@@ -1,0 +1,22 @@
+{
+  "name": "Coco en Forma",
+  "short_name": "Coco en Forma",
+  "description": "Gimnasio mental para entrenar la memoria, la lógica y la concentración.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b4f8a",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
