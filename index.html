@@ -393,12 +393,30 @@ var clasificacionPorId={};
 filasClasificacion.forEach(function(fila){
   clasificacionPorId[String(fila.id||fila.jugador||"")]=fila
 });
-var filas=(consultaPerfiles.data||[]).map(function(perfil){
-  var antigua=clasificacionPorId[String(perfil.id)]||{};
-  return Object.assign({},antigua,perfil,{id:perfil.id,apodo:perfil.apodo})
+/*
+  La vista clasificacion es la base pública y contiene a TODOS los jugadores.
+  La tabla perfiles puede estar protegida por RLS y, para un jugador normal,
+  devolver únicamente su propio perfil. Por eso no debemos construir la lista
+  solo desde perfiles: eso hacía que cada usuario se viera solo y como nº 1.
+*/
+var filas=filasClasificacion.map(function(fila){
+  return Object.assign({},fila)
 });
-/* Si por permisos no pudiera leerse perfiles, se mantiene la clasificación anterior como respaldo. */
-if(!filas.length)filas=filasClasificacion.slice();
+var indiceFilas={};
+filas.forEach(function(fila,indice){
+  indiceFilas[String(fila.id||fila.jugador||"")]=indice
+});
+/* Añadimos o completamos perfiles visibles, incluidos jugadores recién creados. */
+(consultaPerfiles.data||[]).forEach(function(perfil){
+  var id=String(perfil.id||"");
+  if(!id)return;
+  if(null!=indiceFilas[id]){
+    filas[indiceFilas[id]]=Object.assign({},filas[indiceFilas[id]],perfil,{id:perfil.id,apodo:perfil.apodo})
+  }else{
+    indiceFilas[id]=filas.length;
+    filas.push(Object.assign({},perfil,{id:perfil.id,apodo:perfil.apodo}))
+  }
+});
 
 var respuestaRachas=await d.rpc("rachas_coco"),mapaRachas={};
 respuestaRachas&&!respuestaRachas.error&&Array.isArray(respuestaRachas.data)&&
