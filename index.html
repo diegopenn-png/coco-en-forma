@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-07-28-v92-coco-labs-integrado --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coco en Forma + Coco Labs | Aprende jugando y construyendo</title>
+<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-07-28-v93-coco-labs-visible --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coco en Forma + Coco Labs | Aprende jugando y construyendo</title>
 <meta name="description" content="Juegos educativos para niños de 6 a 12 años que desarrollan la memoria, el cálculo, la lógica, el lenguaje y la concentración.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cocoenforma.com/">
@@ -2123,10 +2123,12 @@ try{
   function crearLabs(){
     var app=document.getElementById('cocoApp');
     if(!app||app.querySelector('.cocoLabsHome')) return;
-    var hero=app.querySelector('.heroe');
-    if(!hero) return;
     /* Solo se muestra en la portada pública, no dentro del panel o los juegos. */
     if(app.querySelector('.carnet,.barraVolver,.navegacionJugador')) return;
+    var hero=app.querySelector('.heroe');
+    var portada=app.querySelector('.rejilla.dos');
+    var cabecera=app.querySelector('.cabecera');
+    if(!hero&&!portada&&!cabecera) return;
     var sec=document.createElement('section');
     sec.className='cocoLabsHome';
     sec.setAttribute('aria-label','Coco Labs');
@@ -2149,7 +2151,13 @@ try{
         <article class="cocoLabWorld"><span class="ico">🚀</span><b>Espacio</b><small>Cohetes, órbitas y exploración.</small></article>\
         <article class="cocoLabWorld"><span class="ico">🫀</span><b>Cuerpo humano</b><small>Órganos, sistemas y salud.</small></article>\
       </div>';
-    hero.insertAdjacentElement('afterend',sec);
+    if(hero){
+      hero.insertAdjacentElement('afterend',sec);
+    }else if(portada){
+      portada.insertAdjacentElement('beforebegin',sec);
+    }else{
+      cabecera.insertAdjacentElement('afterend',sec);
+    }
     sec.querySelector('[data-abrir-labs]').onclick=abrir;
     sec.querySelector('[data-ver-mundos]').onclick=function(){sec.querySelector('.cocoLabsWorlds').scrollIntoView({behavior:'smooth',block:'center'})};
     enviarAlto();
