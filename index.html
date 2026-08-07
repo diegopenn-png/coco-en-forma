@@ -2517,6 +2517,190 @@ body > .cocoResiduoV134{
   }
 }
 </style>
+<style id="coco-v135-css">
+/* =========================================================
+   COCO v135 · AUDITORÍA UX / ANIMACIÓN / NAVEGACIÓN
+   ========================================================= */
+
+/* ---------- LOGIN: universo flotante orgánico ---------- */
+#cocoApp.cocoLoginGeneralActivo .loginCard{
+  position:relative!important;
+  overflow:hidden!important;
+}
+
+#cocoApp .cocoOrbitasV135{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+#cocoApp .cocoOrbitasV135 .orb{
+  position:absolute;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(255,255,255,.58);
+  box-shadow:0 10px 30px rgba(29,83,111,.08);
+  opacity:.30;
+  filter:saturate(1.1);
+  animation-timing-function:ease-in-out;
+  animation-iteration-count:infinite;
+  animation-direction:alternate;
+}
+
+#cocoApp .cocoOrbitasV135 .sol{left:3%;top:15%;width:58px;height:58px;font-size:32px;animation-name:cocoFloatA;animation-duration:5.8s}
+#cocoApp .cocoOrbitasV135 .saturno{left:43%;top:16%;width:54px;height:54px;font-size:30px;animation-name:cocoFloatB;animation-duration:6.7s}
+#cocoApp .cocoOrbitasV135 .tierra{left:38%;bottom:10%;width:50px;height:50px;font-size:28px;animation-name:cocoFloatA;animation-duration:7.4s}
+#cocoApp .cocoOrbitasV135 .futbol{left:44%;top:46%;width:46px;height:46px;font-size:25px;animation-name:cocoFloatC;animation-duration:5.3s}
+#cocoApp .cocoOrbitasV135 .basket{right:37%;bottom:8%;width:45px;height:45px;font-size:24px;animation-name:cocoFloatB;animation-duration:6.1s}
+#cocoApp .cocoOrbitasV135 .padel{left:5%;bottom:16%;width:44px;height:44px;font-size:22px;animation-name:cocoFloatC;animation-duration:7.1s}
+#cocoApp .cocoOrbitasV135 .estrella{right:43%;top:31%;width:38px;height:38px;font-size:20px;animation-name:cocoFloatA;animation-duration:4.9s}
+
+@keyframes cocoFloatA{
+  from{transform:translate3d(0,0,0) rotate(-3deg)}
+  to{transform:translate3d(0,-12px,0) rotate(5deg)}
+}
+@keyframes cocoFloatB{
+  from{transform:translate3d(0,0,0) rotate(4deg)}
+  to{transform:translate3d(8px,-8px,0) rotate(-4deg)}
+}
+@keyframes cocoFloatC{
+  from{transform:translate3d(0,0,0) scale(.96)}
+  to{transform:translate3d(-7px,-10px,0) scale(1.04)}
+}
+
+#cocoApp.cocoLoginGeneralActivo .loginCard > *:not(.cocoOrbitasV135){
+  position:relative;
+  z-index:2;
+}
+
+/* ---------- MODALES "EN PREPARACIÓN": siempre cerrables ---------- */
+#cocoLigaComingModal{
+  position:fixed!important;
+  inset:0!important;
+  z-index:100880!important;
+}
+
+#cocoLigaComingModal .cocoComingCerrarV135{
+  position:absolute;
+  top:14px;
+  right:14px;
+  width:46px;
+  height:46px;
+  border:0;
+  border-radius:15px;
+  background:linear-gradient(180deg,#1B7CAA,#07577E);
+  color:#fff;
+  font-size:26px;
+  line-height:1;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 4px 0 #073D5B,0 9px 20px rgba(11,62,89,.18);
+}
+
+/* ---------- NAVEGACIÓN: jamás "Salir", siempre Volver ---------- */
+#cocoApp [data-coco-salir-v135="1"]{
+  display:none!important;
+}
+
+#cocoVolverGlobal{
+  display:flex!important;
+  right:max(14px,env(safe-area-inset-right))!important;
+  top:max(12px,env(safe-area-inset-top))!important;
+  left:auto!important;
+  min-width:132px!important;
+  min-height:54px!important;
+  z-index:100600!important;
+}
+
+/* ---------- COCO MED: limpiar explicación redundante ---------- */
+#cocoApp .cocoMedLigaLeyendaV135,
+#cocoApp [data-coco-med-leyenda-v135="1"]{
+  display:none!important;
+}
+
+/* ---------- COCO MED: acciones visibles junto al estado ---------- */
+#cocoApp .cocoMedResultadoHeadV135{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+  margin-bottom:10px!important;
+}
+
+#cocoApp .cocoMedAccionesV135{
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  flex-wrap:wrap!important;
+}
+
+#cocoApp .cocoMedAccionesV135 button,
+#cocoApp .cocoMedAccionesV135 .btn{
+  min-height:42px!important;
+  padding:8px 13px!important;
+  border-radius:13px!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  margin:0!important;
+}
+
+/* old position becomes visually irrelevant */
+#cocoApp .cocoMedAccionesOriginalV135{
+  display:none!important;
+}
+
+/* ---------- polish visual global ---------- */
+#cocoApp .cocoLigaCard,
+#cocoApp .tarjetaReto,
+#cocoApp .cocoMedDato,
+#cocoApp .cocoMedRankingPanel,
+#cocoApp .cocoMedNivelActual{
+  transition:transform .16s ease,box-shadow .16s ease!important;
+}
+
+#cocoApp .cocoLigaCard:hover,
+#cocoApp .tarjetaReto:hover{
+  transform:translateY(-2px);
+}
+
+/* ---------- mobile/PWA ---------- */
+@media(max-width:760px){
+  #cocoApp .cocoOrbitasV135 .sol{left:1%;top:17%;width:44px;height:44px;font-size:24px}
+  #cocoApp .cocoOrbitasV135 .saturno{left:41%;top:10%;width:42px;height:42px;font-size:24px}
+  #cocoApp .cocoOrbitasV135 .tierra{left:8%;bottom:5%;width:40px;height:40px;font-size:23px}
+  #cocoApp .cocoOrbitasV135 .futbol{left:45%;top:38%;width:38px;height:38px;font-size:21px}
+  #cocoApp .cocoOrbitasV135 .basket{right:4%;bottom:6%;width:38px;height:38px;font-size:20px}
+  #cocoApp .cocoOrbitasV135 .padel{left:3%;bottom:23%;width:36px;height:36px;font-size:18px}
+  #cocoApp .cocoOrbitasV135 .estrella{right:4%;top:32%;width:32px;height:32px;font-size:17px}
+
+  #cocoVolverGlobal{
+    min-width:112px!important;
+    min-height:48px!important;
+    font-size:13px!important;
+  }
+
+  #cocoApp .cocoMedResultadoHeadV135{
+    align-items:flex-start!important;
+  }
+
+  #cocoApp .cocoMedAccionesV135{
+    width:100%!important;
+  }
+
+  #cocoApp .cocoMedAccionesV135 button,
+  #cocoApp .cocoMedAccionesV135 .btn{
+    flex:1 1 140px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  #cocoApp .cocoOrbitasV135 .orb{animation:none!important}
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -6502,7 +6686,7 @@ function inicio(){
 
 <!-- =========================================================
      COCO LIGAS · AISLAMIENTO EPO / MED
-     Versión 2026-08-08-v134
+     Versión 2026-08-08-v135
      - Coco EPO: solo Mis retos + Mis tarjetas
      - Coco Med: solo acceso y contenido de Coco Med
      ========================================================= -->
@@ -6536,7 +6720,7 @@ function inicio(){
 (function(){
   "use strict";
 
-  window.COCO_VERSION = "2026-08-08-v134-pulido-final";
+  window.COCO_VERSION = "2026-08-08-v135-auditoria-ux";
 
   function app(){
     return document.getElementById("cocoApp");
@@ -7507,6 +7691,170 @@ function inicio(){
     alCargarOcultarCortina();
     setTimeout(aplicar,250);
     setTimeout(aplicar,900);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",init);
+  }else{
+    init();
+  }
+})();
+</script>
+
+
+<script id="coco-v135-runtime">
+(function(){
+  "use strict";
+
+  function norm(s){return (s||"").replace(/\s+/g," ").trim().toLowerCase()}
+
+  function decorarLogin(){
+    const login=document.querySelector("#cocoApp .loginCard");
+    if(!login || login.querySelector(".cocoOrbitasV135")) return;
+
+    const d=document.createElement("div");
+    d.className="cocoOrbitasV135";
+    d.innerHTML=
+      '<span class="orb sol">☀️</span>'+
+      '<span class="orb saturno">🪐</span>'+
+      '<span class="orb tierra">🌍</span>'+
+      '<span class="orb futbol">⚽</span>'+
+      '<span class="orb basket">🏀</span>'+
+      '<span class="orb padel">🏓</span>'+
+      '<span class="orb estrella">⭐</span>';
+    login.prepend(d);
+  }
+
+  function asegurarXModalPreparacion(){
+    const modal=document.getElementById("cocoLigaComingModal");
+    if(!modal) return;
+    if(modal.querySelector(".cocoComingCerrarV135")) return;
+
+    const card=modal.querySelector(".cocoLigaComingCard,.cocoComingCard,.modal-card,div");
+    if(!card) return;
+    card.style.position="relative";
+
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="cocoComingCerrarV135";
+    b.setAttribute("aria-label","Cerrar");
+    b.textContent="×";
+    b.addEventListener("click",function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      modal.style.display="none";
+      modal.classList.remove("abierto");
+    });
+    card.appendChild(b);
+
+    modal.addEventListener("click",function(e){
+      if(e.target===modal){
+        modal.style.display="none";
+        modal.classList.remove("abierto");
+      }
+    });
+  }
+
+  function quitarSalir(){
+    document.querySelectorAll("#cocoApp button,#cocoApp a").forEach(function(el){
+      const t=norm(el.textContent);
+      if(t==="salir" || t==="cerrar sesión" || t==="logout"){
+        el.dataset.cocoSalirV135="1";
+      }
+    });
+  }
+
+  function limpiarLeyendaMed(){
+    document.querySelectorAll("#cocoApp *").forEach(function(el){
+      const t=norm(el.textContent);
+      if(
+        t.includes("liga médica coco") &&
+        t.includes("misma cuenta") &&
+        t.includes("compiten por separado")
+      ){
+        el.dataset.cocoMedLeyendaV135="1";
+      }
+    });
+  }
+
+  function moverAccionesMed(){
+    // Find a result block containing "Correcto" or "Incorrecto"
+    const candidates=Array.from(document.querySelectorAll("#cocoApp *")).filter(function(el){
+      if(el.children.length>12) return false;
+      const t=norm(el.textContent);
+      return /^correcto!?$/.test(t) || /^incorrecto$/.test(t) ||
+             t==="✅ ¡correcto!" || t==="❌ incorrecto";
+    });
+
+    const status=candidates.find(function(el){
+      return el.offsetParent!==null;
+    });
+    if(!status) return;
+
+    // locate the two action buttons
+    const allBtns=Array.from(document.querySelectorAll("#cocoApp button,#cocoApp a"));
+    const explain=allBtns.find(function(el){
+      const t=norm(el.textContent);
+      return t==="explícamelo mejor" || t==="explicamelo mejor";
+    });
+    const next=allBtns.find(function(el){
+      return norm(el.textContent).includes("siguiente pregunta");
+    });
+    if(!explain && !next) return;
+
+    // Build/reuse result header wrapper
+    let head=status.closest(".cocoMedResultadoHeadV135");
+    if(!head){
+      head=document.createElement("div");
+      head.className="cocoMedResultadoHeadV135";
+      status.parentNode.insertBefore(head,status);
+      head.appendChild(status);
+    }
+
+    let actions=head.querySelector(".cocoMedAccionesV135");
+    if(!actions){
+      actions=document.createElement("div");
+      actions.className="cocoMedAccionesV135";
+      head.appendChild(actions);
+    }
+
+    [explain,next].forEach(function(btn){
+      if(btn && btn.parentNode!==actions){
+        actions.appendChild(btn);
+      }
+    });
+  }
+
+  function asegurarVolverVisible(){
+    const btn=document.getElementById("cocoVolverGlobal");
+    if(!btn) return;
+
+    // If user is logged in and is not on login, always show global Back.
+    const logged=!!document.querySelector("#cocoApp .navegacionJugador");
+    btn.classList.toggle("visible",logged);
+  }
+
+  function aplicar(){
+    decorarLogin();
+    asegurarXModalPreparacion();
+    quitarSalir();
+    limpiarLeyendaMed();
+    moverAccionesMed();
+    asegurarVolverVisible();
+  }
+
+  const obs=new MutationObserver(function(){
+    clearTimeout(window.__cocoV135Timer);
+    window.__cocoV135Timer=setTimeout(aplicar,50);
+  });
+
+  function init(){
+    const app=document.getElementById("cocoApp");
+    if(app) obs.observe(app,{childList:true,subtree:true});
+    aplicar();
+    setTimeout(aplicar,250);
+    setTimeout(aplicar,900);
+    setTimeout(aplicar,1800);
   }
 
   if(document.readyState==="loading"){
