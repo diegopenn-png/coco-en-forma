@@ -2314,6 +2314,209 @@ body{
   #cocoApp{min-height:100dvh}
 }
 </style>
+<style id="coco-v134-css">
+/* =========================================================
+   COCO v134 · PULIDO FINAL UX / SIN CUADRICULADO / SIN FLASH
+   ========================================================= */
+
+/* 1) Elimina restos visuales en la esquina superior izquierda */
+body > .cocoResiduoV134{
+  display:none!important;
+}
+
+/* 2) Selector: recorte más agresivo de las tres imágenes con checkerboard */
+#cocoApp #cocoLigasInicio .cocoLigaMed .cocoLigaImagen{
+  display:block!important;
+  width:68%!important;
+  height:158%!important;
+  right:-9%!important;
+  bottom:-31%!important;
+  object-fit:cover!important;
+  object-position:center 53%!important;
+  transform:scale(1.08)!important;
+  clip-path:inset(0 0 11% 0 round 0)!important;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigaFootball .cocoLigaImagen{
+  display:block!important;
+  width:68%!important;
+  height:160%!important;
+  right:-9%!important;
+  bottom:-33%!important;
+  object-fit:cover!important;
+  object-position:center 53%!important;
+  transform:scale(1.09)!important;
+  clip-path:inset(0 0 12% 0 round 0)!important;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigaBasket .cocoLigaImagen{
+  display:block!important;
+  width:69%!important;
+  height:161%!important;
+  right:-10%!important;
+  bottom:-34%!important;
+  object-fit:cover!important;
+  object-position:center 53%!important;
+  transform:scale(1.10)!important;
+  clip-path:inset(0 0 13% 0 round 0)!important;
+}
+
+/* Cubre cualquier mínimo residuo inferior sin tapar personaje */
+#cocoApp #cocoLigasInicio .cocoLigaMed::before,
+#cocoApp #cocoLigasInicio .cocoLigaFootball::before,
+#cocoApp #cocoLigasInicio .cocoLigaBasket::before{
+  content:"";
+  position:absolute;
+  z-index:4;
+  left:48%;
+  right:0;
+  bottom:0;
+  height:22px;
+  pointer-events:none;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigaMed::before{
+  background:linear-gradient(180deg,transparent,rgba(8,94,126,.98));
+}
+#cocoApp #cocoLigasInicio .cocoLigaFootball::before{
+  background:linear-gradient(180deg,transparent,rgba(7,105,40,.98));
+}
+#cocoApp #cocoLigasInicio .cocoLigaBasket::before{
+  background:linear-gradient(180deg,transparent,rgba(138,47,8,.98));
+}
+
+/* 3) Descarga tu app: más grande, con jerarquía real */
+#cocoApp .cocoLoginTutorialHeader{
+  min-width:218px!important;
+  min-height:68px!important;
+  padding:9px 16px 9px 9px!important;
+  border-width:3px!important;
+  border-radius:20px!important;
+  box-shadow:
+    0 6px 0 #C8E2EE,
+    0 13px 26px rgba(23,78,108,.11)!important;
+}
+
+#cocoApp .cocoLoginTutorialHeader .cerebro{
+  width:50px!important;
+  height:50px!important;
+  flex:0 0 50px!important;
+  border-radius:15px!important;
+}
+
+#cocoApp .cocoLoginTutorialHeader b{
+  font-size:14px!important;
+}
+
+#cocoApp .cocoLoginTutorialHeader small{
+  font-size:11px!important;
+  margin-top:5px!important;
+}
+
+/* 4) Activa tu supercerebro: compacto, imagen cerca del título */
+#cocoApp.cocoLoginGeneralActivo .loginDecor{
+  justify-content:flex-start!important;
+  padding:14px 14px 16px!important;
+  gap:4px!important;
+}
+
+#cocoApp.cocoLoginGeneralActivo .loginDecor h3,
+#cocoApp.cocoLoginGeneralActivo .loginDecor .tituloMagico{
+  margin:0 0 8px!important;
+  font-size:24px!important;
+  line-height:1!important;
+}
+
+#cocoApp.cocoLoginGeneralActivo .loginDecorStage{
+  flex:0 0 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  align-items:flex-start!important;
+}
+
+#cocoApp.cocoLoginGeneralActivo .loginPoster{
+  width:min(100%,375px)!important;
+  max-width:375px!important;
+  max-height:520px!important;
+  margin:0 auto!important;
+}
+
+/* 5) Cortina de carga: instantánea, más premium y sin ver la pantalla anterior */
+#cocoCambioCortina{
+  background:
+    radial-gradient(circle at 50% 40%,rgba(79,191,236,.18),transparent 28%),
+    radial-gradient(circle at 25% 25%,rgba(255,196,48,.11),transparent 18%),
+    linear-gradient(180deg,#F8FCFE,#EAF7FD)!important;
+}
+
+#cocoCambioCortina .cocoCambioCentro{
+  padding:26px 34px;
+  border-radius:28px;
+  background:rgba(255,255,255,.78);
+  border:2px solid #D5EAF4;
+  box-shadow:0 8px 0 #D1E7F1,0 22px 52px rgba(20,69,95,.12);
+}
+
+#cocoCambioCortina .cocoCambioBrain{
+  font-size:60px!important;
+}
+
+#cocoCambioCortina .cocoCambioCentro span:last-child{
+  font-size:20px!important;
+  color:#17435D!important;
+}
+
+/* 6) Un único Volver, siempre arriba derecha */
+#cocoVolverGlobal{
+  right:max(16px,env(safe-area-inset-right))!important;
+  top:max(14px,env(safe-area-inset-top))!important;
+  left:auto!important;
+  min-width:132px!important;
+  min-height:54px!important;
+}
+
+/* Oculta cualquier otro volver textual que sobreviva */
+#cocoApp button:not(#cocoVolverGlobal)[data-coco-viejo-volver="1"],
+#cocoApp a[data-coco-viejo-volver="1"]{
+  display:none!important;
+}
+
+/* 7) PWA / móvil */
+@media(max-width:760px){
+  #cocoApp .cocoLoginTutorialHeader{
+    min-width:66px!important;
+    width:66px!important;
+    min-height:58px!important;
+    padding:6px!important;
+  }
+
+  #cocoApp .cocoLoginTutorialHeader .cerebro{
+    width:46px!important;
+    height:46px!important;
+    flex-basis:46px!important;
+  }
+
+  #cocoApp .cocoLoginTutorialHeader span:last-child{
+    display:none!important;
+  }
+
+  #cocoApp.cocoLoginGeneralActivo .loginPoster{
+    width:min(100%,285px)!important;
+    max-height:385px!important;
+  }
+
+  #cocoApp #cocoLigasInicio .cocoLigaMed .cocoLigaImagen,
+  #cocoApp #cocoLigasInicio .cocoLigaFootball .cocoLigaImagen,
+  #cocoApp #cocoLigasInicio .cocoLigaBasket .cocoLigaImagen{
+    width:72%!important;
+    height:168%!important;
+    right:-13%!important;
+    bottom:-39%!important;
+  }
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -6299,7 +6502,7 @@ function inicio(){
 
 <!-- =========================================================
      COCO LIGAS · AISLAMIENTO EPO / MED
-     Versión 2026-08-08-v133
+     Versión 2026-08-08-v134
      - Coco EPO: solo Mis retos + Mis tarjetas
      - Coco Med: solo acceso y contenido de Coco Med
      ========================================================= -->
@@ -6333,7 +6536,7 @@ function inicio(){
 (function(){
   "use strict";
 
-  window.COCO_VERSION = "2026-08-08-v133-tutorial-fluidez";
+  window.COCO_VERSION = "2026-08-08-v134-pulido-final";
 
   function app(){
     return document.getElementById("cocoApp");
@@ -7151,6 +7354,166 @@ function inicio(){
 
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init);
   else init();
+})();
+</script>
+
+
+<script id="coco-v134-runtime">
+(function(){
+  "use strict";
+
+  function limpiarResiduosEsquina(){
+    /* Elimina texto directo accidental del body */
+    Array.from(document.body.childNodes).forEach(function(n){
+      if(n.nodeType===Node.TEXT_NODE && (n.textContent||"").trim()){
+        n.textContent="";
+      }
+    });
+
+    /* Oculta pequeños elementos huérfanos visibles arriba a la izquierda */
+    Array.from(document.body.children).forEach(function(el){
+      if(
+        el.id==="cocoApp" ||
+        el.id==="cocoVolverGlobal" ||
+        el.id==="cocoTutorialV133" ||
+        el.id==="cocoLegalV133" ||
+        el.id==="cocoCambioCortina" ||
+        el.tagName==="SCRIPT" ||
+        el.tagName==="STYLE"
+      ) return;
+
+      const r=el.getBoundingClientRect();
+      const txt=(el.textContent||"").replace(/\s+/g," ").trim();
+
+      if(
+        r.width>0 && r.height>0 &&
+        r.left<28 && r.top<85 &&
+        txt.length>0 && txt.length<=6
+      ){
+        el.classList.add("cocoResiduoV134");
+      }
+    });
+  }
+
+  function marcarVolverAntiguos(){
+    document.querySelectorAll("#cocoApp a,#cocoApp button").forEach(function(el){
+      if(el.id==="cocoVolverGlobal") return;
+      const txt=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+      if(/^volver\b/.test(txt) || txt==="← volver" || txt==="volver a coco"){
+        el.dataset.cocoViejoVolver="1";
+      }
+    });
+  }
+
+  function mostrarCortina(label){
+    const cortina=document.getElementById("cocoCambioCortina");
+    if(!cortina) return;
+    const texto=cortina.querySelector(".cocoCambioCentro span:last-child");
+    if(texto) texto.textContent=label||"Preparando tu Coco…";
+    cortina.classList.add("visible");
+  }
+
+  function ocultarCortinaCuando(liga){
+    const cortina=document.getElementById("cocoCambioCortina");
+    if(!cortina) return;
+
+    const inicio=Date.now();
+    const loop=function(){
+      const app=document.getElementById("cocoApp");
+      let listo=false;
+
+      if(liga==="epo") listo=!!app && app.classList.contains("cocoModoEpo");
+      else if(liga==="med") listo=!!app && app.classList.contains("cocoModoMed");
+      else listo=true;
+
+      if((listo && Date.now()-inicio>260) || Date.now()-inicio>1700){
+        requestAnimationFrame(function(){
+          requestAnimationFrame(function(){
+            cortina.classList.remove("visible");
+          });
+        });
+        return;
+      }
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  function entrarDirectoSinFlash(card){
+    const liga=card.dataset.liga||"";
+    if(liga!=="epo" && liga!=="med") return false;
+
+    const nombre=liga==="med" ? "Coco Med" : "Coco EPO";
+
+    mostrarCortina("Cargando "+nombre+"…");
+
+    try{
+      localStorage.setItem("coco_liga_seleccionada",liga);
+    }catch(err){}
+
+    /* Impide que el viejo router pinte EPO durante unos milisegundos.
+       Recarga con la sesión existente y la selección ya grabada. */
+    setTimeout(function(){
+      location.reload();
+    },50);
+
+    return true;
+  }
+
+  /* Captura antes que los listeners viejos */
+  document.addEventListener("click",function(e){
+    const card=e.target.closest && e.target.closest("#cocoLigasInicio [data-liga]");
+    if(card && (card.dataset.liga==="epo" || card.dataset.liga==="med")){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      entrarDirectoSinFlash(card);
+      return;
+    }
+
+    const volver=e.target.closest && e.target.closest("#cocoVolverGlobal");
+    if(volver){
+      /* La versión v132 ya decide si va al selector o al login.
+         Aquí solo cubrimos visualmente el cambio antes de que ocurra. */
+      mostrarCortina("Volviendo…");
+    }
+  },true);
+
+  function alCargarOcultarCortina(){
+    let liga="";
+    try{liga=localStorage.getItem("coco_liga_seleccionada")||""}catch(err){}
+    if(liga==="epo" || liga==="med"){
+      mostrarCortina(liga==="med" ? "Cargando Coco Med…" : "Cargando Coco EPO…");
+      ocultarCortinaCuando(liga);
+    }else{
+      const c=document.getElementById("cocoCambioCortina");
+      if(c) c.classList.remove("visible");
+    }
+  }
+
+  function aplicar(){
+    limpiarResiduosEsquina();
+    marcarVolverAntiguos();
+  }
+
+  const obs=new MutationObserver(function(){
+    clearTimeout(window.__cocoV134T);
+    window.__cocoV134T=setTimeout(aplicar,40);
+  });
+
+  function init(){
+    const app=document.getElementById("cocoApp");
+    if(app) obs.observe(app,{childList:true,subtree:true});
+    aplicar();
+    alCargarOcultarCortina();
+    setTimeout(aplicar,250);
+    setTimeout(aplicar,900);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",init);
+  }else{
+    init();
+  }
 })();
 </script>
 
