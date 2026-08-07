@@ -728,6 +728,305 @@ body{
   }
 }
 </style>
+<style id="coco-v129-login-general-css">
+/* =========================================================
+   COCO v129 · LOGIN GENERAL + TARJETAS EMBEBIDAS
+   ========================================================= */
+
+/* ---------- LOGIN GENERAL ---------- */
+
+#cocoApp .cocoLoginGeneralCabecera{
+  width:min(1120px,calc(100% - 24px));
+  box-sizing:border-box;
+  margin:12px auto 18px;
+  padding:18px;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 8% 15%,rgba(57,187,241,.13),transparent 27%),
+    radial-gradient(circle at 94% 12%,rgba(255,169,48,.11),transparent 25%),
+    linear-gradient(180deg,#FBFDFE,#F1F8FB);
+  border:2px solid #D8EAF3;
+  box-shadow:0 6px 0 #D5E7EF,0 18px 38px rgba(18,57,80,.08);
+}
+
+#cocoApp .cocoLoginGeneralTop{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:22px;
+  margin-bottom:14px;
+}
+
+#cocoApp .cocoLoginGeneralTop>div:first-child{
+  text-align:center;
+}
+
+#cocoApp .cocoLoginGeneralTop h1{
+  margin:0!important;
+  color:#102D43!important;
+  font-family:var(--display)!important;
+  font-size:clamp(31px,4vw,46px)!important;
+  line-height:1!important;
+}
+
+#cocoApp .cocoLoginGeneralTop p{
+  margin:6px 0 0!important;
+  color:#647B89!important;
+  font-weight:850!important;
+}
+
+#cocoApp .cocoLoginInstalar{
+  border:2px solid #C9E3EF;
+  background:linear-gradient(180deg,#FFF,#EDF8FC);
+  border-radius:18px;
+  padding:9px 12px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  cursor:pointer;
+  color:#17384D;
+  box-shadow:0 4px 0 #D3E8F1;
+  font-family:var(--display)!important;
+}
+
+#cocoApp .cocoLoginInstalarIco{
+  width:36px;height:36px;border-radius:11px;
+  display:grid;place-items:center;
+  background:linear-gradient(180deg,#248FBE,#176A98);
+  color:#FF7A16;font-size:24px;font-weight:900;
+}
+
+#cocoApp .cocoLoginInstalar span:last-child{
+  display:flex;flex-direction:column;align-items:flex-start;line-height:1.05;
+}
+
+#cocoApp .cocoLoginInstalar b{font-size:12px}
+#cocoApp .cocoLoginInstalar small{
+  margin-top:4px;color:#EF6C05;font-family:var(--body)!important;font-weight:900
+}
+
+#cocoApp .cocoUniversosPreview{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;
+}
+
+#cocoApp .cocoPreview{
+  height:90px;
+  border-radius:17px;
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  padding:9px 10px;
+  box-sizing:border-box;
+  color:#fff;
+  isolation:isolate;
+}
+
+#cocoApp .cocoPreview::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(90deg,rgba(3,20,35,.70),rgba(3,20,35,.12));
+}
+
+#cocoApp .cocoPreview img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center 58%;
+  z-index:0;
+}
+
+#cocoApp .cocoPreview span{
+  position:relative;z-index:2;display:flex;flex-direction:column
+}
+#cocoApp .cocoPreview b{font-family:var(--display)!important;font-size:13px}
+#cocoApp .cocoPreview small{font-size:9px;opacity:.92;font-weight:800}
+
+#cocoApp .cocoPreviewEpo{background:#075C9D}
+#cocoApp .cocoPreviewMed{background:#087997}
+#cocoApp .cocoPreviewFutbol{background:#08752C}
+#cocoApp .cocoPreviewBasket{background:#B3480B}
+
+#cocoApp .cocoLoginMensaje{
+  text-align:center;
+  margin-top:11px;
+  padding:9px 12px;
+  border-radius:13px;
+  background:#EAF7FD;
+  color:#345F75;
+  font-size:12px;
+  font-weight:800;
+}
+
+/* Durante el login, hacemos el acceso realmente general:
+   se oculta la columna antigua "Los retos". */
+#cocoApp.cocoLoginGeneralActivo .retosCard{
+  display:none!important;
+}
+
+#cocoApp.cocoLoginGeneralActivo .rejilla.dos{
+  grid-template-columns:minmax(0,660px)!important;
+  justify-content:center!important;
+  max-width:760px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+#cocoApp.cocoLoginGeneralActivo .loginCard{
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+
+#cocoApp.cocoLoginGeneralActivo .loginCard>h2,
+#cocoApp.cocoLoginGeneralActivo .loginCard>.tituloMagico,
+#cocoApp.cocoLoginGeneralActivo .loginCard>p:first-of-type{
+  max-width:none!important;
+}
+
+/* El instalador antiguo del login queda oculto; usamos el superior. */
+#cocoApp.cocoLoginGeneralActivo #cocoInstalaMini{
+  display:none!important;
+}
+
+/* ---------- TARJETAS EMBEBIDAS ---------- */
+
+/* En vez de "foto pegada": la escena llena la zona derecha y se funde
+   con el color mediante máscara y degradado. */
+#cocoApp .cocoLigaCard{
+  overflow:hidden!important;
+}
+
+#cocoApp .cocoLigaImagen{
+  position:absolute!important;
+  z-index:2!important;
+  right:0!important;
+  bottom:0!important;
+  width:55%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 58%!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  filter:none!important;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.65) 18%,#000 38%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.65) 18%,#000 38%,#000 100%);
+}
+
+#cocoApp .cocoLigaCard::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(90deg,
+      rgba(4,24,42,.34) 0%,
+      rgba(4,24,42,.18) 43%,
+      rgba(4,24,42,.04) 59%,
+      rgba(4,24,42,0) 76%)!important;
+}
+
+#cocoApp .cocoLigaContenido{
+  z-index:4!important;
+  width:52%!important;
+  padding-right:7px!important;
+}
+
+/* El nombre largo de Baloncesto no puede invadir la escena. */
+#cocoApp .cocoLigaBasket .cocoLigaNombre{
+  font-size:clamp(25px,3vw,35px)!important;
+  line-height:.98!important;
+  max-width:100%!important;
+  letter-spacing:-.02em;
+}
+
+#cocoApp .cocoLigaBasket .cocoLigaDescripcion{
+  max-width:22ch!important;
+}
+
+/* El rótulo EN PREPARACIÓN queda dentro de la parte de color,
+   no flotando encima del personaje. */
+#cocoApp .cocoLigaFootball .cocoLigaProximamente,
+#cocoApp .cocoLigaBasket .cocoLigaProximamente{
+  right:auto!important;
+  left:22px!important;
+  top:auto!important;
+  bottom:16px!important;
+  z-index:5!important;
+  font-size:9px!important;
+}
+
+/* Dejamos sitio al distintivo en las tarjetas aún no activas. */
+#cocoApp .cocoLigaFootball .cocoLigaEntrar,
+#cocoApp .cocoLigaBasket .cocoLigaEntrar{
+  margin-bottom:28px!important;
+}
+
+/* ---------- MÓVIL ---------- */
+@media(max-width:720px){
+  #cocoApp .cocoLoginGeneralCabecera{
+    width:calc(100% - 12px);
+    margin:6px auto 12px;
+    padding:12px;
+    border-radius:22px;
+  }
+
+  #cocoApp .cocoLoginGeneralTop{
+    gap:9px;
+    justify-content:space-between;
+  }
+
+  #cocoApp .cocoLoginGeneralTop>div:first-child{text-align:left}
+
+  #cocoApp .cocoLoginGeneralTop h1{
+    font-size:29px!important;
+  }
+
+  #cocoApp .cocoLoginGeneralTop p{
+    font-size:11px!important;
+  }
+
+  #cocoApp .cocoLoginInstalar{
+    padding:7px;
+    flex:none;
+  }
+
+  #cocoApp .cocoLoginInstalar span:last-child{
+    display:none;
+  }
+
+  #cocoApp .cocoUniversosPreview{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  #cocoApp .cocoPreview{
+    height:75px;
+  }
+
+  #cocoApp .cocoLigaImagen{
+    width:52%!important;
+  }
+
+  #cocoApp .cocoLigaContenido{
+    width:56%!important;
+  }
+
+  #cocoApp .cocoLigaBasket .cocoLigaNombre{
+    font-size:24px!important;
+  }
+}
+
+@media(max-width:430px){
+  #cocoApp .cocoLigaImagen{
+    width:50%!important;
+  }
+  #cocoApp .cocoLigaContenido{
+    width:58%!important;
+  }
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -4475,20 +4774,68 @@ function inicio(){
     boton.addEventListener("click",function(e){
       e.preventDefault();
       e.stopPropagation();
-
-      // Reutilizamos el tutorial de instalación que ya existe en el index.
-      const mini = document.getElementById("cocoInstalaMini");
-      if(mini){
-        mini.click();
-        return;
-      }
-
-      const overlay = document.getElementById("cocoInstalaOverlay");
-      if(overlay){
-        overlay.classList.add("abierto");
-        document.body.style.overflow = "hidden";
-      }
+      abrirInstalacionSeguro();
     });
+  }
+
+  function mostrarLoginGeneral(){
+    const app = root();
+    if(!app) return;
+
+    app.classList.add("cocoLoginGeneralActivo");
+
+    // Si el selector quedó de una renderización anterior, lo quitamos.
+    const selector = document.getElementById("cocoLigasInicio");
+    if(selector) selector.remove();
+
+    // Restauramos el contenido real del login si alguna versión anterior lo ocultó.
+    document.querySelectorAll("#cocoApp [data-coco-antes-liga='1']").forEach(function(el){
+      el.style.display = "";
+      delete el.dataset.cocoAntesLiga;
+    });
+
+    const cambiar = document.getElementById("cocoLigaLoginVolver");
+    if(cambiar) cambiar.remove();
+
+    if(!document.getElementById("cocoLoginGeneralCabecera")){
+      const cab = document.createElement("section");
+      cab.id = "cocoLoginGeneralCabecera";
+      cab.className = "cocoLoginGeneralCabecera";
+      cab.innerHTML = `
+        <div class="cocoLoginGeneralTop">
+          <div>
+            <h1>Elige tu Coco</h1>
+            <p>Cuatro universos para aprender, jugar y competir.</p>
+          </div>
+          <button type="button" class="cocoLoginInstalar" id="cocoLoginInstalar">
+            <span class="cocoLoginInstalarIco">⇩</span>
+            <span><b>Instala tu Coco</b><small>Ver cómo →</small></span>
+          </button>
+        </div>
+        ${htmlPreviewUniversos()}
+        <div class="cocoLoginMensaje">
+          Inicia sesión una sola vez. Después podrás cambiar de Coco sin volver a identificarte.
+        </div>
+      `;
+      app.insertBefore(cab, app.firstChild);
+
+      const instalar = cab.querySelector("#cocoLoginInstalar");
+      if(instalar){
+        instalar.addEventListener("click",function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          abrirInstalacionSeguro();
+        });
+      }
+    }
+  }
+
+  function limpiarLoginGeneral(){
+    const app = root();
+    if(!app) return;
+    app.classList.remove("cocoLoginGeneralActivo");
+    const cab = document.getElementById("cocoLoginGeneralCabecera");
+    if(cab) cab.remove();
   }
 
   function mostrarSelector(){
@@ -4504,7 +4851,7 @@ function inicio(){
 
     const hijos = Array.from(app.children);
     hijos.forEach(function(el){
-      if(el.id !== "cocoLigaComingModal"){
+      if(el.id !== "cocoLigaComingModal" && el.id !== "cocoInstalaOverlay"){
         el.dataset.cocoAntesLiga = "1";
         el.style.display = "none";
       }
@@ -4549,6 +4896,7 @@ function inicio(){
     // Ocultamos temporalmente TODO el contenido actual, pero no lo destruimos.
     Array.from(app.children).forEach(function(el){
       if(el.id === "cocoLigaComingModal") return;
+      if(el.id === "cocoInstalaOverlay") return;
       if(el.id === "cocoLigasInicio") return;
       el.dataset.cocoAntesLiga = "1";
       el.style.display = "none";
@@ -4614,7 +4962,19 @@ function inicio(){
     const app = root();
     if(!app) return;
 
-    // Si no hay selección, el selector debe ser la primera pantalla.
+    const logueado = !!app.querySelector(".navegacionJugador");
+
+    // 1. Antes de iniciar sesión: portada + login general.
+    if(!logueado){
+      mostrarLoginGeneral();
+      return;
+    }
+
+    // Ya hay sesión: retiramos la portada de acceso.
+    limpiarLoginGeneral();
+
+    // 2. Con sesión iniciada pero sin universo elegido:
+    //    mostramos "Elige tu Coco".
     if(!seleccion){
       if(!document.getElementById("cocoLigasInicio")){
         mostrarSelector();
@@ -4622,7 +4982,7 @@ function inicio(){
       return;
     }
 
-    // Si ya eligió EPO o MED, dejamos funcionar la app original.
+    // 3. Con sesión + Coco elegido: dejamos funcionar el juego.
     insertarVolverALigas();
     abrirSeleccionSiYaEstaLogueado();
   }
@@ -4652,7 +5012,7 @@ function inicio(){
 
 <!-- =========================================================
      COCO LIGAS · AISLAMIENTO EPO / MED
-     Versión 2026-08-07-v128
+     Versión 2026-08-07-v129
      - Coco EPO: solo Mis retos + Mis tarjetas
      - Coco Med: solo acceso y contenido de Coco Med
      ========================================================= -->
@@ -4686,7 +5046,7 @@ function inicio(){
 (function(){
   "use strict";
 
-  window.COCO_VERSION = "2026-08-07-v128-selector-pro";
+  window.COCO_VERSION = "2026-08-07-v129-login-general";
 
   function app(){
     return document.getElementById("cocoApp");
@@ -4827,6 +5187,30 @@ function inicio(){
   }else{
     iniciar();
   }
+})();
+</script>
+
+
+<script id="coco-v129-instala-seguro">
+(function(){
+  document.addEventListener("click",function(e){
+    const btn = e.target.closest && e.target.closest("#cocoInstalaPrincipal,#cocoLoginInstalar");
+    if(!btn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const overlay = document.getElementById("cocoInstalaOverlay");
+    if(overlay){
+      overlay.style.display = "";
+      overlay.classList.add("abierto");
+      document.body.style.overflow = "hidden";
+      return;
+    }
+
+    const old = document.getElementById("cocoInstalaMini");
+    if(old) old.click();
+  },true);
 })();
 </script>
 
