@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-06-v121-tutor-conectado --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coco en Forma | Entrena el cerebro jugando</title>
+<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-07-v123-tutor-contextual --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coco en Forma | Entrena el cerebro jugando</title>
 <meta name="description" content="Juegos educativos para niños de 6 a 12 años que desarrollan la memoria, el cálculo, la lógica, el lenguaje y la concentración.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cocoenforma.com/">
@@ -3432,7 +3432,7 @@ function inicio(){
    window.__cocoMedMiniLogro=setTimeout(function(){n.classList.remove("visible")},2600);
  }
 
- async function explicarMejorMed(q){
+ async function explicarMejorMed(q,respuestaElegida,acerto){
    var panel=document.getElementById("medTutorPanel");if(!panel)return;
    panel.innerHTML="<b>Preparando una explicación más clara…</b><p class='pequeno apagado'>Puede tardar unos segundos.</p>";
    var controlador=typeof AbortController!=="undefined"?new AbortController():null;
@@ -3464,7 +3464,9 @@ function inicio(){
          explicacion:q.explanation,
          referencia:q.reference,
          etapa:q.stage,
-         materia:q.subject
+         materia:q.subject,
+         respuesta_usuario:respuestaElegida,
+         acerto:Boolean(acerto)
        })
      };
      if(controlador)opcionesFetch.signal=controlador.signal;
@@ -3561,7 +3563,7 @@ function inicio(){
        '</button>'+
      '</div>';
 
-   document.getElementById("medExplicarMejor").onclick=function(){explicarMejorMed(q)};
+   document.getElementById("medExplicarMejor").onclick=function(){explicarMejorMed(q,q.options[i],ok)};
    document.getElementById("medSiguiente").onclick=function(){
      var continuar=function(){estado.indice++;estado.respondida=false;pregunta()};
      if(ok&&estado.racha>0&&estado.racha%10===0){
