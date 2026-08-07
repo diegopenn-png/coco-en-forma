@@ -2581,6 +2581,164 @@ body.cocoLoginV136 #cocoVolverGlobal{
   }
 }
 </style>
+<style id="coco-v137-css">
+/* =========================================================
+   COCO v137 · SELECTOR LIMPIO / IMÁGENES GITHUB BIEN EMBEBIDAS
+   ========================================================= */
+
+/* La pantalla "Elige tu Coco" queda limpia: solo título + 4 tarjetas */
+#cocoApp #cocoLigasInicio .cocoOrbitasV135,
+#cocoApp #cocoLigasInicio .cocoLoginDecoraciones,
+#cocoApp #cocoLigasInicio [class*="orb"],
+#cocoApp #cocoLigasInicio [class*="sol"],
+#cocoApp #cocoLigasInicio [class*="saturno"],
+#cocoApp #cocoLigasInicio [class*="tierra"],
+#cocoApp #cocoLigasInicio [class*="futbol"],
+#cocoApp #cocoLigasInicio [class*="basket"],
+#cocoApp #cocoLigasInicio [class*="padel"],
+#cocoApp #cocoLigasInicio [class*="estrella"]{
+  display:none!important;
+}
+
+/* Todas las tarjetas recortan cualquier margen del PNG */
+#cocoApp #cocoLigasInicio .cocoLigaCard{
+  overflow:hidden!important;
+  isolation:isolate!important;
+}
+
+/* EPO se mantiene como referencia visual */
+#cocoApp #cocoLigasInicio .cocoLigaEpo .cocoLigaImagen{
+  transform:none!important;
+  clip-path:none!important;
+}
+
+/* MED: usa exactamente el PNG de GitHub, ampliado dentro del marco
+   para que no se vea el borde/cuadrícula inferior ni superior. */
+#cocoApp #cocoLigasInicio .cocoLigaMed .cocoLigaImagen{
+  content:url('/coco-med-transparente.png')!important;
+  display:block!important;
+  position:absolute!important;
+  z-index:2!important;
+  right:-1%!important;
+  bottom:0!important;
+  width:59%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 49%!important;
+  transform:scale(1.20)!important;
+  transform-origin:center center!important;
+  clip-path:inset(3% 0 4% 0)!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+
+/* FÚTBOL: misma lógica que EPO, sin bandas ni rayas */
+#cocoApp #cocoLigasInicio .cocoLigaFootball .cocoLigaImagen{
+  content:url('/coco-futbol-transparente.png')!important;
+  display:block!important;
+  position:absolute!important;
+  z-index:2!important;
+  right:-1%!important;
+  bottom:0!important;
+  width:59%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 50%!important;
+  transform:scale(1.18)!important;
+  transform-origin:center center!important;
+  clip-path:inset(3% 0 4% 0)!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+
+/* BALONCESTO: misma lógica */
+#cocoApp #cocoLigasInicio .cocoLigaBasket .cocoLigaImagen{
+  content:url('/coco-baloncesto-transparente.png')!important;
+  display:block!important;
+  position:absolute!important;
+  z-index:2!important;
+  right:-1%!important;
+  bottom:0!important;
+  width:59%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 50%!important;
+  transform:scale(1.18)!important;
+  transform-origin:center center!important;
+  clip-path:inset(3% 0 4% 0)!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+
+/* Fundido lateral: imagen integrada, no pegada */
+#cocoApp #cocoLigasInicio .cocoLigaMed .cocoLigaImagen,
+#cocoApp #cocoLigasInicio .cocoLigaFootball .cocoLigaImagen,
+#cocoApp #cocoLigasInicio .cocoLigaBasket .cocoLigaImagen{
+  -webkit-mask-image:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,0,0,.55) 13%,
+    rgba(0,0,0,.95) 27%,
+    #000 40%,
+    #000 100%
+  )!important;
+  mask-image:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,0,0,.55) 13%,
+    rgba(0,0,0,.95) 27%,
+    #000 40%,
+    #000 100%
+  )!important;
+}
+
+/* Tapa únicamente el último borde inferior por si el PNG original
+   conserva algún píxel del patrón, sin cubrir los pies. */
+#cocoApp #cocoLigasInicio .cocoLigaMed::before,
+#cocoApp #cocoLigasInicio .cocoLigaFootball::before,
+#cocoApp #cocoLigasInicio .cocoLigaBasket::before{
+  content:"";
+  position:absolute;
+  z-index:3;
+  right:0;
+  bottom:0;
+  width:60%;
+  height:10px;
+  pointer-events:none;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigaMed::before{
+  background:linear-gradient(180deg,transparent,rgba(9,104,137,.98));
+}
+#cocoApp #cocoLigasInicio .cocoLigaFootball::before{
+  background:linear-gradient(180deg,transparent,rgba(8,104,41,.98));
+}
+#cocoApp #cocoLigasInicio .cocoLigaBasket::before{
+  background:linear-gradient(180deg,transparent,rgba(138,47,8,.98));
+}
+
+/* Texto siempre por encima */
+#cocoApp #cocoLigasInicio .cocoLigaContenido{
+  position:relative!important;
+  z-index:5!important;
+}
+
+/* Móvil/PWA */
+@media(max-width:720px){
+  #cocoApp #cocoLigasInicio .cocoLigaMed .cocoLigaImagen,
+  #cocoApp #cocoLigasInicio .cocoLigaFootball .cocoLigaImagen,
+  #cocoApp #cocoLigasInicio .cocoLigaBasket .cocoLigaImagen{
+    width:57%!important;
+    transform:scale(1.22)!important;
+  }
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -6572,7 +6730,7 @@ function inicio(){
 
 <!-- =========================================================
      COCO LIGAS · AISLAMIENTO EPO / MED
-     Versión 2026-08-08-v136
+     Versión 2026-08-08-v137
      - Coco EPO: solo Mis retos + Mis tarjetas
      - Coco Med: solo acceso y contenido de Coco Med
      ========================================================= -->
@@ -6606,7 +6764,7 @@ function inicio(){
 (function(){
   "use strict";
 
-  window.COCO_VERSION = "2026-08-08-v136-estable";
+  window.COCO_VERSION = "2026-08-08-v137-imagenes-limpias";
 
   function app(){
     return document.getElementById("cocoApp");
@@ -7631,6 +7789,51 @@ function inicio(){
   aplicar();
   setTimeout(aplicar,300);
   setTimeout(aplicar,900);
+})();
+</script>
+
+
+<script id="coco-v137-selector-limpio">
+(function(){
+  "use strict";
+
+  function limpiarDecoracionSelector(){
+    const selector=document.getElementById("cocoLigasInicio");
+    if(!selector) return;
+
+    selector.querySelectorAll(
+      ".cocoOrbitasV135,.cocoLoginDecoraciones,[class*='orb'],[class*='sol'],[class*='saturno'],[class*='tierra'],[class*='padel'],[class*='estrella']"
+    ).forEach(function(el){
+      el.remove();
+    });
+
+    /* Fuerza siempre los archivos exactos ya subidos a GitHub */
+    const imagenes = {
+      ".cocoLigaMed .cocoLigaImagen":"/coco-med-transparente.png",
+      ".cocoLigaFootball .cocoLigaImagen":"/coco-futbol-transparente.png",
+      ".cocoLigaBasket .cocoLigaImagen":"/coco-baloncesto-transparente.png"
+    };
+
+    Object.entries(imagenes).forEach(function([sel,src]){
+      const img=selector.querySelector(sel);
+      if(img && img.getAttribute("src")!==src){
+        img.setAttribute("src",src);
+      }
+    });
+  }
+
+  const app=document.getElementById("cocoApp");
+  if(app){
+    const obs=new MutationObserver(function(){
+      clearTimeout(window.__cocoV137T);
+      window.__cocoV137T=setTimeout(limpiarDecoracionSelector,70);
+    });
+    obs.observe(app,{childList:true,subtree:true});
+  }
+
+  limpiarDecoracionSelector();
+  setTimeout(limpiarDecoracionSelector,300);
+  setTimeout(limpiarDecoracionSelector,900);
 })();
 </script>
 
