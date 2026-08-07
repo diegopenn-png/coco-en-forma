@@ -1027,6 +1027,264 @@ body{
   }
 }
 </style>
+<style id="coco-v130-final-css">
+/* =========================================================
+   COCO v130 · AJUSTES VISUALES Y DE NAVEGACIÓN
+   ========================================================= */
+
+/* 1) Selector: quitar instalación de esta pantalla */
+#cocoApp #cocoLigasInicio #cocoInstalaPrincipal{
+  display:none!important;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigasCabecera{
+  justify-content:center!important;
+  min-height:auto!important;
+  margin-bottom:18px!important;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigasTitulos{
+  text-align:center!important;
+}
+
+/* Título más lúdico/premium */
+#cocoApp #cocoLigasInicio .cocoLigasTitulo h2,
+#cocoApp #cocoLigasInicio .cocoLigasCabecera h2{
+  font-family:var(--display)!important;
+  font-weight:950!important;
+  letter-spacing:-.045em!important;
+  font-size:clamp(34px,5vw,52px)!important;
+  line-height:.95!important;
+  color:#123B58!important;
+  text-shadow:
+    0 2px 0 #fff,
+    0 5px 0 rgba(93,167,202,.16),
+    0 10px 20px rgba(18,59,88,.10)!important;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigasSub{
+  font-size:14px!important;
+  font-weight:850!important;
+  color:#587383!important;
+  letter-spacing:.005em!important;
+}
+
+/* 2) Fundir aún más las escenas con las tarjetas y eliminar el efecto
+      visual de "cuadriculado" mediante recorte/zoom de las zonas superiores. */
+#cocoApp #cocoLigasInicio .cocoLigaImagen{
+  width:59%!important;
+  height:116%!important;
+  right:-2%!important;
+  bottom:-9%!important;
+  object-fit:cover!important;
+  object-position:center 66%!important;
+  transform:scale(1.08)!important;
+  transform-origin:center bottom!important;
+  -webkit-mask-image:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,0,0,.45) 9%,
+    rgba(0,0,0,.94) 27%,
+    #000 43%,
+    #000 100%
+  )!important;
+  mask-image:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,0,0,.45) 9%,
+    rgba(0,0,0,.94) 27%,
+    #000 43%,
+    #000 100%
+  )!important;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigaCard::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,
+      rgba(7,31,54,.68) 0%,
+      rgba(7,31,54,.42) 38%,
+      rgba(7,31,54,.10) 56%,
+      rgba(7,31,54,0) 73%);
+}
+
+#cocoApp #cocoLigasInicio .cocoLigaContenido{
+  position:relative!important;
+  z-index:5!important;
+}
+
+/* Color superior para tapar cualquier borde claro residual del archivo fuente */
+#cocoApp #cocoLigasInicio .cocoLigaCard{
+  background-clip:padding-box!important;
+}
+
+#cocoApp #cocoLigasInicio .cocoLigaEpo .cocoLigaImagen{object-position:center 67%!important}
+#cocoApp #cocoLigasInicio .cocoLigaMed .cocoLigaImagen{object-position:center 64%!important}
+#cocoApp #cocoLigasInicio .cocoLigaFootball .cocoLigaImagen{object-position:center 69%!important}
+#cocoApp #cocoLigasInicio .cocoLigaBasket .cocoLigaImagen{object-position:center 68%!important}
+
+/* 3) Coco EPO ya logueado: usar el personaje estudiante diseñado */
+#cocoApp.cocoModoEpo .avatarCarnet{
+  width:82px!important;
+  height:82px!important;
+  min-width:82px!important;
+  border-radius:22px!important;
+  background:
+    linear-gradient(rgba(6,66,110,.10),rgba(6,66,110,.10)),
+    url('/coco-epo-transparente.png') center 61% / 185% auto no-repeat!important;
+  border:2px solid rgba(255,255,255,.72)!important;
+  box-shadow:0 5px 14px rgba(0,39,68,.22)!important;
+  overflow:hidden!important;
+}
+
+#cocoApp.cocoModoEpo .avatarCarnet svg{
+  display:none!important;
+}
+
+/* 4) Coco Med: aprovechar el gran bloque azul para integrar al Coco médico */
+#cocoApp.cocoModoMed .cocoMedNivelActual{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:310px!important;
+  padding-right:43%!important;
+  box-sizing:border-box!important;
+}
+
+#cocoApp.cocoModoMed .cocoMedNivelActual::after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  right:-2%;
+  top:0;
+  width:47%;
+  height:100%;
+  background:
+    url('/coco-med-transparente.png') center 60% / cover no-repeat;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.65) 18%,#000 38%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.65) 18%,#000 38%);
+  opacity:.98;
+}
+
+#cocoApp.cocoModoMed .cocoMedNivelActual::before{
+  content:"";
+  position:absolute;
+  z-index:2;
+  right:0;
+  top:0;
+  width:50%;
+  height:100%;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(11,92,131,.54),rgba(11,92,131,.08) 45%,transparent 75%);
+}
+
+#cocoApp.cocoModoMed .cocoMedNivelActual>*{
+  position:relative;
+  z-index:3;
+}
+
+/* 5) Tutorial junto a Entrar en el login */
+#cocoApp .cocoLoginTutorialBtn{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:48px!important;
+  padding:10px 14px!important;
+  border:2px solid #BFDDEB!important;
+  border-radius:15px!important;
+  background:linear-gradient(180deg,#FFFFFF,#EDF8FC)!important;
+  color:#173A50!important;
+  box-shadow:0 4px 0 #D0E5EF!important;
+  cursor:pointer!important;
+  font-family:var(--display)!important;
+  font-weight:900!important;
+}
+
+#cocoApp .cocoLoginTutorialBtn .ico{
+  width:30px;
+  height:30px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(180deg,#248FBE,#176A98);
+  color:#FF7A16;
+  font-size:19px;
+  line-height:1;
+}
+
+#cocoApp .cocoLoginTutorialBtn .txt{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  line-height:1.03;
+}
+
+#cocoApp .cocoLoginTutorialBtn .txt b{
+  font-size:12px;
+}
+
+#cocoApp .cocoLoginTutorialBtn .txt small{
+  margin-top:3px;
+  color:#EF6C05;
+  font-family:var(--body)!important;
+  font-size:10px;
+  font-weight:900;
+}
+
+/* El instalador superior del login general se oculta:
+   el acceso pasa a estar junto al botón Entrar. */
+#cocoApp.cocoLoginGeneralActivo #cocoLoginInstalar{
+  display:none!important;
+}
+
+#cocoApp.cocoLoginGeneralActivo .cocoLoginGeneralTop{
+  justify-content:center!important;
+}
+
+/* 6) Mantener el selector compacto en móvil */
+@media(max-width:720px){
+  #cocoApp #cocoLigasInicio .cocoLigaImagen{
+    width:56%!important;
+    height:112%!important;
+    bottom:-7%!important;
+    transform:scale(1.06)!important;
+  }
+
+  #cocoApp.cocoModoMed .cocoMedNivelActual{
+    min-height:330px!important;
+    padding-right:14px!important;
+    padding-bottom:155px!important;
+  }
+
+  #cocoApp.cocoModoMed .cocoMedNivelActual::after{
+    width:100%!important;
+    height:175px!important;
+    top:auto!important;
+    bottom:-5px!important;
+    right:0!important;
+    background-position:center 58%!important;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.55) 15%,#000 38%)!important;
+    mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.55) 15%,#000 38%)!important;
+  }
+
+  #cocoApp.cocoModoMed .cocoMedNivelActual::before{
+    width:100%!important;
+    height:175px!important;
+    top:auto!important;
+    bottom:0!important;
+    background:linear-gradient(180deg,rgba(11,92,131,.48),rgba(11,92,131,.02) 50%,transparent)!important;
+  }
+
+  #cocoApp.cocoModoEpo .avatarCarnet{
+    width:66px!important;
+    height:66px!important;
+    min-width:66px!important;
+  }
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -4634,7 +4892,7 @@ function inicio(){
         <div class="cocoLigasCabecera">
           <div class="cocoLigasTitulos">
             <h2>Elige tu Coco</h2>
-            <span class="cocoLigasSub">Cuatro universos para aprender, jugar y competir.</span>
+            <span class="cocoLigasSub">Universos para aprender jugando y competir.</span>
           </div>
           <button type="button" id="cocoInstalaPrincipal" class="cocoInstalaPrincipal" aria-label="Ver cómo instalar Coco en Forma">
             <span class="cocoInstalaPrincipalIcono">
@@ -4805,7 +5063,7 @@ function inicio(){
         <div class="cocoLoginGeneralTop">
           <div>
             <h1>Elige tu Coco</h1>
-            <p>Cuatro universos para aprender, jugar y competir.</p>
+            <p>Universos para aprender jugando y competir.</p>
           </div>
           <button type="button" class="cocoLoginInstalar" id="cocoLoginInstalar">
             <span class="cocoLoginInstalarIco">⇩</span>
@@ -5012,7 +5270,7 @@ function inicio(){
 
 <!-- =========================================================
      COCO LIGAS · AISLAMIENTO EPO / MED
-     Versión 2026-08-07-v129
+     Versión 2026-08-08-v130
      - Coco EPO: solo Mis retos + Mis tarjetas
      - Coco Med: solo acceso y contenido de Coco Med
      ========================================================= -->
@@ -5046,7 +5304,7 @@ function inicio(){
 (function(){
   "use strict";
 
-  window.COCO_VERSION = "2026-08-07-v129-login-general";
+  window.COCO_VERSION = "2026-08-08-v130-ajustes-visuales";
 
   function app(){
     return document.getElementById("cocoApp");
@@ -5211,6 +5469,104 @@ function inicio(){
     const old = document.getElementById("cocoInstalaMini");
     if(old) old.click();
   },true);
+})();
+</script>
+
+
+<script id="coco-v130-final-ajustes">
+(function(){
+  "use strict";
+
+  function abrirTutorialInstalacion(){
+    const overlay=document.getElementById("cocoInstalaOverlay");
+    if(overlay){
+      overlay.style.removeProperty("display");
+      overlay.classList.add("abierto");
+      document.body.style.overflow="hidden";
+      return true;
+    }
+
+    const antiguo=document.getElementById("cocoInstalaMini");
+    if(antiguo){
+      antiguo.click();
+      return true;
+    }
+
+    return false;
+  }
+
+  function insertarTutorialLogin(){
+    const login=document.querySelector("#cocoApp .loginCard");
+    if(!login) return;
+
+    if(login.querySelector(".cocoLoginTutorialBtn")) return;
+
+    const entrar=Array.from(login.querySelectorAll("button")).find(function(btn){
+      return (btn.textContent||"").trim()==="Entrar";
+    });
+    if(!entrar || !entrar.parentElement) return;
+
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="cocoLoginTutorialBtn";
+    btn.innerHTML=
+      '<span class="ico">⇩</span>'+
+      '<span class="txt"><b>Descarga tu app</b><small>Ver cómo →</small></span>';
+
+    btn.addEventListener("click",function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      abrirTutorialInstalacion();
+    });
+
+    entrar.insertAdjacentElement("afterend",btn);
+  }
+
+  function limpiarInstaladorSelector(){
+    const btn=document.querySelector("#cocoLigasInicio #cocoInstalaPrincipal");
+    if(btn) btn.remove();
+  }
+
+  function asegurarTextoSelector(){
+    const sub=document.querySelector("#cocoLigasInicio .cocoLigasSub");
+    if(sub) sub.textContent="Universos para aprender jugando y competir.";
+  }
+
+  function aplicar(){
+    insertarTutorialLogin();
+    limpiarInstaladorSelector();
+    asegurarTextoSelector();
+  }
+
+  document.addEventListener("click",function(e){
+    const btn=e.target.closest&&e.target.closest(".cocoLoginTutorialBtn");
+    if(btn){
+      e.preventDefault();
+      e.stopPropagation();
+      abrirTutorialInstalacion();
+    }
+  },true);
+
+  const obs=new MutationObserver(function(){
+    clearTimeout(window.__cocoV130Timer);
+    window.__cocoV130Timer=setTimeout(aplicar,50);
+  });
+
+  function iniciar(){
+    const app=document.getElementById("cocoApp");
+    if(!app) return;
+    obs.observe(app,{childList:true,subtree:true});
+    aplicar();
+    setTimeout(aplicar,250);
+    setTimeout(aplicar,800);
+    setTimeout(aplicar,1600);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",iniciar);
+  }else{
+    iniciar();
+  }
 })();
 </script>
 
