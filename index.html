@@ -4172,4 +4172,185 @@ function inicio(){
 })();
 </script>
 
+
+<!-- =========================================================
+     COCO LIGAS · AISLAMIENTO EPO / MED
+     Versión 2026-08-07-v126
+     - Coco EPO: solo Mis retos + Mis tarjetas
+     - Coco Med: solo acceso y contenido de Coco Med
+     ========================================================= -->
+<style id="coco-ligas-v126-isolation-css">
+#cocoApp.cocoModoEpo .cocoMedPestana,
+#cocoApp.cocoModoEpo #cocoMedPestana{
+  display:none!important;
+}
+
+#cocoApp.cocoModoEpo .navegacionJugador{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+
+#cocoApp.cocoModoMed .navegacionJugador .pestanaJugador:not(.cocoMedPestana):not(#cocoMedPestana){
+  display:none!important;
+}
+
+#cocoApp.cocoModoMed .navegacionJugador{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+
+@media(max-width:560px){
+  #cocoApp.cocoModoEpo .navegacionJugador,
+  #cocoApp.cocoModoMed .navegacionJugador{
+    grid-template-columns:1fr!important;
+  }
+}
+</style>
+
+<script id="coco-ligas-v126-isolation-js">
+(function(){
+  "use strict";
+
+  window.COCO_VERSION = "2026-08-07-v126-ligas-separadas";
+
+  function app(){
+    return document.getElementById("cocoApp");
+  }
+
+  function ligaActual(){
+    try{
+      return localStorage.getItem("coco_liga_seleccionada") || "";
+    }catch(e){
+      return "";
+    }
+  }
+
+  function buscarTabPorTexto(texto){
+    var nav=document.querySelector("#cocoApp .navegacionJugador");
+    if(!nav)return null;
+    var buscado=String(texto||"").toLowerCase();
+    return Array.from(nav.querySelectorAll("button")).find(function(btn){
+      return (btn.textContent||"").toLowerCase().includes(buscado);
+    })||null;
+  }
+
+  function aplicarSeparacion(){
+    var root=app();
+    if(!root)return;
+
+    var liga=ligaActual();
+
+    root.classList.remove("cocoModoEpo","cocoModoMed");
+
+    if(liga==="epo"){
+      root.classList.add("cocoModoEpo");
+
+      /*
+       * EPO conserva únicamente sus dos pestañas:
+       * Mis retos y Mis tarjetas.
+       * Coco Med queda oculto aunque su módulo siga cargado
+       * internamente para no romper nada.
+       */
+      var med=document.getElementById("cocoMedPestana") ||
+              root.querySelector(".cocoMedPestana");
+      if(med)med.style.display="none";
+
+      var retos=buscarTabPorTexto("Mis retos");
+      if(!retos)retos=buscarTabPorTexto("Inicio");
+
+      var tarjetas=buscarTabPorTexto("Mis tarjetas");
+      if(!tarjetas)tarjetas=buscarTabPorTexto("Logros");
+
+      if(retos)retos.style.display="";
+      if(tarjetas)tarjetas.style.display="";
+
+      /*
+       * Al entrar en EPO forzamos Mis retos para evitar
+       * que quede visible un panel médico de una visita anterior.
+       */
+      if(retos && !window.__COCO_EPO_ABIERTO__){
+        window.__COCO_EPO_ABIERTO__=true;
+        setTimeout(function(){
+          try{retos.click();}catch(e){}
+        },120);
+      }
+
+      return;
+    }
+
+    if(liga==="med"){
+      root.classList.add("cocoModoMed");
+
+      var nav=root.querySelector(".navegacionJugador");
+      var medTab=document.getElementById("cocoMedPestana") ||
+                 root.querySelector(".cocoMedPestana");
+
+      if(nav){
+        Array.from(nav.querySelectorAll(".pestanaJugador")).forEach(function(btn){
+          if(btn===medTab || btn.classList.contains("cocoMedPestana")){
+            btn.style.display="";
+          }else{
+            /*
+             * Oculta Mis retos y Mis tarjetas dentro de Coco Med.
+             * Otros accesos generales que no sean pestanasJugador
+             * no se modifican.
+             */
+            btn.style.display="none";
+          }
+        });
+      }
+
+      if(medTab && !window.__COCO_MED_ABIERTO_V126__){
+        window.__COCO_MED_ABIERTO_V126__=true;
+        setTimeout(function(){
+          try{medTab.click();}catch(e){}
+        },160);
+      }
+
+      return;
+    }
+  }
+
+  function resetFlagsSiCambiaLiga(){
+    var anterior="";
+    setInterval(function(){
+      var actual=ligaActual();
+      if(actual!==anterior){
+        anterior=actual;
+        window.__COCO_EPO_ABIERTO__=false;
+        window.__COCO_MED_ABIERTO_V126__=false;
+        aplicarSeparacion();
+      }
+    },500);
+  }
+
+  function iniciar(){
+    var root=app();
+    if(!root)return;
+
+    aplicarSeparacion();
+
+    var observer=new MutationObserver(function(){
+      clearTimeout(window.__cocoSeparacionTimer);
+      window.__cocoSeparacionTimer=setTimeout(aplicarSeparacion,80);
+    });
+
+    observer.observe(root,{
+      childList:true,
+      subtree:true
+    });
+
+    setTimeout(aplicarSeparacion,250);
+    setTimeout(aplicarSeparacion,700);
+    setTimeout(aplicarSeparacion,1400);
+
+    resetFlagsSiCambiaLiga();
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",iniciar);
+  }else{
+    iniciar();
+  }
+})();
+</script>
+
 </body></html>
