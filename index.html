@@ -3689,4 +3689,77 @@ function inicio(){
 </script>
 <!-- COCO MED PRO V3 END -->
 
+
+<!-- COCO LIGAS · v124 -->
+<style id="coco-ligas-v124-css">
+#cocoApp .cocoLigasLauncher{margin:18px 0 22px;padding:20px;border-radius:28px;background:radial-gradient(circle at 8% 10%,rgba(74,194,255,.15),transparent 28%),radial-gradient(circle at 95% 95%,rgba(255,170,51,.12),transparent 30%),linear-gradient(180deg,#F9FCFE,#EEF7FC);border:2px solid #D5EAF5;box-shadow:0 6px 0 #CFE4EF,0 14px 35px rgba(17,62,88,.08)}
+#cocoApp .cocoLigasTitulo{text-align:center;margin-bottom:18px}#cocoApp .cocoLigasTitulo h2{margin:0 0 5px!important;font-size:clamp(27px,4vw,38px)!important;color:#12364F!important}#cocoApp .cocoLigasTitulo p{margin:0!important;color:#607989!important;font-weight:700}
+#cocoApp .cocoLigasGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#cocoApp .cocoLigaCard{appearance:none;-webkit-appearance:none;border:0;border-radius:25px;overflow:hidden;padding:0;min-height:285px;position:relative;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 7px 0 rgba(10,44,67,.18),0 14px 28px rgba(12,46,69,.12);transition:transform .18s ease,box-shadow .18s ease}
+#cocoApp .cocoLigaCard:hover{transform:translateY(-3px);box-shadow:0 10px 0 rgba(10,44,67,.16),0 20px 35px rgba(12,46,69,.15)}#cocoApp .cocoLigaCard:active{transform:translateY(2px)}
+#cocoApp .cocoLigaFondo{position:absolute;inset:0;z-index:0}
+#cocoApp .cocoLigaImagen{position:absolute;right:-3%;bottom:0;width:57%;height:82%;object-fit:contain;object-position:center bottom;z-index:1;filter:drop-shadow(0 10px 14px rgba(0,0,0,.22))}
+#cocoApp .cocoLigaFallback{position:absolute;right:7%;bottom:18%;z-index:1;font-size:82px;line-height:1;filter:drop-shadow(0 10px 14px rgba(0,0,0,.22));display:none}
+#cocoApp .cocoLigaContenido{position:relative;z-index:2;width:58%;min-height:285px;box-sizing:border-box;padding:24px 8px 21px 23px;display:flex;flex-direction:column;align-items:flex-start}
+#cocoApp .cocoLigaBadge{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.25);color:#fff!important;font-size:11px;font-weight:900;margin-bottom:10px}
+#cocoApp .cocoLigaNombre{font-family:var(--display)!important;font-size:clamp(28px,4vw,42px);line-height:.95;color:#fff!important;margin:0 0 9px;text-shadow:0 3px 0 rgba(0,0,0,.15)}
+#cocoApp .cocoLigaDescripcion{color:rgba(255,255,255,.93)!important;font-size:14px;line-height:1.3!important;font-weight:700;max-width:24ch}
+#cocoApp .cocoLigaEntrar{margin-top:auto;display:inline-flex;align-items:center;gap:7px;background:#fff;color:#143950!important;border-radius:999px;padding:10px 14px;font-family:var(--display)!important;font-size:14px;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.14)}
+#cocoApp .cocoLigaEpo .cocoLigaFondo{background:radial-gradient(circle at 82% 20%,rgba(255,255,255,.16),transparent 23%),linear-gradient(145deg,#092B59,#116DA6 56%,#169ED5)}
+#cocoApp .cocoLigaMed .cocoLigaFondo{background:radial-gradient(circle at 90% 12%,rgba(65,208,255,.25),transparent 25%),linear-gradient(145deg,#092D4A,#075B83 58%,#0FA9CE)}
+#cocoApp .cocoLigaFootball .cocoLigaFondo{background:radial-gradient(circle at 88% 18%,rgba(199,255,83,.18),transparent 26%),linear-gradient(145deg,#123F24,#187333 58%,#49A925)}
+#cocoApp .cocoLigaBasket .cocoLigaFondo{background:radial-gradient(circle at 88% 18%,rgba(255,217,99,.18),transparent 27%),linear-gradient(145deg,#542008,#A83D0B 56%,#F47B15)}
+#cocoApp .cocoLigaProximamente{position:absolute;top:14px;right:14px;z-index:4;padding:7px 10px;border-radius:999px;background:#FFC93C;color:#573A00!important;font-size:10px;font-weight:900;box-shadow:0 3px 0 #D99900}
+#cocoApp .cocoVolverLigas{position:fixed;top:14px;right:14px;z-index:100150;display:none;align-items:center;gap:6px;border:2px solid #D3E7F2;background:rgba(255,255,255,.95);color:#173E58;border-radius:999px;padding:9px 13px;font-family:var(--display)!important;font-weight:900;cursor:pointer;box-shadow:0 5px 18px rgba(6,33,51,.15);backdrop-filter:blur(10px)}
+#cocoApp .cocoVolverLigas.visible{display:flex}
+#cocoApp .cocoLigaComingModal{position:fixed;inset:0;z-index:100300;display:none;place-items:center;padding:20px;background:rgba(4,22,34,.78);backdrop-filter:blur(9px)}
+#cocoApp .cocoLigaComingModal.visible{display:grid}
+#cocoApp .cocoLigaComingCaja{width:min(470px,100%);border-radius:28px;background:#fff;padding:27px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.35);border:3px solid #D9EBF4}
+#cocoApp .cocoLigaComingEmoji{font-size:58px;line-height:1;margin-bottom:8px}
+#cocoApp .cocoLigaComingCaja h3{font-size:30px!important;margin:0 0 7px!important;color:#153B54!important}#cocoApp .cocoLigaComingCaja p{color:#607887!important;line-height:1.45!important}
+#cocoApp .cocoLigaComingCerrar{border:0;border-radius:999px;padding:12px 19px;background:linear-gradient(180deg,#FF9C2A,#EE6B05);color:#fff;font-family:var(--display)!important;font-weight:900;cursor:pointer;box-shadow:0 4px 0 #B95004}
+@media(max-width:720px){#cocoApp .cocoLigasLauncher{padding:13px;border-radius:22px}#cocoApp .cocoLigasGrid{grid-template-columns:1fr 1fr;gap:10px}#cocoApp .cocoLigaCard{min-height:245px;border-radius:20px}#cocoApp .cocoLigaContenido{width:66%;min-height:245px;padding:17px 2px 15px 14px}#cocoApp .cocoLigaImagen{width:58%;right:-11%;height:72%}#cocoApp .cocoLigaFallback{right:5%;bottom:17%;font-size:62px}#cocoApp .cocoLigaNombre{font-size:25px}#cocoApp .cocoLigaDescripcion{font-size:11.5px;line-height:1.25!important}#cocoApp .cocoLigaEntrar{font-size:11px;padding:8px 10px}#cocoApp .cocoLigaBadge{font-size:9px;padding:5px 7px}}
+@media(max-width:430px){#cocoApp .cocoLigasGrid{grid-template-columns:1fr}#cocoApp .cocoLigaCard{min-height:215px}#cocoApp .cocoLigaContenido{min-height:215px}#cocoApp .cocoLigaImagen{width:52%;right:0;height:78%}}
+</style>
+<script id="coco-ligas-v124-js">
+(function(){"use strict";
+window.COCO_VERSION="2026-08-07-v124-ligas";
+const IMG={epo:"https://imagecdn.123inventatuweb.com/69/1d/691dc9ac-33da-49ff-8f9d-ee2f429b5080.png",med:"/coco-med.png",football:"/coco-football.png",basket:"/coco-basket.png"};
+let launcher=null,volver=null,navOriginal=null,nodos=[];
+const app=()=>document.getElementById("cocoApp");
+function boton(txt){txt=txt.toLowerCase();return Array.from(document.querySelectorAll("#cocoApp button")).find(b=>(b.textContent||"").toLowerCase().includes(txt))||null}
+function medBtn(){return document.querySelector("#cocoApp .pestanaJugador.cocoMedPestana")||boton("Coco Med")}
+function img(src,alt,emo){return '<img class="cocoLigaImagen" src="'+src+'" alt="'+alt+'" onerror="this.style.display=\\'none\\';this.nextElementSibling.style.display=\\'block\\'"><span class="cocoLigaFallback" aria-hidden="true">'+emo+'</span>'}
+function construir(){
+ if(document.getElementById("cocoLigasLauncher"))return true;
+ const root=app(),nav=root&&root.querySelector(".navegacionJugador");if(!nav)return false;navOriginal=nav;
+ launcher=document.createElement("section");launcher.id="cocoLigasLauncher";launcher.className="cocoLigasLauncher";
+ launcher.innerHTML=`<div class="cocoLigasTitulo"><h2>Elige tu Coco</h2><p>Cuatro universos para aprender, jugar y competir.</p></div><div class="cocoLigasGrid">
+ <button type="button" class="cocoLigaCard cocoLigaEpo" data-coco-liga="epo"><span class="cocoLigaFondo"></span>${img(IMG.epo,"Coco astronauta","🚀")}<span class="cocoLigaContenido"><span class="cocoLigaBadge">🚀 PRIMARIA</span><strong class="cocoLigaNombre">COCO EPO</strong><span class="cocoLigaDescripcion">Todos tus retos actuales: lógica, cálculo, memoria, palabras, Sudoku, sopa de letras y tarjetas.</span><span class="cocoLigaEntrar">JUGAR →</span></span></button>
+ <button type="button" class="cocoLigaCard cocoLigaMed" data-coco-liga="med"><span class="cocoLigaFondo"></span>${img(IMG.med,"Coco médico","🩺")}<span class="cocoLigaContenido"><span class="cocoLigaBadge">🩺 MEDICINA</span><strong class="cocoLigaNombre">COCO MED</strong><span class="cocoLigaDescripcion">Medicina por etapas, preguntas, ranking y tutor con IA para ampliar cada respuesta.</span><span class="cocoLigaEntrar">ENTRAR →</span></span></button>
+ <button type="button" class="cocoLigaCard cocoLigaFootball" data-coco-liga="football"><span class="cocoLigaFondo"></span><span class="cocoLigaProximamente">EN PREPARACIÓN</span>${img(IMG.football,"Coco futbolista","⚽")}<span class="cocoLigaContenido"><span class="cocoLigaBadge">⚽ FÚTBOL EUROPEO</span><strong class="cocoLigaNombre">COCO FOOTBALL</strong><span class="cocoLigaDescripcion">Actualidad, Champions, LaLiga, Premier, Serie A, Bundesliga y fútbol europeo reciente.</span><span class="cocoLigaEntrar">VER →</span></span></button>
+ <button type="button" class="cocoLigaCard cocoLigaBasket" data-coco-liga="basket"><span class="cocoLigaFondo"></span><span class="cocoLigaProximamente">EN PREPARACIÓN</span>${img(IMG.basket,"Coco baloncesto","🏀")}<span class="cocoLigaContenido"><span class="cocoLigaBadge">🏀 NBA + ESPAÑA</span><strong class="cocoLigaNombre">COCO BASKET</strong><span class="cocoLigaDescripcion">NBA y baloncesto español: actualidad, estrellas, partidos e historia reciente.</span><span class="cocoLigaEntrar">VER →</span></span></button>
+ </div>`;
+ nav.parentNode.insertBefore(launcher,nav);
+ volver=document.createElement("button");volver.type="button";volver.className="cocoVolverLigas";volver.textContent="← Ligas";root.appendChild(volver);volver.onclick=mostrarLigas;
+ launcher.querySelectorAll("[data-coco-liga]").forEach(c=>c.onclick=()=>abrir(c.dataset.cocoLiga));
+ capturar();mostrarLigas();return true
+}
+function capturar(){nodos=[];let n=navOriginal;while(n){if(n!==launcher&&n!==volver&&!n.classList.contains("cocoLigaComingModal"))nodos.push(n);n=n.nextElementSibling}}
+function ocultar(){nodos.forEach(el=>{if(!el.dataset.cocoLigaDisplayGuardado){el.dataset.cocoLigaDisplayGuardado="1";el.dataset.cocoLigaDisplayOriginal=el.style.display||""}el.style.display="none"})}
+function mostrar(){nodos.forEach(el=>el.style.display=el.dataset.cocoLigaDisplayOriginal||"")}
+function mostrarLigas(){if(!launcher)return;launcher.style.display="";ocultar();if(volver)volver.classList.remove("visible");try{launcher.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}}
+function abrir(liga){launcher.style.display="none";volver&&volver.classList.add("visible");
+ if(liga==="epo"){mostrar();const r=boton("Mis retos");r&&setTimeout(()=>r.click(),60);return}
+ if(liga==="med"){mostrar();const m=medBtn();m?setTimeout(()=>m.click(),80):modal("🩺","Coco Med","Coco Med está instalado, pero no encontré automáticamente su acceso.");return}
+ ocultar();
+ if(liga==="football")modal("⚽","Coco Football","Ya queda reservado dentro de la app. Lo programaremos con foco en actualidad del fútbol europeo y los últimos años.");
+ if(liga==="basket")modal("🏀","Coco Basket","Ya queda reservado dentro de la app para NBA y baloncesto español.")
+}
+function modal(emo,titulo,texto){const root=app();let m=document.getElementById("cocoLigaComingModal");if(!m){m=document.createElement("div");m.id="cocoLigaComingModal";m.className="cocoLigaComingModal";root.appendChild(m)}m.innerHTML=`<div class="cocoLigaComingCaja"><div class="cocoLigaComingEmoji">${emo}</div><h3>${titulo}</h3><p>${texto}</p><button type="button" class="cocoLigaComingCerrar">Volver a las ligas</button></div>`;m.classList.add("visible");m.querySelector(".cocoLigaComingCerrar").onclick=()=>{m.classList.remove("visible");mostrarLigas()}}
+function intentar(){return document.querySelector("#cocoApp .navegacionJugador")?construir():false}
+if(!intentar()){const obs=new MutationObserver(()=>{if(intentar())obs.disconnect()});obs.observe(document.documentElement,{childList:true,subtree:true})}
+})();
+</script>
+
 </body></html>
