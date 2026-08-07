@@ -489,6 +489,245 @@
   #cocoApp .cocoMedResultadoGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
+<style id="coco-v128-selector-pro-css">
+/* =========================================================
+   COCO v128 · SELECTOR PRO / PERSONAJES TRANSPARENTES
+   ========================================================= */
+
+html,body{
+  overscroll-behavior-y:none;
+}
+
+#cocoApp .cocoLigasInicio{
+  width:min(1180px,calc(100% - 24px))!important;
+  box-sizing:border-box!important;
+  margin:12px auto 10px!important;
+  padding:20px!important;
+  overflow:hidden!important;
+}
+
+#cocoApp .cocoLigasCabecera{
+  min-height:72px!important;
+  margin-bottom:14px!important;
+}
+
+#cocoApp .cocoLigasGrid{
+  gap:14px!important;
+  align-items:stretch!important;
+}
+
+#cocoApp .cocoLigaCard{
+  min-height:276px!important;
+  isolation:isolate!important;
+  background:#0c3352!important;
+}
+
+#cocoApp .cocoLigaCard::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(4,24,42,.46) 0%,rgba(4,24,42,.22) 42%,rgba(4,24,42,0) 71%),
+    radial-gradient(circle at 82% 35%,rgba(255,255,255,.15),transparent 31%);
+}
+
+#cocoApp .cocoLigaImagen{
+  z-index:2!important;
+  right:-1%!important;
+  bottom:-3%!important;
+  width:54%!important;
+  height:94%!important;
+  object-fit:contain!important;
+  object-position:center bottom!important;
+  filter:
+    drop-shadow(0 18px 24px rgba(0,0,0,.28))
+    drop-shadow(0 0 18px rgba(255,255,255,.08))!important;
+  transform:translateZ(0);
+}
+
+#cocoApp .cocoLigaContenido{
+  z-index:3!important;
+  width:57%!important;
+  min-height:276px!important;
+  padding:22px 8px 19px 22px!important;
+}
+
+#cocoApp .cocoLigaNombre{
+  font-size:clamp(29px,3.6vw,43px)!important;
+}
+
+#cocoApp .cocoLigaDescripcion{
+  font-size:13.5px!important;
+  max-width:26ch!important;
+}
+
+#cocoApp .cocoLigaEpo .cocoLigaFondo{
+  background:
+    radial-gradient(circle at 84% 24%,rgba(67,194,255,.30),transparent 30%),
+    radial-gradient(circle at 70% 90%,rgba(255,143,32,.18),transparent 31%),
+    linear-gradient(145deg,#071F4B 0%,#064B8B 58%,#0A8EC7 100%)!important;
+}
+
+#cocoApp .cocoLigaMed .cocoLigaFondo{
+  background:
+    radial-gradient(circle at 85% 22%,rgba(74,221,255,.24),transparent 31%),
+    linear-gradient(145deg,#072A44 0%,#07577D 55%,#0A99B5 100%)!important;
+}
+
+#cocoApp .cocoLigaFootball .cocoLigaFondo{
+  background:
+    radial-gradient(circle at 86% 22%,rgba(198,255,114,.19),transparent 30%),
+    linear-gradient(145deg,#07381F 0%,#08742C 55%,#35A627 100%)!important;
+}
+
+#cocoApp .cocoLigaBasket .cocoLigaFondo{
+  background:
+    radial-gradient(circle at 85% 22%,rgba(255,205,94,.22),transparent 31%),
+    linear-gradient(145deg,#5B1905 0%,#A63706 54%,#EC6A08 100%)!important;
+}
+
+/* El personaje se funde con la tarjeta: sin marco ni caja propia. */
+#cocoApp .cocoLigaImagen{
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+/* Si todavía falta algún PNG, el fallback queda grande y discreto. */
+#cocoApp .cocoLigaFallback{
+  right:11%!important;
+  bottom:24%!important;
+  font-size:76px!important;
+  opacity:.9;
+}
+
+/* Footer legal compacto: visible sin generar un gran vacío inferior. */
+#cocoApp .cocoLigasLegal{
+  margin:18px 0 0!important;
+  padding:13px 8px 2px!important;
+  border-top:1px solid rgba(193,221,235,.9);
+  text-align:center;
+  color:#617887;
+  font-size:11px;
+  line-height:1.35;
+}
+
+#cocoApp .cocoLigasLegal nav{
+  display:flex;
+  justify-content:center;
+  gap:5px 13px;
+  flex-wrap:wrap;
+  margin-bottom:6px;
+}
+
+#cocoApp .cocoLigasLegal a{
+  color:#236D92;
+  text-decoration:none;
+  font-weight:850;
+}
+
+#cocoApp .cocoLigasLegal a:hover{
+  text-decoration:underline;
+}
+
+#cocoApp .cocoLigasResponsable{
+  margin-bottom:3px;
+}
+
+#cocoApp .cocoLigasLegal small{
+  color:#7A8E99;
+}
+
+/* El footer legal original de la zona logueada ya no deja 90/105 px vacíos. */
+#cocoApp .cocoLegalFooter{
+  margin:18px auto 12px!important;
+  padding:14px 10px 8px!important;
+}
+
+/* Evita espacio muerto al final de la app. */
+#cocoApp{
+  padding-bottom:0!important;
+}
+
+body{
+  padding-bottom:0!important;
+  margin-bottom:0!important;
+}
+
+@media(min-width:900px) and (min-height:700px){
+  #cocoApp .cocoLigasInicio{
+    min-height:calc(100dvh - 24px)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+  }
+}
+
+@media(max-width:720px){
+  #cocoApp .cocoLigasInicio{
+    width:calc(100% - 12px)!important;
+    margin:6px auto!important;
+    padding:11px!important;
+  }
+
+  #cocoApp .cocoLigasGrid{
+    gap:9px!important;
+  }
+
+  #cocoApp .cocoLigaCard{
+    min-height:218px!important;
+  }
+
+  #cocoApp .cocoLigaContenido{
+    width:64%!important;
+    min-height:218px!important;
+    padding:15px 3px 13px 13px!important;
+  }
+
+  #cocoApp .cocoLigaImagen{
+    width:52%!important;
+    height:88%!important;
+    right:-4%!important;
+  }
+
+  #cocoApp .cocoLigaDescripcion{
+    font-size:11px!important;
+    line-height:1.22!important;
+  }
+
+  #cocoApp .cocoLigaNombre{
+    font-size:24px!important;
+  }
+
+  #cocoApp .cocoLigasLegal{
+    margin-top:12px!important;
+    font-size:10px!important;
+  }
+}
+
+@media(max-width:460px){
+  #cocoApp .cocoLigasGrid{
+    grid-template-columns:1fr!important;
+  }
+
+  #cocoApp .cocoLigaCard{
+    min-height:205px!important;
+  }
+
+  #cocoApp .cocoLigaContenido{
+    min-height:205px!important;
+  }
+
+  #cocoApp .cocoLigaImagen{
+    width:48%!important;
+    height:92%!important;
+    right:0!important;
+  }
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -4063,10 +4302,10 @@ function inicio(){
   window.COCO_VERSION = "2026-08-07-v125-ligas-inicio";
 
   const IMAGENES = {
-    epo: "https://imagecdn.123inventatuweb.com/69/1d/691dc9ac-33da-49ff-8f9d-ee2f429b5080.png",
-    med: "/coco-med.png",
-    football: "/coco-football.png",
-    basket: "/coco-basket.png"
+    epo: "/coco-epo-transparente.png",
+    med: "/coco-med-transparente.png",
+    football: "/coco-futbol-transparente.png",
+    basket: "/coco-baloncesto-transparente.png"
   };
 
   let seleccion = null;
@@ -4154,14 +4393,29 @@ function inicio(){
             <span class="cocoLigaProximamente">EN PREPARACIÓN</span>
             ${img(IMAGENES.basket,"Coco baloncesto","🏀")}
             <span class="cocoLigaContenido">
-              <span class="cocoLigaBadge">🏀 NBA + ESPAÑA</span>
+              <span class="cocoLigaBadge">🏀 BALONCESTO</span>
               <strong class="cocoLigaNombre">COCO BALONCESTO</strong>
-              <span class="cocoLigaDescripcion">NBA y baloncesto español: actualidad, estrellas e historia reciente.</span>
+              <span class="cocoLigaDescripcion">Baloncesto de actualidad, grandes competiciones, estrellas e historia reciente.</span>
               <span class="cocoLigaEntrar">VER →</span>
             </span>
           </button>
 
         </div>
+
+        <footer class="cocoLigasLegal" aria-label="Información legal">
+          <nav>
+            <a href="/aviso-legal.html" target="_blank" rel="noopener">Aviso legal</a>
+            <a href="/politica-de-privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>
+            <a href="/politica-de-cookies.html" target="_blank" rel="noopener">Cookies</a>
+            <a href="/proteccion-de-datos.html" target="_blank" rel="noopener">Protección de datos</a>
+            <a href="/terminos-y-condiciones.html" target="_blank" rel="noopener">Términos y condiciones</a>
+          </nav>
+          <div class="cocoLigasResponsable">
+            <strong>Responsable:</strong> Diego Hernán Pennise ·
+            <a href="mailto:info@cocoenforma.com">info@cocoenforma.com</a>
+          </div>
+          <small>© 2026 Coco en Forma · Todos los derechos reservados.</small>
+        </footer>
       </section>
     `;
   }
@@ -4398,7 +4652,7 @@ function inicio(){
 
 <!-- =========================================================
      COCO LIGAS · AISLAMIENTO EPO / MED
-     Versión 2026-08-07-v127
+     Versión 2026-08-07-v128
      - Coco EPO: solo Mis retos + Mis tarjetas
      - Coco Med: solo acceso y contenido de Coco Med
      ========================================================= -->
@@ -4432,7 +4686,7 @@ function inicio(){
 (function(){
   "use strict";
 
-  window.COCO_VERSION = "2026-08-07-v127-portada-navegacion";
+  window.COCO_VERSION = "2026-08-07-v128-selector-pro";
 
   function app(){
     return document.getElementById("cocoApp");
