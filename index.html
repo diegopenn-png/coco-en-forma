@@ -7442,4 +7442,157 @@ function inicio(){
 })();
 </script>
 
+<!-- =========================================================
+     COCO v147 · ENRUTADO ÚNICO Y BOTÓN LIMPIO
+     Base intacta: v145
+     ========================================================= -->
+<style id="coco-v147-routing-css">
+/* Las navegaciones heredadas no deben ocupar espacio ni quedar debajo. */
+#cocoApp #cocoLigaLoginVolver,
+#cocoApp #cocoMedCambiarCocoV143,
+#cocoApp .cocoLigaLoginVolver,
+#cocoApp .cocoMedVolver,
+#cocoApp .cocoMedVolverCoco,
+#cocoApp .cocoMedCerrar,
+#cocoApp .cocoMedVolverSuperior,
+#cocoApp #cocoPrepScreenV142 .prepBack{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* La pantalla de los universos en preparación queda aislada. */
+#cocoApp.cocoPreparacionV147 > *:not(#cocoPrepV147){
+  display:none!important;
+}
+#cocoPrepV147{
+  display:block!important;
+  width:min(760px,calc(100% - 24px));
+  margin:82px auto 24px;
+  padding:30px 24px;
+  box-sizing:border-box;
+  border:2px solid #D5E8F2;
+  border-radius:28px;
+  text-align:center;
+  background:linear-gradient(180deg,#FFFFFF,#F3FAFD);
+  box-shadow:0 7px 0 #D5E8F1,0 20px 50px rgba(18,69,97,.10);
+}
+#cocoPrepV147 .cocoPrepEmoji{font-size:62px;line-height:1}
+#cocoPrepV147 h2{margin:12px 0 7px!important;color:#143A52!important}
+#cocoPrepV147 p{margin:0 auto!important;max-width:540px;color:#597280!important}
+</style>
+
+<script id="coco-v147-routing-runtime">
+(function(){
+  "use strict";
+
+  var CANONICAL="cocoCambiarCocoV145";
+  var changing=false;
+
+  function app(){ return document.getElementById("cocoApp"); }
+
+  function saveLiga(kind){
+    try{ localStorage.setItem("coco_liga_seleccionada",kind); }catch(e){}
+    try{
+      sessionStorage.removeItem("coco_v145_force_portada");
+      sessionStorage.removeItem("coco_v140_med_loading");
+    }catch(e){}
+  }
+
+  function removeLegacyButtons(){
+    var r=app();
+    if(!r) return;
+
+    r.querySelectorAll(
+      "#cocoLigaLoginVolver,"+
+      "#cocoMedCambiarCocoV143,"+
+      ".cocoLigaLoginVolver,"+
+      ".cocoMedVolver,"+
+      ".cocoMedVolverCoco,"+
+      ".cocoMedCerrar,"+
+      ".cocoMedVolverSuperior"
+    ).forEach(function(el){ el.remove(); });
+
+    Array.from(r.querySelectorAll("button,a")).forEach(function(el){
+      if(el.id===CANONICAL) return;
+      var text=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+      if(text==="cambiar coco" || text==="← cambiar coco") el.remove();
+    });
+  }
+
+  function reloadInto(kind){
+    if(changing) return;
+    changing=true;
+    saveLiga(kind);
+    document.documentElement.classList.add("cocoGlobalLoadingV144");
+    if(window.CocoGlobalLoaderV144 && window.CocoGlobalLoaderV144.show){
+      var name=kind==="med"?"Coco Med":"Coco EPO";
+      window.CocoGlobalLoaderV144.show("Cargando "+name,"Preparando tu universo…");
+    }
+    setTimeout(function(){ window.location.reload(); },80);
+  }
+
+  function showPreparation(kind){
+    changing=false;
+    saveLiga(kind);
+    var r=app();
+    if(!r) return;
+
+    r.className=r.className
+      .replace(/\bcocoModoFootballV\d+\b/g,"")
+      .replace(/\bcocoModoBasketV\d+\b/g,"");
+    r.classList.add("cocoPreparacionV147");
+
+    var old=document.getElementById("cocoPrepV147");
+    if(old) old.remove();
+
+    var football=kind==="football";
+    var box=document.createElement("section");
+    box.id="cocoPrepV147";
+    box.innerHTML=
+      '<div class="cocoPrepEmoji">'+(football?'⚽':'🏀')+'</div>'+ 
+      '<h2>'+(football?'Coco Fútbol':'Coco Baloncesto')+'</h2>'+ 
+      '<p>Este universo está en preparación. Muy pronto podrás entrar, aprender y competir aquí.</p>';
+    r.insertBefore(box,r.firstChild);
+
+    document.body.classList.remove("cocoPortadaV145");
+    document.body.classList.add("cocoTieneUniversoV145");
+    removeLegacyButtons();
+
+    if(window.CocoGlobalLoaderV144 && window.CocoGlobalLoaderV144.finish){
+      window.CocoGlobalLoaderV144.finish(80);
+    }else{
+      document.documentElement.classList.remove("cocoGlobalLoadingV144");
+    }
+    window.scrollTo(0,0);
+  }
+
+  /* Window captura antes que los listeners heredados instalados en document. */
+  window.addEventListener("click",function(e){
+    var card=e.target && e.target.closest && e.target.closest("#cocoLigasInicio [data-liga]");
+    if(!card) return;
+    var kind=card.getAttribute("data-liga")||"";
+    if(!/^(epo|med|football|basket)$/.test(kind)) return;
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    if(kind==="football" || kind==="basket") showPreparation(kind);
+    else reloadInto(kind);
+  },true);
+
+  function clean(){ removeLegacyButtons(); }
+  var r=app();
+  if(r){
+    new MutationObserver(function(){
+      clearTimeout(window.__cocoV147Clean);
+      window.__cocoV147Clean=setTimeout(clean,25);
+    }).observe(r,{childList:true,subtree:true});
+  }
+  clean();
+  setTimeout(clean,250);
+  setTimeout(clean,900);
+})();
+</script>
+
 </body></html>
