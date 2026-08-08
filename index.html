@@ -2278,7 +2278,128 @@ html.cocoGlobalLoadingV144 body{
 })();
 </script>
 
+
+<!-- =========================================================
+     COCO v145 · RESET REAL ENTRE UNIVERSOS
+     Un único botón Cambiar Coco + reload limpio.
+     ========================================================= -->
+
+<style id="coco-v145-css">
+/* =========================================================
+   COCO v145 · CAMBIO DE COCO SIN ESTADO RESIDUAL
+   Base: v144
+   ========================================================= */
+
+/* Ocultamos todos los botones antiguos de volver/cambiar.
+   Desde v145 existe UN solo botón canónico. */
+#cocoApp .cocoLigaLoginVolver,
+#cocoLigaLoginVolver,
+#cocoMedCambiarCocoV143,
+#cocoApp .cocoMedVolver,
+#cocoApp .cocoMedVolverCoco,
+#cocoApp .cocoMedCerrar,
+#cocoApp .cocoMedVolverSuperior{
+  display:none!important;
+}
+
+/* Botón único y limpio */
+#cocoCambiarCocoV145{
+  position:fixed!important;
+  top:max(12px,env(safe-area-inset-top))!important;
+  right:max(12px,env(safe-area-inset-right))!important;
+  z-index:2147483000!important;
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+
+  min-height:48px;
+  padding:10px 15px;
+
+  border:2px solid #CFE5EF!important;
+  border-radius:17px!important;
+
+  background:#FFFFFF!important;
+  background-image:none!important;
+
+  color:#153F58!important;
+  font-family:var(--display)!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  line-height:1!important;
+
+  box-shadow:0 5px 0 #D7EAF2,0 12px 25px rgba(12,55,80,.13)!important;
+  filter:none!important;
+  opacity:1!important;
+  transform:none!important;
+  overflow:hidden!important;
+  cursor:pointer!important;
+  -webkit-appearance:none!important;
+  appearance:none!important;
+}
+
+/* Nada raro detrás */
+#cocoCambiarCocoV145::before,
+#cocoCambiarCocoV145::after{
+  content:none!important;
+  display:none!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+
+/* Se muestra en login de universo y dentro de EPO/MED */
+body.cocoTieneUniversoV145 #cocoCambiarCocoV145{
+  display:flex!important;
+}
+
+/* Nunca mostrarlo en la portada de 4 Cocos */
+body.cocoPortadaV145 #cocoCambiarCocoV145{
+  display:none!important;
+}
+
+/* Durante el loader tampoco se ve */
+html.cocoGlobalLoadingV144 #cocoCambiarCocoV145{
+  display:none!important;
+}
+
+/* Seguridad: al resetear, ocultamos cualquier pantalla antigua
+   hasta que la página recargue. */
+html.cocoResetUniversoV145 #cocoApp{
+  visibility:hidden!important;
+}
+
+@media(max-width:640px){
+  #cocoCambiarCocoV145{
+    top:max(9px,env(safe-area-inset-top))!important;
+    right:max(8px,env(safe-area-inset-right))!important;
+    min-height:43px;
+    padding:8px 11px;
+    font-size:12px!important;
+    border-radius:15px!important;
+  }
+}
+</style>
+
+<script id="coco-v145-early-reset">
+(function(){
+  try{
+    if(sessionStorage.getItem("coco_v145_force_portada")==="1"){
+      /* Antes de que pinte la app quitamos la selección anterior. */
+      localStorage.removeItem("coco_liga_seleccionada");
+      sessionStorage.removeItem("coco_v145_force_portada");
+      document.documentElement.classList.add("cocoGlobalLoadingV144");
+    }
+  }catch(e){}
+})();
+</script>
+
 </head><body>
+<button id="cocoCambiarCocoV145" type="button" aria-label="Cambiar Coco">
+  <span aria-hidden="true">←</span>
+  <span>Cambiar Coco</span>
+</button>
+
 <div id="cocoGlobalLoaderV144" aria-live="polite" aria-busy="true">
   <div class="cocoLoaderBox">
     <div class="brain">🧠</div>
@@ -7145,6 +7266,179 @@ function inicio(){
     show:showLoader,
     finish:finishLoader
   };
+})();
+</script>
+
+
+<script id="coco-v145-clean-universe-routing">
+(function(){
+  "use strict";
+
+  function app(){
+    return document.getElementById("cocoApp");
+  }
+
+  function selectedLiga(){
+    try{
+      return localStorage.getItem("coco_liga_seleccionada") || "";
+    }catch(e){
+      return "";
+    }
+  }
+
+  function visible(el){
+    if(!el) return false;
+    var s=getComputedStyle(el);
+    return s.display!=="none" &&
+           s.visibility!=="hidden" &&
+           el.getClientRects().length>0;
+  }
+
+  function onPortada(){
+    var selector=document.getElementById("cocoLigasInicio");
+    return visible(selector);
+  }
+
+  function loginVisible(){
+    return visible(document.querySelector("#cocoApp .loginCard"));
+  }
+
+  function medVisible(){
+    var r=app();
+    if(!r) return false;
+    return !!(
+      r.classList.contains("cocoModoMed") ||
+      visible(r.querySelector(".cocoMedRankingPanel,.cocoMedCabeceraInicio"))
+    );
+  }
+
+  function epoVisible(){
+    var r=app();
+    if(!r) return false;
+    return visible(r.querySelector(".carnet,.zonaJugador"));
+  }
+
+  function setBodyState(){
+    var liga=selectedLiga();
+    var portada=onPortada() && !loginVisible();
+
+    document.body.classList.toggle("cocoPortadaV145",portada);
+    document.body.classList.toggle(
+      "cocoTieneUniversoV145",
+      !portada && (
+        !!liga ||
+        loginVisible() ||
+        medVisible() ||
+        epoVisible()
+      )
+    );
+  }
+
+  function hardResetToPortada(){
+    /* Loader antes de tocar nada */
+    if(window.CocoGlobalLoaderV144 && window.CocoGlobalLoaderV144.show){
+      window.CocoGlobalLoaderV144.show(
+        "Cambiando de Coco",
+        "Preparando tus universos…"
+      );
+    }else{
+      document.documentElement.classList.add("cocoGlobalLoadingV144");
+    }
+
+    /* Oculta cualquier UI antigua por seguridad */
+    document.documentElement.classList.add("cocoResetUniversoV145");
+
+    try{
+      /* Esta es la clave: la selección anterior no puede sobrevivir */
+      localStorage.removeItem("coco_liga_seleccionada");
+
+      /* Quitamos flags transitorios de las versiones anteriores */
+      sessionStorage.removeItem("coco_v140_med_loading");
+      sessionStorage.removeItem("coco_v144_loader");
+
+      /* Marcamos el reload como retorno obligatorio a portada */
+      sessionStorage.setItem("coco_v145_force_portada","1");
+    }catch(e){}
+
+    /* Recarga real: destruye completamente el DOM/estado del Coco anterior.
+       Así no puede quedar Med sobre EPO ni EPO sobre Med. */
+    setTimeout(function(){
+      window.location.reload();
+    },120);
+  }
+
+  function installCanonicalButton(){
+    var btn=document.getElementById("cocoCambiarCocoV145");
+    if(!btn) return;
+
+    /* Evita handlers duplicados */
+    if(btn.dataset.ready==="1") return;
+    btn.dataset.ready="1";
+
+    btn.addEventListener("click",function(e){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      hardResetToPortada();
+    },true);
+  }
+
+  /* Cuando se entra a un nuevo Coco, dejamos explícitamente
+     registrada la nueva selección ANTES del handler antiguo. */
+  document.addEventListener("click",function(e){
+    var card=e.target.closest && e.target.closest("#cocoLigasInicio [data-liga]");
+    if(!card) return;
+
+    var kind=card.getAttribute("data-liga") || "";
+    if(!kind) return;
+
+    try{
+      localStorage.setItem("coco_liga_seleccionada",kind);
+    }catch(err){}
+
+    /* La transición global de v144 ya tapa la pantalla anterior. */
+    setBodyState();
+  },true);
+
+  /* Limpieza visual de botones antiguos por si algún módulo
+     los recrea dinámicamente. */
+  function removeOldButtons(){
+    document.querySelectorAll(
+      "#cocoLigaLoginVolver,"+
+      "#cocoMedCambiarCocoV143,"+
+      ".cocoLigaLoginVolver,"+
+      ".cocoMedVolver,"+
+      ".cocoMedVolverCoco,"+
+      ".cocoMedCerrar,"+
+      ".cocoMedVolverSuperior"
+    ).forEach(function(el){
+      el.style.display="none";
+    });
+  }
+
+  function apply(){
+    installCanonicalButton();
+    removeOldButtons();
+    setBodyState();
+  }
+
+  var r=app();
+  if(r){
+    var obs=new MutationObserver(function(){
+      clearTimeout(window.__cocoV145Timer);
+      window.__cocoV145Timer=setTimeout(apply,55);
+    });
+    obs.observe(r,{
+      childList:true,
+      subtree:true,
+      attributes:true,
+      attributeFilter:["class","style"]
+    });
+  }
+
+  apply();
+  setTimeout(apply,250);
+  setTimeout(apply,800);
+  setTimeout(apply,1600);
 })();
 </script>
 
