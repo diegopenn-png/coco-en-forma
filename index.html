@@ -2064,7 +2064,231 @@ html.cocoPwaInstaladaV143 #cocoApp .cocoLoginTutorialHeader {
   }
 }
 </style>
+
+<!-- =========================================================
+     COCO v144 · EPO EMBEBIDO + LOADER GLOBAL
+     ========================================================= -->
+
+<style id="coco-v144-css">
+/* =========================================================
+   COCO v144 · EPO EMBEBIDO + LOADER GLOBAL SIN FLASHES
+   Base: v143
+   ========================================================= */
+
+/* =========================================================
+   1) EPO: QUITAR LA TARJETA/AVATAR Y EMBEBER A COCO EN EL AZUL
+   ========================================================= */
+
+/* Quita por completo la mini tarjeta/avatar actual */
+#cocoApp .carnet .avatarCarnet{
+  display:none!important;
+}
+
+/* Convertimos la cabecera azul en una escena integrada */
+#cocoApp .carnet{
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  padding-left:34px!important;
+}
+
+/* Coco EPO integrado, sin rectángulo ni tarjeta visible */
+#cocoApp .carnet::before{
+  content:""!important;
+  position:absolute!important;
+  top:-18%!important;
+  bottom:-18%!important;
+  left:35%!important;
+  width:28%!important;
+  z-index:0!important;
+  pointer-events:none!important;
+
+  background-image:url('/coco-epo-transparente.png')!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:center 44%!important;
+
+  -webkit-mask-image:
+    linear-gradient(90deg,
+      transparent 0%,
+      rgba(0,0,0,.18) 7%,
+      rgba(0,0,0,.70) 22%,
+      #000 38%,
+      #000 72%,
+      rgba(0,0,0,.65) 84%,
+      transparent 100%)!important;
+  mask-image:
+    linear-gradient(90deg,
+      transparent 0%,
+      rgba(0,0,0,.18) 7%,
+      rgba(0,0,0,.70) 22%,
+      #000 38%,
+      #000 72%,
+      rgba(0,0,0,.65) 84%,
+      transparent 100%)!important;
+
+  opacity:.95!important;
+  filter:saturate(1.04) contrast(1.02)!important;
+}
+
+/* Fundido azul adicional para que jamás parezca una pegatina */
+#cocoApp .carnet::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(90deg,
+      rgba(6,74,126,.92) 0%,
+      rgba(6,89,146,.60) 34%,
+      rgba(6,105,164,.06) 48%,
+      rgba(5,75,126,.08) 68%,
+      rgba(3,55,95,.24) 100%)!important;
+}
+
+/* Todo el contenido real queda por encima del Coco embebido */
+#cocoApp .carnet > *{
+  position:relative!important;
+  z-index:3!important;
+}
+
+#cocoApp .carnet .quien{
+  margin-left:0!important;
+}
+
+/* =========================================================
+   2) LOADER GLOBAL: OCULTA SIEMPRE LA PANTALLA ANTERIOR
+   ========================================================= */
+
+#cocoGlobalLoaderV144{
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483647!important;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(81,194,221,.16),transparent 28%),
+    linear-gradient(180deg,#F9FCFE 0%,#EAF7FD 100%)!important;
+}
+
+html.cocoGlobalLoadingV144 #cocoGlobalLoaderV144,
+#cocoGlobalLoaderV144.activo{
+  display:flex!important;
+}
+
+/* Mientras carga, la app queda completamente tapada */
+html.cocoGlobalLoadingV144 body{
+  overflow:hidden!important;
+}
+
+#cocoGlobalLoaderV144 .cocoLoaderBox{
+  width:min(390px,calc(100% - 32px));
+  box-sizing:border-box;
+  padding:29px 26px 24px;
+  text-align:center;
+  border:2px solid #D5EAF4;
+  border-radius:28px;
+  background:rgba(255,255,255,.98);
+  box-shadow:
+    0 8px 0 #D4E8F1,
+    0 26px 68px rgba(17,67,96,.15);
+}
+
+#cocoGlobalLoaderV144 .brain{
+  font-size:74px;
+  line-height:1;
+  transform-origin:center;
+  animation:cocoBrainThinkV144 .56s ease-in-out infinite alternate;
+}
+
+#cocoGlobalLoaderV144 h3{
+  margin:11px 0 5px!important;
+  font-family:var(--display)!important;
+  font-size:24px!important;
+  color:#143E57!important;
+}
+
+#cocoGlobalLoaderV144 .mensaje{
+  min-height:20px;
+  margin-bottom:4px;
+  color:#6B818D;
+  font-size:12px;
+  font-weight:800;
+}
+
+#cocoGlobalLoaderV144 .pct{
+  color:#ED750A;
+  font-family:var(--display)!important;
+  font-size:34px;
+  font-weight:950;
+}
+
+#cocoGlobalLoaderV144 .track{
+  height:13px;
+  margin-top:13px;
+  border-radius:999px;
+  overflow:hidden;
+  background:#DAEDF5;
+}
+
+#cocoGlobalLoaderV144 .bar{
+  width:0%;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#27B16C,#49C1DB,#FFBA31,#ED760A);
+  transition:width .07s linear;
+}
+
+@keyframes cocoBrainThinkV144{
+  from{transform:scale(.93) rotate(-2.5deg)}
+  to{transform:scale(1.08) rotate(2.5deg)}
+}
+
+/* Móvil */
+@media(max-width:700px){
+  #cocoApp .carnet{
+    padding-left:18px!important;
+  }
+
+  #cocoApp .carnet::before{
+    left:31%!important;
+    width:35%!important;
+    top:-10%!important;
+    bottom:-10%!important;
+  }
+
+  #cocoGlobalLoaderV144 .cocoLoaderBox{
+    padding:24px 20px 21px;
+  }
+
+  #cocoGlobalLoaderV144 .brain{
+    font-size:66px;
+  }
+}
+</style>
+
+<script id="coco-v144-early-loader">
+(function(){
+  document.documentElement.classList.add("cocoGlobalLoadingV144");
+  try{
+    sessionStorage.setItem("coco_v144_loader","1");
+  }catch(e){}
+})();
+</script>
+
 </head><body>
+<div id="cocoGlobalLoaderV144" aria-live="polite" aria-busy="true">
+  <div class="cocoLoaderBox">
+    <div class="brain">🧠</div>
+    <h3>Preparando Coco</h3>
+    <div class="mensaje">Activando tu experiencia…</div>
+    <div class="pct">0%</div>
+    <div class="track"><div class="bar"></div></div>
+  </div>
+</div>
+
 <div id="cocoMedLoaderV142">
   <div class="loaderBox">
     <div class="brain">🧠</div>
@@ -6707,6 +6931,220 @@ function inicio(){
   update();
   setTimeout(update,250);
   setTimeout(update,900);
+})();
+</script>
+
+
+<script id="coco-v144-global-loader-runtime">
+(function(){
+  "use strict";
+
+  var loader=document.getElementById("cocoGlobalLoaderV144");
+  var timer=null;
+  var current=0;
+  var hideTimer=null;
+
+  function els(){
+    return {
+      pct:loader && loader.querySelector(".pct"),
+      bar:loader && loader.querySelector(".bar"),
+      msg:loader && loader.querySelector(".mensaje"),
+      title:loader && loader.querySelector("h3")
+    };
+  }
+
+  function setP(n){
+    current=Math.max(0,Math.min(100,n));
+    var e=els();
+    if(e.pct)e.pct.textContent=current+"%";
+    if(e.bar)e.bar.style.width=current+"%";
+  }
+
+  function setText(title,msg){
+    var e=els();
+    if(e.title && title)e.title.textContent=title;
+    if(e.msg && msg)e.msg.textContent=msg;
+  }
+
+  function showLoader(title,msg){
+    clearInterval(timer);
+    clearTimeout(hideTimer);
+
+    document.documentElement.classList.add("cocoGlobalLoadingV144");
+    if(loader)loader.classList.add("activo");
+
+    setText(title||"Preparando Coco",msg||"Activando tu experiencia…");
+    setP(0);
+
+    var steps=[1,10,20,30,40,50,60,70,80,90];
+    var i=0;
+
+    timer=setInterval(function(){
+      if(i<steps.length){
+        setP(steps[i]);
+        i++;
+      }else{
+        clearInterval(timer);
+      }
+    },70);
+  }
+
+  function finishLoader(minDelay){
+    clearInterval(timer);
+    setP(100);
+
+    hideTimer=setTimeout(function(){
+      if(loader)loader.classList.remove("activo");
+      document.documentElement.classList.remove("cocoGlobalLoadingV144");
+      try{sessionStorage.removeItem("coco_v144_loader")}catch(e){}
+    },typeof minDelay==="number"?minDelay:150);
+  }
+
+  function appReady(){
+    var app=document.getElementById("cocoApp");
+    if(!app)return false;
+
+    /* selector, login, EPO o MED: cualquiera de estas pantallas ya es estable */
+    var candidates=[
+      document.getElementById("cocoLigasInicio"),
+      app.querySelector(".loginCard"),
+      app.querySelector(".carnet"),
+      app.querySelector(".cocoMedRankingPanel,.cocoMedCabeceraInicio")
+    ];
+
+    return candidates.some(function(el){
+      if(!el)return false;
+      var s=getComputedStyle(el);
+      return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
+    });
+  }
+
+  /* Carga inicial: no mostramos nada anterior; esperamos una pantalla estable */
+  var initialTicks=0;
+  var initial=setInterval(function(){
+    initialTicks++;
+    if(current<90) setP(Math.min(90,current+10));
+
+    if(appReady() && initialTicks>=5){
+      clearInterval(initial);
+      finishLoader(90);
+      return;
+    }
+
+    if(initialTicks>28){
+      clearInterval(initial);
+      finishLoader(90);
+    }
+  },75);
+
+  /* =======================================================
+     TRANSICIONES ENTRE COCOS / CAMBIAR COCO
+     ======================================================= */
+
+  document.addEventListener("click",function(e){
+    var el=e.target.closest && e.target.closest(
+      "#cocoLigasInicio [data-liga],"+
+      ".cocoLigaLoginVolver,"+
+      "#cocoMedCambiarCocoV143,"+
+      "button"
+    );
+    if(!el)return;
+
+    var txt=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+
+    /* Entrar a un universo desde la portada */
+    var card=el.closest && el.closest("#cocoLigasInicio [data-liga]");
+    if(card){
+      var liga=card.getAttribute("data-liga")||"";
+      var nombre=
+        liga==="med"?"Coco Med":
+        liga==="epo"?"Coco EPO":
+        liga==="football"?"Coco Fútbol":
+        liga==="basket"?"Coco Baloncesto":"Coco";
+
+      showLoader("Cargando "+nombre,"Preparando tu universo…");
+
+      /* Los universos en preparación muestran su pantalla casi inmediatamente */
+      setTimeout(function(){
+        if(liga==="football" || liga==="basket"){
+          finishLoader(120);
+        }
+      },420);
+
+      /* Para login real dejamos que la UI cambie y luego liberamos */
+      setTimeout(function(){
+        if(document.documentElement.classList.contains("cocoGlobalLoadingV144")){
+          finishLoader(120);
+        }
+      },850);
+
+      return;
+    }
+
+    /* Cambiar Coco */
+    if(
+      el.classList.contains("cocoLigaLoginVolver") ||
+      el.id==="cocoMedCambiarCocoV143" ||
+      txt.includes("cambiar coco")
+    ){
+      showLoader("Cambiando de Coco","Volviendo a tus universos…");
+      setTimeout(function(){
+        finishLoader(120);
+      },700);
+      return;
+    }
+
+    /* Login: EPO o MED. Tapamos desde antes de que el usuario viejo pueda pintarse */
+    if(txt==="entrar"){
+      var login=el.closest(".loginCard");
+      if(login){
+        var ligaActual="";
+        try{ligaActual=localStorage.getItem("coco_liga_seleccionada")||""}catch(err){}
+
+        var nombre=ligaActual==="med"?"Coco Med":ligaActual==="epo"?"Coco EPO":"Coco";
+        showLoader("Entrando en "+nombre,"Cargando tu perfil…");
+
+        var ticks=0;
+        var watch=setInterval(function(){
+          ticks++;
+          var app=document.getElementById("cocoApp");
+          var loginStill=app && app.querySelector(".loginCard");
+          var med=app && app.querySelector(".cocoMedRankingPanel,.cocoMedCabeceraInicio");
+          var epo=app && app.querySelector(".carnet");
+
+          if((ligaActual==="med" && med) || (ligaActual==="epo" && epo)){
+            clearInterval(watch);
+            finishLoader(130);
+          }else if(ticks>30){
+            clearInterval(watch);
+            finishLoader(130);
+          }
+        },80);
+      }
+    }
+  },true);
+
+  /* Tecla Enter / submit en login */
+  document.addEventListener("submit",function(e){
+    var form=e.target;
+    if(!form || !form.closest || !form.closest("#cocoApp"))return;
+
+    var ligaActual="";
+    try{ligaActual=localStorage.getItem("coco_liga_seleccionada")||""}catch(err){}
+    var nombre=ligaActual==="med"?"Coco Med":ligaActual==="epo"?"Coco EPO":"Coco";
+
+    showLoader("Entrando en "+nombre,"Cargando tu perfil…");
+
+    setTimeout(function(){
+      finishLoader(130);
+    },1100);
+  },true);
+
+  /* Exponer por si otras rutinas quieren usarlo */
+  window.CocoGlobalLoaderV144={
+    show:showLoader,
+    finish:finishLoader
+  };
 })();
 </script>
 
