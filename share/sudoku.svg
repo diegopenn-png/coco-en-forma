@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Sudoku · Coco en Forma</title>
+  <desc id="desc">Lógica sin repetir números</desc>
+  <defs>
+    <linearGradient id="bg-sudoku" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4c9bd6"/><stop offset="1" stop-color="#205b9c"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#061f2c" flood-opacity=".24"/></filter>
+  </defs>
+  <rect width="1200" height="630" rx="42" fill="url(#bg-sudoku)"/>
+  <circle cx="1090" cy="-10" r="260" fill="#fff" opacity=".09"/><circle cx="1035" cy="45" r="175" fill="none" stroke="#fff" stroke-width="3" opacity=".16"/>
+  <path d="M0 520C230 440 400 610 650 520s362-12 550-115v225H0Z" fill="#fff" opacity=".1"/>
+  <g filter="url(#shadow)"><rect x="76" y="92" width="360" height="360" rx="92" fill="#fff"/></g><svg x="112" y="128" width="288" height="288" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="cocoIcon-sudoku" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4c9bd6"/><stop offset="1" stop-color="#205b9c"/></linearGradient></defs><rect x="4" y="4" width="112" height="112" rx="30" fill="url(#cocoIcon-sudoku)"/><circle cx="35" cy="27" r="20" fill="#fff" opacity=".13"/><rect x="20" y="20" width="80" height="80" rx="10" fill="#fff"/><path d="M46 20v80M73 20v80M20 46h80M20 73h80" stroke="#17394b" stroke-width="4"/><g fill="#2f86b5" font-size="17" font-weight="900" text-anchor="middle"><text x="33" y="40">4</text><text x="60" y="67">7</text><text x="86" y="93">2</text></g></svg>
+  <text x="500" y="145" fill="#dff7ff" font-family="DejaVu Sans,Arial,sans-serif" font-size="28" font-weight="900" letter-spacing="5">COCO EN FORMA</text>
+  <text x="500" y="245" fill="#fff" font-family="DejaVu Sans,Arial,sans-serif" font-size="62" font-weight="900">Sudoku</text>
+  <text x="500" y="330" fill="#eefaff" font-family="DejaVu Sans,Arial,sans-serif" font-size="28" font-weight="700">Lógica sin repetir números</text>
+  <rect x="500" y="470" width="350" height="72" rx="36" fill="#fff"/><text x="675" y="516" text-anchor="middle" fill="#205b9c" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" font-weight="900">JUEGA Y COMPARTE</text>
+</svg>
