@@ -7717,4 +7717,137 @@ function inicio(){
 })();
 </script>
 
+<!-- =========================================================
+     COCO v149 · RUTA MED REAL + SCROLL EPO ESTABLE
+     Correccion final sobre v148, sin alterar el resto.
+     ========================================================= -->
+<style id="coco-v149-routing-scroll-css">
+/* Si el destino es Med, el tablero EPO no puede quedar visible por debajo. */
+#cocoApp.cocoDestinoMedV149 .carnet,
+#cocoApp.cocoDestinoMedV149 .navegacionJugador,
+#cocoApp.cocoDestinoMedV149 .panelJugador{
+  visibility:hidden!important;
+}
+#cocoApp.cocoDestinoMedV149 #cocoMedOverlay,
+#cocoApp.cocoDestinoMedV149 #cocoMedOverlay *{
+  visibility:visible!important;
+}
+
+/* EPO usa el desplazamiento normal de la pagina completa. */
+html.cocoEpoScrollV149,
+html.cocoEpoScrollV149 body{
+  overflow-y:auto!important;
+  overscroll-behavior-y:auto!important;
+  position:static!important;
+  height:auto!important;
+  min-height:100%!important;
+  touch-action:pan-y!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+</style>
+
+<script id="coco-v149-routing-scroll-runtime">
+(function(){
+  "use strict";
+
+  var openingMed=false;
+  var lastMedTab=null;
+
+  function root(){ return document.getElementById("cocoApp"); }
+  function target(){
+    try{return localStorage.getItem("coco_liga_seleccionada")||""}
+    catch(e){return ""}
+  }
+  function isVisible(el){
+    if(!el)return false;
+    var s=getComputedStyle(el);
+    return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
+  }
+  function loggedIn(){ return !!document.querySelector("#cocoApp .navegacionJugador"); }
+  function medOpen(){
+    var o=document.getElementById("cocoMedOverlay");
+    return !!(o && o.classList.contains("abierto"));
+  }
+
+  function exactMedTab(){
+    var r=root();
+    if(!r)return null;
+    var tab=document.getElementById("cocoMedPestana");
+    if(tab && tab.classList.contains("cocoMedPestana"))return tab;
+    return r.querySelector(".navegacionJugador > .cocoMedPestana");
+  }
+
+  function unlockEpo(){
+    var r=root();
+    if(!r)return;
+
+    r.classList.remove("cocoDestinoMedV149","cocoModoMed");
+    r.classList.add("cocoModoEpo");
+    document.documentElement.classList.add("cocoEpoScrollV149");
+
+    var med=document.getElementById("cocoMedOverlay");
+    if(med)med.classList.remove("abierto");
+
+    /* No sobreescribir continuamente: solo reparar un bloqueo heredado. */
+    if(document.body.style.overflow==="hidden")document.body.style.overflow="";
+    if(document.documentElement.style.overflow==="hidden")document.documentElement.style.overflow="";
+  }
+
+  function openRealMed(){
+    var r=root();
+    if(!r)return;
+
+    document.documentElement.classList.remove("cocoEpoScrollV149");
+    r.classList.remove("cocoModoEpo");
+    r.classList.add("cocoModoMed","cocoDestinoMedV149");
+
+    if(!loggedIn() || medOpen() || openingMed)return;
+
+    var tab=exactMedTab();
+    if(!tab || tab===lastMedTab && medOpen())return;
+
+    openingMed=true;
+    lastMedTab=tab;
+
+    /* onclick es la entrada real definida por el modulo Coco Med.
+       Se invoca directamente para que ningun listener antiguo la redirija a EPO. */
+    try{
+      if(typeof tab.onclick==="function")tab.onclick.call(tab);
+      else tab.click();
+    }catch(e){}
+
+    setTimeout(function(){
+      openingMed=false;
+      if(!medOpen())lastMedTab=null;
+    },500);
+  }
+
+  function enforce(){
+    var wanted=target();
+    if(wanted==="med")openRealMed();
+    else if(wanted==="epo")unlockEpo();
+    else{
+      document.documentElement.classList.remove("cocoEpoScrollV149");
+      var r=root();
+      if(r)r.classList.remove("cocoDestinoMedV149");
+    }
+  }
+
+  /* La app reconstruye el panel despues del login; esperamos al tab Med exacto. */
+  var r=root();
+  if(r){
+    new MutationObserver(function(){
+      clearTimeout(window.__cocoV149Timer);
+      window.__cocoV149Timer=setTimeout(enforce,40);
+    }).observe(r,{childList:true,subtree:true});
+  }
+
+  enforce();
+  setTimeout(enforce,180);
+  setTimeout(enforce,600);
+  setTimeout(enforce,1300);
+  setInterval(enforce,600);
+})();
+</script>
+
 </body></html>
