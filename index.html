@@ -1667,6 +1667,50 @@ body{
   }
 }
 </style>
+
+<!-- =========================================================
+     COCO v139 · LOGIN SOLO FORMULARIO
+     Elimina definitivamente la tarjeta "Los retos".
+     ========================================================= -->
+
+<style id="coco-v139-login-only-css">
+/* =========================================================
+   COCO v139 · LOGIN SOLO FORMULARIO
+   Base: v138
+   ÚNICO cambio: quitar por completo "Los retos" del login
+   ========================================================= */
+
+/* La segunda tarjeta real del login se llama .retosCard.
+   La ocultamos completa en TODOS los accesos de universo. */
+#cocoApp.cocoLoginUniversoV138 .retosCard,
+#cocoApp.cocoLoginUniversoV138 [class*="retosCard"],
+#cocoApp.cocoLoginUniversoV138 .notaRetos,
+#cocoApp.cocoLoginUniversoV138 .retosMagico,
+#cocoApp.cocoLoginUniversoV138 .retosAtmosfera{
+  display:none!important;
+}
+
+/* La rejilla del login queda en una sola columna y no reserva
+   espacio para la antigua tarjeta de retos. */
+#cocoApp.cocoLoginUniversoV138 .rejilla.dos{
+  display:block!important;
+  grid-template-columns:1fr!important;
+  width:min(760px,calc(100% - 24px))!important;
+  max-width:760px!important;
+  margin:20px auto!important;
+}
+
+/* Solo el formulario de acceso permanece visible. */
+#cocoApp.cocoLoginUniversoV138 .loginCard{
+  display:block!important;
+  width:100%!important;
+  max-width:760px!important;
+  margin:0 auto!important;
+}
+
+/* Seguridad extra: si algún render antiguo vuelve a crear
+   una tarjeta con el título "Los retos", el JS la elimina. */
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -5983,6 +6027,45 @@ function inicio(){
   apply();
   setTimeout(apply,250);
   setTimeout(apply,800);
+})();
+</script>
+
+
+<script id="coco-v139-remove-login-challenges">
+(function(){
+  "use strict";
+
+  function clean(){
+    var app=document.getElementById("cocoApp");
+    if(!app || !app.classList.contains("cocoLoginUniversoV138")) return;
+
+    app.querySelectorAll(".retosCard,.notaRetos,.retosMagico,.retosAtmosfera").forEach(function(el){
+      el.remove();
+    });
+
+    /* También elimina cualquier bloque residual cuyo encabezado sea "Los retos". */
+    Array.from(app.querySelectorAll("h1,h2,h3")).forEach(function(h){
+      if((h.textContent||"").trim().toLowerCase()==="los retos"){
+        var box=h.closest(".tarjeta,.card,.retosCard,section,article,div");
+        if(box && !box.classList.contains("loginCard")){
+          box.remove();
+        }
+      }
+    });
+  }
+
+  var app=document.getElementById("cocoApp");
+  if(app){
+    var obs=new MutationObserver(function(){
+      clearTimeout(window.__cocoV139Clean);
+      window.__cocoV139Clean=setTimeout(clean,40);
+    });
+    obs.observe(app,{childList:true,subtree:true});
+  }
+
+  clean();
+  setTimeout(clean,200);
+  setTimeout(clean,700);
 })();
 </script>
 
