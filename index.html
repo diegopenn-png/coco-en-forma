@@ -1711,7 +1711,196 @@ body{
 /* Seguridad extra: si algún render antiguo vuelve a crear
    una tarjeta con el título "Los retos", el JS la elimina. */
 </style>
+
+<!-- =========================================================
+     COCO v140
+     Football/Basket: login preparado pero bloqueado.
+     Med: loader 0→100 antes de mostrar el módulo médico.
+     ========================================================= -->
+
+<style id="coco-v140-css">
+/* =========================================================
+   COCO v140 · FÚTBOL/BALONCESTO EN PREPARACIÓN + LOADER MED
+   Base: v139
+   ========================================================= */
+
+/* ---------- FÚTBOL / BALONCESTO: LOGIN VISIBLE PERO BLOQUEADO ---------- */
+#cocoApp.cocoLoginPreparacionV140 .loginCard{
+  position:relative!important;
+}
+
+#cocoApp .cocoPreparacionV140{
+  margin:0 0 20px;
+  padding:16px 18px;
+  border:2px solid #F3C244;
+  border-radius:18px;
+  background:linear-gradient(180deg,#FFF9D9,#FFF3B8);
+  box-shadow:0 5px 0 #E7D285;
+  color:#674800;
+}
+
+#cocoApp .cocoPreparacionV140 .tag{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#F8C400;
+  color:#3C2A00;
+  font-family:var(--display)!important;
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.03em;
+}
+
+#cocoApp .cocoPreparacionV140 h3{
+  margin:10px 0 5px!important;
+  font-family:var(--display)!important;
+  font-size:23px!important;
+  color:#3B4250!important;
+}
+
+#cocoApp .cocoPreparacionV140 p{
+  margin:0!important;
+  color:#6B6250!important;
+  font-size:13px!important;
+  line-height:1.45!important;
+}
+
+#cocoApp.cocoLoginPreparacionV140 .loginCard input{
+  opacity:.70!important;
+  cursor:not-allowed!important;
+}
+
+#cocoApp.cocoLoginPreparacionV140 .loginCard button,
+#cocoApp.cocoLoginPreparacionV140 .loginCard a{
+  pointer-events:none!important;
+}
+
+#cocoApp.cocoLoginPreparacionV140 .loginCard button{
+  opacity:.48!important;
+  filter:grayscale(.15)!important;
+}
+
+/* Cambiar Coco sí debe seguir funcionando */
+#cocoApp.cocoLoginPreparacionV140 .cocoLigaLoginVolver{
+  pointer-events:auto!important;
+  opacity:1!important;
+  filter:none!important;
+}
+
+/* ---------- LOADER MED: CUBRE TODO ANTES DE QUE EPO PUEDA PINTARSE ---------- */
+#cocoMedLoaderV140{
+  position:fixed;
+  inset:0;
+  z-index:2147483647;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(64,188,216,.18),transparent 28%),
+    linear-gradient(180deg,#F8FCFE,#EAF7FD);
+}
+
+html.cocoMedLoadingV140 #cocoMedLoaderV140{
+  display:flex!important;
+}
+
+/* Mientras cargamos Med, no dejamos ver absolutamente nada de la interfaz anterior */
+html.cocoMedLoadingV140 body > *:not(#cocoMedLoaderV140):not(script):not(style){
+  visibility:hidden!important;
+}
+
+#cocoMedLoaderV140 .box{
+  width:min(390px,calc(100% - 34px));
+  padding:28px 25px 24px;
+  box-sizing:border-box;
+  text-align:center;
+  border:2px solid #D4EAF4;
+  border-radius:28px;
+  background:rgba(255,255,255,.95);
+  box-shadow:0 8px 0 #D4E8F1,0 26px 66px rgba(18,69,97,.14);
+}
+
+#cocoMedLoaderV140 .brain{
+  font-size:72px;
+  line-height:1;
+  animation:cocoMedThinkV140 .62s ease-in-out infinite alternate;
+}
+
+#cocoMedLoaderV140 h3{
+  margin:11px 0 5px!important;
+  color:#123B55!important;
+  font-family:var(--display)!important;
+  font-size:24px!important;
+}
+
+#cocoMedLoaderV140 .pct{
+  color:#EE7209;
+  font-family:var(--display)!important;
+  font-size:32px;
+  font-weight:950;
+}
+
+#cocoMedLoaderV140 .track{
+  height:13px;
+  margin-top:14px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#DAEDF5;
+}
+
+#cocoMedLoaderV140 .bar{
+  width:0%;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#18A967,#45C1DB,#FFB52B,#F4790B);
+  transition:width .08s linear;
+}
+
+#cocoMedLoaderV140 .hint{
+  margin-top:10px;
+  color:#617E8D;
+  font-size:12px;
+  font-weight:800;
+}
+
+@keyframes cocoMedThinkV140{
+  from{transform:scale(.94) rotate(-2deg)}
+  to{transform:scale(1.08) rotate(2deg)}
+}
+
+@media(max-width:640px){
+  #cocoApp .cocoPreparacionV140{
+    padding:14px;
+  }
+  #cocoApp .cocoPreparacionV140 h3{
+    font-size:20px!important;
+  }
+}
+</style>
+
+<script id="coco-v140-early-med-loader">
+(function(){
+  try{
+    if(sessionStorage.getItem("coco_v140_med_loading")==="1"){
+      document.documentElement.classList.add("cocoMedLoadingV140");
+    }
+  }catch(e){}
+})();
+</script>
+
 </head><body>
+<div id="cocoMedLoaderV140" aria-live="polite">
+  <div class="box">
+    <div class="brain">🧠</div>
+    <h3>Cargando Coco Med</h3>
+    <div class="pct">0%</div>
+    <div class="track"><div class="bar"></div></div>
+    <div class="hint">Preparando tu experiencia médica…</div>
+  </div>
+</div>
+
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
 <style>@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=Bangers&display=swap");#cocoApp{--negro:#131C24;--hielo:#E7F6FD;--carta:#FFFFFF;--naranja:#EF6C05;--naranjaOscuro:#B85104;--agua:#2FA9DC;--cielo:#9EE1F8;--lima:#2FBE85;--sol:#FFC93C;--uva:#7C63DE;--rojo:#E8515C;--linea:#CFE7F5;--gris:#5D7789;--display:"Lilita One","Trebuchet MS","Avenir Next",Verdana,system-ui,sans-serif;--texto:"Fredoka","Trebuchet MS","Avenir Next",Verdana,system-ui,sans-serif;font-family:var(--texto);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;color:var(--negro);font-size:16px;line-height:1.5;max-width:960px;margin:0 auto;padding:8px;background:radial-gradient(circle at 6% 12%,rgba(255,201,60,.20) 0 46px,transparent 47px),radial-gradient(circle at 96% 26%,rgba(42,167,216,.16) 0 60px,transparent 61px),radial-gradient(circle at 12% 82%,rgba(63,207,142,.16) 0 52px,transparent 53px),radial-gradient(circle at 88% 92%,rgba(255,138,43,.16) 0 44px,transparent 45px)}#cocoApp *{box-sizing:border-box}#cocoApp h1,#cocoApp h2,#cocoApp h3{font-family:var(--display);font-weight:800;margin:0;line-height:1.12;letter-spacing:-.02em}#cocoApp h1{font-size:clamp(28px,5.5vw,42px)}#cocoApp h2{font-size:clamp(21px,3.6vw,28px)}#cocoApp h3{font-size:18px}#cocoApp p{margin:.4em 0}#cocoApp .apagado{color:var(--gris)}#cocoApp .pequeno{font-size:14px}#cocoApp .centro{text-align:center}#cocoApp .coco-cargando{text-align:center;padding:44px;color:var(--gris);font-weight:700}#cocoApp .cabecera{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;min-height:0}#cocoApp .logo{display:flex;align-items:center;gap:10px}#cocoApp .logo svg{width:56px;height:auto;flex:none}#cocoApp .logo b{font-family:var(--display);font-size:22px;letter-spacing:-.02em}#cocoApp .logo span{display:block;font-size:12px;color:var(--gris);font-weight:600;letter-spacing:.08em;text-transform:uppercase}#cocoApp .cabecera .fin{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}#cocoApp .btn{font-family:var(--display);font-weight:800;font-size:16px;border:none;border-radius:14px;padding:12px 20px;cursor:pointer;background:var(--naranja);color:#fff;box-shadow:0 4px 0 var(--naranjaOscuro);transition:transform .08s,box-shadow .08s}#cocoApp .btn:hover{transform:translateY(1px);box-shadow:0 3px 0 var(--naranjaOscuro)}#cocoApp .btn:active{transform:translateY(4px);box-shadow:none}#cocoApp .btn.agua{background:var(--agua);box-shadow:0 4px 0 #1b7ea6}#cocoApp .btn.lima{background:var(--lima);box-shadow:0 4px 0 #2a9c69}#cocoApp .btn.rojo{background:var(--rojo);box-shadow:0 4px 0 #bf3941}#cocoApp .btn.plano{background:#fff;color:var(--negro);border:2px solid var(--linea);box-shadow:0 3px 0 var(--linea)}#cocoApp .btn.mini{font-size:13px;padding:6px 11px;border-radius:10px;box-shadow:none}#cocoApp .btn:disabled{opacity:.42;cursor:not-allowed;transform:none}#cocoApp button:focus-visible,#cocoApp input:focus-visible{outline:3px solid var(--agua);outline-offset:2px}#cocoApp .caja{background:var(--carta);border:2px solid var(--linea);border-radius:20px;padding:22px;box-shadow:0 4px 0 var(--linea)}#cocoApp .rejilla{display:grid;gap:16px}@media(min-width:760px){#cocoApp .rejilla.tres{grid-template-columns:repeat(3,1fr)}#cocoApp .rejilla.dos{grid-template-columns:1.1fr .9fr}}#cocoApp label{display:block;font-weight:700;font-size:14px;margin:14px 0 5px}#cocoApp input[type=text],#cocoApp input[type=password],#cocoApp input[type=email],#cocoApp input[type=number]{width:100%;padding:12px 14px;border:2px solid var(--linea);border-radius:13px;font-size:16px;font-family:var(--texto);background:#fff;color:var(--negro)}#cocoApp input:focus{border-color:var(--agua);outline:none}#cocoApp .casilla{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px;font-weight:600}#cocoApp .casilla input{width:20px;height:20px;flex:none;margin-top:2px}#cocoApp .aviso{border-radius:13px;padding:11px 14px;font-size:14px;font-weight:700;margin-top:14px}#cocoApp .aviso.mal{background:#ffe9ea;color:#a52b32}#cocoApp .aviso.bien{background:#e3f8ee;color:#177655}#cocoApp .heroe{background:linear-gradient(165deg,#9EE1F8 0%,#B9EBFA 60%,#D9F4FC 100%);color:var(--negro);border-radius:28px;padding:26px;border:4px solid #fff;box-shadow:0 6px 0 var(--linea);display:flex;gap:22px;align-items:center;flex-wrap:wrap;overflow:hidden;position:relative}#cocoApp .heroe::after{content:"";position:absolute;right:-40px;top:-40px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.45)}#cocoApp .heroe svg{width:158px;height:auto;flex:none;position:relative;z-index:1;filter:drop-shadow(0 6px 0 rgba(32,51,74,.15))}#cocoApp .heroe>div{position:relative;z-index:1}#cocoApp .heroe h1{color:var(--negro)}#cocoApp .heroe .lema{display:inline-block;background:var(--naranja);color:#fff;border-radius:999px;padding:5px 14px;font-weight:800;font-size:14px;margin-bottom:8px}#cocoApp .heroe p{color:#2C4763;max-width:44ch}#cocoApp .carnet{background:linear-gradient(140deg,#2FA9DC,#1E7FB4);color:#fff;border-radius:22px;padding:18px 22px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;box-shadow:0 5px 0 #14607f}#cocoApp .carnet .tanteo b{color:#FFC93C}#cocoApp .carnet svg{width:62px;height:auto;flex:none}#cocoApp .carnet .quien{flex:1;min-width:140px}#cocoApp .carnet .quien strong{font-family:var(--display);font-size:24px;display:block}#cocoApp .carnet .tanteo{text-align:right}#cocoApp .carnet .tanteo b{font-family:var(--display);font-size:36px;display:block;line-height:1;color:#FFD08A}#cocoApp .juego{display:flex;flex-direction:column;gap:9px;text-align:center;border-width:3px}#cocoApp .juego .emoji{background:var(--hielo);border-radius:22px;padding:10px 0;margin-bottom:2px}#cocoApp .juego.c1{border-color:#9BDCFF}#cocoApp .juego.c1 .emoji{background:#E4F6FF}#cocoApp .juego.c2{border-color:#FFDE9B}#cocoApp .juego.c2 .emoji{background:#FFF6E2}#cocoApp .juego.c3{border-color:#B9E9CF}#cocoApp .juego.c3 .emoji{background:#E7F9F0}#cocoApp .juego .emoji{font-size:42px}#cocoApp .pesas{display:flex;gap:6px;justify-content:center;margin:2px 0}#cocoApp .pesa{width:24px;height:10px;border-radius:6px;background:var(--linea)}#cocoApp .pesa.viva{background:var(--lima)}#cocoApp .juego .btn{width:100%}#cocoApp table{width:100%;border-collapse:collapse;font-size:15px}#cocoApp th,#cocoApp td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--linea)}#cocoApp th{font-family:var(--display);font-size:13px;color:var(--gris);text-transform:uppercase;letter-spacing:.05em}#cocoApp .desplaza{overflow-x:auto}#cocoApp .hud{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px;font-weight:700}#cocoApp .hud .dato{background:var(--hielo);border-radius:12px;padding:6px 13px;font-size:15px}#cocoApp .hud .dato b{font-family:var(--display);font-size:18px}#cocoApp .hud .fin{margin-left:auto}#cocoApp .regla{background:var(--naranja);color:#fff;border-radius:12px;padding:8px 14px;font-family:var(--display);font-weight:800;font-size:17px;display:inline-block}#cocoApp svg.lienzo{width:100%;height:auto;display:block;background:var(--hielo);border-radius:16px;touch-action:manipulation}#cocoApp .nodo circle{fill:#fff;stroke:var(--agua);stroke-width:3;cursor:pointer;transition:fill .15s}#cocoApp .nodo text{font-family:var(--display);font-weight:800;font-size:20px;fill:var(--negro);pointer-events:none;user-select:none}#cocoApp .nodo.hecho circle{fill:var(--lima);stroke:#2a9c69}#cocoApp .nodo.hecho text{fill:#fff}#cocoApp .nodo.fallo circle{fill:var(--rojo);stroke:#bf3941}#cocoApp,#cocoApp *{font-family:var(--texto) !important;letter-spacing:normal !important;text-transform:none !important}#cocoApp h1,#cocoApp h2,#cocoApp h3,#cocoApp .btn,#cocoApp .logo b,#cocoApp .carnet strong,#cocoApp .granPuntos,#cocoApp .operacion,#cocoApp .ficha,#cocoApp .hueco,#cocoApp .celda,#cocoApp .teclado button,#cocoApp .marcaRespuesta,#cocoApp .regla,#cocoApp .logo span{font-family:var(--display) !important}#cocoApp .logo span{text-transform:uppercase !important;letter-spacing:.08em !important}#cocoApp input{width:100% !important;display:block !important;opacity:1 !important;visibility:visible !important;appearance:auto;-webkit-appearance:none;background:#fff !important;color:var(--negro) !important;border:2px solid var(--linea) !important;border-radius:13px !important;padding:12px 14px !important;font-size:16px !important;height:auto !important;margin:0 !important;box-shadow:none !important}#cocoApp button{width:auto;letter-spacing:normal !important}#cocoApp p,#cocoApp span,#cocoApp td,#cocoApp th,#cocoApp label{line-height:1.5 !important}#cocoApp .casillaCoco{display:flex !important;gap:12px;align-items:flex-start;margin-top:18px;font-size:14px;font-weight:700;cursor:pointer;background:var(--hielo);border:2px solid var(--linea);border-radius:14px;padding:13px}#cocoApp .casillaCoco .cuadro{width:28px !important;height:28px !important;min-width:28px;flex:none !important;border:3px solid var(--gris);border-radius:9px;background:#fff !important;display:grid !important;place-items:center;color:#fff;font-size:17px;line-height:1;font-family:var(--display) !important}#cocoApp .casillaCoco.marcada{border-color:var(--lima);background:#E9FBF3}#cocoApp .casillaCoco.marcada .cuadro{background:var(--lima) !important;border-color:var(--lima)}#cocoApp .casillaCoco.marcada .cuadro::after{content:"\2714"}#cocoApp .casillaCoco a{color:var(--agua);font-weight:800}#cocoApp .marcaHeroe{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative;z-index:1;flex:none}#cocoApp .marcaHeroe svg,#cocoApp .marcaHeroe img{width:190px;height:auto;background:transparent;filter:drop-shadow(0 8px 10px rgba(32,51,74,.25))}#cocoApp .rotulo{text-align:center;margin-top:-2px;display:flex;flex-direction:column;align-items:center;line-height:1;transform:rotate(-1deg)}#cocoApp .rotulo .r1{display:block;font-family:"Lilita One","Arial Black",Impact,sans-serif !important;font-size:clamp(43px,6vw,58px);font-weight:400;line-height:.82 !important;text-transform:uppercase !important;letter-spacing:.02em !important;color:#082E49;-webkit-text-stroke:1px #061E31;text-shadow:2px 3px 0 #5CB8E2,5px 6px 0 rgba(3,32,52,.28);transform:skewX(-9deg) scaleX(1.08);transform-origin:center bottom}#cocoApp .rotulo .r2{display:block;font-family:"Bangers","Trebuchet MS",sans-serif !important;font-size:clamp(34px,5vw,47px);font-weight:400;line-height:.88 !important;text-transform:uppercase !important;letter-spacing:.035em !important;color:#FF7412;-webkit-text-stroke:1px #D95700;text-shadow:2px 3px 0 rgba(122,54,0,.24);transform:skewX(-11deg) rotate(-1deg) scaleX(1.05);transform-origin:center top;margin-top:9px;white-space:nowrap}#cocoApp .rotulo .r2::after{content:"";display:block;width:92%;height:7px;margin:2px auto 0;background:#F06A08;border-radius:100% 20% 100% 20%;transform:skewX(-22deg) rotate(-2deg);box-shadow:0 2px 0 rgba(143,61,0,.16)}#cocoApp .rotulo .rsub{display:flex;align-items:center;gap:9px;font-family:"Trebuchet MS","Avenir Next",Verdana,sans-serif !important;font-size:12px;font-weight:900;letter-spacing:.20em !important;text-transform:uppercase !important;color:#173F59;line-height:1 !important;margin-top:7px;white-space:nowrap}#cocoApp .rotulo .rsub::before,#cocoApp .rotulo .rsub::after{content:"";width:28px;height:2px;background:#173F59;border-radius:999px}#cocoApp .textoHeroe{flex:1;min-width:230px;position:relative;z-index:1}@media(max-width:640px){#cocoApp .heroe{justify-content:center;text-align:center}#cocoApp .marcaHeroe svg,#cocoApp .marcaHeroe img{width:135px}#cocoApp .rotulo .r1{font-size:45px}#cocoApp .rotulo .r2{font-size:36px}#cocoApp .rotulo .rsub{font-size:10px;letter-spacing:.16em !important}#cocoApp .textoHeroe{text-align:left}}#cocoApp .retoLista{display:flex;gap:12px;align-items:center;margin:12px 0;background:var(--hielo);border-radius:16px;padding:10px 12px}#cocoApp .retoLista svg{flex:none}#cocoApp .retoLista b{font-size:17px}#cocoApp .juego{padding:18px 16px 20px}#cocoApp .juego .emoji{padding:14px 0 10px;border-radius:24px}#cocoApp .juego h3{font-size:21px}#cocoApp .juego .btn{font-size:18px;padding:14px 20px;border-radius:16px}#cocoApp .pesa{width:28px;height:12px}#cocoApp .retoLista{align-items:center}#cocoApp .retoLista>svg{width:46px;height:46px;flex:none}#cocoApp .retoLista>div{flex:1;min-width:0}#cocoApp .juego{justify-content:flex-start}#cocoApp .juego .emoji{display:flex;align-items:center;justify-content:center;min-height:104px}#cocoApp .juego h3{min-height:2.3em;display:flex;align-items:center;justify-content:center}#cocoApp .juego>p.pequeno.apagado{min-height:3.2em;display:flex;align-items:center;justify-content:center;margin:0}#cocoApp .juego .pesas{min-height:14px}#cocoApp .juego .btn{margin-top:auto}@media(min-width:620px){#cocoApp .rejilla.cuatro{grid-template-columns:repeat(2,1fr)}}@media(min-width:980px){#cocoApp .rejilla.cuatro{grid-template-columns:repeat(4,1fr)}}#cocoApp .abaco{display:flex;gap:10px;justify-content:center;background:#8B5E34;border-radius:20px;padding:16px 14px 10px;margin:14px auto;max-width:460px;box-shadow:0 5px 0 #6B4526}#cocoApp .varilla{background:#FFF3E2;border-radius:12px;padding:8px 6px 6px;display:flex;flex-direction:column;align-items:center;flex:1;max-width:96px;position:relative}#cocoApp .cielo{height:62px;display:flex;flex-direction:column;justify-content:flex-start;width:100%;align-items:center}#cocoApp .barra{height:8px;background:#8B5E34;width:100%;border-radius:4px;margin:4px 0}#cocoApp .tierra{display:flex;flex-direction:column-reverse;justify-content:flex-start;align-items:center;height:172px;width:100%}#cocoApp .cuenta{width:44px;height:30px;border-radius:50%/40%;margin:2px 0;cursor:pointer;touch-action:none;border:3px solid rgba(0,0,0,.18);transition:transform .22s cubic-bezier(.34,1.4,.5,1),opacity .18s,filter .18s;opacity:.45;filter:saturate(.5)}#cocoApp .cuenta:active{cursor:grabbing}#cocoApp .cuenta.puesta{opacity:1;filter:none}#cocoApp .cuenta.pulsada{box-shadow:0 0 0 4px rgba(239,108,5,.35)}#cocoApp .cuenta.cinco{background:#2AA7D8;transform:translateY(-22px)}#cocoApp .cuenta.cinco.puesta{transform:translateY(20px)}#cocoApp .cuenta.una{background:#EF6C05;transform:translateY(26px)}#cocoApp .cuenta.una.puesta{transform:translateY(-8px)}#cocoApp .abaco{touch-action:none;user-select:none;-webkit-user-select:none}#cocoApp .peso{font-size:10px;font-weight:800;color:#8B5E34;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}#cocoApp .leeAbaco{font-size:17px;font-weight:700;margin:6px 0 14px}#cocoApp .leeAbaco b{font-family:var(--display);font-size:26px;color:var(--naranja)}#cocoApp .comoVa{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:13px;font-weight:700;background:var(--hielo);border-radius:14px;padding:9px 12px;margin:4px auto 0;max-width:520px}#cocoApp .comoVa span{display:flex;align-items:center;gap:6px}#cocoApp .jugadorFila{display:flex;align-items:center;gap:8px}#cocoApp .jugadorFila img,#cocoApp .jugadorFila div{width:26px !important;height:26px;flex:none;border-radius:50%;object-fit:cover}#cocoApp .bolaAzul,#cocoApp .bolaNaranja{width:20px;height:14px;border-radius:50%/40%;display:inline-block;border:2px solid rgba(0,0,0,.18)}#cocoApp .bolaAzul{background:#2AA7D8}#cocoApp .bolaNaranja{background:#EF6C05}#cocoApp .digito{font-family:var(--display);font-weight:800;font-size:22px;color:var(--negro);background:#fff;border-radius:8px;width:100%;text-align:center;margin-top:4px}#cocoApp .ejemploAbaco{background:#FFF6E2;border:2px solid #FFDE9B;border-radius:14px;padding:12px 14px;font-size:14px;max-width:520px;margin:0 auto 14px;text-align:center;line-height:1.5}#cocoApp .cuenta{box-shadow:0 2px 4px rgba(0,0,0,.25)}#cocoApp .cuenta:hover{filter:brightness(1.12)}#cocoApp .tablaRanking{table-layout:auto}#cocoApp .tablaRanking th,#cocoApp .tablaRanking td{padding:10px 8px;vertical-align:middle}#cocoApp .tablaRanking th.cat{font-size:12px;line-height:1.05;text-align:right;color:#355469}#cocoApp .tablaRanking td.cat{font-weight:700;color:#203C50}#cocoApp .tablaRanking th.total{font-size:13px;color:#8B4C05}#cocoApp .tablaRanking td.total{font-size:17px;font-weight:900;color:#8B4C05}#cocoApp .rankingNota{margin-top:5px;color:#587182}#cocoApp .tablaRanking .pos{width:36px;text-align:center;padding-right:4px}#cocoApp .tablaRanking .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}#cocoApp .tablaRanking td.total{font-size:16px;padding-left:14px;border-left:2px solid var(--linea)}#cocoApp .tablaRanking th.num.total,#cocoApp .tablaRanking td.total{background:#FFF8EE}#cocoApp .jugadorFila{display:flex;align-items:center;gap:8px;min-width:120px}#cocoApp .jugadorFila img,#cocoApp .jugadorFila>div:first-child,#cocoApp .jugadorFila>svg{width:34px !important;height:34px;flex:none;border-radius:50%;object-fit:cover;background:#EAF6FF}#cocoApp .avatarCarnet{display:inline-grid;place-items:center;width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.25);flex:none}#cocoApp .nombreJug{display:flex;flex-direction:column;gap:3px;font-weight:800;line-height:1.1}#cocoApp .insignia{display:inline-flex;align-items:center;gap:3px;align-self:flex-start;color:#fff;font-size:11px;font-weight:800;padding:2px 8px 2px 5px;border-radius:999px;white-space:nowrap}#cocoApp .insignia svg{flex:none}#cocoApp .estadoLogro{font-size:11px;font-weight:800;color:var(--gris)}#cocoApp .carnet .tanteo{display:flex;flex-direction:column;align-items:flex-end;gap:4px}#cocoApp .carnet .bRankCarnet{margin-top:4px;background:rgba(255,255,255,.9);color:var(--negro);border:none;box-shadow:none}#cocoApp .carnet .bRankCarnet:hover{background:#fff}#cocoApp .logrosCabeza{display:flex;flex-direction:column;gap:2px;margin-bottom:12px}#cocoApp .logrosCabeza h3{display:flex;align-items:center;gap:8px}#cocoApp .cuentaLogros{font-size:13px;font-weight:800;background:var(--lima);color:#fff;border-radius:999px;padding:2px 10px}#cocoApp .barraLogro{height:8px;background:var(--linea);border-radius:999px;overflow:hidden;margin-bottom:14px}#cocoApp .barraLogro span{display:block;height:100%;border-radius:999px;transition:width .5s}#cocoApp .listaLogros{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}@media(max-width:520px){#cocoApp .listaLogros{gap:4px}#cocoApp .logro{padding:8px 1px}#cocoApp .medallaLogro{width:38px;height:38px}#cocoApp .medallaLogro svg{width:20px;height:20px}#cocoApp .logro b{font-size:10.5px}#cocoApp .estadoLogro{font-size:9px}#cocoApp .medallaLogro .tick{width:15px;height:15px;background-size:11px}}#cocoApp .logro{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:10px 2px;border-radius:14px;background:#F5F9FC;border:2px solid transparent;position:relative;min-width:0;overflow:hidden}#cocoApp .logro b{max-width:100%;overflow:hidden;text-overflow:ellipsis}#cocoApp .logro.hecho{background:#fff;border-color:var(--lima);box-shadow:0 2px 0 #CDEEDF}#cocoApp .logro:not(.hecho){opacity:.72}#cocoApp .logro:not(.hecho) b{color:var(--gris)}#cocoApp .medallaLogro{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;position:relative;box-shadow:0 2px 0 rgba(0,0,0,.08)}#cocoApp .medallaLogro .tick{position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;background:var(--lima) url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M6 12.5l3.5 3.5 8-9\" fill=\"none\" stroke=\"white\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>') center/13px no-repeat;border:2px solid #fff}#cocoApp .logro b{font-size:12.5px;font-family:var(--display);font-weight:800;line-height:1.05}#cocoApp .estadoLogro{font-size:10px;font-weight:800;color:var(--gris)}#cocoApp .logro.hecho .estadoLogro{color:var(--lima)}#cocoApp .confetiCoco{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}#cocoApp .medallaDia{font-size:18px;font-weight:800;color:var(--naranja);margin:4px 0 10px}#cocoApp .confetiCoco span{position:absolute;top:-12px;width:10px;height:14px;border-radius:2px;animation:caeCoco 2.4s linear forwards}@keyframes caeCoco{to{transform:translateY(110vh) rotate(720deg);opacity:.3}}#cocoApp .serieCoco{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0}#cocoApp .celdaSerie{width:52px;height:52px;border-radius:14px;background:var(--hielo);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:24px;color:var(--negro);border:2px solid var(--linea)}#cocoApp .celdaSerie.incognita{background:#FFF3E2;border-color:var(--naranja);color:var(--naranja)}#cocoApp .opcionesSerie{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:320px;margin:16px auto 0}#cocoApp .opSerie{font-size:22px;font-family:var(--display);font-weight:800;padding:16px}#cocoApp .opSerie.bienSerie{background:var(--lima);color:#fff;border-color:var(--lima)}#cocoApp .opSerie.malSerie{background:var(--rojo);color:#fff;border-color:var(--rojo)}@media(max-width:400px){#cocoApp .celdaSerie{width:44px;height:44px;font-size:20px}}#cocoApp .rejilla.cuatro{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}@media(max-width:900px){#cocoApp .rejilla.cuatro{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){#cocoApp .rejilla.cuatro{grid-template-columns:1fr}}#cocoApp .juego.proximo{opacity:.75;position:relative}#cocoApp .juego.proximo .emoji{background:#F0F4F8}#cocoApp .juego.proximo h3{color:var(--gris)}#cocoApp .cintaObras{margin-top:auto;background:var(--sol);color:#7A5A00;font-weight:800;font-size:13px;letter-spacing:.05em;padding:10px;border-radius:14px;text-align:center}#cocoApp .listaAvatares{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}@media(max-width:520px){#cocoApp .listaAvatares{grid-template-columns:repeat(3,1fr)}}#cocoApp .avatarItem{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:10px 2px;border-radius:14px;background:#F5F9FC;border:2px solid transparent}#cocoApp .avatarItem.abierto{background:#fff;border-color:var(--agua);box-shadow:0 2px 0 #BEE3F2}#cocoApp .avatarItem:not(.abierto){opacity:.65}#cocoApp .avatarCirc{width:52px;height:52px;border-radius:50%;background:#EAF6FF;display:grid;place-items:center;overflow:hidden}#cocoApp .avatarItem:not(.abierto) .avatarCirc{background:#E7EEF4}#cocoApp .candado{font-size:22px;filter:grayscale(1);opacity:.5}#cocoApp .avatarItem b{font-size:11.5px;font-family:var(--display);font-weight:800;line-height:1.05}#cocoApp .avatarItem:not(.abierto) b{color:var(--gris)}#cocoApp .barraVolver{margin-bottom:12px}#cocoApp .btn.volver{font-size:15px;padding:8px 16px;border-radius:12px}#cocoApp .tablero{position:relative;width:100%;max-width:440px;margin:14px auto;aspect-ratio:1;touch-action:none;user-select:none;-webkit-user-select:none}#cocoApp .rejillaZip{display:grid;width:100%;height:100%;gap:0;border:3px solid var(--negro);border-radius:16px;overflow:hidden;background:var(--negro)}#cocoApp .celda{background:#fff;border:1px solid var(--linea);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:clamp(13px,3.4vw,22px);color:var(--negro);cursor:pointer}#cocoApp .celda.num{background:var(--negro);color:#fff;border-color:var(--negro);border-radius:50%;transform:scale(.82)}#cocoApp .celda.pisada{background:#FFF1E2}#cocoApp .celda.num.pisada{background:var(--negro)}#cocoApp .celda.guiada{box-shadow:inset 0 0 0 4px var(--agua)}#cocoApp .celda.mala{background:#FFD9DC}#cocoApp .celda.ganada{background:#E3F8EE}#cocoApp .celda.num.ganada{background:var(--lima);border-color:var(--lima)}#cocoApp .trazo{position:absolute;inset:0;pointer-events:none}#cocoApp .operacion{font-family:var(--display);font-weight:800;font-size:clamp(32px,8vw,52px);text-align:center;margin:12px 0}#cocoApp .marcaRespuesta{font-family:var(--display);font-weight:800;font-size:38px;text-align:center;min-height:50px;border-bottom:4px dashed var(--linea);max-width:290px;margin:0 auto 14px}#cocoApp .teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;max-width:290px;margin:0 auto}#cocoApp .teclado button{font-family:var(--display);font-weight:800;font-size:23px;padding:14px 0;border:2px solid var(--linea);border-radius:14px;background:#fff;cursor:pointer;color:var(--negro)}#cocoApp .teclado button:active{background:var(--hielo)}#cocoApp .fichas,#cocoApp .huecos{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}#cocoApp .ficha{width:50px;height:56px;border-radius:13px;border:2px solid var(--linea);background:#fff;color:var(--negro);font-family:var(--display);font-weight:800;font-size:25px;cursor:pointer;box-shadow:0 3px 0 var(--linea)}#cocoApp .ficha:disabled{opacity:.22}#cocoApp .hueco{width:50px;height:56px;border-radius:13px;background:var(--hielo);border:2px dashed var(--linea);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:25px}#cocoApp .hueco.lleno{background:var(--naranja);color:#fff;border-style:solid;border-color:var(--naranjaOscuro)}#cocoApp .pista{text-align:center;font-size:17px;font-weight:600;margin:8px 0;min-height:26px}#cocoApp .granPuntos{font-family:var(--display);font-weight:800;font-size:62px;color:var(--lima);line-height:1}#cocoApp .enlaceDuenio{background:none;border:none;color:var(--gris);font-size:12px;cursor:pointer;text-decoration:underline;padding:4px}@media (prefers-reduced-motion:reduce){#cocoApp *{transition:none!important;animation:none!important}}
@@ -6066,6 +6255,230 @@ function inicio(){
   clean();
   setTimeout(clean,200);
   setTimeout(clean,700);
+})();
+</script>
+
+
+<script id="coco-v140-preparacion-med-loader">
+(function(){
+  "use strict";
+
+  function root(){ return document.getElementById("cocoApp"); }
+
+  function liga(){
+    try{return localStorage.getItem("coco_liga_seleccionada")||""}
+    catch(e){return ""}
+  }
+
+  function visible(el){
+    if(!el) return false;
+    const s=getComputedStyle(el);
+    return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
+  }
+
+  function loginVisible(){
+    return visible(document.querySelector("#cocoApp .loginCard"));
+  }
+
+  /* ========================================================
+     FOOTBALL / BASKET: LOGIN EN PREPARACIÓN
+     ======================================================== */
+  function prepararLoginBloqueado(){
+    const r=root();
+    if(!r || !loginVisible()) return;
+
+    const l=liga();
+
+    r.classList.remove("cocoLoginPreparacionV140");
+
+    const old=r.querySelector(".cocoPreparacionV140");
+    if(old) old.remove();
+
+    if(l!=="football" && l!=="basket"){
+      r.querySelectorAll(".loginCard input").forEach(function(i){ i.disabled=false; });
+      return;
+    }
+
+    r.classList.add("cocoLoginPreparacionV140");
+
+    const card=r.querySelector(".loginCard");
+    if(!card) return;
+
+    const box=document.createElement("section");
+    box.className="cocoPreparacionV140";
+
+    if(l==="football"){
+      box.innerHTML=
+        '<span class="tag">⚽ EN PREPARACIÓN</span>'+
+        '<h3>Coco Fútbol está en construcción</h3>'+
+        '<p>El acceso ya está preparado, pero el universo todavía no está habilitado. Cuando terminemos su programación podrás utilizar aquí tu misma cuenta de Coco en Forma.</p>';
+    }else{
+      box.innerHTML=
+        '<span class="tag">🏀 EN PREPARACIÓN</span>'+
+        '<h3>Coco Baloncesto está en construcción</h3>'+
+        '<p>El acceso ya está preparado, pero el universo todavía no está habilitado. Cuando terminemos su programación podrás utilizar aquí tu misma cuenta de Coco en Forma.</p>';
+    }
+
+    card.prepend(box);
+
+    /* Campos visibles como maqueta, pero no operativos */
+    card.querySelectorAll("input").forEach(function(i){
+      i.disabled=true;
+    });
+  }
+
+  /* Bloqueo extra de cualquier intento de autenticar en universos en preparación */
+  document.addEventListener("click",function(e){
+    const l=liga();
+    if((l==="football" || l==="basket") && loginVisible()){
+      const el=e.target.closest && e.target.closest("button,a");
+      if(!el) return;
+
+      if(el.closest(".cocoLigaLoginVolver")) return;
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  },true);
+
+  document.addEventListener("submit",function(e){
+    const l=liga();
+    if(l==="football" || l==="basket"){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  },true);
+
+  /* ========================================================
+     MED: LOADER 0 → 100 ANTES DE ENTRAR
+     ======================================================== */
+  let timer=null;
+
+  function loaderEls(){
+    const l=document.getElementById("cocoMedLoaderV140");
+    return {
+      l:l,
+      pct:l&&l.querySelector(".pct"),
+      bar:l&&l.querySelector(".bar")
+    };
+  }
+
+  function setP(n){
+    const e=loaderEls();
+    if(e.pct) e.pct.textContent=n+"%";
+    if(e.bar) e.bar.style.width=n+"%";
+  }
+
+  function beginMedLoader(){
+    try{sessionStorage.setItem("coco_v140_med_loading","1")}catch(e){}
+    document.documentElement.classList.add("cocoMedLoadingV140");
+
+    if(timer) clearInterval(timer);
+
+    const steps=[0,10,20,30,40,50,60,70,80,90];
+    let i=0;
+    setP(0);
+
+    timer=setInterval(function(){
+      i=Math.min(i+1,steps.length-1);
+      setP(steps[i]);
+      if(steps[i]>=90) clearInterval(timer);
+    },90);
+  }
+
+  function endMedLoader(){
+    if(timer) clearInterval(timer);
+    setP(100);
+
+    setTimeout(function(){
+      document.documentElement.classList.remove("cocoMedLoadingV140");
+      try{sessionStorage.removeItem("coco_v140_med_loading")}catch(e){}
+    },240);
+  }
+
+  /* Antes del click de ENTRAR en Med, tapamos la UI inmediatamente */
+  document.addEventListener("click",function(e){
+    if(liga()!=="med" || !loginVisible()) return;
+
+    const el=e.target.closest && e.target.closest("button");
+    if(!el) return;
+
+    const t=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+    if(t==="entrar"){
+      beginMedLoader();
+      /* no impedimos el handler real de autenticación */
+    }
+  },true);
+
+  /* Si la autenticación Med se hace por submit/Enter de teclado */
+  document.addEventListener("submit",function(e){
+    if(liga()==="med" && loginVisible()){
+      beginMedLoader();
+    }
+  },true);
+
+  function medReady(){
+    const r=root();
+    if(!r || loginVisible()) return false;
+
+    /* La app ya marcó modo Med o existe el contenido médico real visible */
+    if(r.classList.contains("cocoModoMed")) return true;
+
+    const med=
+      document.getElementById("cocoMedInicio") ||
+      document.getElementById("cocoMedPantalla") ||
+      r.querySelector(".cocoMedInicio,.cocoMedPantalla,.cocoMedRankingPanel,.cocoMedCabeceraInicio");
+
+    return visible(med);
+  }
+
+  function resumeMedLoader(){
+    let loading=false;
+    try{loading=sessionStorage.getItem("coco_v140_med_loading")==="1"}catch(e){}
+    if(!loading) return;
+
+    document.documentElement.classList.add("cocoMedLoadingV140");
+
+    let n=60;
+    setP(n);
+
+    const poll=setInterval(function(){
+      if(n<90){
+        n+=10;
+        setP(n);
+      }
+
+      if(medReady()){
+        clearInterval(poll);
+        endMedLoader();
+      }
+    },90);
+
+    /* Failsafe para no dejar nunca la pantalla bloqueada */
+    setTimeout(function(){
+      clearInterval(poll);
+      endMedLoader();
+    },3200);
+  }
+
+  function apply(){
+    prepararLoginBloqueado();
+  }
+
+  const r=root();
+  if(r){
+    const obs=new MutationObserver(function(){
+      clearTimeout(window.__cocoV140Timer);
+      window.__cocoV140Timer=setTimeout(apply,60);
+    });
+    obs.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
+  }
+
+  apply();
+  resumeMedLoader();
+
+  setTimeout(apply,250);
+  setTimeout(apply,800);
 })();
 </script>
 
