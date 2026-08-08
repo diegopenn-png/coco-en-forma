@@ -7595,4 +7595,126 @@ function inicio(){
 })();
 </script>
 
+<!-- =========================================================
+     COCO v148 · DESTINOS EPO / MED INDEPENDIENTES
+     Mantiene intactas las correcciones visuales de v147.
+     ========================================================= -->
+<script id="coco-v148-med-epo-independent-routing">
+(function(){
+  "use strict";
+
+  var routing=false;
+  var lastTarget="";
+
+  function app(){ return document.getElementById("cocoApp"); }
+
+  function selected(){
+    try{ return localStorage.getItem("coco_liga_seleccionada")||""; }
+    catch(e){ return ""; }
+  }
+
+  function visible(el){
+    if(!el) return false;
+    var s=getComputedStyle(el);
+    return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
+  }
+
+  function loginVisible(){
+    return visible(document.querySelector("#cocoApp .loginCard"));
+  }
+
+  function medIsOpen(){
+    var overlay=document.getElementById("cocoMedOverlay");
+    return !!(overlay && overlay.classList.contains("abierto"));
+  }
+
+  function medTab(){
+    var r=app();
+    if(!r) return null;
+    return document.getElementById("cocoMedPestana") ||
+      r.querySelector(".cocoMedPestana") ||
+      Array.from(r.querySelectorAll("button,a")).find(function(el){
+        return /coco med/i.test(el.textContent||"");
+      }) || null;
+  }
+
+  function epoTab(){
+    var r=app();
+    if(!r) return null;
+    var nav=r.querySelector(".navegacionJugador");
+    if(!nav) return null;
+    return Array.from(nav.querySelectorAll("button")).find(function(el){
+      return /mis retos|inicio/i.test(el.textContent||"") && !/coco med/i.test(el.textContent||"");
+    }) || null;
+  }
+
+  function enterMed(){
+    var r=app();
+    if(!r || loginVisible() || medIsOpen()) return;
+
+    r.classList.remove("cocoModoEpo");
+    r.classList.add("cocoModoMed");
+
+    var tab=medTab();
+    if(!tab) return;
+
+    routing=true;
+    try{ tab.click(); }catch(e){}
+    setTimeout(function(){ routing=false; },80);
+  }
+
+  function enterEpo(){
+    var r=app();
+    if(!r || loginVisible()) return;
+
+    /* EPO nunca puede heredar la ventana o el estado visual de Coco Med. */
+    var overlay=document.getElementById("cocoMedOverlay");
+    if(overlay) overlay.classList.remove("abierto");
+    document.body.style.overflow="";
+
+    r.classList.remove("cocoModoMed");
+    r.classList.add("cocoModoEpo");
+
+    var tab=epoTab();
+    if(!tab || visible(r.querySelector(".carnet,.zonaJugador"))) return;
+
+    routing=true;
+    try{ tab.click(); }catch(e){}
+    setTimeout(function(){ routing=false; },80);
+  }
+
+  function enforce(){
+    if(routing) return;
+    var target=selected();
+    if(target!=="med" && target!=="epo") return;
+
+    if(target!==lastTarget){
+      lastTarget=target;
+      window.__COCO_EPO_ABIERTO__=false;
+      window.__COCO_MED_ABIERTO_V126__=false;
+      window.__COCO_MED_V137_DONE__=false;
+    }
+
+    if(target==="med") enterMed();
+    else enterEpo();
+  }
+
+  /* La sesión y las pestañas se crean de forma asíncrona. Esta vigilancia
+     enruta cuando el destino real ya existe, no antes. */
+  var r=app();
+  if(r){
+    new MutationObserver(function(){
+      clearTimeout(window.__cocoV148Route);
+      window.__cocoV148Route=setTimeout(enforce,35);
+    }).observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
+  }
+
+  enforce();
+  setTimeout(enforce,200);
+  setTimeout(enforce,650);
+  setTimeout(enforce,1400);
+  setInterval(enforce,700);
+})();
+</script>
+
 </body></html>
