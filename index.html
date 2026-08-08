@@ -1713,322 +1713,218 @@ body{
 </style>
 
 <!-- =========================================================
-     COCO v140
-     Football/Basket: login preparado pero bloqueado.
-     Med: loader 0→100 antes de mostrar el módulo médico.
+     COCO v142 · FIX ESTABLE
+     Derivado de v139 para evitar el bloqueo de v141.
      ========================================================= -->
 
-<style id="coco-v140-css">
+<style id="coco-v142-css">
 /* =========================================================
-   COCO v140 · FÚTBOL/BALONCESTO EN PREPARACIÓN + LOADER MED
-   Base: v139
+   COCO v142 · FIX ESTABLE
+   Base: v139 (antes del bloqueo que colgaba)
+   - Med: solo "Cambiar Coco" + loader
+   - Fútbol/Baloncesto: pantalla estática EN PREPARACIÓN
    ========================================================= */
 
-/* ---------- FÚTBOL / BALONCESTO: LOGIN VISIBLE PERO BLOQUEADO ---------- */
-#cocoApp.cocoLoginPreparacionV140 .loginCard{
-  position:relative!important;
+/* ---------- COCO MED: ocultar X y Volver internos ---------- */
+#cocoApp.cocoModoMed .cocoMedVolver,
+#cocoApp.cocoModoMed .cocoMedCerrar,
+#cocoApp.cocoModoMed .cocoMedVolverCoco,
+#cocoApp.cocoModoMed .cocoMedCabecera .btnVolver,
+#cocoApp.cocoModoMed .cocoMedCabecera .btnCerrar{
+  display:none!important;
 }
 
-#cocoApp .cocoPreparacionV140{
-  margin:0 0 20px;
-  padding:16px 18px;
-  border:2px solid #F3C244;
-  border-radius:18px;
-  background:linear-gradient(180deg,#FFF9D9,#FFF3B8);
-  box-shadow:0 5px 0 #E7D285;
-  color:#674800;
+/* El botón global "Cambiar Coco" queda siempre disponible */
+#cocoApp.cocoModoMed .cocoLigaLoginVolver{
+  display:flex!important;
+  z-index:99999!important;
 }
 
-#cocoApp .cocoPreparacionV140 .tag{
+/* ---------- PANTALLA ESTÁTICA EN PREPARACIÓN ---------- */
+#cocoPrepScreenV142{
+  width:min(760px,calc(100% - 24px));
+  margin:24px auto;
+  padding:28px;
+  box-sizing:border-box;
+  border:2px solid #D5E8F2;
+  border-radius:28px;
+  background:linear-gradient(180deg,#FFFFFF,#F3FAFD);
+  box-shadow:0 7px 0 #D5E8F1,0 20px 50px rgba(18,69,97,.10);
+}
+
+#cocoPrepScreenV142 .prepTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:20px;
+}
+
+#cocoPrepScreenV142 .prepTag{
   display:inline-flex;
   align-items:center;
   gap:7px;
-  padding:6px 10px;
+  padding:7px 11px;
   border-radius:999px;
-  background:#F8C400;
-  color:#3C2A00;
+  background:#F6C600;
+  color:#3A2900;
   font-family:var(--display)!important;
   font-size:11px;
   font-weight:950;
-  letter-spacing:.03em;
 }
 
-#cocoApp .cocoPreparacionV140 h3{
-  margin:10px 0 5px!important;
+#cocoPrepScreenV142 h2{
+  margin:10px 0 4px!important;
+  color:#153C54!important;
   font-family:var(--display)!important;
-  font-size:23px!important;
-  color:#3B4250!important;
+  font-size:30px!important;
 }
 
-#cocoApp .cocoPreparacionV140 p{
+#cocoPrepScreenV142 p{
   margin:0!important;
-  color:#6B6250!important;
-  font-size:13px!important;
-  line-height:1.45!important;
+  color:#607886!important;
+  line-height:1.5!important;
 }
 
-#cocoApp.cocoLoginPreparacionV140 .loginCard input{
-  opacity:.70!important;
-  cursor:not-allowed!important;
+#cocoPrepScreenV142 .prepLogin{
+  margin-top:22px;
+  padding:20px;
+  border-radius:22px;
+  background:#F7FBFD;
+  border:2px solid #D9EAF2;
 }
 
-#cocoApp.cocoLoginPreparacionV140 .loginCard button,
-#cocoApp.cocoLoginPreparacionV140 .loginCard a{
-  pointer-events:none!important;
+#cocoPrepScreenV142 .prepField{
+  margin-bottom:14px;
 }
 
-#cocoApp.cocoLoginPreparacionV140 .loginCard button{
-  opacity:.48!important;
-  filter:grayscale(.15)!important;
+#cocoPrepScreenV142 label{
+  display:block;
+  margin-bottom:6px;
+  color:#264B60;
+  font-weight:900;
 }
 
-/* Cambiar Coco sí debe seguir funcionando */
-#cocoApp.cocoLoginPreparacionV140 .cocoLigaLoginVolver{
-  pointer-events:auto!important;
-  opacity:1!important;
-  filter:none!important;
+#cocoPrepScreenV142 input{
+  width:100%;
+  height:48px;
+  box-sizing:border-box;
+  padding:0 14px;
+  border:2px solid #D3E7F0;
+  border-radius:14px;
+  background:#EEF4F7;
+  color:#8A9BA5;
+  font:inherit;
 }
 
-/* ---------- LOADER MED: CUBRE TODO ANTES DE QUE EPO PUEDA PINTARSE ---------- */
-#cocoMedLoaderV140{
+#cocoPrepScreenV142 input:disabled{
+  opacity:1;
+}
+
+#cocoPrepScreenV142 .prepButton{
+  width:100%;
+  min-height:50px;
+  border:0;
+  border-radius:15px;
+  background:#C9D4DA;
+  color:#fff;
+  font-family:var(--display)!important;
+  font-weight:950;
+  cursor:not-allowed;
+}
+
+#cocoPrepScreenV142 .prepBack{
+  border:2px solid #CFE4EE;
+  border-radius:14px;
+  background:#fff;
+  padding:9px 13px;
+  color:#16445E;
+  font-family:var(--display)!important;
+  font-weight:950;
+  cursor:pointer;
+}
+
+/* ---------- LOADER COCO MED ---------- */
+#cocoMedLoaderV142{
   position:fixed;
   inset:0;
   z-index:2147483647;
   display:none;
   align-items:center;
   justify-content:center;
-  background:
-    radial-gradient(circle at 50% 38%,rgba(64,188,216,.18),transparent 28%),
-    linear-gradient(180deg,#F8FCFE,#EAF7FD);
+  background:linear-gradient(180deg,#F8FCFE,#EAF7FD);
 }
 
-html.cocoMedLoadingV140 #cocoMedLoaderV140{
-  display:flex!important;
+#cocoMedLoaderV142.activo{
+  display:flex;
 }
 
-/* Mientras cargamos Med, no dejamos ver absolutamente nada de la interfaz anterior */
-html.cocoMedLoadingV140 body > *:not(#cocoMedLoaderV140):not(script):not(style){
-  visibility:hidden!important;
-}
-
-#cocoMedLoaderV140 .box{
+#cocoMedLoaderV142 .loaderBox{
   width:min(390px,calc(100% - 34px));
   padding:28px 25px 24px;
   box-sizing:border-box;
   text-align:center;
   border:2px solid #D4EAF4;
   border-radius:28px;
-  background:rgba(255,255,255,.95);
+  background:#fff;
   box-shadow:0 8px 0 #D4E8F1,0 26px 66px rgba(18,69,97,.14);
 }
 
-#cocoMedLoaderV140 .brain{
+#cocoMedLoaderV142 .brain{
   font-size:72px;
   line-height:1;
-  animation:cocoMedThinkV140 .62s ease-in-out infinite alternate;
+  animation:cocoThinkV142 .55s ease-in-out infinite alternate;
 }
 
-#cocoMedLoaderV140 h3{
-  margin:11px 0 5px!important;
+#cocoMedLoaderV142 h3{
+  margin:10px 0 4px!important;
   color:#123B55!important;
   font-family:var(--display)!important;
-  font-size:24px!important;
 }
 
-#cocoMedLoaderV140 .pct{
-  color:#EE7209;
+#cocoMedLoaderV142 .pct{
   font-family:var(--display)!important;
   font-size:32px;
   font-weight:950;
+  color:#EF750A;
 }
 
-#cocoMedLoaderV140 .track{
+#cocoMedLoaderV142 .track{
   height:13px;
-  margin-top:14px;
-  overflow:hidden;
+  margin-top:13px;
   border-radius:999px;
-  background:#DAEDF5;
+  overflow:hidden;
+  background:#DCEEF5;
 }
 
-#cocoMedLoaderV140 .bar{
+#cocoMedLoaderV142 .bar{
   width:0%;
   height:100%;
   border-radius:999px;
-  background:linear-gradient(90deg,#18A967,#45C1DB,#FFB52B,#F4790B);
+  background:linear-gradient(90deg,#26B36E,#47C3D9,#FFBA2F,#EF750A);
   transition:width .08s linear;
 }
 
-#cocoMedLoaderV140 .hint{
-  margin-top:10px;
-  color:#617E8D;
-  font-size:12px;
-  font-weight:800;
-}
-
-@keyframes cocoMedThinkV140{
+@keyframes cocoThinkV142{
   from{transform:scale(.94) rotate(-2deg)}
-  to{transform:scale(1.08) rotate(2deg)}
+  to{transform:scale(1.07) rotate(2deg)}
 }
 
 @media(max-width:640px){
-  #cocoApp .cocoPreparacionV140{
-    padding:14px;
-  }
-  #cocoApp .cocoPreparacionV140 h3{
-    font-size:20px!important;
-  }
-}
-</style>
-
-<script id="coco-v140-early-med-loader">
-(function(){
-  try{
-    if(sessionStorage.getItem("coco_v140_med_loading")==="1"){
-      document.documentElement.classList.add("cocoMedLoadingV140");
-    }
-  }catch(e){}
-})();
-</script>
-
-
-<!-- =========================================================
-     COCO v141
-     Med: sin X ni Volver internos.
-     Football/Basket: login bloqueado y sin derivaciones.
-     ========================================================= -->
-
-<style id="coco-v141-css">
-/* =========================================================
-   COCO v141 · MED LIMPIO + FÚTBOL/BASKET BLOQUEADOS
-   Base: v140
-   ========================================================= */
-
-/* ---- COCO MED: solo dejar el botón global "Cambiar Coco" ---- */
-#cocoApp.cocoModoMed .cocoMedCabecera button,
-#cocoApp.cocoModoMed .cocoMedCabecera a,
-#cocoApp.cocoModoMed .cocoMedHeader button,
-#cocoApp.cocoModoMed .cocoMedHeader a,
-#cocoApp.cocoModoMed .cocoMedVolver,
-#cocoApp.cocoModoMed .cocoMedCerrar,
-#cocoApp.cocoModoMed .cocoMedVolverCoco,
-#cocoApp.cocoModoMed button[aria-label*="cerrar" i],
-#cocoApp.cocoModoMed button[title*="cerrar" i]{
-  display:none!important;
-}
-
-/* Asegura que el botón global sí quede visible */
-#cocoApp.cocoModoMed .cocoLigaLoginVolver{
-  display:flex!important;
-  z-index:99999!important;
-}
-
-/* ---- FÚTBOL / BALONCESTO: login en construcción, jamás derivan ---- */
-#cocoApp.cocoLoginPreparacionV141 .loginCard{
-  position:relative!important;
-}
-
-#cocoApp .cocoPreparacionV141{
-  margin:0 0 18px;
-  padding:15px 17px;
-  border:2px solid #F0C44B;
-  border-radius:18px;
-  background:linear-gradient(180deg,#FFF8D7,#FFF0A9);
-  box-shadow:0 5px 0 #E6D183;
-}
-
-#cocoApp .cocoPreparacionV141 .tag{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#F7C500;
-  color:#382600;
-  font-family:var(--display)!important;
-  font-weight:950;
-  font-size:11px;
-}
-
-#cocoApp .cocoPreparacionV141 h3{
-  margin:10px 0 5px!important;
-  color:#243E50!important;
-  font-family:var(--display)!important;
-  font-size:22px!important;
-}
-
-#cocoApp .cocoPreparacionV141 p{
-  margin:0!important;
-  color:#655F50!important;
-  font-size:13px!important;
-  line-height:1.45!important;
-}
-
-/* Form visible pero totalmente no operativo */
-#cocoApp.cocoLoginPreparacionV141 .loginCard input,
-#cocoApp.cocoLoginPreparacionV141 .loginCard button:not(.cocoLigaLoginVolver),
-#cocoApp.cocoLoginPreparacionV141 .loginCard a:not(.cocoLigaLoginVolver){
-  opacity:.52!important;
-}
-
-#cocoApp.cocoLoginPreparacionV141 .loginCard input{
-  pointer-events:none!important;
-}
-
-#cocoApp.cocoLoginPreparacionV141 .loginCard button:not(.cocoLigaLoginVolver),
-#cocoApp.cocoLoginPreparacionV141 .loginCard a:not(.cocoLigaLoginVolver){
-  pointer-events:none!important;
-}
-
-/* Si por alguna razón la app llega a renderizar EPO/MED después de un login antiguo,
-   lo tapamos completamente para estos dos universos. */
-#cocoApp.cocoModoFootballV141 .zonaJugador,
-#cocoApp.cocoModoFootballV141 .cocoMedInicio,
-#cocoApp.cocoModoFootballV141 .cocoMedPantalla,
-#cocoApp.cocoModoBasketV141 .zonaJugador,
-#cocoApp.cocoModoBasketV141 .cocoMedInicio,
-#cocoApp.cocoModoBasketV141 .cocoMedPantalla{
-  display:none!important;
-}
-
-#cocoApp .cocoBloqueadoDashboardV141{
-  width:min(720px,calc(100% - 24px));
-  margin:24px auto;
-  padding:28px 22px;
-  text-align:center;
-  box-sizing:border-box;
-  border:2px solid #D4E8F2;
-  border-radius:28px;
-  background:linear-gradient(180deg,#FFFFFF,#F3FAFD);
-  box-shadow:0 7px 0 #D6E8F1;
-}
-
-#cocoApp .cocoBloqueadoDashboardV141 .emoji{
-  font-size:56px;
-}
-#cocoApp .cocoBloqueadoDashboardV141 h2{
-  margin:8px 0 6px!important;
-  font-family:var(--display)!important;
-  color:#173D55!important;
-}
-#cocoApp .cocoBloqueadoDashboardV141 p{
-  margin:0!important;
-  color:#5B7280!important;
-}
-
-@media(max-width:640px){
-  #cocoApp .cocoPreparacionV141{
-    padding:13px 14px;
+  #cocoPrepScreenV142{
+    width:calc(100% - 14px);
+    padding:18px 14px;
+    margin:12px auto;
   }
 }
 </style>
 </head><body>
-<div id="cocoMedLoaderV140" aria-live="polite">
-  <div class="box">
+<div id="cocoMedLoaderV142">
+  <div class="loaderBox">
     <div class="brain">🧠</div>
     <h3>Cargando Coco Med</h3>
     <div class="pct">0%</div>
     <div class="track"><div class="bar"></div></div>
-    <div class="hint">Preparando tu experiencia médica…</div>
   </div>
 </div>
 
@@ -6390,11 +6286,11 @@ function inicio(){
 </script>
 
 
-<script id="coco-v140-preparacion-med-loader">
+<script id="coco-v142-stable-routing">
 (function(){
   "use strict";
 
-  function root(){ return document.getElementById("cocoApp"); }
+  function app(){ return document.getElementById("cocoApp"); }
 
   function liga(){
     try{return localStorage.getItem("coco_liga_seleccionada")||""}
@@ -6407,370 +6303,191 @@ function inicio(){
     return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
   }
 
+  function loader(){
+    return document.getElementById("cocoMedLoaderV142");
+  }
+
+  let loadTimer=null;
+  let loadValue=0;
+
+  function setLoad(n){
+    const l=loader();
+    if(!l) return;
+    const pct=l.querySelector(".pct");
+    const bar=l.querySelector(".bar");
+    if(pct) pct.textContent=n+"%";
+    if(bar) bar.style.width=n+"%";
+  }
+
+  function startMedLoader(){
+    const l=loader();
+    if(!l) return;
+    l.classList.add("activo");
+    loadValue=0;
+    setLoad(0);
+
+    clearInterval(loadTimer);
+    loadTimer=setInterval(function(){
+      if(loadValue<90){
+        loadValue+=10;
+        setLoad(loadValue);
+      }
+    },90);
+  }
+
+  function stopMedLoader(){
+    clearInterval(loadTimer);
+    setLoad(100);
+    setTimeout(function(){
+      const l=loader();
+      if(l) l.classList.remove("activo");
+      loadValue=0;
+    },180);
+  }
+
+  function medReady(){
+    const r=app();
+    if(!r) return false;
+    if(r.classList.contains("cocoModoMed")) return true;
+
+    const el=
+      document.getElementById("cocoMedInicio") ||
+      document.getElementById("cocoMedPantalla") ||
+      r.querySelector(".cocoMedRankingPanel,.cocoMedCabeceraInicio");
+
+    return visible(el);
+  }
+
   function loginVisible(){
     return visible(document.querySelector("#cocoApp .loginCard"));
   }
 
-  /* ========================================================
-     FOOTBALL / BASKET: LOGIN EN PREPARACIÓN
-     ======================================================== */
-  function prepararLoginBloqueado(){
-    const r=root();
-    if(!r || !loginVisible()) return;
-
-    const l=liga();
-
-    r.classList.remove("cocoLoginPreparacionV140");
-
-    const old=r.querySelector(".cocoPreparacionV140");
-    if(old) old.remove();
-
-    if(l!=="football" && l!=="basket"){
-      r.querySelectorAll(".loginCard input").forEach(function(i){ i.disabled=false; });
-      return;
-    }
-
-    r.classList.add("cocoLoginPreparacionV140");
-
-    const card=r.querySelector(".loginCard");
-    if(!card) return;
-
-    const box=document.createElement("section");
-    box.className="cocoPreparacionV140";
-
-    if(l==="football"){
-      box.innerHTML=
-        '<span class="tag">⚽ EN PREPARACIÓN</span>'+
-        '<h3>Coco Fútbol está en construcción</h3>'+
-        '<p>El acceso ya está preparado, pero el universo todavía no está habilitado. Cuando terminemos su programación podrás utilizar aquí tu misma cuenta de Coco en Forma.</p>';
-    }else{
-      box.innerHTML=
-        '<span class="tag">🏀 EN PREPARACIÓN</span>'+
-        '<h3>Coco Baloncesto está en construcción</h3>'+
-        '<p>El acceso ya está preparado, pero el universo todavía no está habilitado. Cuando terminemos su programación podrás utilizar aquí tu misma cuenta de Coco en Forma.</p>';
-    }
-
-    card.prepend(box);
-
-    /* Campos visibles como maqueta, pero no operativos */
-    card.querySelectorAll("input").forEach(function(i){
-      i.disabled=true;
-    });
-  }
-
-  /* Bloqueo extra de cualquier intento de autenticar en universos en preparación */
-  document.addEventListener("click",function(e){
-    const l=liga();
-    if((l==="football" || l==="basket") && loginVisible()){
-      const el=e.target.closest && e.target.closest("button,a");
-      if(!el) return;
-
-      if(el.closest(".cocoLigaLoginVolver")) return;
-
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
-  },true);
-
-  document.addEventListener("submit",function(e){
-    const l=liga();
-    if(l==="football" || l==="basket"){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
-  },true);
-
-  /* ========================================================
-     MED: LOADER 0 → 100 ANTES DE ENTRAR
-     ======================================================== */
-  let timer=null;
-
-  function loaderEls(){
-    const l=document.getElementById("cocoMedLoaderV140");
-    return {
-      l:l,
-      pct:l&&l.querySelector(".pct"),
-      bar:l&&l.querySelector(".bar")
-    };
-  }
-
-  function setP(n){
-    const e=loaderEls();
-    if(e.pct) e.pct.textContent=n+"%";
-    if(e.bar) e.bar.style.width=n+"%";
-  }
-
-  function beginMedLoader(){
-    try{sessionStorage.setItem("coco_v140_med_loading","1")}catch(e){}
-    document.documentElement.classList.add("cocoMedLoadingV140");
-
-    if(timer) clearInterval(timer);
-
-    const steps=[0,10,20,30,40,50,60,70,80,90];
-    let i=0;
-    setP(0);
-
-    timer=setInterval(function(){
-      i=Math.min(i+1,steps.length-1);
-      setP(steps[i]);
-      if(steps[i]>=90) clearInterval(timer);
-    },90);
-  }
-
-  function endMedLoader(){
-    if(timer) clearInterval(timer);
-    setP(100);
-
-    setTimeout(function(){
-      document.documentElement.classList.remove("cocoMedLoadingV140");
-      try{sessionStorage.removeItem("coco_v140_med_loading")}catch(e){}
-    },240);
-  }
-
-  /* Antes del click de ENTRAR en Med, tapamos la UI inmediatamente */
-  document.addEventListener("click",function(e){
-    if(liga()!=="med" || !loginVisible()) return;
-
-    const el=e.target.closest && e.target.closest("button");
-    if(!el) return;
-
-    const t=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
-    if(t==="entrar"){
-      beginMedLoader();
-      /* no impedimos el handler real de autenticación */
-    }
-  },true);
-
-  /* Si la autenticación Med se hace por submit/Enter de teclado */
-  document.addEventListener("submit",function(e){
-    if(liga()==="med" && loginVisible()){
-      beginMedLoader();
-    }
-  },true);
-
-  function medReady(){
-    const r=root();
-    if(!r || loginVisible()) return false;
-
-    /* La app ya marcó modo Med o existe el contenido médico real visible */
-    if(r.classList.contains("cocoModoMed")) return true;
-
-    const med=
-      document.getElementById("cocoMedInicio") ||
-      document.getElementById("cocoMedPantalla") ||
-      r.querySelector(".cocoMedInicio,.cocoMedPantalla,.cocoMedRankingPanel,.cocoMedCabeceraInicio");
-
-    return visible(med);
-  }
-
-  function resumeMedLoader(){
-    let loading=false;
-    try{loading=sessionStorage.getItem("coco_v140_med_loading")==="1"}catch(e){}
-    if(!loading) return;
-
-    document.documentElement.classList.add("cocoMedLoadingV140");
-
-    let n=60;
-    setP(n);
-
+  function monitorMed(){
+    let ticks=0;
     const poll=setInterval(function(){
-      if(n<90){
-        n+=10;
-        setP(n);
+      ticks++;
+
+      /* Si llegamos al login de Med, no hay que seguir tapándolo. */
+      if(liga()==="med" && loginVisible()){
+        clearInterval(poll);
+        stopMedLoader();
+        return;
       }
 
       if(medReady()){
         clearInterval(poll);
-        endMedLoader();
+        stopMedLoader();
+        return;
+      }
+
+      if(ticks>35){
+        clearInterval(poll);
+        stopMedLoader();
       }
     },90);
-
-    /* Failsafe para no dejar nunca la pantalla bloqueada */
-    setTimeout(function(){
-      clearInterval(poll);
-      endMedLoader();
-    },3200);
   }
 
-  function apply(){
-    prepararLoginBloqueado();
+  /* ---------------------------------------------------------
+     FÚTBOL/BASKET: interceptamos SOLO el click de la portada.
+     No tocamos el login real, ni Supabase, ni otros botones.
+     --------------------------------------------------------- */
+  function showPrep(kind){
+    const r=app();
+    if(!r) return;
+
+    const launcher=document.getElementById("cocoLigasInicio");
+    if(launcher) launcher.style.display="none";
+
+    const old=document.getElementById("cocoPrepScreenV142");
+    if(old) old.remove();
+
+    const box=document.createElement("section");
+    box.id="cocoPrepScreenV142";
+
+    const isFootball=kind==="football";
+    box.innerHTML=
+      '<div class="prepTop">'+
+        '<div>'+
+          '<span class="prepTag">'+(isFootball?'⚽':'🏀')+' EN PREPARACIÓN</span>'+
+          '<h2>'+(isFootball?'Coco Fútbol':'Coco Baloncesto')+'</h2>'+
+          '<p>Este universo todavía está en construcción. La pantalla de acceso queda preparada, pero aún no está habilitada.</p>'+
+        '</div>'+
+        '<button type="button" class="prepBack">← Cambiar Coco</button>'+
+      '</div>'+
+      '<div class="prepLogin">'+
+        '<div class="prepField"><label>Correo electrónico</label><input disabled placeholder="correo@ejemplo.com"></div>'+
+        '<div class="prepField"><label>Contraseña</label><input disabled type="password" placeholder="••••••••"></div>'+
+        '<button type="button" class="prepButton" disabled>Entrar · En preparación</button>'+
+      '</div>';
+
+    r.insertBefore(box,r.firstChild);
+
+    box.querySelector(".prepBack").onclick=function(){
+      box.remove();
+      if(launcher) launcher.style.display="";
+    };
   }
 
-  const r=root();
-  if(r){
-    const obs=new MutationObserver(function(){
-      clearTimeout(window.__cocoV140Timer);
-      window.__cocoV140Timer=setTimeout(apply,60);
-    });
-    obs.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
-  }
+  document.addEventListener("click",function(e){
+    const card=e.target.closest && e.target.closest("#cocoLigasInicio [data-liga]");
+    if(!card) return;
 
-  apply();
-  resumeMedLoader();
+    const kind=card.getAttribute("data-liga");
 
-  setTimeout(apply,250);
-  setTimeout(apply,800);
-})();
-</script>
-
-
-<script id="coco-v141-med-clean-football-basket-lock">
-(function(){
-  "use strict";
-
-  function app(){ return document.getElementById("cocoApp"); }
-
-  function liga(){
-    try{
-      return localStorage.getItem("coco_liga_seleccionada") || "";
-    }catch(e){
-      return "";
+    if(kind==="football" || kind==="basket"){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      showPrep(kind);
+      return;
     }
-  }
 
-  function visible(el){
-    if(!el) return false;
-    const s=getComputedStyle(el);
-    return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
-  }
+    if(kind==="med"){
+      startMedLoader();
+      monitorMed();
+      /* dejamos continuar el click original */
+    }
+  },true);
 
-  function loginVisible(){
-    return visible(document.querySelector("#cocoApp .loginCard"));
-  }
+  /* Al pulsar Entrar en el login Med, cubrir cualquier flash de EPO. */
+  document.addEventListener("click",function(e){
+    if(liga()!=="med" || !loginVisible()) return;
+    const b=e.target.closest && e.target.closest("button");
+    if(!b) return;
 
-  function removeMedInternalButtons(){
+    const t=(b.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
+    if(t==="entrar"){
+      startMedLoader();
+      monitorMed();
+    }
+  },true);
+
+  /* Ocultar botones internos de Coco Med, dejando Cambiar Coco. */
+  function cleanMedButtons(){
     const r=app();
     if(!r || !r.classList.contains("cocoModoMed")) return;
 
-    /* Remove any internal buttons whose text is Volver / × / Cerrar,
-       but never the global Cambiar Coco. */
     Array.from(r.querySelectorAll("button,a")).forEach(function(el){
-      if(el.classList.contains("cocoLigaLoginVolver")) return;
+      if(el.id==="cocoLigaLoginVolver" || el.classList.contains("cocoLigaLoginVolver")) return;
 
       const t=(el.textContent||"").replace(/\s+/g," ").trim().toLowerCase();
-      const aria=(el.getAttribute("aria-label")||"").toLowerCase();
-      const title=(el.getAttribute("title")||"").toLowerCase();
-
-      if(
-        t==="volver" ||
-        t==="← volver" ||
-        t==="×" ||
-        t==="x" ||
-        t==="cerrar" ||
-        aria.includes("cerrar") ||
-        title.includes("cerrar")
-      ){
+      if(t==="volver" || t==="← volver" || t==="x" || t==="×" || t==="cerrar"){
         el.style.display="none";
       }
     });
   }
 
-  function lockPrepLogin(){
-    const r=app();
-    if(!r || !loginVisible()) return;
-
-    const l=liga();
-
-    r.classList.remove("cocoLoginPreparacionV141");
-
-    const old=r.querySelector(".cocoPreparacionV141");
-    if(old) old.remove();
-
-    if(l!=="football" && l!=="basket") return;
-
-    r.classList.add("cocoLoginPreparacionV141");
-
-    const card=r.querySelector(".loginCard");
-    if(!card) return;
-
-    const box=document.createElement("section");
-    box.className="cocoPreparacionV141";
-
-    if(l==="football"){
-      box.innerHTML=
-        '<span class="tag">⚽ EN PREPARACIÓN</span>'+
-        '<h3>Coco Fútbol todavía no está habilitado</h3>'+
-        '<p>La pantalla de acceso ya está preparada, pero este universo continúa en construcción. Por ahora no es posible iniciar sesión aquí.</p>';
-    }else{
-      box.innerHTML=
-        '<span class="tag">🏀 EN PREPARACIÓN</span>'+
-        '<h3>Coco Baloncesto todavía no está habilitado</h3>'+
-        '<p>La pantalla de acceso ya está preparada, pero este universo continúa en construcción. Por ahora no es posible iniciar sesión aquí.</p>';
-    }
-
-    card.prepend(box);
-
-    card.querySelectorAll("input").forEach(function(i){
-      i.disabled=true;
-      i.setAttribute("aria-disabled","true");
-    });
-  }
-
-  /* Hard stop: football / basket cannot authenticate or navigate anywhere */
-  document.addEventListener("click",function(e){
-    const l=liga();
-    if(l!=="football" && l!=="basket") return;
-    if(!loginVisible()) return;
-
-    const el=e.target.closest && e.target.closest("button,a");
-    if(!el) return;
-
-    if(el.classList.contains("cocoLigaLoginVolver")) return;
-
-    e.preventDefault();
-    e.stopImmediatePropagation();
-  },true);
-
-  document.addEventListener("submit",function(e){
-    const l=liga();
-    if(l==="football" || l==="basket"){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    }
-  },true);
-
-  /* If a stale logged-in session already exists, never show Med/EPO for football/basket. */
-  function enforceBlockedUniverse(){
-    const r=app();
-    if(!r || loginVisible()) return;
-
-    const l=liga();
-    r.classList.remove("cocoModoFootballV141","cocoModoBasketV141");
-
-    const old=r.querySelector(".cocoBloqueadoDashboardV141");
-    if(old) old.remove();
-
-    if(l!=="football" && l!=="basket") return;
-
-    r.classList.add(l==="football" ? "cocoModoFootballV141" : "cocoModoBasketV141");
-
-    const box=document.createElement("section");
-    box.className="cocoBloqueadoDashboardV141";
-    box.innerHTML = l==="football"
-      ? '<div class="emoji">⚽</div><h2>Coco Fútbol · En preparación</h2><p>Este universo todavía no está habilitado.</p>'
-      : '<div class="emoji">🏀</div><h2>Coco Baloncesto · En preparación</h2><p>Este universo todavía no está habilitado.</p>';
-
-    r.appendChild(box);
-  }
-
-  function apply(){
-    removeMedInternalButtons();
-    lockPrepLogin();
-    enforceBlockedUniverse();
-  }
-
   const r=app();
   if(r){
     const obs=new MutationObserver(function(){
-      clearTimeout(window.__cocoV141Timer);
-      window.__cocoV141Timer=setTimeout(apply,60);
+      clearTimeout(window.__cocoV142Timer);
+      window.__cocoV142Timer=setTimeout(cleanMedButtons,60);
     });
-    obs.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
+    obs.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
   }
 
-  apply();
-  setTimeout(apply,250);
-  setTimeout(apply,800);
+  cleanMedButtons();
+  setTimeout(cleanMedButtons,300);
+  setTimeout(cleanMedButtons,900);
 })();
 </script>
 
