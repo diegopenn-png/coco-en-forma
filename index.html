@@ -1130,13 +1130,13 @@ body{
 </style>
 
 <!-- =========================================================
-     COCO v135 · FIX PWA / IPHONE
+     COCO v134 · FIX PWA / IPHONE
      Solo corrige el selector móvil; escritorio no cambia.
      ========================================================= -->
 
-<style id="coco-v135-pwa-fix-css">
+<style id="coco-v134-pwa-fix-css">
 /* =========================================================
-   COCO v135 · FIX PWA / IPHONE
+   COCO v134 · FIX PWA / IPHONE
    Base: v133
    Solo corrige el selector en móvil. Escritorio queda igual.
    ========================================================= */
@@ -1282,229 +1282,200 @@ body{
 </style>
 
 <!-- =========================================================
-     COCO v135 · LOGIN GENERAL ARRIBA DEL SELECTOR
-     Una cuenta para todos los Cocos.
+     COCO v136 · ACCESOS INDEPENDIENTES
+     Cada universo usa la misma cuenta, pero no comparte interfaz.
      ========================================================= -->
 
-<style id="coco-v135-login-general-css">
+<style id="coco-v136-independent-css">
 /* =========================================================
-   COCO v135 · LOGIN GENERAL ARRIBA + SELECTOR DE 4 COCOS
-   Base: v134 PWA estable
+   COCO v136 · ACCESOS INDEPENDIENTES POR UNIVERSO
+   Base: v134 estable.
+   - Mismo usuario/contraseña.
+   - Cada Coco tiene su propio acceso y su propio contenido.
+   - EPO no mezcla Medicina.
+   - MED no muestra Sudoku, memoria, cálculo, etc.
    ========================================================= */
 
-/* 1) LOGIN COMO CABECERA COMPACTA */
-#cocoApp.cocoLoginGeneralActivo .rejilla.dos,
-#cocoApp.cocoLoginGeneralActivo .loginCard{
-  display:block!important;
-  width:min(1100px,calc(100% - 24px))!important;
-  max-width:1100px!important;
-  margin:14px auto 12px!important;
-  padding:0!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
-}
-
-#cocoApp .cocoLoginCompactoV135{
-  width:100%;
-  box-sizing:border-box;
-  padding:14px 16px;
-  border:2px solid #D7E9F2;
+/* ---------- LOGIN TEMÁTICO ---------- */
+#cocoApp .cocoAccesoUniversoV136{
+  margin:18px 0 0;
+  padding:18px;
+  border:2px solid #D4E8F2;
   border-radius:22px;
-  background:linear-gradient(180deg,#FFFFFF,#F3FAFD);
-  box-shadow:0 5px 0 #D6E8F0,0 14px 30px rgba(23,72,98,.08);
-  display:grid;
-  grid-template-columns:auto minmax(150px,1fr) minmax(150px,1fr) auto auto auto;
-  gap:10px;
-  align-items:end;
+  background:linear-gradient(180deg,#F9FCFE,#EEF8FC);
+  box-shadow:0 5px 0 #D5E8F1;
 }
 
-#cocoApp .cocoLoginCompactoV135 .cocoLoginMiniTitulo{
-  align-self:center;
-  min-width:150px;
+#cocoApp .cocoAccesoUniversoV136 .cocoAccesoCabecera{
+  display:flex;
+  align-items:center;
+  gap:14px;
 }
 
-#cocoApp .cocoLoginCompactoV135 .cocoLoginMiniTitulo h2{
+#cocoApp .cocoAccesoUniversoV136 .cocoAccesoAvatar{
+  width:76px;
+  height:76px;
+  flex:0 0 76px;
+  border-radius:20px;
+  overflow:hidden;
+  background:#DDEFF7;
+  border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 5px 14px rgba(8,54,82,.12);
+}
+
+#cocoApp .cocoAccesoUniversoV136 .cocoAccesoAvatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+#cocoApp .cocoAccesoUniversoV136 h3{
   margin:0!important;
+  color:#143A52!important;
   font-family:var(--display)!important;
   font-size:24px!important;
-  color:#143B54!important;
-  line-height:1!important;
+  line-height:1.05!important;
 }
 
-#cocoApp .cocoLoginCompactoV135 .cocoLoginMiniTitulo p{
-  margin:4px 0 0!important;
-  font-size:11px!important;
-  color:#657D8A!important;
-  font-weight:800!important;
-}
-
-#cocoApp .cocoLoginCompactoV135 .campo{
-  margin:0!important;
-}
-
-#cocoApp .cocoLoginCompactoV135 label{
-  display:block!important;
-  margin:0 0 5px!important;
-  font-size:11px!important;
-  font-weight:900!important;
-  color:#23485D!important;
-}
-
-#cocoApp .cocoLoginCompactoV135 input{
-  height:46px!important;
-  min-height:46px!important;
-  margin:0!important;
-  padding:0 13px!important;
-  border-radius:14px!important;
+#cocoApp .cocoAccesoUniversoV136 p{
+  margin:5px 0 0!important;
+  color:#587181!important;
   font-size:13px!important;
+  line-height:1.42!important;
 }
 
-#cocoApp .cocoLoginCompactoV135 .acciones{
+#cocoApp .cocoAccesoUniversoV136 .cocoAccesoChips{
   display:flex;
-  gap:8px;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:13px;
+}
+
+#cocoApp .cocoAccesoUniversoV136 .cocoAccesoChips span{
+  display:inline-flex;
   align-items:center;
-}
-
-#cocoApp .cocoLoginCompactoV135 button{
-  min-height:46px!important;
-  height:46px!important;
-  margin:0!important;
-  padding:0 15px!important;
-  border-radius:14px!important;
-  white-space:nowrap!important;
-}
-
-#cocoApp .cocoLoginCompactoV135 .cocoDescargaMini{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  border:2px solid #C7E1EC;
-  background:linear-gradient(180deg,#fff,#EEF8FD);
-  color:#143B54;
-  font-family:var(--display);
-  font-weight:950;
-  box-shadow:0 4px 0 #D2E7EF;
-}
-
-#cocoApp .cocoLoginCompactoV135 .cocoBrainMini{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  font-size:27px;
-  background:linear-gradient(180deg,#FFE8EF,#FFF5F8);
-  border:2px solid #F3C5D4;
-  animation:cocoBrainPulseV135 .8s ease-in-out infinite alternate;
-}
-
-@keyframes cocoBrainPulseV135{
-  from{transform:scale(.92) rotate(-3deg)}
-  to{transform:scale(1.07) rotate(3deg)}
-}
-
-#cocoApp .cocoLoginCompactoV135 .secundarios{
-  grid-column:2 / -1;
-  display:flex;
-  justify-content:flex-end;
-  gap:12px;
-  margin-top:0;
+  min-height:27px;
+  padding:3px 9px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #D1E6F0;
+  color:#315C73;
   font-size:10.5px;
-  font-weight:800;
+  font-weight:900;
 }
 
-#cocoApp .cocoLoginCompactoV135 .secundarios a{
-  color:#31566C!important;
+/* Different mood per universe */
+#cocoApp.cocoLoginMedV136 .loginCard{
+  background:
+    radial-gradient(circle at 96% 10%,rgba(69,193,218,.14),transparent 26%),
+    rgba(255,255,255,.95)!important;
+}
+#cocoApp.cocoLoginFootballV136 .loginCard{
+  background:
+    radial-gradient(circle at 96% 10%,rgba(38,177,72,.13),transparent 27%),
+    rgba(255,255,255,.95)!important;
+}
+#cocoApp.cocoLoginBasketV136 .loginCard{
+  background:
+    radial-gradient(circle at 96% 10%,rgba(244,111,16,.14),transparent 27%),
+    rgba(255,255,255,.95)!important;
 }
 
-/* 2) EL SELECTOR DE 4 COCOS APARECE INMEDIATAMENTE DEBAJO */
-#cocoApp.cocoLoginGeneralActivo #cocoLigasInicio{
-  display:block!important;
-  width:min(1100px,calc(100% - 24px))!important;
-  max-width:1100px!important;
-  margin:12px auto 16px!important;
-}
-
-/* En login general ocultamos la vieja ilustración de "Activa tu supercerebro"
-   porque ahora el cerebro animado forma parte del encabezado. */
-#cocoApp.cocoLoginGeneralActivo .loginDecor{
+/* MED login: remove EPO promotional/challenge content.
+   Keep only auth + medical intro. */
+#cocoApp.cocoLoginMedV136 .loginDecor,
+#cocoApp.cocoLoginMedV136 .retosLogin,
+#cocoApp.cocoLoginMedV136 .listaRetosLogin{
   display:none!important;
 }
 
-/* 3) Cuando el usuario ya está logueado, el bloque compacto desaparece. */
-#cocoApp:not(.cocoLoginGeneralActivo) .cocoLoginCompactoV135{
+/* Football / Basket also never show EPO promo/challenges */
+#cocoApp.cocoLoginFootballV136 .loginDecor,
+#cocoApp.cocoLoginFootballV136 .retosLogin,
+#cocoApp.cocoLoginFootballV136 .listaRetosLogin,
+#cocoApp.cocoLoginBasketV136 .loginDecor,
+#cocoApp.cocoLoginBasketV136 .retosLogin,
+#cocoApp.cocoLoginBasketV136 .listaRetosLogin{
   display:none!important;
 }
 
-/* 4) Responsive/PWA */
-@media(max-width:820px){
-  #cocoApp .cocoLoginCompactoV135{
-    grid-template-columns:1fr 1fr auto;
-    align-items:end;
-    padding:12px;
-  }
+/* ---------- STRICT APP ISOLATION ---------- */
 
-  #cocoApp .cocoLoginCompactoV135 .cocoLoginMiniTitulo{
-    grid-column:1 / -1;
-  }
-
-  #cocoApp .cocoLoginCompactoV135 .acciones{
-    grid-column:1 / -1;
-  }
-
-  #cocoApp .cocoLoginCompactoV135 .cocoBrainMini{
-    position:absolute;
-    top:12px;
-    right:12px;
-  }
-
-  #cocoApp .cocoLoginCompactoV135{
-    position:relative;
-  }
-
-  #cocoApp .cocoLoginCompactoV135 .secundarios{
-    grid-column:1 / -1;
-    justify-content:flex-start;
-    flex-wrap:wrap;
-  }
+/* EPO: only its original user sections */
+#cocoApp.cocoModoEpo .cocoMedPestana,
+#cocoApp.cocoModoEpo #cocoMedPestana{
+  display:none!important;
+}
+#cocoApp.cocoModoEpo .navegacionJugador{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
 }
 
-@media(max-width:560px){
-  #cocoApp .cocoLoginCompactoV135{
-    grid-template-columns:1fr;
-    gap:9px;
-  }
+/* MED: EPO navigation is completely invisible.
+   The user enters directly into the medical experience. */
+#cocoApp.cocoModoMed .navegacionJugador{
+  display:none!important;
+}
 
-  #cocoApp .cocoLoginCompactoV135 .cocoLoginMiniTitulo,
-  #cocoApp .cocoLoginCompactoV135 .acciones,
-  #cocoApp .cocoLoginCompactoV135 .secundarios{
-    grid-column:1!important;
-  }
+/* Remove redundant medical league explanation and internal "Volver a Coco";
+   the global Cambiar Coco button is the only universe navigation. */
+#cocoApp.cocoModoMed .cocoMedLigaAviso,
+#cocoApp.cocoModoMed .cocoMedCuentaBarra .cocoMedVolverCoco{
+  display:none!important;
+}
 
-  #cocoApp .cocoLoginCompactoV135 .campo{
-    width:100%;
-  }
+/* Medical home gets more editorial breathing room */
+#cocoApp.cocoModoMed .cocoMedRankingPanel{
+  margin-top:4px!important;
+}
+#cocoApp.cocoModoMed .cocoMedCabeceraInicio{
+  margin-top:16px!important;
+}
 
-  #cocoApp .cocoLoginCompactoV135 input{
-    width:100%!important;
-    box-sizing:border-box!important;
-  }
+/* Future universes: never fall back into EPO UI */
+#cocoApp.cocoModoFootballV136 .navegacionJugador,
+#cocoApp.cocoModoBasketV136 .navegacionJugador,
+#cocoApp.cocoModoFootballV136 .zonaJugador,
+#cocoApp.cocoModoBasketV136 .zonaJugador{
+  display:none!important;
+}
 
-  #cocoApp .cocoLoginCompactoV135 .acciones{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-  }
+#cocoApp .cocoProximamenteDashboardV136{
+  margin:24px auto;
+  width:min(760px,calc(100% - 28px));
+  padding:30px 24px;
+  border-radius:28px;
+  text-align:center;
+  border:2px solid #D4E8F2;
+  background:linear-gradient(180deg,#FFFFFF,#F2FAFD);
+  box-shadow:0 7px 0 #D5E8F1,0 20px 50px rgba(15,63,90,.10);
+}
 
-  #cocoApp .cocoLoginCompactoV135 .cocoDescargaMini{
-    grid-column:1 / -1;
-    justify-content:center;
-  }
+#cocoApp .cocoProximamenteDashboardV136 .emoji{
+  font-size:58px;
+}
+#cocoApp .cocoProximamenteDashboardV136 h2{
+  margin:9px 0 6px!important;
+  font-family:var(--display)!important;
+  color:#143A52!important;
+  font-size:32px!important;
+}
+#cocoApp .cocoProximamenteDashboardV136 p{
+  margin:0 auto!important;
+  max-width:560px;
+  color:#597280!important;
+  line-height:1.5!important;
+}
 
-  #cocoApp .cocoLoginCompactoV135 .cocoBrainMini{
-    width:40px;
-    height:40px;
-    font-size:24px;
+/* Mobile */
+@media(max-width:640px){
+  #cocoApp .cocoAccesoUniversoV136{
+    padding:14px;
+  }
+  #cocoApp .cocoAccesoUniversoV136 .cocoAccesoAvatar{
+    width:62px;height:62px;flex-basis:62px;border-radius:17px;
+  }
+  #cocoApp .cocoAccesoUniversoV136 h3{
+    font-size:21px!important;
   }
 }
 </style>
@@ -5232,15 +5203,6 @@ function inicio(){
       btn.addEventListener("click",function(){
         const liga = btn.getAttribute("data-liga");
 
-        if(liga === "football"){
-          mostrarModal("⚽","Coco Fútbol","Ya está reservado dentro de la app. Lo programaremos con actualidad del fútbol europeo y los últimos años.");
-          return;
-        }
-        if(liga === "basket"){
-          mostrarModal("🏀","Coco Baloncesto","Ya está reservado dentro de la app para NBA y baloncesto español.");
-          return;
-        }
-
         guardarLiga(liga);
         mostrarPantallaOriginal();
       });
@@ -5611,97 +5573,183 @@ function inicio(){
 </script>
 
 
-<script id="coco-v135-login-general">
+<script id="coco-v136-independent-logins">
 (function(){
   "use strict";
 
-  function q(sel,root){return (root||document).querySelector(sel)}
+  const IMG={
+    epo:"/coco-epo-transparente.png",
+    med:"/coco-med-transparente.png",
+    football:"/coco-futbol-transparente.png",
+    basket:"/coco-baloncesto-transparente.png"
+  };
 
-  function makeCompact(){
-    const app=q("#cocoApp");
-    if(!app || !app.classList.contains("cocoLoginGeneralActivo")) return;
+  const META={
+    epo:{
+      title:"Acceso Coco EPO",
+      desc:"Tu gimnasio mental de primaria. Entra con tu cuenta habitual y continúa tus retos.",
+      chips:["Lógica","Cálculo","Memoria","Palabras","Sudoku","Sopa de letras"]
+    },
+    med:{
+      title:"Acceso Coco Med",
+      desc:"Tu espacio médico independiente: formación por etapas, exámenes, progreso, clasificación y tutor con IA.",
+      chips:["Preuniversitario","1.º–6.º año","Internado","Residencias","Ranking","Tutor IA"]
+    },
+    football:{
+      title:"Acceso Coco Fútbol",
+      desc:"Tu futuro universo de fútbol europeo. La cuenta es la misma, pero su experiencia y progreso estarán separados.",
+      chips:["Actualidad","Grandes ligas europeas","Historia reciente"]
+    },
+    basket:{
+      title:"Acceso Coco Baloncesto",
+      desc:"Tu futuro universo de baloncesto. La cuenta es la misma, pero su experiencia y progreso estarán separados.",
+      chips:["Novedades","Grandes competiciones","Historia reciente"]
+    }
+  };
 
-    const oldLogin=q(".loginCard",app);
-    if(!oldLogin || q(".cocoLoginCompactoV135",app)) return;
+  function app(){return document.getElementById("cocoApp")}
 
-    const email=q('input[type="email"]',oldLogin);
-    const pass=q('input[type="password"]',oldLogin);
-    const enter=Array.from(oldLogin.querySelectorAll("button")).find(b=>
-      (b.textContent||"").trim().toLowerCase()==="entrar"
+  function liga(){
+    try{return localStorage.getItem("coco_liga_seleccionada")||""}
+    catch(e){return ""}
+  }
+
+  function visible(el){
+    if(!el)return false;
+    const s=getComputedStyle(el);
+    return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
+  }
+
+  function loginVisible(){
+    return visible(document.querySelector("#cocoApp .loginCard"));
+  }
+
+  function resetLoginClasses(root){
+    root.classList.remove(
+      "cocoLoginEpoV136",
+      "cocoLoginMedV136",
+      "cocoLoginFootballV136",
+      "cocoLoginBasketV136"
     );
-    const create=Array.from(oldLogin.querySelectorAll("button,a")).find(b=>
-      (b.textContent||"").trim().toLowerCase().includes("crear cuenta")
-    );
-    const forgot=Array.from(oldLogin.querySelectorAll("a,button")).find(b=>
-      (b.textContent||"").toLowerCase().includes("olvidado")
-    );
-    const tutorial=oldLogin.querySelector(".cocoLoginTutorialHeader");
+  }
 
-    if(!email || !pass || !enter) return;
+  function brandLogin(){
+    const root=app();
+    if(!root || !loginVisible())return;
 
-    const wrap=document.createElement("section");
-    wrap.className="cocoLoginCompactoV135";
-    wrap.innerHTML=`
-      <div class="cocoLoginMiniTitulo">
-        <h2>Entrar 🧠</h2>
-        <p>Una cuenta para todos tus Cocos.</p>
-      </div>
-      <div class="campo campo-email">
-        <label>Usuario</label>
-      </div>
-      <div class="campo campo-pass">
-        <label>Contraseña</label>
-      </div>
-      <div class="acciones"></div>
-      <button type="button" class="cocoDescargaMini">
-        <span>📲</span><span>Descarga tu app</span>
-      </button>
-      <div class="cocoBrainMini" aria-hidden="true">🧠</div>
-      <div class="secundarios"></div>
-    `;
+    const l=liga();
+    if(!l || !META[l])return;
 
-    // Move the REAL inputs and buttons so we preserve exactly the old auth logic.
-    wrap.querySelector(".campo-email").appendChild(email);
-    wrap.querySelector(".campo-pass").appendChild(pass);
-    wrap.querySelector(".acciones").appendChild(enter);
+    resetLoginClasses(root);
+    const suffix=l==="epo"?"Epo":l==="med"?"Med":l==="football"?"Football":"Basket";
+    root.classList.add("cocoLogin"+suffix+"V136");
 
-    if(create) wrap.querySelector(".acciones").appendChild(create);
+    const card=root.querySelector(".loginCard");
+    if(!card)return;
 
-    if(forgot){
-      wrap.querySelector(".secundarios").appendChild(forgot);
+    let box=card.querySelector(".cocoAccesoUniversoV136");
+    if(!box){
+      box=document.createElement("section");
+      box.className="cocoAccesoUniversoV136";
+
+      const olvido=Array.from(card.querySelectorAll("a,button")).find(function(el){
+        return /olvidado|contraseña/i.test(el.textContent||"");
+      });
+
+      if(olvido && olvido.parentElement){
+        olvido.parentElement.insertAdjacentElement("afterend",box);
+      }else{
+        card.appendChild(box);
+      }
     }
 
-    const download=wrap.querySelector(".cocoDescargaMini");
-    download.addEventListener("click",function(){
-      if(tutorial) tutorial.click();
-    });
+    const m=META[l];
+    box.innerHTML=
+      '<div class="cocoAccesoCabecera">'+
+        '<div class="cocoAccesoAvatar"><img src="'+IMG[l]+'" alt=""></div>'+
+        '<div><h3>'+m.title+'</h3><p>'+m.desc+'</p></div>'+
+      '</div>'+
+      '<div class="cocoAccesoChips">'+m.chips.map(function(x){return "<span>"+x+"</span>"}).join("")+'</div>';
 
-    oldLogin.prepend(wrap);
-
-    // Hide leftover original login pieces, but keep oldLogin as auth container.
-    Array.from(oldLogin.children).forEach(function(ch){
-      if(ch!==wrap && !ch.classList.contains("loginDecor")){
-        ch.style.display="none";
-      }
-    });
-
-    // Ensure selector is visible while unauthenticated.
-    const selector=q("#cocoLigasInicio",app);
-    if(selector) selector.style.display="block";
+    /* Text on the main login title stays simple and specific. */
+    const heading=card.querySelector("h1,h2");
+    if(heading && /entrar/i.test(heading.textContent||"")){
+      heading.innerHTML="Entrar <span aria-hidden='true'>🧠</span>";
+    }
   }
 
-  const app=q("#cocoApp");
-  if(app){
+  function ensureFutureDashboard(){
+    const root=app();
+    if(!root || loginVisible())return;
+
+    const l=liga();
+    root.classList.remove("cocoModoFootballV136","cocoModoBasketV136");
+
+    const old=root.querySelector(".cocoProximamenteDashboardV136");
+    if(old)old.remove();
+
+    if(l!=="football" && l!=="basket")return;
+
+    root.classList.add(l==="football"?"cocoModoFootballV136":"cocoModoBasketV136");
+
+    const box=document.createElement("section");
+    box.className="cocoProximamenteDashboardV136";
+    if(l==="football"){
+      box.innerHTML='<div class="emoji">⚽</div><h2>Coco Fútbol</h2><p>Tu acceso ya está separado y preparado. Aquí construiremos actualidad y grandes ligas europeas sin mezclar ningún contenido de Coco EPO.</p>';
+    }else{
+      box.innerHTML='<div class="emoji">🏀</div><h2>Coco Baloncesto</h2><p>Tu acceso ya está separado y preparado. Aquí construiremos novedades, grandes competiciones e historia reciente sin mezclar ningún contenido de Coco EPO.</p>';
+    }
+    root.appendChild(box);
+  }
+
+  function forceMed(){
+    const root=app();
+    if(!root || loginVisible() || liga()!=="med")return;
+
+    root.classList.add("cocoModoMed");
+
+    const med=document.getElementById("cocoMedPestana") ||
+      root.querySelector(".cocoMedPestana") ||
+      Array.from(root.querySelectorAll("button")).find(function(b){
+        return /coco med/i.test(b.textContent||"");
+      });
+
+    if(med && !window.__COCO_MED_DIRECT_V136__){
+      window.__COCO_MED_DIRECT_V136__=true;
+      setTimeout(function(){
+        try{med.click()}catch(e){}
+      },80);
+    }
+  }
+
+  function apply(){
+    const root=app();
+    if(!root)return;
+
+    if(loginVisible()){
+      window.__COCO_MED_DIRECT_V136__=false;
+      brandLogin();
+      return;
+    }
+
+    resetLoginClasses(root);
+    forceMed();
+    ensureFutureDashboard();
+  }
+
+  const root=app();
+  if(root){
     const obs=new MutationObserver(function(){
-      clearTimeout(window.__cocoV135Login);
-      window.__cocoV135Login=setTimeout(makeCompact,50);
+      clearTimeout(window.__cocoV136IndependentTimer);
+      window.__cocoV136IndependentTimer=setTimeout(apply,55);
     });
-    obs.observe(app,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
+    obs.observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
   }
 
-  makeCompact();
-  setTimeout(makeCompact,250);
-  setTimeout(makeCompact,800);
+  apply();
+  setTimeout(apply,250);
+  setTimeout(apply,700);
+  setTimeout(apply,1400);
 })();
 </script>
 
