@@ -1576,6 +1576,97 @@ body{
   }
 }
 </style>
+
+<!-- =========================================================
+     COCO v138 · PORTADA SOLO 4 COCOS
+     Login aparece únicamente después de entrar a un universo.
+     ========================================================= -->
+
+<style id="coco-v138-portada-login-css">
+/* =========================================================
+   COCO v138 · PORTADA SOLO 4 COCOS + LOGIN SOLO AL ENTRAR
+   Base: v137 limpia
+   ========================================================= */
+
+/* ---------- PORTADA PRINCIPAL ---------- */
+/* En la portada solo se ven los 4 universos. */
+#cocoApp.cocoPortadaSoloCocosV138 .loginCard,
+#cocoApp.cocoPortadaSoloCocosV138 .rejilla.dos,
+#cocoApp.cocoPortadaSoloCocosV138 .loginDecor,
+#cocoApp.cocoPortadaSoloCocosV138 .retosLogin,
+#cocoApp.cocoPortadaSoloCocosV138 .listaRetosLogin,
+#cocoApp.cocoPortadaSoloCocosV138 .cocoAccesoUniversoV136{
+  display:none!important;
+}
+
+#cocoApp.cocoPortadaSoloCocosV138 #cocoLigasInicio{
+  display:block!important;
+  width:min(1100px,calc(100% - 24px))!important;
+  max-width:1100px!important;
+  margin:18px auto!important;
+}
+
+/* ---------- LOGIN DE CADA COCO ---------- */
+/* Al entrar a un universo, desaparece la portada y queda SOLO el login. */
+#cocoApp.cocoLoginUniversoV138 #cocoLigasInicio{
+  display:none!important;
+}
+
+#cocoApp.cocoLoginUniversoV138 .loginCard{
+  display:block!important;
+  width:min(720px,calc(100% - 24px))!important;
+  max-width:720px!important;
+  margin:24px auto!important;
+  padding:28px!important;
+  box-sizing:border-box!important;
+}
+
+/* Quitar TODO lo que no sea el formulario de acceso. */
+#cocoApp.cocoLoginUniversoV138 .loginDecor,
+#cocoApp.cocoLoginUniversoV138 .retosLogin,
+#cocoApp.cocoLoginUniversoV138 .listaRetosLogin,
+#cocoApp.cocoLoginUniversoV138 .cocoAccesoUniversoV136{
+  display:none!important;
+}
+
+/* Si el login estaba dentro de una rejilla de dos columnas, la dejamos simple. */
+#cocoApp.cocoLoginUniversoV138 .rejilla.dos{
+  display:block!important;
+  width:100%!important;
+}
+
+/* Limpieza de cualquier bloque extra insertado en versiones anteriores. */
+#cocoApp.cocoLoginUniversoV138 .cocoInfoV140,
+#cocoApp.cocoLoginUniversoV138 .cocoQueEsV138,
+#cocoApp.cocoLoginUniversoV138 .cocoDescargaV140,
+#cocoApp.cocoLoginUniversoV138 .cocoDescargaBajoPosterV138,
+#cocoApp.cocoLoginUniversoV138 .cocoLoginCompactoV135{
+  display:none!important;
+}
+
+/* Botón cambiar Coco visible solo cuando ya entraste a un universo. */
+#cocoApp.cocoPortadaSoloCocosV138 .cocoLigaLoginVolver{
+  display:none!important;
+}
+
+#cocoApp.cocoLoginUniversoV138 .cocoLigaLoginVolver{
+  display:flex!important;
+}
+
+/* Móvil / PWA */
+@media(max-width:640px){
+  #cocoApp.cocoLoginUniversoV138 .loginCard{
+    width:calc(100% - 16px)!important;
+    margin:14px auto!important;
+    padding:20px 16px!important;
+  }
+
+  #cocoApp.cocoPortadaSoloCocosV138 #cocoLigasInicio{
+    width:calc(100% - 12px)!important;
+    margin:10px auto 18px!important;
+  }
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -5796,6 +5887,97 @@ function inicio(){
       window.__cocoV137Timer=setTimeout(apply,80);
     });
     observer.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
+  }
+
+  apply();
+  setTimeout(apply,250);
+  setTimeout(apply,800);
+})();
+</script>
+
+
+<script id="coco-v138-portada-login-limpio">
+(function(){
+  "use strict";
+
+  function root(){
+    return document.getElementById("cocoApp");
+  }
+
+  function selectedLiga(){
+    try{
+      return localStorage.getItem("coco_liga_seleccionada") || "";
+    }catch(e){
+      return "";
+    }
+  }
+
+  function visible(el){
+    if(!el) return false;
+    const s=getComputedStyle(el);
+    return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
+  }
+
+  function loginVisible(){
+    return visible(document.querySelector("#cocoApp .loginCard"));
+  }
+
+  function removeOldExtras(){
+    const r=root();
+    if(!r) return;
+
+    r.querySelectorAll(
+      ".cocoAccesoUniversoV136,"+
+      ".cocoInfoV140,"+
+      ".cocoQueEsV138,"+
+      ".cocoDescargaV140,"+
+      ".cocoDescargaBajoPosterV138,"+
+      ".cocoLoginCompactoV135"
+    ).forEach(function(el){
+      el.remove();
+    });
+  }
+
+  function apply(){
+    const r=root();
+    if(!r) return;
+
+    removeOldExtras();
+
+    r.classList.remove("cocoPortadaSoloCocosV138","cocoLoginUniversoV138");
+
+    const liga=selectedLiga();
+
+    /* Sin Coco seleccionado = portada pura con los 4 Cocos. */
+    if(!liga){
+      r.classList.add("cocoPortadaSoloCocosV138");
+
+      const selector=document.getElementById("cocoLigasInicio");
+      if(selector) selector.style.display="block";
+
+      return;
+    }
+
+    /* Coco seleccionado + login visible = SOLO formulario. */
+    if(loginVisible()){
+      r.classList.add("cocoLoginUniversoV138");
+
+      const selector=document.getElementById("cocoLigasInicio");
+      if(selector) selector.style.display="none";
+
+      r.querySelectorAll(".loginDecor,.retosLogin,.listaRetosLogin").forEach(function(el){
+        el.style.display="none";
+      });
+    }
+  }
+
+  const r=root();
+  if(r){
+    const obs=new MutationObserver(function(){
+      clearTimeout(window.__cocoV138CleanTimer);
+      window.__cocoV138CleanTimer=setTimeout(apply,70);
+    });
+    obs.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
   }
 
   apply();
