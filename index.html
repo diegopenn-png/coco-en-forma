@@ -1022,6 +1022,112 @@ body{
   }
 }
 </style>
+
+<!-- =========================================================
+     COCO v133 · EPO FUNDIDO
+     Solo suaviza la unión entre fondo azul e imagen EPO.
+     ========================================================= -->
+
+<style id="coco-v133-epo-fundido-css">
+/* =========================================================
+   COCO v133 · EPO FUNDIDO
+   Base: v132
+   ÚNICO cambio: Coco EPO se funde como Med/Fútbol/Baloncesto
+   ========================================================= */
+
+/* Mantiene el PNG original de alta resolución de GitHub,
+   pero elimina el corte vertical tajante. */
+#cocoApp #cocoLigasInicio .cocoLigaEpo .cocoLigaImagen{
+  content:url('/coco-epo-transparente.png')!important;
+  display:block!important;
+  position:absolute!important;
+  z-index:2!important;
+  right:0!important;
+  bottom:0!important;
+  width:59%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  transform:none!important;
+  clip-path:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+
+  /* Fundido progresivo idéntico en concepto a los otros Cocos */
+  -webkit-mask-image:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,0,0,.12) 5%,
+    rgba(0,0,0,.45) 14%,
+    rgba(0,0,0,.78) 24%,
+    #000 36%,
+    #000 100%
+  )!important;
+  mask-image:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,0,0,.12) 5%,
+    rgba(0,0,0,.45) 14%,
+    rgba(0,0,0,.78) 24%,
+    #000 36%,
+    #000 100%
+  )!important;
+}
+
+/* Azul base extendido por debajo de la fotografía para que la unión sea natural */
+#cocoApp #cocoLigasInicio .cocoLigaEpo .cocoLigaFondo{
+  background:
+    linear-gradient(
+      90deg,
+      #061F4B 0%,
+      #063D73 43%,
+      #07538E 60%,
+      #0A69A5 100%
+    )!important;
+}
+
+/* Sin líneas ni pseudo-capas heredadas */
+#cocoApp #cocoLigasInicio .cocoLigaEpo::before,
+#cocoApp #cocoLigasInicio .cocoLigaEpo::after{
+  content:none!important;
+  display:none!important;
+}
+
+/* Texto siempre nítido sobre el fundido */
+#cocoApp #cocoLigasInicio .cocoLigaEpo .cocoLigaContenido{
+  position:relative!important;
+  z-index:4!important;
+}
+
+/* Móvil / PWA: mismo archivo y mismo tipo de transición */
+@media(max-width:720px){
+  #cocoApp #cocoLigasInicio .cocoLigaEpo .cocoLigaImagen{
+    width:64%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    object-position:center center!important;
+    -webkit-mask-image:linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0,0,0,.18) 7%,
+      rgba(0,0,0,.55) 18%,
+      rgba(0,0,0,.86) 29%,
+      #000 41%,
+      #000 100%
+    )!important;
+    mask-image:linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0,0,0,.18) 7%,
+      rgba(0,0,0,.55) 18%,
+      rgba(0,0,0,.86) 29%,
+      #000 41%,
+      #000 100%
+    )!important;
+  }
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
