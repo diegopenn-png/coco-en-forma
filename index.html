@@ -1479,6 +1479,103 @@ body{
   }
 }
 </style>
+
+<style id="coco-v137-clean-login-css">
+/* =========================================================
+   COCO v137 · LOGIN LIMPIO / SIN TARJETAS REPETIDAS
+   Base: v136
+   ========================================================= */
+
+/* Elimina por completo las tarjetas "Acceso Coco ..." */
+#cocoApp .cocoAccesoUniversoV136{
+  display:none!important;
+}
+
+/* Elimina la tarjeta/imagen promocional del Coco dentro del login */
+#cocoApp .loginDecor{
+  display:none!important;
+}
+
+/* Login más limpio y centrado */
+#cocoApp .loginCard{
+  width:min(760px,calc(100% - 24px))!important;
+  max-width:760px!important;
+  margin:22px auto!important;
+  padding:28px!important;
+  box-sizing:border-box!important;
+}
+
+/* Evita columnas vacías heredadas */
+#cocoApp .rejilla.dos{
+  display:block!important;
+  width:100%!important;
+}
+
+/* Mantiene un único botón de cambio de Coco */
+#cocoApp .cocoLigaLoginVolver{
+  z-index:9999!important;
+}
+
+/* EPO no debe mostrar módulos médicos */
+#cocoApp.cocoModoEpo .cocoMedPestana,
+#cocoApp.cocoModoEpo #cocoMedPestana{
+  display:none!important;
+}
+
+/* Med no debe mostrar navegación / retos EPO */
+#cocoApp.cocoModoMed .navegacionJugador{
+  display:none!important;
+}
+#cocoApp.cocoModoMed .cocoMedLigaAviso,
+#cocoApp.cocoModoMed .cocoMedCuentaBarra .cocoMedVolverCoco{
+  display:none!important;
+}
+
+/* Football / Basket: jamás muestran el dashboard EPO */
+#cocoApp.cocoModoFootballV137 .navegacionJugador,
+#cocoApp.cocoModoBasketV137 .navegacionJugador,
+#cocoApp.cocoModoFootballV137 .zonaJugador,
+#cocoApp.cocoModoBasketV137 .zonaJugador{
+  display:none!important;
+}
+
+#cocoApp .cocoProximamenteDashboardV137{
+  margin:24px auto;
+  width:min(760px,calc(100% - 28px));
+  padding:30px 24px;
+  box-sizing:border-box;
+  border-radius:28px;
+  text-align:center;
+  border:2px solid #D4E8F2;
+  background:linear-gradient(180deg,#FFFFFF,#F2FAFD);
+  box-shadow:0 7px 0 #D5E8F1,0 20px 50px rgba(15,63,90,.10);
+}
+
+#cocoApp .cocoProximamenteDashboardV137 .emoji{
+  font-size:58px;
+}
+#cocoApp .cocoProximamenteDashboardV137 h2{
+  margin:9px 0 6px!important;
+  font-family:var(--display)!important;
+  color:#143A52!important;
+  font-size:32px!important;
+}
+#cocoApp .cocoProximamenteDashboardV137 p{
+  margin:0 auto!important;
+  max-width:560px;
+  color:#597280!important;
+  line-height:1.5!important;
+}
+
+/* Móvil */
+@media(max-width:640px){
+  #cocoApp .loginCard{
+    width:calc(100% - 16px)!important;
+    padding:20px 16px!important;
+    margin:14px auto!important;
+  }
+}
+</style>
 </head><body>
 <script>window.COCO_VERSION="2026-08-07-v122-tutor-robusto";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <div id="cocoApp"><div class="coco-cargando">Calentando…</div></div>
@@ -5573,183 +5670,137 @@ function inicio(){
 </script>
 
 
-<script id="coco-v136-independent-logins">
+
+
+
+<script id="coco-v137-independent-clean">
 (function(){
   "use strict";
 
-  const IMG={
-    epo:"/coco-epo-transparente.png",
-    med:"/coco-med-transparente.png",
-    football:"/coco-futbol-transparente.png",
-    basket:"/coco-baloncesto-transparente.png"
-  };
+  function root(){ return document.getElementById("cocoApp"); }
 
-  const META={
-    epo:{
-      title:"Acceso Coco EPO",
-      desc:"Tu gimnasio mental de primaria. Entra con tu cuenta habitual y continúa tus retos.",
-      chips:["Lógica","Cálculo","Memoria","Palabras","Sudoku","Sopa de letras"]
-    },
-    med:{
-      title:"Acceso Coco Med",
-      desc:"Tu espacio médico independiente: formación por etapas, exámenes, progreso, clasificación y tutor con IA.",
-      chips:["Preuniversitario","1.º–6.º año","Internado","Residencias","Ranking","Tutor IA"]
-    },
-    football:{
-      title:"Acceso Coco Fútbol",
-      desc:"Tu futuro universo de fútbol europeo. La cuenta es la misma, pero su experiencia y progreso estarán separados.",
-      chips:["Actualidad","Grandes ligas europeas","Historia reciente"]
-    },
-    basket:{
-      title:"Acceso Coco Baloncesto",
-      desc:"Tu futuro universo de baloncesto. La cuenta es la misma, pero su experiencia y progreso estarán separados.",
-      chips:["Novedades","Grandes competiciones","Historia reciente"]
+  function selectedLiga(){
+    try{
+      return localStorage.getItem("coco_liga_seleccionada") || "";
+    }catch(e){
+      return "";
     }
-  };
-
-  function app(){return document.getElementById("cocoApp")}
-
-  function liga(){
-    try{return localStorage.getItem("coco_liga_seleccionada")||""}
-    catch(e){return ""}
   }
 
-  function visible(el){
-    if(!el)return false;
+  function loginVisible(){
+    const el=document.querySelector("#cocoApp .loginCard");
+    if(!el) return false;
     const s=getComputedStyle(el);
     return s.display!=="none" && s.visibility!=="hidden" && el.getClientRects().length>0;
   }
 
-  function loginVisible(){
-    return visible(document.querySelector("#cocoApp .loginCard"));
+  function removeRepeatedCards(){
+    document.querySelectorAll("#cocoApp .cocoAccesoUniversoV136").forEach(function(el){
+      el.remove();
+    });
   }
 
-  function resetLoginClasses(root){
-    root.classList.remove(
-      "cocoLoginEpoV136",
-      "cocoLoginMedV136",
-      "cocoLoginFootballV136",
-      "cocoLoginBasketV136"
-    );
+  function cleanLogin(){
+    removeRepeatedCards();
+
+    const r=root();
+    if(!r || !loginVisible()) return;
+
+    // Never show the old promo/poster card in any universe login.
+    r.querySelectorAll(".loginDecor").forEach(function(el){
+      el.style.display="none";
+    });
+
+    // Keep the same real login form/authentication.
+    // We only make the selected universe explicit in the browser state.
+    const liga=selectedLiga();
+    r.dataset.cocoLoginUniverso=liga || "general";
   }
 
-  function brandLogin(){
-    const root=app();
-    if(!root || !loginVisible())return;
+  function clearFutureDashboard(){
+    const r=root();
+    if(!r) return;
+    r.querySelectorAll(".cocoProximamenteDashboardV137").forEach(function(el){ el.remove(); });
+    r.classList.remove("cocoModoFootballV137","cocoModoBasketV137");
+  }
 
-    const l=liga();
-    if(!l || !META[l])return;
+  function forceMedAfterLogin(){
+    const r=root();
+    if(!r || loginVisible() || selectedLiga()!=="med") return;
 
-    resetLoginClasses(root);
-    const suffix=l==="epo"?"Epo":l==="med"?"Med":l==="football"?"Football":"Basket";
-    root.classList.add("cocoLogin"+suffix+"V136");
+    r.classList.add("cocoModoMed");
 
-    const card=root.querySelector(".loginCard");
-    if(!card)return;
+    if(window.__COCO_MED_V137_DONE__) return;
 
-    let box=card.querySelector(".cocoAccesoUniversoV136");
-    if(!box){
-      box=document.createElement("section");
-      box.className="cocoAccesoUniversoV136";
-
-      const olvido=Array.from(card.querySelectorAll("a,button")).find(function(el){
-        return /olvidado|contraseña/i.test(el.textContent||"");
+    const btn =
+      document.getElementById("cocoMedPestana") ||
+      r.querySelector(".cocoMedPestana") ||
+      Array.from(r.querySelectorAll("button,a")).find(function(el){
+        return /coco med/i.test(el.textContent||"");
       });
 
-      if(olvido && olvido.parentElement){
-        olvido.parentElement.insertAdjacentElement("afterend",box);
-      }else{
-        card.appendChild(box);
-      }
-    }
-
-    const m=META[l];
-    box.innerHTML=
-      '<div class="cocoAccesoCabecera">'+
-        '<div class="cocoAccesoAvatar"><img src="'+IMG[l]+'" alt=""></div>'+
-        '<div><h3>'+m.title+'</h3><p>'+m.desc+'</p></div>'+
-      '</div>'+
-      '<div class="cocoAccesoChips">'+m.chips.map(function(x){return "<span>"+x+"</span>"}).join("")+'</div>';
-
-    /* Text on the main login title stays simple and specific. */
-    const heading=card.querySelector("h1,h2");
-    if(heading && /entrar/i.test(heading.textContent||"")){
-      heading.innerHTML="Entrar <span aria-hidden='true'>🧠</span>";
+    if(btn){
+      window.__COCO_MED_V137_DONE__=true;
+      setTimeout(function(){
+        try{ btn.click(); }catch(e){}
+      },60);
     }
   }
 
-  function ensureFutureDashboard(){
-    const root=app();
-    if(!root || loginVisible())return;
+  function futureUniverseAfterLogin(){
+    const r=root();
+    if(!r || loginVisible()) return;
 
-    const l=liga();
-    root.classList.remove("cocoModoFootballV136","cocoModoBasketV136");
+    const liga=selectedLiga();
+    clearFutureDashboard();
 
-    const old=root.querySelector(".cocoProximamenteDashboardV136");
-    if(old)old.remove();
+    if(liga!=="football" && liga!=="basket") return;
 
-    if(l!=="football" && l!=="basket")return;
-
-    root.classList.add(l==="football"?"cocoModoFootballV136":"cocoModoBasketV136");
+    r.classList.add(liga==="football" ? "cocoModoFootballV137" : "cocoModoBasketV137");
 
     const box=document.createElement("section");
-    box.className="cocoProximamenteDashboardV136";
-    if(l==="football"){
-      box.innerHTML='<div class="emoji">⚽</div><h2>Coco Fútbol</h2><p>Tu acceso ya está separado y preparado. Aquí construiremos actualidad y grandes ligas europeas sin mezclar ningún contenido de Coco EPO.</p>';
+    box.className="cocoProximamenteDashboardV137";
+
+    if(liga==="football"){
+      box.innerHTML=
+        '<div class="emoji">⚽</div>'+
+        '<h2>Coco Fútbol</h2>'+
+        '<p>Tu acceso ya está separado. Aquí construiremos la experiencia de actualidad y grandes ligas europeas sin mezclar ningún contenido de Coco EPO.</p>';
     }else{
-      box.innerHTML='<div class="emoji">🏀</div><h2>Coco Baloncesto</h2><p>Tu acceso ya está separado y preparado. Aquí construiremos novedades, grandes competiciones e historia reciente sin mezclar ningún contenido de Coco EPO.</p>';
+      box.innerHTML=
+        '<div class="emoji">🏀</div>'+
+        '<h2>Coco Baloncesto</h2>'+
+        '<p>Tu acceso ya está separado. Aquí construiremos novedades, grandes competiciones e historia reciente sin mezclar ningún contenido de Coco EPO.</p>';
     }
-    root.appendChild(box);
-  }
 
-  function forceMed(){
-    const root=app();
-    if(!root || loginVisible() || liga()!=="med")return;
-
-    root.classList.add("cocoModoMed");
-
-    const med=document.getElementById("cocoMedPestana") ||
-      root.querySelector(".cocoMedPestana") ||
-      Array.from(root.querySelectorAll("button")).find(function(b){
-        return /coco med/i.test(b.textContent||"");
-      });
-
-    if(med && !window.__COCO_MED_DIRECT_V136__){
-      window.__COCO_MED_DIRECT_V136__=true;
-      setTimeout(function(){
-        try{med.click()}catch(e){}
-      },80);
-    }
+    r.appendChild(box);
   }
 
   function apply(){
-    const root=app();
-    if(!root)return;
+    removeRepeatedCards();
 
     if(loginVisible()){
-      window.__COCO_MED_DIRECT_V136__=false;
-      brandLogin();
+      window.__COCO_MED_V137_DONE__=false;
+      cleanLogin();
       return;
     }
 
-    resetLoginClasses(root);
-    forceMed();
-    ensureFutureDashboard();
+    forceMedAfterLogin();
+    futureUniverseAfterLogin();
   }
 
-  const root=app();
-  if(root){
-    const obs=new MutationObserver(function(){
-      clearTimeout(window.__cocoV136IndependentTimer);
-      window.__cocoV136IndependentTimer=setTimeout(apply,55);
+  const r=root();
+  if(r){
+    const observer=new MutationObserver(function(){
+      clearTimeout(window.__cocoV137Timer);
+      window.__cocoV137Timer=setTimeout(apply,80);
     });
-    obs.observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
+    observer.observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
   }
 
   apply();
   setTimeout(apply,250);
-  setTimeout(apply,700);
-  setTimeout(apply,1400);
+  setTimeout(apply,800);
 })();
 </script>
 
