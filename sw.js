@@ -1,14 +1,9 @@
-const CACHE_VERSION = "coco-en-forma-v134.2.0";
+const CACHE_VERSION = "coco-en-forma-v134.2.1";
 const APP_SHELL = [
-  "/",
   "/index.html",
   "/manifest.json",
-  "/coco-v134-content.js",
-  "/coco-v134-runtime.js",
-  "/coco-v134-padel.js",
-  "/coco-v134.css",
-  "/app-icon-192.png",
-  "/app-icon-512.png"
+  "/coco-pwa-icon.svg",
+  "/coco-v134.1.html"
 ];
 
 self.addEventListener("install", (event) => {
