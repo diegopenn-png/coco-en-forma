@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-09-v136.0-encuentra-diferencias --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coco en Forma | Entrena el cerebro jugando</title>
+<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-09-v137.0-diferencias-enriquecidas --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coco en Forma | Entrena el cerebro jugando</title>
 <meta name="description" content="Entrenamiento cognitivo lúdico para todas las edades: una misión diaria por juego para practicar memoria, cálculo, lenguaje, atención, velocidad y coordinación.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cocoenforma.com/">
@@ -490,7 +490,7 @@
 }
 </style>
 </head><body>
-<script>window.COCO_VERSION="2026-08-09-v136.0-encuentra-diferencias";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
+<script>window.COCO_VERSION="2026-08-09-v137.0-diferencias-enriquecidas";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <style id="coco-v134-style">:root{color-scheme:light}
 html{scroll-behavior:smooth}
 body{min-height:100dvh}
@@ -4760,9 +4760,9 @@ function prepararAcceso(app){
  }
  if(retos.dataset.cocoV124!=="1"){
   capturarIconos(retos);retos.dataset.cocoV124="1";
-  var generales=JUEGOS.filter(function(j){return j.grupo==="general"}),propios=JUEGOS.filter(function(j){return j.grupo==="propio"});
+  var juegosContinuos=JUEGOS.slice();
   function lista(items){return '<div class="cocoMiniJuegos">'+items.map(function(j){return '<div class="cocoMiniJuego"><span class="cocoMiniIcono">'+miniIcono(j)+'</span><b>'+escapar(j.nombre)+'</b><span class="cocoMiniEstado '+(j.estado==="obra"?'obra':'')+'">'+(j.estado==="obra"?'En construcción':'Disponible')+'</span></div>'}).join("")+'</div>'}
-  retos.innerHTML='<span class="cocoEyebrow">Juega · aprende · avanza</span><h2>Todos los juegos</h2><p class="cocoRetosIntro">Entrena cada día, suma puntos y avanza a tu ritmo.</p><div class="cocoListaTitulo"><span>🏆</span>Clasificación general</div>'+lista(generales)+'<div class="cocoListaTitulo"><span>⭐</span>Puntuación propia</div>'+lista(propios)+'<p class="cocoRetosNota">Cada juego permite una sola partida al día y vuelve a abrirse mañana. Coco Pádel Club es una herramienta ilimitada.</p>';
+  retos.innerHTML='<span class="cocoEyebrow">Juega · aprende · avanza</span><h2>Todos los juegos</h2><p class="cocoRetosIntro">Entrena cada día, suma puntos y avanza a tu ritmo.</p>'+lista(juegosContinuos)+'<p class="cocoRetosNota">Cada juego permite una sola partida al día y vuelve a abrirse mañana. Coco Pádel Club es una herramienta ilimitada.</p>';
  }
  return true;
 }
@@ -4803,12 +4803,9 @@ function prepararJugador(app){
  if(panel.dataset.cocoV124==="1")delete panel.dataset.cocoV124;
  var vieja=panel.querySelector(".rejilla.cuatro");if(!vieja)return true;
  var mapa={};Array.prototype.slice.call(vieja.children).forEach(function(card){var h=card.querySelector("h3");if(h)mapa[h.textContent.trim()]=card});
- var envol=document.createElement("div");envol.className="cocoGruposJuegos";
- envol.appendChild(grupoTitulo("🏆","Clasificación general","Los puntos de estos once juegos se suman a la clasificación general."));
- var general=document.createElement("div");general.className="cocoGridJuegos cocoGridGeneral";
- JUEGOS.filter(function(j){return j.grupo==="general"}).forEach(function(j){var card=mapa[j.nombre];general.appendChild(j.estado==="listo"&&card?prepararCardBase(card,j):cardEspecial(app,j))});envol.appendChild(general);
- envol.appendChild(grupoTitulo("⭐","Juegos con puntuación propia","Sus puntos son independientes y no se suman a la clasificación general."));
- var propio=document.createElement("div");propio.className="cocoGridJuegos cocoGridPropio";JUEGOS.filter(function(j){return j.grupo==="propio"}).forEach(function(j){propio.appendChild(cardEspecial(app,j))});envol.appendChild(propio);
+ var envol=document.createElement("div");envol.className="cocoGruposJuegos cocoCatalogoContinuo";
+ var juegos=document.createElement("div");juegos.className="cocoGridJuegos cocoGridUnificada";
+ JUEGOS.forEach(function(j){var card=mapa[j.nombre];juegos.appendChild(j.estado==="listo"&&card?prepararCardBase(card,j):cardEspecial(app,j))});envol.appendChild(juegos);
  var nota=document.createElement("div");nota.className="cocoNotaDiaria";nota.textContent="Cada jugador puede hacer 1 partida de cada reto disponible al día. Mañana se recargan todos los retos.";envol.appendChild(nota);
  vieja.parentNode.replaceChild(envol,vieja);panel.dataset.cocoV124="1";actualizarPuntosMed(app);return true;
 }
@@ -6405,7 +6402,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   "use strict";
   if(window.CocoArcadeV133)return;
 
-  var VERSION="2026.08.09-136.0";
+  var VERSION="2026.08.09-137.0";
   var OFFICIAL_COCO="https://imagecdn.123inventatuweb.com/a5/a5/a5a51b1b-2190-4998-9e65-7ac1c56294dd.png";
   var READY_IDS=["crucigrama","tiempo","verdadero","diferencias","futbol","padel","ingles"];
   var GENERAL_IDS=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","diferencias"];
@@ -6841,8 +6838,8 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 
   function shareUrl(id){
     var host=location.hostname||"",base=/localhost|127\.0\.0\.1|\.chatgpt\.site$/i.test(host)?location.origin:"https://cocoenforma.com",root=base.replace(/\/$/,"");
-    if(id==="diferencias")return root+"/?juego=diferencias";
-    return root+"/juego/"+encodeURIComponent(id)+"/?v=1360";
+    if(id==="diferencias")return root+"/juego/diferencias/";
+    return root+"/juego/"+encodeURIComponent(id)+"/?v=1370";
   }
   function shareData(id){var game=GAMES[id]||{title:DISPLAY_NAMES[id]||"Coco en Forma",description:(GAME_META[id]&&GAME_META[id].share)||"Entrena tu mente jugando."};return{title:game.title+" · Coco en Forma",text:game.description||"Entrena tu mente jugando.",url:shareUrl(id)}}
   async function copyText(text){var copied=false;try{await navigator.clipboard.writeText(text);copied=true}catch{var area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();try{copied=document.execCommand("copy")}catch{}area.remove()}return copied}
@@ -6910,17 +6907,22 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     return user;
   }
 
-  /* Encuentra las diferencias se inyecta dentro del motor Arcade para reutilizar
-     su sesión, puntuación, clasificación, cierre diario y pantalla de resultado. */
+  /* Coco en Forma v137 · Encuentra las diferencias
+     Ambas escenas nacen del mismo marcado. La escena derecha solo recibe las
+     clases de las diferencias seleccionadas para impedir cambios accidentales. */
   var COCO_DIFFERENCE_DEFINITIONS=[
-    {id:"sun",label:"el color del círculo de la pared",x:13.5,y:16},
-    {id:"clock",label:"la hora del reloj",x:86.5,y:16},
-    {id:"window",label:"la nube de la ventana",x:35,y:20},
-    {id:"lamp",label:"la luz de la lámpara",x:51.5,y:18},
-    {id:"wrench",label:"la posición de la llave",x:80,y:45},
-    {id:"plant",label:"una hoja de la planta",x:15,y:69},
-    {id:"toolbox",label:"el color de la caja de herramientas",x:82,y:76},
-    {id:"floor",label:"el color de la línea del suelo",x:50,y:91}
+    {id:"badge",label:"el tono del emblema redondo",x:12.5,y:15,hit:11},
+    {id:"clock",label:"la hora del reloj",x:87,y:15,hit:12},
+    {id:"bird",label:"el pájaro de la ventana",x:35,y:18,hit:10},
+    {id:"lamp",label:"el tirador de la lámpara",x:53.5,y:17,hit:10},
+    {id:"wrench",label:"la orientación de la llave",x:79,y:46,hit:11},
+    {id:"plant",label:"la hoja pequeña de la planta",x:13,y:67,hit:12},
+    {id:"toolbox",label:"el color del cierre de la caja",x:83,y:76,hit:11},
+    {id:"floor",label:"el tramo amarillo de la línea del suelo",x:51,y:91,hit:12},
+    {id:"cans",label:"la cantidad de puntos del bote azul",x:67,y:30,hit:10},
+    {id:"mug",label:"la tercera raya de la taza",x:43,y:58,hit:10},
+    {id:"blueprint",label:"la figura del plano azul",x:58,y:39,hit:11},
+    {id:"books",label:"la altura del libro naranja",x:24,y:32,hit:10}
   ];
 
   function cocoDifferenceConfig(level){
@@ -6928,23 +6930,42 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     return level===1?{count:4,seconds:100}:level===2?{count:5,seconds:85}:{count:6,seconds:70};
   }
 
+  function cocoDifferenceDecorMarkup(){
+    return '<span class="cocoDiffWallPanel" aria-hidden="true"></span>'+
+      '<span class="cocoDiffPegboard" aria-hidden="true"></span>'+
+      '<span class="cocoDiffBadge" aria-hidden="true"><i></i></span>'+
+      '<span class="cocoDiffClock" aria-hidden="true"></span>'+
+      '<span class="cocoDiffWindow" aria-hidden="true"><i class="cocoDiffMountain"></i><i class="cocoDiffCloud cloudOne"></i><i class="cocoDiffCloud cloudTwo"></i><i class="cocoDiffBird"></i></span>'+
+      '<span class="cocoDiffLamp" aria-hidden="true"><i class="cocoDiffLampShade"></i><i class="cocoDiffLampPull"></i></span>'+
+      '<span class="cocoDiffTopShelf" aria-hidden="true"><i class="cocoDiffBooks"><b class="bookOne"></b><b class="bookTwo"></b><b class="bookThree"></b></i><i class="cocoDiffJar jarOne"></i><i class="cocoDiffJar jarTwo"></i><i class="cocoDiffMiniBox"></i></span>'+
+      '<span class="cocoDiffCans" aria-hidden="true"><i class="cocoDiffCan canOrange"></i><i class="cocoDiffCan canBlue"><b class="canDot one"></b><b class="canDot two"></b><b class="canDot third"></b></i><i class="cocoDiffCan canGreen"></i></span>'+
+      '<span class="cocoDiffBlueprint" aria-hidden="true"><i class="blueprintGrid"></i><i class="shapeTriangle"></i><i class="shapeCircle"></i></span>'+
+      '<span class="cocoDiffGearCluster" aria-hidden="true"><i class="gearBig"></i><i class="gearSmall"></i></span>'+
+      '<span class="cocoDiffWorkbench" aria-hidden="true"><i class="benchDrawer one"></i><i class="benchDrawer two"></i><i class="benchLeg left"></i><i class="benchLeg right"></i></span>'+
+      '<span class="cocoDiffRadio" aria-hidden="true"><i></i></span>'+
+      '<span class="cocoDiffMug" aria-hidden="true"><i class="mugStripe one"></i><i class="mugStripe two"></i><i class="mugStripe third"></i></span>'+
+      '<span class="cocoDiffRuler" aria-hidden="true"></span>'+
+      '<span class="cocoDiffHammer" aria-hidden="true"></span>'+
+      '<span class="cocoDiffScrewdriver" aria-hidden="true"></span>'+
+      '<span class="cocoDiffPencil" aria-hidden="true"></span>'+
+      '<span class="cocoDiffWrench" aria-hidden="true"></span>'+
+      '<span class="cocoDiffPlant" aria-hidden="true"><i class="cocoDiffLeaf one"></i><i class="cocoDiffLeaf two"></i><i class="cocoDiffLeaf three"></i><i class="cocoDiffLeaf four"></i><i class="cocoDiffPot"></i></span>'+
+      '<span class="cocoDiffToolbox" aria-hidden="true"><i class="toolboxHandle"></i><i class="toolboxLatch"></i></span>'+
+      '<span class="cocoDiffTyre" aria-hidden="true"></span>'+
+      '<span class="cocoDiffBattery" aria-hidden="true"><i></i></span>'+
+      '<span class="cocoDiffFloorBolts" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+      '<span class="cocoDiffFloorLine" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>';
+  }
+
   function cocoDifferenceSceneMarkup(side){
     var selected=active.diffSelected||[],right=side==="right",classes=["cocoDiffScene"];
     if(right)selected.forEach(function(item){classes.push("diff-"+item.id)});
     var hotspots=selected.map(function(item){
-      return '<button type="button" class="cocoDiffHotspot" data-diff-id="'+esc(item.id)+'" style="left:'+item.x+'%;top:'+item.y+'%" aria-label="Marcar esta zona como una diferencia"></button>';
+      return '<button type="button" class="cocoDiffHotspot" data-diff-id="'+esc(item.id)+'" style="left:'+item.x+'%;top:'+item.y+'%;--diff-hit:'+item.hit+'%" aria-label="Marcar esta zona como una diferencia"></button>';
     }).join("");
     return '<div class="'+classes.join(" ")+'" data-diff-scene="'+side+'" role="group" aria-label="Escena '+(right?'derecha':'izquierda')+' del taller de Coco">'+
-      '<span class="cocoDiffShelf" aria-hidden="true"></span>'+
-      '<span class="cocoDiffSun" aria-hidden="true"></span>'+
-      '<span class="cocoDiffClock" aria-hidden="true"></span>'+
-      '<span class="cocoDiffWindow" aria-hidden="true"><i class="cocoDiffCloud"></i></span>'+
-      '<span class="cocoDiffLamp" aria-hidden="true"></span>'+
-      '<span class="cocoDiffWrench" aria-hidden="true"></span>'+
-      '<span class="cocoDiffPlant" aria-hidden="true"><i class="cocoDiffLeaf one"></i><i class="cocoDiffLeaf two"></i><i class="cocoDiffLeaf three"></i><i class="cocoDiffPot"></i></span>'+
-      '<span class="cocoDiffToolbox" aria-hidden="true"></span>'+
-      '<span class="cocoDiffFloorLine" aria-hidden="true"></span>'+
-      '<img class="cocoDiffCoco" src="/coco-v2-diferencias.png?v=1360" alt="" width="1000" height="868" draggable="false">'+
+      cocoDifferenceDecorMarkup()+
+      '<img class="cocoDiffCoco" src="/coco-v2-diferencias.png?v=1370" alt="" width="235" height="320" draggable="false">'+
       hotspots+
     '</div>';
   }
@@ -7018,7 +7039,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     var config=cocoDifferenceConfig(active.level),pool=shuffle(COCO_DIFFERENCE_DEFINITIONS,active.rng);
     active.diffSelected=pool.slice(0,config.count);active.diffFound=new Set();active.diffMisses=0;active.diffTotal=config.count;active.diffLimit=config.seconds;active.diffRemaining=config.seconds;active.diffLocked=false;active.correct=0;active.total=config.count;active.streak=0;active.maxStreak=0;
     body.innerHTML='<section class="cocoDifferencesGame">'+
-      '<div class="cocoDifferencesIntroBar"><div><b>Encuentra '+config.count+' diferencias</b><p>Toca la diferencia en cualquiera de las dos escenas. Mira formas, colores y posiciones.</p></div><div class="cocoDifferencesCounters"><div class="cocoDifferencesCounter"><strong data-diff-found>0/'+config.count+'</strong><span>Encontradas</span></div><div class="cocoDifferencesCounter"><strong data-diff-time>'+config.seconds+' s</strong><span>Tiempo</span></div><div class="cocoDifferencesCounter"><strong data-diff-misses>0</strong><span>Fallos</span></div></div></div>'+
+      '<div class="cocoDifferencesIntroBar"><div><b>Encuentra '+config.count+' diferencias</b><p>La mayoría de los objetos son iguales. Busca cambios pequeños de forma, color, cantidad o posición.</p></div><div class="cocoDifferencesCounters"><div class="cocoDifferencesCounter"><strong data-diff-found>0/'+config.count+'</strong><span>Encontradas</span></div><div class="cocoDifferencesCounter"><strong data-diff-time>'+config.seconds+' s</strong><span>Tiempo</span></div><div class="cocoDifferencesCounter"><strong data-diff-misses>0</strong><span>Fallos</span></div></div></div>'+
       '<div class="cocoDifferencesBoards"><div class="cocoDifferencesPanel"><div class="cocoDifferencesPanelTitle"><span>1</span> Escena original</div>'+cocoDifferenceSceneMarkup("left")+'</div><div class="cocoDifferencesPanel"><div class="cocoDifferencesPanelTitle"><span>2</span> Escena modificada</div>'+cocoDifferenceSceneMarkup("right")+'</div></div>'+
       '<div class="cocoDifferencesProgress" aria-live="polite">'+active.diffSelected.map(function(_,index){return '<span class="cocoDifferenceChip" data-diff-chip="'+index+'"><i>'+(index+1)+'</i><span>Diferencia por descubrir</span></span>'}).join("")+'</div>'+
     '</section>';
@@ -7035,7 +7056,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
       active.diffRemaining=Math.max(0,active.diffLimit-(Date.now()-active.startedAt)/1000);updateCocoDifferencesUi();
       if(active.diffRemaining<=0)finishCocoDifferences("time");
     },250);active.timers.push(active.diffInterval);
-    setCocoMood("focus","Compara despacio: forma, color y posición.");
+    setCocoMood("focus","Compara despacio: casi todo es igual y los cambios son sutiles.");
   }
 
 
@@ -8782,551 +8803,184 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 })();
 </script>
 
-<style id="coco-v136-differences-style">/* Coco en Forma v136 · Encuentra las diferencias */
-#cocoApp .cocoDifferencesGame {
-  display: grid;
-  gap: 16px;
-  width: 100%;
-}
+<style id="coco-v137-differences-style">/* Coco en Forma v137 · Taller visual enriquecido */
+#cocoApp .cocoDifferencesGame{display:grid;gap:16px;width:100%}
+#cocoApp .cocoDifferencesIntroBar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border:2px solid #d5eaf4;border-radius:18px;background:linear-gradient(135deg,#fff,#eef9fe);box-shadow:0 4px 0 #dbeaf1}
+#cocoApp .cocoDifferencesIntroBar>div:first-child{min-width:0}
+#cocoApp .cocoDifferencesIntroBar b{display:block;color:#17394b;font-family:var(--display);font-size:clamp(18px,3vw,24px);line-height:1.08}
+#cocoApp .cocoDifferencesIntroBar p{margin:4px 0 0;color:#587487;font-size:13px;font-weight:700;line-height:1.35}
+#cocoApp .cocoDifferencesCounters{display:flex;flex:0 0 auto;gap:8px}
+#cocoApp .cocoDifferencesCounter{min-width:78px;padding:8px 11px;border:1px solid #d6e8f1;border-radius:13px;background:#fff;text-align:center}
+#cocoApp .cocoDifferencesCounter strong{display:block;color:#17394b;font-family:var(--display);font-size:21px;line-height:1}
+#cocoApp .cocoDifferencesCounter span{display:block;margin-top:3px;color:#668092!important;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+#cocoApp .cocoDifferencesBoards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#cocoApp .cocoDifferencesPanel{min-width:0}
+#cocoApp .cocoDifferencesPanelTitle{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px;color:#31566b;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+#cocoApp .cocoDifferencesPanelTitle span{display:grid;width:21px;height:21px;place-items:center;border-radius:50%;background:#17394b;color:#fff;font-size:10px}
 
-#cocoApp .cocoDifferencesIntroBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 13px 16px;
-  border: 2px solid #d5eaf4;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #ffffff, #eef9fe);
-  box-shadow: 0 4px 0 #dbeaf1;
-}
+#cocoApp .cocoDiffScene{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;isolation:isolate;border:3px solid #b9dff0;border-radius:22px;background:linear-gradient(180deg,#d9f1fa 0 72%,#d7ae79 72% 100%);box-shadow:0 7px 0 #d5e8f1,0 14px 30px rgba(24,80,106,.12);cursor:crosshair;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#cocoApp .cocoDiffScene:before{content:"";position:absolute;z-index:0;inset:0 0 28%;background:linear-gradient(90deg,rgba(255,255,255,.22) 1px,transparent 1px) 0 0/8.4% 100%,linear-gradient(180deg,rgba(255,255,255,.22) 1px,transparent 1px) 0 0/100% 21%,radial-gradient(circle at 32% 18%,rgba(255,255,255,.62),transparent 35%),linear-gradient(145deg,#dff4fc,#c7e7f3)}
+#cocoApp .cocoDiffScene:after{content:"";position:absolute;z-index:0;left:0;right:0;top:72%;height:3px;background:rgba(126,76,36,.36);box-shadow:0 4px 0 rgba(255,255,255,.25)}
+#cocoApp .cocoDiffWallPanel{position:absolute;z-index:1;inset:5.5% 3.5% 29%;border:1px solid rgba(46,116,148,.13);border-radius:15px;background:linear-gradient(145deg,rgba(255,255,255,.19),rgba(44,135,174,.04));box-shadow:inset 0 0 0 4px rgba(255,255,255,.13)}
+#cocoApp .cocoDiffPegboard{position:absolute;z-index:1;right:5.5%;top:30%;width:28%;height:28%;border:3px solid #c99763;border-radius:10px;background-color:#e8bd86;background-image:radial-gradient(#8e6744 1.2px,transparent 1.5px);background-size:9px 9px;box-shadow:0 4px 0 rgba(111,69,33,.2)}
 
-#cocoApp .cocoDifferencesIntroBar > div:first-child {
-  min-width: 0;
-}
+#cocoApp .cocoDiffBadge{position:absolute;z-index:3;left:7%;top:9%;width:11%;aspect-ratio:1;border:4px solid #fff;border-radius:50%;background:#ffc74d;box-shadow:0 0 0 4px rgba(255,199,77,.2),0 4px 0 rgba(154,98,18,.14)}
+#cocoApp .cocoDiffBadge i{position:absolute;left:50%;top:50%;width:39%;height:39%;border:3px solid #1d739c;border-radius:50%;transform:translate(-50%,-50%)}
+#cocoApp .cocoDiffBadge i:after{content:"";position:absolute;left:50%;top:-38%;width:3px;height:174%;border-radius:9px;background:#1d739c;transform:translateX(-50%) rotate(45deg)}
+#cocoApp .cocoDiffScene.diff-badge .cocoDiffBadge{background:#f2a85c;box-shadow:0 0 0 4px rgba(242,168,92,.2),0 4px 0 rgba(154,98,18,.14)}
 
-#cocoApp .cocoDifferencesIntroBar b {
-  display: block;
-  color: #17394b;
-  font-family: var(--display);
-  font-size: clamp(18px, 3vw, 24px);
-  line-height: 1.08;
-}
+#cocoApp .cocoDiffClock{position:absolute;z-index:3;right:6%;top:8%;width:12%;aspect-ratio:1;border:4px solid #fff;border-radius:50%;background:repeating-conic-gradient(from -2deg,#dceaf0 0 2deg,transparent 2deg 30deg),#f9fcfd;box-shadow:0 4px 0 rgba(59,105,127,.18)}
+#cocoApp .cocoDiffClock:before,#cocoApp .cocoDiffClock:after{content:"";position:absolute;left:50%;bottom:50%;width:3px;border-radius:999px;background:#17394b;transform-origin:50% 100%}
+#cocoApp .cocoDiffClock:before{height:29%;transform:translateX(-50%) rotate(35deg)}
+#cocoApp .cocoDiffClock:after{height:21%;background:#ef6c05;transform:translateX(-50%) rotate(118deg)}
+#cocoApp .cocoDiffScene.diff-clock .cocoDiffClock:before{transform:translateX(-50%) rotate(162deg)}
 
-#cocoApp .cocoDifferencesIntroBar p {
-  margin: 3px 0 0;
-  color: #587487;
-  font-size: 13px;
-  font-weight: 700;
-}
+#cocoApp .cocoDiffWindow{position:absolute;z-index:2;left:27%;top:8%;width:19%;height:23%;overflow:hidden;border:4px solid #fff;border-radius:10px;background:linear-gradient(180deg,#75ccec,#d9f6ff);box-shadow:0 4px 0 rgba(54,111,139,.15)}
+#cocoApp .cocoDiffWindow:before,#cocoApp .cocoDiffWindow:after{content:"";position:absolute;z-index:5;background:rgba(255,255,255,.92)}
+#cocoApp .cocoDiffWindow:before{left:49%;top:0;width:3px;height:100%}
+#cocoApp .cocoDiffWindow:after{left:0;top:49%;width:100%;height:3px}
+#cocoApp .cocoDiffMountain{position:absolute;z-index:1;left:5%;bottom:-18%;width:64%;height:48%;background:#74b88b;clip-path:polygon(0 100%,36% 12%,58% 60%,76% 22%,100% 100%)}
+#cocoApp .cocoDiffCloud{position:absolute;z-index:2;width:26%;height:10%;border-radius:999px;background:#fff;box-shadow:6px -3px 0 -1px #fff,12px 1px 0 -2px #fff}
+#cocoApp .cocoDiffCloud.cloudOne{left:9%;top:20%}
+#cocoApp .cocoDiffCloud.cloudTwo{right:11%;top:33%;transform:scale(.78)}
+#cocoApp .cocoDiffBird{position:absolute;z-index:3;right:19%;top:17%;width:11%;height:7%;border-top:2px solid #17394b;border-radius:50%;transform:rotate(10deg)}
+#cocoApp .cocoDiffBird:after{content:"";position:absolute;left:80%;top:-2px;width:100%;height:100%;border-top:2px solid #17394b;border-radius:50%;transform:rotate(-22deg)}
+#cocoApp .cocoDiffScene.diff-bird .cocoDiffBird{opacity:0}
 
-#cocoApp .cocoDifferencesCounters {
-  display: flex;
-  flex: 0 0 auto;
-  gap: 8px;
-}
+#cocoApp .cocoDiffLamp{position:absolute;z-index:4;left:53%;top:3%;width:4px;height:14%;border-radius:999px;background:#37576a}
+#cocoApp .cocoDiffLampShade{position:absolute;left:50%;bottom:-18px;width:27px;height:20px;border:3px solid #fff;border-radius:14px 14px 8px 8px;background:#ffc93c;box-shadow:0 8px 16px rgba(255,201,60,.3);transform:translateX(-50%)}
+#cocoApp .cocoDiffLampPull{position:absolute;left:16px;bottom:-31px;width:2px;height:17px;border-radius:9px;background:#37576a}
+#cocoApp .cocoDiffLampPull:after{content:"";position:absolute;left:50%;bottom:-4px;width:6px;height:6px;border-radius:50%;background:#ef6c05;transform:translateX(-50%)}
+#cocoApp .cocoDiffScene.diff-lamp .cocoDiffLampPull{left:-13px;height:12px}
 
-#cocoApp .cocoDifferencesCounter {
-  min-width: 78px;
-  padding: 8px 11px;
-  border: 1px solid #d6e8f1;
-  border-radius: 13px;
-  background: #fff;
-  text-align: center;
-}
+#cocoApp .cocoDiffTopShelf{position:absolute;z-index:2;left:6%;top:37%;width:39%;height:4%;border-radius:999px;background:#865839;box-shadow:0 4px 0 #634027}
+#cocoApp .cocoDiffTopShelf:before,#cocoApp .cocoDiffTopShelf:after{content:"";position:absolute;top:90%;width:5px;height:13px;border-radius:0 0 4px 4px;background:#634027}
+#cocoApp .cocoDiffTopShelf:before{left:12%}
+#cocoApp .cocoDiffTopShelf:after{right:12%}
+#cocoApp .cocoDiffBooks{position:absolute;left:6%;bottom:100%;width:31%;height:46px}
+#cocoApp .cocoDiffBooks b{position:absolute;bottom:0;width:25%;border:2px solid rgba(255,255,255,.75);border-radius:3px 3px 0 0}
+#cocoApp .cocoDiffBooks .bookOne{left:0;height:66%;background:#2fa9dc}
+#cocoApp .cocoDiffBooks .bookTwo{left:28%;height:89%;background:#ef7d23}
+#cocoApp .cocoDiffBooks .bookThree{left:56%;height:75%;background:#6fc894;transform:rotate(6deg);transform-origin:bottom}
+#cocoApp .cocoDiffScene.diff-books .cocoDiffBooks .bookTwo{height:64%}
+#cocoApp .cocoDiffJar{position:absolute;bottom:100%;width:13%;height:29px;border:3px solid #fff;border-radius:5px 5px 9px 9px;background:linear-gradient(180deg,#c7f1fb,#82cbe2);box-shadow:inset 0 0 0 2px rgba(34,101,129,.12)}
+#cocoApp .cocoDiffJar:after{content:"";position:absolute;left:-2px;right:-2px;top:-5px;height:5px;border-radius:4px;background:#f7c63a}
+#cocoApp .cocoDiffJar.jarOne{left:48%}
+#cocoApp .cocoDiffJar.jarTwo{left:64%;height:23px;background:#d9d0f8}
+#cocoApp .cocoDiffMiniBox{position:absolute;right:1%;bottom:100%;width:17%;height:27px;border:3px solid #fff;border-radius:6px;background:#58bd86;box-shadow:inset 0 -6px 0 rgba(25,104,68,.15)}
 
-#cocoApp .cocoDifferencesCounter strong {
-  display: block;
-  color: #17394b;
-  font-family: var(--display);
-  font-size: 21px;
-  line-height: 1;
-}
+#cocoApp .cocoDiffCans{position:absolute;z-index:4;left:62%;top:23%;width:14%;height:13%}
+#cocoApp .cocoDiffCan{position:absolute;bottom:0;width:29%;height:70%;border:2px solid #fff;border-radius:4px 4px 6px 6px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.12)}
+#cocoApp .cocoDiffCan:before{content:"";position:absolute;left:-1px;right:-1px;top:-3px;height:4px;border-radius:4px;background:#e7f3f7}
+#cocoApp .cocoDiffCan.canOrange{left:0;background:#f48a3b}
+#cocoApp .cocoDiffCan.canBlue{left:35%;height:92%;background:#2f9ecb}
+#cocoApp .cocoDiffCan.canGreen{right:0;height:80%;background:#4fbd80}
+#cocoApp .canDot{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff}
+#cocoApp .canDot.one{left:23%;top:30%}
+#cocoApp .canDot.two{right:23%;top:30%}
+#cocoApp .canDot.third{left:42%;top:55%}
+#cocoApp .cocoDiffScene.diff-cans .canDot.third{display:none}
 
-#cocoApp .cocoDifferencesCounter span {
-  display: block;
-  margin-top: 3px;
-  color: #668092 !important;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
+#cocoApp .cocoDiffBlueprint{position:absolute;z-index:3;left:52%;top:31%;width:13%;height:17%;border:3px solid #fff;border-radius:5px;background:#278bb9;box-shadow:0 3px 0 rgba(23,57,75,.2);transform:rotate(-2deg)}
+#cocoApp .blueprintGrid{position:absolute;inset:8%;background:linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px) 0 0/20% 100%,linear-gradient(180deg,rgba(255,255,255,.18) 1px,transparent 1px) 0 0/100% 25%}
+#cocoApp .shapeTriangle{position:absolute;left:50%;top:52%;width:46%;height:42%;border:2px solid #fff;clip-path:polygon(50% 0,100% 100%,0 100%);transform:translate(-50%,-50%)}
+#cocoApp .shapeCircle{position:absolute;left:50%;top:52%;width:43%;aspect-ratio:1;border:2px solid #fff;border-radius:50%;opacity:0;transform:translate(-50%,-50%)}
+#cocoApp .cocoDiffScene.diff-blueprint .shapeTriangle{opacity:0}
+#cocoApp .cocoDiffScene.diff-blueprint .shapeCircle{opacity:1}
 
-#cocoApp .cocoDifferencesBoards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
+#cocoApp .cocoDiffGearCluster{position:absolute;z-index:3;right:9%;top:34%;width:17%;height:15%}
+#cocoApp .cocoDiffGearCluster i{position:absolute;display:block;aspect-ratio:1;border:5px dotted #56798a;border-radius:50%;background:radial-gradient(circle,#d9e8ee 0 25%,#7895a3 27% 43%,transparent 45%);filter:drop-shadow(0 2px 0 rgba(26,58,73,.16))}
+#cocoApp .gearBig{left:0;bottom:0;width:56%;transform:rotate(8deg)}
+#cocoApp .gearSmall{right:0;top:0;width:42%;transform:rotate(23deg)}
 
-#cocoApp .cocoDifferencesPanel {
-  min-width: 0;
-}
+#cocoApp .cocoDiffWorkbench{position:absolute;z-index:2;left:24%;top:54%;width:69%;height:18%;border:4px solid #fff;border-radius:8px;background:linear-gradient(180deg,#d28a4f 0 24%,#9d653c 25% 100%);box-shadow:0 5px 0 #714323}
+#cocoApp .benchDrawer{position:absolute;top:35%;height:39%;border:2px solid #754622;border-radius:4px;background:#bd7843}
+#cocoApp .benchDrawer:after{content:"";position:absolute;left:50%;top:23%;width:21%;height:4px;border-radius:8px;background:#f2c892;transform:translateX(-50%)}
+#cocoApp .benchDrawer.one{left:5%;width:28%}
+#cocoApp .benchDrawer.two{right:5%;width:28%}
+#cocoApp .benchLeg{position:absolute;top:100%;width:6%;height:95%;background:#754622}
+#cocoApp .benchLeg.left{left:7%}
+#cocoApp .benchLeg.right{right:7%}
 
-#cocoApp .cocoDifferencesPanelTitle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  margin-bottom: 7px;
-  color: #31566b;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
+#cocoApp .cocoDiffRadio{position:absolute;z-index:5;left:27%;top:47%;width:11%;height:9%;border:3px solid #fff;border-radius:7px;background:#6c7f8d;box-shadow:0 3px 0 rgba(23,57,75,.22)}
+#cocoApp .cocoDiffRadio:before{content:"";position:absolute;left:8%;top:20%;width:35%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(circle,#273f4c 0 2px,#81949e 2px 4px)}
+#cocoApp .cocoDiffRadio:after{content:"";position:absolute;right:9%;top:25%;width:34%;height:17%;border-radius:3px;background:#a8e18d;box-shadow:0 10px 0 -2px #f7c83e}
+#cocoApp .cocoDiffRadio i{position:absolute;left:14%;right:14%;top:-9px;height:2px;background:#314d5c;transform:rotate(-8deg);transform-origin:right}
 
-#cocoApp .cocoDiffScene {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  isolation: isolate;
-  border: 3px solid #b9dff0;
-  border-radius: 22px;
-  background:
-    linear-gradient(180deg, transparent 0 72%, rgba(255, 255, 255, .18) 72% 73%, transparent 73%),
-    linear-gradient(180deg, #dff4fc 0 72%, #efc18a 72% 100%);
-  box-shadow: 0 7px 0 #d5e8f1, 0 14px 30px rgba(24, 80, 106, .12);
-  cursor: crosshair;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-}
+#cocoApp .cocoDiffMug{position:absolute;z-index:6;left:39%;top:51%;width:8%;height:9%;border:3px solid #fff;border-radius:5px 5px 8px 8px;background:#6c55c7;box-shadow:0 3px 0 rgba(54,37,111,.22)}
+#cocoApp .cocoDiffMug:after{content:"";position:absolute;right:-42%;top:20%;width:42%;height:45%;border:3px solid #fff;border-left:0;border-radius:0 50% 50% 0}
+#cocoApp .mugStripe{position:absolute;left:14%;right:14%;height:2px;border-radius:4px;background:#f8d15a}
+#cocoApp .mugStripe.one{top:25%}
+#cocoApp .mugStripe.two{top:47%}
+#cocoApp .mugStripe.third{top:69%}
+#cocoApp .cocoDiffScene.diff-mug .mugStripe.third{opacity:0}
 
-#cocoApp .cocoDiffScene::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  inset: 7% 4% 29%;
-  border-radius: 18px 18px 8px 8px;
-  background:
-    linear-gradient(90deg, rgba(255, 255, 255, .3) 1px, transparent 1px) 0 0 / 14% 100%,
-    linear-gradient(180deg, rgba(255, 255, 255, .25) 1px, transparent 1px) 0 0 / 100% 22%,
-    linear-gradient(145deg, rgba(255, 255, 255, .16), rgba(58, 147, 185, .05));
-}
+#cocoApp .cocoDiffRuler{position:absolute;z-index:5;left:48%;top:53%;width:18%;height:3.2%;border:2px solid #fff;border-radius:4px;background:repeating-linear-gradient(90deg,#f7c63d 0 9%,#b87819 9% 10%);transform:rotate(-5deg)}
+#cocoApp .cocoDiffHammer{position:absolute;z-index:5;right:16%;top:51%;width:4%;height:18%;border-radius:999px;background:#a96a38;box-shadow:0 2px 0 rgba(80,42,18,.2);transform:rotate(51deg);transform-origin:50% 80%}
+#cocoApp .cocoDiffHammer:before{content:"";position:absolute;left:50%;top:-12%;width:250%;height:22%;border:2px solid #fff;border-radius:4px;background:#708993;transform:translateX(-50%)}
+#cocoApp .cocoDiffScrewdriver{position:absolute;z-index:5;right:7%;top:52%;width:3%;height:14%;border-radius:999px;background:linear-gradient(180deg,#ef6c05 0 45%,#e6f2f6 46%);transform:rotate(8deg)}
+#cocoApp .cocoDiffPencil{position:absolute;z-index:5;left:62%;top:51%;width:2.5%;height:17%;background:linear-gradient(90deg,#ef6c05 0 44%,#ffcf4d 45%);clip-path:polygon(0 0,100% 0,100% 86%,50% 100%,0 86%);transform:rotate(66deg)}
 
-#cocoApp .cocoDiffShelf {
-  position: absolute;
-  z-index: 1;
-  left: 61%;
-  top: 49%;
-  width: 31%;
-  height: 3.5%;
-  border-radius: 999px;
-  background: #8b5b37;
-  box-shadow: 0 4px 0 #684123;
-}
+#cocoApp .cocoDiffWrench{position:absolute;z-index:7;right:17%;top:38%;width:4.5%;height:18%;border-radius:999px;background:linear-gradient(90deg,#94aab5,#edf7fb 48%,#8097a3);box-shadow:0 3px 0 rgba(37,69,84,.2);transform:rotate(18deg);transform-origin:50% 80%}
+#cocoApp .cocoDiffWrench:before{content:"";position:absolute;left:50%;top:-22%;width:145%;aspect-ratio:1;border:4px solid #b9cbd4;border-top-color:transparent;border-radius:50%;transform:translateX(-50%)}
+#cocoApp .cocoDiffScene.diff-wrench .cocoDiffWrench{transform:rotate(-22deg)}
 
-#cocoApp .cocoDiffShelf::before,
-#cocoApp .cocoDiffShelf::after {
-  content: "";
-  position: absolute;
-  top: 95%;
-  width: 5px;
-  height: 20px;
-  border-radius: 0 0 4px 4px;
-  background: #684123;
-}
+#cocoApp .cocoDiffPlant{position:absolute;z-index:7;left:5%;bottom:8%;width:17%;height:30%}
+#cocoApp .cocoDiffPot{position:absolute;left:20%;bottom:0;width:61%;height:32%;border:3px solid #fff;border-radius:5px 5px 12px 12px;background:linear-gradient(180deg,#f89b55,#e96406);box-shadow:0 4px 0 #a94d0c}
+#cocoApp .cocoDiffLeaf{position:absolute;left:45%;bottom:27%;width:25%;height:47%;border:2px solid rgba(255,255,255,.65);border-radius:100% 0 100% 0;background:linear-gradient(145deg,#63d59a,#1e8b58);transform-origin:12% 88%}
+#cocoApp .cocoDiffLeaf.one{transform:rotate(-61deg)}
+#cocoApp .cocoDiffLeaf.two{transform:rotate(-20deg) scale(.96)}
+#cocoApp .cocoDiffLeaf.three{transform:rotate(35deg) scale(.88)}
+#cocoApp .cocoDiffLeaf.four{left:50%;bottom:39%;width:18%;height:32%;transform:rotate(66deg) scale(.72)}
+#cocoApp .cocoDiffScene.diff-plant .cocoDiffLeaf.four{opacity:0}
 
-#cocoApp .cocoDiffShelf::before { left: 16%; }
-#cocoApp .cocoDiffShelf::after { right: 16%; }
+#cocoApp .cocoDiffToolbox{position:absolute;z-index:8;right:3.5%;bottom:7%;width:24%;height:16%;border:3px solid #fff;border-radius:8px 8px 12px 12px;background:linear-gradient(180deg,#f68f43,#df5800);box-shadow:0 5px 0 #a94305}
+#cocoApp .toolboxHandle{position:absolute;left:28%;top:-43%;width:44%;height:45%;border:4px solid #fff;border-bottom:0;border-radius:10px 10px 0 0}
+#cocoApp .toolboxLatch{position:absolute;left:45%;top:34%;width:11%;height:28%;border-radius:3px;background:#ffe5a9}
+#cocoApp .cocoDiffScene.diff-toolbox .toolboxLatch{background:#4ec7d9}
 
-#cocoApp .cocoDiffSun {
-  position: absolute;
-  z-index: 1;
-  left: 8%;
-  top: 10%;
-  width: 11%;
-  aspect-ratio: 1;
-  border: 5px solid rgba(255, 255, 255, .9);
-  border-radius: 50%;
-  background: #ffc93c;
-  box-shadow: 0 0 0 5px rgba(255, 201, 60, .2), 0 5px 0 rgba(175, 113, 12, .15);
-}
+#cocoApp .cocoDiffTyre{position:absolute;z-index:5;right:27%;bottom:2%;width:15%;aspect-ratio:1;border:8px solid #394b55;border-radius:50%;background:radial-gradient(circle,#bac9d0 0 26%,#607681 28% 45%,transparent 47%);box-shadow:0 4px 0 rgba(35,54,64,.24);transform:rotate(-8deg)}
+#cocoApp .cocoDiffBattery{position:absolute;z-index:5;left:23%;bottom:5%;width:10%;height:12%;border:3px solid #fff;border-radius:6px;background:#3b97bd;box-shadow:0 4px 0 #236681}
+#cocoApp .cocoDiffBattery:before,#cocoApp .cocoDiffBattery:after{content:"";position:absolute;top:-7px;width:16%;height:7px;border-radius:3px 3px 0 0;background:#e8f2f5}
+#cocoApp .cocoDiffBattery:before{left:17%}
+#cocoApp .cocoDiffBattery:after{right:17%}
+#cocoApp .cocoDiffBattery i:before,#cocoApp .cocoDiffBattery i:after{position:absolute;top:31%;color:#fff;font:900 13px/1 Arial,sans-serif}
+#cocoApp .cocoDiffBattery i:before{content:"+";left:16%}
+#cocoApp .cocoDiffBattery i:after{content:"−";right:16%}
 
-#cocoApp .cocoDiffScene.diff-sun .cocoDiffSun {
-  background: #765bd5;
-  box-shadow: 0 0 0 5px rgba(118, 91, 213, .18), 0 5px 0 rgba(63, 43, 126, .15);
-}
+#cocoApp .cocoDiffFloorBolts{position:absolute;z-index:2;inset:73% 0 0}
+#cocoApp .cocoDiffFloorBolts i{position:absolute;width:5px;height:5px;border-radius:50%;background:#8b623f;box-shadow:0 1px 0 rgba(255,255,255,.4)}
+#cocoApp .cocoDiffFloorBolts i:nth-child(1){left:7%;top:34%}
+#cocoApp .cocoDiffFloorBolts i:nth-child(2){left:37%;top:67%}
+#cocoApp .cocoDiffFloorBolts i:nth-child(3){right:34%;top:28%}
+#cocoApp .cocoDiffFloorBolts i:nth-child(4){right:8%;top:72%}
+#cocoApp .cocoDiffFloorLine{position:absolute;z-index:3;left:34%;bottom:4%;width:35%;height:4px;display:flex;gap:4px}
+#cocoApp .cocoDiffFloorLine i{flex:1;border-radius:999px;background:#2fa9dc;box-shadow:0 0 0 2px rgba(255,255,255,.4)}
+#cocoApp .cocoDiffScene.diff-floor .cocoDiffFloorLine i:nth-child(3){background:#ffc93c}
 
-#cocoApp .cocoDiffClock {
-  position: absolute;
-  z-index: 1;
-  right: 7%;
-  top: 9%;
-  width: 13%;
-  aspect-ratio: 1;
-  border: 5px solid #fff;
-  border-radius: 50%;
-  background: #f8fcfe;
-  box-shadow: 0 4px 0 rgba(59, 105, 127, .18);
-}
+#cocoApp .cocoDiffCoco{position:absolute;z-index:9;left:35%;bottom:2.5%;width:30%;height:auto;max-height:62%;object-fit:contain;object-position:center bottom;border:3px solid rgba(120,224,249,.9);border-radius:16px;background:#08243b;box-shadow:0 7px 0 rgba(19,93,125,.24),0 10px 22px rgba(18,55,73,.22);pointer-events:none}
 
-#cocoApp .cocoDiffClock::before,
-#cocoApp .cocoDiffClock::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 50%;
-  width: 4px;
-  border-radius: 999px;
-  background: #17394b;
-  transform-origin: 50% 100%;
-}
+#cocoApp .cocoDiffHotspot{position:absolute;z-index:20;width:clamp(38px,var(--diff-hit),62px);aspect-ratio:1;padding:0;border:3px solid transparent;border-radius:50%;background:transparent;cursor:pointer;transform:translate(-50%,-50%);touch-action:manipulation}
+#cocoApp .cocoDiffHotspot:focus-visible{outline:4px solid #17394b;outline-offset:2px;background:rgba(255,255,255,.28)}
+#cocoApp .cocoDiffHotspot.found{border-color:#fff;background:rgba(47,190,133,.22);box-shadow:0 0 0 5px #2fbe85,0 6px 18px rgba(20,116,83,.32);pointer-events:none;animation:cocoDifferenceFound .38s ease both}
+#cocoApp .cocoDiffHotspot.found:after{content:"✓";position:absolute;inset:16%;display:grid;place-items:center;border-radius:50%;background:#2fbe85;color:#fff;font-family:var(--display);font-size:clamp(16px,3vw,25px);font-weight:900}
+#cocoApp .cocoDiffHotspot.hint{border-color:#fff;box-shadow:0 0 0 6px #ffc93c,0 0 24px rgba(255,201,60,.85);animation:cocoDifferenceHint .68s ease-in-out 2}
 
-#cocoApp .cocoDiffClock::before {
-  height: 29%;
-  transform: translateX(-50%) rotate(36deg);
-}
+#cocoApp .cocoDifferencesProgress{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;min-height:36px}
+#cocoApp .cocoDifferenceChip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #d7e8f1;border-radius:999px;background:#f5fafc;color:#69808f;font-size:11px;font-weight:900}
+#cocoApp .cocoDifferenceChip.found{border-color:#9ee0bb;background:#e8f9f0;color:#1d8256}
+#cocoApp .cocoDifferenceChip i{display:grid;width:18px;height:18px;place-items:center;border-radius:50%;background:#dceaf1;color:#69808f;font-style:normal}
+#cocoApp .cocoDifferenceChip.found i{background:#2fbe85;color:#fff}
 
-#cocoApp .cocoDiffClock::after {
-  height: 21%;
-  background: #ef6c05;
-  transform: translateX(-50%) rotate(118deg);
-}
+/* Una sola retícula: todas las filas heredan la misma altura, sin saltos en el
+   punto donde antes comenzaba el grupo de puntuación propia. */
+#cocoApp .cocoGridUnificada{grid-auto-rows:1fr}
+#cocoApp .cocoGridUnificada>.cocoGameCard{height:100%}
 
-#cocoApp .cocoDiffScene.diff-clock .cocoDiffClock::before {
-  transform: translateX(-50%) rotate(196deg);
-}
-
-#cocoApp .cocoDiffWindow {
-  position: absolute;
-  z-index: 1;
-  left: 25%;
-  top: 9%;
-  width: 22%;
-  height: 24%;
-  overflow: hidden;
-  border: 5px solid #fff;
-  border-radius: 13px;
-  background: linear-gradient(180deg, #80d3ef, #d7f5ff);
-  box-shadow: 0 5px 0 rgba(54, 111, 139, .15);
-}
-
-#cocoApp .cocoDiffWindow::before,
-#cocoApp .cocoDiffWindow::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  background: rgba(255, 255, 255, .92);
-}
-
-#cocoApp .cocoDiffWindow::before {
-  left: 48%;
-  top: 0;
-  width: 4px;
-  height: 100%;
-}
-
-#cocoApp .cocoDiffWindow::after {
-  left: 0;
-  top: 48%;
-  width: 100%;
-  height: 4px;
-}
-
-#cocoApp .cocoDiffCloud {
-  position: absolute;
-  z-index: 1;
-  left: 13%;
-  top: 27%;
-  width: 39%;
-  height: 20%;
-  border-radius: 999px;
-  background: #fff;
-  box-shadow: 13px -5px 0 -2px #fff, 25px 2px 0 -4px #fff;
-}
-
-#cocoApp .cocoDiffScene.diff-window .cocoDiffCloud { display: none; }
-
-#cocoApp .cocoDiffLamp {
-  position: absolute;
-  z-index: 1;
-  left: 51%;
-  top: 5%;
-  width: 4px;
-  height: 15%;
-  border-radius: 999px;
-  background: #37576a;
-}
-
-#cocoApp .cocoDiffLamp::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -20px;
-  width: 28px;
-  height: 22px;
-  border: 4px solid #fff;
-  border-radius: 15px 15px 9px 9px;
-  background: #ffc93c;
-  box-shadow: 0 8px 16px rgba(255, 201, 60, .38);
-  transform: translateX(-50%);
-}
-
-#cocoApp .cocoDiffScene.diff-lamp .cocoDiffLamp::after {
-  background: #7b8d98;
-  box-shadow: none;
-}
-
-#cocoApp .cocoDiffWrench {
-  position: absolute;
-  z-index: 2;
-  right: 17%;
-  top: 38%;
-  width: 5%;
-  height: 19%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #9baeba, #edf7fb 48%, #879ca8);
-  box-shadow: 0 3px 0 rgba(37, 69, 84, .2);
-  transform: rotate(23deg);
-  transform-origin: 50% 80%;
-}
-
-#cocoApp .cocoDiffWrench::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -22%;
-  width: 145%;
-  aspect-ratio: 1;
-  border: 5px solid #b9cbd4;
-  border-top-color: transparent;
-  border-radius: 50%;
-  transform: translateX(-50%);
-}
-
-#cocoApp .cocoDiffScene.diff-wrench .cocoDiffWrench {
-  transform: rotate(-43deg);
-}
-
-#cocoApp .cocoDiffPlant {
-  position: absolute;
-  z-index: 2;
-  left: 7%;
-  bottom: 10%;
-  width: 17%;
-  height: 29%;
-}
-
-#cocoApp .cocoDiffPot {
-  position: absolute;
-  left: 18%;
-  bottom: 0;
-  width: 64%;
-  height: 35%;
-  border-radius: 5px 5px 13px 13px;
-  background: linear-gradient(180deg, #ff9a50, #e96406);
-  box-shadow: 0 4px 0 #a94d0c;
-}
-
-#cocoApp .cocoDiffLeaf {
-  position: absolute;
-  left: 45%;
-  bottom: 28%;
-  width: 26%;
-  height: 47%;
-  border-radius: 100% 0 100% 0;
-  background: linear-gradient(145deg, #63d59a, #1e8b58);
-  transform-origin: 12% 88%;
-}
-
-#cocoApp .cocoDiffLeaf.one { transform: rotate(-58deg); }
-#cocoApp .cocoDiffLeaf.two { transform: rotate(-13deg) scale(.92); }
-#cocoApp .cocoDiffLeaf.three { transform: rotate(39deg) scale(.86); }
-#cocoApp .cocoDiffScene.diff-plant .cocoDiffLeaf.three { display: none; }
-
-#cocoApp .cocoDiffToolbox {
-  position: absolute;
-  z-index: 3;
-  right: 5%;
-  bottom: 8%;
-  width: 25%;
-  height: 17%;
-  border: 4px solid #fff;
-  border-radius: 9px 9px 13px 13px;
-  background: linear-gradient(180deg, #ff9a4d, #e85d00);
-  box-shadow: 0 5px 0 #a94305;
-}
-
-#cocoApp .cocoDiffToolbox::before {
-  content: "";
-  position: absolute;
-  left: 26%;
-  top: -42%;
-  width: 48%;
-  height: 48%;
-  border: 5px solid #fff;
-  border-bottom: 0;
-  border-radius: 12px 12px 0 0;
-}
-
-#cocoApp .cocoDiffToolbox::after {
-  content: "";
-  position: absolute;
-  left: 45%;
-  top: 35%;
-  width: 10%;
-  height: 25%;
-  border-radius: 3px;
-  background: #ffe5a9;
-}
-
-#cocoApp .cocoDiffScene.diff-toolbox .cocoDiffToolbox {
-  background: linear-gradient(180deg, #957be9, #5940b0);
-  box-shadow: 0 5px 0 #3e2b86;
-}
-
-#cocoApp .cocoDiffFloorLine {
-  position: absolute;
-  z-index: 1;
-  left: 27%;
-  bottom: 4.5%;
-  width: 43%;
-  height: 4px;
-  border-radius: 999px;
-  background: #2fa9dc;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, .48);
-}
-
-#cocoApp .cocoDiffScene.diff-floor .cocoDiffFloorLine {
-  background: #ffc93c;
-}
-
-#cocoApp .cocoDiffCoco {
-  position: absolute;
-  z-index: 4;
-  left: 29%;
-  bottom: 4%;
-  width: 42%;
-  height: auto;
-  max-height: 64%;
-  object-fit: contain;
-  object-position: center bottom;
-  filter: drop-shadow(0 7px 7px rgba(18, 55, 73, .18));
-  pointer-events: none;
-}
-
-#cocoApp .cocoDiffHotspot {
-  position: absolute;
-  z-index: 10;
-  width: clamp(38px, 13%, 64px);
-  aspect-ratio: 1;
-  padding: 0;
-  border: 3px solid transparent;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  transform: translate(-50%, -50%);
-  touch-action: manipulation;
-}
-
-#cocoApp .cocoDiffHotspot:focus-visible {
-  outline: 4px solid #17394b;
-  outline-offset: 2px;
-  background: rgba(255, 255, 255, .28);
-}
-
-#cocoApp .cocoDiffHotspot.found {
-  border-color: #fff;
-  background: rgba(47, 190, 133, .22);
-  box-shadow: 0 0 0 5px #2fbe85, 0 6px 18px rgba(20, 116, 83, .32);
-  pointer-events: none;
-  animation: cocoDifferenceFound .38s ease both;
-}
-
-#cocoApp .cocoDiffHotspot.found::after {
-  content: "✓";
-  position: absolute;
-  inset: 16%;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #2fbe85;
-  color: #fff;
-  font-family: var(--display);
-  font-size: clamp(16px, 3vw, 25px);
-  font-weight: 900;
-}
-
-#cocoApp .cocoDiffHotspot.hint {
-  border-color: #fff;
-  box-shadow: 0 0 0 6px #ffc93c, 0 0 24px rgba(255, 201, 60, .85);
-  animation: cocoDifferenceHint .68s ease-in-out 2;
-}
-
-#cocoApp .cocoDifferencesProgress {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 36px;
-}
-
-#cocoApp .cocoDifferenceChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 10px;
-  border: 1px solid #d7e8f1;
-  border-radius: 999px;
-  background: #f5fafc;
-  color: #69808f;
-  font-size: 11px;
-  font-weight: 900;
-}
-
-#cocoApp .cocoDifferenceChip.found {
-  border-color: #9ee0bb;
-  background: #e8f9f0;
-  color: #1d8256;
-}
-
-#cocoApp .cocoDifferenceChip i {
-  display: grid;
-  width: 18px;
-  height: 18px;
-  place-items: center;
-  border-radius: 50%;
-  background: #dceaf1;
-  color: #69808f;
-  font-style: normal;
-}
-
-#cocoApp .cocoDifferenceChip.found i {
-  background: #2fbe85;
-  color: #fff;
-}
-
-@keyframes cocoDifferenceFound {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(.55); }
-  75% { transform: translate(-50%, -50%) scale(1.12); }
-  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-}
-
-@keyframes cocoDifferenceHint {
-  50% { transform: translate(-50%, -50%) scale(1.16); }
-}
-
-@media (max-width: 780px) {
-  #cocoApp .cocoDifferencesBoards { grid-template-columns: 1fr; gap: 16px; }
-  #cocoApp .cocoDiffScene { border-radius: 20px; }
-  #cocoApp .cocoDifferencesIntroBar { align-items: flex-start; }
-  #cocoApp .cocoDifferencesCounter { min-width: 70px; }
-}
-
-@media (max-width: 520px) {
-  #cocoApp .cocoDifferencesIntroBar { display: grid; }
-  #cocoApp .cocoDifferencesCounters { width: 100%; }
-  #cocoApp .cocoDifferencesCounter { flex: 1; }
-  #cocoApp .cocoDiffHotspot { width: clamp(44px, 15%, 62px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #cocoApp .cocoDiffHotspot.found,
-  #cocoApp .cocoDiffHotspot.hint { animation: none !important; }
-}
+@keyframes cocoDifferenceFound{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}75%{transform:translate(-50%,-50%) scale(1.12)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes cocoDifferenceHint{50%{transform:translate(-50%,-50%) scale(1.16)}}
+@media(max-width:780px){#cocoApp .cocoDifferencesBoards{grid-template-columns:1fr;gap:16px}#cocoApp .cocoDiffScene{border-radius:20px}#cocoApp .cocoDifferencesIntroBar{align-items:flex-start}#cocoApp .cocoDifferencesCounter{min-width:70px}}
+@media(max-width:520px){#cocoApp .cocoDifferencesIntroBar{display:grid}#cocoApp .cocoDifferencesCounters{width:100%}#cocoApp .cocoDifferencesCounter{flex:1}#cocoApp .cocoDiffHotspot{width:clamp(42px,var(--diff-hit),60px)}}
+@media(prefers-reduced-motion:reduce){#cocoApp .cocoDiffHotspot.found,#cocoApp .cocoDiffHotspot.hint{animation:none!important}}
 </style>
 </body></html>
