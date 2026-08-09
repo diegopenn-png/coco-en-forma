@@ -1,24 +1,27 @@
-const CACHE_VERSION = "coco-en-forma-v134.3.0";
+const CACHE_VERSION = "coco-en-forma-v135.0.0";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/manifest.json",
-  "/coco-v134-content.js",
-  "/coco-v134-runtime.js",
-  "/coco-v134-padel.js",
-  "/coco-v134.css",
   "/app-icon-192.png",
-  "/app-icon-512.png"
+  "/app-icon-512.png",
+  "/apple-touch-icon.png",
+  "/favicon.svg"
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(APP_SHELL)));
+  event.waitUntil(
+    caches.open(CACHE_VERSION)
+      .then((cache) => cache.addAll(APP_SHELL))
+  );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_VERSION).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(
+        keys.filter((key) => key !== CACHE_VERSION).map((key) => caches.delete(key))
+      ))
       .then(() => self.clients.claim())
   );
 });
@@ -36,8 +39,11 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
+          if (response.ok) {
+            const copy = response.clone();
+            const cacheKey = requestUrl.pathname === "/" ? "/index.html" : event.request;
+            caches.open(CACHE_VERSION).then((cache) => cache.put(cacheKey, copy));
+          }
           return response;
         })
         .catch(() => caches.match(event.request).then((cached) => cached || caches.match("/index.html")))
@@ -47,13 +53,16 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      const refreshed = fetch(event.request)
+      const network = fetch(event.request)
         .then((response) => {
-          if (response.ok) caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, response.clone()));
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
+          }
           return response;
         })
         .catch(() => cached);
-      return cached || refreshed;
+      return cached || network;
     })
   );
 });
