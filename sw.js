@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v135.0.0";
+const CACHE_VERSION = "coco-en-forma-v136.0.0";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -6,7 +6,8 @@ const APP_SHELL = [
   "/app-icon-192.png",
   "/app-icon-512.png",
   "/apple-touch-icon.png",
-  "/favicon.svg"
+  "/favicon.svg",
+  "/coco-v2-diferencias.png"
 ];
 
 self.addEventListener("install", (event) => {

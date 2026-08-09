@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-09-v135.0-juegos-unificados-memoria-2d --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coco en Forma | Entrena el cerebro jugando</title>
+<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-09-v136.0-encuentra-diferencias --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coco en Forma | Entrena el cerebro jugando</title>
 <meta name="description" content="Entrenamiento cognitivo lúdico para todas las edades: una misión diaria por juego para practicar memoria, cálculo, lenguaje, atención, velocidad y coordinación.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cocoenforma.com/">
@@ -490,7 +490,7 @@
 }
 </style>
 </head><body>
-<script>window.COCO_VERSION="2026-08-09-v135.0-juegos-unificados-memoria-2d";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
+<script>window.COCO_VERSION="2026-08-09-v136.0-encuentra-diferencias";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <style id="coco-v134-style">:root{color-scheme:light}
 html{scroll-behavior:smooth}
 body{min-height:100dvh}
@@ -4722,6 +4722,7 @@ var JUEGOS=[
  {id:"crucigrama",nombre:"Crucigrama",grupo:"general",estado:"obra",color:"cocoAzul",descripcion:"Completa las palabras usando las pistas."},
  {id:"tiempo",nombre:"Reto tiempo",grupo:"general",estado:"obra",color:"cocoNaranja",descripcion:"Responde antes de que se acabe el tiempo."},
  {id:"verdadero",nombre:"Verdadero o falso",grupo:"general",estado:"obra",color:"cocoVerde",descripcion:"Decide si cada afirmación es correcta."},
+ {id:"diferencias",nombre:"Encuentra las diferencias",grupo:"general",estado:"obra",color:"cocoAzul",descripcion:"Compara dos escenas y localiza cada cambio antes de que termine el tiempo."},
  {id:"cocomed",nombre:"Coco Med",grupo:"propio",estado:"listo",color:"cocoNaranja",descripcion:"Poné a prueba tus conocimientos sobre salud y aprendé con una explicación después de cada respuesta."},
  {id:"futbol",nombre:"Fútbol",grupo:"propio",estado:"obra",color:"cocoVerde",descripcion:"Responde preguntas sobre fútbol y demuestra tus conocimientos."},
  {id:"baloncesto",nombre:"Baloncesto",grupo:"propio",estado:"obra",color:"cocoNaranja",descripcion:"Pon a prueba tu pasión y conocimiento sobre baloncesto."},
@@ -4803,7 +4804,7 @@ function prepararJugador(app){
  var vieja=panel.querySelector(".rejilla.cuatro");if(!vieja)return true;
  var mapa={};Array.prototype.slice.call(vieja.children).forEach(function(card){var h=card.querySelector("h3");if(h)mapa[h.textContent.trim()]=card});
  var envol=document.createElement("div");envol.className="cocoGruposJuegos";
- envol.appendChild(grupoTitulo("🏆","Clasificación general","Los puntos de estos diez juegos se suman a la clasificación general."));
+ envol.appendChild(grupoTitulo("🏆","Clasificación general","Los puntos de estos once juegos se suman a la clasificación general."));
  var general=document.createElement("div");general.className="cocoGridJuegos cocoGridGeneral";
  JUEGOS.filter(function(j){return j.grupo==="general"}).forEach(function(j){var card=mapa[j.nombre];general.appendChild(j.estado==="listo"&&card?prepararCardBase(card,j):cardEspecial(app,j))});envol.appendChild(general);
  envol.appendChild(grupoTitulo("⭐","Juegos con puntuación propia","Sus puntos son independientes y no se suman a la clasificación general."));
@@ -6404,15 +6405,15 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   "use strict";
   if(window.CocoArcadeV133)return;
 
-  var VERSION="2026.08.09-135.0";
+  var VERSION="2026.08.09-136.0";
   var OFFICIAL_COCO="https://imagecdn.123inventatuweb.com/a5/a5/a5a51b1b-2190-4998-9e65-7ac1c56294dd.png";
-  var READY_IDS=["crucigrama","tiempo","verdadero","futbol","padel","ingles"];
-  var GENERAL_IDS=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero"];
+  var READY_IDS=["crucigrama","tiempo","verdadero","diferencias","futbol","padel","ingles"];
+  var GENERAL_IDS=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","diferencias"];
   var OWN_IDS=["cocomed","futbol","ingles"];
   var TOOL_IDS=["padel"];
   var ALL_IDS=GENERAL_IDS.concat(OWN_IDS,TOOL_IDS);
-  var TITLE_TO_ID={"Une los números":"numeros","Cálculo veloz":"calculo","Descifra la palabra":"palabras","Series lógicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto Tiempo":"tiempo","Reto tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Fútbol":"futbol","Coco Fútbol":"futbol","Pádel":"padel","Coco Pádel":"padel","Coco Pádel Club":"padel","Inglés":"ingles","Coco Inglés":"ingles"};
-  var DISPLAY_NAMES={numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto Tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Coco Fútbol",padel:"Coco Pádel Club",ingles:"Coco Inglés"};
+  var TITLE_TO_ID={"Une los números":"numeros","Cálculo veloz":"calculo","Descifra la palabra":"palabras","Series lógicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto Tiempo":"tiempo","Reto tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Fútbol":"futbol","Coco Fútbol":"futbol","Pádel":"padel","Coco Pádel":"padel","Coco Pádel Club":"padel","Inglés":"ingles","Coco Inglés":"ingles","Encuentra las diferencias":"diferencias"};
+  var DISPLAY_NAMES={numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto Tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Coco Fútbol",padel:"Coco Pádel Club",ingles:"Coco Inglés",diferencias:"Encuentra las diferencias"};
   var GAME_META={
     numeros:{domain:"Atención y coordinación visomotora",group:"general",share:"Conecta la secuencia sin repetir casillas."},
     calculo:{domain:"Razonamiento cuantitativo",group:"general"},
@@ -6424,6 +6425,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     crucigrama:{domain:"Lenguaje y memoria",group:"general"},
     tiempo:{domain:"Velocidad de procesamiento",group:"general"},
     verdadero:{domain:"Razonamiento y conocimiento",group:"general"},
+    diferencias:{domain:"Atención visual y percepción",group:"general",share:"Compara dos escenas y encuentra los cambios."},
     cocomed:{domain:"Aprendizaje y razonamiento",group:"own"},
     futbol:{domain:"Memoria y atención",group:"own"},
     padel:{domain:"Actividad física y vínculo social",group:"tool"},
@@ -6435,6 +6437,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     crucigrama:{id:"crucigrama",title:"Crucigrama",subtitle:"El archivo secreto de palabras de Coco",icon:"🧩",group:"general",type:"crossword",accent:"azul",description:"Cruza pistas, descubre palabras y enciende cada casilla del tablero.",features:[["Pistas claras","Aprende palabras nuevas"],["Teclado amigable","Toca o escribe"],["Hasta 320 puntos","Clasificación general"]]},
     tiempo:{id:"tiempo",title:"Reto Tiempo",subtitle:"La consola supersónica de Coco",icon:"⏱️",group:"general",type:"time",accent:"naranja",description:"Diez microdesafíos que mezclan cálculo, atención, patrones y velocidad.",features:[["Nivel adaptativo","Ajustado a tu edad"],["10 misiones","Una partida dinámica"],["Hasta 320 puntos","Clasificación general"]]},
     verdadero:{id:"verdadero",title:"Verdadero o falso",subtitle:"El laboratorio de certezas",icon:"⚖️",group:"general",type:"quiz",mode:"truefalse",accent:"verde",description:"Analiza cada afirmación, decide y descubre por qué es correcta o incorrecta.",features:[["10 afirmaciones","Ciencia, lengua y lógica"],["Explicación inmediata","Aprender importa"],["Hasta 320 puntos","Clasificación general"]]},
+    diferencias:{id:"diferencias",title:"Encuentra las diferencias",subtitle:"El taller visual de Coco",icon:"🔎",group:"general",type:"differences",accent:"azul",description:"Compara dos escenas del taller y localiza cada cambio antes de que termine el tiempo.",features:[["4–6 diferencias","Según la dificultad"],["Dos escenas táctiles","Toca cualquiera de las dos"],["Hasta 320 puntos","Clasificación general"]]},
     futbol:{id:"futbol",title:"Coco Fútbol",subtitle:"Penal con memoria",icon:"⚽",group:"own",type:"football",accent:"verde",description:"Observa cinco señales rojas de una en una, recuérdalas y chuta al único lugar que nunca se encendió.",features:[["Memoria visual","Cinco señales, un único hueco"],["Secuencia limpia","Cada zona desaparece antes de la siguiente"],["3 velocidades","Básico, intermedio y avanzado"]]},
     padel:{id:"padel",title:"Coco Pádel Club",subtitle:"Mixings que ponen al grupo en movimiento",icon:"🎾",group:"tool",type:"padel-club",accent:"azul",description:"Organiza jugadores sin límite, pistas reales, tiempos flexibles y resultados por games o sets.",features:[["Jugadores sin límite","Niveles bajo, medio y alto"],["Pistas personalizadas","Rondas y minutos configurables"],["Ranking e historial","Forma, victorias y games"]]},
     ingles:{id:"ingles",title:"Coco Inglés",subtitle:"Inglés real para la vida diaria",icon:"🌍",group:"own",type:"quiz",mode:"english",accent:"morado",description:"Practica situaciones reales, escucha y lenguaje útil desde A1–A2 hasta C1–C2.",features:[["3 tramos MCER","A1–A2, B1–B2 y C1–C2"],["Inglés cotidiano","Diálogos, escucha y contexto"],["Metodología reconocida","Inspirado en Cambridge English"]]}
@@ -6837,8 +6840,9 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
 
   function shareUrl(id){
-    var host=location.hostname||"",base=/localhost|127\.0\.0\.1|\.chatgpt\.site$/i.test(host)?location.origin:"https://cocoenforma.com";
-    return base.replace(/\/$/,"")+"/juego/"+encodeURIComponent(id)+"/?v=1350";
+    var host=location.hostname||"",base=/localhost|127\.0\.0\.1|\.chatgpt\.site$/i.test(host)?location.origin:"https://cocoenforma.com",root=base.replace(/\/$/,"");
+    if(id==="diferencias")return root+"/?juego=diferencias";
+    return root+"/juego/"+encodeURIComponent(id)+"/?v=1360";
   }
   function shareData(id){var game=GAMES[id]||{title:DISPLAY_NAMES[id]||"Coco en Forma",description:(GAME_META[id]&&GAME_META[id].share)||"Entrena tu mente jugando."};return{title:game.title+" · Coco en Forma",text:game.description||"Entrena tu mente jugando.",url:shareUrl(id)}}
   async function copyText(text){var copied=false;try{await navigator.clipboard.writeText(text);copied=true}catch{var area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();try{copied=document.execCommand("copy")}catch{}area.remove()}return copied}
@@ -6906,6 +6910,135 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     return user;
   }
 
+  /* Encuentra las diferencias se inyecta dentro del motor Arcade para reutilizar
+     su sesión, puntuación, clasificación, cierre diario y pantalla de resultado. */
+  var COCO_DIFFERENCE_DEFINITIONS=[
+    {id:"sun",label:"el color del círculo de la pared",x:13.5,y:16},
+    {id:"clock",label:"la hora del reloj",x:86.5,y:16},
+    {id:"window",label:"la nube de la ventana",x:35,y:20},
+    {id:"lamp",label:"la luz de la lámpara",x:51.5,y:18},
+    {id:"wrench",label:"la posición de la llave",x:80,y:45},
+    {id:"plant",label:"una hoja de la planta",x:15,y:69},
+    {id:"toolbox",label:"el color de la caja de herramientas",x:82,y:76},
+    {id:"floor",label:"el color de la línea del suelo",x:50,y:91}
+  ];
+
+  function cocoDifferenceConfig(level){
+    level=Math.max(1,Math.min(3,Number(level)||1));
+    return level===1?{count:4,seconds:100}:level===2?{count:5,seconds:85}:{count:6,seconds:70};
+  }
+
+  function cocoDifferenceSceneMarkup(side){
+    var selected=active.diffSelected||[],right=side==="right",classes=["cocoDiffScene"];
+    if(right)selected.forEach(function(item){classes.push("diff-"+item.id)});
+    var hotspots=selected.map(function(item){
+      return '<button type="button" class="cocoDiffHotspot" data-diff-id="'+esc(item.id)+'" style="left:'+item.x+'%;top:'+item.y+'%" aria-label="Marcar esta zona como una diferencia"></button>';
+    }).join("");
+    return '<div class="'+classes.join(" ")+'" data-diff-scene="'+side+'" role="group" aria-label="Escena '+(right?'derecha':'izquierda')+' del taller de Coco">'+
+      '<span class="cocoDiffShelf" aria-hidden="true"></span>'+
+      '<span class="cocoDiffSun" aria-hidden="true"></span>'+
+      '<span class="cocoDiffClock" aria-hidden="true"></span>'+
+      '<span class="cocoDiffWindow" aria-hidden="true"><i class="cocoDiffCloud"></i></span>'+
+      '<span class="cocoDiffLamp" aria-hidden="true"></span>'+
+      '<span class="cocoDiffWrench" aria-hidden="true"></span>'+
+      '<span class="cocoDiffPlant" aria-hidden="true"><i class="cocoDiffLeaf one"></i><i class="cocoDiffLeaf two"></i><i class="cocoDiffLeaf three"></i><i class="cocoDiffPot"></i></span>'+
+      '<span class="cocoDiffToolbox" aria-hidden="true"></span>'+
+      '<span class="cocoDiffFloorLine" aria-hidden="true"></span>'+
+      '<img class="cocoDiffCoco" src="/coco-v2-diferencias.png?v=1360" alt="" width="1000" height="868" draggable="false">'+
+      hotspots+
+    '</div>';
+  }
+
+  function cocoDifferencePreviewScore(){
+    if(!active||!active.diffTotal)return 0;
+    var found=active.diffFound.size,accuracy=found/active.diffTotal,precision=active.diffTotal/(active.diffTotal+active.diffMisses),speed=Math.max(0,active.diffRemaining/active.diffLimit);
+    return Math.round(200*accuracy+40*accuracy*precision+(found===active.diffTotal?80*speed:0));
+  }
+
+  function updateCocoDifferencesUi(){
+    if(!active||active.game.type!=="differences")return;
+    var found=active.diffFound.size,foundNode=body.querySelector("[data-diff-found]"),timeNode=body.querySelector("[data-diff-time]"),missNode=body.querySelector("[data-diff-misses]");
+    if(foundNode)foundNode.textContent=found+"/"+active.diffTotal;
+    if(timeNode)timeNode.textContent=Math.max(0,Math.ceil(active.diffRemaining))+" s";
+    if(missNode)missNode.textContent=String(active.diffMisses);
+    setHud(found+"/"+active.diffTotal,cocoDifferencePreviewScore(),"PUNTOS");
+    body.querySelectorAll("[data-diff-chip]").forEach(function(chip){
+      var item=active.diffSelected[Number(chip.dataset.diffChip)],done=item&&active.diffFound.has(item.id);
+      chip.classList.toggle("found",Boolean(done));
+      chip.innerHTML='<i>'+(done?'✓':String(Number(chip.dataset.diffChip)+1))+'</i><span>'+(done?esc(item.label):"Diferencia por descubrir")+'</span>';
+    });
+  }
+
+  function hintCocoDifference(item){
+    if(!item||!active)return;
+    body.querySelectorAll(".cocoDiffHotspot.hint").forEach(function(node){node.classList.remove("hint")});
+    body.querySelectorAll('.cocoDiffHotspot[data-diff-id="'+item.id+'"]:not(.found)').forEach(function(node){node.classList.add("hint")});
+    setTimer(function(){
+      if(!body)return;
+      body.querySelectorAll('.cocoDiffHotspot[data-diff-id="'+item.id+'"].hint').forEach(function(node){node.classList.remove("hint")});
+    },1450);
+  }
+
+  function finishCocoDifferences(reason){
+    if(!active||active.game.type!=="differences"||active.diffLocked)return;
+    active.diffLocked=true;
+    if(active.diffInterval){clearInterval(active.diffInterval);active.diffInterval=0}
+    var found=active.diffFound.size,score=cocoDifferencePreviewScore(),duration=Date.now()-active.startedAt;
+    if(reason==="time"&&found<active.diffTotal){
+      var pending=active.diffSelected.find(function(item){return !active.diffFound.has(item.id)});
+      if(pending)window.CocoResponseV135&&window.CocoResponseV135.show("incorrect",{answer:pending.label});
+    }
+    setTimer(function(){
+      finishGame(score,{correct:found,total:active.diffTotal,maxStreak:active.maxStreak||0,duration:duration,misses:active.diffMisses,reason:reason||"complete"});
+    },reason==="complete"?760:1050);
+  }
+
+  function answerCocoDifference(item){
+    if(!active||active.game.type!=="differences"||active.diffLocked)return;
+    var now=Date.now();if(now-Number(active.diffLastTap||0)<220)return;active.diffLastTap=now;
+    if(item&&active.diffFound.has(item.id))return;
+    if(item){
+      active.diffFound.add(item.id);active.correct=active.diffFound.size;active.streak=(active.streak||0)+1;active.maxStreak=Math.max(active.maxStreak||0,active.streak);
+      body.querySelectorAll('.cocoDiffHotspot[data-diff-id="'+item.id+'"]').forEach(function(node){node.classList.remove("hint");node.classList.add("found");node.setAttribute("aria-label","Diferencia encontrada: "+item.label)});
+      window.CocoResponseV135&&window.CocoResponseV135.show("correct",{message:"Diferencia encontrada · "+active.diffFound.size+" de "+active.diffTotal});
+      announce("Diferencia encontrada: "+item.label+". "+active.diffFound.size+" de "+active.diffTotal+".");
+      updateCocoDifferencesUi();
+      if(active.diffFound.size>=active.diffTotal)finishCocoDifferences("complete");
+      return;
+    }
+    active.diffMisses++;active.streak=0;
+    var pending=active.diffSelected.find(function(candidate){return !active.diffFound.has(candidate.id)});
+    window.CocoResponseV135&&window.CocoResponseV135.show("incorrect",{answer:pending?pending.label:"una diferencia entre las dos escenas"});
+    if(pending)hintCocoDifference(pending);
+    announce("Respuesta incorrecta. Observa con calma la zona resaltada.");
+    updateCocoDifferencesUi();
+  }
+
+  function startCocoDifferences(){
+    var config=cocoDifferenceConfig(active.level),pool=shuffle(COCO_DIFFERENCE_DEFINITIONS,active.rng);
+    active.diffSelected=pool.slice(0,config.count);active.diffFound=new Set();active.diffMisses=0;active.diffTotal=config.count;active.diffLimit=config.seconds;active.diffRemaining=config.seconds;active.diffLocked=false;active.correct=0;active.total=config.count;active.streak=0;active.maxStreak=0;
+    body.innerHTML='<section class="cocoDifferencesGame">'+
+      '<div class="cocoDifferencesIntroBar"><div><b>Encuentra '+config.count+' diferencias</b><p>Toca la diferencia en cualquiera de las dos escenas. Mira formas, colores y posiciones.</p></div><div class="cocoDifferencesCounters"><div class="cocoDifferencesCounter"><strong data-diff-found>0/'+config.count+'</strong><span>Encontradas</span></div><div class="cocoDifferencesCounter"><strong data-diff-time>'+config.seconds+' s</strong><span>Tiempo</span></div><div class="cocoDifferencesCounter"><strong data-diff-misses>0</strong><span>Fallos</span></div></div></div>'+
+      '<div class="cocoDifferencesBoards"><div class="cocoDifferencesPanel"><div class="cocoDifferencesPanelTitle"><span>1</span> Escena original</div>'+cocoDifferenceSceneMarkup("left")+'</div><div class="cocoDifferencesPanel"><div class="cocoDifferencesPanelTitle"><span>2</span> Escena modificada</div>'+cocoDifferenceSceneMarkup("right")+'</div></div>'+
+      '<div class="cocoDifferencesProgress" aria-live="polite">'+active.diffSelected.map(function(_,index){return '<span class="cocoDifferenceChip" data-diff-chip="'+index+'"><i>'+(index+1)+'</i><span>Diferencia por descubrir</span></span>'}).join("")+'</div>'+
+    '</section>';
+    body.querySelectorAll("[data-diff-scene]").forEach(function(scene){
+      scene.addEventListener("click",function(event){
+        var hotspot=event.target&&event.target.closest?event.target.closest(".cocoDiffHotspot"):null;
+        var item=hotspot?active.diffSelected.find(function(candidate){return candidate.id===hotspot.dataset.diffId}):null;
+        answerCocoDifference(item||null);
+      });
+    });
+    updateCocoDifferencesUi();
+    active.diffInterval=setInterval(function(){
+      if(!active||active.game.type!=="differences"||active.diffLocked)return;
+      active.diffRemaining=Math.max(0,active.diffLimit-(Date.now()-active.startedAt)/1000);updateCocoDifferencesUi();
+      if(active.diffRemaining<=0)finishCocoDifferences("time");
+    },250);active.timers.push(active.diffInterval);
+    setCocoMood("focus","Compara despacio: forma, color y posición.");
+  }
+
+
   async function startGame(){
     if(!active)return;if(active.game.type==="padel-club"){active.phase="playing";active.startedAt=Date.now();startPadelClub();return}active.phase="loading";body.innerHTML='<div class="cocoArcadeQuestion" style="text-align:center"><div class="coco-cargando">Coco está ajustando el nivel…</div></div>';
     var fresh=await loadStats(active.id);if(!active)return;if(Number(fresh.today)>0){active.stats=fresh;active.phase="intro";renderIntro();setCocoMood("done","La misión de hoy ya está completa. Mañana te espero con otra.");return}if(active.game.group!=="tool"){var daily=await window.CocoDailyV134.claim(active.id,active.user&&active.user.id);if(!daily.ok){active.stats=fresh;active.stats.today=1;active.phase="intro";renderIntro();setCocoMood("done","La misión de hoy ya está completa. Mañana te espero con otra.");return}}
@@ -6913,6 +7046,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     if(active.game.type==="crossword")startCrossword();
     else if(active.game.type==="time")startTime();
     else if(active.game.type==="football")startFootball();
+    else if(active.game.type==="differences")startCocoDifferences();
     else startQuiz();
   }
 
@@ -7301,7 +7435,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 
   var statsCache={};
   function iconSvg(id){
-    var palette={numeros:["#2fa9dc","#0d6b95"],calculo:["#ffb43b","#e96406"],palabras:["#f06a78","#9e3954"],series:["#7c63de","#4935a3"],memoria:["#2fbe85","#147453"],sudoku:["#4c9bd6","#205b9c"],sopa:["#f2c535","#db7520"],crucigrama:["#4dbde7","#27709e"],tiempo:["#ff9350","#dc4d21"],verdadero:["#50c88b","#147250"],cocomed:["#58badc","#28749a"],futbol:["#53bf78","#167047"],baloncesto:["#ff9842","#bc470b"],padel:["#54c9e7","#136e92"],ingles:["#8e73e8","#4e36a9"]}[id]||["#2fa9dc","#765bd5"],inner="";
+    var palette={numeros:["#2fa9dc","#0d6b95"],calculo:["#ffb43b","#e96406"],palabras:["#f06a78","#9e3954"],series:["#7c63de","#4935a3"],memoria:["#2fbe85","#147453"],sudoku:["#4c9bd6","#205b9c"],sopa:["#f2c535","#db7520"],crucigrama:["#4dbde7","#27709e"],tiempo:["#ff9350","#dc4d21"],verdadero:["#50c88b","#147250"],diferencias:["#34b8e8","#5168c9"],cocomed:["#58badc","#28749a"],futbol:["#53bf78","#167047"],baloncesto:["#ff9842","#bc470b"],padel:["#54c9e7","#136e92"],ingles:["#8e73e8","#4e36a9"]}[id]||["#2fa9dc","#765bd5"],inner="";
     if(id==="numeros")inner='<path d="M22 80C35 35 70 85 97 35" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-dasharray="4 12"/><g fill="#fff" stroke="#17394b" stroke-width="3"><circle cx="24" cy="79" r="13"/><circle cx="55" cy="57" r="13"/><circle cx="96" cy="35" r="13"/></g><g fill="#17394b" font-size="14" font-weight="900" text-anchor="middle"><text x="24" y="84">1</text><text x="55" y="62">2</text><text x="96" y="40">3</text></g>';
     else if(id==="calculo")inner='<rect x="24" y="22" width="72" height="76" rx="16" fill="#fff"/><rect x="34" y="32" width="52" height="17" rx="6" fill="#dff4fb"/><g fill="#17394b"><circle cx="41" cy="65" r="6"/><circle cx="60" cy="65" r="6"/><circle cx="79" cy="65" r="6"/><circle cx="41" cy="84" r="6"/><path d="M55 80h12v8H55zM75 80h12v8H75z"/></g>';
     else if(id==="palabras")inner='<path d="m25 88 10-31 43-40 25 25-43 40-35 6Z" fill="#fff"/><path d="m35 57 25 25-35 6 10-31Z" fill="#ffc93c"/><path d="m78 17 25 25-10 9-25-25 10-9Z" fill="#f06a78"/><path d="M20 99h80" stroke="#fff" stroke-width="7" stroke-linecap="round"/>';
@@ -7312,6 +7446,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     else if(id==="crucigrama")inner='<g fill="#fff" stroke="#17394b" stroke-width="3"><rect x="18" y="45" width="20" height="20" rx="4"/><rect x="40" y="45" width="20" height="20" rx="4"/><rect x="62" y="45" width="20" height="20" rx="4"/><rect x="84" y="45" width="20" height="20" rx="4"/><rect x="62" y="23" width="20" height="20" rx="4"/><rect x="62" y="67" width="20" height="20" rx="4"/><rect x="62" y="89" width="20" height="20" rx="4"/></g>';
     else if(id==="tiempo")inner='<circle cx="60" cy="65" r="39" fill="#fff"/><path d="M46 19h28M60 26V14M60 65V40M60 65l19 12" stroke="#17394b" stroke-width="7" stroke-linecap="round"/><path d="M91 34 101 24" stroke="#ffc93c" stroke-width="8" stroke-linecap="round"/>';
     else if(id==="verdadero")inner='<path d="M60 19v77M27 33h66M35 34 20 68h30L35 34Zm50 0L70 68h30L85 34Z" fill="#fff" stroke="#17394b" stroke-width="4" stroke-linejoin="round"/><path d="m25 83 8 8 17-19" fill="none" stroke="#bff6d9" stroke-width="7" stroke-linecap="round"/><path d="m75 78 18 18m0-18L75 96" stroke="#ffc0c6" stroke-width="7" stroke-linecap="round"/>';
+    else if(id==="diferencias")inner='<rect x="17" y="25" width="39" height="55" rx="9" fill="#fff"/><rect x="64" y="25" width="39" height="55" rx="9" fill="#fff"/><path d="M28 37h17M28 49h17M28 61h12M75 37h17M75 49h12M75 61h17" stroke="#2f86b5" stroke-width="5" stroke-linecap="round"/><circle cx="61" cy="76" r="19" fill="#ffc93c" stroke="#17394b" stroke-width="4"/><path d="m75 90 14 14" stroke="#17394b" stroke-width="8" stroke-linecap="round"/></svg>'.replace("</svg>","");
     else if(id==="cocomed")inner='<rect x="22" y="26" width="76" height="68" rx="14" fill="#fff"/><path d="M60 38v44M38 60h44" stroke="#ef6c05" stroke-width="13" stroke-linecap="round"/><path d="m31 28 7-12 8 12m28 0 7-12 8 12" fill="#ffc93c"/>';
     else if(id==="futbol")inner='<g transform="translate(20 20) scale(.8)">'+footballSvg().replace(/^<svg[^>]*>|<\/svg>$/g,"")+'</g>';
     else if(id==="baloncesto")inner='<g transform="translate(20 20) scale(.8)">'+basketSvg().replace(/^<svg[^>]*>|<\/svg>$/g,"")+'</g>';
@@ -7444,9 +7579,9 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     {id:"visual",label:"Percepción y coordinación visomotora",short:"Percepción, reflejos y respuesta",color:"#f1b917"}
   ];
   var COG_WEIGHTS={
-    numeros:{executive:.35,speed:.25,visual:.4},calculo:{quant:.65,speed:.25,memory:.1},palabras:{language:.65,memory:.25,speed:.1},series:{quant:.6,executive:.25,memory:.15},memoria:{memory:.8,executive:.2},sudoku:{quant:.45,executive:.4,memory:.15},sopa:{executive:.5,language:.3,visual:.2},crucigrama:{language:.55,memory:.25,quant:.2},tiempo:{speed:.4,executive:.25,quant:.2,memory:.15},verdadero:{quant:.35,language:.25,memory:.2,executive:.2},cocomed:{language:.45,quant:.35,memory:.2},futbol:{memory:.55,executive:.25,visual:.2},padel:{visual:.45,speed:.35,executive:.2},ingles:{language:.65,memory:.2,executive:.15}
+    numeros:{executive:.35,speed:.25,visual:.4},calculo:{quant:.65,speed:.25,memory:.1},palabras:{language:.65,memory:.25,speed:.1},series:{quant:.6,executive:.25,memory:.15},memoria:{memory:.8,executive:.2},sudoku:{quant:.45,executive:.4,memory:.15},sopa:{executive:.5,language:.3,visual:.2},crucigrama:{language:.55,memory:.25,quant:.2},tiempo:{speed:.4,executive:.25,quant:.2,memory:.15},verdadero:{quant:.35,language:.25,memory:.2,executive:.2},diferencias:{visual:.65,executive:.25,speed:.1},cocomed:{language:.45,quant:.35,memory:.2},futbol:{memory:.55,executive:.25,visual:.2},padel:{visual:.45,speed:.35,executive:.2},ingles:{language:.65,memory:.2,executive:.15}
   };
-  var SCORE_CAPS={numeros:672,calculo:840,palabras:739,series:907,memoria:874,sudoku:1075,sopa:773,crucigrama:320,tiempo:320,verdadero:320,cocomed:1000,futbol:1000,padel:1000,ingles:1000};
+  var SCORE_CAPS={numeros:672,calculo:840,palabras:739,series:907,memoria:874,sudoku:1075,sopa:773,crucigrama:320,tiempo:320,verdadero:320,diferencias:320,cocomed:1000,futbol:1000,padel:1000,ingles:1000};
   var DEFAULT_WEIGHTS={executive:.4,memory:.2,speed:.2,language:.2};
 
   window.CocoCognitiveCatalog={
@@ -8646,4 +8781,552 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   });
 })();
 </script>
+
+<style id="coco-v136-differences-style">/* Coco en Forma v136 · Encuentra las diferencias */
+#cocoApp .cocoDifferencesGame {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+}
+
+#cocoApp .cocoDifferencesIntroBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  border: 2px solid #d5eaf4;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff, #eef9fe);
+  box-shadow: 0 4px 0 #dbeaf1;
+}
+
+#cocoApp .cocoDifferencesIntroBar > div:first-child {
+  min-width: 0;
+}
+
+#cocoApp .cocoDifferencesIntroBar b {
+  display: block;
+  color: #17394b;
+  font-family: var(--display);
+  font-size: clamp(18px, 3vw, 24px);
+  line-height: 1.08;
+}
+
+#cocoApp .cocoDifferencesIntroBar p {
+  margin: 3px 0 0;
+  color: #587487;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#cocoApp .cocoDifferencesCounters {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+#cocoApp .cocoDifferencesCounter {
+  min-width: 78px;
+  padding: 8px 11px;
+  border: 1px solid #d6e8f1;
+  border-radius: 13px;
+  background: #fff;
+  text-align: center;
+}
+
+#cocoApp .cocoDifferencesCounter strong {
+  display: block;
+  color: #17394b;
+  font-family: var(--display);
+  font-size: 21px;
+  line-height: 1;
+}
+
+#cocoApp .cocoDifferencesCounter span {
+  display: block;
+  margin-top: 3px;
+  color: #668092 !important;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+#cocoApp .cocoDifferencesBoards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+#cocoApp .cocoDifferencesPanel {
+  min-width: 0;
+}
+
+#cocoApp .cocoDifferencesPanelTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 7px;
+  color: #31566b;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+#cocoApp .cocoDiffScene {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  isolation: isolate;
+  border: 3px solid #b9dff0;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, transparent 0 72%, rgba(255, 255, 255, .18) 72% 73%, transparent 73%),
+    linear-gradient(180deg, #dff4fc 0 72%, #efc18a 72% 100%);
+  box-shadow: 0 7px 0 #d5e8f1, 0 14px 30px rgba(24, 80, 106, .12);
+  cursor: crosshair;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#cocoApp .cocoDiffScene::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 7% 4% 29%;
+  border-radius: 18px 18px 8px 8px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, .3) 1px, transparent 1px) 0 0 / 14% 100%,
+    linear-gradient(180deg, rgba(255, 255, 255, .25) 1px, transparent 1px) 0 0 / 100% 22%,
+    linear-gradient(145deg, rgba(255, 255, 255, .16), rgba(58, 147, 185, .05));
+}
+
+#cocoApp .cocoDiffShelf {
+  position: absolute;
+  z-index: 1;
+  left: 61%;
+  top: 49%;
+  width: 31%;
+  height: 3.5%;
+  border-radius: 999px;
+  background: #8b5b37;
+  box-shadow: 0 4px 0 #684123;
+}
+
+#cocoApp .cocoDiffShelf::before,
+#cocoApp .cocoDiffShelf::after {
+  content: "";
+  position: absolute;
+  top: 95%;
+  width: 5px;
+  height: 20px;
+  border-radius: 0 0 4px 4px;
+  background: #684123;
+}
+
+#cocoApp .cocoDiffShelf::before { left: 16%; }
+#cocoApp .cocoDiffShelf::after { right: 16%; }
+
+#cocoApp .cocoDiffSun {
+  position: absolute;
+  z-index: 1;
+  left: 8%;
+  top: 10%;
+  width: 11%;
+  aspect-ratio: 1;
+  border: 5px solid rgba(255, 255, 255, .9);
+  border-radius: 50%;
+  background: #ffc93c;
+  box-shadow: 0 0 0 5px rgba(255, 201, 60, .2), 0 5px 0 rgba(175, 113, 12, .15);
+}
+
+#cocoApp .cocoDiffScene.diff-sun .cocoDiffSun {
+  background: #765bd5;
+  box-shadow: 0 0 0 5px rgba(118, 91, 213, .18), 0 5px 0 rgba(63, 43, 126, .15);
+}
+
+#cocoApp .cocoDiffClock {
+  position: absolute;
+  z-index: 1;
+  right: 7%;
+  top: 9%;
+  width: 13%;
+  aspect-ratio: 1;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  background: #f8fcfe;
+  box-shadow: 0 4px 0 rgba(59, 105, 127, .18);
+}
+
+#cocoApp .cocoDiffClock::before,
+#cocoApp .cocoDiffClock::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 4px;
+  border-radius: 999px;
+  background: #17394b;
+  transform-origin: 50% 100%;
+}
+
+#cocoApp .cocoDiffClock::before {
+  height: 29%;
+  transform: translateX(-50%) rotate(36deg);
+}
+
+#cocoApp .cocoDiffClock::after {
+  height: 21%;
+  background: #ef6c05;
+  transform: translateX(-50%) rotate(118deg);
+}
+
+#cocoApp .cocoDiffScene.diff-clock .cocoDiffClock::before {
+  transform: translateX(-50%) rotate(196deg);
+}
+
+#cocoApp .cocoDiffWindow {
+  position: absolute;
+  z-index: 1;
+  left: 25%;
+  top: 9%;
+  width: 22%;
+  height: 24%;
+  overflow: hidden;
+  border: 5px solid #fff;
+  border-radius: 13px;
+  background: linear-gradient(180deg, #80d3ef, #d7f5ff);
+  box-shadow: 0 5px 0 rgba(54, 111, 139, .15);
+}
+
+#cocoApp .cocoDiffWindow::before,
+#cocoApp .cocoDiffWindow::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  background: rgba(255, 255, 255, .92);
+}
+
+#cocoApp .cocoDiffWindow::before {
+  left: 48%;
+  top: 0;
+  width: 4px;
+  height: 100%;
+}
+
+#cocoApp .cocoDiffWindow::after {
+  left: 0;
+  top: 48%;
+  width: 100%;
+  height: 4px;
+}
+
+#cocoApp .cocoDiffCloud {
+  position: absolute;
+  z-index: 1;
+  left: 13%;
+  top: 27%;
+  width: 39%;
+  height: 20%;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 13px -5px 0 -2px #fff, 25px 2px 0 -4px #fff;
+}
+
+#cocoApp .cocoDiffScene.diff-window .cocoDiffCloud { display: none; }
+
+#cocoApp .cocoDiffLamp {
+  position: absolute;
+  z-index: 1;
+  left: 51%;
+  top: 5%;
+  width: 4px;
+  height: 15%;
+  border-radius: 999px;
+  background: #37576a;
+}
+
+#cocoApp .cocoDiffLamp::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -20px;
+  width: 28px;
+  height: 22px;
+  border: 4px solid #fff;
+  border-radius: 15px 15px 9px 9px;
+  background: #ffc93c;
+  box-shadow: 0 8px 16px rgba(255, 201, 60, .38);
+  transform: translateX(-50%);
+}
+
+#cocoApp .cocoDiffScene.diff-lamp .cocoDiffLamp::after {
+  background: #7b8d98;
+  box-shadow: none;
+}
+
+#cocoApp .cocoDiffWrench {
+  position: absolute;
+  z-index: 2;
+  right: 17%;
+  top: 38%;
+  width: 5%;
+  height: 19%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #9baeba, #edf7fb 48%, #879ca8);
+  box-shadow: 0 3px 0 rgba(37, 69, 84, .2);
+  transform: rotate(23deg);
+  transform-origin: 50% 80%;
+}
+
+#cocoApp .cocoDiffWrench::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -22%;
+  width: 145%;
+  aspect-ratio: 1;
+  border: 5px solid #b9cbd4;
+  border-top-color: transparent;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+#cocoApp .cocoDiffScene.diff-wrench .cocoDiffWrench {
+  transform: rotate(-43deg);
+}
+
+#cocoApp .cocoDiffPlant {
+  position: absolute;
+  z-index: 2;
+  left: 7%;
+  bottom: 10%;
+  width: 17%;
+  height: 29%;
+}
+
+#cocoApp .cocoDiffPot {
+  position: absolute;
+  left: 18%;
+  bottom: 0;
+  width: 64%;
+  height: 35%;
+  border-radius: 5px 5px 13px 13px;
+  background: linear-gradient(180deg, #ff9a50, #e96406);
+  box-shadow: 0 4px 0 #a94d0c;
+}
+
+#cocoApp .cocoDiffLeaf {
+  position: absolute;
+  left: 45%;
+  bottom: 28%;
+  width: 26%;
+  height: 47%;
+  border-radius: 100% 0 100% 0;
+  background: linear-gradient(145deg, #63d59a, #1e8b58);
+  transform-origin: 12% 88%;
+}
+
+#cocoApp .cocoDiffLeaf.one { transform: rotate(-58deg); }
+#cocoApp .cocoDiffLeaf.two { transform: rotate(-13deg) scale(.92); }
+#cocoApp .cocoDiffLeaf.three { transform: rotate(39deg) scale(.86); }
+#cocoApp .cocoDiffScene.diff-plant .cocoDiffLeaf.three { display: none; }
+
+#cocoApp .cocoDiffToolbox {
+  position: absolute;
+  z-index: 3;
+  right: 5%;
+  bottom: 8%;
+  width: 25%;
+  height: 17%;
+  border: 4px solid #fff;
+  border-radius: 9px 9px 13px 13px;
+  background: linear-gradient(180deg, #ff9a4d, #e85d00);
+  box-shadow: 0 5px 0 #a94305;
+}
+
+#cocoApp .cocoDiffToolbox::before {
+  content: "";
+  position: absolute;
+  left: 26%;
+  top: -42%;
+  width: 48%;
+  height: 48%;
+  border: 5px solid #fff;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+}
+
+#cocoApp .cocoDiffToolbox::after {
+  content: "";
+  position: absolute;
+  left: 45%;
+  top: 35%;
+  width: 10%;
+  height: 25%;
+  border-radius: 3px;
+  background: #ffe5a9;
+}
+
+#cocoApp .cocoDiffScene.diff-toolbox .cocoDiffToolbox {
+  background: linear-gradient(180deg, #957be9, #5940b0);
+  box-shadow: 0 5px 0 #3e2b86;
+}
+
+#cocoApp .cocoDiffFloorLine {
+  position: absolute;
+  z-index: 1;
+  left: 27%;
+  bottom: 4.5%;
+  width: 43%;
+  height: 4px;
+  border-radius: 999px;
+  background: #2fa9dc;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .48);
+}
+
+#cocoApp .cocoDiffScene.diff-floor .cocoDiffFloorLine {
+  background: #ffc93c;
+}
+
+#cocoApp .cocoDiffCoco {
+  position: absolute;
+  z-index: 4;
+  left: 29%;
+  bottom: 4%;
+  width: 42%;
+  height: auto;
+  max-height: 64%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 7px 7px rgba(18, 55, 73, .18));
+  pointer-events: none;
+}
+
+#cocoApp .cocoDiffHotspot {
+  position: absolute;
+  z-index: 10;
+  width: clamp(38px, 13%, 64px);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  touch-action: manipulation;
+}
+
+#cocoApp .cocoDiffHotspot:focus-visible {
+  outline: 4px solid #17394b;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, .28);
+}
+
+#cocoApp .cocoDiffHotspot.found {
+  border-color: #fff;
+  background: rgba(47, 190, 133, .22);
+  box-shadow: 0 0 0 5px #2fbe85, 0 6px 18px rgba(20, 116, 83, .32);
+  pointer-events: none;
+  animation: cocoDifferenceFound .38s ease both;
+}
+
+#cocoApp .cocoDiffHotspot.found::after {
+  content: "✓";
+  position: absolute;
+  inset: 16%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #2fbe85;
+  color: #fff;
+  font-family: var(--display);
+  font-size: clamp(16px, 3vw, 25px);
+  font-weight: 900;
+}
+
+#cocoApp .cocoDiffHotspot.hint {
+  border-color: #fff;
+  box-shadow: 0 0 0 6px #ffc93c, 0 0 24px rgba(255, 201, 60, .85);
+  animation: cocoDifferenceHint .68s ease-in-out 2;
+}
+
+#cocoApp .cocoDifferencesProgress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+}
+
+#cocoApp .cocoDifferenceChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid #d7e8f1;
+  border-radius: 999px;
+  background: #f5fafc;
+  color: #69808f;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#cocoApp .cocoDifferenceChip.found {
+  border-color: #9ee0bb;
+  background: #e8f9f0;
+  color: #1d8256;
+}
+
+#cocoApp .cocoDifferenceChip i {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 50%;
+  background: #dceaf1;
+  color: #69808f;
+  font-style: normal;
+}
+
+#cocoApp .cocoDifferenceChip.found i {
+  background: #2fbe85;
+  color: #fff;
+}
+
+@keyframes cocoDifferenceFound {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.55); }
+  75% { transform: translate(-50%, -50%) scale(1.12); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes cocoDifferenceHint {
+  50% { transform: translate(-50%, -50%) scale(1.16); }
+}
+
+@media (max-width: 780px) {
+  #cocoApp .cocoDifferencesBoards { grid-template-columns: 1fr; gap: 16px; }
+  #cocoApp .cocoDiffScene { border-radius: 20px; }
+  #cocoApp .cocoDifferencesIntroBar { align-items: flex-start; }
+  #cocoApp .cocoDifferencesCounter { min-width: 70px; }
+}
+
+@media (max-width: 520px) {
+  #cocoApp .cocoDifferencesIntroBar { display: grid; }
+  #cocoApp .cocoDifferencesCounters { width: 100%; }
+  #cocoApp .cocoDifferencesCounter { flex: 1; }
+  #cocoApp .cocoDiffHotspot { width: clamp(44px, 15%, 62px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cocoApp .cocoDiffHotspot.found,
+  #cocoApp .cocoDiffHotspot.hint { animation: none !important; }
+}
+</style>
 </body></html>
