@@ -5,7 +5,7 @@
   "description": "Entrena la mente jugando con retos diarios y organiza tu club de pádel.",
   "lang": "es",
   "dir": "ltr",
-  "start_url": "/coco-v134.1.html?source=pwa",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",

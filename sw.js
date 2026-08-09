@@ -1,7 +1,6 @@
-const CACHE = "coco-en-forma-134-1";
+const CACHE = "coco-en-forma-134-1-pwa-fix-1";
 const SHELL = [
   "/",
-  "/coco-v134.1.html",
   "/manifest.json",
   "/coco-pwa-icon.svg"
 ];
@@ -34,7 +33,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE).then((cache) => cache.put(request, copy));
           return response;
         })
-        .catch(() => caches.match(request).then((hit) => hit || caches.match("/coco-v134.1.html"))),
+        .catch(() => caches.match(request).then((hit) => hit || caches.match("/"))),
     );
     return;
   }
