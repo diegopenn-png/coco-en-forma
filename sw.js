@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v137.0.0";
+const CACHE_VERSION = "coco-en-forma-v138.0.0";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -7,9 +7,15 @@ const APP_SHELL = [
   "/app-icon-512.png",
   "/apple-touch-icon.png",
   "/favicon.svg",
-  "/coco-v2-diferencias.png",
   "/share/diferencias.png",
-  "/juego/diferencias/index.html"
+  "/juego/diferencias/index.html",
+  "/scenes/scene-workshop.png",
+  "/scenes/scene-invention-lab.png",
+  "/scenes/scene-observatory.png",
+  "/scenes/scene-tech-library.png",
+  "/scenes/scene-electric-garage.png",
+  "/scenes/scene-robotics-studio.png",
+  "/scenes/scene-ocean-lab.png"
 ];
 
 self.addEventListener("install", (event) => {
