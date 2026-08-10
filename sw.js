@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v142.0.0";
+const CACHE_VERSION = "coco-en-forma-v143.0.0";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
