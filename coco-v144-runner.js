@@ -2,7 +2,7 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoRunnerV149) return;
+  if (!C || root.CocoRunnerV150) return;
 
   var GAME_ID = "cococorre";
   var HISTORY_KEY = "coco_runner_history_v144";
@@ -14,12 +14,53 @@
   var lastFrame = 0;
   var pointerStart = null;
 
-  var COLORS = [{ id: "azul", label: "azul", value: "#38aee0" }, { id: "naranja", label: "naranja", value: "#ef7a18" }, { id: "verde", label: "verde", value: "#45b979" }, { id: "morado", label: "morado", value: "#7960d8" }];
-  var SHAPES = [{ id: "circulo", label: "círculo", glyph: "●" }, { id: "cuadrado", label: "cuadrado", glyph: "■" }, { id: "triangulo", label: "triángulo", glyph: "▲" }, { id: "estrella", label: "estrella", glyph: "★" }];
+  var COLORS = [
+    { id: "azul", label: "azul", value: "#38aee0" }, { id: "naranja", label: "naranja", value: "#ef7a18" },
+    { id: "verde", label: "verde", value: "#45b979" }, { id: "morado", label: "morado", value: "#7960d8" },
+    { id: "rojo", label: "rojo", value: "#e85d68" }, { id: "amarillo", label: "amarillo", value: "#f2c744" },
+    { id: "turquesa", label: "turquesa", value: "#2fbdb3" }, { id: "rosa", label: "rosa", value: "#e96ca6" }
+  ];
+  var SHAPES = [
+    { id: "circulo", label: "círculo", glyph: "●" }, { id: "cuadrado", label: "cuadrado", glyph: "■" },
+    { id: "triangulo", label: "triángulo", glyph: "▲" }, { id: "estrella", label: "estrella", glyph: "★" },
+    { id: "rombo", label: "rombo", glyph: "◆" }, { id: "hexagono", label: "hexágono", glyph: "⬢" },
+    { id: "corazon", label: "corazón", glyph: "♥" }
+  ];
   var CATEGORIES = [
-    { id: "herramientas", label: "herramientas", items: [{ id: "llave", label: "llave", glyph: "🔧" }, { id: "engranaje", label: "engranaje", glyph: "⚙" }, { id: "tuerca", label: "tuerca", glyph: "⬢" }] },
-    { id: "naturaleza", label: "naturaleza", items: [{ id: "hoja", label: "hoja", glyph: "◆" }, { id: "flor", label: "flor", glyph: "✿" }, { id: "gota", label: "gota", glyph: "●" }] },
-    { id: "ciencia", label: "ciencia", items: [{ id: "atomo", label: "átomo", glyph: "⚛" }, { id: "matraz", label: "matraz", glyph: "⌬" }, { id: "iman", label: "imán", glyph: "∩" }] }
+    { id: "herramientas", label: "herramientas", items: [
+      { id: "llave", label: "llave inglesa", glyph: "🔧" }, { id: "martillo", label: "martillo", glyph: "🔨" },
+      { id: "destornillador", label: "destornillador", glyph: "🪛" }, { id: "engranaje", label: "engranaje", glyph: "⚙" },
+      { id: "tuerca", label: "tuerca", glyph: "🔩" }
+    ] },
+    { id: "frutas", label: "frutas", items: [
+      { id: "manzana", label: "manzana", glyph: "🍎" }, { id: "pera", label: "pera", glyph: "🍐" },
+      { id: "platano", label: "plátano", glyph: "🍌" }, { id: "fresa", label: "fresa", glyph: "🍓" },
+      { id: "naranja", label: "naranja", glyph: "🍊" }, { id: "uva", label: "uvas", glyph: "🍇" }, { id: "pina", label: "piña", glyph: "🍍" }
+    ] },
+    { id: "naturaleza", label: "naturaleza", items: [
+      { id: "hoja", label: "hoja", glyph: "🌿" }, { id: "flor", label: "flor", glyph: "🌼" },
+      { id: "gota", label: "gota", glyph: "💧" }, { id: "arbol", label: "árbol", glyph: "🌳" }, { id: "nube", label: "nube", glyph: "☁" }
+    ] },
+    { id: "ciencia", label: "ciencia", items: [
+      { id: "atomo", label: "átomo", glyph: "⚛" }, { id: "matraz", label: "matraz", glyph: "🧪" },
+      { id: "iman", label: "imán", glyph: "🧲" }, { id: "microscopio", label: "microscopio", glyph: "🔬" }, { id: "telescopio", label: "telescopio", glyph: "🔭" }
+    ] },
+    { id: "colegio", label: "objetos escolares", items: [
+      { id: "libros", label: "libros", glyph: "📚" }, { id: "lapiz", label: "lápiz", glyph: "✏" },
+      { id: "regla", label: "regla", glyph: "📏" }, { id: "escuadra", label: "escuadra", glyph: "📐" }, { id: "mochila", label: "mochila", glyph: "🎒" }
+    ] },
+    { id: "deportes", label: "deportes", items: [
+      { id: "futbol", label: "balón de fútbol", glyph: "⚽" }, { id: "tenis", label: "pelota de tenis", glyph: "🎾" },
+      { id: "baloncesto", label: "balón de baloncesto", glyph: "🏀" }, { id: "pingpong", label: "pala de tenis de mesa", glyph: "🏓" }, { id: "medalla", label: "medalla", glyph: "🏅" }
+    ] },
+    { id: "espacio", label: "espacio", items: [
+      { id: "cohete", label: "cohete", glyph: "🚀" }, { id: "planeta", label: "planeta", glyph: "🪐" },
+      { id: "luna", label: "luna", glyph: "🌙" }, { id: "estrella", label: "estrella", glyph: "⭐" }, { id: "satelite", label: "satélite", glyph: "🛰" }
+    ] },
+    { id: "cocina", label: "cocina", items: [
+      { id: "cuchara", label: "cuchara", glyph: "🥄" }, { id: "tenedor", label: "tenedor", glyph: "🍴" },
+      { id: "sarten", label: "sartén", glyph: "🍳" }, { id: "taza", label: "taza", glyph: "☕" }, { id: "pan", label: "pan", glyph: "🍞" }
+    ] }
   ];
 
   function hash(text) { var value = 2166136261; String(text).split("").forEach(function (character) { value ^= character.charCodeAt(0); value = Math.imul(value, 16777619); }); return value >>> 0; }
@@ -31,15 +72,18 @@
 
   function categoryById(id) { return CATEGORIES.filter(function (category) { return category.id === id; })[0] || CATEGORIES[0]; }
   function otherFrom(list, currentId, random) { var options = list.filter(function (item) { return item.id !== currentId; }); return pick(options.length ? options : list, random); }
-  function pluralShape(shape) { return shape.id === "circulo" ? "círculos" : shape.id === "cuadrado" ? "cuadrados" : shape.id === "triangulo" ? "triángulos" : "estrellas"; }
+  function pluralShape(shape) {
+    var plural = { circulo: "círculos", cuadrado: "cuadrados", triangulo: "triángulos", estrella: "estrellas", rombo: "rombos", hexagono: "hexágonos", corazon: "corazones" };
+    return plural[shape.id] || shape.label;
+  }
 
   function buildMission(chosenLevel, seed, attempt) {
     var random = randomFrom(String(seed || (C.today() + "|" + chosenLevel)) + "|" + attempt), sequenceLength = chosenLevel === 1 ? 3 : chosenLevel === 2 ? 4 : 5, sequence = [];
     while (sequence.length < sequenceLength) { var next = pick(COLORS, random); if (!sequence.length || sequence[sequence.length - 1].id !== next.id) sequence.push(next); }
     var attentionPools = {
-      1: [function () { return { type: "even" }; }, function () { return { type: "shape", target: pick(SHAPES, random) }; }, function () { return { type: "color", target: pick(COLORS, random) }; }],
-      2: [function () { return { type: "odd" }; }, function () { return { type: "category", target: pick(CATEGORIES, random) }; }, function () { return { type: "shape-color", shape: pick(SHAPES, random), color: pick(COLORS, random) }; }],
-      3: [function () { return { type: "shape-color", shape: pick(SHAPES, random), color: pick(COLORS, random) }; }, function () { return { type: "category-color", category: pick(CATEGORIES, random), color: pick(COLORS, random) }; }, function () { return { type: "calculation", parity: random() > .5 ? "par" : "impar" }; }]
+      1: [function () { return { type: "even" }; }, function () { return { type: "shape", target: pick(SHAPES, random) }; }, function () { return { type: "color", target: pick(COLORS, random) }; }, function () { return { type: "category", target: pick(CATEGORIES, random) }; }],
+      2: [function () { return { type: "odd" }; }, function () { return { type: "category", target: pick(CATEGORIES, random) }; }, function () { return { type: "shape-color", shape: pick(SHAPES, random), color: pick(COLORS, random) }; }, function () { return { type: "color", target: pick(COLORS, random) }; }],
+      3: [function () { return { type: "shape-color", shape: pick(SHAPES, random), color: pick(COLORS, random) }; }, function () { return { type: "category-color", category: pick(CATEGORIES, random), color: pick(COLORS, random) }; }, function () { return { type: "calculation", parity: random() > .5 ? "par" : "impar" }; }, function () { return { type: "opposite-color", target: pick(COLORS, random) }; }]
     };
     var attentionFactory = pick(attentionPools[chosenLevel] || attentionPools[1], random);
     var flexRules = chosenLevel === 1 ? [
@@ -117,7 +161,7 @@
   }
 
   function openingPlanForRule(rule, random, level) {
-    var pattern = [false, true, false, true, false];
+    var pattern = [false, false, true, false, true, false];
     var alternateColors = rule.color ? COLORS.filter(function (color) { return color.id !== rule.color.id; }) : [];
     return pattern.map(function (shouldMatch, index) {
       var token = makeTokenForRule(rule, random, level, shouldMatch);
@@ -139,10 +183,34 @@
   }
 
   function tokenCaption(token) {
-    if (token.display === "category") return token.item.label;
+    if (token.display === "category") return token.item.label + " · " + token.color.label;
     if (token.display === "calculation") return "calcula";
     if (token.display === "number") return "número";
     return token.shape.label;
+  }
+
+  function appendTintedCategoryGlyph(node, token) {
+    var wrap = document.createElement("span"), canvas = document.createElement("canvas"), dot = document.createElement("i");
+    wrap.className = "c150RunnerTintedGlyph";
+    canvas.className = "c150RunnerTintedCanvas";
+    canvas.width = 144; canvas.height = 144; canvas.setAttribute("aria-hidden", "true");
+    dot.className = "c150RunnerColorDot"; dot.style.background = token.color.value; dot.setAttribute("aria-hidden", "true");
+    wrap.appendChild(canvas); wrap.appendChild(dot); node.appendChild(wrap);
+    var context = canvas.getContext && canvas.getContext("2d");
+    if (!context) {
+      var fallback = document.createElement("span"); fallback.className = "c147RunnerTokenGlyph"; fallback.textContent = token.glyph; fallback.style.color = token.color.value; wrap.insertBefore(fallback, canvas); canvas.hidden = true; return;
+    }
+    context.clearRect(0, 0, 144, 144);
+    context.textAlign = "center"; context.textBaseline = "middle";
+    context.font = '104px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+    context.fillText(token.glyph, 72, 75);
+    /* Tinte source-atop: conserva volumen y detalle del emoji, pero el objeto adopta el color de la regla. */
+    context.save();
+    context.globalCompositeOperation = "source-atop";
+    context.globalAlpha = .68;
+    context.fillStyle = token.color.value;
+    context.fillRect(0, 0, 144, 144);
+    context.restore();
   }
 
   function correctGapLimitForLevel(chosenLevel) { return chosenLevel === 1 ? 2 : chosenLevel === 2 ? 3 : 4; }
@@ -151,7 +219,7 @@
 
   function buildRulePlan(rule, chosenLevel, count, random) {
     var plan = [], distractorGap = 0, correctRun = 0, maxDistractorGap = 0, targets = 0, distractors = 0;
-    var opening = openingPlanForRule(rule, random, chosenLevel).slice(0, Math.min(count, 5));
+    var opening = openingPlanForRule(rule, random, chosenLevel).slice(0, Math.min(count, 6));
     for (var index = 0; index < count; index++) {
       var openingToken = opening[index], forceTarget = !openingToken && distractorGap >= correctGapLimitForLevel(chosenLevel);
       var forceDistractor = !forceTarget && correctRun >= correctRunLimitForLevel(chosenLevel);
@@ -176,7 +244,7 @@
       if (rule.type === "shape" && rule.target.id === "estrella" && correct.glyph !== "★") failures.push("star-not-visible");
       if (rule.type === "shape" && rule.target.id === "triangulo" && correct.glyph !== "▲") failures.push("triangle-not-visible");
       var plan = buildRulePlan(rule, mission.level, 24, random);
-      if (plan.firstTargetIndex < 0 || plan.firstTargetIndex > 1) failures.push("rule-" + index + "-first-target-late");
+      if (plan.firstTargetIndex !== 2) failures.push("rule-" + index + "-opening-target-position");
       if (!plan.startsWithDistractor) failures.push("rule-" + index + "-opening-not-interleaved");
       if (plan.targets < 6) failures.push("rule-" + index + "-insufficient-targets");
       if (plan.distractors < 3) failures.push("rule-" + index + "-insufficient-distractors");
@@ -189,7 +257,7 @@
     });
     var spawnInterval = mission.level === 1 ? 1.28 : mission.level === 2 ? 1.08 : .92, nominalDuration = mission.level === 1 ? 132 : mission.level === 2 ? 162 : 198, guaranteedPerSegment = Math.floor(((nominalDuration / 3) / spawnInterval) / (mission.level + 2));
     if (guaranteedPerSegment < mission.memory.sequence.length) failures.push("insufficient-sequence-budget");
-    return { valid: failures.length === 0, failures: failures, checkedRules: rules.length, guaranteedPerSegment: guaranteedPerSegment, firstTargetGuaranteed: true, firstTargetIndex: 1, startsWithDistractor: true, maxDistractorGap: correctGapLimitForLevel(mission.level), minimumTargetsPerRulePlan: 6, minimumDistractorsPerRulePlan: 3 };
+    return { valid: failures.length === 0, failures: failures, checkedRules: rules.length, guaranteedPerSegment: guaranteedPerSegment, firstTargetGuaranteed: true, firstTargetIndex: 2, startsWithDistractor: true, openingDistractors: 2, maxDistractorGap: correctGapLimitForLevel(mission.level), minimumTargetsPerRulePlan: 6, minimumDistractorsPerRulePlan: 3 };
   }
 
   function missionForLevel(chosenLevel, seed) {
@@ -312,7 +380,21 @@
     }
     var node = document.createElement("div"); node.className = "c144RunnerObject " + (obstacle ? "obstacle" : "runner-token") + (!obstacle && item.token.display === "calculation" ? " c145Gate" : ""); node.dataset.runnerObject = item.id;
     if (obstacle) { node.innerHTML = '<span class="c147RunnerTokenGlyph" aria-hidden="true">' + (item.requirement === "jump" ? "▰" : "╱╲") + '</span><small class="c147RunnerTokenLabel">' + (item.requirement === "jump" ? "SALTA" : "AGÁCHATE") + '</small>'; node.setAttribute("aria-label", item.requirement === "jump" ? "Obstáculo para saltar" : "Obstáculo para agacharse"); }
-    else { node.innerHTML = '<span class="c147RunnerTokenGlyph" aria-hidden="true">' + C.esc(item.token.glyph) + '</span><small class="c147RunnerTokenLabel">' + C.esc(tokenCaption(item.token)) + '</small>'; node.style.setProperty("--token-color", item.token.color.value); node.setAttribute("aria-label", item.token.display === "category" ? item.token.item.label + " de color " + item.token.color.label : item.token.display === "calculation" ? "Operación " + item.token.glyph : item.token.shape.label + " de color " + item.token.color.label + (item.token.display === "number" ? ", número " + item.token.value : "")); }
+    else {
+      node.style.setProperty("--token-color", item.token.color.value);
+      node.dataset.runnerDisplay = item.token.display;
+      node.dataset.runnerColor = item.token.color.id;
+      if (item.token.display === "category") {
+        appendTintedCategoryGlyph(node, item.token);
+        var categoryLabel = document.createElement("small"); categoryLabel.className = "c147RunnerTokenLabel"; categoryLabel.textContent = tokenCaption(item.token); node.appendChild(categoryLabel);
+        node.style.borderColor = item.token.color.value;
+        node.style.background = "radial-gradient(circle at 24% 14%,#fff 0 13%,transparent 34%),linear-gradient(145deg,#fff 0 52%," + item.token.color.value + "33 100%)";
+        node.style.boxShadow = "0 0 0 5px " + item.token.color.value + "2e,0 13px 30px rgba(3,27,44,.34),inset 0 1px 0 rgba(255,255,255,.96)";
+      } else {
+        node.innerHTML = '<span class="c147RunnerTokenGlyph" aria-hidden="true">' + C.esc(item.token.glyph) + '</span><small class="c147RunnerTokenLabel">' + C.esc(tokenCaption(item.token)) + '</small>';
+      }
+      node.setAttribute("aria-label", item.token.display === "category" ? item.token.item.label + " de color " + item.token.color.label : item.token.display === "calculation" ? "Operación " + item.token.glyph : item.token.shape.label + " de color " + item.token.color.label + (item.token.display === "number" ? ", número " + item.token.value : ""));
+    }
     body.querySelector(".c144RunnerStage").appendChild(node); item.node = node; game.objects.push(item);
   }
 
@@ -451,10 +533,11 @@
   function dispose() { if (game) game.stopped = true; cancelAnimationFrame(frame); if (controller) controller.abort(); controller = null; pointerStart = null; game = null; }
 
   var api = {
-    version: "149.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, openingPlanForRule: openingPlanForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
+    version: "150.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, openingPlanForRule: openingPlanForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
     catalog: function () { return { colors: COLORS.slice(), shapes: SHAPES.slice(), categories: CATEGORIES.slice() }; },
-    audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, firstTargetIndexAfterRuleChange: 1, openingTargetsInterleaved: true, categoryColorVarietyGuaranteed: true, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, correctAnswerStyling: false, characterMotion: "stable-with-brief-functional-actions", collisionModel: "lane-and-action", obstacleApproachScale: .95, adjacentLaneVisualClearance: true, neutralApproachSound: true, audioUnlockForSafariPwa: true, rankingWrites: true, partidasTableWrites: true, generalLeaderboard: true, ownLeaderboard: false, scoreCap: 320, dailyLimit: 1, unlimitedTestAccount: true, extraTestRunsRanked: false, technicalErrorsHidden: true, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
+    audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, firstTargetIndexAfterRuleChange: 2, openingTargetsInterleaved: true, openingDistractorsBeforeTarget: 2, colors: 8, shapes: 7, categories: 8, fruitAndToolVariety: true, categoryColorVarietyGuaranteed: true, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, correctAnswerStyling: false, characterMotion: "stable-with-brief-functional-actions", collisionModel: "lane-and-action", obstacleApproachScale: .95, adjacentLaneVisualClearance: true, neutralApproachSound: true, audioUnlockForSafariPwa: true, rankingWrites: true, partidasTableWrites: true, generalLeaderboard: true, ownLeaderboard: false, scoreCap: 320, dailyLimit: 1, unlimitedTestAccount: true, extraTestRunsRanked: false, technicalErrorsHidden: true, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
   };
+  root.CocoRunnerV150 = api;
   root.CocoRunnerV149 = api;
   root.CocoRunnerV148 = api;
   root.CocoRunnerV147 = api;

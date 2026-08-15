@@ -1,0 +1,36 @@
+COCO EN FORMA v150.0 — ZIP PARA GITHUB
+========================================
+
+BASE
+----
+Esta entrega parte de Coco en Forma v149.0 y conserva sus archivos, usuarios,
+puntuaciones, PWA, Supabase y módulos existentes.
+
+QUÉ CAMBIA
+----------
+1. Las etiquetas de clasificación dentro de los juegos son solo informativas:
+   "Clasificación general" o "Clasificación específica". No abren rankings.
+2. La posición se consulta desde la pestaña principal "Clasificación".
+3. Coco Corre incorpora más categorías/colores/figuras y dos distractores antes
+   del primer objetivo después de cada regla nueva.
+4. Frutas y herramientas de Coco Corre muestran físicamente el color solicitado.
+5. Encuentra las diferencias gana luminosidad y cambios visibles en Coco
+   (cerebro/pico), además de los cambios de objetos.
+6. Se amplían bancos de contenido y rotaciones de los 15 juegos/módulos.
+
+SUBIDA A GITHUB
+---------------
+Sube el CONTENIDO de esta carpeta manteniendo exactamente la misma estructura de
+rutas. No hace falta ejecutar SQL nuevo para v150.0.
+
+ANTES DE REEMPLAZAR PRODUCCIÓN
+------------------------------
+Conserva una copia de v149.0. Prueba primero v150.0 en una rama o despliegue de
+prueba, especialmente inicio de sesión, una partida de Coco Corre, Encuentra las
+diferencias, la pestaña Clasificación y actualización de la PWA.
+
+PWA
+---
+La caché de esta entrega es coco-en-forma-v150.0.0-r1. Después de publicar, si un
+dispositivo conserva la versión anterior, cierra/reabre la PWA o recarga la web
+para que el service worker pueda actualizar los recursos.

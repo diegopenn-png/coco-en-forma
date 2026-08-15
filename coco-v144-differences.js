@@ -2,14 +2,26 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoDifferencesProV149) return;
+  if (!C || root.CocoDifferencesProV150) return;
 
-  var KINDS = ["color", "shape", "presence"];
+  var KINDS = ["color", "shape", "presence", "character-color"];
   var VARIANTS = [
     ["color", "shape", "presence", "color", "shape", "presence"],
     ["shape", "presence", "color", "shape", "presence", "color"],
     ["presence", "color", "shape", "presence", "color", "shape"]
   ];
+  var COCO_FEATURES = {
+    "workshop": { brain: [47.5, 30.6, 15, 18], beak: [44.7, 48.8, 9, 10] },
+    "invention-lab": { brain: [38.8, 31.0, 16, 18], beak: [40.0, 50.5, 9, 11] },
+    "observatory": { brain: [44.1, 38.7, 13, 14], beak: [47.7, 51.0, 8, 10] },
+    "tech-library": { brain: [46.7, 32.4, 13, 15], beak: [45.2, 46.8, 8, 10] },
+    "electric-garage": { brain: [36.7, 34.9, 14, 16], beak: [37.3, 51.0, 8, 10] },
+    "robotics-studio": { brain: [53.8, 29.8, 17, 19], beak: [49.9, 46.0, 9, 10] },
+    "ocean-lab": { brain: [36.7, 30.9, 14, 15], beak: [39.0, 46.5, 8, 10] },
+    "botanical-greenhouse": { brain: [51.5, 26.5, 15, 18], beak: [49.0, 43.0, 9, 10] },
+    "music-studio": { brain: [40.2, 26.2, 18, 18], beak: [41.5, 45.0, 9, 10] },
+    "space-station": { brain: [44.8, 36.8, 12, 12], beak: [47.8, 50.0, 8, 9] }
+  };
   var SCENES = [
     ["workshop", "El taller mecánico", "scenes/scene-workshop-v141.webp?v=1440", [["clock", "el reloj", 91.5, 10.5, 10, 15], ["can", "el bote de pintura", 59.5, 45, 7, 15], ["mug", "la taza", 70, 66, 9, 14], ["lamp", "la lámpara", 48, 10, 18, 20], ["toolbox", "la caja de herramientas", 82.5, 62, 18, 23], ["plant", "la planta", 9, 56, 18, 29]]],
     ["invention-lab", "El laboratorio de inventos", "scenes/scene-invention-lab-v141.webp?v=1440", [["clock", "el reloj", 85, 13, 11, 15], ["canisters", "los botes de colores", 88, 53, 17, 18], ["toolbox", "la caja de herramientas", 83, 73, 20, 22], ["cup", "el vaso", 14, 71, 9, 22], ["controls", "las luces del robot", 50, 73, 12, 11], ["lamp", "la lámpara", 31, 11, 16, 21]]],
@@ -22,7 +34,13 @@
     ["music-studio", "El estudio musical", "scenes/scene-music-studio-v141.webp?v=1440", [["guitar", "la guitarra", 11, 47, 15, 40], ["microphone", "el micrófono", 64, 37, 9, 29], ["bells", "las campanas", 84, 22, 22, 13], ["metronome", "el metrónomo", 65, 67, 11, 27], ["controls", "los controles", 25, 84, 21, 15], ["records", "los discos", 88, 76, 21, 18]]],
     ["space-station", "La estación espacial", "scenes/scene-space-station-v141.webp?v=1440", [["planet", "el planeta", 24, 10, 15, 18], ["energy", "el tubo de energía", 23, 40, 12, 30], ["robot", "el robot", 62, 66, 16, 29], ["case", "la caja", 89, 65, 17, 20], ["plant", "la planta", 86, 40, 15, 24], ["tools", "las herramientas", 35, 88, 19, 12]]]
   ].map(function (scene) {
-    return { id: scene[0], title: scene[1], src: scene[2], differences: scene[3].map(function (item, index) { return { id: scene[0] + "-" + item[0], key: item[0], sceneId: scene[0], label: item[1], x: item[2], y: item[3], w: Math.max(12, item[4]), h: Math.max(14, item[5]), kind: KINDS[index % KINDS.length] }; }) };
+    var differences = scene[3].map(function (item, index) { return { id: scene[0] + "-" + item[0], key: item[0], sceneId: scene[0], label: item[1], x: item[2], y: item[3], w: Math.max(12, item[4]), h: Math.max(14, item[5]), kind: KINDS[index % 3] }; });
+    var coco = COCO_FEATURES[scene[0]];
+    if (coco) {
+      differences.push({ id: scene[0] + "-coco-brain", key: "coco-brain", sceneId: scene[0], label: "el cerebro de Coco", x: coco.brain[0], y: coco.brain[1], w: coco.brain[2], h: coco.brain[3], kind: "character-color", characterPart: "brain" });
+      differences.push({ id: scene[0] + "-coco-beak", key: "coco-beak", sceneId: scene[0], label: "el pico de Coco", x: coco.beak[0], y: coco.beak[1], w: coco.beak[2], h: coco.beak[3], kind: "character-color", characterPart: "beak" });
+    }
+    return { id: scene[0], title: scene[1], src: scene[2], differences: differences };
   });
 
   var levelSelected = 1;
@@ -41,9 +59,14 @@
     return { scene: scene, variant: variant, id: scene.id + "-v" + (variant + 1) };
   }
   function materialize(choice, count) {
-    return choice.scene.differences.slice(0, count).map(function (base, index) {
-      var item = Object.assign({}, base); item.id = base.id + "-v" + (choice.variant + 1); item.kind = VARIANTS[choice.variant][index]; item.variant = choice.variant;
-      item.label = item.kind === "color" ? "el cambio de color de " + base.label : item.kind === "shape" ? "el cambio de forma de " + base.label : "el objeto presente o ausente junto a " + base.label;
+    var source = choice.scene.differences.slice(), characters = source.filter(function (item) { return Boolean(item.characterPart); }), objects = source.filter(function (item) { return !item.characterPart; }), rotated = objects.slice((choice.variant * 2) % objects.length).concat(objects.slice(0, (choice.variant * 2) % objects.length)), ordered;
+    if (choice.variant === 0) ordered = rotated.slice(0, Math.max(0, count - 1)).concat(characters.slice(0, 1));
+    else if (choice.variant === 1) ordered = characters.slice(1, 2).concat(rotated.slice(0, Math.max(0, count - 1)));
+    else ordered = characters.slice(0, Math.min(2, count)).concat(rotated.slice(0, Math.max(0, count - Math.min(2, count))));
+    ordered = ordered.slice(0, count);
+    return ordered.map(function (base, index) {
+      var item = Object.assign({}, base); item.id = base.id + "-v" + (choice.variant + 1); item.kind = base.characterPart ? "character-color" : VARIANTS[choice.variant][index % VARIANTS[choice.variant].length]; item.variant = choice.variant;
+      item.label = item.kind === "character-color" ? "el cambio de color de " + base.label : item.kind === "color" ? "el cambio de color de " + base.label : item.kind === "shape" ? "el cambio de forma de " + base.label : "el objeto presente o ausente junto a " + base.label;
       return item;
     });
   }
@@ -64,11 +87,11 @@
 
   function introHtml(allowed) {
     var choice = todayChoice(), cfg = config(levelSelected), unlimited = unlimitedTesting();
-    return '<main class="c144DiffIntro"><section class="c144Card"><span class="c144Eyebrow">ATENCIÓN VISUAL · ESCENAS CLARAS Y COHERENTES</span><h3>Encuentra las diferencias</h3><p>Compara las dos imágenes y marca cada cambio desde cualquiera de ellas. La imagen, el objeto y su zona pulsable comparten una única definición normalizada.</p><div class="c144DiffTypes"><span>🎨 Color claro</span><span>◆ Forma completa</span><span>◌ Presente o ausente</span></div><div class="c144LevelButtons"><button type="button" data-diff144-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico · 4</button><button type="button" data-diff144-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio · 5</button><button type="button" data-diff144-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado · 6</button></div><p class="c144Notice">Escenario de hoy: <b>' + C.esc(choice.scene.title) + '</b> · combinación ' + (choice.variant + 1) + '/3 · ' + cfg.seconds + ' segundos. No se deforman, rompen ni deterioran objetos.</p>' + (unlimited ? '<p class="c144Notice">Modo de pruebas activo: puedes repetir sin límite. Solo el primer resultado válido del día puntúa.</p>' : '') + '<div class="c144Actions"><button type="button" class="c144Primary" data-diff144-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? (unlimited ? "Comenzar partida de prueba" : "Comenzar") : "Completado hoy") + '</button></div></section></main>';
+    return '<main class="c144DiffIntro"><section class="c144Card"><span class="c144Eyebrow">ATENCIÓN VISUAL · ESCENAS CINEMATOGRÁFICAS Y LUMINOSAS</span><h3>Encuentra las diferencias</h3><p>Compara las dos imágenes y marca cada cambio desde cualquiera de ellas. La imagen, el objeto y su zona pulsable comparten una única definición normalizada.</p><div class="c144DiffTypes"><span>🎨 Color visible</span><span>◆ Forma completa</span><span>◌ Objeto presente o ausente</span><span>🧠 Coco también puede cambiar</span></div><div class="c144LevelButtons"><button type="button" data-diff144-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico · 4</button><button type="button" data-diff144-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio · 5</button><button type="button" data-diff144-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado · 6</button></div><p class="c144Notice">Escenario de hoy: <b>' + C.esc(choice.scene.title) + '</b> · combinación ' + (choice.variant + 1) + '/3 · ' + cfg.seconds + ' segundos. No se deforman, rompen ni deterioran objetos.</p>' + (unlimited ? '<p class="c144Notice">Modo de pruebas activo: puedes repetir sin límite. Solo el primer resultado válido del día puntúa.</p>' : '') + '<div class="c144Actions"><button type="button" class="c144Primary" data-diff144-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? (unlimited ? "Comenzar partida de prueba" : "Comenzar") : "Completado hoy") + '</button></div></section></main>';
   }
 
   async function renderIntro() {
-    var allowed = await canPlay(), body = C.body(); if (!body) return; C.setModalTitle("Encuentra las diferencias", "ATENCIÓN VISUAL · v149.0"); body.innerHTML = introHtml(allowed);
+    var allowed = await canPlay(), body = C.body(); if (!body) return; C.setModalTitle("Encuentra las diferencias", "ATENCIÓN VISUAL · v150.0"); body.innerHTML = introHtml(allowed);
     body.querySelectorAll("[data-diff144-level]").forEach(function (button) { button.onclick = function () { levelSelected = Number(button.dataset.diff144Level) || 1; renderIntro(); }; });
     var start = body.querySelector("[data-diff144-start]"); if (start && !start.disabled) start.onclick = startGame;
   }
@@ -107,6 +130,22 @@
       var index = (y * rect.width + x) * 4, original = [data[index], data[index + 1], data[index + 2]], hsv = rgbToHsv(original[0], original[1], original[2]);
       var next = hsvToRgb(targetHue, Math.max(.34, Math.min(.78, hsv[1] * .86 + .16)), Math.max(.16, Math.min(1, hsv[2] * 1.04)));
       weight *= .76; data[index] = Math.round(original[0] + (next[0] - original[0]) * weight); data[index + 1] = Math.round(original[1] + (next[1] - original[1]) * weight); data[index + 2] = Math.round(original[2] + (next[2] - original[2]) * weight);
+    }
+    ctx.putImageData(image, rect.x, rect.y);
+  }
+  function recolorCharacterFeature(ctx, rect, part, variant) {
+    var image = ctx.getImageData(rect.x, rect.y, rect.width, rect.height), data = image.data;
+    var hues = part === "brain" ? [.72, .48, .15] : [.52, .34, .78], targetHue = hues[variant % hues.length];
+    for (var y = 0; y < rect.height; y++) for (var x = 0; x < rect.width; x++) {
+      var nx = ((x + .5) / rect.width - .5) * 2, ny = ((y + .5) / rect.height - .5) * 2, radius = nx * nx + ny * ny;
+      if (radius > 1) continue;
+      var edge = clamp01((1 - radius) / .28), weight = Math.max(.42, edge) * .9;
+      var index = (y * rect.width + x) * 4, original = [data[index], data[index + 1], data[index + 2]], hsv = rgbToHsv(original[0], original[1], original[2]);
+      if (hsv[2] < .12) continue;
+      if (part === "brain" && !(hsv[1] > .22 && (hsv[0] < .14 || hsv[0] > .94))) continue;
+      if (part === "beak" && !(hsv[1] > .42 && hsv[0] > .015 && hsv[0] < .17)) continue;
+      var saturationFloor = part === "brain" ? .58 : .72, next = hsvToRgb(targetHue, Math.max(saturationFloor, Math.min(.98, hsv[1] * 1.12 + .22)), Math.max(.42, Math.min(1, hsv[2] * 1.14)));
+      data[index] = Math.round(original[0] + (next[0] - original[0]) * weight); data[index + 1] = Math.round(original[1] + (next[1] - original[1]) * weight); data[index + 2] = Math.round(original[2] + (next[2] - original[2]) * weight);
     }
     ctx.putImageData(image, rect.x, rect.y);
   }
@@ -165,7 +204,8 @@
   }
   function applyDifference(ctx, canvas, item, side) {
     var rect = rectFor(canvas, item);
-    if (item.kind === "color" && side === "right") recolorNaturalRegion(ctx, rect, item.variant);
+    if (item.kind === "character-color" && side === "right") recolorCharacterFeature(ctx, rect, item.characterPart, item.variant);
+    else if (item.kind === "color" && side === "right") recolorNaturalRegion(ctx, rect, item.variant);
     else if (item.kind === "shape") drawIntegratedDetail(ctx, rect, item, side);
     else if (item.kind === "presence" && side === "right") drawContextProp(ctx, rect, item);
   }
@@ -174,7 +214,7 @@
     var image = new Image(); image.decoding = "async";
     image.onload = function () {
       if (!game || game.finished) return;
-      C.body().querySelectorAll("[data-diff144-canvas]").forEach(function (canvas) { var ctx = canvas.getContext("2d", { alpha: false }), side = canvas.dataset.diff144Canvas; ctx.filter = "brightness(1.2) contrast(1.07) saturate(1.06)"; ctx.drawImage(image, 0, 0, canvas.width, canvas.height); ctx.filter = "none"; game.items.forEach(function (item) { applyDifference(ctx, canvas, item, side); }); var scene = canvas.closest("[data-diff144-scene]"); if (scene) scene.dataset.ready = "true"; });
+      C.body().querySelectorAll("[data-diff144-canvas]").forEach(function (canvas) { var ctx = canvas.getContext("2d", { alpha: false }), side = canvas.dataset.diff144Canvas; ctx.filter = "brightness(1.28) contrast(1.09) saturate(1.1)"; ctx.drawImage(image, 0, 0, canvas.width, canvas.height); ctx.filter = "none"; game.items.forEach(function (item) { applyDifference(ctx, canvas, item, side); }); var scene = canvas.closest("[data-diff144-scene]"); if (scene) scene.dataset.ready = "true"; });
       game.startedAt = Date.now(); timer = setInterval(tick, 250); updateHud();
     };
     image.onerror = function () { var body = C.body(); if (!body) return; body.innerHTML = '<div class="c144Empty"><b>No se pudo cargar el escenario</b><span>Comprueba los archivos locales de escenas.</span><button type="button" class="c144Secondary" data-diff144-retry>Reintentar</button></div>'; body.querySelector("[data-diff144-retry]").onclick = startGame; };
@@ -231,11 +271,11 @@
     loadScenes();
   }
 
-  async function open() { C.openModal({ module: "differences", title: "Encuentra las diferencias", kicker: "ATENCIÓN VISUAL · v149.0", html: '<div class="c144Empty"><b>Coco está preparando el escenario…</b></div>', dispose: dispose }); user = await resolveUser(); renderIntro(); }
+  async function open() { C.openModal({ module: "differences", title: "Encuentra las diferencias", kicker: "ATENCIÓN VISUAL · v150.0", html: '<div class="c144Empty"><b>Coco está preparando el escenario…</b></div>', dispose: dispose }); user = await resolveUser(); renderIntro(); }
   function dispose() { clearInterval(timer); if (controller) controller.abort(); controller = null; if (game) game.finished = true; game = null; }
 
   var api = {
-    version: "149.0.0", open: open, scenes: SCENES,
+    version: "150.0.0", open: open, scenes: SCENES,
     config: config, rectFor: rectFor,
     materializeForAudit: function (sceneId, variant, count) {
       var scene = SCENES.find(function (item) { return item.id === sceneId; });
@@ -244,8 +284,9 @@
       return materialize({ scene: scene, variant: variant }, Math.max(1, Math.min(scene.differences.length, Number(count) || 6)));
     },
     applyDifferenceForAudit: applyDifference,
-    audit: function () { return { sceneCount: SCENES.length, variantsPerScene: VARIANTS.length, combinationsPerLevel: SCENES.length * VARIANTS.length, levels: { basic: 4, intermediate: 5, advanced: 6 }, everySceneHasSix: SCENES.every(function (scene) { return scene.differences.length === 6; }), differenceKinds: KINDS.slice(), allowedKindsOnly: true, brokenObjects: false, deformedObjects: false, blurredRemoval: false, completeObjects: true, preAnswerMarkers: false, genericCircleMarkers: false, genericStarMarkers: false, foundFeedbackOnlyAfterCorrectTap: true, sameDefinitionForVisualAndHit: true, normalizedCoordinates: true, clickableFromBothImages: true, falseClicksAccepted: false, brightness: 1.2, unlimitedTestAccount: true, extraTestRunsRanked: false, renderer: "dual-canvas-integrated-scene-changes-v149" }; }
+    audit: function () { return { sceneCount: SCENES.length, variantsPerScene: VARIANTS.length, combinationsPerLevel: SCENES.length * VARIANTS.length, levels: { basic: 4, intermediate: 5, advanced: 6 }, everySceneHasAtLeastEight: SCENES.every(function (scene) { return scene.differences.length >= 8; }), differenceKinds: KINDS.slice(), allowedKindsOnly: true, brokenObjects: false, deformedObjects: false, blurredRemoval: false, completeObjects: true, preAnswerMarkers: false, genericCircleMarkers: false, genericStarMarkers: false, foundFeedbackOnlyAfterCorrectTap: true, sameDefinitionForVisualAndHit: true, normalizedCoordinates: true, clickableFromBothImages: true, falseClicksAccepted: false, brightness: 1.28, unlimitedTestAccount: true, extraTestRunsRanked: false, characterDifferences: ["brain-color", "beak-color"], characterDifferenceGuaranteed: true, renderer: "dual-canvas-integrated-scene-changes-v150" }; }
   };
+  root.CocoDifferencesProV150 = api;
   root.CocoDifferencesProV149 = api;
   root.CocoDifferencesProV148 = api;
   root.CocoDifferencesProV147 = api;

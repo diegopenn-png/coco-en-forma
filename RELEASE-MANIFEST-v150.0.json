@@ -1,0 +1,60 @@
+{
+  "product": "Coco en Forma",
+  "version": "150.0",
+  "base_version": "149.0",
+  "date": "2026-08-16",
+  "public_deployment_performed": false,
+  "service_worker_cache": "coco-en-forma-v150.0.0-r1",
+  "new_database_migration_required": false,
+  "classification": {
+    "game_badges_are_informational_only": true,
+    "labels": ["Clasificación general", "Clasificación específica"],
+    "main_classification_tab_preserved": true,
+    "padel_tournament_ranking_preserved": true
+  },
+  "coco_corre": {
+    "colors": 8,
+    "shapes": 7,
+    "categories": 8,
+    "opening_distractors_before_first_target": 2,
+    "colored_category_objects": true,
+    "score_cap": 320
+  },
+  "differences": {
+    "scenes": 10,
+    "minimum_candidates_per_scene": 8,
+    "brightness": 1.28,
+    "character_parts": ["brain", "beak"],
+    "character_difference_guaranteed": true
+  },
+  "content": {
+    "games_modules_audited": 15,
+    "levels_audited": 45,
+    "minimum_rotation_combinations_per_level": 40
+  },
+  "modified_files": [
+    "coco-v144-content.js",
+    "coco-v144-core.js",
+    "coco-v144-differences.js",
+    "coco-v144-runner.js",
+    "index.html",
+    "manifest.json",
+    "manifest.webmanifest",
+    "sw.js"
+  ],
+  "added_application_files": [
+    "coco-v150-content.js",
+    "coco-v150-refinements.css",
+    "share/coco-en-forma-v150.png",
+    "qa/v150-functional-tests.mjs"
+  ],
+  "removed_files": [],
+  "tests": {
+    "v150_functional": "11/11 PASS",
+    "http_resources": "69/69 HTTP 200",
+    "http_404_responses": 0,
+    "social_png": "27/27 PASS",
+    "inline_script_syntax": "20/20 PASS",
+    "precache_missing": 0
+  }
+}
