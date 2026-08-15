@@ -1,0 +1,58 @@
+COCO EN FORMA v148.0 — RESPALDO Y PRUEBA SEGURA
+================================================
+
+ESTADO
+------
+- Esta carpeta contiene la versión de prueba v148.0.
+- No ha sido publicada ni desplegada.
+- La aplicación pública no ha sido sustituida.
+- La copia intacta de v147.0 está fuera de esta carpeta, en:
+  coco-v148/base-v1470
+
+QUÉ CAMBIA
+----------
+- La cuenta autenticada diegopenn@icloud.com puede repetir todos los juegos sin límite.
+- Todos los demás usuarios mantienen una partida por juego y día.
+- Solo el primer resultado válido de cada juego y día suma puntos.
+- Las repeticiones de prueba no duplican puntos ni clasificación.
+- Coco Pádel continúa siendo ilimitado para todos.
+
+PRUEBA LOCAL SIN SUSTITUIR LA WEB
+---------------------------------
+1. Descomprime el ZIP en una carpeta nueva y separada.
+2. Abre una terminal dentro de esa carpeta.
+3. Ejecuta:
+
+   python3 -m http.server 8765 --bind 127.0.0.1
+
+4. Abre en el navegador:
+
+   http://127.0.0.1:8765/
+
+5. Inicia sesión normalmente con diegopenn@icloud.com.
+6. Completa un juego y vuelve a abrirlo. Debe aparecer disponible para otra prueba.
+7. Comprueba que la repetición indique que no duplica puntos.
+8. Cierra sesión y entra con otra cuenta. Tras completar un juego, debe mostrar “Completado hoy”.
+
+PRUEBA COMO PWA
+---------------
+- Usa localhost o un dominio de ensayo distinto del dominio público.
+- No copies estos archivos sobre cocoenforma.com todavía.
+- Si el navegador conserva una versión anterior del entorno de ensayo, cierra la PWA, borra los datos de ese sitio de prueba y vuelve a cargar.
+- La caché esperada es: coco-en-forma-v148.0.0-r1
+
+PRUEBA EN GITHUB SIN PUBLICAR EN PRODUCCIÓN
+-------------------------------------------
+- Crea una rama o carpeta de prueba independiente.
+- Sube el CONTENIDO descomprimido del ZIP conservando exactamente todas las carpetas y archivos.
+- No subas únicamente index.html.
+- No subas el ZIP como si fuera la aplicación: GitHub Pages necesita los archivos extraídos.
+- No mezcles la v148.0 con la rama o carpeta que sirve la web pública.
+
+RESTAURACIÓN
+------------
+Si se desea descartar la v148.0, elimina únicamente su carpeta o rama de prueba y conserva/repone el contenido de la copia v147.0. No hace falta revertir ninguna migración de Supabase porque esta versión no añade migraciones.
+
+APROBACIÓN
+----------
+No publicar ni desplegar hasta recibir aprobación expresa del propietario.

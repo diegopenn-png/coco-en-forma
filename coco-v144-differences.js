@@ -2,7 +2,7 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoDifferencesProV146) return;
+  if (!C || root.CocoDifferencesProV148) return;
 
   var KINDS = ["color", "shape", "presence"];
   var VARIANTS = [
@@ -22,7 +22,7 @@
     ["music-studio", "El estudio musical", "scenes/scene-music-studio-v141.webp?v=1440", [["guitar", "la guitarra", 11, 47, 15, 40], ["microphone", "el micrófono", 64, 37, 9, 29], ["bells", "las campanas", 84, 22, 22, 13], ["metronome", "el metrónomo", 65, 67, 11, 27], ["controls", "los controles", 25, 84, 21, 15], ["records", "los discos", 88, 76, 21, 18]]],
     ["space-station", "La estación espacial", "scenes/scene-space-station-v141.webp?v=1440", [["planet", "el planeta", 24, 10, 15, 18], ["energy", "el tubo de energía", 23, 40, 12, 30], ["robot", "el robot", 62, 66, 16, 29], ["case", "la caja", 89, 65, 17, 20], ["plant", "la planta", 86, 40, 15, 24], ["tools", "las herramientas", 35, 88, 19, 12]]]
   ].map(function (scene) {
-    return { id: scene[0], title: scene[1], src: scene[2], differences: scene[3].map(function (item, index) { return { id: scene[0] + "-" + item[0], label: item[1], x: item[2], y: item[3], w: Math.max(12, item[4]), h: Math.max(14, item[5]), kind: KINDS[index % KINDS.length] }; }) };
+    return { id: scene[0], title: scene[1], src: scene[2], differences: scene[3].map(function (item, index) { return { id: scene[0] + "-" + item[0], key: item[0], sceneId: scene[0], label: item[1], x: item[2], y: item[3], w: Math.max(12, item[4]), h: Math.max(14, item[5]), kind: KINDS[index % KINDS.length] }; }) };
   });
 
   var levelSelected = 1;
@@ -52,27 +52,29 @@
 
   async function resolveUser() {
     var session = await C.session(); if (!session || !session.user) return { id: "visitante", name: "Jugador Coco" };
+    if (root.CocoDailyV134 && typeof root.CocoDailyV134.setUser === "function") root.CocoDailyV134.setUser(session.user.id, session.user.email || "");
     var metadata = session.user.user_metadata || {}; return { id: session.user.id, name: metadata.apodo || metadata.username || (session.user.email || "Jugador Coco").split("@")[0] };
   }
   function userId() { return user && user.id || "visitante"; }
+  function unlimitedTesting() { return Boolean(root.CocoDailyV134 && typeof root.CocoDailyV134.isUnlimited === "function" && root.CocoDailyV134.isUnlimited(userId())); }
   async function canPlay() {
     if (!root.CocoDailyV134 || typeof root.CocoDailyV134.canPlay !== "function") return true;
     try { return await root.CocoDailyV134.canPlay("diferencias", userId()); } catch (_) { return true; }
   }
 
   function introHtml(allowed) {
-    var choice = todayChoice(), cfg = config(levelSelected);
-    return '<main class="c144DiffIntro"><section class="c144Card"><span class="c144Eyebrow">ATENCIÓN VISUAL · ESCENAS CLARAS Y COHERENTES</span><h3>Encuentra las diferencias</h3><p>Compara las dos imágenes y marca cada cambio desde cualquiera de ellas. La imagen, el objeto y su zona pulsable comparten una única definición normalizada.</p><div class="c144DiffTypes"><span>🎨 Color claro</span><span>◆ Forma completa</span><span>◌ Presente o ausente</span></div><div class="c144LevelButtons"><button type="button" data-diff144-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico · 4</button><button type="button" data-diff144-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio · 5</button><button type="button" data-diff144-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado · 6</button></div><p class="c144Notice">Escenario de hoy: <b>' + C.esc(choice.scene.title) + '</b> · combinación ' + (choice.variant + 1) + '/3 · ' + cfg.seconds + ' segundos. No se deforman, rompen ni deterioran objetos.</p><div class="c144Actions"><button type="button" class="c144Primary" data-diff144-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? "Comenzar" : "Completado hoy") + '</button></div></section></main>';
+    var choice = todayChoice(), cfg = config(levelSelected), unlimited = unlimitedTesting();
+    return '<main class="c144DiffIntro"><section class="c144Card"><span class="c144Eyebrow">ATENCIÓN VISUAL · ESCENAS CLARAS Y COHERENTES</span><h3>Encuentra las diferencias</h3><p>Compara las dos imágenes y marca cada cambio desde cualquiera de ellas. La imagen, el objeto y su zona pulsable comparten una única definición normalizada.</p><div class="c144DiffTypes"><span>🎨 Color claro</span><span>◆ Forma completa</span><span>◌ Presente o ausente</span></div><div class="c144LevelButtons"><button type="button" data-diff144-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico · 4</button><button type="button" data-diff144-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio · 5</button><button type="button" data-diff144-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado · 6</button></div><p class="c144Notice">Escenario de hoy: <b>' + C.esc(choice.scene.title) + '</b> · combinación ' + (choice.variant + 1) + '/3 · ' + cfg.seconds + ' segundos. No se deforman, rompen ni deterioran objetos.</p>' + (unlimited ? '<p class="c144Notice">Modo de pruebas activo: puedes repetir sin límite. Solo el primer resultado válido del día puntúa.</p>' : '') + '<div class="c144Actions"><button type="button" class="c144Primary" data-diff144-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? (unlimited ? "Comenzar partida de prueba" : "Comenzar") : "Completado hoy") + '</button></div></section></main>';
   }
 
   async function renderIntro() {
-    var allowed = await canPlay(), body = C.body(); if (!body) return; C.setModalTitle("Encuentra las diferencias", "ATENCIÓN VISUAL · v146.0"); body.innerHTML = introHtml(allowed);
+    var allowed = await canPlay(), body = C.body(); if (!body) return; C.setModalTitle("Encuentra las diferencias", "ATENCIÓN VISUAL · v148.0"); body.innerHTML = introHtml(allowed);
     body.querySelectorAll("[data-diff144-level]").forEach(function (button) { button.onclick = function () { levelSelected = Number(button.dataset.diff144Level) || 1; renderIntro(); }; });
     var start = body.querySelector("[data-diff144-start]"); if (start && !start.disabled) start.onclick = startGame;
   }
 
   function sceneMarkup(side) {
-    return '<div class="c144DiffScene" data-diff144-scene="' + side + '" data-ready="false"><canvas width="1536" height="1024" data-diff144-canvas="' + side + '"></canvas>' + game.items.map(function (item) { return '<button type="button" class="c144DiffHit" data-diff144-id="' + item.id + '" aria-label="Marcar posible diferencia: ' + C.esc(item.label) + '" style="left:' + item.x + '%;top:' + item.y + '%;width:' + item.w + '%;height:' + item.h + '%"></button>'; }).join("") + '</div>';
+    return '<div class="c144DiffScene" data-diff144-scene="' + side + '" data-ready="false" role="img" aria-label="Escena ' + (side === "left" ? "original" : "modificada") + '. Busca las diferencias sin pistas visuales."><canvas width="1536" height="1024" data-diff144-canvas="' + side + '"></canvas>' + game.items.map(function (item) { return '<button type="button" tabindex="-1" aria-hidden="true" class="c144DiffHit" data-diff144-id="' + item.id + '" style="left:' + item.x + '%;top:' + item.y + '%;width:' + item.w + '%;height:' + item.h + '%"></button>'; }).join("") + '</div>';
   }
 
   function gameHtml() {
@@ -84,31 +86,88 @@
     return { x: Math.max(0, Math.min(canvas.width - width, Math.round(canvas.width * item.x / 100 - width / 2))), y: Math.max(0, Math.min(canvas.height - height, Math.round(canvas.height * item.y / 100 - height / 2))), width: width, height: height };
   }
 
-  function markerRect(rect) {
-    var width = Math.max(34, rect.width * .72), height = Math.max(34, rect.height * .72), size = Math.min(width, height);
-    return { x: rect.x + (rect.width - size) / 2, y: rect.y + (rect.height - size) / 2, width: size, height: size };
+  function clamp01(value) { return Math.max(0, Math.min(1, value)); }
+  function rgbToHsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255; var max = Math.max(r, g, b), min = Math.min(r, g, b), delta = max - min, hue = 0;
+    if (delta) hue = max === r ? ((g - b) / delta) % 6 : max === g ? (b - r) / delta + 2 : (r - g) / delta + 4;
+    hue = ((hue / 6) % 1 + 1) % 1; return [hue, max ? delta / max : 0, max];
   }
-
-  function shapePath(ctx, rect, shape) {
-    var cx = rect.x + rect.width / 2, cy = rect.y + rect.height / 2, radius = Math.min(rect.width, rect.height) * .42;
-    ctx.beginPath();
-    if (shape === "circle") ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    else if (shape === "square") { var side = radius * 1.55; ctx.rect(cx - side / 2, cy - side / 2, side, side); }
-    else if (shape === "triangle") { ctx.moveTo(cx, cy - radius); ctx.lineTo(cx + radius * .9, cy + radius * .72); ctx.lineTo(cx - radius * .9, cy + radius * .72); ctx.closePath(); }
-    else { for (var point = 0; point < 10; point++) { var angle = -Math.PI / 2 + point * Math.PI / 5, length = point % 2 ? radius * .46 : radius, x = cx + Math.cos(angle) * length, y = cy + Math.sin(angle) * length; if (!point) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.closePath(); }
+  function hsvToRgb(h, s, v) {
+    h = ((h % 1) + 1) % 1; var section = Math.floor(h * 6), fraction = h * 6 - section, p = v * (1 - s), q = v * (1 - fraction * s), t = v * (1 - (1 - fraction) * s), values = [[v, t, p], [q, v, p], [p, v, t], [p, q, v], [t, p, v], [v, p, q]][section % 6];
+    return values.map(function (value) { return Math.round(value * 255); });
   }
-
-  function drawCompleteObject(ctx, rect, shape, fill) {
-    var marker = markerRect(rect); ctx.save(); ctx.shadowColor = "rgba(4,31,48,.34)"; ctx.shadowBlur = Math.max(6, marker.width * .08); ctx.shadowOffsetY = Math.max(3, marker.height * .04);
-    shapePath(ctx, marker, shape); ctx.fillStyle = fill; ctx.fill(); ctx.shadowColor = "transparent"; ctx.lineWidth = Math.max(4, marker.width * .045); ctx.strokeStyle = "rgba(255,255,255,.96)"; ctx.stroke();
-    ctx.globalAlpha = .65; ctx.lineWidth = Math.max(2, marker.width * .018); ctx.strokeStyle = "#173e58"; ctx.stroke(); ctx.globalAlpha = .7; ctx.beginPath(); ctx.arc(marker.x + marker.width * .38, marker.y + marker.height * .34, Math.max(3, marker.width * .065), 0, Math.PI * 2); ctx.fillStyle = "#fff"; ctx.fill(); ctx.restore();
+  function featherWeight(x, y, width, height) {
+    var nx = Math.abs((x + .5) / width * 2 - 1), ny = Math.abs((y + .5) / height * 2 - 1), edge = Math.max(nx, ny), weight = clamp01((1 - edge) / .24);
+    return weight * weight * (3 - 2 * weight);
   }
-
+  function recolorNaturalRegion(ctx, rect, variant) {
+    var image = ctx.getImageData(rect.x, rect.y, rect.width, rect.height), data = image.data, hues = [.07, .48, .78], targetHue = hues[variant % hues.length];
+    for (var y = 0; y < rect.height; y++) for (var x = 0; x < rect.width; x++) {
+      var weight = featherWeight(x, y, rect.width, rect.height); if (weight <= 0) continue;
+      var index = (y * rect.width + x) * 4, original = [data[index], data[index + 1], data[index + 2]], hsv = rgbToHsv(original[0], original[1], original[2]);
+      var next = hsvToRgb(targetHue, Math.max(.34, Math.min(.78, hsv[1] * .86 + .16)), Math.max(.16, Math.min(1, hsv[2] * 1.04)));
+      weight *= .76; data[index] = Math.round(original[0] + (next[0] - original[0]) * weight); data[index + 1] = Math.round(original[1] + (next[1] - original[1]) * weight); data[index + 2] = Math.round(original[2] + (next[2] - original[2]) * weight);
+    }
+    ctx.putImageData(image, rect.x, rect.y);
+  }
+  function polygonPath(ctx, cx, cy, radius, sides, rotation) {
+    ctx.beginPath(); for (var point = 0; point < sides; point++) { var angle = (rotation || 0) + point * Math.PI * 2 / sides, x = cx + Math.cos(angle) * radius, y = cy + Math.sin(angle) * radius; if (!point) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.closePath();
+  }
+  function roundedRectPath(ctx, x, y, width, height, radius) {
+    radius = Math.min(radius, width / 2, height / 2); ctx.beginPath(); ctx.moveTo(x + radius, y); ctx.lineTo(x + width - radius, y); ctx.quadraticCurveTo(x + width, y, x + width, y + radius); ctx.lineTo(x + width, y + height - radius); ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height); ctx.lineTo(x + radius, y + height); ctx.quadraticCurveTo(x, y + height, x, y + height - radius); ctx.lineTo(x, y + radius); ctx.quadraticCurveTo(x, y, x + radius, y); ctx.closePath();
+  }
+  function drawIntegratedDetail(ctx, rect, item, side) {
+    var cx = rect.x + rect.width / 2, cy = rect.y + rect.height / 2, size = Math.max(20, Math.min(rect.width, rect.height) * .3), key = item.key || "", left = side === "left";
+    if (key === "clock") size *= 1.38;
+    var isControl = /controls|lights|tubes|energy/.test(key), isContainer = /mug|cup|bottle|watering|pot/.test(key);
+    if (isContainer) size *= 1.5;
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,.38)"; ctx.shadowBlur = Math.max(4, size * .1); ctx.shadowOffsetY = Math.max(2, size * .07); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (key === "clock") {
+      ctx.translate(cx, cy); ctx.strokeStyle = "#7b321f"; ctx.lineWidth = Math.max(4, size * .13); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(left ? -size * .16 : size * .34, -size * .56); ctx.moveTo(0, 0); ctx.lineTo(left ? size * .52 : -size * .48, left ? size * .2 : size * .32); ctx.stroke();
+    } else if (key === "microphone") {
+      var micGradient = ctx.createLinearGradient(cx - size, cy, cx + size, cy); micGradient.addColorStop(0, "#42362f"); micGradient.addColorStop(.5, "#c2aa82"); micGradient.addColorStop(1, "#352c28"); ctx.fillStyle = micGradient;
+      if (left) roundedRectPath(ctx, cx - size * .42, cy - size * .72, size * .84, size * 1.44, size * .38); else polygonPath(ctx, cx, cy, size * .72, 6, Math.PI / 6); ctx.fill();
+      ctx.shadowColor = "transparent"; ctx.strokeStyle = "rgba(27,22,20,.7)"; ctx.lineWidth = Math.max(1.5, size * .045); for (var grille = -2; grille <= 2; grille++) { ctx.beginPath(); ctx.moveTo(cx - size * .28, cy + grille * size * .18); ctx.lineTo(cx + size * .28, cy + grille * size * .18); ctx.stroke(); }
+    } else if (isControl) {
+      ctx.fillStyle = "rgba(32,48,54,.88)"; roundedRectPath(ctx, cx - size * .62, cy - size * .46, size * 1.24, size * .92, size * .12); ctx.fill(); ctx.shadowColor = "transparent"; ctx.strokeStyle = "#d39b42"; ctx.lineWidth = Math.max(4, size * .14); ctx.beginPath(); if (left) { ctx.moveTo(cx, cy - size * .27); ctx.lineTo(cx, cy + size * .27); } else { ctx.moveTo(cx - size * .32, cy); ctx.lineTo(cx + size * .32, cy); } ctx.stroke();
+    } else if (key === "guitar") {
+      ctx.fillStyle = "rgba(76,37,20,.9)"; ctx.beginPath(); if (left) { ctx.moveTo(cx - size * .5, cy - size * .5); ctx.bezierCurveTo(cx + size * .46, cy - size * .35, cx + size * .48, cy + size * .38, cx - size * .12, cy + size * .6); ctx.bezierCurveTo(cx - size * .5, cy + size * .34, cx - size * .64, cy, cx - size * .5, cy - size * .5); } else { ctx.moveTo(cx - size * .55, cy - size * .45); ctx.lineTo(cx + size * .5, cy - size * .28); ctx.lineTo(cx + size * .28, cy + size * .55); ctx.lineTo(cx - size * .42, cy + size * .42); ctx.closePath(); } ctx.fill();
+    } else if (/lamp|bells/.test(key)) {
+      ctx.fillStyle = "#a16a2f"; ctx.beginPath(); if (left) { ctx.moveTo(cx - size * .62, cy + size * .42); ctx.lineTo(cx - size * .28, cy - size * .5); ctx.lineTo(cx + size * .28, cy - size * .5); ctx.lineTo(cx + size * .62, cy + size * .42); } else { ctx.moveTo(cx - size * .7, cy + size * .4); ctx.quadraticCurveTo(cx, cy - size * .82, cx + size * .7, cy + size * .4); } ctx.closePath(); ctx.fill();
+    } else if (isContainer) {
+      ctx.shadowColor = "transparent"; ctx.strokeStyle = "#6c4028"; ctx.lineWidth = Math.max(5, size * .18); ctx.beginPath(); if (left) { ctx.moveTo(cx - size * .06, cy - size * .48); ctx.bezierCurveTo(cx - size * .12, cy - size * .52, cx + size * .68, cy - size * .45, cx + size * .55, cy + size * .34); } else { ctx.moveTo(cx - size * .06, cy - size * .48); ctx.lineTo(cx + size * .55, cy - size * .48); ctx.lineTo(cx + size * .55, cy + size * .34); } ctx.stroke();
+    } else if (key === "plant") {
+      ctx.fillStyle = "#39764d"; ctx.beginPath(); ctx.moveTo(cx, cy + size * .65); ctx.bezierCurveTo(cx + (left ? -.78 : .78) * size, cy + size * .12, cx + (left ? -.58 : .58) * size, cy - size * .65, cx, cy - size * .72); ctx.bezierCurveTo(cx + (left ? .28 : -.28) * size, cy - size * .18, cx + (left ? .3 : -.3) * size, cy + size * .34, cx, cy + size * .65); ctx.fill();
+    } else if (key === "fish") {
+      ctx.fillStyle = "#458f91"; ctx.beginPath(); ctx.moveTo(cx - size * .7, cy); ctx.quadraticCurveTo(cx, cy - size * .5, cx + size * .56, cy); ctx.quadraticCurveTo(cx, cy + size * .5, cx - size * .7, cy); ctx.fill(); ctx.beginPath(); ctx.moveTo(cx + size * .5, cy); if (left) { ctx.lineTo(cx + size, cy - size * .45); ctx.lineTo(cx + size, cy + size * .45); } else { ctx.lineTo(cx + size, cy - size * .58); ctx.lineTo(cx + size * .76, cy); ctx.lineTo(cx + size, cy + size * .58); } ctx.closePath(); ctx.fill();
+    } else {
+      var shapes = [["diamond", "hexagon"], ["tag", "diamond"], ["hexagon", "tag"]], shape = shapes[item.variant % shapes.length][left ? 0 : 1], gradient = ctx.createLinearGradient(cx - size, cy - size, cx + size, cy + size); gradient.addColorStop(0, "#c39a5f"); gradient.addColorStop(.55, "#80603f"); gradient.addColorStop(1, "#49372c"); ctx.fillStyle = gradient;
+      if (shape === "diamond") polygonPath(ctx, cx, cy, size * .66, 4, Math.PI / 4); else if (shape === "hexagon") polygonPath(ctx, cx, cy, size * .66, 6, Math.PI / 6); else roundedRectPath(ctx, cx - size * .68, cy - size * .43, size * 1.36, size * .86, size * .13); ctx.fill();
+      ctx.shadowColor = "transparent"; ctx.globalAlpha = .58; ctx.lineWidth = Math.max(2, size * .045); ctx.strokeStyle = "#30251f"; ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function drawContextProp(ctx, rect, item) {
+    var cx = rect.x + rect.width / 2, cy = rect.y + rect.height / 2, size = Math.max(24, Math.min(rect.width, rect.height) * .31), family = item.sceneId === "music-studio" ? "music" : item.sceneId === "botanical-greenhouse" ? "nature" : item.sceneId === "ocean-lab" ? "ocean" : item.sceneId === "space-station" || item.sceneId === "observatory" ? "space" : "tool";
+    ctx.save(); ctx.translate(cx, cy); ctx.shadowColor = "rgba(0,0,0,.42)"; ctx.shadowBlur = Math.max(4, size * .11); ctx.shadowOffsetY = Math.max(2, size * .08); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (family === "music") {
+      ctx.strokeStyle = "#d7a64d"; ctx.fillStyle = "#9a5a28"; ctx.lineWidth = Math.max(4, size * .16); ctx.beginPath(); ctx.moveTo(size * .18, -size * .7); ctx.lineTo(size * .18, size * .34); ctx.lineTo(size * .62, size * .18); ctx.stroke(); ctx.beginPath(); ctx.ellipse(-size * .08, size * .42, size * .34, size * .23, -.22, 0, Math.PI * 2); ctx.fill();
+    } else if (family === "nature") {
+      ctx.fillStyle = "#3f8f5e"; ctx.beginPath(); ctx.moveTo(0, size * .62); ctx.bezierCurveTo(-size * .85, size * .14, -size * .58, -size * .72, 0, -size * .78); ctx.bezierCurveTo(size * .7, -size * .38, size * .72, size * .32, 0, size * .62); ctx.fill(); ctx.shadowColor = "transparent"; ctx.strokeStyle = "#24593d"; ctx.lineWidth = Math.max(2, size * .07); ctx.beginPath(); ctx.moveTo(-size * .08, size * .75); ctx.lineTo(size * .18, -size * .5); ctx.stroke();
+    } else if (family === "ocean") {
+      ctx.fillStyle = "#4aa6a8"; ctx.beginPath(); ctx.ellipse(-size * .08, 0, size * .68, size * .38, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.moveTo(size * .5, 0); ctx.lineTo(size, -size * .42); ctx.lineTo(size, size * .42); ctx.closePath(); ctx.fill(); ctx.shadowColor = "transparent"; ctx.fillStyle = "#102f3b"; ctx.fillRect(-size * .42, -size * .08, Math.max(2, size * .08), Math.max(2, size * .08));
+    } else if (family === "space") {
+      ctx.fillStyle = "#b78743"; roundedRectPath(ctx, -size * .35, -size * .35, size * .7, size * .7, size * .1); ctx.fill(); ctx.fillStyle = "#357a91"; ctx.fillRect(-size, -size * .38, size * .52, size * .76); ctx.fillRect(size * .48, -size * .38, size * .52, size * .76); ctx.shadowColor = "transparent"; ctx.strokeStyle = "#d9c07e"; ctx.lineWidth = Math.max(2, size * .06); ctx.beginPath(); ctx.moveTo(0, -size * .35); ctx.lineTo(0, -size * .82); ctx.stroke();
+    } else {
+      ctx.strokeStyle = "#a9793e"; ctx.lineWidth = Math.max(7, size * .22); ctx.beginPath(); ctx.moveTo(-size * .62, size * .56); ctx.lineTo(size * .45, -size * .5); ctx.stroke(); ctx.shadowColor = "transparent"; ctx.strokeStyle = "#5a3d28"; ctx.lineWidth = Math.max(3, size * .09); polygonPath(ctx, size * .56, -size * .58, size * .34, 6, Math.PI / 6); ctx.stroke();
+    }
+    ctx.restore();
+  }
   function applyDifference(ctx, canvas, item, side) {
-    var rect = rectFor(canvas, item), palettes = [["#2fa9dc", "#ef7a18"], ["#49b97d", "#7b61d8"], ["#f0c62f", "#e95065"]], palette = palettes[item.variant % palettes.length];
-    if (item.kind === "color") drawCompleteObject(ctx, rect, "circle", side === "left" ? palette[0] : palette[1]);
-    else if (item.kind === "shape") { var leftShapes = ["circle", "square", "triangle"], rightShapes = ["square", "triangle", "star"]; drawCompleteObject(ctx, rect, side === "left" ? leftShapes[item.variant] : rightShapes[item.variant], "#ffd24a"); }
-    else if (item.kind === "presence" && side === "right") drawCompleteObject(ctx, rect, "star", palette[1]);
+    var rect = rectFor(canvas, item);
+    if (item.kind === "color" && side === "right") recolorNaturalRegion(ctx, rect, item.variant);
+    else if (item.kind === "shape") drawIntegratedDetail(ctx, rect, item, side);
+    else if (item.kind === "presence" && side === "right") drawContextProp(ctx, rect, item);
   }
 
   function loadScenes() {
@@ -140,7 +199,7 @@
   function answer(item, scene, event) {
     if (!game || game.finished || scene.dataset.ready !== "true") return;
     if (item && game.found.has(item.id)) return;
-    if (item) { game.found.add(item.id); C.body().querySelectorAll('[data-diff144-id="' + selectorValue(item.id) + '"]').forEach(function (button) { button.classList.add("found"); button.setAttribute("aria-label", "Diferencia encontrada: " + item.label); }); C.sound("good"); updateHud(); if (game.found.size >= game.items.length) finish("complete"); return; }
+    if (item) { game.found.add(item.id); C.body().querySelectorAll('[data-diff144-id="' + selectorValue(item.id) + '"]').forEach(function (button) { button.classList.add("found"); button.innerHTML = '<span aria-hidden="true">✓</span>'; }); C.sound("good"); updateHud(); if (game.found.size >= game.items.length) finish("complete"); return; }
     game.misses++; var rect = scene.getBoundingClientRect(), marker = document.createElement("span"); marker.className = "c144DiffMiss"; marker.textContent = "×"; marker.style.left = Math.max(2, Math.min(98, (event.clientX - rect.left) / rect.width * 100)) + "%"; marker.style.top = Math.max(2, Math.min(98, (event.clientY - rect.top) / rect.height * 100)) + "%"; scene.appendChild(marker); setTimeout(function () { marker.remove(); }, 620); C.sound("bad"); updateHud();
   }
 
@@ -149,15 +208,20 @@
   function updateHud() { var body = C.body(); if (!body || !game) return; var found = body.querySelector("[data-diff144-found]"), time = body.querySelector("[data-diff144-time]"), misses = body.querySelector("[data-diff144-misses]"); if (found) found.textContent = game.found.size + "/" + game.items.length; if (time) time.textContent = Math.ceil(game.remaining) + " s"; if (misses) misses.textContent = game.misses; }
 
   async function saveScore(points) {
-    if (root.CocoDailyV134 && typeof root.CocoDailyV134.complete === "function") await root.CocoDailyV134.complete("diferencias", userId());
-    if (userId() === "visitante") return;
-    var api = C.client(); if (!api) return;
-    try { var result = await api.rpc("registrar_partida_coco", { p_juego: "diferencias", p_puntos: points }); if (result.error && /could not find|schema cache|PGRST202/i.test(result.error.message || result.error.code || "")) await api.from("partidas").insert({ jugador: userId(), juego: "diferencias", puntos: points }); } catch (_) {}
+    var result = null, arcade = root.CocoArcadeV133;
+    if (arcade && typeof arcade.saveScore === "function") result = await arcade.saveScore("diferencias", points, { found: game && game.found.size || 0, total: game && game.items.length || 0, misses: game && game.misses || 0, level: levelSelected }, userId());
+    else if (userId() !== "visitante") {
+      var api = C.client();
+      try { result = await api.rpc("registrar_partida_coco", { p_juego: "diferencias", p_puntos: points }); if (result.error && /could not find|schema cache|PGRST202/i.test(result.error.message || result.error.code || "")) result = await api.from("partidas").insert({ jugador: userId(), juego: "diferencias", puntos: points }); result = result && result.error ? { ok: false, error: result.error.message || "No se pudo guardar." } : { ok: true }; } catch (error) { result = { ok: false, error: error && error.message || "No se pudo guardar." }; }
+    }
+    if (result && result.ok && root.CocoDailyV134 && typeof root.CocoDailyV134.complete === "function") await root.CocoDailyV134.complete("diferencias", userId());
+    return result || { ok: userId() === "visitante", local: true };
   }
 
   async function finish(reason) {
-    if (!game || game.finished) return; game.finished = true; clearInterval(timer); var points = score(); await saveScore(points); C.sound(reason === "complete" ? "finish" : "bad"); var body = C.body(); if (!body) return;
-    C.setModalTitle("Encuentra las diferencias", "RESULTADO · CLASIFICACIÓN GENERAL"); body.innerHTML = '<main class="c144DiffResult"><section class="c144Card"><span class="c144Eyebrow">' + (reason === "complete" ? "ESCENARIO COMPLETADO" : "TIEMPO FINALIZADO") + '</span><h3>' + game.found.size + ' de ' + game.items.length + ' diferencias</h3><div class="c144RunnerMetrics"><div><b>' + points + '</b><span>Puntos</span></div><div><b>' + game.misses + '</b><span>Clics falsos</span></div><div><b>' + Math.ceil(game.limit - game.remaining) + ' s</b><span>Tiempo</span></div></div><p class="c144HealthyEnd">Buen entrenamiento visual. Descansa la vista mirando a lo lejos durante unos instantes.</p><div class="c144Actions" style="justify-content:center"><button type="button" class="c144Primary" data-diff144-close>Volver</button></div></section></main>'; body.querySelector("[data-diff144-close]").onclick = C.closeModal;
+    if (!game || game.finished) return; game.finished = true; clearInterval(timer); var points = score(), saved = await saveScore(points); C.sound(reason === "complete" ? "finish" : "bad"); var body = C.body(); if (!body) return;
+    var saveCopy = saved && saved.test ? "Partida de prueba completada sin duplicar puntos. Solo el primer resultado válido del día puntúa." : saved && saved.ok ? "Puntuación guardada correctamente." : "No se pudo guardar la puntuación todavía.";
+    C.setModalTitle("Encuentra las diferencias", "RESULTADO · CLASIFICACIÓN GENERAL"); body.innerHTML = '<main class="c144DiffResult"><section class="c144Card"><span class="c144Eyebrow">' + (reason === "complete" ? "ESCENARIO COMPLETADO" : "TIEMPO FINALIZADO") + '</span><h3>' + game.found.size + ' de ' + game.items.length + ' diferencias</h3><div class="c144RunnerMetrics"><div><b>' + points + '</b><span>' + (saved && saved.test ? 'Resultado de prueba' : 'Puntos') + '</span></div><div><b>' + game.misses + '</b><span>Clics falsos</span></div><div><b>' + Math.ceil(game.limit - game.remaining) + ' s</b><span>Tiempo</span></div></div><p class="c144Notice">' + C.esc(saveCopy) + '</p><p class="c144HealthyEnd">Buen entrenamiento visual. Descansa la vista mirando a lo lejos durante unos instantes.</p><div class="c144Actions" style="justify-content:center"><button type="button" class="c144Primary" data-diff144-close>Volver</button></div></section></main>'; body.querySelector("[data-diff144-close]").onclick = C.closeModal;
   }
 
   async function startGame() {
@@ -167,11 +231,11 @@
     loadScenes();
   }
 
-  async function open() { C.openModal({ module: "differences", title: "Encuentra las diferencias", kicker: "ATENCIÓN VISUAL · v146.0", html: '<div class="c144Empty"><b>Coco está preparando el escenario…</b></div>', dispose: dispose }); user = await resolveUser(); renderIntro(); }
+  async function open() { C.openModal({ module: "differences", title: "Encuentra las diferencias", kicker: "ATENCIÓN VISUAL · v148.0", html: '<div class="c144Empty"><b>Coco está preparando el escenario…</b></div>', dispose: dispose }); user = await resolveUser(); renderIntro(); }
   function dispose() { clearInterval(timer); if (controller) controller.abort(); controller = null; if (game) game.finished = true; game = null; }
 
   var api = {
-    version: "146.0.0", open: open, scenes: SCENES,
+    version: "148.0.0", open: open, scenes: SCENES,
     config: config, rectFor: rectFor,
     materializeForAudit: function (sceneId, variant, count) {
       var scene = SCENES.find(function (item) { return item.id === sceneId; });
@@ -180,8 +244,10 @@
       return materialize({ scene: scene, variant: variant }, Math.max(1, Math.min(scene.differences.length, Number(count) || 6)));
     },
     applyDifferenceForAudit: applyDifference,
-    audit: function () { return { sceneCount: SCENES.length, variantsPerScene: VARIANTS.length, combinationsPerLevel: SCENES.length * VARIANTS.length, levels: { basic: 4, intermediate: 5, advanced: 6 }, everySceneHasSix: SCENES.every(function (scene) { return scene.differences.length === 6; }), differenceKinds: KINDS.slice(), allowedKindsOnly: true, brokenObjects: false, deformedObjects: false, blurredRemoval: false, completeObjects: true, sameDefinitionForVisualAndHit: true, normalizedCoordinates: true, clickableFromBothImages: true, falseClicksAccepted: false, brightness: 1.2, renderer: "dual-canvas-natural-objects-v146" }; }
+    audit: function () { return { sceneCount: SCENES.length, variantsPerScene: VARIANTS.length, combinationsPerLevel: SCENES.length * VARIANTS.length, levels: { basic: 4, intermediate: 5, advanced: 6 }, everySceneHasSix: SCENES.every(function (scene) { return scene.differences.length === 6; }), differenceKinds: KINDS.slice(), allowedKindsOnly: true, brokenObjects: false, deformedObjects: false, blurredRemoval: false, completeObjects: true, preAnswerMarkers: false, genericCircleMarkers: false, genericStarMarkers: false, foundFeedbackOnlyAfterCorrectTap: true, sameDefinitionForVisualAndHit: true, normalizedCoordinates: true, clickableFromBothImages: true, falseClicksAccepted: false, brightness: 1.2, unlimitedTestAccount: true, extraTestRunsRanked: false, renderer: "dual-canvas-integrated-scene-changes-v148" }; }
   };
+  root.CocoDifferencesProV148 = api;
+  root.CocoDifferencesProV147 = api;
   root.CocoDifferencesProV146 = api;
   root.CocoDifferencesProV144 = api;
 })(window);

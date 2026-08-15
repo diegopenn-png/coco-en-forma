@@ -2,6 +2,7 @@
   "use strict";
 
   var CONTENT_VERSION = "142.0.0";
+  var DAILY_POLICY_VERSION = "148.0.0";
   /* Conserva las claves v141 para no reiniciar el historial de rotación ni
      cambiar una misión ya elegida al actualizar la PWA durante el mismo día. */
   var STORAGE_PREFIX = "coco_v141_rotation_";
@@ -10,6 +11,7 @@
   var FALLBACK_USER = "visitante";
   var remoteClient = null;
   var remoteUserId = "";
+  var remoteUserEmail = "";
   var remoteReady = false;
   var remoteUnavailable = false;
   var authWatcherInstalled = false;
@@ -34,6 +36,22 @@
 
   function cleanUser(value) {
     return String(value || FALLBACK_USER).replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 96) || FALLBACK_USER;
+  }
+
+  function cleanEmail(value) {
+    return String(value || "").trim().toLocaleLowerCase("en-US");
+  }
+
+  function unlimitedTestEmails() {
+    var config = window.COCO_CONFIG || {};
+    return (Array.isArray(config.cuentasPruebaIlimitadas) ? config.cuentasPruebaIlimitadas : [])
+      .map(cleanEmail).filter(Boolean);
+  }
+
+  function isUnlimitedUser(userId) {
+    var requested = String(userId || remoteUserId || "");
+    return Boolean(requested && remoteUserId && requested === String(remoteUserId) &&
+      remoteUserEmail && unlimitedTestEmails().indexOf(remoteUserEmail) >= 0);
   }
 
   function stableStringify(value) {
@@ -250,15 +268,22 @@
     return value;
   }
 
-  function setActiveUser(value) {
+  function setActiveUser(value, email) {
     var next = value ? String(value) : "";
-    if (next === remoteUserId) return remoteUserId || null;
+    var emailProvided = arguments.length > 1;
+    var nextEmail = emailProvided ? cleanEmail(email) : next === remoteUserId ? remoteUserEmail : "";
+    if (next === remoteUserId && nextEmail === remoteUserEmail) return remoteUserId || null;
+    var userChanged = next !== remoteUserId;
     remoteUserId = next;
-    remoteReady = false;
-    dailyCallCounters = Object.create(null);
-    generatedCallCounters = Object.create(null);
-    try { window.dispatchEvent(new CustomEvent("coco:daily-user", { detail: { userId: remoteUserId || null, day: localToday() } })); } catch {}
-    try { window.dispatchEvent(new CustomEvent("coco:daily-sync", { detail: { userId: remoteUserId || null, day: localToday(), source: "user-change" } })); } catch {}
+    remoteUserEmail = nextEmail;
+    if (userChanged) {
+      remoteReady = false;
+      dailyCallCounters = Object.create(null);
+      generatedCallCounters = Object.create(null);
+    }
+    var detail = { userId: remoteUserId || null, day: localToday(), unlimitedTesting: isUnlimitedUser(remoteUserId) };
+    try { window.dispatchEvent(new CustomEvent("coco:daily-user", { detail: detail })); } catch {}
+    try { window.dispatchEvent(new CustomEvent("coco:daily-sync", { detail: Object.assign({ source: "user-change" }, detail) })); } catch {}
     return remoteUserId || null;
   }
 
@@ -278,7 +303,8 @@
     try {
       var result = api.auth.onAuthStateChange(function (_event, session) {
         var nextUserId = session && session.user && session.user.id ? session.user.id : "";
-        setActiveUser(nextUserId);
+        var nextUserEmail = session && session.user && session.user.email ? session.user.email : "";
+        setActiveUser(nextUserId, nextUserEmail);
         remoteReady = Boolean(nextUserId);
         if (nextUserId) setTimeout(establishRemote, 0);
       });
@@ -304,6 +330,7 @@
   }
 
   function localDailyRows(userId) {
+    if (isUnlimitedUser(userId)) return [];
     var rows = [], prefix = DAILY_PREFIX + cleanUser(userId) + "_";
     try {
       for (var index = 0; index < localStorage.length; index++) {
@@ -326,7 +353,7 @@
         setActiveUser("");
         return false;
       }
-      var syncUserId = session.user.id; setActiveUser(syncUserId); remoteReady = true;
+      var syncUserId = session.user.id; setActiveUser(syncUserId, session.user.email || ""); remoteReady = true;
       var remote = await api.from("coco_content_rotation").select("scope_key,state,content_version,updated_at").eq("user_id", syncUserId), remoteTimes = Object.create(null);
       if (!remote.error && Array.isArray(remote.data)) {
         remote.data.forEach(function (row) {
@@ -380,6 +407,7 @@
   }
 
   function localDailyUsed(gameId, userId, day) {
+    if (isUnlimitedUser(userId)) return false;
     try { return localStorage.getItem(dailyKey(gameId, userId, day)) === "1"; } catch { return false; }
   }
 
@@ -388,6 +416,11 @@
     if (gameId === "padel") return { ok: true, tool: true, source: "local" };
     if (!resolvedUser) return { ok: false, error: "missing-authenticated-user", source: "local" };
     if (cleanUser(remoteUserId) !== cleanUser(resolvedUser)) setActiveUser(resolvedUser);
+    if (!remoteUserEmail) await establishRemote();
+    if (isUnlimitedUser(resolvedUser)) {
+      try { window.dispatchEvent(new CustomEvent("coco:test-play-completed", { detail: { gameId: gameId, userId: resolvedUser, day: day } })); } catch {}
+      return { ok: true, unlimited: true, ranked: false, source: "test" };
+    }
     if (localDailyUsed(gameId, resolvedUser, day)) return { ok: true, daily: true, already: true, source: "local" };
     try { localStorage.setItem(dailyKey(gameId, resolvedUser, day), "1"); } catch {}
     try { window.dispatchEvent(new CustomEvent("coco:daily-completed", { detail: { gameId: gameId, userId: resolvedUser || null, day: day } })); } catch {}
@@ -411,6 +444,8 @@
 
   async function checkDaily(gameId, userId) {
     if (gameId === "padel") return { ok: true, tool: true, source: "check" };
+    if (!remoteUserEmail) await establishRemote();
+    if (isUnlimitedUser(userId)) return { ok: true, unlimited: true, ranked: false, source: "test" };
     var allowed = await canPlayDaily(gameId, userId);
     return allowed ? { ok: true, source: "check" } : { ok: false, daily: true, source: "check" };
   }
@@ -419,6 +454,8 @@
     var day = localToday(), resolvedUser = userId || remoteUserId;
     if (gameId === "padel") return true;
     if (!resolvedUser) return true;
+    if (!remoteUserEmail || String(remoteUserId || "") !== String(resolvedUser)) await establishRemote();
+    if (isUnlimitedUser(resolvedUser)) return true;
     if (localDailyUsed(gameId, resolvedUser, day)) return false;
     var api = client(); if (!api) return true;
     try {
@@ -519,7 +556,7 @@
     stableId: itemId,
     canonical: stableStringify,
     hash: hash,
-    status: function () { return { contentVersion: CONTENT_VERSION, cloudReady: remoteReady, localFallback: remoteUnavailable || !remoteReady, userId: remoteUserId || null, authWatcher: Boolean(authSubscription) }; },
+    status: function () { return { contentVersion: CONTENT_VERSION, dailyPolicyVersion: DAILY_POLICY_VERSION, cloudReady: remoteReady, localFallback: remoteUnavailable || !remoteReady, userId: remoteUserId || null, authWatcher: Boolean(authSubscription), unlimitedTesting: isUnlimitedUser(remoteUserId) }; },
     hydrate: establishRemote
   };
   window.CocoDailyV134 = {
@@ -530,11 +567,14 @@
     today: localToday,
     sync: establishRemote,
     setUser: setActiveUser,
-    userId: function () { return remoteUserId || null; }
+    userId: function () { return remoteUserId || null; },
+    isUnlimited: isUnlimitedUser,
+    policyVersion: DAILY_POLICY_VERSION
   };
   window.CocoDailyV135 = window.CocoDailyV134;
   window.CocoDailyV141 = window.CocoDailyV134;
   window.CocoDailyV142 = window.CocoDailyV134;
+  window.CocoDailyV148 = window.CocoDailyV134;
   window.CocoAnalyticsV134 = { track: track, mode: "local-only", exportsPersonalData: false };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhanceCopyAndAccessibility);

@@ -1,0 +1,48 @@
+{
+  "product": "Coco en Forma",
+  "version": "148.0",
+  "base_version": "147.0",
+  "date": "2026-08-15",
+  "public_deployment_performed": false,
+  "backup_path": "coco-v148/base-v1470",
+  "service_worker_cache": "coco-en-forma-v148.0.0-r1",
+  "unlimited_test_accounts": [
+    "diegopenn@icloud.com"
+  ],
+  "default_daily_limit_per_game": 1,
+  "test_account_daily_limit_per_game": null,
+  "extra_test_runs_ranked": false,
+  "padel_unlimited_for_all_users": true,
+  "database_migrations_added": [],
+  "modified_files": [
+    "coco-v142-runtime.js",
+    "coco-v142-unified.js",
+    "coco-v144-core.js",
+    "coco-v144-differences.js",
+    "coco-v144-padel.js",
+    "coco-v144-runner.js",
+    "index.html",
+    "manifest.json",
+    "manifest.webmanifest",
+    "sw.js"
+  ],
+  "added_files": [
+    "ENTREGA-V148.0.md",
+    "ARCHIVOS-V148.0.md",
+    "PRUEBAS-V148.0.md",
+    "LEEME-RESPALDO-Y-PRUEBA-V148.0.txt",
+    "RELEASE-MANIFEST-v148.0.json",
+    "SHA256SUMS-v148.0.txt",
+    "qa/v148-functional-tests.mjs",
+    "qa/v148-browser-tests.mjs",
+    "qa/v148-unlimited-browser-tests.mjs"
+  ],
+  "removed_files": [],
+  "tests": {
+    "functional": "22/22 PASS",
+    "unlimited_policy_browser": "5/5 PASS",
+    "full_browser_regression": "14/14 PASS",
+    "javascript_errors": 0,
+    "local_404_responses": 0
+  }
+}

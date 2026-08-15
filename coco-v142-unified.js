@@ -14,6 +14,7 @@
   var legacyEffects = window.CocoEffectsV134 || null;
   var completionPromises = Object.create(null);
   var celebratedCompletions = Object.create(null);
+  var unlimitedCompletionSequence = 0;
   var auditState = {
     correct: 0,
     incorrect: 0,
@@ -306,7 +307,8 @@
     var resolvedUser = userId || (daily && typeof daily.userId === "function" ? daily.userId() : "");
     if (!resolvedUser) return Promise.resolve({ ok: false, error: "missing-authenticated-user" });
     var day = daily && typeof daily.today === "function" ? daily.today() : new Date().toISOString().slice(0, 10);
-    var completionKey = String(resolvedUser) + "|" + gameId + "|" + day;
+    var unlimited = Boolean(daily && typeof daily.isUnlimited === "function" && daily.isUnlimited(resolvedUser));
+    var completionKey = String(resolvedUser) + "|" + gameId + "|" + day + (unlimited ? "|test-" + (++unlimitedCompletionSequence) : "");
     if (completionPromises[completionKey]) return completionPromises[completionKey];
     auditState.completions[gameId] = (auditState.completions[gameId] || 0) + 1;
     completionPromises[completionKey] = Promise.resolve(
@@ -316,8 +318,10 @@
     ).then(function (result) {
       result = result || { ok: false };
       if (result.ok) {
-        markCardComplete(gameId);
-        if (!result.already) completionCelebration(completionKey);
+        if (result.unlimited) clearCardComplete(gameId);
+        else markCardComplete(gameId);
+        var celebrationKey = result.unlimited && !unlimited ? completionKey + "|resolved-test-" + (++unlimitedCompletionSequence) : completionKey;
+        if (!result.already) completionCelebration(celebrationKey);
       }
       return result;
     }).catch(function (error) {

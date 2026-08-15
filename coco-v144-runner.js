@@ -2,7 +2,7 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoRunnerV146) return;
+  if (!C || root.CocoRunnerV148) return;
 
   var GAME_ID = "cococorre";
   var HISTORY_KEY = "coco_runner_history_v144";
@@ -116,6 +116,13 @@
     return token;
   }
 
+  function tokenCaption(token) {
+    if (token.display === "category") return token.item.label;
+    if (token.display === "calculation") return "calcula";
+    if (token.display === "number") return "número";
+    return token.shape.label;
+  }
+
   function correctGapLimitForLevel(chosenLevel) { return chosenLevel === 1 ? 2 : chosenLevel === 2 ? 3 : 4; }
   function correctRunLimitForLevel(chosenLevel) { return chosenLevel === 1 ? 4 : 3; }
   function targetRateForLevel(chosenLevel) { return chosenLevel === 1 ? .58 : chosenLevel === 2 ? .48 : .4; }
@@ -165,10 +172,12 @@
   }
 
   function currentUserId() { return user && user.id || root.CocoDailyV134 && root.CocoDailyV134.userId && root.CocoDailyV134.userId() || "visitante"; }
+  function unlimitedTesting() { return Boolean(root.CocoDailyV134 && typeof root.CocoDailyV134.isUnlimited === "function" && root.CocoDailyV134.isUnlimited(currentUserId())); }
 
   async function resolveUser() {
     var session = await C.session();
     if (!session || !session.user) return { id: "visitante", name: "Jugador Coco" };
+    if (root.CocoDailyV134 && typeof root.CocoDailyV134.setUser === "function") root.CocoDailyV134.setUser(session.user.id, session.user.email || "");
     var metadata = session.user.user_metadata || {}, name = metadata.apodo || metadata.username || (session.user.email || "Jugador Coco").split("@")[0];
     try { var profile = await C.client().from("perfiles").select("apodo").eq("id", session.user.id).maybeSingle(); if (!profile.error && profile.data && profile.data.apodo) name = profile.data.apodo; } catch (_) {}
     return { id: session.user.id, name: name };
@@ -185,8 +194,8 @@
   }
 
   function introHtml(allowed) {
-    var stats = runnerStats();
-    return '<main class="c144RunnerIntro"><div class="c144RunnerIntroGrid"><section class="c144Card"><span class="c144Eyebrow">MISIÓN COGNITIVA FINITA · CLASIFICACIÓN GENERAL</span><h3>Coco Corre<br>Misión Cerebro</h3><p>Un recorrido original de tres carriles con principio y final. Entrena atención, memoria de trabajo y control inhibitorio en una sesión breve y saludable.</p><div class="c144RunnerFeatures"><div><b>3 tramos</b><span>Atención, memoria y flexibilidad</span></div><div><b>2–4 minutos</b><span>Meta clara, nunca infinito</span></div><div><b>Hasta 320 puntos</b><span>Una puntuación general al completar</span></div></div><div class="c144LevelButtons" role="group" aria-label="Dificultad"><button type="button" data-runner-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico</button><button type="button" data-runner-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio</button><button type="button" data-runner-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado</button></div><p class="c144Notice">La dificultad cambia las reglas y los distractores, no solo la velocidad.</p><div class="c144Actions"><button type="button" class="c144Primary" data-runner-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? "Comenzar misión de hoy" : "Completado hoy") + '</button></div><p><small>Controles: desliza o usa ← → para cambiar de carril, ↑ para saltar, ↓ para agacharte. Las colisiones no terminan la partida.</small></p></section><aside class="c144Card c144RunnerCoco"><img src="./coco-v2-runner-v144.png" alt="Coco V2 estable, con cerebro visible, mono azul de mecánico y herramientas"><div class="c144PersonalSummary"><div><b>' + stats.missions + '</b><span>misiones</span></div><div><b>' + stats.average + '%</b><span>precisión media</span></div><div><b>' + stats.best + '%</b><span>mejor precisión</span></div></div></aside></div><p class="c144HealthyEnd">Coco en Forma no usa monedas, vidas, cofres, tiendas, publicidad ni recompensas aleatorias. Al terminar, Coco te invitará a descansar.</p></main>';
+    var stats = runnerStats(), unlimited = unlimitedTesting();
+    return '<main class="c144RunnerIntro"><div class="c144RunnerIntroGrid"><section class="c144Card"><span class="c144Eyebrow">MISIÓN COGNITIVA FINITA · CLASIFICACIÓN GENERAL</span><h3>Coco Corre<br>Misión Cerebro</h3><p>Un recorrido original de tres carriles con principio y final. Entrena atención, memoria de trabajo y control inhibitorio en una sesión breve y saludable.</p><div class="c144RunnerFeatures"><div><b>3 tramos</b><span>Atención, memoria y flexibilidad</span></div><div><b>2–4 minutos</b><span>Meta clara, nunca infinito</span></div><div><b>Hasta 320 puntos</b><span>Una puntuación general al completar</span></div></div><div class="c144LevelButtons" role="group" aria-label="Dificultad"><button type="button" data-runner-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico</button><button type="button" data-runner-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio</button><button type="button" data-runner-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado</button></div><p class="c144Notice">La dificultad cambia las reglas y los distractores, no solo la velocidad.</p>' + (unlimited ? '<p class="c144Notice">Modo de pruebas activo: puedes repetir sin límite. Solo el primer resultado válido del día puntúa en la clasificación.</p>' : '') + '<div class="c144Actions"><button type="button" class="c144Primary" data-runner-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? (unlimited ? "Comenzar partida de prueba" : "Comenzar misión de hoy") : "Completado hoy") + '</button></div><p><small>Controles: desliza o usa ← → para cambiar de carril, ↑ para saltar, ↓ para agacharte. Las colisiones no terminan la partida.</small></p></section><aside class="c144Card c144RunnerCoco"><img src="./coco-v2-runner-v144.png" alt="Coco V2 estable, con cerebro visible, mono azul de mecánico y herramientas"><div class="c144PersonalSummary"><div><b>' + stats.missions + '</b><span>misiones</span></div><div><b>' + stats.average + '%</b><span>precisión media</span></div><div><b>' + stats.best + '%</b><span>mejor precisión</span></div></div></aside></div><p class="c144HealthyEnd">Coco en Forma no usa monedas, vidas, cofres, tiendas, publicidad ni recompensas aleatorias. Al terminar, Coco te invitará a descansar.</p></main>';
   }
 
   async function renderIntro() {
@@ -197,7 +206,11 @@
   function bindIntro() {
     var body = C.body();
     body.querySelectorAll("[data-runner-level]").forEach(function (button) { button.onclick = function () { levelSelected = Number(button.dataset.runnerLevel) || 1; renderIntro(); }; });
-    var start = body.querySelector("[data-runner-start]"); if (start && !start.disabled) start.onclick = startGame;
+    var start = body.querySelector("[data-runner-start]");
+    if (start && !start.disabled) {
+      start.addEventListener("pointerdown", function () { if (C.unlockAudio) C.unlockAudio(); }, { passive: true });
+      start.onclick = startGame;
+    }
   }
 
   function gameDuration(chosenLevel) {
@@ -212,7 +225,7 @@
   async function startGame() {
     if (!(await canPlay())) { renderIntro(); return; }
     var body = C.body(); if (!body) return;
-    var duration = gameDuration(levelSelected), seed = C.today() + "|" + currentUserId() + "|" + levelSelected;
+    var duration = gameDuration(levelSelected), seed = C.today() + "|" + currentUserId() + "|" + levelSelected + (unlimitedTesting() ? "|prueba|" + Date.now() : "");
     game = { level: levelSelected, mission: missionForLevel(levelSelected, seed), random: randomFrom(seed + "|runtime"), duration: duration, elapsed: 0, segment: 0, flexIndex: 0, memoryIndex: 0, lane: 0, previousLane: 0, action: "idle", actionUntil: 0, paused: false, stopped: false, objects: [], nextSpawn: .08, forcedCorrect: 2, spawnsSinceCorrect: 0, correctsSinceDistractor: 0, correct: 0, distractors: 0, missed: 0, expected: 0, obstacles: 0, obstaclesPassed: 0, collisions: 0, reactions: [], sequences: 0, ruleChanges: 0, celebrationDone: false, lastRuleChange: 0, startedAt: Date.now() };
     body.innerHTML = stageHtml(); controller = new AbortController();
     document.addEventListener("keydown", keyControl, { signal: controller.signal });
@@ -220,7 +233,7 @@
     var stage = body.querySelector("[data-runner-stage]"); stage.dataset.level = String(levelSelected); stage.addEventListener("pointerdown", pointerDown, { signal: controller.signal }); stage.addEventListener("pointerup", pointerUp, { signal: controller.signal }); stage.addEventListener("pointercancel", function () { pointerStart = null; }, { signal: controller.signal });
     body.querySelector("[data-runner-pause]").onclick = togglePause;
     document.addEventListener("visibilitychange", visibilityPause, { signal: controller.signal });
-    updateLane(); updateHud(); showMessage("Tramo 1 · Atención selectiva", "good"); C.sound("good"); lastFrame = performance.now(); frame = requestAnimationFrame(loop);
+    updateLane(); updateHud(); showMessage("Tramo 1 · Atención selectiva", "good"); C.sound("start"); lastFrame = performance.now(); frame = requestAnimationFrame(loop);
   }
 
   function keyControl(event) {
@@ -239,10 +252,10 @@
   function move(direction) {
     if (!game || game.paused || game.stopped) return; var now = performance.now();
     game.previousLane = game.lane;
-    if (direction === "left") game.lane = Math.max(-1, game.lane - 1);
-    else if (direction === "right") game.lane = Math.min(1, game.lane + 1);
-    else if (direction === "up") { game.action = "jump"; game.actionUntil = now + 650; }
-    else if (direction === "down") { game.action = "duck"; game.actionUntil = now + 720; }
+    if (direction === "left") { game.lane = Math.max(-1, game.lane - 1); C.sound("move"); }
+    else if (direction === "right") { game.lane = Math.min(1, game.lane + 1); C.sound("move"); }
+    else if (direction === "up") { game.action = "jump"; game.actionUntil = now + 650; C.sound("jump"); }
+    else if (direction === "down") { game.action = "duck"; game.actionUntil = now + 720; C.sound("duck"); }
     updateLane();
   }
 
@@ -259,22 +272,22 @@
   function spawnObject() {
     var body = C.body(); if (!body || !game) return;
     var obstacleRate = game.level === 1 ? .18 : game.level === 2 ? .24 : .29, mustBeCorrect = game.forcedCorrect > 0 || game.spawnsSinceCorrect >= correctGapLimit(), obstacle = !mustBeCorrect && game.random() < obstacleRate, lane = Math.floor(game.random() * 3) - 1, item;
-    if (obstacle) { item = { id: C.id("run"), kind: "obstacle", lane: lane, progress: 0, requirement: game.random() > .5 ? "jump" : "duck", spawnedAt: performance.now(), resolved: false }; game.spawnsSinceCorrect++; }
+    if (obstacle) { item = { id: C.id("run"), kind: "obstacle", lane: lane, progress: 0, requirement: game.random() > .5 ? "jump" : "duck", spawnedAt: performance.now(), resolved: false, approachSoundPlayed: false }; game.spawnsSinceCorrect++; }
     else {
       var forceDistractor = !mustBeCorrect && game.correctsSinceDistractor >= correctRunLimitForLevel(game.level), shouldMatch = mustBeCorrect || !forceDistractor && game.random() < targetRate(), rule = currentRule(), token = makeTokenForRule(rule, game.random, game.level, shouldMatch);
-      item = { id: C.id("run"), kind: "token", lane: lane, progress: 0, token: token, ruleType: rule.type, spawnedAt: performance.now(), resolved: false };
+      item = { id: C.id("run"), kind: "token", lane: lane, progress: 0, token: token, ruleType: rule.type, spawnedAt: performance.now(), resolved: false, approachSoundPlayed: false };
       if (token.correct) { game.expected++; game.forcedCorrect = Math.max(0, game.forcedCorrect - 1); game.spawnsSinceCorrect = 0; game.correctsSinceDistractor++; }
       else { game.spawnsSinceCorrect++; game.correctsSinceDistractor = 0; }
     }
     var node = document.createElement("div"); node.className = "c144RunnerObject " + (obstacle ? "obstacle" : "runner-token") + (!obstacle && item.token.display === "calculation" ? " c145Gate" : ""); node.dataset.runnerObject = item.id;
-    if (obstacle) { node.textContent = item.requirement === "jump" ? "▰" : "╱╲"; node.setAttribute("aria-label", item.requirement === "jump" ? "Obstáculo para saltar" : "Obstáculo para agacharse"); }
-    else { node.textContent = item.token.glyph; node.style.color = item.token.color.value; node.setAttribute("aria-label", item.token.display === "category" ? item.token.item.label + " de color " + item.token.color.label : item.token.display === "calculation" ? "Operación " + item.token.glyph : item.token.shape.label + " de color " + item.token.color.label + (item.token.display === "number" ? ", número " + item.token.value : "")); }
+    if (obstacle) { node.innerHTML = '<span class="c147RunnerTokenGlyph" aria-hidden="true">' + (item.requirement === "jump" ? "▰" : "╱╲") + '</span><small class="c147RunnerTokenLabel">' + (item.requirement === "jump" ? "SALTA" : "AGÁCHATE") + '</small>'; node.setAttribute("aria-label", item.requirement === "jump" ? "Obstáculo para saltar" : "Obstáculo para agacharse"); }
+    else { node.innerHTML = '<span class="c147RunnerTokenGlyph" aria-hidden="true">' + C.esc(item.token.glyph) + '</span><small class="c147RunnerTokenLabel">' + C.esc(tokenCaption(item.token)) + '</small>'; node.style.setProperty("--token-color", item.token.color.value); node.setAttribute("aria-label", item.token.display === "category" ? item.token.item.label + " de color " + item.token.color.label : item.token.display === "calculation" ? "Operación " + item.token.glyph : item.token.shape.label + " de color " + item.token.color.label + (item.token.display === "number" ? ", número " + item.token.value : "")); }
     body.querySelector(".c144RunnerStage").appendChild(node); item.node = node; game.objects.push(item);
   }
 
   function positionObject(item) {
     var body = C.body(), stage = body && body.querySelector(".c144RunnerStage"); if (!stage || !item.node) return;
-    var width = stage.clientWidth || innerWidth, center = width / 2, spread = width * (.055 + item.progress * .22), x = center + item.lane * spread, y = 30 + item.progress * 66, scale = .42 + item.progress * .9;
+    var width = stage.clientWidth || innerWidth, center = width / 2, spread = width * (.07 + item.progress * .225), x = center + item.lane * spread, y = 27 + item.progress * 67, scale = .68 + item.progress * 1.06;
     item.node.style.left = x + "px"; item.node.style.top = y + "%"; item.node.style.setProperty("--scale", scale.toFixed(2)); item.node.style.opacity = item.progress > .96 ? String(Math.max(0, 1 - (item.progress - .96) * 20)) : "1";
   }
 
@@ -327,7 +340,11 @@
       game.elapsed += delta; if (now >= game.actionUntil && game.action !== "idle") { game.action = "idle"; updateLane(); }
       updateSegment(); game.nextSpawn -= delta; if (game.nextSpawn <= 0) { spawnObject(); game.nextSpawn = game.level === 1 ? 1.28 : game.level === 2 ? 1.08 : .92; }
       var speed = game.level === 1 ? .19 : game.level === 2 ? .215 : .235;
-      game.objects.slice().forEach(function (item) { item.progress += delta * speed; positionObject(item); if (item.progress >= .88) resolveObject(item); });
+      game.objects.slice().forEach(function (item) {
+        item.progress += delta * speed; positionObject(item);
+        if (!item.approachSoundPlayed && item.progress >= .48) { item.approachSoundPlayed = true; C.sound(item.kind === "obstacle" ? "warning" : "approach"); }
+        if (item.progress >= .88) resolveObject(item);
+      });
       game.objects = game.objects.filter(function (item) { return !item.resolved; }); updateHud(); if (game.elapsed >= game.duration) { finishGame(); return; }
     }
     frame = requestAnimationFrame(loop);
@@ -379,7 +396,7 @@
     var result = { id: C.id("runner-result"), userId: currentUserId(), missionId: game.mission.id, date: C.today(), completedAt: new Date().toISOString(), level: game.level, accuracy: accuracy, correctObjects: game.correct, availableTargets: game.expected, distractorsPicked: game.distractors, missedTargets: game.missed, sequencesRemembered: game.sequences, obstaclesPassed: game.obstaclesPassed, obstacleCount: game.obstacles, collisions: game.collisions, averageReactionMs: reaction, ruleChanges: game.ruleChanges, durationSeconds: Math.round(game.elapsed), highlightedSkill: "", generalPoints: 0, rankingSaved: false };
     result.highlightedSkill = highlightedSkill(result); result.generalPoints = generalScoreFor(result);
     showMessage("Guardando " + result.generalPoints + " puntos…", "good");
-    var rankingResult = await saveGeneralScore(result); result.rankingSaved = Boolean(rankingResult && rankingResult.ok); result.rankingDaily = Boolean(rankingResult && rankingResult.daily); result.rankingError = rankingResult && rankingResult.error || "";
+    var rankingResult = await saveGeneralScore(result); result.rankingTest = Boolean(rankingResult && rankingResult.test); result.rankingSaved = Boolean(rankingResult && rankingResult.ok && !result.rankingTest); result.rankingDaily = Boolean(rankingResult && rankingResult.daily); result.rankingError = rankingResult && rankingResult.error || "";
     await savePersonalResult(result);
     if (root.CocoDailyV134 && typeof root.CocoDailyV134.complete === "function") await root.CocoDailyV134.complete(GAME_ID, currentUserId());
     if (!game.celebrationDone) { game.celebrationDone = true; C.sound("finish"); }
@@ -388,10 +405,10 @@
 
   function renderFinish(result) {
     var body = C.body(); if (!body) return; C.setModalTitle("Misión completada", "RESULTADO · CLASIFICACIÓN GENERAL");
-    var saveCopy = result.rankingSaved ? "Puntuación guardada una sola vez en la clasificación general." : result.rankingDaily ? "La puntuación válida de hoy ya estaba registrada." : "No se pudo guardar todavía: " + C.esc(result.rankingError || "revisa la conexión e inténtalo de nuevo.");
-    body.innerHTML = '<main class="c144Finish"><section class="c144Card c144FinishHero"><img src="./coco-v2-runner-v144.png" alt="Coco V2 celebrando la misión"><span class="c144Eyebrow">META ALCANZADA</span><h3>¡Misión Cerebro completada!</h3><p>Tu habilidad destacada hoy fue <b>' + C.esc(result.highlightedSkill) + '</b>.</p><div class="c146RunnerScore"><b>+' + result.generalPoints + '</b><span>PUNTOS GENERALES</span></div><div class="c144RunnerMetrics"><div><b>' + result.accuracy + '%</b><span>Precisión</span></div><div><b>' + result.correctObjects + '/' + result.availableTargets + '</b><span>Objetivos correctos</span></div><div><b>' + result.distractorsPicked + '</b><span>Distractores recogidos</span></div><div><b>' + result.sequencesRemembered + '</b><span>Secuencias</span></div><div><b>' + result.obstaclesPassed + '/' + result.obstacleCount + '</b><span>Obstáculos superados</span></div><div><b>' + (result.averageReactionMs ? result.averageReactionMs + ' ms' : '—') + '</b><span>Reacción media</span></div></div><p class="c146RunnerSave ' + (!result.rankingSaved && !result.rankingDaily ? "error" : "") + '" data-runner-save-status>' + saveCopy + '</p><p class="c144HealthyEnd">Buen trabajo. Ahora es un buen momento para apartar la vista de la pantalla, moverte un poco y continuar mañana.</p><div class="c144Actions" style="justify-content:center"><button type="button" class="c144Primary" data-runner-close>Volver a Coco en Forma</button>' + (!result.rankingSaved && !result.rankingDaily ? '<button type="button" class="c144Secondary" data-runner-retry-score>Reintentar guardado</button>' : '') + '</div></section></main>';
+    var saveCopy = result.rankingTest ? "Partida de prueba completada sin duplicar puntos. Solo el primer resultado válido del día entra en la clasificación." : result.rankingSaved ? "Puntuación guardada una sola vez en la clasificación general." : result.rankingDaily ? "La puntuación válida de hoy ya estaba registrada." : "No se pudo guardar todavía: " + C.esc(result.rankingError || "revisa la conexión e inténtalo de nuevo.");
+    body.innerHTML = '<main class="c144Finish"><section class="c144Card c144FinishHero"><img src="./coco-v2-runner-v144.png" alt="Coco V2 celebrando la misión"><span class="c144Eyebrow">META ALCANZADA</span><h3>¡Misión Cerebro completada!</h3><p>Tu habilidad destacada hoy fue <b>' + C.esc(result.highlightedSkill) + '</b>.</p><div class="c146RunnerScore"><b>+' + result.generalPoints + '</b><span>' + (result.rankingTest ? 'RESULTADO DE PRUEBA' : 'PUNTOS GENERALES') + '</span></div><div class="c144RunnerMetrics"><div><b>' + result.accuracy + '%</b><span>Precisión</span></div><div><b>' + result.correctObjects + '/' + result.availableTargets + '</b><span>Objetivos correctos</span></div><div><b>' + result.distractorsPicked + '</b><span>Distractores recogidos</span></div><div><b>' + result.sequencesRemembered + '</b><span>Secuencias</span></div><div><b>' + result.obstaclesPassed + '/' + result.obstacleCount + '</b><span>Obstáculos superados</span></div><div><b>' + (result.averageReactionMs ? result.averageReactionMs + ' ms' : '—') + '</b><span>Reacción media</span></div></div><p class="c146RunnerSave ' + (!result.rankingSaved && !result.rankingDaily && !result.rankingTest ? "error" : "") + '" data-runner-save-status>' + saveCopy + '</p><p class="c144HealthyEnd">Buen trabajo. Ahora es un buen momento para apartar la vista de la pantalla y moverte un poco.</p><div class="c144Actions" style="justify-content:center"><button type="button" class="c144Primary" data-runner-close>Volver a Coco en Forma</button>' + (!result.rankingSaved && !result.rankingDaily && !result.rankingTest ? '<button type="button" class="c144Secondary" data-runner-retry-score>Reintentar guardado</button>' : '') + '</div></section></main>';
     body.querySelector("[data-runner-close]").onclick = C.closeModal;
-    var retry = body.querySelector("[data-runner-retry-score]"); if (retry) retry.onclick = async function () { retry.disabled = true; retry.textContent = "Guardando…"; var saved = await saveGeneralScore(result); result.rankingSaved = Boolean(saved && saved.ok); result.rankingDaily = Boolean(saved && saved.daily); result.rankingError = saved && saved.error || ""; renderFinish(result); };
+    var retry = body.querySelector("[data-runner-retry-score]"); if (retry) retry.onclick = async function () { retry.disabled = true; retry.textContent = "Guardando…"; var saved = await saveGeneralScore(result); result.rankingTest = Boolean(saved && saved.test); result.rankingSaved = Boolean(saved && saved.ok && !result.rankingTest); result.rankingDaily = Boolean(saved && saved.daily); result.rankingError = saved && saved.error || ""; renderFinish(result); };
     if (C.enhanceCatalog) C.enhanceCatalog();
   }
 
@@ -403,10 +420,12 @@
   function dispose() { if (game) game.stopped = true; cancelAnimationFrame(frame); if (controller) controller.abort(); controller = null; pointerStart = null; game = null; }
 
   var api = {
-    version: "146.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
+    version: "148.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
     catalog: function () { return { colors: COLORS.slice(), shapes: SHAPES.slice(), categories: CATEGORIES.slice() }; },
-    audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, targetsAfterRuleChange: 2, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, correctAnswerStyling: false, characterMotion: "stable-with-brief-functional-actions", rankingWrites: true, partidasTableWrites: true, generalLeaderboard: true, ownLeaderboard: false, scoreCap: 320, dailyLimit: 1, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
+    audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, targetsAfterRuleChange: 2, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, correctAnswerStyling: false, characterMotion: "stable-with-brief-functional-actions", targetBaseSize: 112, targetApproachScale: 1.61, neutralApproachSound: true, audioUnlockForSafariPwa: true, rankingWrites: true, partidasTableWrites: true, generalLeaderboard: true, ownLeaderboard: false, scoreCap: 320, dailyLimit: 1, unlimitedTestAccount: true, extraTestRunsRanked: false, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
   };
+  root.CocoRunnerV148 = api;
+  root.CocoRunnerV147 = api;
   root.CocoRunnerV146 = api;
   root.CocoRunnerV145 = api;
   root.CocoRunnerV144 = api;

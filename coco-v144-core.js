@@ -3,7 +3,7 @@
 
   if (root.CocoV144) return;
 
-  var VERSION = "146.0.0";
+  var VERSION = "148.0.0";
   var modal = null;
   var modalBody = null;
   var modalTitle = null;
@@ -65,22 +65,58 @@
     }, 2700);
   }
 
-  function sound(kind) {
-    if (localStorage.getItem("coco_sonido") === "0") return;
+  function audioContext() {
+    var Context = root.AudioContext || root.webkitAudioContext;
+    if (!Context) return null;
+    return root.__cocoV144Audio || (root.__cocoV144Audio = new Context());
+  }
+
+  function unlockAudio() {
+    if (localStorage.getItem("coco_sonido") === "0") return Promise.resolve(false);
     try {
-      var context = root.__cocoV144Audio || (root.__cocoV144Audio = new (root.AudioContext || root.webkitAudioContext)());
-      var notes = kind === "finish" ? [523, 659, 784, 1047] : kind === "bad" ? [205, 168] : [660, 880];
-      notes.forEach(function (frequency, index) {
-        var oscillator = context.createOscillator(), gain = context.createGain(), at = context.currentTime + index * .075;
-        oscillator.type = kind === "bad" ? "sine" : "triangle";
-        oscillator.frequency.value = frequency;
-        oscillator.connect(gain); gain.connect(context.destination);
-        gain.gain.setValueAtTime(.0001, at);
-        gain.gain.exponentialRampToValueAtTime(.14, at + .018);
-        gain.gain.exponentialRampToValueAtTime(.0001, at + .15);
-        oscillator.start(at); oscillator.stop(at + .17);
-      });
-    } catch (_) {}
+      var context = audioContext();
+      if (!context) return Promise.resolve(false);
+      var resumed = context.state === "suspended" && context.resume ? context.resume() : Promise.resolve();
+      return Promise.resolve(resumed).then(function () {
+        /* Un pulso silencioso dentro del gesto desbloquea Web Audio en Safari/PWA. */
+        var oscillator = context.createOscillator(), gain = context.createGain(), at = context.currentTime;
+        gain.gain.setValueAtTime(.0001, at); oscillator.connect(gain); gain.connect(context.destination);
+        oscillator.start(at); oscillator.stop(at + .012); return true;
+      }).catch(function () { return false; });
+    } catch (_) { return Promise.resolve(false); }
+  }
+
+  function sound(kind) {
+    if (localStorage.getItem("coco_sonido") === "0") return false;
+    try {
+      var context = audioContext(); if (!context) return false;
+      var patterns = {
+        finish: { notes: [523, 659, 784, 1047], type: "triangle", volume: .14, step: .075, duration: .17 },
+        bad: { notes: [205, 168], type: "sine", volume: .14, step: .075, duration: .17 },
+        approach: { notes: [285], end: 355, type: "sine", volume: .055, step: 0, duration: .105 },
+        warning: { notes: [185, 155], type: "square", volume: .05, step: .07, duration: .11 },
+        move: { notes: [330], end: 390, type: "triangle", volume: .045, step: 0, duration: .075 },
+        jump: { notes: [390], end: 610, type: "triangle", volume: .065, step: 0, duration: .13 },
+        duck: { notes: [360], end: 235, type: "sine", volume: .055, step: 0, duration: .12 },
+        start: { notes: [392, 523], type: "triangle", volume: .09, step: .08, duration: .16 },
+        good: { notes: [660, 880], type: "triangle", volume: .14, step: .075, duration: .17 }
+      };
+      var pattern = patterns[kind] || patterns.good;
+      function play() {
+        pattern.notes.forEach(function (frequency, index) {
+          var oscillator = context.createOscillator(), gain = context.createGain(), at = context.currentTime + index * pattern.step;
+          oscillator.type = pattern.type; oscillator.frequency.setValueAtTime(frequency, at);
+          if (pattern.end && oscillator.frequency.exponentialRampToValueAtTime) oscillator.frequency.exponentialRampToValueAtTime(pattern.end, at + pattern.duration);
+          oscillator.connect(gain); gain.connect(context.destination);
+          gain.gain.setValueAtTime(.0001, at);
+          gain.gain.exponentialRampToValueAtTime(pattern.volume, at + .012);
+          gain.gain.exponentialRampToValueAtTime(.0001, at + pattern.duration);
+          oscillator.start(at); oscillator.stop(at + pattern.duration + .02);
+        });
+      }
+      if (context.state === "suspended" && context.resume) context.resume().then(play).catch(function () {}); else play();
+      return true;
+    } catch (_) { return false; }
   }
 
   function soundIcon(muted) {
@@ -112,7 +148,7 @@
       localStorage.setItem("coco_sonido", muted ? "1" : "0");
       this.innerHTML = soundIcon(!muted);
       this.setAttribute("aria-label", muted ? "Desactivar sonido" : "Activar sonido");
-      if (muted) sound("good");
+      if (muted) unlockAudio().then(function () { sound("good"); });
     };
     modal.addEventListener("click", function (event) { if (event.target === modal) closeModal(); });
     modal.addEventListener("keydown", function (event) {
@@ -134,7 +170,7 @@
     previousFocus = document.activeElement;
     modal.dataset.module = options.module || "";
     modalTitle.textContent = options.title || "Coco en Forma";
-    modalKicker.textContent = options.kicker || "COCO EN FORMA · v146.0";
+    modalKicker.textContent = options.kicker || "COCO EN FORMA · v148.0";
     modalBody.innerHTML = options.html || "";
     disposer = typeof options.dispose === "function" ? options.dispose : null;
     modal.classList.add("visible");
@@ -174,6 +210,11 @@
     return Boolean(root.CocoDailyV134 && root.CocoDailyV134.localUsed && root.CocoDailyV134.localUsed("cococorre", userId || "visitante", today()));
   }
 
+  function unlimitedTesting() {
+    var userId = root.CocoDailyV134 && root.CocoDailyV134.userId ? root.CocoDailyV134.userId() : "";
+    return Boolean(root.CocoDailyV134 && typeof root.CocoDailyV134.isUnlimited === "function" && root.CocoDailyV134.isUnlimited(userId));
+  }
+
   function transformRunnerCard(card) {
     if (!card || card.dataset.cocoV144Game === "cococorre") return;
     card.dataset.cocoV144Game = "cococorre";
@@ -202,7 +243,7 @@
       var fresh = button.cloneNode(false), completed = runnerCompletedToday();
       fresh.type = "button"; fresh.className = button.className; fresh.dataset.cocoV144Open = "runner";
       fresh.disabled = completed; fresh.setAttribute("aria-disabled", completed ? "true" : "false");
-      fresh.textContent = completed ? "Completado hoy" : "Comenzar misión";
+      fresh.textContent = completed ? "Completado hoy" : unlimitedTesting() ? "Probar otra vez" : "Comenzar misión";
       button.replaceWith(fresh);
     }
   }
@@ -215,7 +256,7 @@
     fresh.dataset.cocoJuego = "cococorre";
     var title = fresh.querySelector("b"); if (title) title.textContent = "Coco Corre";
     var icon = fresh.querySelector(".cocoMiniIcono"); if (icon) icon.innerHTML = runnerIcon();
-    var state = fresh.querySelector(".cocoMiniEstado"); if (state) state.textContent = runnerCompletedToday() ? "Completado hoy" : "Una vez al día";
+    var state = fresh.querySelector(".cocoMiniEstado"); if (state) state.textContent = runnerCompletedToday() ? "Completado hoy" : unlimitedTesting() ? "Pruebas ilimitadas" : "Una vez al día";
     item.replaceWith(fresh);
   }
 
@@ -236,7 +277,7 @@
       if (Array.isArray(general) && general.indexOf("cococorre") < 0) general.push("cococorre");
       if (!arcade.__v144OpenWrapped && typeof arcade.open === "function") {
         var originalOpen = arcade.open;
-        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") return root.CocoRunnerV144 && root.CocoRunnerV144.open(); return originalOpen.apply(this, arguments); };
+        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") { var runner = root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144; return runner && runner.open(); } return originalOpen.apply(this, arguments); };
         arcade.__v144OpenWrapped = true;
       }
     }
@@ -258,7 +299,7 @@
       node.remove();
     });
     var note = app.querySelector(".cocoRetosNota");
-    if (note) note.textContent = "Una partida breve por juego y día. Coco Corre suma una puntuación diaria a la clasificación general. Coco Pádel es ilimitado.";
+    if (note) { var noteCopy = unlimitedTesting() ? "Modo de pruebas activo: partidas ilimitadas en todos los juegos. Solo el primer resultado válido de cada juego y día puntúa. Coco Pádel continúa siendo ilimitado." : "Una partida breve por juego y día. Coco Corre suma una puntuación diaria a la clasificación general. Coco Pádel es ilimitado."; if (note.textContent !== noteCopy) note.textContent = noteCopy; }
   }
 
   function scheduleEnhance() {
@@ -284,9 +325,9 @@
     if (!actionable) return;
     if (feature === "runner" && actionable.classList && actionable.classList.contains("cocoLigaBadge")) return;
     event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-    if (feature === "runner" && (root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV146 || root.CocoRunnerV144).open();
-    else if (feature === "padel" && (root.CocoPadelV146 || root.CocoPadelV144)) (root.CocoPadelV146 || root.CocoPadelV144).open();
-    else if (feature === "differences" && (root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
+    if (feature === "runner" && (root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
+    else if (feature === "padel" && (root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144)) (root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144).open();
+    else if (feature === "differences" && (root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
   }, true);
 
   root.CocoV144 = {
@@ -298,6 +339,7 @@
     session: session,
     toast: toast,
     sound: sound,
+    unlockAudio: unlockAudio,
     openModal: openModal,
     closeModal: closeModal,
     setModalTitle: setModalTitle,
@@ -318,17 +360,21 @@
     }
   };
 
+  root.CocoV148 = root.CocoV144;
+  root.CocoV147 = root.CocoV144;
   root.CocoV146 = root.CocoV144;
-  root.COCO_VERSION = "2026-08-15-v146.0-professional";
+  root.COCO_VERSION = "2026-08-15-v148.0-professional";
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhanceCatalog);
   else enhanceCatalog();
   observer = new MutationObserver(scheduleEnhance);
   observer.observe(document.documentElement, { childList: true, subtree: true });
   root.addEventListener("coco:daily-completed", scheduleEnhance);
+  root.addEventListener("coco:daily-user", scheduleEnhance);
+  root.addEventListener("coco:daily-sync", scheduleEnhance);
   setTimeout(function () {
     try {
       var activeModal = document.querySelector(".cocoV144Modal.visible");
-      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV146 || root.CocoRunnerV144).open();
+      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
     } catch (_) {}
   }, 260);
 })(window);
