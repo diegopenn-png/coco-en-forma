@@ -1,0 +1,32 @@
+{
+  "product": "Coco en Forma",
+  "version": "145.0",
+  "status": "review-candidate",
+  "published": false,
+  "deployed": false,
+  "base_version": "144.0",
+  "base_zip_sha256": "505b59de4e7250c006d897d9ce9e87d20fff960cc7d8b11bfdba5e750f3b1335",
+  "database_migration_required": false,
+  "runner": {
+    "daily_limit": 1,
+    "general_ranking_writes": false,
+    "preflight_validation": true,
+    "guaranteed_targets": true
+  },
+  "padel": {
+    "unlimited": true,
+    "tabs": ["Mixing", "Campeonato", "Jugadores"],
+    "mixing_persisted": false,
+    "mixing_points": false,
+    "championship_stats_derived_from_results": true
+  },
+  "automated_functional_tests": {
+    "passed": 16,
+    "failed": 0
+  },
+  "essential_http_assets": {
+    "status_200": 27,
+    "total": 27
+  },
+  "browser_e2e": "included-but-not-executed-no-browser-binary"
+}

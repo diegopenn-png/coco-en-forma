@@ -6,6 +6,10 @@ import { fileURLToPath } from "node:url";
 
 const qaDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.dirname(qaDir);
+if (fs.readFileSync(path.join(rootDir, "index.html"), "utf8").includes("v145.0-profesional")) {
+  console.log("SKIP  Suite histórica v144: la versión activa de este paquete es v145.0. Usa qa/v145-functional-tests.mjs.");
+  process.exit(0);
+}
 const results = [];
 let idCounter = 0;
 

@@ -2,19 +2,22 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoPadelV144) return;
+  if (!C || root.CocoPadelV145) return;
 
   var STORAGE_KEY = "coco_padel_club_v144";
   var LEGACY_KEYS = ["coco_padel_club_v132", "coco_padel_club_v130"];
   var state = null;
   var view = "mixing";
   var currentSessionId = null;
+  var mixingSession = null;
+  var mixingDraft = null;
   var currentChampionshipId = null;
   var selectedPlayerId = null;
   var controller = null;
   var draft = null;
   var busy = false;
   var standingsSort = "position";
+  var directoryStatus = "";
 
   function iso() { return new Date().toISOString(); }
   function level(value) { return ["bajo", "medio", "alto"].indexOf(String(value || "").toLowerCase()) >= 0 ? String(value).toLowerCase() : "medio"; }
@@ -24,7 +27,7 @@
   function selectorValue(value) { return String(value || "").replace(/([\\"'\\[\\]#.:])/g, "\\$1"); }
   function playerById(playerId) { return state && state.players.find(function (item) { return item.id === playerId; }) || null; }
   function championshipById(championshipId) { return state && state.championships.find(function (item) { return item.id === championshipId; }) || null; }
-  function sessionById(sessionId) { return state && state.sessions.find(function (item) { return item.id === sessionId; }) || null; }
+  function sessionById(sessionId) { return mixingSession && mixingSession.id === sessionId ? mixingSession : state && state.sessions.find(function (item) { return item.id === sessionId; }) || null; }
   function displayPlayer(playerId) { var player = playerById(playerId); return player ? player.name + " — " + player.code : "Jugador no disponible"; }
 
   function blankState() {
@@ -212,6 +215,7 @@
   function playerHistory(targetState, playerId) {
     var rows = [];
     targetState.sessions.forEach(function (selected) {
+      if (!selected.championshipId) return;
       var snapshot = selected.participants.find(function (entry) { return entry.playerId === playerId; }); if (!snapshot) return;
       selected.matches.forEach(function (match) {
         if (!completed(match) || match.teamA.indexOf(playerId) < 0 && match.teamB.indexOf(playerId) < 0) return;
@@ -227,8 +231,13 @@
     history.forEach(function (row) { if (row.championshipId) championships[row.championshipId] = true; dates[row.sessionId] = true; result.gamesWon += row.gamesWon; result.gamesLost += row.gamesLost; if (row.result === "Ganado") result.won++; else if (row.result === "Perdido") result.lost++; else result.drawn++; });
     result.championships = Object.keys(championships).length; result.dates = Object.keys(dates).length; result.gameDifference = result.gamesWon - result.gamesLost;
     targetState.championships.forEach(function (championship) { var row = championshipStandings(targetState, championship.id).find(function (item) { return item.id === playerId; }); if (row) result.points += row.points; });
-    targetState.sessions.filter(function (item) { return !item.championshipId; }).forEach(function (selected) { var row = sessionStandings(targetState, selected.id).find(function (item) { return item.id === playerId; }); if (row) result.points += row.points; });
     return result;
+  }
+
+  function championshipPointsMap(targetState) {
+    var points = Object.create(null);
+    targetState.championships.forEach(function (championship) { championshipStandings(targetState, championship.id).forEach(function (row) { points[row.id] = (points[row.id] || 0) + row.points; }); });
+    return points;
   }
 
   async function loadState() {
@@ -267,17 +276,19 @@
     if (participants.length < 4) throw new Error("Selecciona al menos cuatro jugadores activos.");
     var courts = Math.max(1, Math.min(40, Number(localDraft.courts) || 1)), rounds = Math.max(1, Math.min(50, Number(localDraft.rounds) || 1)), labels = String(localDraft.courtLabels || "").split(/[,;\n]+/).map(function (value) { return value.trim(); }).filter(Boolean).slice(0, courts);
     while (labels.length < courts) labels.push(String(labels.length + 1));
-    var prior = state.sessions.reduce(function (all, item) { return all.concat(item.matches || []); }, []), matches;
+    var prior = localDraft.kind === "championship-date" ? state.sessions.filter(function (item) { return item.championshipId === localDraft.championshipId; }).reduce(function (all, item) { return all.concat(item.matches || []); }, []) : [], matches;
     if (root.CocoPadelV134 && typeof root.CocoPadelV134.generate === "function") matches = root.CocoPadelV134.generate(participants, labels, rounds, C.id("seed"), { priorMatches: prior });
     else matches = [];
     if (!matches.length) throw new Error("No se pudo generar una rotación válida con esa configuración.");
     var selected = { id: C.id("session"), kind: localDraft.kind, championshipId: localDraft.championshipId || null, name: String(localDraft.name || "Mixing").trim(), date: localDraft.date || C.today(), courts: courts, courtLabels: labels, rounds: rounds, timerMode: localDraft.timerMode === "unlimited" ? "unlimited" : "limit", matchMinutes: Math.max(1, Math.min(240, Number(localDraft.matchMinutes) || 20)), participants: participants.map(function (entry) { return { playerId: entry.playerId, codeSnapshot: entry.codeSnapshot, nameSnapshot: entry.nameSnapshot, levelSnapshot: entry.levelSnapshot }; }), matches: matches.map(function (match) { return { id: match.id || C.id("match"), order: match.order, round: match.round, court: match.court, courtLabel: match.courtLabel, teamA: match.teamA.slice(), teamB: match.teamB.slice(), score: null, updatedAt: null }; }), createdAt: iso(), updatedAt: iso() };
-    state.sessions.push(selected); state.updatedAt = iso(); state.auditLog.push({ id: C.id("audit"), type: "session-created", sessionId: selected.id, championshipId: selected.championshipId, at: iso() });
+    if (selected.championshipId) {
+      state.sessions.push(selected); state.updatedAt = iso(); state.auditLog.push({ id: C.id("audit"), type: "championship-date-created", sessionId: selected.id, championshipId: selected.championshipId, at: iso() });
+    } else mixingSession = selected;
     return selected;
   }
 
   function navHtml() {
-    return '<nav class="c144PadelNav" aria-label="Secciones de Coco Pádel">' + [["mixing", "Nuevo mixing"], ["championships", "Campeonatos"], ["players", "Jugadores"]].map(function (item) { return '<button type="button" data-padel144-view="' + item[0] + '" class="' + (view === item[0] ? "active" : "") + '">' + item[1] + '</button>'; }).join("") + '</nav>';
+    return '<nav class="c145PadelTabs" aria-label="Secciones de Coco Pádel">' + [["mixing", "Mixing"], ["championship", "Campeonato"], ["players", "Jugadores"]].map(function (item) { return '<button type="button" data-padel144-view="' + item[0] + '" class="' + (view === item[0] ? "active" : "") + '" aria-current="' + (view === item[0] ? "page" : "false") + '">' + item[1] + '</button>'; }).join("") + '</nav>';
   }
 
   function heroHtml() {
@@ -313,10 +324,16 @@
     return '<section class="c144Card c144PadelPanel"><div class="c144PadelPanelHead"><div><span class="c144Eyebrow">' + (selected.championshipId ? "FECHA DEL CAMPEONATO" : "SESIÓN LIBRE") + '</span><h3>' + C.esc(selected.name) + '</h3><p>' + C.esc(selected.date) + ' · ' + selected.participants.length + ' jugadores · ' + selected.courts + ' pistas</p></div><span class="c144Chip">' + done + '/' + selected.matches.length + ' guardados</span></div><div class="c144Actions"><button type="button" class="c144Primary" data-padel144-save-all>Guardar toda la sesión</button></div><div class="c144Rounds">' + Object.keys(rounds).map(function (round) { return '<section class="c144Round"><header><b>Ronda ' + round + '</b><span>' + (selected.timerMode === "unlimited" ? "Sin límite" : selected.matchMinutes + " min") + '</span></header><div class="c144Matches">' + rounds[round].map(function (match) { return matchHtml(selected, match); }).join("") + '</div></section>'; }).join("") + '</div><div class="c144StandingsTools"><h4>Resumen de la sesión</h4></div>' + standingsTableHtml(rows, scoring) + '</section>';
   }
 
+  function mixingOrderHtml(selected) {
+    if (!selected) return '<section class="c144Card c144PadelPanel c145MixingEmpty"><div class="c144Empty"><b>El orden de juego aparecerá aquí</b><span>Selecciona jugadores, indica pistas y rondas, y pulsa “Generar partidos”.</span></div></section>';
+    var rounds = Object.create(null); selected.matches.forEach(function (match) { (rounds[match.round] || (rounds[match.round] = [])).push(match); });
+    return '<section class="c144Card c144PadelPanel"><div class="c144PadelPanelHead"><div><span class="c144Eyebrow">ORDEN DE JUEGO TEMPORAL</span><h3>Listo para llevar a la pista</h3><p>' + selected.participants.length + ' jugadores · ' + selected.courts + ' pistas · ' + selected.rounds + ' rondas</p></div><span class="c144Chip">No suma puntos</span></div><p class="c144Notice">Este mixing vive únicamente mientras está abierto. No se guarda como historial, no aparece en campeonatos y no modifica estadísticas.</p><div class="c144Rounds">' + Object.keys(rounds).map(function (round) { return '<section class="c144Round"><header><b>Ronda ' + round + '</b><span>Orden de juego</span></header><div class="c144Matches">' + rounds[round].map(function (match) { return '<article class="c144Match"><div class="c144MatchHead"><span>PARTIDO ' + match.order + '</span><b>Pista ' + C.esc(match.courtLabel) + '</b></div><div class="c144Versus"><b>' + match.teamA.map(displayPlayer).map(C.esc).join('<br><span>+</span><br>') + '</b><span>VS</span><b>' + match.teamB.map(displayPlayer).map(C.esc).join('<br><span>+</span><br>') + '</b></div><button type="button" class="c144Secondary" data-padel144-swap-mixing="' + match.id + '">Cambiar una pareja</button></article>'; }).join("") + '</div></section>'; }).join("") + '</div><div class="c144Actions"><button type="button" class="c144Secondary" data-padel144-regenerate-mixing>Regenerar cruces</button><button type="button" class="c144Danger" data-padel144-reset-mixing>Descartar mixing</button></div></section>';
+  }
+
   function mixingHtml() {
-    if (!draft || draft.kind !== "mixing") draft = defaultDraft("mixing");
-    var players = state.players.filter(function (player) { return player.active; }), selected = sessionById(currentSessionId);
-    return '<main class="c144PadelPage"><div class="c144PadelGrid"><section class="c144Card c144PadelPanel"><div class="c144PadelPanelHead"><div><span class="c144Eyebrow">NUEVO MIXING</span><h3>Configura y crea la rotación</h3><p>El nivel se recupera automáticamente de cada ficha.</p></div></div><div class="c144FormGrid"><label class="c144Field">Nombre<input data-padel144-draft="name" value="' + C.esc(draft.name) + '"></label><label class="c144Field">Fecha<input type="date" data-padel144-draft="date" value="' + C.esc(draft.date) + '"></label><label class="c144Field">Pistas<input type="number" min="1" max="40" data-padel144-draft="courts" value="' + draft.courts + '"></label><label class="c144Field">Rondas<input type="number" min="1" max="50" data-padel144-draft="rounds" value="' + draft.rounds + '"></label><label class="c144Field c144Wide">Nombres de pista<input data-padel144-draft="courtLabels" value="' + C.esc(draft.courtLabels) + '" placeholder="1, 2, Central"></label><label class="c144Field">Tiempo<select data-padel144-draft="timerMode"><option value="limit" ' + (draft.timerMode === "limit" ? "selected" : "") + '>Con límite</option><option value="unlimited" ' + (draft.timerMode === "unlimited" ? "selected" : "") + '>Sin límite</option></select></label><label class="c144Field">Minutos<input type="number" min="1" max="240" data-padel144-draft="matchMinutes" value="' + draft.matchMinutes + '" ' + (draft.timerMode === "unlimited" ? "disabled" : "") + '></label></div><div class="c144PadelPanelHead" style="margin-top:18px"><div><h4>Jugadores presentes</h4><p>' + draft.participantIds.length + ' seleccionados</p></div></div><label class="c144Field">Buscar por nombre o código<input data-padel144-picker-search placeholder="Ej.: Diego o CP-0012"></label><div class="c144PlayerResults">' + players.map(function (player) { return playerOptionHtml(player, draft.participantIds.indexOf(player.id) >= 0); }).join("") + '</div><details style="margin-top:12px"><summary><b>Crear un jugador nuevo</b></summary>' + createPlayerFormHtml("mixing") + '</details><div class="c144Actions"><button type="button" class="c144Primary" data-padel144-generate>Crear mixing equilibrado</button></div></section><section><div class="c144Card c144PadelPanel"><div class="c144PadelPanelHead"><div><span class="c144Eyebrow">HISTORIAL DE SESIONES LIBRES</span><h3>Mixings guardados</h3></div></div>' + sessionListHtml("mixing") + '</div>' + sessionDetailHtml(selected && !selected.championshipId ? selected : null, null) + '</section></div></main>';
+    if (!mixingDraft) mixingDraft = defaultDraft("mixing"); draft = mixingDraft;
+    var players = state.players.filter(function (player) { return player.active; });
+    return '<main class="c144PadelPage"><div class="c145FlowSteps" aria-label="Flujo del mixing"><span class="active">1 · Jugadores</span><span>2 · Pistas</span><span>3 · Partidos</span></div><div class="c144PadelGrid"><section class="c144Card c144PadelPanel"><div class="c144PadelPanelHead"><div><span class="c144Eyebrow">MIXING OCASIONAL</span><h3>¿Quién juega hoy?</h3><p>Los niveles guardados se recuperan automáticamente.</p></div><span class="c144Chip" data-padel144-mixing-count>' + draft.participantIds.length + ' elegidos</span></div><label class="c144Field">Buscar por nombre o código<input data-padel144-picker-search placeholder="Diego o CP-0012" autocomplete="off"></label><div class="c144PlayerResults">' + (players.length ? players.map(function (player) { return playerOptionHtml(player, draft.participantIds.indexOf(player.id) >= 0); }).join("") : '<div class="c144Empty"><b>No hay jugadores activos</b><span>Créelos o reactívalos desde la pestaña Jugadores.</span></div>') + '</div><div class="c145MixingSetup"><label class="c144Field">Número de pistas<input type="number" min="1" max="40" inputmode="numeric" data-padel144-draft="courts" value="' + draft.courts + '"></label><label class="c144Field">Número de rondas<input type="number" min="1" max="50" inputmode="numeric" data-padel144-draft="rounds" value="' + draft.rounds + '"></label></div><div class="c144Actions"><button type="button" class="c144Primary" data-padel144-generate>Generar partidos</button></div><p class="c144Notice">Para añadir una persona nueva, ve a <b>Jugadores</b>. Así el directorio permanece ordenado y cada código se crea una sola vez.</p></section><div>' + mixingOrderHtml(mixingSession) + '</div></div></main>';
   }
 
   function championshipListHtml() {
@@ -354,17 +371,18 @@
 
   function playersHtml() {
     var player = playerById(selectedPlayerId);
-    return '<main class="c144PadelPage"><section class="c144Card c144PadelPanel"><div class="c144PadelPanelHead"><div><span class="c144Eyebrow">DIRECTORIO DE JUGADORES</span><h3>Buscar por nombre, código o nivel</h3></div><span class="c144Chip">' + state.players.length + ' registrados</span></div><div class="c144PlayerFilters"><label class="c144Field">Nombre o código<input data-padel144-directory-search placeholder="Diego o CP-0012"></label><label class="c144Field">Nivel<select data-padel144-directory-level><option value="">Todos</option><option value="bajo">Bajo</option><option value="medio">Medio</option><option value="alto">Alto</option></select></label></div><div class="c144PlayerDirectory" data-padel144-directory>' + directoryCardsHtml(state.players) + '</div><details style="margin-top:14px"><summary><b>Crear nuevo jugador</b></summary>' + createPlayerFormHtml("directory") + '</details></section>' + (player ? profileHtml(player) : '<div class="c144Empty"><b>Selecciona una ficha</b><span>Verás estadísticas recalculadas e historial completo.</span></div>') + '</main>';
+    return '<main class="c144PadelPage"><section class="c144Card c144PadelPanel"><div class="c144PadelPanelHead"><div><span class="c144Eyebrow">JUGADORES · ADMINISTRACIÓN ÚNICA</span><h3>Directorio del club</h3><p>Aquí se crean, editan, nivelan y activan todas las personas.</p></div><button type="button" class="c144Primary" data-padel144-toggle-add-player>Añadir jugador</button></div><div class="c145AddPlayer" data-padel144-add-panel hidden><h4>Nuevo jugador</h4>' + createPlayerFormHtml("directory") + '</div><div class="c144PlayerFilters c145PlayerFilters"><label class="c144Field">Nombre o código<input data-padel144-directory-search placeholder="Diego o CP-0012" autocomplete="off"></label><label class="c144Field">Nivel<select data-padel144-directory-level><option value="">Todos</option><option value="bajo">Bajo</option><option value="medio">Medio</option><option value="alto">Alto</option></select></label><label class="c144Field">Estado<select data-padel144-directory-status><option value="">Todos</option><option value="active">Activos</option><option value="inactive">Inactivos</option></select></label></div><div class="c145DirectorySummary"><b>' + state.players.length + ' jugadores</b><span>Los puntos proceden exclusivamente de campeonatos.</span></div><div class="c145PlayerDirectory" data-padel144-directory>' + (state.players.length ? directoryCardsHtml(state.players) : '<div class="c144Empty"><b>Aún no hay jugadores</b><span>Pulsa “Añadir jugador” para crear el primero.</span></div>') + '</div></section>' + (player ? profileHtml(player) : '<div class="c144Empty"><b>Abre una ficha para consultar su historial</b><span>Los mixings ocasionales no aparecerán ni sumarán puntos.</span></div>') + '</main>';
   }
 
   function directoryCardsHtml(players) {
-    return players.map(function (player) { return '<button type="button" class="c144PlayerCard ' + (player.active ? "" : "inactive") + '" data-padel144-profile="' + player.id + '" data-search="' + C.esc((player.name + " " + player.code).toLocaleLowerCase("es")) + '" data-level="' + player.currentLevel + '"><span class="c144Chip ' + player.currentLevel + '">' + levelLabel(player.currentLevel) + '</span><h4>' + C.esc(player.name) + '</h4><p>' + C.esc(player.code) + ' · ' + (player.active ? "Activo" : "Inactivo") + '</p></button>'; }).join("");
+    var points = championshipPointsMap(state);
+    return players.map(function (player) { return '<article class="c145PlayerAdmin ' + (player.active ? "" : "inactive") + '" data-padel144-player-card data-search="' + C.esc((player.name + " " + player.code).toLocaleLowerCase("es")) + '" data-level="' + player.currentLevel + '" data-status="' + (player.active ? "active" : "inactive") + '"><div class="c145PlayerIdentity"><button type="button" data-padel144-profile="' + player.id + '" aria-label="Abrir ficha de ' + C.esc(player.name) + '"><b>' + C.esc(player.name) + '</b><span>' + C.esc(player.code) + ' · ' + (player.active ? "Activo" : "Inactivo") + '</span></button><div><b>' + (points[player.id] || 0) + '</b><span>puntos</span></div></div><div class="c145PlayerAdminActions"><label class="c144Field">Nivel<select data-padel144-player-level="' + player.id + '"><option value="bajo" ' + (player.currentLevel === "bajo" ? "selected" : "") + '>Bajo</option><option value="medio" ' + (player.currentLevel === "medio" ? "selected" : "") + '>Medio</option><option value="alto" ' + (player.currentLevel === "alto" ? "selected" : "") + '>Alto</option></select></label><button type="button" class="c144Secondary" data-padel144-edit-player="' + player.id + '">Editar nombre</button><button type="button" class="' + (player.active ? "c144Danger" : "c144Secondary") + '" data-padel144-toggle-player="' + player.id + '">' + (player.active ? "Dar de baja" : "Dar de alta") + '</button></div></article>'; }).join("");
   }
 
   function render() {
     var body = C.body(); if (!body || !state) return;
-    C.setModalTitle("Coco Pádel", "HERRAMIENTA ILIMITADA · v144.0");
-    body.innerHTML = '<div class="c144Padel">' + heroHtml() + navHtml() + (view === "mixing" ? mixingHtml() : view === "championships" ? championshipsHtml() : playersHtml()) + '</div>';
+    C.setModalTitle("Coco Pádel", "HERRAMIENTA ILIMITADA · v145.0");
+    body.innerHTML = '<div class="c144Padel c145Padel">' + heroHtml() + navHtml() + (view === "mixing" ? mixingHtml() : view === "championship" ? championshipsHtml() : playersHtml()) + '</div>';
   }
 
   async function createPlayerFromForm(context) {
@@ -372,7 +390,7 @@
     if (!name) { C.toast("Escribe el nombre del jugador.", "bad"); return; }
     var duplicate = state.players.some(function (player) { return player.name.toLocaleLowerCase("es") === name.toLocaleLowerCase("es"); });
     if (duplicate && !confirm("Ya existe al menos un jugador llamado " + name + ". ¿Es otra persona y quieres crearla con un código diferente?")) return;
-    var result = createPlayer(state, name, levelInput && levelInput.value); if (context === "mixing" && draft) draft.participantIds.push(result.player.id); selectedPlayerId = result.player.id;
+    var result = createPlayer(state, name, levelInput && levelInput.value); selectedPlayerId = result.player.id;
     await persist(true); C.toast(result.player.name + " creado como " + result.player.code + ".", "good"); render();
   }
 
@@ -401,8 +419,9 @@
   }
 
   function filterDirectory() {
-    var body = C.body(), query = String(body.querySelector("[data-padel144-directory-search]").value || "").toLocaleLowerCase("es"), targetLevel = body.querySelector("[data-padel144-directory-level]").value;
-    body.querySelectorAll("[data-padel144-profile]").forEach(function (card) { card.hidden = Boolean(query && card.dataset.search.indexOf(query) < 0 || targetLevel && card.dataset.level !== targetLevel); });
+    var body = C.body(), search = body.querySelector("[data-padel144-directory-search]"), levelSelect = body.querySelector("[data-padel144-directory-level]"), statusSelect = body.querySelector("[data-padel144-directory-status]"); if (!search || !levelSelect || !statusSelect) return;
+    var query = String(search.value || "").toLocaleLowerCase("es"), targetLevel = levelSelect.value, targetStatus = statusSelect.value; directoryStatus = targetStatus;
+    body.querySelectorAll("[data-padel144-player-card]").forEach(function (card) { card.hidden = Boolean(query && card.dataset.search.indexOf(query) < 0 || targetLevel && card.dataset.level !== targetLevel || targetStatus && card.dataset.status !== targetStatus); });
   }
 
   function filterHistory() {
@@ -412,12 +431,16 @@
 
   async function handleClick(event) {
     var button = event.target.closest("button"); if (!button) return;
-    if (button.dataset.padel144View) { view = button.dataset.padel144View; currentSessionId = null; selectedPlayerId = null; draft = null; render(); return; }
+    if (button.dataset.padel144View) { if (view === "mixing" && draft && draft.kind === "mixing") mixingDraft = draft; view = button.dataset.padel144View; currentSessionId = null; selectedPlayerId = null; draft = view === "mixing" ? mixingDraft : null; render(); return; }
+    if (button.hasAttribute("data-padel144-toggle-add-player")) { var panel = C.body().querySelector("[data-padel144-add-panel]"); if (panel) { panel.hidden = !panel.hidden; if (!panel.hidden) { var nameField = panel.querySelector("[data-padel144-new-name]"); if (nameField) nameField.focus(); } } return; }
     if (button.dataset.padel144CreatePlayer) { await createPlayerFromForm(button.dataset.padel144CreatePlayer); return; }
     if (button.hasAttribute("data-padel144-generate") || button.hasAttribute("data-padel144-generate-date")) {
-      try { var selected = generateSession(draft); currentSessionId = selected.id; if (selected.championshipId) currentChampionshipId = selected.championshipId; await persist(true); C.toast("Rotación creada: " + selected.matches.length + " partidos equilibrados.", "good"); render(); } catch (error) { C.toast(error.message, "bad"); } return;
+      try { var selected = generateSession(draft); currentSessionId = selected.id; if (selected.championshipId) { currentChampionshipId = selected.championshipId; await persist(true); } C.toast((selected.championshipId ? "Fecha guardada" : "Mixing temporal creado") + ": " + selected.matches.length + " partidos equilibrados.", "good"); render(); } catch (error) { C.toast(error.message, "bad"); } return;
     }
-    if (button.dataset.padel144OpenSession) { currentSessionId = button.dataset.padel144OpenSession; var selectedSession = sessionById(currentSessionId); if (selectedSession && selectedSession.championshipId) { currentChampionshipId = selectedSession.championshipId; view = "championships"; } render(); return; }
+    if (button.hasAttribute("data-padel144-regenerate-mixing")) { try { mixingSession = generateSession(draft); currentSessionId = mixingSession.id; C.toast("Cruces regenerados. Nada se ha guardado en el historial.", "good"); render(); } catch (error) { C.toast(error.message, "bad"); } return; }
+    if (button.hasAttribute("data-padel144-reset-mixing")) { if (!confirm("¿Descartar este mixing temporal? No afectará a jugadores ni campeonatos.")) return; mixingSession = null; currentSessionId = null; mixingDraft = defaultDraft("mixing"); draft = mixingDraft; render(); return; }
+    if (button.dataset.padel144SwapMixing) { var mixingMatch = mixingSession && mixingSession.matches.find(function (match) { return match.id === button.dataset.padel144SwapMixing; }); if (!mixingMatch || mixingMatch.teamA.length < 2 || mixingMatch.teamB.length < 1) return; var swapped = mixingMatch.teamA[1]; mixingMatch.teamA[1] = mixingMatch.teamB[0]; mixingMatch.teamB[0] = swapped; C.toast("Pareja ajustada solo para este mixing.", "good"); render(); return; }
+    if (button.dataset.padel144OpenSession) { currentSessionId = button.dataset.padel144OpenSession; var selectedSession = sessionById(currentSessionId); if (selectedSession && selectedSession.championshipId) { currentChampionshipId = selectedSession.championshipId; view = "championship"; } render(); return; }
     if (button.dataset.padel144SaveScore) { await saveSingleResult(button.dataset.padel144SaveScore); return; }
     if (button.dataset.padel144DeleteScore) { if (!confirm("¿Deshacer este resultado? La clasificación y los historiales se recalcularán.")) return; deleteResult(state, currentSessionId, button.dataset.padel144DeleteScore); await persist(true); C.toast("Resultado eliminado y estadísticas recalculadas.", "good"); render(); return; }
     if (button.hasAttribute("data-padel144-save-all")) { await saveAllResults(); return; }
@@ -429,15 +452,17 @@
     if (button.hasAttribute("data-padel144-archive-champ")) { if (!confirm("¿Archivar este campeonato? Seguirá disponible para consulta.")) return; var archive = championshipById(currentChampionshipId); archive.status = "archived"; archive.archivedAt = iso(); await persist(true); render(); return; }
     if (button.dataset.padel144ApplyLevel) { var playerId = button.dataset.padel144ApplyLevel, select = C.body().querySelector('[data-padel144-review-level="' + selectorValue(playerId) + '"]'), reason = C.body().querySelector('[data-padel144-review-reason="' + selectorValue(playerId) + '"]'), player = playerById(playerId); if (!player) return; if (select.value === player.currentLevel) { C.toast("Nivel mantenido. No se crea un cambio innecesario."); return; } if (!confirm("Cambiar a " + levelLabel(select.value) + " el nivel de " + player.name + "?")) return; changePlayerLevel(state, playerId, select.value, currentChampionshipId, reason && reason.value); await persist(true); C.toast("Nivel actualizado; los partidos anteriores conservan su nivel histórico.", "good"); render(); return; }
     if (button.dataset.padel144Profile) { selectedPlayerId = button.dataset.padel144Profile; render(); return; }
+    if (button.dataset.padel144EditPlayer) { var editing = playerById(button.dataset.padel144EditPlayer); if (!editing) return; var renamed = prompt("Nombre del jugador " + editing.code, editing.name); if (renamed == null) return; renamed = String(renamed).trim(); if (!renamed) { C.toast("El nombre no puede quedar vacío.", "bad"); return; } var sameName = state.players.some(function (item) { return item.id !== editing.id && item.name.toLocaleLowerCase("es") === renamed.toLocaleLowerCase("es"); }); if (sameName && !confirm("Ya existe otra persona llamada " + renamed + ". ¿Quieres conservar ambas diferenciadas por su código?")) return; editing.name = renamed; state.auditLog.push({ id: C.id("audit"), type: "player-renamed", playerId: editing.id, at: iso() }); await persist(true); C.toast("Nombre actualizado. El código " + editing.code + " no cambió.", "good"); render(); return; }
     if (button.dataset.padel144TogglePlayer) { var toggle = playerById(button.dataset.padel144TogglePlayer); if (!toggle || !confirm((toggle.active ? "¿Desactivar" : "¿Reactivar") + " a " + toggle.name + " — " + toggle.code + "?")) return; toggle.active = !toggle.active; state.auditLog.push({ id: C.id("audit"), type: toggle.active ? "player-reactivated" : "player-deactivated", playerId: toggle.id, at: iso() }); await persist(true); render(); }
   }
 
   function handleChange(event) {
     var input = event.target;
     if (input.dataset.padel144Draft) { updateDraftFrom(input); if (input.dataset.padel144Draft === "timerMode") render(); return; }
-    if (input.dataset.padel144Player && draft) { var playerId = input.dataset.padel144Player, index = draft.participantIds.indexOf(playerId); if (input.checked && index < 0) draft.participantIds.push(playerId); else if (!input.checked && index >= 0) draft.participantIds.splice(index, 1); return; }
+    if (input.dataset.padel144Player && draft) { var playerId = input.dataset.padel144Player, index = draft.participantIds.indexOf(playerId); if (input.checked && index < 0) draft.participantIds.push(playerId); else if (!input.checked && index >= 0) draft.participantIds.splice(index, 1); if (draft.kind === "mixing") { mixingDraft = draft; var counter = C.body().querySelector("[data-padel144-mixing-count]"); if (counter) counter.textContent = draft.participantIds.length + " elegidos"; } return; }
     if (input.dataset.padel144Sort) { standingsSort = input.value; render(); return; }
-    if (input.matches("[data-padel144-directory-search],[data-padel144-directory-level]")) { filterDirectory(); return; }
+    if (input.dataset.padel144PlayerLevel) { var player = playerById(input.dataset.padel144PlayerLevel); if (!player) return; var nextLevel = level(input.value); if (nextLevel === player.currentLevel) return; if (!confirm("¿Cambiar a nivel " + levelLabel(nextLevel) + " a " + player.name + " — " + player.code + "?")) { render(); return; } changePlayerLevel(state, player.id, nextLevel, null, "Cambio manual desde Jugadores"); persist(true).then(function () { C.toast("Nivel actualizado para las próximas partidas.", "good"); render(); }); return; }
+    if (input.matches("[data-padel144-directory-search],[data-padel144-directory-level],[data-padel144-directory-status]")) { filterDirectory(); return; }
     if (input.matches("[data-padel144-history-champ],[data-padel144-history-from],[data-padel144-history-to]")) filterHistory();
   }
 
@@ -448,24 +473,26 @@
   }
 
   async function open() {
-    C.openModal({ module: "padel", title: "Coco Pádel", kicker: "HERRAMIENTA ILIMITADA · v144.0", html: '<div class="c144Empty"><b>Coco está cargando el club…</b></div>', dispose: dispose });
+    C.openModal({ module: "padel", title: "Coco Pádel", kicker: "HERRAMIENTA ILIMITADA · v145.0", html: '<div class="c144Empty"><b>Coco está cargando el club…</b></div>', dispose: dispose });
     state = await loadState(); if (!C.body()) return;
     currentChampionshipId = state.championships.find(function (item) { return item.status === "active"; }) && state.championships.find(function (item) { return item.status === "active"; }).id || state.championships[0] && state.championships[0].id || null;
     controller = new AbortController(); C.body().addEventListener("click", handleClick, { signal: controller.signal }); C.body().addEventListener("change", handleChange, { signal: controller.signal }); C.body().addEventListener("input", handleInput, { signal: controller.signal });
-    view = "mixing"; currentSessionId = null; selectedPlayerId = null; draft = null; render();
+    view = "mixing"; currentSessionId = null; selectedPlayerId = null; mixingDraft = null; draft = null; render();
   }
 
-  function dispose() { if (controller) controller.abort(); controller = null; draft = null; busy = false; }
+  function dispose() { if (controller) controller.abort(); controller = null; draft = null; mixingDraft = null; mixingSession = null; currentSessionId = null; busy = false; }
 
-  root.CocoPadelV144 = {
-    version: "144.0.0", open: open, normalize: normalizeState, blankState: blankState, createPlayer: createPlayer,
+  var api = {
+    version: "145.0.0", open: open, normalize: normalizeState, blankState: blankState, createPlayer: createPlayer,
     saveResult: saveResult, deleteResult: deleteResult, changePlayerLevel: changePlayerLevel,
     championshipStandings: championshipStandings, standingsForSessions: standingsForSessions,
-    playerHistory: playerHistory, playerStats: playerStats,
+    playerHistory: playerHistory, playerStats: playerStats, championshipPointsMap: championshipPointsMap,
     audit: function (targetState) {
       targetState = normalizeState(targetState || state || blankState());
       var codes = targetState.players.map(function (player) { return player.code; });
-      return { version: targetState.version, topTabs: ["Nuevo mixing", "Campeonatos", "Jugadores"], unlimited: true, playerCount: targetState.players.length, uniqueCodes: new Set(codes).size === codes.length, codesImmutable: true, statsDerivedFromResults: true, levelsAutomatic: false, sessions: targetState.sessions.length, championships: targetState.championships.length };
+      return { version: targetState.version, topTabs: ["Mixing", "Campeonato", "Jugadores"], playerCreationArea: "Jugadores", unlimited: true, mixingPersisted: false, mixingAffectsPoints: false, playerCount: targetState.players.length, uniqueCodes: new Set(codes).size === codes.length, codesImmutable: true, statsDerivedFromResults: true, playerPointsSource: "championship-results-only", levelsAutomatic: false, championshipDates: targetState.sessions.filter(function (item) { return Boolean(item.championshipId); }).length, championships: targetState.championships.length };
     }
   };
+  root.CocoPadelV145 = api;
+  root.CocoPadelV144 = api;
 })(window);

@@ -3,7 +3,7 @@
 
   if (root.CocoV144) return;
 
-  var VERSION = "144.0.0";
+  var VERSION = "145.0.0";
   var modal = null;
   var modalBody = null;
   var modalTitle = null;
@@ -127,7 +127,7 @@
     previousFocus = document.activeElement;
     modal.dataset.module = options.module || "";
     modalTitle.textContent = options.title || "Coco en Forma";
-    modalKicker.textContent = options.kicker || "COCO EN FORMA · v144.0";
+    modalKicker.textContent = options.kicker || "COCO EN FORMA · v145.0";
     modalBody.innerHTML = options.html || "";
     disposer = typeof options.dispose === "function" ? options.dispose : null;
     modal.classList.add("visible");
@@ -300,7 +300,7 @@
     }
   };
 
-  root.COCO_VERSION = "2026-08-15-v144.0-professional";
+  root.COCO_VERSION = "2026-08-15-v145.0-professional";
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhanceCatalog);
   else enhanceCatalog();
   observer = new MutationObserver(scheduleEnhance);
