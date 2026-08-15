@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v148.0.0-r1";
+const CACHE_VERSION = "coco-en-forma-v149.0.0-r1";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
@@ -19,6 +19,7 @@ const CORE_ASSET_PATHS = [
   "./coco-v144-differences.js",
   "./coco-v144-professional.css",
   "./coco-v147-refinements.css",
+  "./coco-v149-refinements.css",
   "./coco-v2-official-icon-source.png",
   "./coco-v2-runner-v144.png",
   "./icon-192.png",
@@ -30,9 +31,7 @@ const CORE_ASSET_PATHS = [
   "./apple-touch-icon.png",
   "./shortcut-icon.png",
   "./favicon.png",
-  "./share/diferencias.png",
-  "./juego/diferencias/index.html",
-  "./juego/coco-corre/index.html"
+  "./share/coco-en-forma-v149.png"
 ];
 
 const SCENE_ASSET_PATHS = [

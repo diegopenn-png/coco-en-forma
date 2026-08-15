@@ -2,7 +2,7 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoRunnerV148) return;
+  if (!C || root.CocoRunnerV149) return;
 
   var GAME_ID = "cococorre";
   var HISTORY_KEY = "coco_runner_history_v144";
@@ -116,6 +116,28 @@
     return token;
   }
 
+  function openingPlanForRule(rule, random, level) {
+    var pattern = [false, true, false, true, false];
+    var alternateColors = rule.color ? COLORS.filter(function (color) { return color.id !== rule.color.id; }) : [];
+    return pattern.map(function (shouldMatch, index) {
+      var token = makeTokenForRule(rule, random, level, shouldMatch);
+      if (!shouldMatch && rule.type === "category-color") {
+        token.category = rule.category;
+        token.item = pick(token.category.items, random);
+        token.color = alternateColors[Math.floor(index / 2) % alternateColors.length];
+        token.glyph = token.item.glyph;
+        token.display = "category";
+      } else if (!shouldMatch && rule.type === "shape-color") {
+        token.shape = rule.shape;
+        token.color = alternateColors[Math.floor(index / 2) % alternateColors.length];
+        token.glyph = token.shape.glyph;
+        token.display = "shape";
+      }
+      token.correct = tokenMatchesRule(token, rule);
+      return token;
+    });
+  }
+
   function tokenCaption(token) {
     if (token.display === "category") return token.item.label;
     if (token.display === "calculation") return "calcula";
@@ -129,16 +151,17 @@
 
   function buildRulePlan(rule, chosenLevel, count, random) {
     var plan = [], distractorGap = 0, correctRun = 0, maxDistractorGap = 0, targets = 0, distractors = 0;
+    var opening = openingPlanForRule(rule, random, chosenLevel).slice(0, Math.min(count, 5));
     for (var index = 0; index < count; index++) {
-      var forceTarget = index < 2 || distractorGap >= correctGapLimitForLevel(chosenLevel);
+      var openingToken = opening[index], forceTarget = !openingToken && distractorGap >= correctGapLimitForLevel(chosenLevel);
       var forceDistractor = !forceTarget && correctRun >= correctRunLimitForLevel(chosenLevel);
       var shouldMatch = forceTarget || !forceDistractor && random() < targetRateForLevel(chosenLevel);
-      var token = makeTokenForRule(rule, random, chosenLevel, shouldMatch), matches = tokenMatchesRule(token, rule);
+      var token = openingToken || makeTokenForRule(rule, random, chosenLevel, shouldMatch), matches = tokenMatchesRule(token, rule);
       plan.push({ target: matches, token: token });
       if (matches) { targets++; distractorGap = 0; correctRun++; }
       else { distractors++; distractorGap++; correctRun = 0; maxDistractorGap = Math.max(maxDistractorGap, distractorGap); }
     }
-    return { plan: plan, targets: targets, distractors: distractors, firstTarget: Boolean(plan[0] && plan[0].target), maxDistractorGap: maxDistractorGap };
+    return { plan: plan, targets: targets, distractors: distractors, firstTargetIndex: plan.findIndex(function (entry) { return entry.target; }), startsWithDistractor: Boolean(plan[0] && !plan[0].target), maxDistractorGap: maxDistractorGap };
   }
 
   function validateMission(mission) {
@@ -153,14 +176,20 @@
       if (rule.type === "shape" && rule.target.id === "estrella" && correct.glyph !== "★") failures.push("star-not-visible");
       if (rule.type === "shape" && rule.target.id === "triangulo" && correct.glyph !== "▲") failures.push("triangle-not-visible");
       var plan = buildRulePlan(rule, mission.level, 24, random);
-      if (!plan.firstTarget) failures.push("rule-" + index + "-first-target-late");
+      if (plan.firstTargetIndex < 0 || plan.firstTargetIndex > 1) failures.push("rule-" + index + "-first-target-late");
+      if (!plan.startsWithDistractor) failures.push("rule-" + index + "-opening-not-interleaved");
       if (plan.targets < 6) failures.push("rule-" + index + "-insufficient-targets");
       if (plan.distractors < 3) failures.push("rule-" + index + "-insufficient-distractors");
       if (plan.maxDistractorGap > correctGapLimitForLevel(mission.level)) failures.push("rule-" + index + "-distractor-gap");
+      if (rule.type === "category-color") {
+        var categoryColors = Object.create(null);
+        plan.plan.slice(0, 5).forEach(function (entry) { if (entry.token.category.id === rule.category.id) categoryColors[entry.token.color.id] = true; });
+        if (!categoryColors[rule.color.id] || Object.keys(categoryColors).length < 3) failures.push("rule-" + index + "-category-color-variety");
+      }
     });
     var spawnInterval = mission.level === 1 ? 1.28 : mission.level === 2 ? 1.08 : .92, nominalDuration = mission.level === 1 ? 132 : mission.level === 2 ? 162 : 198, guaranteedPerSegment = Math.floor(((nominalDuration / 3) / spawnInterval) / (mission.level + 2));
     if (guaranteedPerSegment < mission.memory.sequence.length) failures.push("insufficient-sequence-budget");
-    return { valid: failures.length === 0, failures: failures, checkedRules: rules.length, guaranteedPerSegment: guaranteedPerSegment, firstTargetGuaranteed: true, maxDistractorGap: correctGapLimitForLevel(mission.level), minimumTargetsPerRulePlan: 6, minimumDistractorsPerRulePlan: 3 };
+    return { valid: failures.length === 0, failures: failures, checkedRules: rules.length, guaranteedPerSegment: guaranteedPerSegment, firstTargetGuaranteed: true, firstTargetIndex: 1, startsWithDistractor: true, maxDistractorGap: correctGapLimitForLevel(mission.level), minimumTargetsPerRulePlan: 6, minimumDistractorsPerRulePlan: 3 };
   }
 
   function missionForLevel(chosenLevel, seed) {
@@ -226,7 +255,8 @@
     if (!(await canPlay())) { renderIntro(); return; }
     var body = C.body(); if (!body) return;
     var duration = gameDuration(levelSelected), seed = C.today() + "|" + currentUserId() + "|" + levelSelected + (unlimitedTesting() ? "|prueba|" + Date.now() : "");
-    game = { level: levelSelected, mission: missionForLevel(levelSelected, seed), random: randomFrom(seed + "|runtime"), duration: duration, elapsed: 0, segment: 0, flexIndex: 0, memoryIndex: 0, lane: 0, previousLane: 0, action: "idle", actionUntil: 0, paused: false, stopped: false, objects: [], nextSpawn: .08, forcedCorrect: 2, spawnsSinceCorrect: 0, correctsSinceDistractor: 0, correct: 0, distractors: 0, missed: 0, expected: 0, obstacles: 0, obstaclesPassed: 0, collisions: 0, reactions: [], sequences: 0, ruleChanges: 0, celebrationDone: false, lastRuleChange: 0, startedAt: Date.now() };
+    game = { level: levelSelected, mission: missionForLevel(levelSelected, seed), random: randomFrom(seed + "|runtime"), duration: duration, elapsed: 0, segment: 0, flexIndex: 0, memoryIndex: 0, lane: 0, previousLane: 0, action: "idle", actionUntil: 0, paused: false, stopped: false, objects: [], nextSpawn: .08, openingQueue: [], spawnsSinceCorrect: 0, correctsSinceDistractor: 0, correct: 0, distractors: 0, missed: 0, expected: 0, obstacles: 0, obstaclesPassed: 0, collisions: 0, reactions: [], sequences: 0, ruleChanges: 0, celebrationDone: false, lastRuleChange: 0, startedAt: Date.now() };
+    game.openingQueue = openingPlanForRule(currentRule(), game.random, game.level);
     body.innerHTML = stageHtml(); controller = new AbortController();
     document.addEventListener("keydown", keyControl, { signal: controller.signal });
     body.querySelectorAll("[data-move]").forEach(function (button) { button.addEventListener("pointerdown", function (event) { event.preventDefault(); move(button.dataset.move); }, { signal: controller.signal }); });
@@ -271,12 +301,13 @@
 
   function spawnObject() {
     var body = C.body(); if (!body || !game) return;
-    var obstacleRate = game.level === 1 ? .18 : game.level === 2 ? .24 : .29, mustBeCorrect = game.forcedCorrect > 0 || game.spawnsSinceCorrect >= correctGapLimit(), obstacle = !mustBeCorrect && game.random() < obstacleRate, lane = Math.floor(game.random() * 3) - 1, item;
+    var plannedToken = game.openingQueue.length ? game.openingQueue.shift() : null;
+    var obstacleRate = game.level === 1 ? .18 : game.level === 2 ? .24 : .29, mustBeCorrect = !plannedToken && game.spawnsSinceCorrect >= correctGapLimit(), obstacle = !plannedToken && !mustBeCorrect && game.random() < obstacleRate, lane = Math.floor(game.random() * 3) - 1, item;
     if (obstacle) { item = { id: C.id("run"), kind: "obstacle", lane: lane, progress: 0, requirement: game.random() > .5 ? "jump" : "duck", spawnedAt: performance.now(), resolved: false, approachSoundPlayed: false }; game.spawnsSinceCorrect++; }
     else {
-      var forceDistractor = !mustBeCorrect && game.correctsSinceDistractor >= correctRunLimitForLevel(game.level), shouldMatch = mustBeCorrect || !forceDistractor && game.random() < targetRate(), rule = currentRule(), token = makeTokenForRule(rule, game.random, game.level, shouldMatch);
+      var forceDistractor = !mustBeCorrect && game.correctsSinceDistractor >= correctRunLimitForLevel(game.level), shouldMatch = mustBeCorrect || !forceDistractor && game.random() < targetRate(), rule = currentRule(), token = plannedToken || makeTokenForRule(rule, game.random, game.level, shouldMatch);
       item = { id: C.id("run"), kind: "token", lane: lane, progress: 0, token: token, ruleType: rule.type, spawnedAt: performance.now(), resolved: false, approachSoundPlayed: false };
-      if (token.correct) { game.expected++; game.forcedCorrect = Math.max(0, game.forcedCorrect - 1); game.spawnsSinceCorrect = 0; game.correctsSinceDistractor++; }
+      if (token.correct) { game.expected++; game.spawnsSinceCorrect = 0; game.correctsSinceDistractor++; }
       else { game.spawnsSinceCorrect++; game.correctsSinceDistractor = 0; }
     }
     var node = document.createElement("div"); node.className = "c144RunnerObject " + (obstacle ? "obstacle" : "runner-token") + (!obstacle && item.token.display === "calculation" ? " c145Gate" : ""); node.dataset.runnerObject = item.id;
@@ -287,7 +318,7 @@
 
   function positionObject(item) {
     var body = C.body(), stage = body && body.querySelector(".c144RunnerStage"); if (!stage || !item.node) return;
-    var width = stage.clientWidth || innerWidth, center = width / 2, spread = width * (.07 + item.progress * .225), x = center + item.lane * spread, y = 27 + item.progress * 67, scale = .68 + item.progress * 1.06;
+    var width = stage.clientWidth || innerWidth, center = width / 2, spread = width * (.07 + item.progress * .225), x = center + item.lane * spread, y = 27 + item.progress * 67, scale = item.kind === "obstacle" ? .58 + item.progress * .42 : .68 + item.progress * .68;
     item.node.style.left = x + "px"; item.node.style.top = y + "%"; item.node.style.setProperty("--scale", scale.toFixed(2)); item.node.style.opacity = item.progress > .96 ? String(Math.max(0, 1 - (item.progress - .96) * 20)) : "1";
   }
 
@@ -312,7 +343,7 @@
 
   function beginNewRule(clearTokens) {
     if (!game) return;
-    game.forcedCorrect = 2; game.spawnsSinceCorrect = 0; game.correctsSinceDistractor = 0; game.nextSpawn = .08;
+    game.openingQueue = openingPlanForRule(currentRule(), game.random, game.level); game.spawnsSinceCorrect = 0; game.correctsSinceDistractor = 0; game.nextSpawn = .08;
     if (clearTokens !== false) {
       game.objects.forEach(function (item) { if (item.kind === "token") { item.resolved = true; if (item.node) item.node.remove(); } });
       game.objects = game.objects.filter(function (item) { return !item.resolved; });
@@ -405,7 +436,7 @@
 
   function renderFinish(result) {
     var body = C.body(); if (!body) return; C.setModalTitle("Misión completada", "RESULTADO · CLASIFICACIÓN GENERAL");
-    var saveCopy = result.rankingTest ? "Partida de prueba completada sin duplicar puntos. Solo el primer resultado válido del día entra en la clasificación." : result.rankingSaved ? "Puntuación guardada una sola vez en la clasificación general." : result.rankingDaily ? "La puntuación válida de hoy ya estaba registrada." : "No se pudo guardar todavía: " + C.esc(result.rankingError || "revisa la conexión e inténtalo de nuevo.");
+    var saveCopy = result.rankingTest ? "Partida de prueba completada. Solo el primer resultado válido del día entra en la clasificación." : result.rankingSaved ? "Puntuación guardada en la clasificación general." : result.rankingDaily ? "La puntuación válida de hoy ya estaba registrada." : "Misión completada. La puntuación se sincronizará automáticamente cuando vuelva la conexión.";
     body.innerHTML = '<main class="c144Finish"><section class="c144Card c144FinishHero"><img src="./coco-v2-runner-v144.png" alt="Coco V2 celebrando la misión"><span class="c144Eyebrow">META ALCANZADA</span><h3>¡Misión Cerebro completada!</h3><p>Tu habilidad destacada hoy fue <b>' + C.esc(result.highlightedSkill) + '</b>.</p><div class="c146RunnerScore"><b>+' + result.generalPoints + '</b><span>' + (result.rankingTest ? 'RESULTADO DE PRUEBA' : 'PUNTOS GENERALES') + '</span></div><div class="c144RunnerMetrics"><div><b>' + result.accuracy + '%</b><span>Precisión</span></div><div><b>' + result.correctObjects + '/' + result.availableTargets + '</b><span>Objetivos correctos</span></div><div><b>' + result.distractorsPicked + '</b><span>Distractores recogidos</span></div><div><b>' + result.sequencesRemembered + '</b><span>Secuencias</span></div><div><b>' + result.obstaclesPassed + '/' + result.obstacleCount + '</b><span>Obstáculos superados</span></div><div><b>' + (result.averageReactionMs ? result.averageReactionMs + ' ms' : '—') + '</b><span>Reacción media</span></div></div><p class="c146RunnerSave ' + (!result.rankingSaved && !result.rankingDaily && !result.rankingTest ? "error" : "") + '" data-runner-save-status>' + saveCopy + '</p><p class="c144HealthyEnd">Buen trabajo. Ahora es un buen momento para apartar la vista de la pantalla y moverte un poco.</p><div class="c144Actions" style="justify-content:center"><button type="button" class="c144Primary" data-runner-close>Volver a Coco en Forma</button>' + (!result.rankingSaved && !result.rankingDaily && !result.rankingTest ? '<button type="button" class="c144Secondary" data-runner-retry-score>Reintentar guardado</button>' : '') + '</div></section></main>';
     body.querySelector("[data-runner-close]").onclick = C.closeModal;
     var retry = body.querySelector("[data-runner-retry-score]"); if (retry) retry.onclick = async function () { retry.disabled = true; retry.textContent = "Guardando…"; var saved = await saveGeneralScore(result); result.rankingTest = Boolean(saved && saved.test); result.rankingSaved = Boolean(saved && saved.ok && !result.rankingTest); result.rankingDaily = Boolean(saved && saved.daily); result.rankingError = saved && saved.error || ""; renderFinish(result); };
@@ -420,10 +451,11 @@
   function dispose() { if (game) game.stopped = true; cancelAnimationFrame(frame); if (controller) controller.abort(); controller = null; pointerStart = null; game = null; }
 
   var api = {
-    version: "148.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
+    version: "149.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, openingPlanForRule: openingPlanForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
     catalog: function () { return { colors: COLORS.slice(), shapes: SHAPES.slice(), categories: CATEGORIES.slice() }; },
-    audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, targetsAfterRuleChange: 2, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, correctAnswerStyling: false, characterMotion: "stable-with-brief-functional-actions", targetBaseSize: 112, targetApproachScale: 1.61, neutralApproachSound: true, audioUnlockForSafariPwa: true, rankingWrites: true, partidasTableWrites: true, generalLeaderboard: true, ownLeaderboard: false, scoreCap: 320, dailyLimit: 1, unlimitedTestAccount: true, extraTestRunsRanked: false, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
+    audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, firstTargetIndexAfterRuleChange: 1, openingTargetsInterleaved: true, categoryColorVarietyGuaranteed: true, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, correctAnswerStyling: false, characterMotion: "stable-with-brief-functional-actions", collisionModel: "lane-and-action", obstacleApproachScale: .95, adjacentLaneVisualClearance: true, neutralApproachSound: true, audioUnlockForSafariPwa: true, rankingWrites: true, partidasTableWrites: true, generalLeaderboard: true, ownLeaderboard: false, scoreCap: 320, dailyLimit: 1, unlimitedTestAccount: true, extraTestRunsRanked: false, technicalErrorsHidden: true, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
   };
+  root.CocoRunnerV149 = api;
   root.CocoRunnerV148 = api;
   root.CocoRunnerV147 = api;
   root.CocoRunnerV146 = api;

@@ -2,7 +2,7 @@
   "use strict";
 
   var CONTENT_VERSION = "142.0.0";
-  var DAILY_POLICY_VERSION = "148.0.0";
+  var DAILY_POLICY_VERSION = "149.0.0";
   /* Conserva las claves v141 para no reiniciar el historial de rotación ni
      cambiar una misión ya elegida al actualizar la PWA durante el mismo día. */
   var STORAGE_PREFIX = "coco_v141_rotation_";
@@ -575,6 +575,7 @@
   window.CocoDailyV141 = window.CocoDailyV134;
   window.CocoDailyV142 = window.CocoDailyV134;
   window.CocoDailyV148 = window.CocoDailyV134;
+  window.CocoDailyV149 = window.CocoDailyV134;
   window.CocoAnalyticsV134 = { track: track, mode: "local-only", exportsPersonalData: false };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhanceCopyAndAccessibility);

@@ -3,7 +3,7 @@
 
   if (root.CocoV144) return;
 
-  var VERSION = "148.0.0";
+  var VERSION = "149.0.0";
   var modal = null;
   var modalBody = null;
   var modalTitle = null;
@@ -170,7 +170,7 @@
     previousFocus = document.activeElement;
     modal.dataset.module = options.module || "";
     modalTitle.textContent = options.title || "Coco en Forma";
-    modalKicker.textContent = options.kicker || "COCO EN FORMA · v148.0";
+    modalKicker.textContent = options.kicker || "COCO EN FORMA · v149.0";
     modalBody.innerHTML = options.html || "";
     disposer = typeof options.dispose === "function" ? options.dispose : null;
     modal.classList.add("visible");
@@ -277,7 +277,7 @@
       if (Array.isArray(general) && general.indexOf("cococorre") < 0) general.push("cococorre");
       if (!arcade.__v144OpenWrapped && typeof arcade.open === "function") {
         var originalOpen = arcade.open;
-        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") { var runner = root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144; return runner && runner.open(); } return originalOpen.apply(this, arguments); };
+        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") { var runner = root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144; return runner && runner.open(); } return originalOpen.apply(this, arguments); };
         arcade.__v144OpenWrapped = true;
       }
     }
@@ -325,9 +325,9 @@
     if (!actionable) return;
     if (feature === "runner" && actionable.classList && actionable.classList.contains("cocoLigaBadge")) return;
     event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-    if (feature === "runner" && (root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
-    else if (feature === "padel" && (root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144)) (root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144).open();
-    else if (feature === "differences" && (root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
+    if (feature === "runner" && (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
+    else if (feature === "padel" && (root.CocoPadelV149 || root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144)) (root.CocoPadelV149 || root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144).open();
+    else if (feature === "differences" && (root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
   }, true);
 
   root.CocoV144 = {
@@ -363,7 +363,7 @@
   root.CocoV148 = root.CocoV144;
   root.CocoV147 = root.CocoV144;
   root.CocoV146 = root.CocoV144;
-  root.COCO_VERSION = "2026-08-15-v148.0-professional";
+  root.COCO_VERSION = "2026-08-15-v149.0-professional";
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhanceCatalog);
   else enhanceCatalog();
   observer = new MutationObserver(scheduleEnhance);
@@ -374,7 +374,7 @@
   setTimeout(function () {
     try {
       var activeModal = document.querySelector(".cocoV144Modal.visible");
-      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
+      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
     } catch (_) {}
   }, 260);
 })(window);

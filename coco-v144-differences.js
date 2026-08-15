@@ -2,7 +2,7 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoDifferencesProV148) return;
+  if (!C || root.CocoDifferencesProV149) return;
 
   var KINDS = ["color", "shape", "presence"];
   var VARIANTS = [
@@ -68,7 +68,7 @@
   }
 
   async function renderIntro() {
-    var allowed = await canPlay(), body = C.body(); if (!body) return; C.setModalTitle("Encuentra las diferencias", "ATENCIÓN VISUAL · v148.0"); body.innerHTML = introHtml(allowed);
+    var allowed = await canPlay(), body = C.body(); if (!body) return; C.setModalTitle("Encuentra las diferencias", "ATENCIÓN VISUAL · v149.0"); body.innerHTML = introHtml(allowed);
     body.querySelectorAll("[data-diff144-level]").forEach(function (button) { button.onclick = function () { levelSelected = Number(button.dataset.diff144Level) || 1; renderIntro(); }; });
     var start = body.querySelector("[data-diff144-start]"); if (start && !start.disabled) start.onclick = startGame;
   }
@@ -231,11 +231,11 @@
     loadScenes();
   }
 
-  async function open() { C.openModal({ module: "differences", title: "Encuentra las diferencias", kicker: "ATENCIÓN VISUAL · v148.0", html: '<div class="c144Empty"><b>Coco está preparando el escenario…</b></div>', dispose: dispose }); user = await resolveUser(); renderIntro(); }
+  async function open() { C.openModal({ module: "differences", title: "Encuentra las diferencias", kicker: "ATENCIÓN VISUAL · v149.0", html: '<div class="c144Empty"><b>Coco está preparando el escenario…</b></div>', dispose: dispose }); user = await resolveUser(); renderIntro(); }
   function dispose() { clearInterval(timer); if (controller) controller.abort(); controller = null; if (game) game.finished = true; game = null; }
 
   var api = {
-    version: "148.0.0", open: open, scenes: SCENES,
+    version: "149.0.0", open: open, scenes: SCENES,
     config: config, rectFor: rectFor,
     materializeForAudit: function (sceneId, variant, count) {
       var scene = SCENES.find(function (item) { return item.id === sceneId; });
@@ -244,8 +244,9 @@
       return materialize({ scene: scene, variant: variant }, Math.max(1, Math.min(scene.differences.length, Number(count) || 6)));
     },
     applyDifferenceForAudit: applyDifference,
-    audit: function () { return { sceneCount: SCENES.length, variantsPerScene: VARIANTS.length, combinationsPerLevel: SCENES.length * VARIANTS.length, levels: { basic: 4, intermediate: 5, advanced: 6 }, everySceneHasSix: SCENES.every(function (scene) { return scene.differences.length === 6; }), differenceKinds: KINDS.slice(), allowedKindsOnly: true, brokenObjects: false, deformedObjects: false, blurredRemoval: false, completeObjects: true, preAnswerMarkers: false, genericCircleMarkers: false, genericStarMarkers: false, foundFeedbackOnlyAfterCorrectTap: true, sameDefinitionForVisualAndHit: true, normalizedCoordinates: true, clickableFromBothImages: true, falseClicksAccepted: false, brightness: 1.2, unlimitedTestAccount: true, extraTestRunsRanked: false, renderer: "dual-canvas-integrated-scene-changes-v148" }; }
+    audit: function () { return { sceneCount: SCENES.length, variantsPerScene: VARIANTS.length, combinationsPerLevel: SCENES.length * VARIANTS.length, levels: { basic: 4, intermediate: 5, advanced: 6 }, everySceneHasSix: SCENES.every(function (scene) { return scene.differences.length === 6; }), differenceKinds: KINDS.slice(), allowedKindsOnly: true, brokenObjects: false, deformedObjects: false, blurredRemoval: false, completeObjects: true, preAnswerMarkers: false, genericCircleMarkers: false, genericStarMarkers: false, foundFeedbackOnlyAfterCorrectTap: true, sameDefinitionForVisualAndHit: true, normalizedCoordinates: true, clickableFromBothImages: true, falseClicksAccepted: false, brightness: 1.2, unlimitedTestAccount: true, extraTestRunsRanked: false, renderer: "dual-canvas-integrated-scene-changes-v149" }; }
   };
+  root.CocoDifferencesProV149 = api;
   root.CocoDifferencesProV148 = api;
   root.CocoDifferencesProV147 = api;
   root.CocoDifferencesProV146 = api;
