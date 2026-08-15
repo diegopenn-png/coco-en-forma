@@ -1,0 +1,19 @@
+COCO EN FORMA v151.0 — LISTO PARA GITHUB
+Fecha: 16/08/2026
+
+QUÉ SUBIR
+- Subir TODO el contenido de esta carpeta al repositorio/sitio, respetando carpetas y nombres.
+- No hace falta ejecutar SQL nuevo para v151.
+
+CAMBIOS PRINCIPALES
+1) Los juegos se pueden abrir aunque Supabase tarde en responder.
+2) Se corrige la mezcla de archivos viejos/nuevos causada por caché/PWA.
+3) Coco Corre es bastante más ágil y los objetos no se recortan dentro de cuadrados.
+4) Encuentra las diferencias ya no usa figuras o props artificiales superpuestos: solo cambios sobre objetos reales y sobre Coco.
+
+DESPUÉS DE SUBIR
+- La PWA v151 actualiza su Service Worker automáticamente al instalar la versión nueva.
+- Si un dispositivo tuviera una versión muy antigua abierta desde hace tiempo, cerrar y volver a abrir la PWA o recargar una vez después del despliegue.
+
+PRUEBAS
+Ver PRUEBAS-V151.0.md.

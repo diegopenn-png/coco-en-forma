@@ -277,7 +277,7 @@
       if (Array.isArray(general) && general.indexOf("cococorre") < 0) general.push("cococorre");
       if (!arcade.__v144OpenWrapped && typeof arcade.open === "function") {
         var originalOpen = arcade.open;
-        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") { var runner = root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144; return runner && runner.open(); } return originalOpen.apply(this, arguments); };
+        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") { var runner = root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144; return runner && runner.open(); } return originalOpen.apply(this, arguments); };
         arcade.__v144OpenWrapped = true;
       }
     }
@@ -324,9 +324,9 @@
     var actionable = action || event.target.closest("button,.cocoMiniJuego");
     if (!actionable) return;
         event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-    if (feature === "runner" && (root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
+    if (feature === "runner" && (root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
     else if (feature === "padel" && (root.CocoPadelV149 || root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144)) (root.CocoPadelV149 || root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144).open();
-    else if (feature === "differences" && (root.CocoDifferencesProV150 || root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV150 || root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
+    else if (feature === "differences" && (root.CocoDifferencesProV151 || root.CocoDifferencesProV150 || root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV151 || root.CocoDifferencesProV150 || root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
   }, true);
 
   root.CocoV144 = {
@@ -373,7 +373,7 @@
   setTimeout(function () {
     try {
       var activeModal = document.querySelector(".cocoV144Modal.visible");
-      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
+      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
     } catch (_) {}
   }, 260);
 })(window);

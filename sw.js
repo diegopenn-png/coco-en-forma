@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v150.0.0-r1";
+const CACHE_VERSION = "coco-en-forma-v151.0.0-r1";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
@@ -16,11 +16,12 @@ const CORE_ASSET_PATHS = [
   "./coco-v144-content.js",
   "./coco-v144-core.js",
   "./coco-v144-padel.js",
-  "./coco-v144-runner.js",
-  "./coco-v144-differences.js",
+  "./coco-v151-runner.js",
+  "./coco-v151-differences.js",
   "./coco-v144-professional.css",
   "./coco-v147-refinements.css",
   "./coco-v150-refinements.css",
+  "./coco-v151-refinements.css",
   "./coco-v2-official-icon-source.png",
   "./coco-v2-runner-v144.png",
   "./icon-192.png",
@@ -66,6 +67,7 @@ self.addEventListener("install", (event) => {
     await Promise.all(CORE_ASSET_PATHS.map((assetPath) => fetchAndCache(cache, assetPath)));
     /* Una escena opcional no debe impedir que se instale la actualización completa. */
     await Promise.allSettled(SCENE_ASSET_PATHS.map((assetPath) => fetchAndCache(cache, assetPath)));
+    await self.skipWaiting();
   })());
 });
 
@@ -90,19 +92,25 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(fetch(event.request).then((response) => {
       if (response.ok) event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, response.clone())));
       return response;
-    }).catch(() => caches.match(event.request, { ignoreSearch: true }).then((cached) => cached || caches.match(INDEX_URL))));
+    }).catch(() => caches.match(event.request).then((cached) => cached || caches.match(INDEX_URL))));
     return;
   }
 
-  event.respondWith(caches.match(event.request, { ignoreSearch: true }).then((cached) => {
-    const network = fetch(event.request).then((response) => {
-      if (response.ok) event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, response.clone())));
-      return response;
-    }).catch(() => cached || new Response("Recurso no disponible sin conexión", {
+  /* v151: red primero. Así un despliegue nuevo jamás ejecuta JS/CSS de una caché anterior. */
+  event.respondWith(fetch(event.request).then((response) => {
+    if (response.ok) event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, response.clone())));
+    return response;
+  }).catch(async () => {
+    const cache = await caches.open(CACHE_VERSION);
+    let cached = await cache.match(event.request);
+    if (!cached) {
+      const cleanUrl = new URL(event.request.url); cleanUrl.search = "";
+      cached = await cache.match(cleanUrl.href);
+    }
+    return cached || new Response("Recurso no disponible sin conexión", {
       status: 503,
       statusText: "Offline",
       headers: { "Content-Type": "text/plain; charset=utf-8" }
-    }));
-    return cached || network;
+    });
   }));
 });

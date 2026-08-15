@@ -499,6 +499,7 @@
 <link rel="stylesheet" href="./coco-v144-professional.css?v=1450">
 <link rel="stylesheet" href="./coco-v147-refinements.css?v=14800">
 <link rel="stylesheet" href="./coco-v150-refinements.css?v=15000">
+<link rel="stylesheet" href="./coco-v151-refinements.css?v=15100">
 <style id="coco-v150-classification-css">
 #cocoApp .cocoLigaBadge{cursor:default!important;user-select:none!important}
 #cocoApp .cocoLeaderboardPreview{display:none!important}
@@ -508,7 +509,7 @@
 
 <script src="./supabase-js-2.112.3.min.js?v=15000"></script>
 </head><body>
-<script>window.COCO_VERSION="2026-08-16-v150.0-variedad-clasificacion";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/share/coco-en-forma-v150.png',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',cuentasPruebaIlimitadas:['diegopenn@icloud.com']};</script>
+<script>window.COCO_VERSION="2026-08-16-v151.0-acceso-runner-diferencias";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/share/coco-en-forma-v150.png',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',cuentasPruebaIlimitadas:['diegopenn@icloud.com']};</script>
 <style id="coco-v134-style">:root{color-scheme:light}
 html{scroll-behavior:smooth}
 body{min-height:100dvh}
@@ -1108,7 +1109,7 @@ body{min-height:100dvh}
     window.__cocoPwaV135Registered = true;
     var hadController = Boolean(navigator.serviceWorker.controller), reloading = false;
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register(new URL("sw.js",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname}).then(function (registration) {
+      navigator.serviceWorker.register(new URL("sw.js?v=15100",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
         function offerUpdate(worker) {
           if (!worker || !hadController || document.querySelector(".cocoV134Update")) return;
           var app = document.getElementById("cocoApp") || document.body, button = document.createElement("button");
@@ -6578,15 +6579,25 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     return clientCache;
   }
 
+  function cocoTimeout(promise,ms,fallback){
+    var settled=false,timer;
+    return new Promise(function(resolve){
+      timer=setTimeout(function(){if(!settled){settled=true;resolve(fallback)}},Math.max(120,Number(ms)||1200));
+      Promise.resolve(promise).then(function(value){if(!settled){settled=true;clearTimeout(timer);resolve(value)}}).catch(function(){if(!settled){settled=true;clearTimeout(timer);resolve(fallback)}});
+    });
+  }
   async function currentSession(force){
     var cli=gameClient();if(!cli)return null;
     var session=null;
-    for(var i=0;i<7;i++){
-      try{var read=await cli.auth.getSession();session=read&&read.data?read.data.session:null}catch{}
+    /* v151: la red nunca bloquea el acceso a los juegos. Dos lecturas rápidas bastan;
+       si Supabase tarda, el catálogo funciona con respaldo local y sincroniza después. */
+    for(var i=0;i<2;i++){
+      var read=await cocoTimeout(cli.auth.getSession(),420,null);
+      session=read&&read.data?read.data.session:null;
       if(session&&session.access_token)break;
-      await new Promise(function(resolve){setTimeout(resolve,140)})
+      if(i===0)await new Promise(function(resolve){setTimeout(resolve,90)});
     }
-    if(force&&cli.auth.refreshSession){try{var refreshed=await cli.auth.refreshSession();if(refreshed&&refreshed.data&&refreshed.data.session)session=refreshed.data.session}catch{}}
+    if(force&&cli.auth.refreshSession){var refreshed=await cocoTimeout(cli.auth.refreshSession(),900,null);if(refreshed&&refreshed.data&&refreshed.data.session)session=refreshed.data.session}
     return session;
   }
 
@@ -6640,8 +6651,8 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     var session=arguments.length>1?sessionHint:await currentSession(false),fallback=localStats(id,session&&session.user&&session.user.id);if(!session)return fallback;
     var cli=gameClient();if(!cli)return fallback;
     try{
-      var result=await cli.from("partidas").select("puntos,creado,fecha").eq("jugador",session.user.id).eq("juego",id).order("creado",{ascending:false}).limit(1000);
-      if(result.error&&/fecha/i.test(result.error.message||""))result=await cli.from("partidas").select("puntos,creado").eq("jugador",session.user.id).eq("juego",id).order("creado",{ascending:false}).limit(1000);
+      var result=await cocoTimeout(cli.from("partidas").select("puntos,creado,fecha").eq("jugador",session.user.id).eq("juego",id).order("creado",{ascending:false}).limit(1000),1450,{error:{message:"timeout"}});
+      if(result.error&&/fecha/i.test(result.error.message||""))result=await cocoTimeout(cli.from("partidas").select("puntos,creado").eq("jugador",session.user.id).eq("juego",id).order("creado",{ascending:false}).limit(1000),1450,{error:{message:"timeout"}});
       if(result.error)throw result.error;
       var rows=result.data||[],stats=rowsToStats(rows),legacy=OWN_IDS.indexOf(id)>=0?legacyOwn(session,id):null;
       return mergeLegacyStats(stats,legacy);
@@ -6792,7 +6803,8 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     overlay.querySelector("[data-arcade-icon]").innerHTML=iconSvg(id);overlay.querySelector("#cocoArcadeTitleV132").textContent=game.title;overlay.querySelector("[data-arcade-subtitle]").textContent=game.subtitle;setCocoMood("ready",game.group==="tool"?"¡Organicemos rápido y salgamos a la pista!":"Hoy solo hay una partida: haz que cuente.");
     overlay.classList.add("visible");setHud("—",0,"PUNTOS");body.innerHTML='<div class="cocoArcadeQuestion" style="text-align:center"><div class="coco-cargando">Preparando la misión de Coco…</div></div>';
     requestAnimationFrame(function(){var shell=overlay&&overlay.querySelector(".cocoArcadeShell");if(shell)shell.focus({preventScroll:true})});
-    var loaded=game.group==="tool"?await Promise.all([Promise.resolve(blankStats()),playerContext(),Promise.resolve(null)]):await Promise.all([loadStats(id),playerContext(),Promise.resolve(null)]);if(!active||active.id!==id)return;active.stats=loaded[0];active.user=loaded[1];active.leaderboard=loaded[2];active.selectedLevel=ageLevel(active.user);active.phase="intro";renderIntro();
+    var fallbackUser={id:"visitante",edad:null,apodo:"Jugador Coco"},fallbackStats=localStats(id,"visitante");
+    var loaded=game.group==="tool"?await Promise.all([Promise.resolve(blankStats()),cocoTimeout(playerContext(),1650,fallbackUser),Promise.resolve(null)]):await Promise.all([cocoTimeout(loadStats(id),1650,fallbackStats),cocoTimeout(playerContext(),1650,fallbackUser),Promise.resolve(null)]);if(!active||active.id!==id)return;active.stats=loaded[0]||fallbackStats;active.user=loaded[1]||fallbackUser;active.leaderboard=loaded[2];active.selectedLevel=ageLevel(active.user);active.phase="intro";renderIntro();
   }
 
   function closeGame(ask){
@@ -6862,7 +6874,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 
   async function playerContext(){
     var session=await currentSession(false),user={id:uidOf(session),edad:null,apodo:"Jugador Coco"};
-    if(session){syncDailyIdentity(session);var meta=session.user.user_metadata||{};user.apodo=meta.apodo||meta.username||(session.user.email||"Jugador Coco").split("@")[0];try{var profile=await gameClient().from("perfiles").select("apodo,edad").eq("id",session.user.id).maybeSingle();if(profile.data){user.apodo=profile.data.apodo||user.apodo;user.edad=null==profile.data.edad?null:Number(profile.data.edad)}}catch{}}
+    if(session){syncDailyIdentity(session);var meta=session.user.user_metadata||{};user.apodo=meta.apodo||meta.username||(session.user.email||"Jugador Coco").split("@")[0];try{var profile=await cocoTimeout(gameClient().from("perfiles").select("apodo,edad").eq("id",session.user.id).maybeSingle(),1200,null);if(profile&&profile.data){user.apodo=profile.data.apodo||user.apodo;user.edad=null==profile.data.edad?null:Number(profile.data.edad)}}catch{}}
     return user;
   }
 
@@ -7645,15 +7657,28 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     var copy=unlimited?"Probar otra vez":used?"Completado hoy":"Jugar";card.classList.toggle("cocoDailyComplete",used);card.dataset.cocoDailyState=used?"done":"available";card.dataset.cocoUnlimitedTesting=unlimited?"true":"false";button.disabled=used;button.setAttribute("aria-disabled",used?"true":"false");if(button.textContent!==copy)button.textContent=copy;button.setAttribute("aria-label",unlimited?"Abrir otra partida de prueba de "+(DISPLAY_NAMES[id]||"este juego"):used?(DISPLAY_NAMES[id]||"Este juego")+": misión completada hoy":"Entrar a "+(DISPLAY_NAMES[id]||"este juego"));
   }
 
+  function optimisticArcadeUserId(){
+    try{var daily=window.CocoDailyV134;if(daily&&typeof daily.userId==="function")return String(daily.userId()||"visitante")}catch{}return "visitante";
+  }
+  function setOptimisticCardState(card,id){
+    var userId=optimisticArcadeUserId(),stats=isClubTool(id)?blankStats():localStats(id,userId),line=card&&card.querySelector(".cocoArcadeCardScore");
+    if(line){var copy=scoreCopy(id,stats);if(line.innerHTML!==copy)line.innerHTML=copy}
+    applyDailyCardState(card,id,stats,userId);
+  }
   async function refreshCardScore(card,id,force){
-    if(!card||!id)return;var session=await currentSession(false),userId=arcadeUserId(session);syncDailyIdentity(session);useStatsCacheForUser(userId);
+    if(!card||!id)return;
+    /* v151: el estado remoto enriquece la tarjeta, pero jamás decide si se puede pulsar mientras carga. */
+    if(!card.dataset.cocoDailyState)setOptimisticCardState(card,id);
+    var session=await cocoTimeout(currentSession(false),950,null),userId=arcadeUserId(session);syncDailyIdentity(session);useStatsCacheForUser(userId);
     if(isClubTool(id)){var toolLine=card.querySelector(".cocoArcadeCardScore");if(toolLine)toolLine.innerHTML=scoreCopy(id,{});applyDailyCardState(card,id,{},userId);return}
     var cacheKey=userId+"|"+id,now=Date.now(),cached=statsCache[cacheKey];
     if(!force&&cached&&now-cached.at<30000){var quick=card.querySelector(".cocoArcadeCardScore"),cachedCopy=scoreCopy(id,cached.stats);if(quick&&quick.innerHTML!==cachedCopy)quick.innerHTML=cachedCopy;applyDailyCardState(card,id,cached.stats,userId);return}
     if(card.dataset.cocoV132Loading==="1")return;card.dataset.cocoV132Loading="1";
-    var stats=await loadStats(id,session),latest=await currentSession(false),latestUser=arcadeUserId(latest);delete card.dataset.cocoV132Loading;
-    if(latestUser!==userId){if(document.contains(card))refreshCardScore(card,id,true);return}if(!document.contains(card))return;
-    statsCache[cacheKey]={at:Date.now(),stats:stats};var line=card.querySelector(".cocoArcadeCardScore"),copy=scoreCopy(id,stats);if(line&&line.innerHTML!==copy)line.innerHTML=copy;applyDailyCardState(card,id,stats,userId);
+    try{
+      var stats=await cocoTimeout(loadStats(id,session),1700,localStats(id,userId)),latest=await cocoTimeout(currentSession(false),800,session),latestUser=arcadeUserId(latest);
+      if(latestUser!==userId){if(document.contains(card))refreshCardScore(card,id,true);return}if(!document.contains(card))return;
+      statsCache[cacheKey]={at:Date.now(),stats:stats};var line=card.querySelector(".cocoArcadeCardScore"),copy=scoreCopy(id,stats);if(line&&line.innerHTML!==copy)line.innerHTML=copy;applyDailyCardState(card,id,stats,userId);
+    }finally{delete card.dataset.cocoV132Loading}
   }
 
   function upgradeCard(card){
@@ -7668,7 +7693,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     var description=card.querySelector(".cocoDescripcion");if(description&&game&&description.textContent!==game.description)description.textContent=game.description;
     var cardTitle=card.querySelector("h3");if(cardTitle&&game&&cardTitle.textContent!==game.title)cardTitle.textContent=game.title;
     bindRankingBadge(card,id);
-    var button=card.querySelector(".cocoBotonJuego,.btn");if(button){button.disabled=true;button.textContent=isClubTool(id)?"Preparando club…":"Comprobando misión…";button.setAttribute("aria-label",isClubTool(id)?"Preparando la herramienta del club":"Comprobando la misión diaria de "+(DISPLAY_NAMES[id]||id));if(game)button.onclick=function(event){event.preventDefault();event.stopPropagation();if(card.dataset.cocoDailyState==="available"||card.dataset.cocoDailyState==="tool")openGame(id,button)}}
+    var button=card.querySelector(".cocoBotonJuego,.btn");if(button){setOptimisticCardState(card,id);if(game)button.onclick=function(event){event.preventDefault();event.stopPropagation();if(card.dataset.cocoDailyState!=="done")openGame(id,button)}}
     refreshCardScore(card,id,false);
   }
 
@@ -7821,7 +7846,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     observer=new MutationObserver(scheduleUpgrade);observer.observe(root,{childList:true,subtree:true});
     window.cocoFeedbackGlobal=function(kind){reactClassic(kind)};
     try{pendingSharedId=new URLSearchParams(location.search).get("juego")||""}catch{}
-    document.addEventListener("click",function(event){var button=event.target&&event.target.closest?event.target.closest(".cocoBotonJuego,.cocoGameCard>.btn"):null,card=button&&button.closest(".cocoGameCard");if(!card||card.classList.contains("cocoSuggestionCard"))return;var id=idFromCard(card),state=card.dataset.cocoDailyState;if(state!=="available"&&state!=="tool"){event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();if(state==="done")toast("Partida completada hoy. Mañana tendrás un desafío nuevo.");return}activeClassicId=id;if(READY_IDS.indexOf(id)<0)return;activeClassicId="";event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();openGame(id,button)},true);
+    document.addEventListener("click",function(event){var button=event.target&&event.target.closest?event.target.closest(".cocoBotonJuego,.cocoGameCard>.btn"):null,card=button&&button.closest(".cocoGameCard");if(!card||card.classList.contains("cocoSuggestionCard"))return;var id=idFromCard(card),state=card.dataset.cocoDailyState;if(state==="done"){event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();toast("Partida completada hoy. Mañana tendrás un desafío nuevo.");return}activeClassicId=id;if(READY_IDS.indexOf(id)<0)return;activeClassicId="";event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();openGame(id,button)},true);
     document.addEventListener("keydown",function(event){if(event.key!=="Escape")return;if(suggestionModal){closeSuggestionForm();return}if(shareModal){closeShareMenu();return}if(familyModal){closeFamilyReport();return}if(overlay&&overlay.classList.contains("visible"))closeGame(true)});
     window.addEventListener("pagehide",clearActive);
     window.addEventListener("storage",function(event){if(event.key&&/coco_v12|coco_pin_familia/.test(event.key)){Object.keys(statsCache).forEach(function(id){statsCache[id].at=0});scheduleUpgrade()}});
@@ -8074,8 +8099,8 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 <script id="coco-v150-unified" src="./coco-v142-unified.js?v=15000"></script>
 <script id="coco-v150-core" src="./coco-v144-core.js?v=15000"></script>
 <script id="coco-v150-padel" src="./coco-v144-padel.js?v=15000"></script>
-<script id="coco-v150-runner" src="./coco-v144-runner.js?v=15000"></script>
-<script id="coco-v150-differences" src="./coco-v144-differences.js?v=15000"></script>
+<script id="coco-v151-runner" src="./coco-v151-runner.js?v=15100"></script>
+<script id="coco-v151-differences" src="./coco-v151-differences.js?v=15100"></script>
 
 
 <style id="coco-v140-differences-style">/* Coco en Forma v140 · parejas de escenas completas, sin iconos superpuestos */
@@ -8143,5 +8168,5 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 }
 </style>
 <script id="coco-v150-user-copy-sanitizer">(function(){"use strict";var technical=/^(?:Detalle|Mensaje técnico|Error técnico)\s*:|Juego no válido|PGRST\d*|schema cache|row-level security/i,friendly="La información se actualizará automáticamente cuando vuelva la conexión.";function clean(root){if(!root||root.nodeType!==1)return;var nodes=[root].concat(Array.from(root.querySelectorAll("p,small,span,[role=status],.aviso,.cocoArcadeSave,.c144Notice,.c146RunnerSave")));nodes.forEach(function(node){if(node.children&&node.children.length)return;var copy=String(node.textContent||"").trim();if(technical.test(copy)){node.textContent=friendly;node.removeAttribute("title");node.dataset.cocoCopySanitized="true"}})}var observer=new MutationObserver(function(records){records.forEach(function(record){Array.from(record.addedNodes||[]).forEach(clean)})});function start(){var app=document.getElementById("cocoApp")||document.body;clean(app);observer.observe(app,{childList:true,subtree:true})}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();window.CocoUserCopyV150={sanitize:clean,audit:function(){return{technicalDetailsVisible:false,friendlyOfflineCopy:true}}}})();</script>
-<script id="coco-v150-local-qa">(function(){try{var p=new URLSearchParams(location.search),local=/localhost|127\.0\.0\.1|terminal\.local/i.test(location.hostname||"");if(local&&p.get("qa")==="1"){window.CocoArcadeDemo=true;var game=p.get("juego");setTimeout(function(){var modal=document.querySelector(".cocoV144Modal.visible"),module=modal&&modal.dataset.module;if(game==="cococorre"&&(window.CocoRunnerV150||window.CocoRunnerV149)&&module!=="runner")(window.CocoRunnerV150||window.CocoRunnerV149).open();else if(game==="diferencias"&&(window.CocoDifferencesProV150||window.CocoDifferencesProV149)&&module!=="differences")(window.CocoDifferencesProV150||window.CocoDifferencesProV149).open();else if(game==="padel"&&window.CocoPadelV149&&module!=="padel")window.CocoPadelV149.open();else if(game&&window.CocoArcadeV133&&window.CocoArcadeV133.games[game]&&!module)window.CocoArcadeV133.open(game,null)},80)}}catch(e){}})();</script>
+<script id="coco-v150-local-qa">(function(){try{var p=new URLSearchParams(location.search),local=/localhost|127\.0\.0\.1|terminal\.local/i.test(location.hostname||"");if(local&&p.get("qa")==="1"){window.CocoArcadeDemo=true;var game=p.get("juego");setTimeout(function(){var modal=document.querySelector(".cocoV144Modal.visible"),module=modal&&modal.dataset.module;if(game==="cococorre"&&(window.CocoRunnerV151||window.CocoRunnerV150||window.CocoRunnerV149)&&module!=="runner")(window.CocoRunnerV151||window.CocoRunnerV150||window.CocoRunnerV149).open();else if(game==="diferencias"&&(window.CocoDifferencesProV151||window.CocoDifferencesProV150||window.CocoDifferencesProV149)&&module!=="differences")(window.CocoDifferencesProV151||window.CocoDifferencesProV150||window.CocoDifferencesProV149).open();else if(game==="padel"&&window.CocoPadelV149&&module!=="padel")window.CocoPadelV149.open();else if(game&&window.CocoArcadeV133&&window.CocoArcadeV133.games[game]&&!module)window.CocoArcadeV133.open(game,null)},80)}}catch(e){}})();</script>
 </body></html>

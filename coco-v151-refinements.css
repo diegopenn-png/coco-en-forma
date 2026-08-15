@@ -1,0 +1,57 @@
+/* Coco en Forma v151.0 — acceso no bloqueante, Coco Corre más vivo y gráficos sin recortes. */
+
+/* Tarjetas: el refresco de puntuación nunca debe parecer un bloqueo de la app. */
+#cocoApp .cocoGameCard .cocoBotonJuego:not(:disabled),
+#cocoApp .cocoGameCard .btn:not(:disabled){cursor:pointer}
+
+/* Coco Corre: objetos completos, sin clipping de paint containment. */
+#cocoApp .c144RunnerObject{contain:layout style!important;overflow:visible!important}
+#cocoApp .c144RunnerObject[data-runner-display="category"]{
+  width:110px!important;height:100px!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;overflow:visible!important;isolation:isolate!important;
+}
+#cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{
+  position:absolute;left:50%;top:45%;display:grid;place-items:center;width:88px;height:88px;
+  transform:translate(-50%,-50%);overflow:visible;border:3px solid rgba(255,255,255,.96);border-radius:30px;
+  background:radial-gradient(circle at 28% 18%,rgba(255,255,255,.98),rgba(255,255,255,.75) 32%,rgba(229,247,255,.88) 78%,rgba(190,226,241,.9));
+  box-shadow:0 12px 28px rgba(3,27,44,.30),inset 0 2px 0 #fff;
+}
+#cocoApp .c151RunnerTintedCanvas{display:block;width:84px;height:84px;max-width:none;filter:saturate(1.08) contrast(1.04);transform:translateY(-1px)}
+#cocoApp .c151RunnerShine{position:absolute;left:13px;top:10px;width:27px;height:12px;border-radius:50%;background:rgba(255,255,255,.64);filter:blur(.4px);transform:rotate(-18deg);pointer-events:none}
+#cocoApp .c151RunnerColorName{
+  position:absolute;z-index:3;right:-13px;top:3px;max-width:78px;padding:4px 7px;border:2px solid #fff;border-radius:999px;
+  background:var(--runner-color,#2fa9dc);color:#fff;font-size:8px;font-weight:1000;line-height:1;letter-spacing:.05em;
+  text-transform:uppercase;text-shadow:0 1px 2px rgba(0,0,0,.3);box-shadow:0 4px 10px rgba(3,27,44,.25);white-space:nowrap
+}
+#cocoApp .c151RunnerEmojiFallback{display:grid;place-items:center;width:82px;height:82px;font-size:58px}
+#cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{
+  position:absolute;z-index:3;left:50%;top:83px;display:block!important;width:max-content;max-width:156px!important;min-height:0!important;
+  transform:translateX(-50%);overflow:visible!important;padding:5px 8px;border:2px solid rgba(255,255,255,.92);border-radius:10px;
+  background:rgba(248,253,255,.95);color:#173e58!important;font-size:9px!important;font-weight:1000;line-height:1.08!important;
+  letter-spacing:.01em;text-align:center;text-transform:uppercase;white-space:normal!important;text-overflow:clip!important;
+  box-shadow:0 5px 12px rgba(3,27,44,.2);text-wrap:balance
+}
+#cocoApp .c144RunnerObject.runner-token:not([data-runner-display="category"]){overflow:visible!important}
+
+/* Un toque de profundidad sin mover a Coco: los objetos se sienten más vivos al acercarse. */
+#cocoApp .c144RunnerObject.runner-token{filter:drop-shadow(0 5px 4px rgba(7,38,55,.10))}
+
+/* Diferencias: no se muestran leyendas que sugieran formas superpuestas artificiales. */
+#cocoApp .c144DiffTypes span{font-weight:900!important}
+#cocoApp .c144DiffScene canvas{image-rendering:auto!important}
+
+@media(max-width:640px){
+  #cocoApp .c144RunnerObject[data-runner-display="category"]{width:92px!important;height:84px!important}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{width:72px;height:72px;border-radius:24px}
+  #cocoApp .c151RunnerTintedCanvas{width:69px;height:69px}
+  #cocoApp .c151RunnerShine{left:10px;top:8px;width:22px;height:10px}
+  #cocoApp .c151RunnerColorName{right:-11px;top:-1px;font-size:7px;padding:3px 5px}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{top:67px;max-width:128px!important;font-size:7.5px!important;padding:4px 6px}
+}
+
+@media(max-width:380px){
+  #cocoApp .c144RunnerObject[data-runner-display="category"]{width:82px!important;height:76px!important}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{width:64px;height:64px;border-radius:21px}
+  #cocoApp .c151RunnerTintedCanvas{width:61px;height:61px}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{top:59px;max-width:116px!important;font-size:7px!important}
+}
