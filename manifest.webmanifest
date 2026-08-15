@@ -1,10 +1,10 @@
 {
   "id": "./",
-  "start_url": "./?source=pwa-v143",
+  "start_url": "./?source=pwa-v144",
   "scope": "./",
   "name": "Coco en Forma",
   "short_name": "Coco",
-  "description": "Entrenamiento cognitivo lúdico con una misión diaria por juego.",
+  "description": "Entrenamiento cognitivo familiar, gratuito, sin publicidad y con sesiones breves.",
   "lang": "es",
   "dir": "ltr",
   "display": "standalone",

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v143.0.0";
+const CACHE_VERSION = "coco-en-forma-v144.0.0";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
@@ -11,7 +11,14 @@ const CORE_ASSET_PATHS = [
   "./coco-v142-content-extension.js",
   "./coco-v142-runtime.js",
   "./coco-v142-unified.js",
+  "./coco-v144-content.js",
+  "./coco-v144-core.js",
+  "./coco-v144-padel.js",
+  "./coco-v144-runner.js",
+  "./coco-v144-differences.js",
+  "./coco-v144-professional.css",
   "./coco-v2-official-icon-source.png",
+  "./coco-v2-runner-v144.png",
   "./icon-192.png",
   "./icon-512.png",
   "./app-icon-192.png",
@@ -22,7 +29,8 @@ const CORE_ASSET_PATHS = [
   "./shortcut-icon.png",
   "./favicon.png",
   "./share/diferencias.png",
-  "./juego/diferencias/index.html"
+  "./juego/diferencias/index.html",
+  "./juego/coco-corre/index.html"
 ];
 
 const SCENE_ASSET_PATHS = [
