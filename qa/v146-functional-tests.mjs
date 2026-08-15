@@ -6,10 +6,6 @@ import { fileURLToPath } from "node:url";
 
 const qaDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.dirname(qaDir);
-if (fs.readFileSync(path.join(rootDir, "index.html"), "utf8").includes("v146.0-profesional")) {
-  console.log("SKIP  Suite histórica v145: la versión activa de este paquete es v146.0. Usa qa/v146-functional-tests.mjs.");
-  process.exit(0);
-}
 const results = [];
 let idCounter = 0;
 
@@ -56,7 +52,7 @@ function championship(id, players, mode = "points") {
 }
 
 test("Coco Pádel: exactamente Mixing, Campeonato y Jugadores", () => {
-  const padel = evaluate("coco-v144-padel.js").CocoPadelV145;
+  const padel = evaluate("coco-v144-padel.js").CocoPadelV146;
   const audit = padel.audit(padel.blankState());
   assert.deepEqual(Array.from(audit.topTabs), ["Mixing", "Campeonato", "Jugadores"]);
   assert.equal(audit.playerCreationArea, "Jugadores");
@@ -66,7 +62,7 @@ test("Coco Pádel: exactamente Mixing, Campeonato y Jugadores", () => {
 });
 
 test("Coco Pádel: nombres duplicados conservan códigos únicos y no reutilizables", () => {
-  const padel = evaluate("coco-v144-padel.js").CocoPadelV145, state = padel.blankState();
+  const padel = evaluate("coco-v144-padel.js").CocoPadelV146, state = padel.blankState();
   const first = padel.createPlayer(state, "Diego", "bajo"), second = padel.createPlayer(state, "Diego", "alto");
   assert.equal(first.player.code, "CP-0001"); assert.equal(second.player.code, "CP-0002"); assert.equal(second.duplicateName, true);
   first.player.active = false;
@@ -79,7 +75,7 @@ test("Coco Pádel: nombres duplicados conservan códigos únicos y no reutilizab
 });
 
 test("Coco Pádel: Mixing histórico no aparece ni suma puntos", () => {
-  const padel = evaluate("coco-v144-padel.js").CocoPadelV145, state = padel.blankState();
+  const padel = evaluate("coco-v144-padel.js").CocoPadelV146, state = padel.blankState();
   const players = ["A", "B", "C", "D"].map((name, index) => padel.createPlayer(state, name, index === 0 ? "bajo" : "medio").player);
   const champ = championship("champ", players); state.championships.push(champ);
   state.sessions.push(session({ id: "c1", championshipId: champ.id, players, score: { gamesA: 6, gamesB: 4 } }));
@@ -91,7 +87,7 @@ test("Coco Pádel: Mixing histórico no aparece ni suma puntos", () => {
 });
 
 test("Coco Pádel: 20 jornadas acumulan, corrigen y eliminan sin duplicar", () => {
-  const padel = evaluate("coco-v144-padel.js").CocoPadelV145, state = padel.blankState();
+  const padel = evaluate("coco-v144-padel.js").CocoPadelV146, state = padel.blankState();
   const players = ["Diego", "Diego", "Ana", "Bruno"].map((name, index) => padel.createPlayer(state, name, ["bajo", "medio", "alto", "medio"][index]).player);
   const champ = championship("champ-20", players); state.championships.push(champ);
   for (let index = 1; index <= 20; index += 1) {
@@ -111,7 +107,7 @@ test("Coco Pádel: 20 jornadas acumulan, corrigen y eliminan sin duplicar", () =
 });
 
 test("Coco Pádel: el cambio manual conserva el nivel histórico", () => {
-  const padel = evaluate("coco-v144-padel.js").CocoPadelV145, state = padel.blankState();
+  const padel = evaluate("coco-v144-padel.js").CocoPadelV146, state = padel.blankState();
   const players = [padel.createPlayer(state, "Elena", "bajo").player, ...["B", "C", "D"].map(name => padel.createPlayer(state, name, "medio").player)];
   const champ = championship("champ-level", players, "games"); state.championships.push(champ);
   state.sessions.push(session({ id: "level-date", championshipId: champ.id, players, score: { gamesA: 6, gamesB: 3 } }));
@@ -121,7 +117,7 @@ test("Coco Pádel: el cambio manual conserva el nivel histórico", () => {
 });
 
 test("Runner: todas las misiones pasan validación previa en los tres niveles", () => {
-  const runner = evaluate("coco-v144-runner.js").CocoRunnerV145;
+  const runner = evaluate("coco-v144-runner.js").CocoRunnerV146;
   for (const level of [1, 2, 3]) for (let index = 0; index < 80; index += 1) {
     const mission = runner.missionForLevel(level, `qa-${level}-${index}`), validation = runner.validateMission(mission);
     assert.equal(validation.valid, true, validation.failures.join(", "));
@@ -129,11 +125,11 @@ test("Runner: todas las misiones pasan validación previa en los tres niveles", 
   }
 });
 
-test("Runner: estrellas, colores, formas, paridad, categorías, memoria y cálculo tienen objetivo y distractor", () => {
-  const runner = evaluate("coco-v144-runner.js").CocoRunnerV145, catalog = runner.catalog();
+test("Runner: triángulos, estrellas, círculos, cuadrados y todas las reglas tienen objetivo y distractor", () => {
+  const runner = evaluate("coco-v144-runner.js").CocoRunnerV146, catalog = runner.catalog();
   const star = catalog.shapes.find(shape => shape.id === "estrella"), blue = catalog.colors[0], category = catalog.categories[0];
   const rules = [
-    { type: "shape", target: star }, { type: "color", target: blue }, { type: "even" }, { type: "odd" },
+    ...catalog.shapes.map(target => ({ type: "shape", target })), { type: "color", target: blue }, { type: "even" }, { type: "odd" },
     { type: "category", target: category }, { type: "shape-color", shape: star, color: blue },
     { type: "category-color", category, color: blue }, { type: "sequence", sequence: catalog.colors.slice(0, 3), index: 0, target: blue },
     { type: "calculation", parity: "par" }, { type: "calculation", parity: "impar" }, { type: "opposite-color", target: blue }
@@ -143,9 +139,13 @@ test("Runner: estrellas, colores, formas, paridad, categorías, memoria y cálcu
     const target = runner.makeTokenForRule(rule, random, level, true), distractor = runner.makeTokenForRule(rule, random, level, false);
     assert.equal(runner.tokenMatchesRule(target, rule), true, `${rule.type}/L${level}`);
     assert.equal(runner.tokenMatchesRule(distractor, rule), false, `${rule.type}/L${level}`);
+    const plan = runner.buildRulePlan(rule, level, 60, random);
+    assert.equal(plan.firstTarget, true, `${rule.type}/L${level}: el primer objeto no es válido`);
+    assert.ok(plan.targets >= 12 && plan.distractors >= 6, `${rule.type}/L${level}: proporción insuficiente`);
+    assert.ok(plan.maxDistractorGap <= level + 1, `${rule.type}/L${level}: demasiados distractores seguidos`);
   }
-  const starToken = runner.makeTokenForRule({ type: "shape", target: star }, random, 1, true);
-  assert.equal(starToken.glyph, "★");
+  const expectedGlyphs = { circulo: "●", cuadrado: "■", triangulo: "▲", estrella: "★" };
+  for (const shape of catalog.shapes) assert.equal(runner.makeTokenForRule({ type: "shape", target: shape }, random, 1, true).glyph, expectedGlyphs[shape.id]);
 });
 
 test("Runner: objetivos garantizados y códigos internos invisibles", () => {
@@ -157,41 +157,71 @@ test("Runner: objetivos garantizados y códigos internos invisibles", () => {
   assert.match(source, /beginNewRule\(true\)/); assert.match(source, /validateMission/);
 });
 
-test("Runner: finito, una vez al día y sin clasificación", () => {
-  const runner = evaluate("coco-v144-runner.js").CocoRunnerV145, audit = runner.audit();
+test("Runner: finito, una vez al día y en la clasificación general", () => {
+  const runner = evaluate("coco-v144-runner.js").CocoRunnerV146, audit = runner.audit();
   assert.deepEqual(Array.from(audit.durationSeconds), [132, 162, 198]); assert.equal(audit.dailyLimit, 1);
-  assert.equal(audit.rankingWrites, false); assert.equal(audit.partidasTableWrites, false); assert.equal(audit.ownLeaderboard, false);
+  assert.equal(audit.rankingWrites, true); assert.equal(audit.partidasTableWrites, true); assert.equal(audit.generalLeaderboard, true); assert.equal(audit.ownLeaderboard, false);
   assert.equal(audit.preflightValidation, true); assert.equal(audit.firstTargetGuaranteed, true);
   const source = fs.readFileSync(path.join(rootDir, "coco-v144-runner.js"), "utf8");
-  assert.match(source, /from\("coco_runner_history"\)\.insert/); assert.doesNotMatch(source, /from\("partidas"\)|registrar_partida_coco/);
+  assert.match(source, /from\("coco_runner_history"\)\.insert/); assert.match(source, /CocoArcadeV133/); assert.match(source, /saveScore\(GAME_ID/);
+  assert.doesNotMatch(source, /Sin ranking|No suma puntos generales|no ha sumado ningún punto/i);
+});
+
+test("Runner: fórmula general normalizada, justa y sin velocidad como criterio", () => {
+  const runner = evaluate("coco-v144-runner.js").CocoRunnerV146;
+  const weak = runner.generalScoreFor({ level: 3, accuracy: 0, correctObjects: 0, availableTargets: 20, distractorsPicked: 8, sequencesRemembered: 0, obstacleCount: 8, obstaclesPassed: 0 });
+  const basic = runner.generalScoreFor({ level: 1, accuracy: 90, correctObjects: 18, availableTargets: 20, distractorsPicked: 2, sequencesRemembered: 2, obstacleCount: 8, obstaclesPassed: 7 });
+  const advanced = runner.generalScoreFor({ level: 3, accuracy: 90, correctObjects: 18, availableTargets: 20, distractorsPicked: 2, sequencesRemembered: 3, obstacleCount: 8, obstaclesPassed: 7 });
+  assert.equal(weak, 0); assert.ok(basic > 0 && basic <= 320); assert.ok(advanced >= basic && advanced <= 320);
+  assert.equal(runner.generalScoreFor({ level: 3, accuracy: 100, correctObjects: 20, availableTargets: 20, distractorsPicked: 0, sequencesRemembered: 3, obstacleCount: 8, obstaclesPassed: 8 }), 320);
 });
 
 test("Coco Pádel: interfaz de Mixing no crea jugadores, no muestra historial y no registra resultados", () => {
   const source = fs.readFileSync(path.join(rootDir, "coco-v144-padel.js"), "utf8");
   const mixingBlock = source.slice(source.indexOf("function mixingHtml"), source.indexOf("function championshipListHtml"));
   assert.doesNotMatch(mixingBlock, /createPlayerFormHtml|sessionListHtml|sessionDetailHtml|saveResult/);
-  assert.match(source, /No se guarda como historial/); assert.match(source, /No suma puntos/);
+  assert.match(source, /no guarda historial/i); assert.match(source, /No suma puntos/);
   assert.match(source, /if \(selected\.championshipId\) \{\s*state\.sessions\.push/);
   assert.match(source, /data-padel144-swap-mixing/); assert.match(source, /data-padel144-reset-mixing/);
+  assert.match(source, /Crear nuevo mixing/); assert.match(source, /Continuar mixing/); assert.match(source, /PASO 1 DE 5/);
 });
 
 test("Coco Pádel: Jugadores reúne alta, búsqueda, nivel, estado, edición y puntos", () => {
   const source = fs.readFileSync(path.join(rootDir, "coco-v144-padel.js"), "utf8");
   for (const marker of ["Añadir jugador", "data-padel144-directory-search", "data-padel144-directory-level", "data-padel144-directory-status", "data-padel144-player-level", "data-padel144-edit-player", "data-padel144-toggle-player", "puntos"]) assert.ok(source.includes(marker), marker);
   assert.match(source, /playerPointsSource:\s*"championship-results-only"/);
+  assert.match(source, /c146PlayerMetrics/); assert.doesNotMatch(source, /HISTORIAL CRONOLÓGICO|Partidos, parejas y rivales|Plantilla del campeonato/);
 });
 
-test("PWA: caché v145 contiene todos sus recursos y no contiene Inglés", () => {
+test("Coco Pádel: Campeonato usa portada, creación por pasos y detalle independiente", () => {
+  const source = fs.readFileSync(path.join(rootDir, "coco-v144-padel.js"), "utf8");
+  for (const marker of ["Crear campeonato", "Campeonatos en curso", "Ver finalizados y archivados", "Añadir jornada", "Volver a campeonatos", "data-padel146-champ-next"]) assert.ok(source.includes(marker), marker);
+  assert.doesNotMatch(source, /Plantilla del campeonato/);
+  assert.match(source, /championshipScreen === "create"/); assert.match(source, /championshipScreen === "detail"/);
+});
+
+test("Encuentra las diferencias: solo color, forma completa y presencia o ausencia", () => {
+  const differences = evaluate("coco-v144-differences.js").CocoDifferencesProV146, audit = differences.audit();
+  assert.deepEqual(Array.from(audit.differenceKinds), ["color", "shape", "presence"]);
+  assert.equal(audit.allowedKindsOnly, true); assert.equal(audit.brokenObjects, false); assert.equal(audit.deformedObjects, false); assert.equal(audit.blurredRemoval, false); assert.equal(audit.completeObjects, true);
+  assert.equal(audit.sameDefinitionForVisualAndHit, true); assert.equal(audit.clickableFromBothImages, true); assert.equal(audit.falseClicksAccepted, false);
+  assert.equal(audit.sceneCount, 10); assert.equal(audit.combinationsPerLevel, 30); assert.equal(audit.everySceneHasSix, true);
+  const source = fs.readFileSync(path.join(rootDir, "coco-v144-differences.js"), "utf8");
+  assert.doesNotMatch(source, /eraseRegion|tintRegion|getImageData|putImageData|ctx\.scale\(-|blur\(12px\)/);
+});
+
+test("PWA: caché v146 contiene todos sus recursos y no contiene Inglés", () => {
   const sw = fs.readFileSync(path.join(rootDir, "sw.js"), "utf8");
-  assert.match(sw, /coco-en-forma-v145\.0\.0/); assert.match(sw, /coco-v145-refinements\.css/); assert.doesNotMatch(sw, /ingles|english/i);
+  assert.match(sw, /coco-en-forma-v146\.0\.0/); assert.match(sw, /coco-v146-refinements\.css/); assert.doesNotMatch(sw, /ingles|english/i);
   const paths = Array.from(sw.matchAll(/"\.\/([^"?]+)"/g), match => match[1]).filter(Boolean);
   for (const asset of paths) assert.ok(fs.existsSync(path.join(rootDir, asset)), `Falta ${asset}`);
 });
 
-test("Integración: v145 carga los módulos corregidos sin retirar funciones estables", () => {
+test("Integración: v146 carga los módulos corregidos y registra Coco Corre como general", () => {
   const html = fs.readFileSync(path.join(rootDir, "index.html"), "utf8");
-  for (const file of ["coco-v144-core.js?v=1450", "coco-v144-padel.js?v=1450", "coco-v144-runner.js?v=1450", "coco-v145-refinements.css?v=1450"]) assert.ok(html.includes(file), file);
-  assert.ok(html.includes("2026-08-15-v145.0-profesional")); assert.ok(html.includes('id:"cococorre",nombre:"Coco Corre"'));
+  for (const file of ["coco-v144-core.js?v=1460", "coco-v144-padel.js?v=1460", "coco-v144-runner.js?v=1460", "coco-v146-refinements.css?v=1460"]) assert.ok(html.includes(file), file);
+  assert.ok(html.includes("2026-08-15-v146.0-profesional")); assert.ok(html.includes('id:"cococorre",nombre:"Coco Corre",grupo:"general"'));
+  assert.match(html, /GENERAL_IDS=\[[^\]]*"cococorre"/); assert.match(html, /saveScore:saveScore/);
   assert.doesNotMatch(html, /ingl[eé]s|english/i);
 });
 
@@ -208,7 +238,7 @@ test("Integridad estática: todas las rutas locales declaradas existen", () => {
 });
 
 test("Responsive y accesibilidad: 320, 360, 390 y 430; sin desbordamiento global", () => {
-  const css = fs.readFileSync(path.join(rootDir, "coco-v144-professional.css"), "utf8") + fs.readFileSync(path.join(rootDir, "coco-v145-refinements.css"), "utf8");
+  const css = fs.readFileSync(path.join(rootDir, "coco-v144-professional.css"), "utf8") + fs.readFileSync(path.join(rootDir, "coco-v146-refinements.css"), "utf8");
   for (const width of [320, 360, 390, 430]) assert.match(css, new RegExp(`max-width:\\s*${width}px`));
   assert.match(css, /prefers-reduced-motion:\s*reduce/); assert.match(css, /overflow-x:\s*hidden/); assert.match(css, /min-height:44px/);
 });

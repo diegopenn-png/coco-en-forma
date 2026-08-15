@@ -1,0 +1,56 @@
+COCO EN FORMA v146.0 — PRUEBA SIN SUSTITUIR LA WEB PÚBLICA
+
+ESTADO
+- Candidata de prueba.
+- No publicada ni desplegada.
+- Base v145.0 conservada intacta.
+- Respaldo separado (no incluido dentro del ZIP v146): Coco-en-Forma-v145.0-prueba.zip
+- SHA-256 del respaldo: 6b17c8340f6f36774a8be2a4b70b94067ecc32e46f3dfee183658f1ff39479f4
+
+PRUEBA LOCAL RECOMENDADA
+1. Descomprime Coco-en-Forma-v146.0-prueba.zip en una carpeta nueva.
+2. No mezcles esa carpeta con la web pública ni con v145.0.
+3. Abre una terminal dentro de la carpeta descomprimida.
+4. Ejecuta: python3 -m http.server 8080
+5. Abre: http://127.0.0.1:8080/?qa=1
+6. Coco Corre: http://127.0.0.1:8080/?qa=1&juego=cococorre
+7. Coco Pádel: http://127.0.0.1:8080/?qa=1&juego=padel
+8. Diferencias: http://127.0.0.1:8080/?qa=1&juego=diferencias
+9. Prueba los anchos 320, 360, 390 y 430 px desde las herramientas del navegador.
+10. Prueba la PWA únicamente en este origen local hasta aprobar la candidata.
+
+No abras index.html mediante file://: el service worker y varias funciones PWA necesitan un servidor HTTP.
+
+PRUEBAS AUTOMÁTICAS
+- Lógica e integridad: node qa/v146-functional-tests.mjs
+- Render de diferencias: node qa/v146-differences-render-tests.mjs
+- Navegador: node qa/v146-browser-tests.mjs
+- Evidencia visual: node qa/v146-visual-evidence.mjs
+
+Las pruebas de navegador requieren Playwright y un Chromium compatible. Las rutas COCO_QA_URL y COCO_CHROMIUM_PATH pueden configurarse mediante variables de entorno.
+
+COMPROBACIÓN MANUAL MÍNIMA
+- Coco Corre solicita y muestra triángulos, estrellas y los demás objetivos.
+- Coco permanece estable; solo hay respuestas breves al cambiar de carril, saltar o agacharse.
+- Una partida completa suma a la clasificación general; abandonar no suma.
+- Coco Pádel muestra solo Mixing, Campeonato y Jugadores.
+- Jugadores permite nivel bajo/medio/alto y estado activo/inactivo.
+- Mixing no ofrece marcadores ni modifica puntos.
+- Añadir una jornada de Campeonato actualiza la clasificación acumulada.
+- Diferencias usa color, formas completas y presencia/ausencia, nunca objetos rotos.
+- No hay botones cortados ni desplazamiento lateral.
+
+GITHUB — SOLO DESPUÉS DE LA APROBACIÓN
+- No se debe subir únicamente el ZIP como si fuera la aplicación.
+- Cuando se apruebe, se extraen y suben todos los archivos respetando exactamente las carpetas.
+- Hazlo primero en una rama de prueba, por ejemplo: git switch -c prueba-v146
+- Verifica el diff antes de confirmar cambios.
+- No fusiones con main ni actives GitHub Pages, Vercel o Cloudflare sin aprobación expresa.
+- El ZIP puede conservarse como respaldo o adjuntarse a una Release en borrador.
+
+RESTAURACIÓN
+1. Conserva el ZIP v145.0 fuera de la carpeta v146.0.
+2. Si descartas v146.0, detén el servidor y elimina únicamente su carpeta separada.
+3. Para volver a v145.0, restaura todos los archivos del ZIP v145.0 como un conjunto; no mezcles versiones.
+4. Borra el service worker y los datos del sitio del origen de prueba, y vuelve a cargar.
+5. No ejecutes supabase-coco-v144-rollback.sql para descartar v146.0: esta candidata no añade ninguna migración.

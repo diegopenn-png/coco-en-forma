@@ -2,7 +2,7 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoRunnerV145) return;
+  if (!C || root.CocoRunnerV146) return;
 
   var GAME_ID = "cococorre";
   var HISTORY_KEY = "coco_runner_history_v144";
@@ -116,6 +116,24 @@
     return token;
   }
 
+  function correctGapLimitForLevel(chosenLevel) { return chosenLevel === 1 ? 2 : chosenLevel === 2 ? 3 : 4; }
+  function correctRunLimitForLevel(chosenLevel) { return chosenLevel === 1 ? 4 : 3; }
+  function targetRateForLevel(chosenLevel) { return chosenLevel === 1 ? .58 : chosenLevel === 2 ? .48 : .4; }
+
+  function buildRulePlan(rule, chosenLevel, count, random) {
+    var plan = [], distractorGap = 0, correctRun = 0, maxDistractorGap = 0, targets = 0, distractors = 0;
+    for (var index = 0; index < count; index++) {
+      var forceTarget = index < 2 || distractorGap >= correctGapLimitForLevel(chosenLevel);
+      var forceDistractor = !forceTarget && correctRun >= correctRunLimitForLevel(chosenLevel);
+      var shouldMatch = forceTarget || !forceDistractor && random() < targetRateForLevel(chosenLevel);
+      var token = makeTokenForRule(rule, random, chosenLevel, shouldMatch), matches = tokenMatchesRule(token, rule);
+      plan.push({ target: matches, token: token });
+      if (matches) { targets++; distractorGap = 0; correctRun++; }
+      else { distractors++; distractorGap++; correctRun = 0; maxDistractorGap = Math.max(maxDistractorGap, distractorGap); }
+    }
+    return { plan: plan, targets: targets, distractors: distractors, firstTarget: Boolean(plan[0] && plan[0].target), maxDistractorGap: maxDistractorGap };
+  }
+
   function validateMission(mission) {
     var random = randomFrom(mission.id + "|preflight"), rules = [mission.attention];
     mission.memory.sequence.forEach(function (color, index) { rules.push({ type: "sequence", sequence: mission.memory.sequence, index: index, target: color }); });
@@ -126,10 +144,16 @@
       if (!tokenMatchesRule(correct, rule)) failures.push("rule-" + index + "-missing-target");
       if (tokenMatchesRule(distractor, rule)) failures.push("rule-" + index + "-missing-distractor");
       if (rule.type === "shape" && rule.target.id === "estrella" && correct.glyph !== "★") failures.push("star-not-visible");
+      if (rule.type === "shape" && rule.target.id === "triangulo" && correct.glyph !== "▲") failures.push("triangle-not-visible");
+      var plan = buildRulePlan(rule, mission.level, 24, random);
+      if (!plan.firstTarget) failures.push("rule-" + index + "-first-target-late");
+      if (plan.targets < 6) failures.push("rule-" + index + "-insufficient-targets");
+      if (plan.distractors < 3) failures.push("rule-" + index + "-insufficient-distractors");
+      if (plan.maxDistractorGap > correctGapLimitForLevel(mission.level)) failures.push("rule-" + index + "-distractor-gap");
     });
     var spawnInterval = mission.level === 1 ? 1.28 : mission.level === 2 ? 1.08 : .92, nominalDuration = mission.level === 1 ? 132 : mission.level === 2 ? 162 : 198, guaranteedPerSegment = Math.floor(((nominalDuration / 3) / spawnInterval) / (mission.level + 2));
     if (guaranteedPerSegment < mission.memory.sequence.length) failures.push("insufficient-sequence-budget");
-    return { valid: failures.length === 0, failures: failures, checkedRules: rules.length, guaranteedPerSegment: guaranteedPerSegment };
+    return { valid: failures.length === 0, failures: failures, checkedRules: rules.length, guaranteedPerSegment: guaranteedPerSegment, firstTargetGuaranteed: true, maxDistractorGap: correctGapLimitForLevel(mission.level), minimumTargetsPerRulePlan: 6, minimumDistractorsPerRulePlan: 3 };
   }
 
   function missionForLevel(chosenLevel, seed) {
@@ -162,11 +186,11 @@
 
   function introHtml(allowed) {
     var stats = runnerStats();
-    return '<main class="c144RunnerIntro"><div class="c144RunnerIntroGrid"><section class="c144Card"><span class="c144Eyebrow">MISIÓN COGNITIVA FINITA · EVOLUCIÓN PERSONAL</span><h3>Coco Corre<br>Misión Cerebro</h3><p>Un recorrido original de tres carriles con principio y final. Entrena atención, memoria de trabajo y control inhibitorio en una sesión breve y saludable.</p><div class="c144RunnerFeatures"><div><b>3 tramos</b><span>Atención, memoria y flexibilidad</span></div><div><b>2–4 minutos</b><span>Meta clara, nunca infinito</span></div><div><b>Sin ranking</b><span>No suma puntos generales</span></div></div><div class="c144LevelButtons" role="group" aria-label="Dificultad"><button type="button" data-runner-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">🌱 Básico</button><button type="button" data-runner-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">⚡ Intermedio</button><button type="button" data-runner-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">🏆 Avanzado</button></div><p class="c144Notice">La dificultad cambia las reglas y los distractores, no solo la velocidad.</p><div class="c144Actions"><button type="button" class="c144Primary" data-runner-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? "Comenzar misión de hoy" : "Completado hoy") + '</button></div><p><small>Controles: desliza o usa ← → para cambiar de carril, ↑ para saltar, ↓ para agacharte. Las colisiones no terminan la partida.</small></p></section><aside class="c144Card c144RunnerCoco"><img src="./coco-v2-runner-v144.png" alt="Coco V2 con cerebro visible, mono azul de mecánico y herramientas, corriendo"><div class="c144PersonalSummary"><div><b>' + stats.missions + '</b><span>misiones</span></div><div><b>' + stats.average + '%</b><span>precisión media</span></div><div><b>' + stats.best + '%</b><span>mejor precisión</span></div></div></aside></div><p class="c144HealthyEnd">Coco en Forma no usa monedas, vidas, cofres, tiendas, publicidad ni recompensas aleatorias. Al terminar, Coco te invitará a descansar.</p></main>';
+    return '<main class="c144RunnerIntro"><div class="c144RunnerIntroGrid"><section class="c144Card"><span class="c144Eyebrow">MISIÓN COGNITIVA FINITA · CLASIFICACIÓN GENERAL</span><h3>Coco Corre<br>Misión Cerebro</h3><p>Un recorrido original de tres carriles con principio y final. Entrena atención, memoria de trabajo y control inhibitorio en una sesión breve y saludable.</p><div class="c144RunnerFeatures"><div><b>3 tramos</b><span>Atención, memoria y flexibilidad</span></div><div><b>2–4 minutos</b><span>Meta clara, nunca infinito</span></div><div><b>Hasta 320 puntos</b><span>Una puntuación general al completar</span></div></div><div class="c144LevelButtons" role="group" aria-label="Dificultad"><button type="button" data-runner-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico</button><button type="button" data-runner-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio</button><button type="button" data-runner-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado</button></div><p class="c144Notice">La dificultad cambia las reglas y los distractores, no solo la velocidad.</p><div class="c144Actions"><button type="button" class="c144Primary" data-runner-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? "Comenzar misión de hoy" : "Completado hoy") + '</button></div><p><small>Controles: desliza o usa ← → para cambiar de carril, ↑ para saltar, ↓ para agacharte. Las colisiones no terminan la partida.</small></p></section><aside class="c144Card c144RunnerCoco"><img src="./coco-v2-runner-v144.png" alt="Coco V2 estable, con cerebro visible, mono azul de mecánico y herramientas"><div class="c144PersonalSummary"><div><b>' + stats.missions + '</b><span>misiones</span></div><div><b>' + stats.average + '%</b><span>precisión media</span></div><div><b>' + stats.best + '%</b><span>mejor precisión</span></div></div></aside></div><p class="c144HealthyEnd">Coco en Forma no usa monedas, vidas, cofres, tiendas, publicidad ni recompensas aleatorias. Al terminar, Coco te invitará a descansar.</p></main>';
   }
 
   async function renderIntro() {
-    var body = C.body(); if (!body) return; C.setModalTitle("Coco Corre — Misión Cerebro", "EVOLUCIÓN PERSONAL · NO SUMA AL RANKING");
+    var body = C.body(); if (!body) return; C.setModalTitle("Coco Corre — Misión Cerebro", "MISIÓN DIARIA · CLASIFICACIÓN GENERAL");
     var allowed = await canPlay(); if (!C.body()) return; body.innerHTML = introHtml(allowed); bindIntro();
   }
 
@@ -182,14 +206,14 @@
   }
 
   function stageHtml() {
-    return '<main class="c144RunnerGame" data-runner-stage tabindex="0" aria-label="Runner educativo de tres carriles"><div class="c144RunnerHud"><div><span class="c144HudPill" data-runner-segment>Tramo 1/3</span><span class="c144HudPill" data-runner-time>0:00</span></div><div class="c144Rule" data-runner-rule aria-live="polite"></div><div><button type="button" data-runner-pause aria-label="Pausar la misión">Ⅱ</button></div></div><div class="c144RunnerStage" data-runner-world><div class="c144RunnerSky"></div><div class="c145Parallax c145ParallaxFar" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="c145Parallax c145ParallaxNear" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="c144Road"><div class="c145RoadFlow" aria-hidden="true"><i></i><i></i><i></i></div></div><div class="c145SideSignals" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="c144RunnerCocoPlay" data-runner-coco data-action="run"><span class="c145CocoShadow" aria-hidden="true"></span><img src="./coco-v2-runner-v144.png" alt="Coco V2 corriendo con cerebro visible, mono azul y herramientas"><span class="c145SpeedLines" aria-hidden="true"></span></div><div class="c144RunnerMessage" data-runner-message aria-live="polite"></div><div class="c144RunnerControls" aria-label="Controles táctiles"><button type="button" data-move="up" aria-label="Saltar">↑</button><button type="button" data-move="left" aria-label="Carril izquierdo">←</button><button type="button" data-move="down" aria-label="Agacharse">↓</button><button type="button" data-move="right" aria-label="Carril derecho">→</button></div><div class="c144RunnerProgress"><i data-runner-progress></i></div></div></main>';
+    return '<main class="c144RunnerGame" data-runner-stage tabindex="0" aria-label="Runner educativo de tres carriles"><div class="c144RunnerHud"><div><span class="c144HudPill" data-runner-segment>Tramo 1/3</span><span class="c144HudPill" data-runner-time>0:00</span></div><div class="c144Rule" data-runner-rule aria-live="polite"></div><div><button type="button" data-runner-pause aria-label="Pausar la misión">Ⅱ</button></div></div><div class="c144RunnerStage" data-runner-world><div class="c144RunnerSky"></div><div class="c145Parallax c145ParallaxFar" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="c145Parallax c145ParallaxNear" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="c144Road"><div class="c145RoadFlow" aria-hidden="true"><i></i><i></i><i></i></div></div><div class="c145SideSignals" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="c144RunnerCocoPlay" data-runner-coco data-action="idle"><span class="c145CocoShadow" aria-hidden="true"></span><img src="./coco-v2-runner-v144.png" alt="Coco V2 estable, con cerebro visible, mono azul y herramientas"></div><div class="c144RunnerMessage" data-runner-message aria-live="polite"></div><div class="c144RunnerControls" aria-label="Controles táctiles"><button type="button" data-move="up" aria-label="Saltar">↑</button><button type="button" data-move="left" aria-label="Carril izquierdo">←</button><button type="button" data-move="down" aria-label="Agacharse">↓</button><button type="button" data-move="right" aria-label="Carril derecho">→</button></div><div class="c144RunnerProgress"><i data-runner-progress></i></div></div></main>';
   }
 
   async function startGame() {
     if (!(await canPlay())) { renderIntro(); return; }
     var body = C.body(); if (!body) return;
     var duration = gameDuration(levelSelected), seed = C.today() + "|" + currentUserId() + "|" + levelSelected;
-    game = { level: levelSelected, mission: missionForLevel(levelSelected, seed), random: randomFrom(seed + "|runtime"), duration: duration, elapsed: 0, segment: 0, flexIndex: 0, memoryIndex: 0, lane: 0, previousLane: 0, action: "run", actionUntil: 0, paused: false, stopped: false, objects: [], nextSpawn: .18, forcedCorrect: 2, spawnsSinceCorrect: 0, correct: 0, distractors: 0, missed: 0, expected: 0, obstacles: 0, obstaclesPassed: 0, collisions: 0, reactions: [], sequences: 0, ruleChanges: 0, celebrationDone: false, lastRuleChange: 0, startedAt: Date.now() };
+    game = { level: levelSelected, mission: missionForLevel(levelSelected, seed), random: randomFrom(seed + "|runtime"), duration: duration, elapsed: 0, segment: 0, flexIndex: 0, memoryIndex: 0, lane: 0, previousLane: 0, action: "idle", actionUntil: 0, paused: false, stopped: false, objects: [], nextSpawn: .08, forcedCorrect: 2, spawnsSinceCorrect: 0, correctsSinceDistractor: 0, correct: 0, distractors: 0, missed: 0, expected: 0, obstacles: 0, obstaclesPassed: 0, collisions: 0, reactions: [], sequences: 0, ruleChanges: 0, celebrationDone: false, lastRuleChange: 0, startedAt: Date.now() };
     body.innerHTML = stageHtml(); controller = new AbortController();
     document.addEventListener("keydown", keyControl, { signal: controller.signal });
     body.querySelectorAll("[data-move]").forEach(function (button) { button.addEventListener("pointerdown", function (event) { event.preventDefault(); move(button.dataset.move); }, { signal: controller.signal }); });
@@ -224,28 +248,25 @@
 
   function updateLane() {
     var body = C.body(), coco = body && body.querySelector("[data-runner-coco]"); if (!coco || !game) return;
-    var stage = body.querySelector(".c144RunnerStage"), step = Math.min(178, (stage.clientWidth || innerWidth) * .25), changed = game.lane !== game.previousLane;
+    var stage = body.querySelector(".c144RunnerStage"), step = Math.min(178, (stage.clientWidth || innerWidth) * .25);
     coco.style.setProperty("--lane-x", (game.lane * step) + "px"); coco.dataset.action = game.action; coco.classList.toggle("jump", game.action === "jump"); coco.classList.toggle("duck", game.action === "duck");
-    if (changed) {
-      coco.classList.remove("lean-left", "lean-right"); void coco.offsetWidth; coco.classList.add(game.lane < game.previousLane ? "lean-left" : "lean-right");
-      clearTimeout(coco.__leanTimer); coco.__leanTimer = setTimeout(function () { if (coco) coco.classList.remove("lean-left", "lean-right"); }, 360);
-    }
   }
 
   function currentRule() { return ruleFor(game.mission, game.segment, game.flexIndex, game.memoryIndex); }
-  function correctGapLimit() { return game.level === 1 ? 2 : game.level === 2 ? 3 : 4; }
-  function targetRate() { return game.level === 1 ? .58 : game.level === 2 ? .48 : .4; }
+  function correctGapLimit() { return correctGapLimitForLevel(game.level); }
+  function targetRate() { return targetRateForLevel(game.level); }
 
   function spawnObject() {
     var body = C.body(); if (!body || !game) return;
     var obstacleRate = game.level === 1 ? .18 : game.level === 2 ? .24 : .29, mustBeCorrect = game.forcedCorrect > 0 || game.spawnsSinceCorrect >= correctGapLimit(), obstacle = !mustBeCorrect && game.random() < obstacleRate, lane = Math.floor(game.random() * 3) - 1, item;
     if (obstacle) { item = { id: C.id("run"), kind: "obstacle", lane: lane, progress: 0, requirement: game.random() > .5 ? "jump" : "duck", spawnedAt: performance.now(), resolved: false }; game.spawnsSinceCorrect++; }
     else {
-      var shouldMatch = mustBeCorrect || game.random() < targetRate(), rule = currentRule(), token = makeTokenForRule(rule, game.random, game.level, shouldMatch);
+      var forceDistractor = !mustBeCorrect && game.correctsSinceDistractor >= correctRunLimitForLevel(game.level), shouldMatch = mustBeCorrect || !forceDistractor && game.random() < targetRate(), rule = currentRule(), token = makeTokenForRule(rule, game.random, game.level, shouldMatch);
       item = { id: C.id("run"), kind: "token", lane: lane, progress: 0, token: token, ruleType: rule.type, spawnedAt: performance.now(), resolved: false };
-      if (token.correct) { game.expected++; game.forcedCorrect = Math.max(0, game.forcedCorrect - 1); game.spawnsSinceCorrect = 0; } else game.spawnsSinceCorrect++;
+      if (token.correct) { game.expected++; game.forcedCorrect = Math.max(0, game.forcedCorrect - 1); game.spawnsSinceCorrect = 0; game.correctsSinceDistractor++; }
+      else { game.spawnsSinceCorrect++; game.correctsSinceDistractor = 0; }
     }
-    var node = document.createElement("div"); node.className = "c144RunnerObject " + (obstacle ? "obstacle" : item.token.correct ? "correct" : "distractor") + (!obstacle && item.token.display === "calculation" ? " c145Gate" : ""); node.dataset.runnerObject = item.id;
+    var node = document.createElement("div"); node.className = "c144RunnerObject " + (obstacle ? "obstacle" : "runner-token") + (!obstacle && item.token.display === "calculation" ? " c145Gate" : ""); node.dataset.runnerObject = item.id;
     if (obstacle) { node.textContent = item.requirement === "jump" ? "▰" : "╱╲"; node.setAttribute("aria-label", item.requirement === "jump" ? "Obstáculo para saltar" : "Obstáculo para agacharse"); }
     else { node.textContent = item.token.glyph; node.style.color = item.token.color.value; node.setAttribute("aria-label", item.token.display === "category" ? item.token.item.label + " de color " + item.token.color.label : item.token.display === "calculation" ? "Operación " + item.token.glyph : item.token.shape.label + " de color " + item.token.color.label + (item.token.display === "number" ? ", número " + item.token.value : "")); }
     body.querySelector(".c144RunnerStage").appendChild(node); item.node = node; game.objects.push(item);
@@ -278,7 +299,7 @@
 
   function beginNewRule(clearTokens) {
     if (!game) return;
-    game.forcedCorrect = 2; game.spawnsSinceCorrect = 0; game.nextSpawn = .1;
+    game.forcedCorrect = 2; game.spawnsSinceCorrect = 0; game.correctsSinceDistractor = 0; game.nextSpawn = .08;
     if (clearTokens !== false) {
       game.objects.forEach(function (item) { if (item.kind === "token") { item.resolved = true; if (item.node) item.node.remove(); } });
       game.objects = game.objects.filter(function (item) { return !item.resolved; });
@@ -303,7 +324,7 @@
   function loop(now) {
     if (!game || game.stopped) return; var delta = Math.min(.05, Math.max(0, (now - lastFrame) / 1000)); lastFrame = now;
     if (!game.paused) {
-      game.elapsed += delta; if (now >= game.actionUntil && game.action !== "run") { game.action = "run"; updateLane(); }
+      game.elapsed += delta; if (now >= game.actionUntil && game.action !== "idle") { game.action = "idle"; updateLane(); }
       updateSegment(); game.nextSpawn -= delta; if (game.nextSpawn <= 0) { spawnObject(); game.nextSpawn = game.level === 1 ? 1.28 : game.level === 2 ? 1.08 : .92; }
       var speed = game.level === 1 ? .19 : game.level === 2 ? .215 : .235;
       game.objects.slice().forEach(function (item) { item.progress += delta * speed; positionObject(item); if (item.progress >= .88) resolveObject(item); });
@@ -331,35 +352,62 @@
     try { await api.from("coco_runner_history").insert({ user_id: session.user.id, mission_id: result.missionId, level: result.level, play_date: result.date, stats: result, completed_at: result.completedAt }); } catch (_) {}
   }
 
+  function generalScoreFor(result) {
+    var precision = clamp((Number(result.accuracy) || 0) / 100, 0, 1);
+    var completion = clamp((Number(result.correctObjects) || 0) / Math.max(1, Number(result.availableTargets) || 0), 0, 1);
+    var inhibition = clamp((Number(result.correctObjects) || 0) / Math.max(1, (Number(result.correctObjects) || 0) + (Number(result.distractorsPicked) || 0)), 0, 1);
+    var sequenceGoal = result.level === 3 ? 3 : 2, memory = clamp((Number(result.sequencesRemembered) || 0) / sequenceGoal, 0, 1);
+    var obstacles = result.obstacleCount ? clamp((Number(result.obstaclesPassed) || 0) / Number(result.obstacleCount), 0, 1) : 1;
+    var difficultyWeight = [0, 5, 10, 15][result.level] || 5, quality = (precision + completion) / 2;
+    return Math.round(clamp(140 * precision + 70 * completion + 45 * inhibition + 35 * memory + 15 * obstacles + difficultyWeight * quality, 0, 320));
+  }
+
+  async function saveGeneralScore(result) {
+    var arcade = root.CocoArcadeV133;
+    if (!arcade || typeof arcade.saveScore !== "function") return { ok: false, error: "El servicio oficial de puntuación no está disponible." };
+    return arcade.saveScore(GAME_ID, result.generalPoints, {
+      accuracy: result.accuracy, correct: result.correctObjects, total: result.availableTargets,
+      distractors: result.distractorsPicked, sequences: result.sequencesRemembered,
+      obstaclesPassed: result.obstaclesPassed, level: result.level, duration: result.durationSeconds
+    }, result.userId);
+  }
+
   async function finishGame() {
     if (!game || game.stopped) return; game.stopped = true; cancelAnimationFrame(frame); if (controller) controller.abort(); controller = null;
-    game.objects.forEach(function (item) { if (item.node) item.node.remove(); });
+    game.objects.forEach(function (item) { if (item.kind === "token" && item.token && item.token.correct && !item.resolved) game.expected = Math.max(0, game.expected - 1); if (item.node) item.node.remove(); });
     var opportunities = Math.max(1, game.correct + game.distractors + game.missed), accuracy = Math.round(100 * game.correct / opportunities), reaction = game.reactions.length ? Math.round(game.reactions.reduce(function (sum, value) { return sum + value; }, 0) / game.reactions.length) : 0;
-    var result = { id: C.id("runner-result"), userId: currentUserId(), missionId: game.mission.id, date: C.today(), completedAt: new Date().toISOString(), level: game.level, accuracy: accuracy, correctObjects: game.correct, distractorsPicked: game.distractors, missedTargets: game.missed, sequencesRemembered: game.sequences, obstaclesPassed: game.obstaclesPassed, obstacleCount: game.obstacles, collisions: game.collisions, averageReactionMs: reaction, ruleChanges: game.ruleChanges, durationSeconds: Math.round(game.elapsed), highlightedSkill: "" };
-    result.highlightedSkill = highlightedSkill(result); await savePersonalResult(result);
+    var result = { id: C.id("runner-result"), userId: currentUserId(), missionId: game.mission.id, date: C.today(), completedAt: new Date().toISOString(), level: game.level, accuracy: accuracy, correctObjects: game.correct, availableTargets: game.expected, distractorsPicked: game.distractors, missedTargets: game.missed, sequencesRemembered: game.sequences, obstaclesPassed: game.obstaclesPassed, obstacleCount: game.obstacles, collisions: game.collisions, averageReactionMs: reaction, ruleChanges: game.ruleChanges, durationSeconds: Math.round(game.elapsed), highlightedSkill: "", generalPoints: 0, rankingSaved: false };
+    result.highlightedSkill = highlightedSkill(result); result.generalPoints = generalScoreFor(result);
+    showMessage("Guardando " + result.generalPoints + " puntos…", "good");
+    var rankingResult = await saveGeneralScore(result); result.rankingSaved = Boolean(rankingResult && rankingResult.ok); result.rankingDaily = Boolean(rankingResult && rankingResult.daily); result.rankingError = rankingResult && rankingResult.error || "";
+    await savePersonalResult(result);
     if (root.CocoDailyV134 && typeof root.CocoDailyV134.complete === "function") await root.CocoDailyV134.complete(GAME_ID, currentUserId());
     if (!game.celebrationDone) { game.celebrationDone = true; C.sound("finish"); }
     renderFinish(result);
   }
 
   function renderFinish(result) {
-    var body = C.body(); if (!body) return; C.setModalTitle("Misión completada", "EVOLUCIÓN PERSONAL · SIN CLASIFICACIÓN");
-    body.innerHTML = '<main class="c144Finish"><section class="c144Card c144FinishHero"><img src="./coco-v2-runner-v144.png" alt="Coco V2 celebrando la misión"><span class="c144Eyebrow">META ALCANZADA</span><h3>¡Misión Cerebro completada!</h3><p>Tu habilidad destacada hoy fue <b>' + C.esc(result.highlightedSkill) + '</b>. Este resultado es personal y no ha sumado ningún punto a la clasificación general.</p><div class="c144RunnerMetrics"><div><b>' + result.accuracy + '%</b><span>Precisión</span></div><div><b>' + result.correctObjects + '</b><span>Objetos correctos</span></div><div><b>' + result.distractorsPicked + '</b><span>Distractores</span></div><div><b>' + result.sequencesRemembered + '</b><span>Secuencias</span></div><div><b>' + result.obstaclesPassed + '/' + result.obstacleCount + '</b><span>Obstáculos superados</span></div><div><b>' + (result.averageReactionMs ? result.averageReactionMs + ' ms' : '—') + '</b><span>Reacción media</span></div></div><p class="c144HealthyEnd">Buen trabajo. Ahora es un buen momento para apartar la vista de la pantalla, moverte un poco y continuar mañana.</p><div class="c144Actions" style="justify-content:center"><button type="button" class="c144Primary" data-runner-close>Volver a Coco en Forma</button></div></section></main>';
-    body.querySelector("[data-runner-close]").onclick = C.closeModal; if (C.enhanceCatalog) C.enhanceCatalog();
+    var body = C.body(); if (!body) return; C.setModalTitle("Misión completada", "RESULTADO · CLASIFICACIÓN GENERAL");
+    var saveCopy = result.rankingSaved ? "Puntuación guardada una sola vez en la clasificación general." : result.rankingDaily ? "La puntuación válida de hoy ya estaba registrada." : "No se pudo guardar todavía: " + C.esc(result.rankingError || "revisa la conexión e inténtalo de nuevo.");
+    body.innerHTML = '<main class="c144Finish"><section class="c144Card c144FinishHero"><img src="./coco-v2-runner-v144.png" alt="Coco V2 celebrando la misión"><span class="c144Eyebrow">META ALCANZADA</span><h3>¡Misión Cerebro completada!</h3><p>Tu habilidad destacada hoy fue <b>' + C.esc(result.highlightedSkill) + '</b>.</p><div class="c146RunnerScore"><b>+' + result.generalPoints + '</b><span>PUNTOS GENERALES</span></div><div class="c144RunnerMetrics"><div><b>' + result.accuracy + '%</b><span>Precisión</span></div><div><b>' + result.correctObjects + '/' + result.availableTargets + '</b><span>Objetivos correctos</span></div><div><b>' + result.distractorsPicked + '</b><span>Distractores recogidos</span></div><div><b>' + result.sequencesRemembered + '</b><span>Secuencias</span></div><div><b>' + result.obstaclesPassed + '/' + result.obstacleCount + '</b><span>Obstáculos superados</span></div><div><b>' + (result.averageReactionMs ? result.averageReactionMs + ' ms' : '—') + '</b><span>Reacción media</span></div></div><p class="c146RunnerSave ' + (!result.rankingSaved && !result.rankingDaily ? "error" : "") + '" data-runner-save-status>' + saveCopy + '</p><p class="c144HealthyEnd">Buen trabajo. Ahora es un buen momento para apartar la vista de la pantalla, moverte un poco y continuar mañana.</p><div class="c144Actions" style="justify-content:center"><button type="button" class="c144Primary" data-runner-close>Volver a Coco en Forma</button>' + (!result.rankingSaved && !result.rankingDaily ? '<button type="button" class="c144Secondary" data-runner-retry-score>Reintentar guardado</button>' : '') + '</div></section></main>';
+    body.querySelector("[data-runner-close]").onclick = C.closeModal;
+    var retry = body.querySelector("[data-runner-retry-score]"); if (retry) retry.onclick = async function () { retry.disabled = true; retry.textContent = "Guardando…"; var saved = await saveGeneralScore(result); result.rankingSaved = Boolean(saved && saved.ok); result.rankingDaily = Boolean(saved && saved.daily); result.rankingError = saved && saved.error || ""; renderFinish(result); };
+    if (C.enhanceCatalog) C.enhanceCatalog();
   }
 
   async function open() {
-    C.openModal({ module: "runner", title: "Coco Corre — Misión Cerebro", kicker: "EVOLUCIÓN PERSONAL · NO SUMA AL RANKING", html: '<div class="c144Empty"><b>Coco está preparando la misión…</b></div>', dispose: dispose });
+    C.openModal({ module: "runner", title: "Coco Corre — Misión Cerebro", kicker: "MISIÓN DIARIA · CLASIFICACIÓN GENERAL", html: '<div class="c144Empty"><b>Coco está preparando la misión…</b></div>', dispose: dispose });
     user = await resolveUser(); await renderIntro();
   }
 
   function dispose() { if (game) game.stopped = true; cancelAnimationFrame(frame); if (controller) controller.abort(); controller = null; pointerStart = null; game = null; }
 
   var api = {
-    version: "145.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, ruleFor: ruleFor,
+    version: "146.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
     catalog: function () { return { colors: COLORS.slice(), shapes: SHAPES.slice(), categories: CATEGORIES.slice() }; },
-    audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, targetsAfterRuleChange: 2, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, rankingWrites: false, partidasTableWrites: false, ownLeaderboard: false, dailyLimit: 1, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
+    audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, targetsAfterRuleChange: 2, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, correctAnswerStyling: false, characterMotion: "stable-with-brief-functional-actions", rankingWrites: true, partidasTableWrites: true, generalLeaderboard: true, ownLeaderboard: false, scoreCap: 320, dailyLimit: 1, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
   };
+  root.CocoRunnerV146 = api;
   root.CocoRunnerV145 = api;
   root.CocoRunnerV144 = api;
 })(window);

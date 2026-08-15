@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-15-v145.0-profesional --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Coco en Forma | Entrena el cerebro jugando</title>
+<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-15-v146.0-profesional --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Coco en Forma | Entrena el cerebro jugando</title>
 <meta name="description" content="Entrenamiento cognitivo lúdico para todas las edades: una misión diaria por juego para practicar memoria, cálculo, lenguaje, atención, velocidad y coordinación.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cocoenforma.com/">
@@ -494,9 +494,10 @@
 }
 </style>
 <link rel="stylesheet" href="./coco-v144-professional.css?v=1450">
-<link rel="stylesheet" href="./coco-v145-refinements.css?v=1450">
+<link rel="stylesheet" href="./coco-v146-refinements.css?v=14601">
+<script src="./supabase-js-2.112.3.min.js?v=14601"></script>
 </head><body>
-<script>window.COCO_VERSION="2026-08-15-v145.0-profesional";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
+<script>window.COCO_VERSION="2026-08-15-v146.0-profesional";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/og-coco.jpg',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/'};</script>
 <style id="coco-v134-style">:root{color-scheme:light}
 html{scroll-behavior:smooth}
 body{min-height:100dvh}
@@ -4757,7 +4758,7 @@ var JUEGOS=[
  {id:"futbol",nombre:"Fútbol",grupo:"propio",estado:"obra",color:"cocoVerde",descripcion:"Responde preguntas sobre fútbol y demuestra tus conocimientos."},
  {id:"baloncesto",nombre:"Baloncesto",grupo:"propio",estado:"obra",color:"cocoNaranja",descripcion:"Pon a prueba tu pasión y conocimiento sobre baloncesto."},
  {id:"padel",nombre:"Pádel",grupo:"propio",estado:"obra",color:"cocoAzul",descripcion:"Demuestra todo lo que sabes sobre pádel y mejora cada día."},
- {id:"cococorre",nombre:"Coco Corre",grupo:"propio",estado:"listo",color:"cocoMorado",descripcion:"Misión breve para entrenar atención, memoria y control mental sin sumar al ranking."}
+ {id:"cococorre",nombre:"Coco Corre",grupo:"general",estado:"listo",color:"cocoMorado",descripcion:"Misión breve para entrenar atención, memoria y control mental y sumar hasta 320 puntos generales."}
 ];
 var iconosAcceso={};
 var raf=0;
@@ -6428,10 +6429,10 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   "use strict";
   if(window.CocoArcadeV133)return;
 
-  var VERSION="2026.08.15-145.0";
+  var VERSION="2026.08.15-146.0";
   var OFFICIAL_COCO="https://imagecdn.123inventatuweb.com/a5/a5/a5a51b1b-2190-4998-9e65-7ac1c56294dd.png";
   var READY_IDS=["crucigrama","tiempo","verdadero","diferencias","futbol","padel"];
-  var GENERAL_IDS=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","diferencias"];
+  var GENERAL_IDS=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","diferencias","cococorre"];
   var OWN_IDS=["cocomed","futbol"];
   var TOOL_IDS=["padel"];
   var ALL_IDS=GENERAL_IDS.concat(OWN_IDS,TOOL_IDS);
@@ -6449,6 +6450,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     tiempo:{domain:"Velocidad de procesamiento",group:"general"},
     verdadero:{domain:"Razonamiento y conocimiento",group:"general"},
     diferencias:{domain:"Atención visual y percepción",group:"general",share:"Compara dos escenas y encuentra los cambios."},
+    cococorre:{domain:"Atención, memoria de trabajo y control inhibitorio",group:"general",share:"Supera una misión breve de atención, memoria y flexibilidad."},
     cocomed:{domain:"Aprendizaje y razonamiento",group:"own"},
     futbol:{domain:"Memoria y atención",group:"own"},
     padel:{domain:"Actividad física y vínculo social",group:"tool"}
@@ -6460,6 +6462,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     tiempo:{id:"tiempo",title:"Reto Tiempo",subtitle:"La consola supersónica de Coco",icon:"⏱️",group:"general",type:"time",accent:"naranja",description:"Diez microdesafíos que mezclan cálculo, atención, patrones y velocidad.",features:[["Nivel adaptativo","Ajustado a tu edad"],["10 misiones","Una partida dinámica"],["Hasta 320 puntos","Clasificación general"]]},
     verdadero:{id:"verdadero",title:"Verdadero o falso",subtitle:"El laboratorio de certezas",icon:"⚖️",group:"general",type:"quiz",mode:"truefalse",accent:"verde",description:"Analiza cada afirmación, decide y descubre por qué es correcta o incorrecta.",features:[["10 afirmaciones","Ciencia, lengua y lógica"],["Explicación inmediata","Aprender importa"],["Hasta 320 puntos","Clasificación general"]]},
     diferencias:{id:"diferencias",title:"Encuentra las diferencias",subtitle:"El taller visual de Coco",icon:"🔎",group:"general",type:"differences",accent:"azul",description:"Compara dos escenas del taller y localiza cada cambio antes de que termine el tiempo.",features:[["4–6 diferencias","Según la dificultad"],["Dos escenas táctiles","Toca cualquiera de las dos"],["Hasta 320 puntos","Clasificación general"]]},
+    cococorre:{id:"cococorre",title:"Coco Corre",subtitle:"Misión Cerebro",icon:"🧠",group:"general",type:"external",accent:"azul",description:"Recorre tres tramos breves que entrenan atención, memoria de trabajo y control inhibitorio.",features:[["3 tramos","Atención, memoria y flexibilidad"],["2–4 minutos","Una misión con meta"],["Hasta 320 puntos","Clasificación general"]]},
     futbol:{id:"futbol",title:"Coco Fútbol",subtitle:"Penal con memoria",icon:"⚽",group:"own",type:"football",accent:"verde",description:"Observa cinco señales rojas de una en una, recuérdalas y chuta al único lugar que nunca se encendió.",features:[["Memoria visual","Cinco señales, un único hueco"],["Secuencia limpia","Cada zona desaparece antes de la siguiente"],["3 velocidades","Básico, intermedio y avanzado"]]},
     padel:{id:"padel",title:"Coco Pádel Club",subtitle:"Mixings que ponen al grupo en movimiento",icon:"🎾",group:"tool",type:"padel-club",accent:"azul",description:"Organiza jugadores sin límite, pistas reales, tiempos flexibles y resultados por games o sets.",features:[["Jugadores sin límite","Niveles bajo, medio y alto"],["Pistas personalizadas","Rondas y minutos configurables"],["Ranking e historial","Forma, victorias y games"]]}
   };
@@ -6790,7 +6793,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
   async function openLeaderboard(id,origin){
     if(id==="cocomed"){openCocoMedRanking(origin);return}
-    rankingOrigin=origin||document.activeElement;ensureRankingModal();rankingModal.querySelector("#cocoGameRankingTitle").textContent=classificationLabel(id,false);var description=rankingModal.querySelector("[data-ranking-description]");if(description)description.textContent=classificationIsGeneral(id)?"Suma los puntos de los diez retos generales de Coco en Forma.":"Tabla independiente dedicada exclusivamente a "+(DISPLAY_NAMES[id]||"este juego")+".";var rankingBody=rankingModal.querySelector(".cocoGameRankingBody");rankingBody.innerHTML='<div class="cocoRankingEmpty"><b>Coco está ordenando la tabla…</b><span>Un momento.</span></div>';rankingModal.classList.add("visible");requestAnimationFrame(function(){rankingModal.querySelector(".cocoGameRankingShell").focus({preventScroll:true})});
+    rankingOrigin=origin||document.activeElement;ensureRankingModal();rankingModal.querySelector("#cocoGameRankingTitle").textContent=classificationLabel(id,false);var description=rankingModal.querySelector("[data-ranking-description]");if(description)description.textContent=classificationIsGeneral(id)?"Suma los puntos de los retos generales de Coco en Forma.":"Tabla independiente dedicada exclusivamente a "+(DISPLAY_NAMES[id]||"este juego")+".";var rankingBody=rankingModal.querySelector(".cocoGameRankingBody");rankingBody.innerHTML='<div class="cocoRankingEmpty"><b>Coco está ordenando la tabla…</b><span>Un momento.</span></div>';rankingModal.classList.add("visible");requestAnimationFrame(function(){rankingModal.querySelector(".cocoGameRankingShell").focus({preventScroll:true})});
     var board=await loadLeaderboard(id);if(!rankingModal||!rankingModal.classList.contains("visible"))return;rankingBody.innerHTML=rankingTableHtml(board);if(active&&active.id===id)active.leaderboard=board;
   }
 
@@ -7212,7 +7215,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
 
   function classificationAudit(){return{generalIds:GENERAL_IDS.slice(),specificIds:OWN_IDS.slice(),allRankedIds:GENERAL_IDS.concat(OWN_IDS),generalCount:GENERAL_IDS.length,retiredExcluded:ALL_IDS.indexOf("baloncesto")<0}}
-  window.CocoArcadeV133={version:VERSION,open:openGame,close:closeGame,share:shareGame,games:GAMES,iconSvg:iconSvg,loadStats:loadStats,loadLeaderboard:loadLeaderboard,classification:{audit:classificationAudit,generalIds:GENERAL_IDS,specificIds:OWN_IDS},padel:{generateMatches:generatePadelMatches,standings:padelStandings}};
+  window.CocoArcadeV133={version:VERSION,open:openGame,close:closeGame,share:shareGame,games:GAMES,iconSvg:iconSvg,loadStats:loadStats,saveScore:saveScore,loadLeaderboard:loadLeaderboard,classification:{audit:classificationAudit,generalIds:GENERAL_IDS,specificIds:OWN_IDS},padel:{generateMatches:generatePadelMatches,standings:padelStandings}};
 
   function dailySerial(){return Math.floor(Date.parse(today()+"T12:00:00Z")/86400000)}
   function missionCode(index){return dailySerial().toString(36).toUpperCase()+"-"+("0"+(index+1)).slice(-2)}
@@ -7717,9 +7720,9 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     {id:"visual",label:"Percepción y coordinación visomotora",short:"Percepción, reflejos y respuesta",color:"#f1b917"}
   ];
   var COG_WEIGHTS={
-    numeros:{executive:.35,speed:.25,visual:.4},calculo:{quant:.65,speed:.25,memory:.1},palabras:{language:.65,memory:.25,speed:.1},series:{quant:.6,executive:.25,memory:.15},memoria:{memory:.8,executive:.2},sudoku:{quant:.45,executive:.4,memory:.15},sopa:{executive:.5,language:.3,visual:.2},crucigrama:{language:.55,memory:.25,quant:.2},tiempo:{speed:.4,executive:.25,quant:.2,memory:.15},verdadero:{quant:.35,language:.25,memory:.2,executive:.2},diferencias:{visual:.65,executive:.25,speed:.1},cocomed:{language:.45,quant:.35,memory:.2},futbol:{memory:.55,executive:.25,visual:.2},padel:{visual:.45,speed:.35,executive:.2}
+    numeros:{executive:.35,speed:.25,visual:.4},calculo:{quant:.65,speed:.25,memory:.1},palabras:{language:.65,memory:.25,speed:.1},series:{quant:.6,executive:.25,memory:.15},memoria:{memory:.8,executive:.2},sudoku:{quant:.45,executive:.4,memory:.15},sopa:{executive:.5,language:.3,visual:.2},crucigrama:{language:.55,memory:.25,quant:.2},tiempo:{speed:.4,executive:.25,quant:.2,memory:.15},verdadero:{quant:.35,language:.25,memory:.2,executive:.2},diferencias:{visual:.65,executive:.25,speed:.1},cococorre:{executive:.42,memory:.28,visual:.2,speed:.1},cocomed:{language:.45,quant:.35,memory:.2},futbol:{memory:.55,executive:.25,visual:.2},padel:{visual:.45,speed:.35,executive:.2}
   };
-  var SCORE_CAPS={numeros:672,calculo:840,palabras:739,series:907,memoria:874,sudoku:1075,sopa:773,crucigrama:320,tiempo:320,verdadero:320,diferencias:320,cocomed:1000,futbol:1000,padel:1000};
+  var SCORE_CAPS={numeros:672,calculo:840,palabras:739,series:907,memoria:874,sudoku:1075,sopa:773,crucigrama:320,tiempo:320,verdadero:320,diferencias:320,cococorre:320,cocomed:1000,futbol:1000,padel:1000};
   var DEFAULT_WEIGHTS={executive:.4,memory:.2,speed:.2,language:.2};
 
   window.CocoCognitiveCatalog={
@@ -8034,10 +8037,10 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 </style>
 <script id="coco-v142-runtime" src="./coco-v142-runtime.js?v=1420"></script>
 <script id="coco-v142-unified" src="./coco-v142-unified.js?v=1420"></script>
-<script id="coco-v145-core" src="./coco-v144-core.js?v=1450"></script>
-<script id="coco-v145-padel" src="./coco-v144-padel.js?v=1450"></script>
-<script id="coco-v145-runner" src="./coco-v144-runner.js?v=1450"></script>
-<script id="coco-v145-differences" src="./coco-v144-differences.js?v=1450"></script>
+<script id="coco-v146-core" src="./coco-v144-core.js?v=14601"></script>
+<script id="coco-v146-padel" src="./coco-v144-padel.js?v=14601"></script>
+<script id="coco-v146-runner" src="./coco-v144-runner.js?v=14601"></script>
+<script id="coco-v146-differences" src="./coco-v144-differences.js?v=14601"></script>
 
 
 <style id="coco-v140-differences-style">/* Coco en Forma v140 · parejas de escenas completas, sin iconos superpuestos */
@@ -8104,5 +8107,5 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   #cocoApp .cocoDiffSceneLoading i,#cocoApp .cocoDiffHotspot.found,#cocoApp .cocoDiffMissMarker{animation:none!important}
 }
 </style>
-<script id="coco-v145-local-qa">(function(){try{var p=new URLSearchParams(location.search),local=/localhost|127\.0\.0\.1|terminal\.local/i.test(location.hostname||"");if(local&&p.get("qa")==="1"){window.CocoArcadeDemo=true;var game=p.get("juego");setTimeout(function(){if(game==="cococorre"&&window.CocoRunnerV145)window.CocoRunnerV145.open();else if(game==="diferencias"&&window.CocoDifferencesProV144)window.CocoDifferencesProV144.open();else if(game==="padel"&&window.CocoPadelV145)window.CocoPadelV145.open();else if(game&&window.CocoArcadeV133&&window.CocoArcadeV133.games[game])window.CocoArcadeV133.open(game,null)},80)}}catch(e){}})();</script>
+<script id="coco-v146-local-qa">(function(){try{var p=new URLSearchParams(location.search),local=/localhost|127\.0\.0\.1|terminal\.local/i.test(location.hostname||"");if(local&&p.get("qa")==="1"){window.CocoArcadeDemo=true;var game=p.get("juego");setTimeout(function(){var modal=document.querySelector(".cocoV144Modal.visible"),module=modal&&modal.dataset.module;if(game==="cococorre"&&window.CocoRunnerV146&&module!=="runner")window.CocoRunnerV146.open();else if(game==="diferencias"&&window.CocoDifferencesProV146&&module!=="differences")window.CocoDifferencesProV146.open();else if(game==="padel"&&window.CocoPadelV146&&module!=="padel")window.CocoPadelV146.open();else if(game&&window.CocoArcadeV133&&window.CocoArcadeV133.games[game]&&!module)window.CocoArcadeV133.open(game,null)},80)}}catch(e){}})();</script>
 </body></html>

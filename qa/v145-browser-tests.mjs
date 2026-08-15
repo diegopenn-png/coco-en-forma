@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import path from "node:path";
 import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
+const qaDir = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.dirname(qaDir);
+if (fs.readFileSync(path.join(rootDir, "index.html"), "utf8").includes("v146.0-profesional")) {
+  console.log("SKIP  Suite histórica de navegador v145: usa qa/v146-browser-tests.mjs.");
+  process.exit(0);
+}
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 
