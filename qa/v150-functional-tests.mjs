@@ -8,93 +8,141 @@ const qaDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.dirname(qaDir);
 const results = [];
 let idCounter = 0;
-async function test(name, fn){try{await fn();results.push(["PASS",name]);}catch(error){results.push(["FAIL",name,error.stack||error.message]);}}
-function browser(extra={}){
-  const location={search:"",hostname:"localhost"};
-  const window={CocoV144:{id(p){return `${p}-${++idCounter}`},today(){return "2026-08-16"},esc:String,body(){return null},session:async()=>null,client:()=>null,toast(){},sound(){},openModal(){},closeModal(){},setModalTitle(){}},location,addEventListener(){},removeEventListener(){},...extra};
-  const context=vm.createContext({window,self:window,globalThis:window,location,console,Set,Map,Date,Math,JSON,Object,Array,String,Number,Boolean,RegExp,Intl,Promise,AbortController,URLSearchParams,TextEncoder,Blob,performance:{now:()=>Date.now()},crypto:{randomUUID:()=>`qa-${++idCounter}`},setTimeout,clearTimeout,setInterval,clearInterval});
-  return {window,context};
+
+async function test(name, body) {
+  try { await body(); results.push({ name, status: "PASS" }); }
+  catch (error) { results.push({ name, status: "FAIL", detail: error.stack || error.message }); }
 }
-function evaluate(file,extra){const b=browser(extra);vm.runInContext(fs.readFileSync(path.join(rootDir,file),"utf8"),b.context,{filename:file});return b.window;}
+function browserContext(extra = {}) {
+  const location = { search: "", hostname: "localhost" };
+  const window = {
+    CocoV144: {
+      id(prefix) { return `${prefix}-${++idCounter}`; }, today() { return "2026-08-16"; }, esc(value) { return String(value); }, body() { return null; },
+      session: async () => null, client: () => null, toast() {}, sound() {}, openModal() {}, closeModal() {}, setModalTitle() {}
+    },
+    location, addEventListener() {}, removeEventListener() {}, ...extra
+  };
+  const context = vm.createContext({ window, self: window, globalThis: window, location, console, Set, Map, Date, Math, JSON, Object, Array, String, Number, Boolean, RegExp, Intl, Promise, AbortController, URLSearchParams, TextEncoder, Blob, performance: { now: () => Date.now() }, crypto: { randomUUID: () => `qa-${++idCounter}` }, setTimeout, clearTimeout, setInterval, clearInterval });
+  return { context, window };
+}
+function evaluate(file, setup) {
+  const { context, window } = browserContext(setup);
+  vm.runInContext(fs.readFileSync(path.join(rootDir, file), "utf8"), context, { filename: file });
+  return window;
+}
 
-await test("Coco Corre: 180 misiones válidas y dos distractores antes del primer objetivo",()=>{
-  const r=evaluate("coco-v144-runner.js").CocoRunnerV150;
-  for(const level of [1,2,3])for(let i=0;i<60;i++){
-    const mission=r.missionForLevel(level,`v150-${level}-${i}`),v=r.validateMission(mission);
-    assert.equal(v.valid,true,v.failures.join(", ")); assert.equal(v.firstTargetIndex,2); assert.equal(v.startsWithDistractor,true);
-  }
-});
-await test("Coco Corre: ninguna regla nueva regala la respuesta en los dos primeros objetos",()=>{
-  const r=evaluate("coco-v144-runner.js").CocoRunnerV150,c=r.catalog();
-  const rules=[{type:"shape-color",shape:c.shapes.find(x=>x.id==="cuadrado"),color:c.colors.find(x=>x.id==="azul")},{type:"category-color",category:c.categories.find(x=>x.id==="herramientas"),color:c.colors.find(x=>x.id==="morado")},{type:"category",target:c.categories.find(x=>x.id==="frutas")},{type:"even"},{type:"odd"}];
-  let value=.071; const random=()=>((value=(value+.173)%1));
-  for(const level of [1,2,3])for(const rule of rules){const opening=r.openingPlanForRule(rule,random,level);assert.deepEqual(Array.from(opening,t=>t.correct),[false,false,true,false,true,false]);}
-});
-await test("Coco Corre: variedad ampliada con frutas, herramientas y más familias",()=>{
-  const r=evaluate("coco-v144-runner.js").CocoRunnerV150,c=r.catalog(),audit=r.audit();
-  assert.ok(c.colors.length>=8);assert.ok(c.shapes.length>=7);assert.ok(c.categories.length>=8);
-  for(const id of ["herramientas","frutas","ciencia","colegio","deportes","espacio","cocina"])assert.ok(c.categories.some(x=>x.id===id),id);
-  assert.equal(audit.openingDistractorsBeforeTarget,2);assert.equal(audit.fruitAndToolVariety,true);
-});
-await test("Coco Corre: frutas y herramientas muestran el color de forma visible, no solo en la lógica",()=>{
-  const r=evaluate("coco-v144-runner.js").CocoRunnerV150,c=r.catalog();
-  let value=.137; const random=()=>((value=(value+.193)%1));
-  const rule={type:"category-color",category:c.categories.find(x=>x.id==="herramientas"),color:c.colors.find(x=>x.id==="morado")};
-  const opening=r.openingPlanForRule(rule,random,3);
-  assert.equal(opening[0].category.id,"herramientas");assert.equal(opening[1].category.id,"herramientas");assert.equal(opening[2].correct,true);
-  assert.notEqual(opening[0].color.id,"morado");assert.notEqual(opening[1].color.id,"morado");assert.equal(opening[2].color.id,"morado");
-  assert.ok(new Set(opening.map(x=>x.color.id)).size>=3,"Debe haber varios colores visibles dentro de la misma categoría");
-  const source=fs.readFileSync(path.join(rootDir,"coco-v144-runner.js"),"utf8"),css=fs.readFileSync(path.join(rootDir,"coco-v150-refinements.css"),"utf8");
-  assert.match(source,/appendTintedCategoryGlyph/);assert.match(source,/globalCompositeOperation = "source-atop"/);assert.match(source,/token\.item\.label \+ " · " \+ token\.color\.label/);
-  assert.match(css,/c150RunnerTintedCanvas/);assert.match(css,/c150RunnerColorDot/);
-});
-await test("Clasificación: dentro de los juegos solo queda la etiqueta informativa",()=>{
-  const html=fs.readFileSync(path.join(rootDir,"index.html"),"utf8");
-  assert.doesNotMatch(html,/function leaderboardPreviewHtml/);assert.doesNotMatch(html,/data-open-leaderboard/);
-  assert.match(html,/active\.leaderboard=loaded\[2\]/);assert.match(html,/Promise\.resolve\(null\)/);
-  assert.match(html,/oldBadge\.cloneNode\(true\)/);assert.match(html,/badge\.removeAttribute\("role"\)/);assert.match(html,/event\.stopPropagation\(\)/);
-  assert.match(html,/Clasificación general|CLASIFICACIÓN GENERAL/);assert.match(html,/Clasificación específica|CLASIFICACIÓN ESPECÍFICA/);
-  assert.doesNotMatch(html,/Misma cuenta · clasificación independiente/);
-  assert.match(html,/ea\("ranking"\)/,"Debe conservarse la pestaña principal de Clasificación");
-});
-await test("Resultados de juego: no hay botón para abrir una clasificación paralela",()=>{
-  const html=fs.readFileSync(path.join(rootDir,"index.html"),"utf8");
-  assert.doesNotMatch(html,/data-result-ranking[^\{]/); // solo puede quedar el selector preventivo de CSS
-  const runner=fs.readFileSync(path.join(rootDir,"coco-v144-runner.js"),"utf8"),diff=fs.readFileSync(path.join(rootDir,"coco-v144-differences.js"),"utf8");
-  assert.doesNotMatch(runner,/Ver clasificación/);assert.doesNotMatch(diff,/Ver clasificación/);
-});
-await test("Encuentra las diferencias: diez escenas, más luminosidad y cambios reales en Coco",()=>{
-  const d=evaluate("coco-v144-differences.js").CocoDifferencesProV150,a=d.audit();
-  assert.equal(a.sceneCount,10);assert.equal(a.everySceneHasAtLeastEight,true);assert.equal(a.brightness,1.28);assert.equal(a.characterDifferenceGuaranteed,true);
-  assert.deepEqual(Array.from(a.differenceKinds),["color","shape","presence","character-color"]);
-  for(const scene of d.scenes)for(let variant=0;variant<3;variant++)for(const level of [1,2,3]){
-    const items=d.materializeForAudit(scene.id,variant,d.config(level).count);assert.ok(items.some(x=>x.characterPart==="brain"||x.characterPart==="beak"),`${scene.id}/v${variant+1}/L${level}`);
-    for(const item of items){assert.ok(item.x>0&&item.x<100&&item.y>0&&item.y<100);assert.ok(item.w>=8&&item.h>=9);}
-  }
-});
-await test("Encuentra las diferencias: cerebro y pico usan recolor selectivo, no un parche plano",()=>{
-  const source=fs.readFileSync(path.join(rootDir,"coco-v144-differences.js"),"utf8");
-  assert.match(source,/part === "brain" && !\(hsv\[1\] > \.22/);assert.match(source,/part === "beak" && !\(hsv\[1\] > \.42/);
-  assert.match(source,/brightness\(1\.28\) contrast\(1\.09\) saturate\(1\.1\)/);
-});
-await test("Contenido: los bancos educativos y las rotaciones se amplían",()=>{
-  const base={version:"test",words:[],crosswords:[],trueFalse:[],soupExtensions:{},mixedMemoryThemes:[]};
-  const w=evaluate("coco-v150-content.js",{CocoV134Content:base});
-  assert.ok(w.CocoV150ContentAudit.addedWords>=50);assert.ok(w.CocoV150ContentAudit.addedFacts>=25);assert.ok(w.CocoV150ContentAudit.addedMemoryThemes>=10);
-  // evalúa el inventario de combinaciones sobre la misma base enriquecida
-  const b=browser({CocoV134Content:base,CocoV142MedExtra:Array(50).fill({})});
-  vm.runInContext(fs.readFileSync(path.join(rootDir,"coco-v144-content.js"),"utf8"),b.context,{filename:"coco-v144-content.js"});
-  const audit=b.window.CocoContentV150.audit();assert.equal(audit.passed,true);assert.equal(audit.minimumPerLevel,40);assert.equal(audit.gamesAudited,15);
-});
-await test("PWA v150: todos los recursos precargados existen",()=>{
-  const sw=fs.readFileSync(path.join(rootDir,"sw.js"),"utf8");assert.match(sw,/coco-en-forma-v150\.0\.0-r1/);assert.match(sw,/coco-v150-content\.js/);assert.match(sw,/coco-v150-refinements\.css/);
-  for(const m of sw.matchAll(/"\.\/([^"?]+)"/g)){const rel=m[1];if(rel==="")continue;assert.ok(fs.existsSync(path.join(rootDir,rel)),rel);}
-});
-await test("Integridad: conserva los 15 accesos del catálogo",()=>{
-  const html=fs.readFileSync(path.join(rootDir,"index.html"),"utf8");
-  const ids=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","diferencias","cococorre","cocomed","futbol","padel"];
-  for(const id of ids)assert.ok(html.includes(id),id);
+await test("Clasificación general usa RPC global y no depende de RLS de partidas", () => {
+  const html = fs.readFileSync(path.join(rootDir, "index.html"), "utf8");
+  assert.match(html, /rpc\("clasificacion_general_coco",\{p_limit:50\}\)/);
+  assert.match(html, /total_jugadores/);
+  assert.match(html, /official:true/);
 });
 
-for(const row of results){console.log(`${row[0]}  ${row[1]}`);if(row[2])console.log(row[2]);}
-const pass=results.filter(r=>r[0]==="PASS").length;console.log(`\n${pass}/${results.length} pruebas v150 superadas.`);if(pass!==results.length)process.exit(1);
+await test("Migración v150 crea rankings general y específico seguros", () => {
+  const sql = fs.readFileSync(path.join(rootDir, "supabase-coco-v150.sql"), "utf8");
+  assert.match(sql, /create or replace function public\.clasificacion_general_coco/);
+  assert.match(sql, /create or replace function public\.clasificacion_juego_coco/);
+  assert.match(sql, /security definer/g);
+  assert.match(sql, /auth\.uid\(\) is not null/);
+  assert.match(sql, /grant execute on function public\.clasificacion_general_coco\(integer\) to authenticated/);
+  assert.match(sql, /grant execute on function public\.clasificacion_juego_coco\(text, integer\) to authenticated/);
+  assert.doesNotMatch(sql, /delete from|truncate/i);
+});
+
+await test("Clasificación general suma exactamente los 12 retos generales", () => {
+  const sql = fs.readFileSync(path.join(rootDir, "supabase-coco-v150.sql"), "utf8");
+  for (const game of ["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","diferencias","cococorre"]) assert.ok(sql.includes(`'${game}'`), game);
+  assert.doesNotMatch(sql.match(/clasificacion_general_coco[\s\S]*?\$\$;/)?.[0] || "", /'cocomed'|'futbol'|'padel'/);
+});
+
+await test("Clasificación específica solo admite Coco Med y Fútbol", () => {
+  const sql = fs.readFileSync(path.join(rootDir, "supabase-coco-v150.sql"), "utf8");
+  assert.match(sql, /p_juego in \('cocomed', 'futbol'\)/);
+});
+
+await test("Coco Corre v150 comienza cada regla con distractor y alterna objetivos", () => {
+  const runner = evaluate("coco-v144-runner.js").CocoRunnerV150;
+  for (const level of [1,2,3]) for (let i=0;i<60;i++) {
+    const mission = runner.missionForLevel(level, `v150-${level}-${i}`), validation = runner.validateMission(mission);
+    assert.equal(validation.valid, true, validation.failures.join(", "));
+    assert.equal(validation.firstTargetIndex, 1); assert.equal(validation.startsWithDistractor, true);
+  }
+});
+
+await test("Coco Corre incluye frutas, herramientas, animales, deportes, naturaleza y ciencia", () => {
+  const runner = evaluate("coco-v144-runner.js").CocoRunnerV150, catalog = runner.catalog();
+  const ids = Array.from(catalog.categories, item => item.id);
+  for (const id of ["herramientas","frutas","animales","deportes","naturaleza","ciencia"]) assert.ok(ids.includes(id), id);
+  for (const category of catalog.categories) assert.ok(category.items.length >= 6, `${category.id}: ${category.items.length}`);
+});
+
+await test("Coco Corre conserva variedad de color con herramientas moradas", () => {
+  const runner = evaluate("coco-v144-runner.js").CocoRunnerV150, catalog = runner.catalog();
+  const tools = catalog.categories.find(c => c.id === "herramientas"), purple = catalog.colors.find(c => c.id === "morado");
+  let value=.11; const random=()=>((value=(value+.231)%1));
+  const opening=runner.openingPlanForRule({type:"category-color",category:tools,color:purple},random,3);
+  assert.deepEqual(Array.from(opening, token => token.correct), [false,true,false,true,false]);
+  assert.ok(new Set(opening.map(token => token.color.id)).size >= 3);
+});
+
+await test("Coco Corre mantiene obstáculos pequeños y mensajes no técnicos", () => {
+  const runner = evaluate("coco-v144-runner.js").CocoRunnerV150, audit=runner.audit();
+  const css=fs.readFileSync(path.join(rootDir,"coco-v149-refinements.css"),"utf8"), html=fs.readFileSync(path.join(rootDir,"index.html"),"utf8");
+  assert.equal(audit.adjacentLaneVisualClearance,true); assert.ok(audit.obstacleApproachScale <= 1);
+  assert.match(css,/c144RunnerObject\.obstacle[\s\S]*width:78px/);
+  assert.doesNotMatch(html,/Juego no válido: cococorre|No se pudo guardar todavía:/);
+});
+
+await test("Encuentra las diferencias incorpora cerebro y pico de Coco como cambios detectables", () => {
+  const diff=evaluate("coco-v144-differences.js").CocoDifferencesProV150;
+  assert.equal(diff.scenes.length,10);
+  for (const scene of diff.scenes) {
+    assert.equal(scene.differences.length,6);
+    const brain=scene.differences.find(item=>item.key==="brain"), beak=scene.differences.find(item=>item.key==="beak");
+    assert.ok(brain && beak, scene.id); assert.equal(brain.forceKind,"color"); assert.equal(beak.forceKind,"color");
+    assert.ok(brain.visualW <= 10 && beak.visualW <= 5);
+  }
+  assert.equal(diff.audit().brightness,1.24);
+});
+
+await test("Diferencias mantiene color, forma y presencia sin marcadores previos", () => {
+  const audit=evaluate("coco-v144-differences.js").CocoDifferencesProV150.audit();
+  assert.deepEqual(Array.from(audit.differenceKinds),["color","shape","presence"]);
+  assert.equal(audit.preAnswerMarkers,false); assert.equal(audit.clickableFromBothImages,true); assert.equal(audit.falseClicksAccepted,false);
+});
+
+await test("Coco Pádel conserva ranking por torneo y exportación completa", () => {
+  const padel=evaluate("coco-v144-padel.js").CocoPadelV150, audit=padel.audit(padel.blankState());
+  assert.deepEqual(Array.from(audit.topTabs),["Mixing","Campeonato","Jugadores"]);
+  assert.equal(audit.tournamentRankingSelector,true); assert.equal(audit.excelExport,"xlsx"); assert.equal(audit.printExport,true); assert.equal(audit.unlimited,true);
+  assert.equal(audit.whatsappExport.length,4);
+});
+
+await test("Las 15 miniaturas sociales siguen presentes y a 1200x630", () => {
+  const games=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","diferencias","cococorre","cocomed","futbol","padel"];
+  const slugs={cococorre:"coco-corre"};
+  for (const id of games) {
+    const image=path.join(rootDir,"share",`${id}-v149.png`), page=path.join(rootDir,"juego",slugs[id]||id,"index.html");
+    assert.ok(fs.existsSync(image)); assert.ok(fs.existsSync(page));
+    const bytes=fs.readFileSync(image); assert.equal(bytes.readUInt32BE(16),1200); assert.equal(bytes.readUInt32BE(20),630);
+  }
+});
+
+await test("PWA usa caché v150 y todos sus recursos de precaché existen", () => {
+  const sw=fs.readFileSync(path.join(rootDir,"sw.js"),"utf8"), html=fs.readFileSync(path.join(rootDir,"index.html"),"utf8");
+  assert.match(sw,/coco-en-forma-v150\.0\.0-r1/); assert.match(html,/2026-08-16-v150\.0-nueva-linea-desde-v149/);
+  for (const asset of Array.from(sw.matchAll(/"\.\/([^"?]+)"/g), m=>m[1])) assert.ok(fs.existsSync(path.join(rootDir,asset)),asset);
+  for (const file of ["coco-v144-core.js?v=15000","coco-v144-padel.js?v=15000","coco-v144-runner.js?v=15000","coco-v144-differences.js?v=15000","coco-v149-refinements.css?v=15000"]) assert.ok(html.includes(file),file);
+});
+
+await test("Rollback v150 elimina solo las funciones nuevas", () => {
+  const sql=fs.readFileSync(path.join(rootDir,"supabase-coco-v150-rollback.sql"),"utf8");
+  assert.match(sql,/drop function if exists public\.clasificacion_general_coco/);
+  assert.match(sql,/drop function if exists public\.clasificacion_juego_coco/);
+  assert.doesNotMatch(sql,/drop table|delete from|truncate/i);
+});
+
+const failures=results.filter(r=>r.status==="FAIL");
+for (const r of results) console.log(`${r.status.padEnd(4)}  ${r.name}${r.detail?`\n${r.detail}`:""}`);
+console.log(`\n${results.length-failures.length}/${results.length} pruebas superadas.`);
+if (failures.length) process.exitCode=1;
