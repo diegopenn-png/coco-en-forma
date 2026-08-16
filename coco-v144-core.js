@@ -3,7 +3,7 @@
 
   if (root.CocoV144) return;
 
-  var VERSION = "149.0.0";
+  var VERSION = "152.0.0";
   var modal = null;
   var modalBody = null;
   var modalTitle = null;
@@ -47,7 +47,7 @@
     var api = client();
     if (!api || !api.auth || typeof api.auth.getSession !== "function") return null;
     try {
-      var result = await api.auth.getSession();
+      var result = await Promise.race([api.auth.getSession(), new Promise(function (resolve) { setTimeout(function () { resolve(null); }, 1000); })]);
       return result && result.data && result.data.session || null;
     } catch (_) { return null; }
   }
@@ -170,7 +170,7 @@
     previousFocus = document.activeElement;
     modal.dataset.module = options.module || "";
     modalTitle.textContent = options.title || "Coco en Forma";
-    modalKicker.textContent = options.kicker || "COCO EN FORMA · v149.0";
+    modalKicker.textContent = options.kicker || "COCO EN FORMA · v152.0";
     modalBody.innerHTML = options.html || "";
     disposer = typeof options.dispose === "function" ? options.dispose : null;
     modal.classList.add("visible");
@@ -225,7 +225,7 @@
     ["cocoV132Bound", "cocoV132Ready", "cocoV132Loading", "cocoDailyState"].forEach(function (key) { delete card.dataset[key]; });
     var visual = card.querySelector(".emoji,.cocoIconoEspecial"); if (visual) visual.innerHTML = runnerIcon();
     var title = card.querySelector("h3"); if (title) title.textContent = "Coco Corre";
-    var description = card.querySelector(".cocoDescripcion,p.pequeno.apagado"); if (description) { description.classList.add("cocoDescripcion"); description.textContent = "Misión breve por tres carriles para entrenar atención, memoria y control mental."; }
+    var description = card.querySelector(".cocoDescripcion,p.pequeno.apagado"); if (description) { description.classList.add("cocoDescripcion"); description.textContent = "Misión breve por cinco carriles para entrenar atención, memoria y control mental."; }
     var state = card.querySelector(".cocoEstadoObra,.cocoArcadeCardScore");
     if (state) {
       state.className = "cocoArcadeCardScore";
@@ -236,7 +236,7 @@
       }).catch(function () {});
     }
     var badge = card.querySelector(".cocoLigaBadge");
-    if (badge) { var freshBadge = badge.cloneNode(false); freshBadge.className = "cocoLigaBadge"; freshBadge.innerHTML = '<span aria-hidden="true">🏆</span><b>Clasificación general</b>'; freshBadge.setAttribute("aria-label", "Ver clasificación general"); badge.replaceWith(freshBadge); }
+    if (badge) { var freshBadge = badge.cloneNode(false); freshBadge.className = "cocoLigaBadge"; freshBadge.innerHTML = '<span aria-hidden="true">🏆</span><b>Clasificación general</b>'; freshBadge.removeAttribute("role"); freshBadge.removeAttribute("tabindex"); freshBadge.removeAttribute("aria-label"); freshBadge.style.pointerEvents = "none"; freshBadge.style.cursor = "default"; badge.replaceWith(freshBadge); }
     var share = card.querySelector(".cocoCardShare"); if (share) share.remove();
     var button = card.querySelector(".cocoBotonJuego,.btn");
     if (button) {
@@ -277,7 +277,7 @@
       if (Array.isArray(general) && general.indexOf("cococorre") < 0) general.push("cococorre");
       if (!arcade.__v144OpenWrapped && typeof arcade.open === "function") {
         var originalOpen = arcade.open;
-        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") { var runner = root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144; return runner && runner.open(); } return originalOpen.apply(this, arguments); };
+        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") { var runner = root.CocoRunnerV152 || root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144; return runner && runner.open(); } return originalOpen.apply(this, arguments); };
         arcade.__v144OpenWrapped = true;
       }
     }
@@ -321,13 +321,12 @@
     var action = event.target && event.target.closest && event.target.closest("[data-coco-v144-open]");
     var feature = action ? action.dataset.cocoV144Open : identifiedFeature(event.target);
     if (!feature) return;
-    var actionable = action || event.target.closest("button,.cocoMiniJuego,.cocoLigaBadge");
+    var actionable = action || event.target.closest("button,.cocoMiniJuego");
     if (!actionable) return;
-    if (feature === "runner" && actionable.classList && actionable.classList.contains("cocoLigaBadge")) return;
-    event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-    if (feature === "runner" && (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
+        event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
+    if (feature === "runner" && (root.CocoRunnerV152 || root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV152 || root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
     else if (feature === "padel" && (root.CocoPadelV149 || root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144)) (root.CocoPadelV149 || root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144).open();
-    else if (feature === "differences" && (root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
+    else if (feature === "differences" && (root.CocoDifferencesProV152 || root.CocoDifferencesProV151 || root.CocoDifferencesProV150 || root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV152 || root.CocoDifferencesProV151 || root.CocoDifferencesProV150 || root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
   }, true);
 
   root.CocoV144 = {
@@ -360,10 +359,14 @@
     }
   };
 
+  root.CocoV152 = root.CocoV144;
+  root.CocoV151 = root.CocoV144;
+  root.CocoV150 = root.CocoV144;
+  root.CocoV149 = root.CocoV144;
   root.CocoV148 = root.CocoV144;
   root.CocoV147 = root.CocoV144;
   root.CocoV146 = root.CocoV144;
-  root.COCO_VERSION = "2026-08-15-v149.0-professional";
+  root.COCO_VERSION = "2026-08-16-v152.0-pwa-5-carriles-diferencias-naturales";
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhanceCatalog);
   else enhanceCatalog();
   observer = new MutationObserver(scheduleEnhance);
@@ -374,7 +377,7 @@
   setTimeout(function () {
     try {
       var activeModal = document.querySelector(".cocoV144Modal.visible");
-      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
+      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV152 || root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV152 || root.CocoRunnerV151 || root.CocoRunnerV150 || root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
     } catch (_) {}
   }, 260);
 })(window);

@@ -442,11 +442,17 @@
     return { ok: true, source: remoteUnavailable ? "local" : "cloud" };
   }
 
+  function boundedWait(promise, milliseconds, fallback) {
+    return Promise.race([Promise.resolve(promise), new Promise(function (resolve) { setTimeout(function () { resolve(fallback); }, milliseconds); })]);
+  }
+
   async function checkDaily(gameId, userId) {
     if (gameId === "padel") return { ok: true, tool: true, source: "check" };
-    if (!remoteUserEmail) await establishRemote();
     if (isUnlimitedUser(userId)) return { ok: true, unlimited: true, ranked: false, source: "test" };
-    var allowed = await canPlayDaily(gameId, userId);
+    if (localDailyUsed(gameId, userId, localToday())) return { ok: false, daily: true, source: "local" };
+    /* v152: nunca bloquear un botón esperando red/Supabase. La verificación remota
+       tiene un límite corto y, si no responde, se permite abrir el juego. */
+    var allowed = await boundedWait(canPlayDaily(gameId, userId), 950, true);
     return allowed ? { ok: true, source: "check" } : { ok: false, daily: true, source: "check" };
   }
 
@@ -454,14 +460,15 @@
     var day = localToday(), resolvedUser = userId || remoteUserId;
     if (gameId === "padel") return true;
     if (!resolvedUser) return true;
-    if (!remoteUserEmail || String(remoteUserId || "") !== String(resolvedUser)) await establishRemote();
     if (isUnlimitedUser(resolvedUser)) return true;
     if (localDailyUsed(gameId, resolvedUser, day)) return false;
+    if (!remoteUserEmail || String(remoteUserId || "") !== String(resolvedUser)) await boundedWait(establishRemote(), 700, false);
     var api = client(); if (!api) return true;
     try {
-      if (!remoteReady || (resolvedUser && cleanUser(remoteUserId) !== cleanUser(resolvedUser))) await establishRemote();
+      if (!remoteReady || (resolvedUser && cleanUser(remoteUserId) !== cleanUser(resolvedUser))) await boundedWait(establishRemote(), 700, false);
       if (!remoteUserId || (resolvedUser && cleanUser(remoteUserId) !== cleanUser(resolvedUser))) return true;
-      var result = await api.from("coco_daily_plays").select("game_id").eq("user_id", remoteUserId).eq("game_id", gameId).eq("play_date", day).maybeSingle();
+      var query = api.from("coco_daily_plays").select("game_id").eq("user_id", remoteUserId).eq("game_id", gameId).eq("play_date", day).maybeSingle();
+      var result = await boundedWait(query, 750, { error: { message: "timeout" }, data: null });
       if (!result.error && result.data) {
         try { localStorage.setItem(dailyKey(gameId, remoteUserId, day), "1"); } catch {}
         return false;
@@ -518,34 +525,7 @@
     }, true);
   }
 
-  function registerPwa() {
-    if (!("serviceWorker" in navigator) || location.protocol === "file:" || window.__cocoPwaV142Registered) return;
-    window.__cocoPwaV142Registered = true;
-    var hadController = Boolean(navigator.serviceWorker.controller), reloading = false;
-    window.addEventListener("load", function () {
-      navigator.serviceWorker.register(new URL("sw.js",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname}).then(function (registration) {
-        function offerUpdate(worker) {
-          if (!worker || !hadController || document.querySelector(".cocoV134Update")) return;
-          var app = document.getElementById("cocoApp") || document.body, button = document.createElement("button");
-          button.type = "button"; button.className = "cocoV134Update"; button.textContent = "Nueva versión disponible · actualizar";
-          button.onclick = function () { worker.postMessage({ type: "SKIP_WAITING" }); };
-          app.appendChild(button);
-        }
-        offerUpdate(registration.waiting);
-        registration.addEventListener("updatefound", function () {
-          var worker = registration.installing; if (!worker) return;
-          worker.addEventListener("statechange", function () {
-            if (worker.state === "installed") offerUpdate(worker);
-          });
-        });
-      }).catch(function () {});
-      navigator.serviceWorker.addEventListener("controllerchange", function () {
-        if (!hadController || reloading) return;
-        reloading = true;
-        location.reload();
-      });
-    });
-  }
+  function registerPwa() { /* v152: registro único gestionado por coco-v152-pwa.js */ return; }
 
   window.CocoRotationV134 = {
     version: CONTENT_VERSION,
@@ -582,5 +562,5 @@
   else enhanceCopyAndAccessibility();
   installClassicActionGuard();
   new MutationObserver(function () { clearTimeout(window.__cocoV134Enhance); window.__cocoV134Enhance = setTimeout(enhanceCopyAndAccessibility, 80); }).observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(establishRemote, 1200); registerPwa();
+  setTimeout(establishRemote, 1200); /* v152: PWA centralizada en coco-v152-pwa.js */
 })();

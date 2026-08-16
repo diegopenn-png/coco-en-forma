@@ -1,10 +1,10 @@
 {
   "id": "./",
-  "start_url": "./?source=pwa-v149",
+  "start_url": "./?source=pwa-v152&v=15200",
   "scope": "./",
   "name": "Coco en Forma",
   "short_name": "Coco",
-  "description": "Entrenamiento cognitivo familiar, gratuito, sin publicidad y con sesiones breves.",
+  "description": "Entrenamiento cognitivo familiar con misiones breves, Coco Corre de cinco carriles y juegos educativos.",
   "lang": "es",
   "dir": "ltr",
   "display": "standalone",

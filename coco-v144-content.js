@@ -1,10 +1,10 @@
 (function (root) {
   "use strict";
 
-  if (root.CocoContentV144) return;
+  if (root.CocoContentV150) return;
   var base = root.CocoV134Content;
   var levels = [1, 2, 3];
-  var target = 20;
+  var target = 40;
 
   var extraWords = [
     ["BRISA", "Viento suave"], ["HUERTO", "Terreno donde se cultivan verduras y frutas"], ["ÓRBITA", "Trayectoria de un cuerpo alrededor de otro"], ["REFLEJO", "Imagen producida cuando la luz rebota"], ["ANCLA", "Pieza que sujeta una embarcación al fondo"], ["NÉCTAR", "Líquido azucarado que producen muchas flores"], ["BOCETO", "Dibujo inicial que sirve para preparar una obra"], ["VÉRTICE", "Punto donde se encuentran dos lados o aristas"], ["CAUDAL", "Cantidad de agua que lleva una corriente"], ["CÚPULA", "Cubierta arquitectónica de forma curva"], ["SENSOR", "Dispositivo que detecta cambios del entorno"], ["TEXTURA", "Cualidad de una superficie percibida por la vista o el tacto"],
@@ -83,14 +83,14 @@
   }
 
   var generators = {
-    numeros: 180, calculo: 160, palabras: 60, series: 120, memoria: 60, sudoku: 80,
-    sopa: 120, crucigrama: 80, tiempo: 160, verdadero: 36, cocomed: 180,
-    futbol: 120, diferencias: 30, cococorre: 30
+    numeros: 320, calculo: 320, palabras: 180, series: 260, memoria: 160, sudoku: 180,
+    sopa: 240, crucigrama: 180, tiempo: 320, verdadero: 120, cocomed: 360,
+    futbol: 240, diferencias: 90, cococorre: 180, padel: 120
   };
 
   function stableChallenges(game, level) {
     var count = Math.max(target, Number(generators[game]) || target), result = [];
-    for (var index = 0; index < count; index++) result.push(Object.freeze({ id: "v144-" + game + "-l" + level + "-" + String(index + 1).padStart(3, "0"), game: game, level: level, seed: index + 1 }));
+    for (var index = 0; index < count; index++) result.push(Object.freeze({ id: "v150-" + game + "-l" + level + "-" + String(index + 1).padStart(3, "0"), game: game, level: level, seed: index + 1 }));
     return result;
   }
 
@@ -121,13 +121,15 @@
       });
     });
     extraFacts.forEach(function (item) { if (typeof item[1] !== "boolean" || !item[2]) failures.push("Afirmación sin respuesta verificada: " + item[0]); });
-    return { version: "144.0.0", minimumPerLevel: target, gamesAudited: Object.keys(inventory).length, levelsAudited: Object.keys(inventory).length * 3, counts: counts, additions: added, antiRepeat: { stableIds: true, shuffledBag: true, perUserGameLevel: true, cloud: "coco_content_rotation", localFallback: "coco_v134_rotation_", avoidsImmediateRepeatAfterReset: true }, failures: failures, passed: failures.length === 0 };
+    return { version: "150.0.0", minimumPerLevel: target, gamesAudited: Object.keys(inventory).length, levelsAudited: Object.keys(inventory).length * 3, counts: counts, additions: added, antiRepeat: { stableIds: true, shuffledBag: true, perUserGameLevel: true, cloud: "coco_content_rotation", localFallback: "coco_v134_rotation_", avoidsImmediateRepeatAfterReset: true }, failures: failures, passed: failures.length === 0 };
   }
 
-  root.CocoContentV144 = Object.freeze({
-    version: "144.0.0", minimumPerLevel: target, games: Object.freeze(Object.keys(generators)),
+  root.CocoContentV150 = Object.freeze({
+    version: "150.0.0", minimumPerLevel: target, games: Object.freeze(Object.keys(generators)),
     inventory: inventory, challenges: function (game, level) { return inventory[game] && inventory[game][level] ? inventory[game][level].slice() : []; },
     audit: audit
   });
-  root.CocoV144ContentAudit = Object.freeze(audit());
+  root.CocoV150ContentAuditInventory = Object.freeze(audit());
+  root.CocoContentV144 = root.CocoContentV150;
+  root.CocoV144ContentAudit = root.CocoV150ContentAuditInventory;
 })(window);
