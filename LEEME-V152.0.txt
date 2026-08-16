@@ -1,9 +1,20 @@
 COCO EN FORMA v152.0
 ====================
 
-1. Subir todos los archivos de esta carpeta a GitHub / hosting sustituyendo la versión anterior.
-2. No ejecutar SQL: esta versión no necesita cambios de Supabase.
-3. La PWA usa un único Service Worker y todos los JS/CSS llevan ?v=15200.
-4. Al primer arranque después del despliegue puede recargarse una vez para activar el worker v152.
-5. Coco Corre: 5 carriles reales y alcanzables.
-6. Diferencias: cambios naturales en objetos, sin manchas/figuras superpuestas ni recoloración morada general.
+Esta entrega parte exclusivamente del ZIP v151.0 aportado para esta corrección.
+
+CAMBIOS IMPORTANTES
+- Coco Pádel ya no aparece En construcción.
+- Fichas de Pádel simplificadas y con palabras completas.
+- Tarjetas sin puntajes/rankings individuales; solo indican si el juego puntúa en la clasificación general.
+- La Clasificación principal de arriba se conserva como acceso único desde el catálogo.
+- Coco Corre aplica realmente el diseño Street Skate: skate, calle, grafitis, salto, agacharse, obstáculos y cambios de regla rápidos.
+- Encuentra las diferencias recupera proporción 3:2 y usa pares específicos por nivel.
+
+SUPABASE
+No hay que ejecutar SQL nuevo para v152.0.
+Se conservan las funciones de clasificación ya instaladas con v150.0.
+
+DESPLIEGUE
+Subir el contenido completo de esta carpeta al mismo repositorio/ruta que la versión anterior.
+El service worker usa un cache nuevo v152.0.0-r1 para forzar la actualización de la PWA.

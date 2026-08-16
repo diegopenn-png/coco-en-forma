@@ -1,20 +1,69 @@
-# Pruebas v152.0
+# QA — Coco en Forma v152.0
 
-Resultados realizados sobre el paquete final antes de comprimir:
+## Suite funcional v152
 
-- 16/16 archivos JavaScript externos: sintaxis válida con `node --check`.
-- 20/20 scripts JavaScript inline de `index.html`: sintaxis válida.
-- 21/21 recursos locales referenciados desde `index.html`: existentes y respuesta HTTP 200 en servidor local.
-- 0 referencias ejecutables JS/CSS con fingerprints antiguos; 15 dependencias ejecutables de primera parte usan `?v=15200`.
-- 1/1 registro de Service Worker en toda la aplicación.
-- Simulación PWA: registro único, limpieza de caches antiguas, worker v152 y fetch de red `no-store`.
-- `manifest.json` y `manifest.webmanifest`: JSON válido, `display=standalone`, `start_url=./?source=pwa-v152&v=15200`.
-- Botón Salir: navegación local ocurre antes del `signOut`; Auth no puede inmovilizar el botón.
-- Acceso diario: límite de espera de 950 ms; fallo/lentitud de Supabase no impide abrir el reto.
-- Coco Corre: 120 misiones generadas/validadas (40 por nivel) sin error.
-- Coco Corre: 50 barajados de carriles; todos contienen exactamente `-2,-1,0,1,2` una vez por ciclo.
-- Coco Corre: geometría comprobada para 320, 390, 768 y 1366 px; los cinco centros quedan ordenados, simétricos y dentro de pantalla.
-- Diferencias: 30 combinaciones escena/variante auditadas; 10 escenas x 3 variantes, sin overlays sintéticos.
-- Renderer de diferencias: análisis de la biblioteca tecnológica con cambios naturales: ~3,48 % de píxeles modificados y ~0,34 % de los píxeles cambiados en rango morado, frente a la inundación de color anterior.
+Resultado: **12/12 PASS**.
 
-Limitación de laboratorio: el Chromium disponible en este entorno bloquea por política administrativa la navegación a localhost, por lo que no se afirma una prueba visual dentro de una PWA iOS real. La lógica PWA, recursos, service worker, caché y módulos sí se verificaron de forma estática y mediante simulación del ciclo del worker.
+Comprueba:
+- Coco Pádel disponible, no en construcción.
+- Tarjetas sin puntajes/rankings individuales y estado de clasificación no clicable.
+- Pádel sin Excel ni terminología `torneo`.
+- Fichas de jugador sin siglas opacas y con palabras completas.
+- Búsqueda, jornadas, resultados y recálculo de Pádel.
+- Street Skate, skate, salto, agacharse, distractor inicial y cambios de regla ≤15 s.
+- Diferencias con pares específicos por nivel y sin cambios extra no pulsables.
+- 100 recursos WebP v152.
+- CSS v152 aplicable al modal exterior a `#cocoApp`.
+- PWA v152.
+- Clasificación principal Supabase intacta.
+- Compatibilidad de aliases con el núcleo estable.
+
+Archivo: `qa/v152-functional-tests.mjs`.
+
+## Núcleo Coco Pádel
+
+Resultado: **8/8 PASS**.
+
+Valida jugadores, resultado por sets, sets/games, puntos, perfil, corrección y borrado con recálculo.
+
+Archivo: `qa/v152-padel-core-tests.mjs`.
+
+## Recursos HTTP
+
+Resultado: **160/160 HTTP 200, 0 errores 404** usando la suite de integridad local heredada.
+
+También se validaron 27 imágenes sociales servidas como `image/png`.
+
+## Sintaxis
+
+- `coco-v152-padel.js`: PASS
+- `coco-v152-runner.js`: PASS
+- `coco-v152-differences.js`: PASS
+- `coco-v152-fixes.js`: PASS
+- `sw.js`: PASS
+- Scripts inline de `index.html`: **20/20 PASS**
+
+## Imágenes de Diferencias
+
+- **100/100 WebP válidos**.
+- Resolución: **768×512**.
+- **30/30** tríos de nivel L1/L2/L3 son archivos distintos.
+- En la comprobación visual móvil cada escena se mantiene en relación **3:2** sin deformación.
+
+Archivo de evidencia: `qa/v152-image-assets.json`.
+
+## Catálogo móvil
+
+Harness Chromium a 390 px:
+- Coco Pádel pierde el estado de construcción y queda habilitado.
+- `Abrir Coco Pádel` disponible.
+- Estado `No puntúa para la clasificación general`, no clicable.
+- Coco Corre muestra `Puntúa para la clasificación general`, no clicable.
+- Eliminación del puntaje individual de la tarjeta.
+- Sin overflow horizontal.
+
+Archivo: `qa/v152-catalog-browser.json`.
+
+## Observación sobre suite histórica v150
+
+La suite v150 conserva una aserción que exige literalmente el cache `v150.0.0-r1`; por diseño esa comprobación deja de ser aplicable en v152. Las comprobaciones de lógica anteriores relevantes siguen cubiertas por la suite v152 y el cache actual se valida explícitamente como `v152.0.0-r1`.
