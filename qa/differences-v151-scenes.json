@@ -1,0 +1,1832 @@
+{
+  "workshop": {
+    "title": "El taller mecánico",
+    "left": "scenes/scene-workshop-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-workshop-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "workshop-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 52,
+            "y": 31,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "workshop-toolbox-v1",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 82.5,
+            "y": 62,
+            "w": 18,
+            "h": 23
+          },
+          {
+            "id": "workshop-mug-v1",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 70,
+            "y": 66,
+            "w": 10,
+            "h": 14
+          },
+          {
+            "id": "workshop-plant-v1",
+            "key": "plant",
+            "label": "el color de planta",
+            "x": 9,
+            "y": 56,
+            "w": 18,
+            "h": 29
+          },
+          {
+            "id": "workshop-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 52,
+            "y": 48,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "workshop-lamp-v1",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 48,
+            "y": 10,
+            "w": 18,
+            "h": 20
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-workshop-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "workshop-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 52,
+            "y": 31,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "workshop-toolbox-v2",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 82.5,
+            "y": 62,
+            "w": 18,
+            "h": 23
+          },
+          {
+            "id": "workshop-mug-v2",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 70,
+            "y": 66,
+            "w": 10,
+            "h": 14
+          },
+          {
+            "id": "workshop-plant-v2",
+            "key": "plant",
+            "label": "el color de planta",
+            "x": 9,
+            "y": 56,
+            "w": 18,
+            "h": 29
+          },
+          {
+            "id": "workshop-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 52,
+            "y": 48,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "workshop-lamp-v2",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 48,
+            "y": 10,
+            "w": 18,
+            "h": 20
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-workshop-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "workshop-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 52,
+            "y": 31,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "workshop-toolbox-v3",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 82.5,
+            "y": 62,
+            "w": 18,
+            "h": 23
+          },
+          {
+            "id": "workshop-mug-v3",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 70,
+            "y": 66,
+            "w": 10,
+            "h": 14
+          },
+          {
+            "id": "workshop-plant-v3",
+            "key": "plant",
+            "label": "el color de planta",
+            "x": 9,
+            "y": 56,
+            "w": 18,
+            "h": 29
+          },
+          {
+            "id": "workshop-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 52,
+            "y": 48,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "workshop-lamp-v3",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 48,
+            "y": 10,
+            "w": 18,
+            "h": 20
+          }
+        ]
+      }
+    ]
+  },
+  "invention-lab": {
+    "title": "El laboratorio de inventos",
+    "left": "scenes/scene-invention-lab-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-invention-lab-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "invention-lab-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 38,
+            "y": 43,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "invention-lab-controls-v1",
+            "key": "controls",
+            "label": "el color de luces drobot",
+            "x": 50,
+            "y": 73,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "invention-lab-toolbox-v1",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 83,
+            "y": 73,
+            "w": 20,
+            "h": 22
+          },
+          {
+            "id": "invention-lab-lamp-v1",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 31,
+            "y": 11,
+            "w": 16,
+            "h": 21
+          },
+          {
+            "id": "invention-lab-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 38,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "invention-lab-cup-v1",
+            "key": "cup",
+            "label": "el color de vaso",
+            "x": 14,
+            "y": 71,
+            "w": 10,
+            "h": 22
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-invention-lab-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "invention-lab-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 38,
+            "y": 43,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "invention-lab-controls-v2",
+            "key": "controls",
+            "label": "el color de luces drobot",
+            "x": 50,
+            "y": 73,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "invention-lab-toolbox-v2",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 83,
+            "y": 73,
+            "w": 20,
+            "h": 22
+          },
+          {
+            "id": "invention-lab-lamp-v2",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 31,
+            "y": 11,
+            "w": 16,
+            "h": 21
+          },
+          {
+            "id": "invention-lab-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 38,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "invention-lab-cup-v2",
+            "key": "cup",
+            "label": "el color de vaso",
+            "x": 14,
+            "y": 71,
+            "w": 10,
+            "h": 22
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-invention-lab-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "invention-lab-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 38,
+            "y": 43,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "invention-lab-controls-v3",
+            "key": "controls",
+            "label": "el color de luces drobot",
+            "x": 50,
+            "y": 73,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "invention-lab-toolbox-v3",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 83,
+            "y": 73,
+            "w": 20,
+            "h": 22
+          },
+          {
+            "id": "invention-lab-lamp-v3",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 31,
+            "y": 11,
+            "w": 16,
+            "h": 21
+          },
+          {
+            "id": "invention-lab-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 38,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "invention-lab-cup-v3",
+            "key": "cup",
+            "label": "el color de vaso",
+            "x": 14,
+            "y": 71,
+            "w": 10,
+            "h": 22
+          }
+        ]
+      }
+    ]
+  },
+  "observatory": {
+    "title": "El observatorio de Coco",
+    "left": "scenes/scene-observatory-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-observatory-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "observatory-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 45,
+            "y": 44,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "observatory-lens-v1",
+            "key": "lens",
+            "label": "el color de lente dtelescopio",
+            "x": 78,
+            "y": 29,
+            "w": 17,
+            "h": 20
+          },
+          {
+            "id": "observatory-mug-v1",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 10,
+            "y": 79,
+            "w": 11,
+            "h": 18
+          },
+          {
+            "id": "observatory-chart-v1",
+            "key": "chart",
+            "label": "el color de mapa celeste",
+            "x": 90,
+            "y": 36,
+            "w": 18,
+            "h": 27
+          },
+          {
+            "id": "observatory-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 45,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "observatory-toolbox-v1",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 89,
+            "y": 80,
+            "w": 19,
+            "h": 22
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-observatory-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "observatory-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 45,
+            "y": 44,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "observatory-lens-v2",
+            "key": "lens",
+            "label": "el color de lente dtelescopio",
+            "x": 78,
+            "y": 29,
+            "w": 17,
+            "h": 20
+          },
+          {
+            "id": "observatory-mug-v2",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 10,
+            "y": 79,
+            "w": 11,
+            "h": 18
+          },
+          {
+            "id": "observatory-chart-v2",
+            "key": "chart",
+            "label": "el color de mapa celeste",
+            "x": 90,
+            "y": 36,
+            "w": 18,
+            "h": 27
+          },
+          {
+            "id": "observatory-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 45,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "observatory-toolbox-v2",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 89,
+            "y": 80,
+            "w": 19,
+            "h": 22
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-observatory-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "observatory-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 45,
+            "y": 44,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "observatory-lens-v3",
+            "key": "lens",
+            "label": "el color de lente dtelescopio",
+            "x": 78,
+            "y": 29,
+            "w": 17,
+            "h": 20
+          },
+          {
+            "id": "observatory-mug-v3",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 10,
+            "y": 79,
+            "w": 11,
+            "h": 18
+          },
+          {
+            "id": "observatory-chart-v3",
+            "key": "chart",
+            "label": "el color de mapa celeste",
+            "x": 90,
+            "y": 36,
+            "w": 18,
+            "h": 27
+          },
+          {
+            "id": "observatory-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 45,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "observatory-toolbox-v3",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 89,
+            "y": 80,
+            "w": 19,
+            "h": 22
+          }
+        ]
+      }
+    ]
+  },
+  "tech-library": {
+    "title": "La biblioteca tecnológica",
+    "left": "scenes/scene-tech-library-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-tech-library-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "tech-library-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 46,
+            "y": 34,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "tech-library-toolbox-v1",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 89,
+            "y": 74,
+            "w": 19,
+            "h": 23
+          },
+          {
+            "id": "tech-library-globe-v1",
+            "key": "globe",
+            "label": "el color de globo",
+            "x": 93,
+            "y": 36,
+            "w": 11,
+            "h": 18
+          },
+          {
+            "id": "tech-library-mug-v1",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 30,
+            "y": 60,
+            "w": 10,
+            "h": 14
+          },
+          {
+            "id": "tech-library-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 46,
+            "y": 49,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "tech-library-cans-v1",
+            "key": "cans",
+            "label": "el color de botes",
+            "x": 29,
+            "y": 69,
+            "w": 11,
+            "h": 13
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-tech-library-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "tech-library-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 46,
+            "y": 34,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "tech-library-toolbox-v2",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 89,
+            "y": 74,
+            "w": 19,
+            "h": 23
+          },
+          {
+            "id": "tech-library-globe-v2",
+            "key": "globe",
+            "label": "el color de globo",
+            "x": 93,
+            "y": 36,
+            "w": 11,
+            "h": 18
+          },
+          {
+            "id": "tech-library-mug-v2",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 30,
+            "y": 60,
+            "w": 10,
+            "h": 14
+          },
+          {
+            "id": "tech-library-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 46,
+            "y": 49,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "tech-library-cans-v2",
+            "key": "cans",
+            "label": "el color de botes",
+            "x": 29,
+            "y": 69,
+            "w": 11,
+            "h": 13
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-tech-library-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "tech-library-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 46,
+            "y": 34,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "tech-library-toolbox-v3",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 89,
+            "y": 74,
+            "w": 19,
+            "h": 23
+          },
+          {
+            "id": "tech-library-globe-v3",
+            "key": "globe",
+            "label": "el color de globo",
+            "x": 93,
+            "y": 36,
+            "w": 11,
+            "h": 18
+          },
+          {
+            "id": "tech-library-mug-v3",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 30,
+            "y": 60,
+            "w": 10,
+            "h": 14
+          },
+          {
+            "id": "tech-library-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 46,
+            "y": 49,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "tech-library-cans-v3",
+            "key": "cans",
+            "label": "el color de botes",
+            "x": 29,
+            "y": 69,
+            "w": 11,
+            "h": 13
+          }
+        ]
+      }
+    ]
+  },
+  "electric-garage": {
+    "title": "El garaje eléctrico",
+    "left": "scenes/scene-electric-garage-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-electric-garage-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "electric-garage-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 44,
+            "y": 39,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "electric-garage-battery-v1",
+            "key": "battery",
+            "label": "el color de batería",
+            "x": 56,
+            "y": 62,
+            "w": 14,
+            "h": 17
+          },
+          {
+            "id": "electric-garage-toolbox-v1",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 11,
+            "y": 61,
+            "w": 21,
+            "h": 22
+          },
+          {
+            "id": "electric-garage-floor-v1",
+            "key": "floor",
+            "label": "el color de señal dsuelo",
+            "x": 53,
+            "y": 82,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "electric-garage-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 44,
+            "y": 52,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "electric-garage-mug-v1",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 94,
+            "y": 74,
+            "w": 10,
+            "h": 17
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-electric-garage-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "electric-garage-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 44,
+            "y": 39,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "electric-garage-battery-v2",
+            "key": "battery",
+            "label": "el color de batería",
+            "x": 56,
+            "y": 62,
+            "w": 14,
+            "h": 17
+          },
+          {
+            "id": "electric-garage-toolbox-v2",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 11,
+            "y": 61,
+            "w": 21,
+            "h": 22
+          },
+          {
+            "id": "electric-garage-floor-v2",
+            "key": "floor",
+            "label": "el color de señal dsuelo",
+            "x": 53,
+            "y": 82,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "electric-garage-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 44,
+            "y": 52,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "electric-garage-mug-v2",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 94,
+            "y": 74,
+            "w": 10,
+            "h": 17
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-electric-garage-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "electric-garage-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 44,
+            "y": 39,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "electric-garage-battery-v3",
+            "key": "battery",
+            "label": "el color de batería",
+            "x": 56,
+            "y": 62,
+            "w": 14,
+            "h": 17
+          },
+          {
+            "id": "electric-garage-toolbox-v3",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 11,
+            "y": 61,
+            "w": 21,
+            "h": 22
+          },
+          {
+            "id": "electric-garage-floor-v3",
+            "key": "floor",
+            "label": "el color de señal dsuelo",
+            "x": 53,
+            "y": 82,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "electric-garage-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 44,
+            "y": 52,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "electric-garage-mug-v3",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 94,
+            "y": 74,
+            "w": 10,
+            "h": 17
+          }
+        ]
+      }
+    ]
+  },
+  "robotics-studio": {
+    "title": "El estudio de robótica",
+    "left": "scenes/scene-robotics-studio-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-robotics-studio-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "robotics-studio-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 56,
+            "y": 42,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "robotics-studio-tools-v1",
+            "key": "tools",
+            "label": "el color de destornilladores",
+            "x": 58,
+            "y": 86,
+            "w": 17,
+            "h": 15
+          },
+          {
+            "id": "robotics-studio-mug-v1",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 21,
+            "y": 80,
+            "w": 10,
+            "h": 17
+          },
+          {
+            "id": "robotics-studio-lamp-v1",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 44,
+            "y": 11,
+            "w": 16,
+            "h": 21
+          },
+          {
+            "id": "robotics-studio-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 56,
+            "y": 54,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "robotics-studio-toolbox-v1",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 85,
+            "y": 75,
+            "w": 19,
+            "h": 23
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-robotics-studio-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "robotics-studio-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 56,
+            "y": 42,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "robotics-studio-tools-v2",
+            "key": "tools",
+            "label": "el color de destornilladores",
+            "x": 58,
+            "y": 86,
+            "w": 17,
+            "h": 15
+          },
+          {
+            "id": "robotics-studio-mug-v2",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 21,
+            "y": 80,
+            "w": 10,
+            "h": 17
+          },
+          {
+            "id": "robotics-studio-lamp-v2",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 44,
+            "y": 11,
+            "w": 16,
+            "h": 21
+          },
+          {
+            "id": "robotics-studio-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 56,
+            "y": 54,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "robotics-studio-toolbox-v2",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 85,
+            "y": 75,
+            "w": 19,
+            "h": 23
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-robotics-studio-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "robotics-studio-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 56,
+            "y": 42,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "robotics-studio-tools-v3",
+            "key": "tools",
+            "label": "el color de destornilladores",
+            "x": 58,
+            "y": 86,
+            "w": 17,
+            "h": 15
+          },
+          {
+            "id": "robotics-studio-mug-v3",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 21,
+            "y": 80,
+            "w": 10,
+            "h": 17
+          },
+          {
+            "id": "robotics-studio-lamp-v3",
+            "key": "lamp",
+            "label": "el color de lámpara",
+            "x": 44,
+            "y": 11,
+            "w": 16,
+            "h": 21
+          },
+          {
+            "id": "robotics-studio-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 56,
+            "y": 54,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "robotics-studio-toolbox-v3",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 85,
+            "y": 75,
+            "w": 19,
+            "h": 23
+          }
+        ]
+      }
+    ]
+  },
+  "ocean-lab": {
+    "title": "El laboratorio submarino",
+    "left": "scenes/scene-ocean-lab-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-ocean-lab-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "ocean-lab-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 43,
+            "y": 40,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "ocean-lab-mug-v1",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 68,
+            "y": 69,
+            "w": 10,
+            "h": 15
+          },
+          {
+            "id": "ocean-lab-canisters-v1",
+            "key": "canisters",
+            "label": "el color de depósitos",
+            "x": 17,
+            "y": 65,
+            "w": 15,
+            "h": 16
+          },
+          {
+            "id": "ocean-lab-floor-v1",
+            "key": "floor",
+            "label": "el color de aro dsuelo",
+            "x": 85,
+            "y": 90,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "ocean-lab-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 43,
+            "y": 52,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "ocean-lab-toolbox-v1",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 84,
+            "y": 73,
+            "w": 19,
+            "h": 23
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-ocean-lab-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "ocean-lab-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 43,
+            "y": 40,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "ocean-lab-mug-v2",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 68,
+            "y": 69,
+            "w": 10,
+            "h": 15
+          },
+          {
+            "id": "ocean-lab-canisters-v2",
+            "key": "canisters",
+            "label": "el color de depósitos",
+            "x": 17,
+            "y": 65,
+            "w": 15,
+            "h": 16
+          },
+          {
+            "id": "ocean-lab-floor-v2",
+            "key": "floor",
+            "label": "el color de aro dsuelo",
+            "x": 85,
+            "y": 90,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "ocean-lab-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 43,
+            "y": 52,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "ocean-lab-toolbox-v2",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 84,
+            "y": 73,
+            "w": 19,
+            "h": 23
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-ocean-lab-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "ocean-lab-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 43,
+            "y": 40,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "ocean-lab-mug-v3",
+            "key": "mug",
+            "label": "el color de taza",
+            "x": 68,
+            "y": 69,
+            "w": 10,
+            "h": 15
+          },
+          {
+            "id": "ocean-lab-canisters-v3",
+            "key": "canisters",
+            "label": "el color de depósitos",
+            "x": 17,
+            "y": 65,
+            "w": 15,
+            "h": 16
+          },
+          {
+            "id": "ocean-lab-floor-v3",
+            "key": "floor",
+            "label": "el color de aro dsuelo",
+            "x": 85,
+            "y": 90,
+            "w": 12,
+            "h": 12
+          },
+          {
+            "id": "ocean-lab-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 43,
+            "y": 52,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "ocean-lab-toolbox-v3",
+            "key": "toolbox",
+            "label": "el color de caja de herramientas",
+            "x": 84,
+            "y": 73,
+            "w": 19,
+            "h": 23
+          }
+        ]
+      }
+    ]
+  },
+  "botanical-greenhouse": {
+    "title": "El invernadero botánico",
+    "left": "scenes/scene-botanical-greenhouse-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-botanical-greenhouse-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "botanical-greenhouse-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 50,
+            "y": 33,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "botanical-greenhouse-pot-v1",
+            "key": "pot",
+            "label": "el color de maceta",
+            "x": 75,
+            "y": 7,
+            "w": 11,
+            "h": 13
+          },
+          {
+            "id": "botanical-greenhouse-bottle-v1",
+            "key": "bottle",
+            "label": "el color de botella",
+            "x": 24,
+            "y": 84,
+            "w": 10,
+            "h": 17
+          },
+          {
+            "id": "botanical-greenhouse-notebook-v1",
+            "key": "notebook",
+            "label": "el color de cuaderno",
+            "x": 42,
+            "y": 91,
+            "w": 16,
+            "h": 12
+          },
+          {
+            "id": "botanical-greenhouse-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 50,
+            "y": 47,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "botanical-greenhouse-cutters-v1",
+            "key": "cutters",
+            "label": "el color de tijeras",
+            "x": 71,
+            "y": 86,
+            "w": 16,
+            "h": 12
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-botanical-greenhouse-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "botanical-greenhouse-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 50,
+            "y": 33,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "botanical-greenhouse-pot-v2",
+            "key": "pot",
+            "label": "el color de maceta",
+            "x": 75,
+            "y": 7,
+            "w": 11,
+            "h": 13
+          },
+          {
+            "id": "botanical-greenhouse-bottle-v2",
+            "key": "bottle",
+            "label": "el color de botella",
+            "x": 24,
+            "y": 84,
+            "w": 10,
+            "h": 17
+          },
+          {
+            "id": "botanical-greenhouse-notebook-v2",
+            "key": "notebook",
+            "label": "el color de cuaderno",
+            "x": 42,
+            "y": 91,
+            "w": 16,
+            "h": 12
+          },
+          {
+            "id": "botanical-greenhouse-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 50,
+            "y": 47,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "botanical-greenhouse-cutters-v2",
+            "key": "cutters",
+            "label": "el color de tijeras",
+            "x": 71,
+            "y": 86,
+            "w": 16,
+            "h": 12
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-botanical-greenhouse-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "botanical-greenhouse-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 50,
+            "y": 33,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "botanical-greenhouse-pot-v3",
+            "key": "pot",
+            "label": "el color de maceta",
+            "x": 75,
+            "y": 7,
+            "w": 11,
+            "h": 13
+          },
+          {
+            "id": "botanical-greenhouse-bottle-v3",
+            "key": "bottle",
+            "label": "el color de botella",
+            "x": 24,
+            "y": 84,
+            "w": 10,
+            "h": 17
+          },
+          {
+            "id": "botanical-greenhouse-notebook-v3",
+            "key": "notebook",
+            "label": "el color de cuaderno",
+            "x": 42,
+            "y": 91,
+            "w": 16,
+            "h": 12
+          },
+          {
+            "id": "botanical-greenhouse-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 50,
+            "y": 47,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "botanical-greenhouse-cutters-v3",
+            "key": "cutters",
+            "label": "el color de tijeras",
+            "x": 71,
+            "y": 86,
+            "w": 16,
+            "h": 12
+          }
+        ]
+      }
+    ]
+  },
+  "music-studio": {
+    "title": "El estudio musical",
+    "left": "scenes/scene-music-studio-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-music-studio-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "music-studio-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 52,
+            "y": 40,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "music-studio-controls-v1",
+            "key": "controls",
+            "label": "el color de controles",
+            "x": 25,
+            "y": 84,
+            "w": 21,
+            "h": 15
+          },
+          {
+            "id": "music-studio-bells-v1",
+            "key": "bells",
+            "label": "el color de campanas",
+            "x": 84,
+            "y": 22,
+            "w": 22,
+            "h": 13
+          },
+          {
+            "id": "music-studio-records-v1",
+            "key": "records",
+            "label": "el color de discos",
+            "x": 88,
+            "y": 76,
+            "w": 21,
+            "h": 18
+          },
+          {
+            "id": "music-studio-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 52,
+            "y": 53,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "music-studio-metronome-v1",
+            "key": "metronome",
+            "label": "el color de metrónomo",
+            "x": 65,
+            "y": 67,
+            "w": 11,
+            "h": 27
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-music-studio-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "music-studio-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 52,
+            "y": 40,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "music-studio-controls-v2",
+            "key": "controls",
+            "label": "el color de controles",
+            "x": 25,
+            "y": 84,
+            "w": 21,
+            "h": 15
+          },
+          {
+            "id": "music-studio-bells-v2",
+            "key": "bells",
+            "label": "el color de campanas",
+            "x": 84,
+            "y": 22,
+            "w": 22,
+            "h": 13
+          },
+          {
+            "id": "music-studio-records-v2",
+            "key": "records",
+            "label": "el color de discos",
+            "x": 88,
+            "y": 76,
+            "w": 21,
+            "h": 18
+          },
+          {
+            "id": "music-studio-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 52,
+            "y": 53,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "music-studio-metronome-v2",
+            "key": "metronome",
+            "label": "el color de metrónomo",
+            "x": 65,
+            "y": 67,
+            "w": 11,
+            "h": 27
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-music-studio-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "music-studio-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 52,
+            "y": 40,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "music-studio-controls-v3",
+            "key": "controls",
+            "label": "el color de controles",
+            "x": 25,
+            "y": 84,
+            "w": 21,
+            "h": 15
+          },
+          {
+            "id": "music-studio-bells-v3",
+            "key": "bells",
+            "label": "el color de campanas",
+            "x": 84,
+            "y": 22,
+            "w": 22,
+            "h": 13
+          },
+          {
+            "id": "music-studio-records-v3",
+            "key": "records",
+            "label": "el color de discos",
+            "x": 88,
+            "y": 76,
+            "w": 21,
+            "h": 18
+          },
+          {
+            "id": "music-studio-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 52,
+            "y": 53,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "music-studio-metronome-v3",
+            "key": "metronome",
+            "label": "el color de metrónomo",
+            "x": 65,
+            "y": 67,
+            "w": 11,
+            "h": 27
+          }
+        ]
+      }
+    ]
+  },
+  "space-station": {
+    "title": "La estación espacial",
+    "left": "scenes/scene-space-station-v151-left.webp?v=1510",
+    "variants": [
+      {
+        "src": "scenes/scene-space-station-v151-right-1.webp?v=1510",
+        "differences": [
+          {
+            "id": "space-station-brain-v1",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 47,
+            "y": 44,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "space-station-plant-v1",
+            "key": "plant",
+            "label": "el color de planta",
+            "x": 86,
+            "y": 40,
+            "w": 15,
+            "h": 24
+          },
+          {
+            "id": "space-station-robot-v1",
+            "key": "robot",
+            "label": "el color de robot",
+            "x": 62,
+            "y": 66,
+            "w": 16,
+            "h": 29
+          },
+          {
+            "id": "space-station-tools-v1",
+            "key": "tools",
+            "label": "el color de herramientas",
+            "x": 35,
+            "y": 88,
+            "w": 19,
+            "h": 12
+          },
+          {
+            "id": "space-station-beak-v1",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 47,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "space-station-case-v1",
+            "key": "case",
+            "label": "el color de caja",
+            "x": 89,
+            "y": 65,
+            "w": 17,
+            "h": 20
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-space-station-v151-right-2.webp?v=1510",
+        "differences": [
+          {
+            "id": "space-station-brain-v2",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 47,
+            "y": 44,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "space-station-plant-v2",
+            "key": "plant",
+            "label": "el color de planta",
+            "x": 86,
+            "y": 40,
+            "w": 15,
+            "h": 24
+          },
+          {
+            "id": "space-station-robot-v2",
+            "key": "robot",
+            "label": "el color de robot",
+            "x": 62,
+            "y": 66,
+            "w": 16,
+            "h": 29
+          },
+          {
+            "id": "space-station-tools-v2",
+            "key": "tools",
+            "label": "el color de herramientas",
+            "x": 35,
+            "y": 88,
+            "w": 19,
+            "h": 12
+          },
+          {
+            "id": "space-station-beak-v2",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 47,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "space-station-case-v2",
+            "key": "case",
+            "label": "el color de caja",
+            "x": 89,
+            "y": 65,
+            "w": 17,
+            "h": 20
+          }
+        ]
+      },
+      {
+        "src": "scenes/scene-space-station-v151-right-3.webp?v=1510",
+        "differences": [
+          {
+            "id": "space-station-brain-v3",
+            "key": "brain",
+            "label": "el color del cerebro de Coco",
+            "x": 47,
+            "y": 44,
+            "w": 14,
+            "h": 18
+          },
+          {
+            "id": "space-station-plant-v3",
+            "key": "plant",
+            "label": "el color de planta",
+            "x": 86,
+            "y": 40,
+            "w": 15,
+            "h": 24
+          },
+          {
+            "id": "space-station-robot-v3",
+            "key": "robot",
+            "label": "el color de robot",
+            "x": 62,
+            "y": 66,
+            "w": 16,
+            "h": 29
+          },
+          {
+            "id": "space-station-tools-v3",
+            "key": "tools",
+            "label": "el color de herramientas",
+            "x": 35,
+            "y": 88,
+            "w": 19,
+            "h": 12
+          },
+          {
+            "id": "space-station-beak-v3",
+            "key": "beak",
+            "label": "el color del pico de Coco",
+            "x": 47,
+            "y": 57,
+            "w": 11,
+            "h": 14
+          },
+          {
+            "id": "space-station-case-v3",
+            "key": "case",
+            "label": "el color de caja",
+            "x": 89,
+            "y": 65,
+            "w": 17,
+            "h": 20
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "passed": 8,
+  "total": 8,
+  "results": [
+    {
+      "name": "tabs mobile",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "4 jugadores UI",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "buscador parcial sin tildes",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "terminología campeonato",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "acciones compartir",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "crear jornada visible",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "nombre jornada",
+      "pass": true,
+      "detail": "Jornada 1"
+    },
+    {
+      "name": "sin overflow horizontal mobile",
+      "pass": true,
+      "detail": "0"
+    }
+  ]
+}
