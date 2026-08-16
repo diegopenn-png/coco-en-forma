@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v150.0.0-r1";
+const CACHE_VERSION = "coco-en-forma-v151.0.0-r1";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
@@ -14,12 +14,13 @@ const CORE_ASSET_PATHS = [
   "./coco-v142-unified.js",
   "./coco-v144-content.js",
   "./coco-v144-core.js",
-  "./coco-v144-padel.js",
-  "./coco-v144-runner.js",
-  "./coco-v144-differences.js",
+  "./coco-v151-padel.js",
+  "./coco-v151-runner.js",
+  "./coco-v151-differences.js",
   "./coco-v144-professional.css",
   "./coco-v147-refinements.css",
   "./coco-v149-refinements.css",
+  "./coco-v151-refinements.css",
   "./coco-v2-official-icon-source.png",
   "./coco-v2-runner-v144.png",
   "./icon-192.png",
@@ -35,16 +36,46 @@ const CORE_ASSET_PATHS = [
 ];
 
 const SCENE_ASSET_PATHS = [
-  "./scenes/scene-workshop-v141.webp",
-  "./scenes/scene-invention-lab-v141.webp",
-  "./scenes/scene-observatory-v141.webp",
-  "./scenes/scene-tech-library-v141.webp",
-  "./scenes/scene-electric-garage-v141.webp",
-  "./scenes/scene-robotics-studio-v141.webp",
-  "./scenes/scene-ocean-lab-v141.webp",
-  "./scenes/scene-botanical-greenhouse-v141.webp",
-  "./scenes/scene-music-studio-v141.webp",
-  "./scenes/scene-space-station-v141.webp"
+  "./scenes/scene-workshop-v151-left.webp",
+  "./scenes/scene-workshop-v151-right-1.webp",
+  "./scenes/scene-workshop-v151-right-2.webp",
+  "./scenes/scene-workshop-v151-right-3.webp",
+  "./scenes/scene-invention-lab-v151-left.webp",
+  "./scenes/scene-invention-lab-v151-right-1.webp",
+  "./scenes/scene-invention-lab-v151-right-2.webp",
+  "./scenes/scene-invention-lab-v151-right-3.webp",
+  "./scenes/scene-observatory-v151-left.webp",
+  "./scenes/scene-observatory-v151-right-1.webp",
+  "./scenes/scene-observatory-v151-right-2.webp",
+  "./scenes/scene-observatory-v151-right-3.webp",
+  "./scenes/scene-tech-library-v151-left.webp",
+  "./scenes/scene-tech-library-v151-right-1.webp",
+  "./scenes/scene-tech-library-v151-right-2.webp",
+  "./scenes/scene-tech-library-v151-right-3.webp",
+  "./scenes/scene-electric-garage-v151-left.webp",
+  "./scenes/scene-electric-garage-v151-right-1.webp",
+  "./scenes/scene-electric-garage-v151-right-2.webp",
+  "./scenes/scene-electric-garage-v151-right-3.webp",
+  "./scenes/scene-robotics-studio-v151-left.webp",
+  "./scenes/scene-robotics-studio-v151-right-1.webp",
+  "./scenes/scene-robotics-studio-v151-right-2.webp",
+  "./scenes/scene-robotics-studio-v151-right-3.webp",
+  "./scenes/scene-ocean-lab-v151-left.webp",
+  "./scenes/scene-ocean-lab-v151-right-1.webp",
+  "./scenes/scene-ocean-lab-v151-right-2.webp",
+  "./scenes/scene-ocean-lab-v151-right-3.webp",
+  "./scenes/scene-botanical-greenhouse-v151-left.webp",
+  "./scenes/scene-botanical-greenhouse-v151-right-1.webp",
+  "./scenes/scene-botanical-greenhouse-v151-right-2.webp",
+  "./scenes/scene-botanical-greenhouse-v151-right-3.webp",
+  "./scenes/scene-music-studio-v151-left.webp",
+  "./scenes/scene-music-studio-v151-right-1.webp",
+  "./scenes/scene-music-studio-v151-right-2.webp",
+  "./scenes/scene-music-studio-v151-right-3.webp",
+  "./scenes/scene-space-station-v151-left.webp",
+  "./scenes/scene-space-station-v151-right-1.webp",
+  "./scenes/scene-space-station-v151-right-2.webp",
+  "./scenes/scene-space-station-v151-right-3.webp"
 ];
 
 function absolute(assetPath) {

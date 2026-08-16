@@ -1,31 +1,62 @@
-# Pruebas v151.0
+# QA — Coco en Forma v151.0
 
-Ejecutadas sobre la entrega completa.
+## Resultado
 
-## Automatizadas
+- **12/12** pruebas funcionales v151.
+- **8/8** pruebas del núcleo de Coco Pádel con resultados reales por sets, corrección y borrado/recalculo.
+- **8/8** comprobaciones de interfaz móvil de Coco Pádel en Chromium (390×844).
+- **9/9** comprobaciones DOM/interacción de Coco Corre en Chromium móvil.
+- **6/6** comprobaciones DOM de Encuentra las diferencias en Chromium móvil.
+- **69/69** recursos declarados por la PWA servidos por HTTP con estado 200; **0 fallos / 0 recursos 404**.
+- **20/20** scripts inline de `index.html` compilan correctamente.
+- **4/4** scripts externos modificados (`Padel`, `Runner`, `Diferencias`, `sw.js`) pasan `node --check`.
+- **40/40** nuevos WebP de Diferencias válidos a 768×512.
+- **30/30** pares modificados contienen cambios visuales medibles y limitados; 0 escenas con área de cambio excesiva.
+- **10/10** escenas v151 aumentan luminosidad frente a su base; mejora media **+38,7 %**.
+- **15/15** miniaturas sociales originales permanecen presentes.
 
-- `node qa/v151-functional-tests.mjs` → 9/9 PASS.
-- `node qa/v149-http-tests.mjs` → PASS, 70/70 recursos HTTP 200 y 0 errores 404.
-- `node qa/v149-padel-ui-tests.mjs` → PASS en las cuatro comprobaciones de UI/función de Coco Pádel.
-- 20 scripts inline de `index.html` comprobados con `node --check` → 0 errores de sintaxis.
-- `coco-v151-runner.js`, `coco-v151-differences.js`, `coco-v144-core.js` y `sw.js` → sintaxis válida.
+## Cobertura relevante
 
-## Cobertura específica v151
+### Coco Pádel
+- Crear jugadores desde interfaz.
+- Búsqueda parcial y sin tildes (`alv` localiza `Álvaro`).
+- Crear campeonato desde interfaz.
+- Terminología “Campeonato” sin “torneo”.
+- WhatsApp y Copiar presentes; Excel ausente.
+- Crear jornada y nombre automático `Jornada 1`.
+- Sin overflow horizontal a 390 px.
+- Resultado 6-4 / 3-6 / 10-7: sets, games, victoria y puntos calculados correctamente.
+- Corrección del resultado: clasificación recalculada sin duplicados.
+- Borrado del resultado: estadísticas derivadas vuelven a cero.
 
-- Botones no bloqueados durante consultas remotas.
-- Timeouts de sesión/estadísticas/perfil.
-- Motores con filenames v151 para evitar mezcla de caché.
-- 180 misiones de Coco Corre validadas.
-- Dos distractores antes del primer objetivo de cada nueva regla.
-- Velocidad y frecuencia de aparición v151 verificadas.
-- CSS sin `contain: paint` en objetos de Coco Corre.
-- Etiquetas largas sin `text-overflow: ellipsis` en tarjetas de categorías.
-- 10 escenas de diferencias y 3 combinaciones por escena.
-- Solo `object-color` y `character-color` como tipos activos.
-- Ausencia de renderers de formas/props superpuestos.
-- Cerebro o pico de Coco presentes en todos los niveles/variantes.
-- Los 15 IDs de juego siguen presentes.
+### Coco Corre
+- Street stage, muro/grafitis y skate presentes.
+- Recurso oficial de Coco conservado.
+- Controles táctiles de salto y agacharse presentes.
+- Animación/estado de impulso lateral comprobado.
+- Estados `jump` y `duck` activados mediante interacción real.
+- Sin overflow horizontal a 390 px.
+- Máximo 15 s por consigna y distractor inicial verificados sobre 120 misiones generadas (40 por nivel).
 
-## Nota de prueba visual
+### Encuentra las diferencias
+- Pares de imágenes precompuestos; no Canvas ni SVG usados para fabricar diferencias en runtime.
+- Hotspots simétricos en ambas escenas.
+- 10 escenas × 3 variantes × 6 diferencias disponibles.
+- Niveles 4/5/6 diferencias.
+- Coordenadas/hotspots dentro de límites.
+- Assets locales, precacheados y sin faltantes.
 
-La entrega incluye comprobaciones estáticas y funcionales del motor. En este entorno el navegador Chromium del sistema está bloqueado por política administrativa, por lo que no se utilizó automatización visual de navegador para capturas finales. Los recursos y motores sí fueron servidos por HTTP local y validados.
+## Evidencias en `/qa`
+
+- `v151-functional-tests.mjs`
+- `v151-padel-core-tests.mjs`
+- `v151-http-assets.json`
+- `v151-image-assets.json`
+- `v151-js-syntax.json`
+- `v151-browser-ui.json`
+- `v151-runner-browser-ui.json`
+- `v151-differences-browser-ui.json`
+- `v151-padel-mobile.png`
+- `differences-v151-scenes.json`
+
+Nota: el test DOM de Diferencias sustituye las URLs de imágenes por un píxel válido únicamente dentro del harness de Chromium porque el sandbox bloquea navegación local. Los WebP reales se validan por separado mediante HTTP, dimensiones, luminancia y comparación de píxeles.
