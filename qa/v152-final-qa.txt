@@ -1,0 +1,33 @@
+COCO EN FORMA v152.0 — QA FINAL
+UTC 2026-08-16 23:40:04
+
+PASS Catálogo: Coco Pádel está disponible y no aparece En construcción
+PASS Tarjetas: ranking por juego eliminado; solo estado de clasificación general no clicable
+PASS Coco Pádel: sin Excel, sin torneo y con compartir WhatsApp/Copiar
+PASS Coco Pádel: ficha de jugador compacta y sin siglas opacas
+PASS Coco Pádel: búsqueda parcial y jornadas/resultados conservados
+PASS Coco Corre: Street Skate real, skate, salto, agacharse y primer distractor
+PASS Encuentra las diferencias: pares específicos por nivel sin cambios extra
+PASS Encuentra las diferencias: 100 recursos v152 presentes
+PASS CSS v152 alcanza el modal fuera de #cocoApp y corrige móvil
+PASS PWA v152: service worker y manifest actualizados
+PASS Clasificación principal Supabase permanece intacta
+PASS Módulos v152 mantienen aliases compatibles con núcleo estable
+
+12/12 pruebas v152 superadas.
+
+8/8 núcleo Coco Pádel v152 superado: jugadores, resultado por sets, sets/games, puntos, perfil, corrección y borrado/recalculo.
+
+PASS  HTTP local: 160/160 recursos respondieron 200; 0 peticiones 404.
+PASS  Miniaturas: 27 imágenes sociales servidas como image/png.
+
+SINTAXIS
+PASS coco-v152-padel.js
+PASS coco-v152-runner.js
+PASS coco-v152-differences.js
+PASS coco-v152-fixes.js
+PASS sw.js
+PASS scripts inline: 20/20
+
+IMAGENES
+PASS WebP v152: 100/100 válidas, 768x512

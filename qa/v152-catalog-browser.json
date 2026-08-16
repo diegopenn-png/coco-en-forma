@@ -1,0 +1,27 @@
+{
+  "overflow": 0,
+  "cards": [
+    {
+      "id": "padel",
+      "construction": false,
+      "state": 0,
+      "button": "Abrir Coco Pádel",
+      "disabled": false,
+      "badge": "•No puntúa para la clasificación general",
+      "aria": "true",
+      "score": [
+        "Organiza jugadores, mixings, campeonatos, jornadas y resultados."
+      ]
+    },
+    {
+      "id": "cococorre",
+      "construction": false,
+      "state": 0,
+      "button": "Jugar",
+      "disabled": false,
+      "badge": "🏆Puntúa para la clasificación general",
+      "aria": "true",
+      "score": []
+    }
+  ]
+}
