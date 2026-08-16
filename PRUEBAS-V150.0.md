@@ -1,59 +1,33 @@
-# Pruebas realizadas — Coco en Forma v150.0
+# Coco en Forma v150.0 — QA
 
-Fecha: 16 de agosto de 2026.
+Fecha de reconstrucción: 2026-08-16
 
-## Resultado automatizado
+## Resultado
 
-| Bloque | Resultado |
-|---|---:|
-| Suite funcional específica v150 | **11/11 PASS** |
-| Recursos HTTP locales | **69/69 HTTP 200** |
-| Peticiones 404 en inventario HTTP | **0** |
-| Miniaturas sociales servidas | **27/27 image/png** |
-| Scripts inline de `index.html` | **20/20 sintaxis válida** |
-| JavaScript v150 modificado | **PASS** |
-| `manifest.json` y `manifest.webmanifest` | **JSON válido** |
-| Recursos declarados en precaché PWA | **0 faltantes** |
+- `qa/v150-functional-tests.mjs`: **14/14 PASS**
+- `qa/v149-padel-ui-tests.mjs`: **4/4 PASS** sobre el módulo Pádel conservado y versionado en v150
+- `qa/v149-http-tests.mjs`: **68/68 recursos HTTP 200**, 0 peticiones 404
+- Miniaturas servidas: **27 PNG**
+- JavaScript externo modificado: sintaxis correcta
+- JavaScript inline de `index.html`: **20/20 scripts** validados con `node --check`
 
-## Coco Corre
+## Cobertura específica v150
 
-- 180 misiones de los tres niveles pasan prevalidación.
-- El primer objetivo correcto aparece en la posición 3 del tramo: hay dos distractores previos.
-- Se valida explícitamente que una regla nueva nunca entregue la respuesta en los dos primeros objetos.
-- 8 colores, 7 figuras y 8 categorías disponibles.
-- Herramientas y frutas participan en reglas combinadas por categoría + color.
-- En una regla como herramientas moradas, los distractores iniciales siguen siendo herramientas de otros colores y el objetivo morado aparece después.
-- El render de categorías usa un lienzo tintado `source-atop`, indicador cromático y etiqueta de color para que el color sea perceptible y no solo un dato interno.
+1. Ranking general por RPC global y no por lectura RLS del usuario.
+2. Migración general/específica segura y reversible.
+3. Doce retos exactos dentro de clasificación general.
+4. Coco Med y Coco Fútbol como rankings específicos.
+5. Coco Corre: 180 misiones de preflight, primer elemento distractor y objetivo en segunda posición.
+6. Coco Corre: herramientas, frutas, animales, deportes, naturaleza y ciencia.
+7. Coco Corre: color morado mezclado con otros colores en la misma regla.
+8. Coco Corre: obstáculos pequeños y mensajes no técnicos.
+9. Diferencias: cerebro y pico de Coco presentes en las 10 escenas como cambios de color.
+10. Diferencias: luminosidad 1.24 y sin pistas previas.
+11. Coco Pádel: torneo, ranking, WhatsApp, XLSX e impresión.
+12. Las 15 miniaturas sociales continúan presentes a 1200 × 630.
+13. PWA con caché v150 y todos los recursos de precaché existentes.
+14. Rollback v150 sin borrado de datos.
 
-## Clasificación
+## Nota sobre la antigua prueba v149
 
-- No existe `leaderboardPreviewHtml` dentro del flujo de juego.
-- No existen botones `data-open-leaderboard` ni botones de ranking en resultados paralelos.
-- El badge de cada tarjeta se clona para retirar manejadores heredados y queda sin `role`, `tabindex`, `title` ni navegación.
-- Las etiquetas visibles son Clasificación general / Clasificación específica.
-- La pestaña principal Clasificación se conserva operativa.
-- El ranking por torneos de Coco Pádel se mantiene porque pertenece a la gestión deportiva del club.
-
-## Encuentra las diferencias
-
-- 10 escenarios disponibles.
-- Todos cuentan con al menos 8 diferencias candidatas.
-- Brillo de escena configurado a 1,28 con refuerzo moderado de contraste/saturación.
-- Todos los escenarios incluyen coordenadas propias para cerebro y pico de Coco.
-- Las 3 variantes × 3 niveles de cada escena incluyen al menos una diferencia de Coco.
-- El recolor de cerebro y pico selecciona píxeles del elemento correspondiente y no dibuja un parche rectangular/plano.
-
-## Contenido
-
-- 59 entradas nuevas únicas incorporadas por la extensión v150 inicial para palabra/crucigrama en una base limpia de prueba.
-- 30 nuevas afirmaciones de verdadero/falso en la extensión v150 inicial.
-- 12 nuevos temas de Memoria en la extensión v150 inicial.
-- Sopa de letras incorpora vocabulario adicional por tema y dificultad.
-- La segunda capa de contenido v150 añade contenido complementario evitando duplicados.
-- Auditoría de rotación: 15 juegos/módulos × 3 niveles, mínimo 40 combinaciones por nivel, identificadores estables y sin duplicados.
-
-## Limitaciones
-
-No se ha iniciado sesión contra el Supabase público ni se ha publicado esta versión. La validación contra cuentas reales, audio/gestos en dispositivos físicos, actualización instalada de la PWA y vistas previas externas de WhatsApp debe realizarse después de subirla a un entorno HTTPS de prueba.
-
-No se pudo ejecutar el test histórico `qa/v147-differences-render-tests.mjs` en este contenedor porque requiere el paquete opcional `@napi-rs/canvas`, no instalado en el entorno. La suite v150 verifica estructura, selección, coordenadas y lógica de recolor de las diferencias.
+La prueba `La base v148 permanece idéntica...` del script histórico v149 busca dos carpetas de trabajo externas que no forman parte del ZIP distribuible. Por eso no se utiliza como criterio de esta entrega; no representa un fallo de la aplicación.

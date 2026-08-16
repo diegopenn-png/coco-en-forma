@@ -3,7 +3,7 @@
 
   if (root.CocoV144) return;
 
-  var VERSION = "149.0.0";
+  var VERSION = "150.0.0";
   var modal = null;
   var modalBody = null;
   var modalTitle = null;
@@ -170,7 +170,7 @@
     previousFocus = document.activeElement;
     modal.dataset.module = options.module || "";
     modalTitle.textContent = options.title || "Coco en Forma";
-    modalKicker.textContent = options.kicker || "COCO EN FORMA · v149.0";
+    modalKicker.textContent = options.kicker || "COCO EN FORMA · v150.0";
     modalBody.innerHTML = options.html || "";
     disposer = typeof options.dispose === "function" ? options.dispose : null;
     modal.classList.add("visible");
@@ -363,7 +363,7 @@
   root.CocoV148 = root.CocoV144;
   root.CocoV147 = root.CocoV144;
   root.CocoV146 = root.CocoV144;
-  root.COCO_VERSION = "2026-08-15-v149.0-professional";
+  root.COCO_VERSION = "2026-08-16-v150.0-nueva-linea-desde-v149";
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhanceCatalog);
   else enhanceCatalog();
   observer = new MutationObserver(scheduleEnhance);

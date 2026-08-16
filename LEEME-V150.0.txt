@@ -1,36 +1,28 @@
-COCO EN FORMA v150.0 — ZIP PARA GITHUB
-========================================
+COCO EN FORMA v150.0 — NUEVA LÍNEA DESDE v149.0
+==================================================
 
-BASE
-----
-Esta entrega parte de Coco en Forma v149.0 y conserva sus archivos, usuarios,
-puntuaciones, PWA, Supabase y módulos existentes.
+BASE ÚNICA UTILIZADA
+Coco-en-Forma-v149.0-prueba(3).zip
+SHA-256: 3f430b4a1383b367e3b0c5d3eade537a7fec872e8964d2dce5e883573e320e0d
 
-QUÉ CAMBIA
-----------
-1. Las etiquetas de clasificación dentro de los juegos son solo informativas:
-   "Clasificación general" o "Clasificación específica". No abren rankings.
-2. La posición se consulta desde la pestaña principal "Clasificación".
-3. Coco Corre incorpora más categorías/colores/figuras y dos distractores antes
-   del primer objetivo después de cada regla nueva.
-4. Frutas y herramientas de Coco Corre muestran físicamente el color solicitado.
-5. Encuentra las diferencias gana luminosidad y cambios visibles en Coco
-   (cerebro/pico), además de los cambios de objetos.
-6. Se amplían bancos de contenido y rotaciones de los 15 juegos/módulos.
+IMPORTANTE
+Esta v150.0 pertenece a la nueva línea reconstruida desde la v149.0 sana.
+No utiliza código de las antiguas v150, v151, v152, v153, v154 o v155 descartadas.
 
-SUBIDA A GITHUB
----------------
-Sube el CONTENIDO de esta carpeta manteniendo exactamente la misma estructura de
-rutas. No hace falta ejecutar SQL nuevo para v150.0.
+DESPLIEGUE
+1) Subir el contenido de esta carpeta a GitHub conservando la estructura.
+2) Si supabase-coco-v149.sql ya se ejecutó anteriormente, ejecutar solo supabase-coco-v150.sql.
+3) Si v149 todavía no está aplicada en Supabase, ejecutar primero supabase-coco-v149.sql y después supabase-coco-v150.sql.
+4) El Service Worker usa un nuevo nombre de caché, por lo que la PWA podrá reemplazar la caché anterior.
 
-ANTES DE REEMPLAZAR PRODUCCIÓN
-------------------------------
-Conserva una copia de v149.0. Prueba primero v150.0 en una rama o despliegue de
-prueba, especialmente inicio de sesión, una partida de Coco Corre, Encuentra las
-diferencias, la pestaña Clasificación y actualización de la PWA.
+ARCHIVOS NUEVOS IMPORTANTES
+- supabase-coco-v150.sql
+- supabase-coco-v150-rollback.sql
+- qa/v150-functional-tests.mjs
+- CAMBIOS-V150.0.md
+- PRUEBAS-V150.0.md
 
-PWA
----
-La caché de esta entrega es coco-en-forma-v150.0.0-r1. Después de publicar, si un
-dispositivo conserva la versión anterior, cierra/reabre la PWA o recarga la web
-para que el service worker pueda actualizar los recursos.
+QA
+14/14 pruebas funcionales v150 correctas.
+4/4 pruebas UI de Coco Pádel correctas.
+68/68 recursos locales por HTTP correctos; 0 errores 404.

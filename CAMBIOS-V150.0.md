@@ -1,46 +1,76 @@
-# Coco en Forma v150.0 — Cambios
+# Coco en Forma v150.0 — nueva línea desde v149.0
 
-Fecha: 16 de agosto de 2026.
-Base: v149.0.
+## Base de trabajo
 
-## Clasificación
+Esta entrega se ha reconstruido **exclusivamente** desde el ZIP sano aportado por el usuario:
 
-- Dentro de las tarjetas y pantallas de juego, la clasificación queda reducida a una etiqueta informativa: **Clasificación general** o **Clasificación específica**.
-- Esas etiquetas no tienen navegación, botón, `role=button`, foco de teclado ni apertura de modal de ranking.
-- Se retiran los accesos paralelos a clasificaciones desde introducciones y resultados de juego.
-- La consulta real de posiciones continúa centralizada en la pestaña principal **Clasificación**, junto a Mis retos y Mis tarjetas.
-- Coco Med y Coco Fútbol se identifican como clasificación específica; los retos generales como clasificación general.
-- Coco Pádel conserva su **ranking actualizado por torneos** dentro de la herramienta del club porque pertenece a la gestión del campeonato y no al ranking genérico de puntos.
+- `Coco-en-Forma-v149.0-prueba(3).zip`
+- SHA-256 del ZIP base: `3f430b4a1383b367e3b0c5d3eade537a7fec872e8964d2dce5e883573e320e0d`
 
-## Coco Corre
+No se ha copiado código de las antiguas v150–v155 descartadas.
 
-- 8 colores, 7 figuras y 8 familias de objetos: herramientas, frutas, naturaleza, ciencia, colegio, deportes, espacio y cocina.
-- Se añaden martillos, llaves, destornilladores, engranajes, frutas variadas, material escolar, objetos científicos, deportivos, espaciales y de cocina.
-- Las reglas combinadas pueden pedir, por ejemplo, **herramientas moradas** o una figura concreta de un color concreto.
-- Los objetos de categoría se tiñen visualmente con el color correspondiente, conservando volumen y detalle, y además muestran un indicador cromático y el nombre del color.
-- Cuando cambia una regla, aparecen **dos distractores antes del primer objetivo correcto**. Una regla nueva como «cuadrados azules» no entrega un cuadrado azul inmediatamente.
-- Se mezclan objetivos y distractores de forma controlada para conservar dificultad sin volver la misión imposible.
+## 1. Clasificaciones
 
-## Encuentra las diferencias
+- La clasificación general ya no depende de una lectura directa de `partidas` que, bajo RLS, podía mostrar únicamente al usuario conectado.
+- Nueva RPC segura `clasificacion_general_coco(p_limit)` para ordenar a todos los jugadores por la suma de los 12 retos generales.
+- Nueva RPC segura `clasificacion_juego_coco(p_juego, p_limit)` para las clasificaciones específicas de Coco Med y Coco Fútbol.
+- La respuesta incluye posición, puntos totales, mejor partida, número de partidas, total de jugadores y marca del usuario conectado.
+- No se exponen correos ni otros datos privados.
+- Migración aditiva y rollback incluidos.
 
-- Los 10 escenarios se presentan con mayor luminosidad, contraste y saturación para facilitar la lectura visual.
-- Cada escenario dispone de al menos 8 cambios candidatos y el sistema sigue seleccionando la cantidad adecuada según el nivel.
-- Se incorporan diferencias detectables sobre Coco: **cambio de color del cerebro** y **cambio de color del pico**.
-- Cada combinación diaria incluye al menos una diferencia visible en Coco; las transformaciones de color afectan al elemento real y no añaden un parche plano.
-- Las zonas de cerebro y pico se ajustaron individualmente a cada escena para mantener el cambio dentro del personaje.
-- Se mantienen las diferencias de objetos, presencia/ausencia y cambios completos de forma, evitando microdetalles poco legibles.
+## 2. Coco Corre — Misión Cerebro
 
-## Contenido y variedad de los 15 juegos/módulos
+- Se conserva el patrón justo tras cada cambio de regla: primero aparece un distractor, después un objetivo y continúan intercalados.
+- Se amplía la variedad visual de categorías a: herramientas, frutas, animales, deportes, naturaleza y ciencia.
+- Cada familia dispone de al menos 6 elementos diferentes.
+- Las reglas por color siguen mostrando simultáneamente el color objetivo y colores distractores.
+- Los tokens muestran un marco del color real para que las combinaciones categoría + color sean inequívocas incluso con emoji.
+- Se mantienen obstáculos reducidos y separación segura entre carriles.
+- Se mantienen ocultos los errores técnicos y reglas internas de programación.
 
-- Se auditan los 15 accesos actuales: Une los números, Cálculo veloz, Descifra la palabra, Series lógicas, Memoria, Sudoku, Sopa de letras, Crucigrama, Reto Tiempo, Verdadero o falso, Encuentra las diferencias, Coco Corre, Coco Med, Coco Fútbol y Coco Pádel Club.
-- Se amplía el vocabulario real de Descifra la palabra y Crucigrama, con nuevas pistas de ciencia, lógica, naturaleza, orientación, tecnología y lenguaje.
-- Se añaden nuevas afirmaciones verificadas a Verdadero o falso, repartidas entre los tres niveles.
-- Memoria incorpora 12 nuevos temas visuales y Sopa de letras incorpora nuevos vocabularios y categorías por dificultad.
-- Los juegos procedimentales mantienen sus generadores y sistema anti-repetición, con inventario de rotación v150 de al menos 40 combinaciones por nivel y pools más amplios.
-- Coco Med conserva su banco académico extenso y su rotación estratificada; Coco Fútbol conserva variación de secuencias/velocidad; Pádel conserva combinaciones de mixing y campeonatos.
+## 3. Coco Pádel
 
-## Compatibilidad
+Se conserva y valida la herramienta de la v149.0:
 
-- No se elimina ningún juego ni archivo histórico de la base v149.0.
-- No se requiere una migración nueva de Supabase para estos cambios.
-- Se renueva la caché PWA a `coco-en-forma-v150.0.0-r1`.
+- Tres áreas limpias: Mixing, Campeonato y Jugadores.
+- Ranking actualizado por torneo.
+- Varias jornadas por campeonato con acumulación y recálculo de puntos.
+- Exportación XLSX real.
+- Copia para WhatsApp.
+- Impresión.
+- Datos de jugadores con códigos permanentes.
+- Mixing separado de los puntos oficiales de campeonato.
+- Uso ilimitado como herramienta del club.
+
+## 4. Encuentra las diferencias
+
+- Diez escenas cinematográficas conservadas.
+- En las diez escenas se añaden cambios detectables sobre Coco: cerebro y pico pueden cambiar de color.
+- Las zonas visuales de cerebro y pico son más precisas que las zonas táctiles para mantener facilidad de pulsación en móvil sin colorear áreas excesivas.
+- Luminosidad elevada de `1.20` a `1.24`, con contraste y saturación ligeramente reforzados.
+- Se mantienen únicamente diferencias naturales de color, forma o presencia.
+- No hay círculos, estrellas ni marcadores que revelen respuestas antes del acierto.
+
+## 5. Contenido, miniaturas y PWA
+
+- Se conserva el banco enriquecido y el sistema anti-repetición de la v149.0 para los retos activos.
+- Coco Corre amplía sus familias y objetos para aumentar combinaciones reales.
+- Encuentra las diferencias mantiene 10 escenas × 3 variantes × 3 niveles.
+- Se conservan las 15 miniaturas sociales 1200 × 630 y las páginas de compartir de cada juego.
+- Caché PWA actualizada a `coco-en-forma-v150.0.0-r1`.
+- Manifiestos actualizados a `source=pwa-v150`.
+
+## Supabase
+
+Si la base v149.0 ya estaba instalada en Supabase, ejecutar solamente:
+
+- `supabase-coco-v150.sql`
+
+Si se parte de una base anterior, ejecutar primero:
+
+1. `supabase-coco-v149.sql`
+2. `supabase-coco-v150.sql`
+
+Rollback exclusivo de esta entrega:
+
+- `supabase-coco-v150-rollback.sql`

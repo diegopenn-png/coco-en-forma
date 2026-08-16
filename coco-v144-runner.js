@@ -2,7 +2,7 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoRunnerV149) return;
+  if (!C || root.CocoRunnerV150) return;
 
   var GAME_ID = "cococorre";
   var HISTORY_KEY = "coco_runner_history_v144";
@@ -17,9 +17,12 @@
   var COLORS = [{ id: "azul", label: "azul", value: "#38aee0" }, { id: "naranja", label: "naranja", value: "#ef7a18" }, { id: "verde", label: "verde", value: "#45b979" }, { id: "morado", label: "morado", value: "#7960d8" }];
   var SHAPES = [{ id: "circulo", label: "círculo", glyph: "●" }, { id: "cuadrado", label: "cuadrado", glyph: "■" }, { id: "triangulo", label: "triángulo", glyph: "▲" }, { id: "estrella", label: "estrella", glyph: "★" }];
   var CATEGORIES = [
-    { id: "herramientas", label: "herramientas", items: [{ id: "llave", label: "llave", glyph: "🔧" }, { id: "engranaje", label: "engranaje", glyph: "⚙" }, { id: "tuerca", label: "tuerca", glyph: "⬢" }] },
-    { id: "naturaleza", label: "naturaleza", items: [{ id: "hoja", label: "hoja", glyph: "◆" }, { id: "flor", label: "flor", glyph: "✿" }, { id: "gota", label: "gota", glyph: "●" }] },
-    { id: "ciencia", label: "ciencia", items: [{ id: "atomo", label: "átomo", glyph: "⚛" }, { id: "matraz", label: "matraz", glyph: "⌬" }, { id: "iman", label: "imán", glyph: "∩" }] }
+    { id: "herramientas", label: "herramientas", items: [{ id: "llave", label: "llave", glyph: "🔧" }, { id: "engranaje", label: "engranaje", glyph: "⚙" }, { id: "tuerca", label: "tuerca", glyph: "⬢" }, { id: "martillo", label: "martillo", glyph: "🔨" }, { id: "destornillador", label: "destornillador", glyph: "🪛" }, { id: "alicates", label: "alicates", glyph: "⌁" }] },
+    { id: "frutas", label: "frutas", items: [{ id: "manzana", label: "manzana", glyph: "🍎" }, { id: "platano", label: "plátano", glyph: "🍌" }, { id: "uva", label: "uvas", glyph: "🍇" }, { id: "naranja", label: "naranja", glyph: "🍊" }, { id: "fresa", label: "fresa", glyph: "🍓" }, { id: "sandia", label: "sandía", glyph: "🍉" }] },
+    { id: "animales", label: "animales", items: [{ id: "pez", label: "pez", glyph: "🐟" }, { id: "mariposa", label: "mariposa", glyph: "🦋" }, { id: "tortuga", label: "tortuga", glyph: "🐢" }, { id: "abeja", label: "abeja", glyph: "🐝" }, { id: "buho", label: "búho", glyph: "🦉" }, { id: "rana", label: "rana", glyph: "🐸" }] },
+    { id: "deportes", label: "deportes", items: [{ id: "balon", label: "balón", glyph: "⚽" }, { id: "raqueta", label: "raqueta", glyph: "🎾" }, { id: "bici", label: "bicicleta", glyph: "🚲" }, { id: "medalla", label: "medalla", glyph: "🏅" }, { id: "diana", label: "diana", glyph: "🎯" }, { id: "patin", label: "patín", glyph: "🛹" }] },
+    { id: "naturaleza", label: "naturaleza", items: [{ id: "hoja", label: "hoja", glyph: "◆" }, { id: "flor", label: "flor", glyph: "✿" }, { id: "gota", label: "gota", glyph: "●" }, { id: "sol", label: "sol", glyph: "☀" }, { id: "montana", label: "montaña", glyph: "▲" }, { id: "arbol", label: "árbol", glyph: "♣" }] },
+    { id: "ciencia", label: "ciencia", items: [{ id: "atomo", label: "átomo", glyph: "⚛" }, { id: "matraz", label: "matraz", glyph: "⌬" }, { id: "iman", label: "imán", glyph: "∩" }, { id: "microscopio", label: "microscopio", glyph: "🔬" }, { id: "planeta", label: "planeta", glyph: "◉" }, { id: "cohete", label: "cohete", glyph: "🚀" }] }
   ];
 
   function hash(text) { var value = 2166136261; String(text).split("").forEach(function (character) { value ^= character.charCodeAt(0); value = Math.imul(value, 16777619); }); return value >>> 0; }
@@ -451,10 +454,11 @@
   function dispose() { if (game) game.stopped = true; cancelAnimationFrame(frame); if (controller) controller.abort(); controller = null; pointerStart = null; game = null; }
 
   var api = {
-    version: "149.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, openingPlanForRule: openingPlanForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
+    version: "150.0.0", open: open, missionForLevel: missionForLevel, validateMission: validateMission, tokenMatchesRule: tokenMatchesRule, makeTokenForRule: makeTokenForRule, openingPlanForRule: openingPlanForRule, ruleFor: ruleFor, buildRulePlan: buildRulePlan, generalScoreFor: generalScoreFor,
     catalog: function () { return { colors: COLORS.slice(), shapes: SHAPES.slice(), categories: CATEGORIES.slice() }; },
     audit: function () { return { id: GAME_ID, finite: true, durationSeconds: [132, 162, 198], levels: 3, segments: ["attention", "working-memory", "inhibition-flexibility"], controls: ["swipe", "keyboard", "buttons"], preflightValidation: true, firstTargetGuaranteed: true, firstTargetIndexAfterRuleChange: 1, openingTargetsInterleaved: true, categoryColorVarietyGuaranteed: true, maxDistractorGap: { basic: 2, intermediate: 3, advanced: 4 }, correctAnswerStyling: false, characterMotion: "stable-with-brief-functional-actions", collisionModel: "lane-and-action", obstacleApproachScale: .95, adjacentLaneVisualClearance: true, neutralApproachSound: true, audioUnlockForSafariPwa: true, rankingWrites: true, partidasTableWrites: true, generalLeaderboard: true, ownLeaderboard: false, scoreCap: 320, dailyLimit: 1, unlimitedTestAccount: true, extraTestRunsRanked: false, technicalErrorsHidden: true, monetization: false, randomRewards: false, localCharacterAsset: "coco-v2-runner-v144.png" }; }
   };
+  root.CocoRunnerV150 = api;
   root.CocoRunnerV149 = api;
   root.CocoRunnerV148 = api;
   root.CocoRunnerV147 = api;

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-15-v149.0-profesional --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Coco en Forma | Entrena el cerebro jugando</title>
+<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-16-v150.0-nueva-linea-desde-v149 --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Coco en Forma | Entrena el cerebro jugando</title>
 <meta name="description" content="Entrenamiento cognitivo lúdico para todas las edades: una misión diaria por juego para practicar memoria, cálculo, lenguaje, atención, velocidad y coordinación.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cocoenforma.com/">
@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Coco en Forma · Entrenamiento cognitivo diario">
 <meta name="twitter:description" content="Entrenamiento cognitivo lúdico para todas las edades: una misión diaria por juego para practicar memoria, cálculo, lenguaje, atención, velocidad y coordinación.">
-<meta name="twitter:image" content="https://cocoenforma.com/share/coco-en-forma-v149.png"><link rel="manifest" href="./manifest.webmanifest?v=1490" type="application/manifest+json">
+<meta name="twitter:image" content="https://cocoenforma.com/share/coco-en-forma-v149.png"><link rel="manifest" href="./manifest.webmanifest?v=1500" type="application/manifest+json">
 <link rel="icon" type="image/png" sizes="48x48" href="./favicon.png?v=1420">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=1420">
 <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=1420">
@@ -498,10 +498,10 @@
 </style>
 <link rel="stylesheet" href="./coco-v144-professional.css?v=1450">
 <link rel="stylesheet" href="./coco-v147-refinements.css?v=14800">
-<link rel="stylesheet" href="./coco-v149-refinements.css?v=14900">
-<script src="./supabase-js-2.112.3.min.js?v=14900"></script>
+<link rel="stylesheet" href="./coco-v149-refinements.css?v=15000">
+<script src="./supabase-js-2.112.3.min.js?v=15000"></script>
 </head><body>
-<script>window.COCO_VERSION="2026-08-15-v149.0-profesional";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/share/coco-en-forma-v149.png',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',cuentasPruebaIlimitadas:['diegopenn@icloud.com']};</script>
+<script>window.COCO_VERSION="2026-08-16-v150.0-nueva-linea-desde-v149";var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://cocoenforma.com/share/coco-en-forma-v149.png',correo:'info@cocoenforma.com',privacidad:'https://cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',cuentasPruebaIlimitadas:['diegopenn@icloud.com']};</script>
 <style id="coco-v134-style">:root{color-scheme:light}
 html{scroll-behavior:smooth}
 body{min-height:100dvh}
@@ -6451,7 +6451,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   "use strict";
   if(window.CocoArcadeV133)return;
 
-  var VERSION="2026.08.15-146.0";
+  var VERSION="2026.08.16-150.0";
   var OFFICIAL_COCO="https://imagecdn.123inventatuweb.com/a5/a5/a5a51b1b-2190-4998-9e65-7ac1c56294dd.png";
   var READY_IDS=["crucigrama","tiempo","verdadero","diferencias","futbol","padel"];
   var GENERAL_IDS=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","diferencias","cococorre"];
@@ -6682,13 +6682,20 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     if(window.CocoArcadeDemo)return demoLeaderboard("general");
     var cli=gameClient(),session=await currentSession(false);if(!cli||!session)return{rows:[],totalPlayers:0,myPosition:null,error:"Inicia sesión para ver la clasificación general."};
     try{
+      var official;try{official=await cli.rpc("clasificacion_general_coco",{p_limit:50})}catch(error){official={error:error}}
+      if(official&&!official.error&&Array.isArray(official.data)){
+        var officialRows=official.data.map(function(row){return{id:row.jugador,apodo:row.apodo||"Jugador Coco",total:Number(row.puntos)||0,best:Number(row.mejor)||0,plays:Number(row.partidas)||0,position:Number(row.posicion)||0,me:Boolean(row.es_mio)}}),officialMine=officialRows.find(function(row){return row.me})||null;
+        return{rows:officialRows,totalPlayers:officialRows.length?Number(official.data[0].total_jugadores)||officialRows.length:0,myPosition:officialMine?officialMine.position:null,general:true,official:true};
+      }
+      /* Compatibilidad de transición: si la migración v150 aún no se aplicó, no inventamos rivales. */
       var results=await Promise.all([cli.from("partidas").select("jugador,juego,puntos,creado").in("juego",GENERAL_IDS).limit(20000),cli.from("perfiles").select("id,apodo").limit(5000)]);
       if(results[0].error)throw results[0].error;
       var names={};(results[1].data||[]).forEach(function(profile){names[profile.id]=profile.apodo||"Jugador Coco"});
       var map={};(results[0].data||[]).forEach(function(row){var key=row.jugador,item=map[key]||(map[key]={id:key,apodo:names[key]||"Jugador Coco",total:0,best:0,plays:0,last:""}),points=Number(row.puntos)||0;item.total+=points;item.best=Math.max(item.best,points);item.plays++;if(!item.last||String(row.creado)>item.last)item.last=row.creado});
       var rows=Object.keys(map).map(function(key){return map[key]}).sort(function(a,b){return b.total-a.total||b.best-a.best||a.apodo.localeCompare(b.apodo,"es")});
       rows.forEach(function(row,index){row.position=index+1;row.me=row.id===session.user.id});var mine=rows.find(function(row){return row.me})||null;
-      return{rows:rows.slice(0,50),totalPlayers:rows.length,myPosition:mine?mine.position:null,general:true};
+      var onlyMine=rows.length>0&&rows.every(function(row){return row.id===session.user.id});
+      return{rows:rows.slice(0,50),totalPlayers:rows.length,myPosition:mine?mine.position:null,general:true,degraded:true,error:onlyMine?"Aplica supabase-coco-v150.sql para activar la clasificación completa de todos los jugadores.":null};
     }catch(error){return{rows:[],totalPlayers:0,myPosition:null,error:error&&error.message||"No se pudo cargar la clasificación general."}}
   }
   async function loadLeaderboard(id){
@@ -8069,12 +8076,12 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   #cocoApp .memoriaCara { transition: none !important; }
 }
 </style>
-<script id="coco-v149-runtime" src="./coco-v142-runtime.js?v=14900"></script>
-<script id="coco-v149-unified" src="./coco-v142-unified.js?v=14900"></script>
-<script id="coco-v149-core" src="./coco-v144-core.js?v=14900"></script>
-<script id="coco-v149-padel" src="./coco-v144-padel.js?v=14900"></script>
-<script id="coco-v149-runner" src="./coco-v144-runner.js?v=14900"></script>
-<script id="coco-v149-differences" src="./coco-v144-differences.js?v=14900"></script>
+<script id="coco-v149-runtime" src="./coco-v142-runtime.js?v=15000"></script>
+<script id="coco-v149-unified" src="./coco-v142-unified.js?v=15000"></script>
+<script id="coco-v149-core" src="./coco-v144-core.js?v=15000"></script>
+<script id="coco-v149-padel" src="./coco-v144-padel.js?v=15000"></script>
+<script id="coco-v149-runner" src="./coco-v144-runner.js?v=15000"></script>
+<script id="coco-v149-differences" src="./coco-v144-differences.js?v=15000"></script>
 
 
 <style id="coco-v140-differences-style">/* Coco en Forma v140 · parejas de escenas completas, sin iconos superpuestos */

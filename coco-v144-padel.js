@@ -523,7 +523,7 @@
 
   function render() {
     var body = C.body(); if (!body || !state) return;
-    C.setModalTitle("Coco Pádel", "HERRAMIENTA ILIMITADA · v149.0");
+    C.setModalTitle("Coco Pádel", "HERRAMIENTA ILIMITADA · v150.0");
     body.innerHTML = '<div class="c144Padel c145Padel">' + heroHtml() + navHtml() + (view === "mixing" ? mixingHtml() : view === "championship" ? championshipsHtml() : playersHtml()) + '</div>';
   }
 
@@ -652,7 +652,7 @@
   }
 
   async function open() {
-    C.openModal({ module: "padel", title: "Coco Pádel", kicker: "HERRAMIENTA ILIMITADA · v149.0", html: '<div class="c144Empty"><b>Coco está cargando el club…</b></div>', dispose: dispose });
+    C.openModal({ module: "padel", title: "Coco Pádel", kicker: "HERRAMIENTA ILIMITADA · v150.0", html: '<div class="c144Empty"><b>Coco está cargando el club…</b></div>', dispose: dispose });
     state = await loadState(); if (!C.body()) return;
     currentChampionshipId = state.championships.find(function (item) { return item.status === "active"; }) && state.championships.find(function (item) { return item.status === "active"; }).id || state.championships[0] && state.championships[0].id || null;
     controller = new AbortController(); C.body().addEventListener("click", handleClick, { signal: controller.signal }); C.body().addEventListener("change", handleChange, { signal: controller.signal }); C.body().addEventListener("input", handleInput, { signal: controller.signal });
@@ -662,7 +662,7 @@
   function dispose() { if (controller) controller.abort(); controller = null; draft = null; mixingDraft = null; mixingSession = null; currentSessionId = null; championshipDraft = null; rankingChampionshipId = null; dateFormOpen = false; participantsOpen = false; busy = false; }
 
   var api = {
-    version: "149.0.0", open: open, normalize: normalizeState, blankState: blankState, createPlayer: createPlayer,
+    version: "150.0.0", open: open, normalize: normalizeState, blankState: blankState, createPlayer: createPlayer,
     saveResult: saveResult, deleteResult: deleteResult, changePlayerLevel: changePlayerLevel,
     championshipStandings: championshipStandings, standingsForSessions: standingsForSessions,
     playerHistory: playerHistory, playerStats: playerStats, championshipPointsMap: championshipPointsMap, standingsPayload: standingsPayload, schedulePayload: schedulePayload, playersPayload: playersPayload, xlsxBlob: xlsxBlob,
@@ -672,6 +672,7 @@
       return { version: targetState.version, topTabs: ["Mixing", "Campeonato", "Jugadores"], playerCreationArea: "Jugadores", unlimited: true, mixingLandingFirst: true, championshipLandingFirst: true, tournamentRankingSelector: true, whatsappExport: ["mixing", "championship", "session", "players"], excelExport: "xlsx", printExport: true, mixingPersisted: false, mixingStoresResults: false, mixingAffectsPoints: false, playerSummaryOnly: true, playerCount: targetState.players.length, uniqueCodes: new Set(codes).size === codes.length, codesImmutable: true, statsDerivedFromResults: true, playerPointsSource: "championship-results-only", levelsAutomatic: false, championshipDates: targetState.sessions.filter(function (item) { return Boolean(item.championshipId); }).length, championships: targetState.championships.length };
     }
   };
+  root.CocoPadelV150 = api;
   root.CocoPadelV149 = api;
   root.CocoPadelV148 = api;
   root.CocoPadelV147 = api;
