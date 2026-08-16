@@ -2,26 +2,14 @@
   "use strict";
 
   var C = root.CocoV144;
-  if (!C || root.CocoDifferencesProV151) return;
+  if (!C || root.CocoDifferencesProV149) return;
 
-  var KINDS = ["object-color", "character-color"];
+  var KINDS = ["color", "shape", "presence"];
   var VARIANTS = [
-    ["object-color", "object-color", "object-color", "object-color", "object-color", "object-color"],
-    ["object-color", "object-color", "object-color", "object-color", "object-color", "object-color"],
-    ["object-color", "object-color", "object-color", "object-color", "object-color", "object-color"]
+    ["color", "shape", "presence", "color", "shape", "presence"],
+    ["shape", "presence", "color", "shape", "presence", "color"],
+    ["presence", "color", "shape", "presence", "color", "shape"]
   ];
-  var COCO_FEATURES = {
-    "workshop": { brain: [47.5, 30.6, 15, 18], beak: [44.7, 48.8, 9, 10] },
-    "invention-lab": { brain: [38.8, 31.0, 16, 18], beak: [40.0, 50.5, 9, 11] },
-    "observatory": { brain: [44.1, 38.7, 13, 14], beak: [47.7, 51.0, 8, 10] },
-    "tech-library": { brain: [46.7, 32.4, 13, 15], beak: [45.2, 46.8, 8, 10] },
-    "electric-garage": { brain: [36.7, 34.9, 14, 16], beak: [37.3, 51.0, 8, 10] },
-    "robotics-studio": { brain: [53.8, 29.8, 17, 19], beak: [49.9, 46.0, 9, 10] },
-    "ocean-lab": { brain: [36.7, 30.9, 14, 15], beak: [39.0, 46.5, 8, 10] },
-    "botanical-greenhouse": { brain: [51.5, 26.5, 15, 18], beak: [49.0, 43.0, 9, 10] },
-    "music-studio": { brain: [40.2, 26.2, 18, 18], beak: [41.5, 45.0, 9, 10] },
-    "space-station": { brain: [44.8, 36.8, 12, 12], beak: [47.8, 50.0, 8, 9] }
-  };
   var SCENES = [
     ["workshop", "El taller mecánico", "scenes/scene-workshop-v141.webp?v=1440", [["clock", "el reloj", 91.5, 10.5, 10, 15], ["can", "el bote de pintura", 59.5, 45, 7, 15], ["mug", "la taza", 70, 66, 9, 14], ["lamp", "la lámpara", 48, 10, 18, 20], ["toolbox", "la caja de herramientas", 82.5, 62, 18, 23], ["plant", "la planta", 9, 56, 18, 29]]],
     ["invention-lab", "El laboratorio de inventos", "scenes/scene-invention-lab-v141.webp?v=1440", [["clock", "el reloj", 85, 13, 11, 15], ["canisters", "los botes de colores", 88, 53, 17, 18], ["toolbox", "la caja de herramientas", 83, 73, 20, 22], ["cup", "el vaso", 14, 71, 9, 22], ["controls", "las luces del robot", 50, 73, 12, 11], ["lamp", "la lámpara", 31, 11, 16, 21]]],
@@ -34,13 +22,7 @@
     ["music-studio", "El estudio musical", "scenes/scene-music-studio-v141.webp?v=1440", [["guitar", "la guitarra", 11, 47, 15, 40], ["microphone", "el micrófono", 64, 37, 9, 29], ["bells", "las campanas", 84, 22, 22, 13], ["metronome", "el metrónomo", 65, 67, 11, 27], ["controls", "los controles", 25, 84, 21, 15], ["records", "los discos", 88, 76, 21, 18]]],
     ["space-station", "La estación espacial", "scenes/scene-space-station-v141.webp?v=1440", [["planet", "el planeta", 24, 10, 15, 18], ["energy", "el tubo de energía", 23, 40, 12, 30], ["robot", "el robot", 62, 66, 16, 29], ["case", "la caja", 89, 65, 17, 20], ["plant", "la planta", 86, 40, 15, 24], ["tools", "las herramientas", 35, 88, 19, 12]]]
   ].map(function (scene) {
-    var differences = scene[3].map(function (item, index) { return { id: scene[0] + "-" + item[0], key: item[0], sceneId: scene[0], label: item[1], x: item[2], y: item[3], w: Math.max(12, item[4]), h: Math.max(14, item[5]), kind: "object-color" }; });
-    var coco = COCO_FEATURES[scene[0]];
-    if (coco) {
-      differences.push({ id: scene[0] + "-coco-brain", key: "coco-brain", sceneId: scene[0], label: "el cerebro de Coco", x: coco.brain[0], y: coco.brain[1], w: coco.brain[2], h: coco.brain[3], kind: "character-color", characterPart: "brain" });
-      differences.push({ id: scene[0] + "-coco-beak", key: "coco-beak", sceneId: scene[0], label: "el pico de Coco", x: coco.beak[0], y: coco.beak[1], w: coco.beak[2], h: coco.beak[3], kind: "character-color", characterPart: "beak" });
-    }
-    return { id: scene[0], title: scene[1], src: scene[2], differences: differences };
+    return { id: scene[0], title: scene[1], src: scene[2], differences: scene[3].map(function (item, index) { return { id: scene[0] + "-" + item[0], key: item[0], sceneId: scene[0], label: item[1], x: item[2], y: item[3], w: Math.max(12, item[4]), h: Math.max(14, item[5]), kind: KINDS[index % KINDS.length] }; }) };
   });
 
   var levelSelected = 1;
@@ -59,14 +41,9 @@
     return { scene: scene, variant: variant, id: scene.id + "-v" + (variant + 1) };
   }
   function materialize(choice, count) {
-    var source = choice.scene.differences.slice(), characters = source.filter(function (item) { return Boolean(item.characterPart); }), objects = source.filter(function (item) { return !item.characterPart; }), rotated = objects.slice((choice.variant * 2) % objects.length).concat(objects.slice(0, (choice.variant * 2) % objects.length)), ordered;
-    if (choice.variant === 0) ordered = rotated.slice(0, Math.max(0, count - 1)).concat(characters.slice(0, 1));
-    else if (choice.variant === 1) ordered = characters.slice(1, 2).concat(rotated.slice(0, Math.max(0, count - 1)));
-    else ordered = characters.slice(0, Math.min(2, count)).concat(rotated.slice(0, Math.max(0, count - Math.min(2, count))));
-    ordered = ordered.slice(0, count);
-    return ordered.map(function (base, index) {
-      var item = Object.assign({}, base); item.id = base.id + "-v" + (choice.variant + 1); item.kind = base.characterPart ? "character-color" : VARIANTS[choice.variant][index % VARIANTS[choice.variant].length]; item.variant = choice.variant;
-      item.label = "el cambio de color de " + base.label;
+    return choice.scene.differences.slice(0, count).map(function (base, index) {
+      var item = Object.assign({}, base); item.id = base.id + "-v" + (choice.variant + 1); item.kind = VARIANTS[choice.variant][index]; item.variant = choice.variant;
+      item.label = item.kind === "color" ? "el cambio de color de " + base.label : item.kind === "shape" ? "el cambio de forma de " + base.label : "el objeto presente o ausente junto a " + base.label;
       return item;
     });
   }
@@ -87,11 +64,11 @@
 
   function introHtml(allowed) {
     var choice = todayChoice(), cfg = config(levelSelected), unlimited = unlimitedTesting();
-    return '<main class="c144DiffIntro"><section class="c144Card"><span class="c144Eyebrow">ATENCIÓN VISUAL · ESCENAS CINEMATOGRÁFICAS Y LUMINOSAS</span><h3>Encuentra las diferencias</h3><p>Compara las dos imágenes y marca cada cambio desde cualquiera de ellas. La imagen, el objeto y su zona pulsable comparten una única definición normalizada.</p><div class="c144DiffTypes"><span>🎨 Cambios en objetos reales</span><span>💡 Diferencias grandes y visibles</span><span>🧠 Cerebro o pico de Coco</span><span>✓ Sin marcas superpuestas</span></div><div class="c144LevelButtons"><button type="button" data-diff144-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico · 4</button><button type="button" data-diff144-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio · 5</button><button type="button" data-diff144-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado · 6</button></div><p class="c144Notice">Escenario de hoy: <b>' + C.esc(choice.scene.title) + '</b> · combinación ' + (choice.variant + 1) + '/3 · ' + cfg.seconds + ' segundos. Las diferencias modifican objetos reales de la escena: nunca se añaden círculos, rombos, marcas o formas encima para simular un cambio.</p>' + (unlimited ? '<p class="c144Notice">Modo de pruebas activo: puedes repetir sin límite. Solo el primer resultado válido del día puntúa.</p>' : '') + '<div class="c144Actions"><button type="button" class="c144Primary" data-diff144-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? (unlimited ? "Comenzar partida de prueba" : "Comenzar") : "Completado hoy") + '</button></div></section></main>';
+    return '<main class="c144DiffIntro"><section class="c144Card"><span class="c144Eyebrow">ATENCIÓN VISUAL · ESCENAS CLARAS Y COHERENTES</span><h3>Encuentra las diferencias</h3><p>Compara las dos imágenes y marca cada cambio desde cualquiera de ellas. La imagen, el objeto y su zona pulsable comparten una única definición normalizada.</p><div class="c144DiffTypes"><span>🎨 Color claro</span><span>◆ Forma completa</span><span>◌ Presente o ausente</span></div><div class="c144LevelButtons"><button type="button" data-diff144-level="1" class="' + (levelSelected === 1 ? "active" : "") + '">Básico · 4</button><button type="button" data-diff144-level="2" class="' + (levelSelected === 2 ? "active" : "") + '">Intermedio · 5</button><button type="button" data-diff144-level="3" class="' + (levelSelected === 3 ? "active" : "") + '">Avanzado · 6</button></div><p class="c144Notice">Escenario de hoy: <b>' + C.esc(choice.scene.title) + '</b> · combinación ' + (choice.variant + 1) + '/3 · ' + cfg.seconds + ' segundos. No se deforman, rompen ni deterioran objetos.</p>' + (unlimited ? '<p class="c144Notice">Modo de pruebas activo: puedes repetir sin límite. Solo el primer resultado válido del día puntúa.</p>' : '') + '<div class="c144Actions"><button type="button" class="c144Primary" data-diff144-start ' + (allowed ? "" : "disabled") + '>' + (allowed ? (unlimited ? "Comenzar partida de prueba" : "Comenzar") : "Completado hoy") + '</button></div></section></main>';
   }
 
   async function renderIntro() {
-    var allowed = await canPlay(), body = C.body(); if (!body) return; C.setModalTitle("Encuentra las diferencias", "ATENCIÓN VISUAL · v150.0"); body.innerHTML = introHtml(allowed);
+    var allowed = await canPlay(), body = C.body(); if (!body) return; C.setModalTitle("Encuentra las diferencias", "ATENCIÓN VISUAL · v149.0"); body.innerHTML = introHtml(allowed);
     body.querySelectorAll("[data-diff144-level]").forEach(function (button) { button.onclick = function () { levelSelected = Number(button.dataset.diff144Level) || 1; renderIntro(); }; });
     var start = body.querySelector("[data-diff144-start]"); if (start && !start.disabled) start.onclick = startGame;
   }
@@ -124,49 +101,80 @@
     return weight * weight * (3 - 2 * weight);
   }
   function recolorNaturalRegion(ctx, rect, variant) {
-    var image = ctx.getImageData(rect.x, rect.y, rect.width, rect.height), data = image.data, hues = [.03, .49, .76], targetHue = hues[variant % hues.length];
+    var image = ctx.getImageData(rect.x, rect.y, rect.width, rect.height), data = image.data, hues = [.07, .48, .78], targetHue = hues[variant % hues.length];
     for (var y = 0; y < rect.height; y++) for (var x = 0; x < rect.width; x++) {
-      var nx = ((x + .5) / rect.width - .5) * 2, ny = ((y + .5) / rect.height - .5) * 2, ellipse = nx * nx + ny * ny;
-      if (ellipse > 1.12) continue;
-      var feather = clamp01((1.12 - ellipse) / .38), index = (y * rect.width + x) * 4, original = [data[index], data[index + 1], data[index + 2]], hsv = rgbToHsv(original[0], original[1], original[2]);
-      /* El centro del hotspot contiene el objeto real. Se conservan luces y sombras y
-         se evita pintar zonas muy oscuras del fondo, de modo que nunca aparece un parche plano. */
-      if (hsv[2] < .16) continue;
-      var objectWeight = (.54 + Math.min(.34, hsv[1] * .42)) * feather;
-      var next = hsvToRgb(targetHue, Math.max(.48, Math.min(.9, hsv[1] * .9 + .24)), Math.max(.2, Math.min(1, hsv[2] * 1.06)));
-      data[index] = Math.round(original[0] + (next[0] - original[0]) * objectWeight); data[index + 1] = Math.round(original[1] + (next[1] - original[1]) * objectWeight); data[index + 2] = Math.round(original[2] + (next[2] - original[2]) * objectWeight);
-    }
-    ctx.putImageData(image, rect.x, rect.y);
-  }
-  function recolorCharacterFeature(ctx, rect, part, variant) {
-    var image = ctx.getImageData(rect.x, rect.y, rect.width, rect.height), data = image.data;
-    var hues = part === "brain" ? [.72, .48, .15] : [.52, .34, .78], targetHue = hues[variant % hues.length];
-    for (var y = 0; y < rect.height; y++) for (var x = 0; x < rect.width; x++) {
-      var nx = ((x + .5) / rect.width - .5) * 2, ny = ((y + .5) / rect.height - .5) * 2, radius = nx * nx + ny * ny;
-      if (radius > 1) continue;
-      var edge = clamp01((1 - radius) / .28), weight = Math.max(.42, edge) * .9;
+      var weight = featherWeight(x, y, rect.width, rect.height); if (weight <= 0) continue;
       var index = (y * rect.width + x) * 4, original = [data[index], data[index + 1], data[index + 2]], hsv = rgbToHsv(original[0], original[1], original[2]);
-      if (hsv[2] < .12) continue;
-      if (part === "brain" && !(hsv[1] > .22 && (hsv[0] < .14 || hsv[0] > .94))) continue;
-      if (part === "beak" && !(hsv[1] > .42 && hsv[0] > .015 && hsv[0] < .17)) continue;
-      var saturationFloor = part === "brain" ? .58 : .72, next = hsvToRgb(targetHue, Math.max(saturationFloor, Math.min(.98, hsv[1] * 1.12 + .22)), Math.max(.42, Math.min(1, hsv[2] * 1.14)));
-      data[index] = Math.round(original[0] + (next[0] - original[0]) * weight); data[index + 1] = Math.round(original[1] + (next[1] - original[1]) * weight); data[index + 2] = Math.round(original[2] + (next[2] - original[2]) * weight);
+      var next = hsvToRgb(targetHue, Math.max(.34, Math.min(.78, hsv[1] * .86 + .16)), Math.max(.16, Math.min(1, hsv[2] * 1.04)));
+      weight *= .76; data[index] = Math.round(original[0] + (next[0] - original[0]) * weight); data[index + 1] = Math.round(original[1] + (next[1] - original[1]) * weight); data[index + 2] = Math.round(original[2] + (next[2] - original[2]) * weight);
     }
     ctx.putImageData(image, rect.x, rect.y);
   }
-  /* v151: no existe renderer de formas, pegatinas ni objetos añadidos.
-     Cada diferencia modifica únicamente píxeles del objeto real ya presente en la escena. */
+  function polygonPath(ctx, cx, cy, radius, sides, rotation) {
+    ctx.beginPath(); for (var point = 0; point < sides; point++) { var angle = (rotation || 0) + point * Math.PI * 2 / sides, x = cx + Math.cos(angle) * radius, y = cy + Math.sin(angle) * radius; if (!point) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.closePath();
+  }
+  function roundedRectPath(ctx, x, y, width, height, radius) {
+    radius = Math.min(radius, width / 2, height / 2); ctx.beginPath(); ctx.moveTo(x + radius, y); ctx.lineTo(x + width - radius, y); ctx.quadraticCurveTo(x + width, y, x + width, y + radius); ctx.lineTo(x + width, y + height - radius); ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height); ctx.lineTo(x + radius, y + height); ctx.quadraticCurveTo(x, y + height, x, y + height - radius); ctx.lineTo(x, y + radius); ctx.quadraticCurveTo(x, y, x + radius, y); ctx.closePath();
+  }
+  function drawIntegratedDetail(ctx, rect, item, side) {
+    var cx = rect.x + rect.width / 2, cy = rect.y + rect.height / 2, size = Math.max(20, Math.min(rect.width, rect.height) * .3), key = item.key || "", left = side === "left";
+    if (key === "clock") size *= 1.38;
+    var isControl = /controls|lights|tubes|energy/.test(key), isContainer = /mug|cup|bottle|watering|pot/.test(key);
+    if (isContainer) size *= 1.5;
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,.38)"; ctx.shadowBlur = Math.max(4, size * .1); ctx.shadowOffsetY = Math.max(2, size * .07); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (key === "clock") {
+      ctx.translate(cx, cy); ctx.strokeStyle = "#7b321f"; ctx.lineWidth = Math.max(4, size * .13); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(left ? -size * .16 : size * .34, -size * .56); ctx.moveTo(0, 0); ctx.lineTo(left ? size * .52 : -size * .48, left ? size * .2 : size * .32); ctx.stroke();
+    } else if (key === "microphone") {
+      var micGradient = ctx.createLinearGradient(cx - size, cy, cx + size, cy); micGradient.addColorStop(0, "#42362f"); micGradient.addColorStop(.5, "#c2aa82"); micGradient.addColorStop(1, "#352c28"); ctx.fillStyle = micGradient;
+      if (left) roundedRectPath(ctx, cx - size * .42, cy - size * .72, size * .84, size * 1.44, size * .38); else polygonPath(ctx, cx, cy, size * .72, 6, Math.PI / 6); ctx.fill();
+      ctx.shadowColor = "transparent"; ctx.strokeStyle = "rgba(27,22,20,.7)"; ctx.lineWidth = Math.max(1.5, size * .045); for (var grille = -2; grille <= 2; grille++) { ctx.beginPath(); ctx.moveTo(cx - size * .28, cy + grille * size * .18); ctx.lineTo(cx + size * .28, cy + grille * size * .18); ctx.stroke(); }
+    } else if (isControl) {
+      ctx.fillStyle = "rgba(32,48,54,.88)"; roundedRectPath(ctx, cx - size * .62, cy - size * .46, size * 1.24, size * .92, size * .12); ctx.fill(); ctx.shadowColor = "transparent"; ctx.strokeStyle = "#d39b42"; ctx.lineWidth = Math.max(4, size * .14); ctx.beginPath(); if (left) { ctx.moveTo(cx, cy - size * .27); ctx.lineTo(cx, cy + size * .27); } else { ctx.moveTo(cx - size * .32, cy); ctx.lineTo(cx + size * .32, cy); } ctx.stroke();
+    } else if (key === "guitar") {
+      ctx.fillStyle = "rgba(76,37,20,.9)"; ctx.beginPath(); if (left) { ctx.moveTo(cx - size * .5, cy - size * .5); ctx.bezierCurveTo(cx + size * .46, cy - size * .35, cx + size * .48, cy + size * .38, cx - size * .12, cy + size * .6); ctx.bezierCurveTo(cx - size * .5, cy + size * .34, cx - size * .64, cy, cx - size * .5, cy - size * .5); } else { ctx.moveTo(cx - size * .55, cy - size * .45); ctx.lineTo(cx + size * .5, cy - size * .28); ctx.lineTo(cx + size * .28, cy + size * .55); ctx.lineTo(cx - size * .42, cy + size * .42); ctx.closePath(); } ctx.fill();
+    } else if (/lamp|bells/.test(key)) {
+      ctx.fillStyle = "#a16a2f"; ctx.beginPath(); if (left) { ctx.moveTo(cx - size * .62, cy + size * .42); ctx.lineTo(cx - size * .28, cy - size * .5); ctx.lineTo(cx + size * .28, cy - size * .5); ctx.lineTo(cx + size * .62, cy + size * .42); } else { ctx.moveTo(cx - size * .7, cy + size * .4); ctx.quadraticCurveTo(cx, cy - size * .82, cx + size * .7, cy + size * .4); } ctx.closePath(); ctx.fill();
+    } else if (isContainer) {
+      ctx.shadowColor = "transparent"; ctx.strokeStyle = "#6c4028"; ctx.lineWidth = Math.max(5, size * .18); ctx.beginPath(); if (left) { ctx.moveTo(cx - size * .06, cy - size * .48); ctx.bezierCurveTo(cx - size * .12, cy - size * .52, cx + size * .68, cy - size * .45, cx + size * .55, cy + size * .34); } else { ctx.moveTo(cx - size * .06, cy - size * .48); ctx.lineTo(cx + size * .55, cy - size * .48); ctx.lineTo(cx + size * .55, cy + size * .34); } ctx.stroke();
+    } else if (key === "plant") {
+      ctx.fillStyle = "#39764d"; ctx.beginPath(); ctx.moveTo(cx, cy + size * .65); ctx.bezierCurveTo(cx + (left ? -.78 : .78) * size, cy + size * .12, cx + (left ? -.58 : .58) * size, cy - size * .65, cx, cy - size * .72); ctx.bezierCurveTo(cx + (left ? .28 : -.28) * size, cy - size * .18, cx + (left ? .3 : -.3) * size, cy + size * .34, cx, cy + size * .65); ctx.fill();
+    } else if (key === "fish") {
+      ctx.fillStyle = "#458f91"; ctx.beginPath(); ctx.moveTo(cx - size * .7, cy); ctx.quadraticCurveTo(cx, cy - size * .5, cx + size * .56, cy); ctx.quadraticCurveTo(cx, cy + size * .5, cx - size * .7, cy); ctx.fill(); ctx.beginPath(); ctx.moveTo(cx + size * .5, cy); if (left) { ctx.lineTo(cx + size, cy - size * .45); ctx.lineTo(cx + size, cy + size * .45); } else { ctx.lineTo(cx + size, cy - size * .58); ctx.lineTo(cx + size * .76, cy); ctx.lineTo(cx + size, cy + size * .58); } ctx.closePath(); ctx.fill();
+    } else {
+      var shapes = [["diamond", "hexagon"], ["tag", "diamond"], ["hexagon", "tag"]], shape = shapes[item.variant % shapes.length][left ? 0 : 1], gradient = ctx.createLinearGradient(cx - size, cy - size, cx + size, cy + size); gradient.addColorStop(0, "#c39a5f"); gradient.addColorStop(.55, "#80603f"); gradient.addColorStop(1, "#49372c"); ctx.fillStyle = gradient;
+      if (shape === "diamond") polygonPath(ctx, cx, cy, size * .66, 4, Math.PI / 4); else if (shape === "hexagon") polygonPath(ctx, cx, cy, size * .66, 6, Math.PI / 6); else roundedRectPath(ctx, cx - size * .68, cy - size * .43, size * 1.36, size * .86, size * .13); ctx.fill();
+      ctx.shadowColor = "transparent"; ctx.globalAlpha = .58; ctx.lineWidth = Math.max(2, size * .045); ctx.strokeStyle = "#30251f"; ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function drawContextProp(ctx, rect, item) {
+    var cx = rect.x + rect.width / 2, cy = rect.y + rect.height / 2, size = Math.max(24, Math.min(rect.width, rect.height) * .31), family = item.sceneId === "music-studio" ? "music" : item.sceneId === "botanical-greenhouse" ? "nature" : item.sceneId === "ocean-lab" ? "ocean" : item.sceneId === "space-station" || item.sceneId === "observatory" ? "space" : "tool";
+    ctx.save(); ctx.translate(cx, cy); ctx.shadowColor = "rgba(0,0,0,.42)"; ctx.shadowBlur = Math.max(4, size * .11); ctx.shadowOffsetY = Math.max(2, size * .08); ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (family === "music") {
+      ctx.strokeStyle = "#d7a64d"; ctx.fillStyle = "#9a5a28"; ctx.lineWidth = Math.max(4, size * .16); ctx.beginPath(); ctx.moveTo(size * .18, -size * .7); ctx.lineTo(size * .18, size * .34); ctx.lineTo(size * .62, size * .18); ctx.stroke(); ctx.beginPath(); ctx.ellipse(-size * .08, size * .42, size * .34, size * .23, -.22, 0, Math.PI * 2); ctx.fill();
+    } else if (family === "nature") {
+      ctx.fillStyle = "#3f8f5e"; ctx.beginPath(); ctx.moveTo(0, size * .62); ctx.bezierCurveTo(-size * .85, size * .14, -size * .58, -size * .72, 0, -size * .78); ctx.bezierCurveTo(size * .7, -size * .38, size * .72, size * .32, 0, size * .62); ctx.fill(); ctx.shadowColor = "transparent"; ctx.strokeStyle = "#24593d"; ctx.lineWidth = Math.max(2, size * .07); ctx.beginPath(); ctx.moveTo(-size * .08, size * .75); ctx.lineTo(size * .18, -size * .5); ctx.stroke();
+    } else if (family === "ocean") {
+      ctx.fillStyle = "#4aa6a8"; ctx.beginPath(); ctx.ellipse(-size * .08, 0, size * .68, size * .38, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.moveTo(size * .5, 0); ctx.lineTo(size, -size * .42); ctx.lineTo(size, size * .42); ctx.closePath(); ctx.fill(); ctx.shadowColor = "transparent"; ctx.fillStyle = "#102f3b"; ctx.fillRect(-size * .42, -size * .08, Math.max(2, size * .08), Math.max(2, size * .08));
+    } else if (family === "space") {
+      ctx.fillStyle = "#b78743"; roundedRectPath(ctx, -size * .35, -size * .35, size * .7, size * .7, size * .1); ctx.fill(); ctx.fillStyle = "#357a91"; ctx.fillRect(-size, -size * .38, size * .52, size * .76); ctx.fillRect(size * .48, -size * .38, size * .52, size * .76); ctx.shadowColor = "transparent"; ctx.strokeStyle = "#d9c07e"; ctx.lineWidth = Math.max(2, size * .06); ctx.beginPath(); ctx.moveTo(0, -size * .35); ctx.lineTo(0, -size * .82); ctx.stroke();
+    } else {
+      ctx.strokeStyle = "#a9793e"; ctx.lineWidth = Math.max(7, size * .22); ctx.beginPath(); ctx.moveTo(-size * .62, size * .56); ctx.lineTo(size * .45, -size * .5); ctx.stroke(); ctx.shadowColor = "transparent"; ctx.strokeStyle = "#5a3d28"; ctx.lineWidth = Math.max(3, size * .09); polygonPath(ctx, size * .56, -size * .58, size * .34, 6, Math.PI / 6); ctx.stroke();
+    }
+    ctx.restore();
+  }
   function applyDifference(ctx, canvas, item, side) {
     var rect = rectFor(canvas, item);
-    if (item.kind === "character-color" && side === "right") recolorCharacterFeature(ctx, rect, item.characterPart, item.variant);
-    else if (item.kind === "object-color" && side === "right") recolorNaturalRegion(ctx, rect, item.variant);
+    if (item.kind === "color" && side === "right") recolorNaturalRegion(ctx, rect, item.variant);
+    else if (item.kind === "shape") drawIntegratedDetail(ctx, rect, item, side);
+    else if (item.kind === "presence" && side === "right") drawContextProp(ctx, rect, item);
   }
 
   function loadScenes() {
     var image = new Image(); image.decoding = "async";
     image.onload = function () {
       if (!game || game.finished) return;
-      C.body().querySelectorAll("[data-diff144-canvas]").forEach(function (canvas) { var ctx = canvas.getContext("2d", { alpha: false }), side = canvas.dataset.diff144Canvas; ctx.filter = "brightness(1.32) contrast(1.07) saturate(1.12)"; ctx.drawImage(image, 0, 0, canvas.width, canvas.height); ctx.filter = "none"; game.items.forEach(function (item) { applyDifference(ctx, canvas, item, side); }); var scene = canvas.closest("[data-diff144-scene]"); if (scene) scene.dataset.ready = "true"; });
+      C.body().querySelectorAll("[data-diff144-canvas]").forEach(function (canvas) { var ctx = canvas.getContext("2d", { alpha: false }), side = canvas.dataset.diff144Canvas; ctx.filter = "brightness(1.2) contrast(1.07) saturate(1.06)"; ctx.drawImage(image, 0, 0, canvas.width, canvas.height); ctx.filter = "none"; game.items.forEach(function (item) { applyDifference(ctx, canvas, item, side); }); var scene = canvas.closest("[data-diff144-scene]"); if (scene) scene.dataset.ready = "true"; });
       game.startedAt = Date.now(); timer = setInterval(tick, 250); updateHud();
     };
     image.onerror = function () { var body = C.body(); if (!body) return; body.innerHTML = '<div class="c144Empty"><b>No se pudo cargar el escenario</b><span>Comprueba los archivos locales de escenas.</span><button type="button" class="c144Secondary" data-diff144-retry>Reintentar</button></div>'; body.querySelector("[data-diff144-retry]").onclick = startGame; };
@@ -223,11 +231,11 @@
     loadScenes();
   }
 
-  async function open() { C.openModal({ module: "differences", title: "Encuentra las diferencias", kicker: "ATENCIÓN VISUAL · v151.0", html: '<div class="c144Empty"><b>Coco está preparando el escenario…</b></div>', dispose: dispose }); user = await resolveUser(); renderIntro(); }
+  async function open() { C.openModal({ module: "differences", title: "Encuentra las diferencias", kicker: "ATENCIÓN VISUAL · v149.0", html: '<div class="c144Empty"><b>Coco está preparando el escenario…</b></div>', dispose: dispose }); user = await resolveUser(); renderIntro(); }
   function dispose() { clearInterval(timer); if (controller) controller.abort(); controller = null; if (game) game.finished = true; game = null; }
 
   var api = {
-    version: "151.0.0", open: open, scenes: SCENES,
+    version: "149.0.0", open: open, scenes: SCENES,
     config: config, rectFor: rectFor,
     materializeForAudit: function (sceneId, variant, count) {
       var scene = SCENES.find(function (item) { return item.id === sceneId; });
@@ -236,10 +244,8 @@
       return materialize({ scene: scene, variant: variant }, Math.max(1, Math.min(scene.differences.length, Number(count) || 6)));
     },
     applyDifferenceForAudit: applyDifference,
-    audit: function () { return { sceneCount: SCENES.length, variantsPerScene: VARIANTS.length, combinationsPerLevel: SCENES.length * VARIANTS.length, levels: { basic: 4, intermediate: 5, advanced: 6 }, everySceneHasAtLeastEight: SCENES.every(function (scene) { return scene.differences.length >= 8; }), differenceKinds: KINDS.slice(), allowedKindsOnly: true, brokenObjects: false, deformedObjects: false, blurredRemoval: false, completeObjects: true, preAnswerMarkers: false, genericCircleMarkers: false, genericStarMarkers: false, syntheticOverlayShapes: false, syntheticAddedProps: false, realObjectChangesOnly: true, foundFeedbackOnlyAfterCorrectTap: true, sameDefinitionForVisualAndHit: true, normalizedCoordinates: true, clickableFromBothImages: true, falseClicksAccepted: false, brightness: 1.32, unlimitedTestAccount: true, extraTestRunsRanked: false, characterDifferences: ["brain-color", "beak-color"], characterDifferenceGuaranteed: true, renderer: "dual-canvas-real-object-color-changes-v151" }; }
+    audit: function () { return { sceneCount: SCENES.length, variantsPerScene: VARIANTS.length, combinationsPerLevel: SCENES.length * VARIANTS.length, levels: { basic: 4, intermediate: 5, advanced: 6 }, everySceneHasSix: SCENES.every(function (scene) { return scene.differences.length === 6; }), differenceKinds: KINDS.slice(), allowedKindsOnly: true, brokenObjects: false, deformedObjects: false, blurredRemoval: false, completeObjects: true, preAnswerMarkers: false, genericCircleMarkers: false, genericStarMarkers: false, foundFeedbackOnlyAfterCorrectTap: true, sameDefinitionForVisualAndHit: true, normalizedCoordinates: true, clickableFromBothImages: true, falseClicksAccepted: false, brightness: 1.2, unlimitedTestAccount: true, extraTestRunsRanked: false, renderer: "dual-canvas-integrated-scene-changes-v149" }; }
   };
-  root.CocoDifferencesProV151 = api;
-  root.CocoDifferencesProV150 = api;
   root.CocoDifferencesProV149 = api;
   root.CocoDifferencesProV148 = api;
   root.CocoDifferencesProV147 = api;
