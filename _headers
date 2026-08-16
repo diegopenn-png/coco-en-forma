@@ -1,10 +1,36 @@
+/
+  Cache-Control: no-store, max-age=0
+
+/index.html
+  Cache-Control: no-store, max-age=0
+
 /manifest.webmanifest
   Content-Type: application/manifest+json; charset=utf-8
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: no-store, max-age=0
+
+/manifest.json
+  Content-Type: application/manifest+json; charset=utf-8
+  Cache-Control: no-store, max-age=0
 
 /sw.js
   Content-Type: application/javascript; charset=utf-8
-  Cache-Control: public, max-age=0, must-revalidate
+  Cache-Control: no-store, max-age=0
+
+/coco-v152-pwa.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-store, max-age=0
+
+/coco-v152-runner.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-store, max-age=0
+
+/coco-v152-differences.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-store, max-age=0
+
+/coco-v152-refinements.css
+  Content-Type: text/css; charset=utf-8
+  Cache-Control: no-store, max-age=0
 
 /icon-*.png
   Content-Type: image/png

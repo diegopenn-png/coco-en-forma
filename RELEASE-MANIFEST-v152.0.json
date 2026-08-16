@@ -1,0 +1,41 @@
+{
+  "release": "152.0.0",
+  "build_date": "2026-08-16",
+  "fingerprint": "15200",
+  "sql_required": false,
+  "pwa": {
+    "manager": "coco-v152-pwa.js",
+    "service_worker": "sw.js",
+    "registration_count_expected": 1,
+    "cache_strategy": "network-only-no-store",
+    "start_url": "./?source=pwa-v152&v=15200"
+  },
+  "runner": {
+    "engine": "coco-v152-runner.js",
+    "lanes": 5,
+    "lane_range": [
+      -2,
+      2
+    ],
+    "random_distribution": "shuffle-bag-per-5-spawns"
+  },
+  "differences": {
+    "engine": "coco-v152-differences.js",
+    "renderer": "dual-canvas-natural-object-local-adjustments-v152",
+    "synthetic_overlays": false,
+    "fixed_purple_flood": false
+  },
+  "critical_files": [
+    "index.html",
+    "manifest.webmanifest",
+    "manifest.json",
+    "sw.js",
+    "_headers",
+    "coco-v152-pwa.js",
+    "coco-v142-runtime.js",
+    "coco-v144-core.js",
+    "coco-v152-runner.js",
+    "coco-v152-differences.js",
+    "coco-v152-refinements.css"
+  ]
+}

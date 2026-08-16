@@ -1,0 +1,150 @@
+/* Coco en Forma v152.0 — PWA estable, cinco carriles y diferencias naturales. */
+
+/* Tarjetas: el refresco de puntuación nunca debe parecer un bloqueo de la app. */
+#cocoApp .cocoGameCard .cocoBotonJuego:not(:disabled),
+#cocoApp .cocoGameCard .btn:not(:disabled){cursor:pointer}
+
+/* Coco Corre: objetos completos, sin clipping de paint containment. */
+#cocoApp .c144RunnerObject{contain:layout style!important;overflow:visible!important}
+#cocoApp .c144RunnerObject[data-runner-display="category"]{
+  width:110px!important;height:100px!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;overflow:visible!important;isolation:isolate!important;
+}
+#cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{
+  position:absolute;left:50%;top:45%;display:grid;place-items:center;width:88px;height:88px;
+  transform:translate(-50%,-50%);overflow:visible;border:3px solid rgba(255,255,255,.96);border-radius:30px;
+  background:radial-gradient(circle at 28% 18%,rgba(255,255,255,.98),rgba(255,255,255,.75) 32%,rgba(229,247,255,.88) 78%,rgba(190,226,241,.9));
+  box-shadow:0 12px 28px rgba(3,27,44,.30),inset 0 2px 0 #fff;
+}
+#cocoApp .c151RunnerTintedCanvas{display:block;width:84px;height:84px;max-width:none;filter:saturate(1.08) contrast(1.04);transform:translateY(-1px)}
+#cocoApp .c151RunnerShine{position:absolute;left:13px;top:10px;width:27px;height:12px;border-radius:50%;background:rgba(255,255,255,.64);filter:blur(.4px);transform:rotate(-18deg);pointer-events:none}
+#cocoApp .c151RunnerColorName{
+  position:absolute;z-index:3;right:-13px;top:3px;max-width:78px;padding:4px 7px;border:2px solid #fff;border-radius:999px;
+  background:var(--runner-color,#2fa9dc);color:#fff;font-size:8px;font-weight:1000;line-height:1;letter-spacing:.05em;
+  text-transform:uppercase;text-shadow:0 1px 2px rgba(0,0,0,.3);box-shadow:0 4px 10px rgba(3,27,44,.25);white-space:nowrap
+}
+#cocoApp .c151RunnerEmojiFallback{display:grid;place-items:center;width:82px;height:82px;font-size:58px}
+#cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{
+  position:absolute;z-index:3;left:50%;top:83px;display:block!important;width:max-content;max-width:156px!important;min-height:0!important;
+  transform:translateX(-50%);overflow:visible!important;padding:5px 8px;border:2px solid rgba(255,255,255,.92);border-radius:10px;
+  background:rgba(248,253,255,.95);color:#173e58!important;font-size:9px!important;font-weight:1000;line-height:1.08!important;
+  letter-spacing:.01em;text-align:center;text-transform:uppercase;white-space:normal!important;text-overflow:clip!important;
+  box-shadow:0 5px 12px rgba(3,27,44,.2);text-wrap:balance
+}
+#cocoApp .c144RunnerObject.runner-token:not([data-runner-display="category"]){overflow:visible!important}
+
+/* Un toque de profundidad sin mover a Coco: los objetos se sienten más vivos al acercarse. */
+#cocoApp .c144RunnerObject.runner-token{filter:drop-shadow(0 5px 4px rgba(7,38,55,.10))}
+
+/* Diferencias: no se muestran leyendas que sugieran formas superpuestas artificiales. */
+#cocoApp .c144DiffTypes span{font-weight:900!important}
+#cocoApp .c144DiffScene canvas{image-rendering:auto!important}
+
+@media(max-width:640px){
+  #cocoApp .c144RunnerObject[data-runner-display="category"]{width:92px!important;height:84px!important}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{width:72px;height:72px;border-radius:24px}
+  #cocoApp .c151RunnerTintedCanvas{width:69px;height:69px}
+  #cocoApp .c151RunnerShine{left:10px;top:8px;width:22px;height:10px}
+  #cocoApp .c151RunnerColorName{right:-11px;top:-1px;font-size:7px;padding:3px 5px}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{top:67px;max-width:128px!important;font-size:7.5px!important;padding:4px 6px}
+}
+
+@media(max-width:380px){
+  #cocoApp .c144RunnerObject[data-runner-display="category"]{width:82px!important;height:76px!important}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{width:64px;height:64px;border-radius:21px}
+  #cocoApp .c151RunnerTintedCanvas{width:61px;height:61px}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{top:59px;max-width:116px!important;font-size:7px!important}
+}
+
+/* =========================================================
+   Coco en Forma v152.0
+   PWA estable · cinco carriles reales · objetos sin recortes
+   ========================================================= */
+
+/* Cinco carriles reales. Las cuatro divisorias corresponden a los cinco centros
+   que usa el motor (-2,-1,0,1,2); los objetos convergen en perspectiva pero
+   terminan exactamente en posiciones alcanzables por Coco. */
+#cocoApp .c144Road{
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 9%,rgba(0,0,0,.075) 9% 10%),
+    linear-gradient(90deg,
+      #17384a 0 19.65%,#f4fbff 19.75% 20.25%,
+      #17384a 20.35% 39.65%,#f4fbff 39.75% 40.25%,
+      #17384a 40.35% 59.65%,#f4fbff 59.75% 60.25%,
+      #17384a 60.35% 79.65%,#f4fbff 79.75% 80.25%,
+      #17384a 80.35% 100%)!important;
+}
+#cocoApp .c145RoadFlow i{width:3px!important;background:repeating-linear-gradient(0deg,rgba(255,255,255,.08) 0 28px,rgba(255,255,255,.9) 28px 62px,rgba(255,255,255,.08) 62px 94px)!important}
+#cocoApp .c145RoadFlow i:nth-child(1){left:20%!important}
+#cocoApp .c145RoadFlow i:nth-child(2){left:40%!important}
+#cocoApp .c145RoadFlow i:nth-child(3){left:60%!important}
+#cocoApp .c145RoadFlow i:nth-child(4){left:80%!important}
+
+/* Indicador compacto de carril actual. No tapa el juego y deja inequívoco que hay cinco. */
+#cocoApp .c152LaneStrip{
+  position:absolute;z-index:7;left:50%;bottom:38px;display:grid;grid-template-columns:repeat(5,18px);gap:7px;
+  transform:translateX(-50%);padding:5px 8px;border:1px solid rgba(255,255,255,.22);border-radius:999px;
+  background:rgba(4,25,40,.55);backdrop-filter:blur(6px);pointer-events:none
+}
+#cocoApp .c152LaneStrip i{display:block;width:18px;height:5px;border-radius:99px;background:rgba(255,255,255,.35);transition:transform .13s ease,background .13s ease}
+#cocoApp .c152LaneStrip i.active{background:#d9f536;transform:scaleX(1.16);box-shadow:0 0 10px rgba(217,245,54,.55)}
+
+/* Las frutas/herramientas dejan de parecer cromos cuadrados. La ilustración queda
+   completa y flotante; el color de la regla se aplica sobre el propio dibujo. */
+#cocoApp .c144RunnerObject[data-runner-display="category"]{
+  width:116px!important;height:110px!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;overflow:visible!important;contain:layout style!important
+}
+#cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{
+  position:absolute!important;left:50%!important;top:45%!important;display:grid!important;place-items:center!important;
+  width:96px!important;height:88px!important;transform:translate(-50%,-50%)!important;overflow:visible!important;
+  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important
+}
+#cocoApp .c151RunnerTintedCanvas{
+  width:94px!important;height:94px!important;overflow:visible!important;filter:saturate(1.08) contrast(1.025) drop-shadow(0 10px 9px rgba(4,29,45,.28))!important
+}
+#cocoApp .c151RunnerShine{display:none!important}
+#cocoApp .c151RunnerColorName{
+  right:-2px!important;top:3px!important;padding:4px 7px!important;border:2px solid rgba(255,255,255,.96)!important;
+  font-size:8px!important;box-shadow:0 3px 8px rgba(4,29,45,.22)!important
+}
+#cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{
+  top:88px!important;width:max-content!important;max-width:170px!important;padding:4px 7px!important;
+  border:1px solid rgba(255,255,255,.9)!important;border-radius:8px!important;background:rgba(7,34,50,.78)!important;
+  color:#fff!important;font-size:9px!important;line-height:1.08!important;box-shadow:0 4px 10px rgba(3,23,37,.2)!important;
+  white-space:normal!important;overflow:visible!important;text-overflow:clip!important
+}
+#cocoApp .c151RunnerEmojiFallback{width:92px!important;height:92px!important;font-size:64px!important;filter:drop-shadow(0 10px 9px rgba(4,29,45,.28))}
+
+/* Los objetos de forma/número también son compactos para no invadir el carril vecino. */
+#cocoApp .c144RunnerObject.runner-token:not([data-runner-display="category"]){
+  width:88px!important;height:88px!important;padding:7px!important;border-radius:20px!important
+}
+#cocoApp .c144RunnerObject.runner-token:not([data-runner-display="category"]) .c147RunnerTokenGlyph{font-size:45px!important}
+#cocoApp .c144RunnerObject.c145Gate{width:112px!important;height:82px!important}
+#cocoApp .c144RunnerObject.obstacle{width:64px!important;height:60px!important;padding:5px!important;border-radius:15px!important}
+
+/* Diferencias: la modificación visual está en el canvas, nunca en una capa coloreada. */
+#cocoApp .c144DiffScene,#cocoApp .c144DiffScene canvas{isolation:isolate}
+#cocoApp .c144DiffHit:not(.found){background:transparent!important;border:0!important;box-shadow:none!important;outline:0!important}
+
+@media(max-width:640px){
+  #cocoApp .c152LaneStrip{bottom:36px;grid-template-columns:repeat(5,14px);gap:5px;padding:4px 6px}
+  #cocoApp .c152LaneStrip i{width:14px;height:4px}
+  #cocoApp .c144RunnerObject[data-runner-display="category"]{width:86px!important;height:82px!important}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{width:72px!important;height:68px!important}
+  #cocoApp .c151RunnerTintedCanvas{width:72px!important;height:72px!important}
+  #cocoApp .c151RunnerColorName{right:-4px!important;top:-1px!important;font-size:6.5px!important;padding:3px 5px!important}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{top:67px!important;max-width:120px!important;font-size:7.2px!important;padding:3px 5px!important}
+  #cocoApp .c144RunnerObject.runner-token:not([data-runner-display="category"]){width:67px!important;height:67px!important;padding:5px!important;border-radius:16px!important}
+  #cocoApp .c144RunnerObject.runner-token:not([data-runner-display="category"]) .c147RunnerTokenGlyph{font-size:34px!important}
+  #cocoApp .c144RunnerObject.c145Gate{width:86px!important;height:64px!important}
+  #cocoApp .c144RunnerObject.obstacle{width:50px!important;height:48px!important}
+}
+
+@media(max-width:380px){
+  #cocoApp .c144RunnerObject[data-runner-display="category"]{width:78px!important;height:75px!important}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c151RunnerVisual{width:65px!important;height:61px!important}
+  #cocoApp .c151RunnerTintedCanvas{width:65px!important;height:65px!important}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{top:60px!important;max-width:108px!important;font-size:6.7px!important}
+}

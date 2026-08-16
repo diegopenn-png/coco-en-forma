@@ -1,0 +1,9 @@
+COCO EN FORMA v152.0
+====================
+
+1. Subir todos los archivos de esta carpeta a GitHub / hosting sustituyendo la versión anterior.
+2. No ejecutar SQL: esta versión no necesita cambios de Supabase.
+3. La PWA usa un único Service Worker y todos los JS/CSS llevan ?v=15200.
+4. Al primer arranque después del despliegue puede recargarse una vez para activar el worker v152.
+5. Coco Corre: 5 carriles reales y alcanzables.
+6. Diferencias: cambios naturales en objetos, sin manchas/figuras superpuestas ni recoloración morada general.

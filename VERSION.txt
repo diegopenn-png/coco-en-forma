@@ -1,0 +1,4 @@
+Coco en Forma v152.0
+Build: 2026-08-16
+Fingerprint: 15200
+PWA: single-service-worker / network-only-no-store
