@@ -3,7 +3,7 @@
 
   if (root.CocoV144) return;
 
-  var VERSION = "150.0.0";
+  var VERSION = "153.0.0";
   var modal = null;
   var modalBody = null;
   var modalTitle = null;
@@ -133,13 +133,14 @@
     modal.setAttribute("aria-labelledby", "cocoV144ModalTitle");
     modal.innerHTML = '<div class="cocoV144Shell" tabindex="-1">' +
       '<header class="cocoV144Header"><div><span class="cocoV144Kicker"></span><h2 id="cocoV144ModalTitle"></h2></div>' +
-      '<div class="cocoV144HeaderActions"><button type="button" data-v144-sound aria-label="Activar o desactivar sonido"></button><button type="button" data-v144-close aria-label="Cerrar">×</button></div></header>' +
+      '<div class="cocoV144HeaderActions"><button type="button" data-v144-share aria-label="Compartir este juego">↗</button><button type="button" data-v144-sound aria-label="Activar o desactivar sonido"></button><button type="button" data-v144-close aria-label="Cerrar">×</button></div></header>' +
       '<div class="cocoV144Body"></div></div>';
     document.body.appendChild(modal);
     modalBody = modal.querySelector(".cocoV144Body");
     modalTitle = modal.querySelector("#cocoV144ModalTitle");
     modalKicker = modal.querySelector(".cocoV144Kicker");
     modal.querySelector("[data-v144-close]").onclick = closeModal;
+    modal.querySelector("[data-v144-share]").onclick = function () { var module = modal && modal.dataset && modal.dataset.module || ""; if (module && typeof root.CocoShareGameV153 === "function") root.CocoShareGameV153(module); };
     var soundButton = modal.querySelector("[data-v144-sound]"), initiallyMuted = localStorage.getItem("coco_sonido") === "0";
     soundButton.innerHTML = soundIcon(initiallyMuted);
     soundButton.setAttribute("aria-label", initiallyMuted ? "Activar sonido" : "Desactivar sonido");
@@ -170,7 +171,7 @@
     previousFocus = document.activeElement;
     modal.dataset.module = options.module || "";
     modalTitle.textContent = options.title || "Coco en Forma";
-    modalKicker.textContent = options.kicker || "COCO EN FORMA · v150.0";
+    modalKicker.textContent = options.kicker || "COCO EN FORMA · v153.0";
     modalBody.innerHTML = options.html || "";
     disposer = typeof options.dispose === "function" ? options.dispose : null;
     modal.classList.add("visible");
@@ -196,70 +197,6 @@
     if (modalKicker && kicker) modalKicker.textContent = kicker;
   }
 
-  function runnerIcon() {
-    return '<svg class="cocoV144RunnerIcon" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="run144" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1f9ed2"/><stop offset="1" stop-color="#5b4dc8"/></linearGradient></defs><rect x="4" y="4" width="112" height="112" rx="30" fill="url(#run144)"/><path d="M23 90 43 34h34l20 56" fill="none" stroke="#d9f5ff" stroke-width="9" stroke-linecap="round" opacity=".75"/><path d="M60 18v82M35 101l10-25M85 101 75 76" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".95"/><path d="m60 30 7 14 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2Z" fill="#ffd64a" stroke="#17394b" stroke-width="3"/></svg>';
-  }
-
-  function personalRunnerHistory() {
-    try { return JSON.parse(localStorage.getItem("coco_runner_history_v144") || "[]"); }
-    catch (_) { return []; }
-  }
-
-  function runnerCompletedToday() {
-    var userId = root.CocoDailyV134 && root.CocoDailyV134.userId ? root.CocoDailyV134.userId() : "visitante";
-    return Boolean(root.CocoDailyV134 && root.CocoDailyV134.localUsed && root.CocoDailyV134.localUsed("cococorre", userId || "visitante", today()));
-  }
-
-  function unlimitedTesting() {
-    var userId = root.CocoDailyV134 && root.CocoDailyV134.userId ? root.CocoDailyV134.userId() : "";
-    return Boolean(root.CocoDailyV134 && typeof root.CocoDailyV134.isUnlimited === "function" && root.CocoDailyV134.isUnlimited(userId));
-  }
-
-  function transformRunnerCard(card) {
-    if (!card || card.dataset.cocoV144Game === "cococorre") return;
-    card.dataset.cocoV144Game = "cococorre";
-    card.dataset.cocoJuego = "cococorre";
-    card.dataset.cocoClasificacion = "general";
-    card.classList.add("cocoV144RunnerCard");
-    card.classList.remove("cocoDailyComplete", "cocoConstruccion");
-    ["cocoV132Bound", "cocoV132Ready", "cocoV132Loading", "cocoDailyState"].forEach(function (key) { delete card.dataset[key]; });
-    var visual = card.querySelector(".emoji,.cocoIconoEspecial"); if (visual) visual.innerHTML = runnerIcon();
-    var title = card.querySelector("h3"); if (title) title.textContent = "Coco Corre";
-    var description = card.querySelector(".cocoDescripcion,p.pequeno.apagado"); if (description) { description.classList.add("cocoDescripcion"); description.textContent = "Misión breve por tres carriles para entrenar atención, memoria y control mental."; }
-    var state = card.querySelector(".cocoEstadoObra,.cocoArcadeCardScore");
-    if (state) {
-      state.className = "cocoArcadeCardScore";
-      state.innerHTML = '<b>—</b>&nbsp;cargando puntos';
-      if (root.CocoArcadeV133 && typeof root.CocoArcadeV133.loadStats === "function") root.CocoArcadeV133.loadStats("cococorre").then(function (stats) {
-        if (!state.isConnected) return;
-        state.innerHTML = '<b>' + Math.round(Number(stats && stats.total) || 0).toLocaleString("es-ES") + '</b>&nbsp;puntos en este reto';
-      }).catch(function () {});
-    }
-    var badge = card.querySelector(".cocoLigaBadge");
-    if (badge) { var freshBadge = badge.cloneNode(false); freshBadge.className = "cocoLigaBadge"; freshBadge.innerHTML = '<span aria-hidden="true">🏆</span><b>Clasificación general</b>'; freshBadge.setAttribute("aria-label", "Ver clasificación general"); badge.replaceWith(freshBadge); }
-    var share = card.querySelector(".cocoCardShare"); if (share) share.remove();
-    var button = card.querySelector(".cocoBotonJuego,.btn");
-    if (button) {
-      var fresh = button.cloneNode(false), completed = runnerCompletedToday();
-      fresh.type = "button"; fresh.className = button.className; fresh.dataset.cocoV144Open = "runner";
-      fresh.disabled = completed; fresh.setAttribute("aria-disabled", completed ? "true" : "false");
-      fresh.textContent = completed ? "Completado hoy" : unlimitedTesting() ? "Probar otra vez" : "Comenzar misión";
-      button.replaceWith(fresh);
-    }
-  }
-
-  function transformRunnerMini(item) {
-    if (!item || item.dataset.cocoV144Game === "cococorre") return;
-    var fresh = item.cloneNode(true);
-    fresh.dataset.cocoV144Game = "cococorre";
-    fresh.dataset.cocoV144Open = "runner";
-    fresh.dataset.cocoJuego = "cococorre";
-    var title = fresh.querySelector("b"); if (title) title.textContent = "Coco Corre";
-    var icon = fresh.querySelector(".cocoMiniIcono"); if (icon) icon.innerHTML = runnerIcon();
-    var state = fresh.querySelector(".cocoMiniEstado"); if (state) state.textContent = runnerCompletedToday() ? "Completado hoy" : unlimitedTesting() ? "Pruebas ilimitadas" : "Una vez al día";
-    item.replaceWith(fresh);
-  }
-
   function titleOf(node) {
     var title = node && node.querySelector && node.querySelector("h3,b");
     return title ? String(title.textContent || "").trim() : "";
@@ -267,39 +204,23 @@
 
   function removeEnglishExposure() {
     var arcade = root.CocoArcadeV133;
-    if (arcade) {
-      if (arcade.games) delete arcade.games.ingles;
-      [arcade.classification && arcade.classification.generalIds, arcade.classification && arcade.classification.specificIds].forEach(function (list) {
-        if (!Array.isArray(list)) return;
-        for (var index = list.length - 1; index >= 0; index--) if (list[index] === "ingles") list.splice(index, 1);
-      });
-      var general = arcade.classification && arcade.classification.generalIds;
-      if (Array.isArray(general) && general.indexOf("cococorre") < 0) general.push("cococorre");
-      if (!arcade.__v144OpenWrapped && typeof arcade.open === "function") {
-        var originalOpen = arcade.open;
-        arcade.open = function (gameId) { if (gameId === "ingles" || gameId === "cococorre") { var runner = root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144; return runner && runner.open(); } return originalOpen.apply(this, arguments); };
-        arcade.__v144OpenWrapped = true;
-      }
-    }
+    if (!arcade) return;
+    if (arcade.games) delete arcade.games.ingles;
+    [arcade.classification && arcade.classification.generalIds, arcade.classification && arcade.classification.specificIds].forEach(function (list) {
+      if (!Array.isArray(list)) return;
+      for (var index = list.length - 1; index >= 0; index--) if (list[index] === "ingles") list.splice(index, 1);
+    });
   }
 
   function enhanceCatalog() {
     removeEnglishExposure();
     var app = document.getElementById("cocoApp"); if (!app) return;
-    Array.prototype.slice.call(app.querySelectorAll(".cocoGameCard")).forEach(function (card) {
-      var dataId = String(card.dataset.cocoJuego || "").toLowerCase(), title = titleOf(card);
-      if (dataId === "ingles" || dataId === "cococorre" || /^(coco\s*)?ingl[eé]s$/i.test(title) || /^coco\s+corre$/i.test(title)) transformRunnerCard(card);
-    });
-    Array.prototype.slice.call(app.querySelectorAll(".cocoMiniJuego")).forEach(function (item) {
-      var dataId = String(item.dataset.cocoJuego || "").toLowerCase(), title = titleOf(item);
-      if (dataId === "ingles" || dataId === "cococorre" || /^(coco\s*)?ingl[eé]s$/i.test(title) || /^coco\s+corre$/i.test(title)) transformRunnerMini(item);
-    });
     app.querySelectorAll('[data-coco-juego="ingles"],[href*="ingles" i],[data-game="ingles"]').forEach(function (node) {
       if (node.closest && (node.closest(".cocoGameCard") || node.closest(".cocoMiniJuego"))) return;
       node.remove();
     });
     var note = app.querySelector(".cocoRetosNota");
-    if (note) { var noteCopy = unlimitedTesting() ? "Modo de pruebas activo: partidas ilimitadas en todos los juegos. Solo el primer resultado válido de cada juego y día puntúa. Coco Pádel continúa siendo ilimitado." : "Una partida breve por juego y día. Coco Corre suma una puntuación diaria a la clasificación general. Coco Pádel es ilimitado."; if (note.textContent !== noteCopy) note.textContent = noteCopy; }
+    if (note) { var noteCopy = "Una partida breve por juego y día. Coco Pádel Club es una herramienta ilimitada."; if (note.textContent !== noteCopy) note.textContent = noteCopy; }
   }
 
   function scheduleEnhance() {
@@ -310,24 +231,19 @@
   function identifiedFeature(target) {
     var card = target && target.closest ? target.closest(".cocoGameCard,.cocoMiniJuego") : null;
     if (!card) return "";
-    if (card.dataset.cocoV144Game === "cococorre") return "runner";
     var raw = String(card.dataset.cocoJuego || "").toLowerCase(), title = titleOf(card);
     if (raw === "padel" || /^coco\s+p[aá]del/i.test(title) || title === "Pádel") return "padel";
-    if (raw === "diferencias" || /encuentra las diferencias/i.test(title)) return "differences";
     return "";
   }
 
   document.addEventListener("click", function (event) {
+    if (event.target && event.target.closest && event.target.closest(".cocoCardShare")) return;
     var action = event.target && event.target.closest && event.target.closest("[data-coco-v144-open]");
     var feature = action ? action.dataset.cocoV144Open : identifiedFeature(event.target);
-    if (!feature) return;
-    var actionable = action || event.target.closest("button,.cocoMiniJuego,.cocoLigaBadge");
-    if (!actionable) return;
-    if (feature === "runner" && actionable.classList && actionable.classList.contains("cocoLigaBadge")) return;
+    if (feature !== "padel") return;
+    var actionable = action || event.target.closest("button,.cocoMiniJuego"); if (!actionable) return;
     event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
-    if (feature === "runner" && (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144)) (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
-    else if (feature === "padel" && (root.CocoPadelV149 || root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144)) (root.CocoPadelV149 || root.CocoPadelV148 || root.CocoPadelV147 || root.CocoPadelV146 || root.CocoPadelV144).open();
-    else if (feature === "differences" && (root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144)) (root.CocoDifferencesProV149 || root.CocoDifferencesProV148 || root.CocoDifferencesProV147 || root.CocoDifferencesProV146 || root.CocoDifferencesProV144).open();
+    if (root.CocoPadelV152 || root.CocoPadelV149 || root.CocoPadelV144) (root.CocoPadelV152 || root.CocoPadelV149 || root.CocoPadelV144).open();
   }, true);
 
   root.CocoV144 = {
@@ -345,15 +261,12 @@
     setModalTitle: setModalTitle,
     body: function () { return modalBody; },
     enhanceCatalog: enhanceCatalog,
-    runnerCompletedToday: runnerCompletedToday,
     audit: function () {
       var arcade = root.CocoArcadeV133 || {}, specific = arcade.classification && arcade.classification.specificIds || [];
       return {
         version: VERSION,
         englishVisible: Boolean(document.querySelector('[data-coco-juego="ingles"]')),
         englishInSpecificRanking: specific.indexOf("ingles") >= 0,
-        runnerInGeneralRanking: Boolean(arcade.classification && arcade.classification.generalIds && arcade.classification.generalIds.indexOf("cococorre") >= 0),
-        runnerInSpecificRanking: specific.indexOf("cococorre") >= 0,
         padelUnlimited: true,
         publicDeploymentPerformed: false
       };
@@ -363,7 +276,7 @@
   root.CocoV148 = root.CocoV144;
   root.CocoV147 = root.CocoV144;
   root.CocoV146 = root.CocoV144;
-  root.COCO_VERSION = "2026-08-16-v150.0-nueva-linea-desde-v149";
+  root.COCO_VERSION = "2026-08-20-v153.0-simplificada-compartible";
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhanceCatalog);
   else enhanceCatalog();
   observer = new MutationObserver(scheduleEnhance);
@@ -371,10 +284,4 @@
   root.addEventListener("coco:daily-completed", scheduleEnhance);
   root.addEventListener("coco:daily-user", scheduleEnhance);
   root.addEventListener("coco:daily-sync", scheduleEnhance);
-  setTimeout(function () {
-    try {
-      var activeModal = document.querySelector(".cocoV144Modal.visible");
-      if (new URLSearchParams(location.search).get("juego") === "cococorre" && (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144) && (!activeModal || activeModal.dataset.module !== "runner")) (root.CocoRunnerV149 || root.CocoRunnerV148 || root.CocoRunnerV147 || root.CocoRunnerV146 || root.CocoRunnerV144).open();
-    } catch (_) {}
-  }, 260);
 })(window);

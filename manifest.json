@@ -1,10 +1,10 @@
 {
   "id": "./",
-  "start_url": "./?source=pwa-v152",
+  "start_url": "./?source=pwa-v153",
   "scope": "./",
   "name": "Coco en Forma",
   "short_name": "Coco",
-  "description": "Entrenamiento cognitivo familiar, gratuito, sin publicidad y con sesiones breves.",
+  "description": "Retos cognitivos breves para entrenar memoria, cálculo, lenguaje, lógica y atención jugando con Coco.",
   "lang": "es",
   "dir": "ltr",
   "display": "standalone",

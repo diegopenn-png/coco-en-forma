@@ -85,7 +85,7 @@
   var generators = {
     numeros: 180, calculo: 160, palabras: 60, series: 120, memoria: 60, sudoku: 80,
     sopa: 120, crucigrama: 80, tiempo: 160, verdadero: 36, cocomed: 180,
-    futbol: 120, diferencias: 30, cococorre: 30
+    futbol: 120
   };
 
   function stableChallenges(game, level) {
