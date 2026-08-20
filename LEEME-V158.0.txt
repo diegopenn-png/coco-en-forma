@@ -1,0 +1,7 @@
+COCO EN FORMA v158.0
+
+1. Subir todo el contenido de esta carpeta al repositorio sustituyendo la versión anterior.
+2. No hay que ejecutar SQL nuevo en Supabase.
+3. Tras publicar, hacer una recarga completa para recibir el Service Worker v158.
+4. En ordenador debe verse el acceso “Instala Coco en tu dispositivo”.
+5. En iPhone/iPad, el tutorial muestra el logotipo  de Apple y los pasos de Safari.

@@ -3391,8 +3391,8 @@ else{var primos=[2,3,5,7,11,13,17,19,23,29,31];a=L(0,4);for(n=0;n<6;n++)add(prim
 }
 </style>
 
-<!-- COCO v157 · Instalación PWA móvil/tablet · INICIO -->
-<style id="coco-v157-install-css">
+<!-- COCO v158 · Instalación PWA todos los dispositivos · INICIO -->
+<style id="coco-v158-install-css">
 .cocoInstallEntry{
   width:min(100%,1180px);margin:4px auto 15px;padding:0;border:0;background:transparent;
   display:flex;align-items:stretch;position:relative;z-index:70;box-sizing:border-box
@@ -3442,6 +3442,9 @@ else{var primos=[2,3,5,7,11,13,17,19,23,29,31];a=L(0,4);for(n=0;n<6;n++)add(prim
 .cocoInstallPanel.activo{display:block}
 .cocoInstallDeviceHead{display:flex;align-items:center;gap:11px;margin-bottom:10px}
 .cocoInstallDeviceIcon{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;background:#17394B;color:#fff;font-size:22px;flex:0 0 45px}
+.cocoAppleLogo,.cocoAppleDeviceIcon{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;font-style:normal;font-weight:700;line-height:1}
+.cocoAppleLogo{display:inline-block;font-size:18px;vertical-align:-1px;margin-right:3px}
+.cocoAppleDeviceIcon{font-size:29px!important}
 .cocoInstallDeviceHead small{display:block;color:#EF6C05;font-size:10px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
 .cocoInstallDeviceHead h3{margin:1px 0 0!important;color:#17394B!important;font-size:21px!important;line-height:1.1!important}
 .cocoInstallBrowserNote{display:none;margin:0 0 10px;padding:10px 11px;border-radius:13px;background:#FFF8E9;border:1px solid #F7D69B;color:#80500B;font-size:12.5px;font-weight:800;line-height:1.4}
@@ -3466,7 +3469,11 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
   .cocoInstallLead{font-size:14.5px!important}.cocoInstallNoStores{font-size:13.5px}
   .cocoInstallPanel{padding:14px 12px}.cocoInstallDeviceHead h3{font-size:19px!important}.cocoInstallStep p{font-size:13.5px!important}
 }
-@media(min-width:1100px) and (hover:hover) and (pointer:fine){.cocoInstallEntry{display:none!important}}
+
+@media(min-width:1100px) and (hover:hover) and (pointer:fine){
+  .cocoInstallEntry{width:min(100%,1180px);margin:6px auto 17px!important;display:flex!important}
+  .cocoInstallEntryCard{min-height:74px}
+}
 @media(display-mode:standalone){.cocoInstallEntry{display:flex!important}}
 .cocoInstallEntry.instalada .cocoInstallEntryCard{cursor:default;background:linear-gradient(135deg,#F1FBF6,#E8F8F0);border-color:#BEE8D1;box-shadow:0 5px 0 #D5EEE0,0 12px 28px rgba(25,117,81,.08)}
 .cocoInstallEntry.instalada .cocoInstallEntryCard:hover,.cocoInstallEntry.instalada .cocoInstallEntryCard:active{transform:none;box-shadow:0 5px 0 #D5EEE0,0 12px 28px rgba(25,117,81,.08)}
@@ -3475,10 +3482,10 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
 .cocoInstallEntry.instalada .cocoInstallEntryDismiss{display:none!important}
 </style>
 
-<script id="coco-v157-install-js">
+<script id="coco-v158-install-js">
 (function(){
-  if(window.__cocoInstallV157)return;
-  window.__cocoInstallV157=true;
+  if(window.__cocoInstallV158)return;
+  window.__cocoInstallV158=true;
   var deferredPrompt=null,installedThisSession=false,lastFocus=null;
   var IOS_RE=/iPad|iPhone|iPod/i,ANDROID_RE=/Android/i;
 
@@ -3497,30 +3504,30 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
   function yaInstalada(){
     return installedThisSession||window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone===true;
   }
-  function fueOcultada(){try{return sessionStorage.getItem("coco_install_dismiss_v157")==="1"}catch(e){return false}}
-  function marcarOculta(){try{sessionStorage.setItem("coco_install_dismiss_v157","1")}catch(e){}}
+  function fueOcultada(){try{return sessionStorage.getItem("coco_install_dismiss_v158")==="1"}catch(e){return false}}
+  function marcarOculta(){try{sessionStorage.setItem("coco_install_dismiss_v158","1")}catch(e){}}
 
   function iconoInstall(){return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6v8m0 0-3-3m3 3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 18.2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'}
   function iconoCheck(){return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.7 12.2l2.8 2.8 5.9-6.1" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>'}
 
   function crearOverlay(){
-    if(document.getElementById("cocoInstallOverlayV157"))return;
+    if(document.getElementById("cocoInstallOverlayV158"))return;
     var o=document.createElement("div");
-    o.id="cocoInstallOverlayV157";o.className="cocoInstallOverlay";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.setAttribute("aria-labelledby","cocoInstallTitleV157");
+    o.id="cocoInstallOverlayV158";o.className="cocoInstallOverlay";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.setAttribute("aria-labelledby","cocoInstallTitleV158");
     o.innerHTML=''+
       '<div class="cocoInstallModal">'+
       '<button class="cocoInstallClose" type="button" aria-label="Cerrar tutorial">×</button>'+
       '<p class="cocoInstallEyebrow">APLICACIÓN COCO EN FORMA</p>'+
-      '<h2 id="cocoInstallTitleV157">Instala Coco en tu dispositivo</h2>'+
-      '<p class="cocoInstallLead">Añade Coco en Forma a tu pantalla de inicio y ábrela como cualquier otra aplicación.</p>'+
+      '<h2 id="cocoInstallTitleV158">Instala Coco en tu dispositivo</h2>'+
+      '<p class="cocoInstallLead">Añade Coco en Forma a tu pantalla de inicio y ábrela como cualquier otra aplicación. Si estás en ordenador, puedes consultar aquí las instrucciones para iPhone, iPad y Android.</p>'+
       '<div class="cocoInstallBenefits"><span>100 % gratis</span><span>Sin publicidad</span><span>Acceso directo</span></div>'+
       '<div class="cocoInstallNoStores">No necesitas descargar Coco en Forma desde App Store ni Google Play.</div>'+
       '<div class="cocoInstallTabs" role="tablist" aria-label="Elige tu dispositivo">'+
-        '<button class="cocoInstallTab" type="button" role="tab" data-panel="ios">🍎 iPhone / iPad</button>'+
+        '<button class="cocoInstallTab" type="button" role="tab" data-panel="ios"><span class="cocoAppleLogo" aria-hidden="true"></span> iPhone / iPad</button>'+
         '<button class="cocoInstallTab" type="button" role="tab" data-panel="android">🤖 Android</button>'+
       '</div>'+
       '<section class="cocoInstallPanel" data-panel-id="ios" role="tabpanel">'+
-        '<div class="cocoInstallDeviceHead"><span class="cocoInstallDeviceIcon">🍎</span><div><small>IPHONE · IPAD · SAFARI</small><h3>Añade Coco a tu pantalla de inicio</h3></div></div>'+
+        '<div class="cocoInstallDeviceHead"><span class="cocoInstallDeviceIcon cocoAppleDeviceIcon" aria-hidden="true"></span><div><small>IPHONE · IPAD · SAFARI</small><h3>Añade Coco a tu pantalla de inicio</h3></div></div>'+
         '<div id="cocoInstallIOSNote" class="cocoInstallBrowserNote">Estás usando otro navegador. Para instalar Coco en iPhone o iPad, abre <b>cocoenforma.com</b> en Safari.</div>'+
         '<div class="cocoInstallStep"><span class="cocoInstallStepNum">1</span><p>Abre <b>cocoenforma.com</b> utilizando <b>Safari</b>.</p></div>'+
         '<div class="cocoInstallStep"><span class="cocoInstallStepNum">2</span><p>Pulsa el botón <b>Compartir</b> de Safari.</p></div>'+
@@ -3534,7 +3541,7 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
         '<div class="cocoInstallStep"><span class="cocoInstallStepNum">2</span><p>Si Chrome muestra <b>Instalar aplicación</b> o <b>Instalar Coco</b>, púlsalo.</p></div>'+
         '<div class="cocoInstallStep"><span class="cocoInstallStepNum">3</span><p>Si no aparece, abre el menú de los <b>tres puntos</b>.</p></div>'+
         '<div class="cocoInstallStep"><span class="cocoInstallStepNum">4</span><p>Selecciona <b>Instalar aplicación</b> o <b>Añadir a pantalla de inicio</b> y confirma.</p></div>'+
-        '<button id="cocoInstallDirectV157" class="cocoInstallDirect" type="button">Instalar Coco ahora</button>'+
+        '<button id="cocoInstallDirectV158" class="cocoInstallDirect" type="button">Instalar Coco ahora</button>'+
       '</section>'+
       '<p class="cocoInstallFoot">Puedes seguir jugando desde la web aunque no instales la aplicación.</p>'+
       '</div>';
@@ -3542,7 +3549,7 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
     o.querySelector('.cocoInstallClose').addEventListener('click',cerrar);
     o.addEventListener('click',function(e){if(e.target===o)cerrar()});
     o.querySelectorAll('.cocoInstallTab').forEach(function(tab){tab.addEventListener('click',function(){activarPanel(tab.getAttribute('data-panel'))})});
-    o.querySelector('#cocoInstallDirectV157').addEventListener('click',async function(){
+    o.querySelector('#cocoInstallDirectV158').addEventListener('click',async function(){
       if(!deferredPrompt)return;
       deferredPrompt.prompt();
       try{await deferredPrompt.userChoice}catch(e){}
@@ -3551,34 +3558,33 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
   }
 
   function activarPanel(id){
-    document.querySelectorAll('#cocoInstallOverlayV157 .cocoInstallTab').forEach(function(t){var on=t.getAttribute('data-panel')===id;t.classList.toggle('activo',on);t.setAttribute('aria-selected',on?'true':'false')});
-    document.querySelectorAll('#cocoInstallOverlayV157 .cocoInstallPanel').forEach(function(p){p.classList.toggle('activo',p.getAttribute('data-panel-id')===id)});
+    document.querySelectorAll('#cocoInstallOverlayV158 .cocoInstallTab').forEach(function(t){var on=t.getAttribute('data-panel')===id;t.classList.toggle('activo',on);t.setAttribute('aria-selected',on?'true':'false')});
+    document.querySelectorAll('#cocoInstallOverlayV158 .cocoInstallPanel').forEach(function(p){p.classList.toggle('activo',p.getAttribute('data-panel-id')===id)});
   }
   function actualizarNotas(){
     var ni=document.getElementById('cocoInstallIOSNote'),na=document.getElementById('cocoInstallAndroidNote');
     if(ni)ni.classList.toggle('visible',isIOS()&&!isSafari());
     if(na)na.classList.toggle('visible',isAndroid()&&!isChromeAndroid());
   }
-  function actualizarDirecto(){var b=document.getElementById('cocoInstallDirectV157');if(b)b.classList.toggle('visible',Boolean(deferredPrompt)&&isAndroid())}
+  function actualizarDirecto(){var b=document.getElementById('cocoInstallDirectV158');if(b)b.classList.toggle('visible',Boolean(deferredPrompt)&&isAndroid())}
   function abrir(){
     crearOverlay();lastFocus=document.activeElement;
-    var o=document.getElementById('cocoInstallOverlayV157');if(!o)return;
+    var o=document.getElementById('cocoInstallOverlayV158');if(!o)return;
     activarPanel(isAndroid()?'android':'ios');actualizarNotas();actualizarDirecto();
     o.classList.add('abierto');document.body.classList.add('cocoInstallLocked');
     setTimeout(function(){var c=o.querySelector('.cocoInstallClose');if(c)c.focus()},20);
   }
   function cerrar(){
-    var o=document.getElementById('cocoInstallOverlayV157');if(o)o.classList.remove('abierto');
+    var o=document.getElementById('cocoInstallOverlayV158');if(o)o.classList.remove('abierto');
     document.body.classList.remove('cocoInstallLocked');
     if(lastFocus&&typeof lastFocus.focus==='function')try{lastFocus.focus()}catch(e){}
   }
 
   function crearEntrada(){
     var instalada=yaInstalada();
-    if(!esMovilTablet()&&!instalada)return;
     if(!instalada&&fueOcultada())return;
-    var app=document.getElementById('cocoApp');if(!app||document.getElementById('cocoInstallEntryV157'))return;
-    var wrap=document.createElement('div');wrap.id='cocoInstallEntryV157';wrap.className='cocoInstallEntry'+(instalada?' instalada':'');
+    var app=document.getElementById('cocoApp');if(!app||document.getElementById('cocoInstallEntryV158'))return;
+    var wrap=document.createElement('div');wrap.id='cocoInstallEntryV158';wrap.className='cocoInstallEntry'+(instalada?' instalada':'');
     if(instalada){
       wrap.innerHTML='<div class="cocoInstallEntryCard" role="status" aria-live="polite"><span class="cocoInstallEntryIcon">'+iconoCheck()+'</span><span class="cocoInstallEntryText"><b>✓ Coco ya está instalada en este dispositivo</b><span>La estás usando como una app desde tu pantalla de inicio.</span></span><span class="cocoInstallEntryMeta">Lista para jugar</span></div>';
     }else{
@@ -3589,8 +3595,8 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
     app.insertBefore(wrap,app.firstChild);
   }
   function sincronizar(){
-    var e=document.getElementById('cocoInstallEntryV157'),instalada=yaInstalada();
-    var debeMostrar=esMovilTablet()||instalada;
+    var e=document.getElementById('cocoInstallEntryV158'),instalada=yaInstalada();
+    var debeMostrar=true;
     if(!debeMostrar||(!instalada&&fueOcultada())){if(e)e.remove();return}
     if(e&&e.classList.contains('instalada')!==instalada){e.remove();e=null}
     if(!e)crearEntrada();
@@ -3599,14 +3605,14 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
   window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;actualizarDirecto();sincronizar()});
   window.addEventListener('appinstalled',function(){installedThisSession=true;deferredPrompt=null;sincronizar();cerrar()});
   try{window.matchMedia('(display-mode: standalone)').addEventListener('change',function(e){if(e.matches){installedThisSession=true;sincronizar();cerrar()}})}catch(e){}
-  window.addEventListener('resize',function(){clearTimeout(window.__cocoInstallResizeV157);window.__cocoInstallResizeV157=setTimeout(sincronizar,120)});
+  window.addEventListener('resize',function(){clearTimeout(window.__cocoInstallResizeV158);window.__cocoInstallResizeV158=setTimeout(sincronizar,120)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')cerrar()});
 
   crearOverlay();sincronizar();
-  new MutationObserver(function(){clearTimeout(window.__cocoInstallMutationV157);window.__cocoInstallMutationV157=setTimeout(sincronizar,90)}).observe(document.getElementById('cocoApp')||document.body,{childList:true,subtree:true});
+  new MutationObserver(function(){clearTimeout(window.__cocoInstallMutationV158);window.__cocoInstallMutationV158=setTimeout(sincronizar,90)}).observe(document.getElementById('cocoApp')||document.body,{childList:true,subtree:true});
 })();
 </script>
-<!-- COCO v157 · Instalación PWA móvil/tablet · FIN -->
+<!-- COCO v158 · Instalación PWA todos los dispositivos · FIN -->
 
 <!-- COCO MED PRO V3 START -->
 <style id="coco-med-pro-v3-css">
