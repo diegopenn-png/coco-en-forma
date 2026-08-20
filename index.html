@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-20-v154.0-miniaturas-sociales-oficiales --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Coco en Forma | Entrena el cerebro jugando</title>
+<!DOCTYPE html><html lang="es"><head><!-- COCO VERSION 2026-08-20-v155.0-identidad-unificada --><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Coco en Forma | Entrena el cerebro jugando</title>
 <meta name="description" content="Entrenamiento cognitivo lúdico para todas las edades: una misión diaria por juego para practicar memoria, cálculo, lenguaje, atención, velocidad y coordinación.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.cocoenforma.com/">
@@ -501,7 +501,7 @@
 <link rel="stylesheet" href="./coco-v149-refinements.css?v=15000"><link rel="stylesheet" href="./coco-v152-refinements.css?v=15200"><link rel="stylesheet" href="./coco-v153-release.css?v=15300">
 <script src="./supabase-js-2.112.3.min.js?v=15000"></script>
 </head><body>
-<script>window.COCO_VERSION="2026-08-20-v154.0-miniaturas-sociales-oficiales";window.COCO_GENERAL_RANKING_IDS_V153=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://www.cocoenforma.com/icon-512.png',correo:'info@cocoenforma.com',privacidad:'https://www.cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',cuentasPruebaIlimitadas:['diegopenn@icloud.com']};</script>
+<script>window.COCO_VERSION="2026-08-20-v155.0-identidad-unificada";window.COCO_GENERAL_RANKING_IDS_V153=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://www.cocoenforma.com/icon-512.png',correo:'info@cocoenforma.com',privacidad:'https://www.cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',cuentasPruebaIlimitadas:['diegopenn@icloud.com']};</script>
 <style id="coco-v134-style">:root{color-scheme:light}
 html{scroll-behavior:smooth}
 body{min-height:100dvh}
@@ -2218,9 +2218,9 @@ else{var primos=[2,3,5,7,11,13,17,19,23,29,31];a=L(0,4);for(n=0;n<6;n++)add(prim
 
   function nombreJuego(id){
     var mapa={
-      numeros:"Números conectados",calculo:"Cálculo rápido",palabras:"Palabras",
+      numeros:"Une los números · Coco en Forma — Conecta la secuencia sin repetir casillas. Entrena planificación, atención visual y coordinación.",calculo:"Cálculo rápido",palabras:"Palabras",
       zip:"Camino ZIP",abaco:"Ábaco",series:"Series",memoria:"Memoria",
-      sudoku:"Sudoku",sopa:"Sopa de letras"
+      sudoku:"Sudoku · Coco en Forma — Completa el tablero sin repetir números.",sopa:"Sopa de letras"
     };
     return mapa[id]||String(id||"Otro");
   }
@@ -4759,9 +4759,9 @@ var JUEGOS=[
  {id:"tiempo",nombre:"Reto tiempo",grupo:"general",estado:"obra",color:"cocoNaranja",descripcion:"Responde antes de que se acabe el tiempo."},
  {id:"verdadero",nombre:"Verdadero o falso",grupo:"general",estado:"obra",color:"cocoVerde",descripcion:"Decide si cada afirmación es correcta."},
  {id:"cocomed",nombre:"Coco Med",grupo:"propio",estado:"listo",color:"cocoNaranja",descripcion:"Poné a prueba tus conocimientos sobre salud y aprendé con una explicación después de cada respuesta."},
- {id:"futbol",nombre:"Fútbol",grupo:"general",estado:"obra",color:"cocoVerde",descripcion:"Responde preguntas sobre fútbol y demuestra tus conocimientos."},
+ {id:"futbol",nombre:"Fútbol",grupo:"general",estado:"obra",color:"cocoVerde",descripcion:"Memoriza las zonas que se iluminan y chuta al espacio que quedó libre."},
  {id:"baloncesto",nombre:"Baloncesto",grupo:"propio",estado:"obra",color:"cocoNaranja",descripcion:"Pon a prueba tu pasión y conocimiento sobre baloncesto."},
- {id:"padel",nombre:"Pádel",grupo:"propio",estado:"listo",color:"cocoAzul",descripcion:"Demuestra todo lo que sabes sobre pádel y mejora cada día."},
+ {id:"padel",nombre:"Pádel",grupo:"propio",estado:"listo",color:"cocoAzul",descripcion:"Organiza mixings y campeonatos, registra resultados y sigue la clasificación de tus jugadores."},
 ];
 var iconosAcceso={};
 var raf=0;
@@ -4794,7 +4794,7 @@ function prepararAcceso(app){
  if(retos.dataset.cocoV124!=="1"){
   capturarIconos(retos);retos.dataset.cocoV124="1";
   var juegosContinuos=JUEGOS.slice();
-  function lista(items){return '<div class="cocoMiniJuegos">'+items.map(function(j){return '<div class="cocoMiniJuego"><span class="cocoMiniIcono">'+miniIcono(j)+'</span><b>'+escapar(j.nombre)+'</b><span class="cocoMiniEstado '+(j.estado==="obra"?'obra':'')+'">'+(j.estado==="obra"?'En construcción':'Disponible')+'</span></div>'}).join("")+'</div>'}
+  function lista(items){return '<div class="cocoMiniJuegos">'+items.map(function(j){return '<div class="cocoMiniJuego" data-coco-juego="'+j.id+'"><span class="cocoMiniIcono">'+miniIcono(j)+'</span><b>'+escapar(j.nombre)+'</b><span class="cocoMiniEstado '+(j.estado==="obra"?'obra':'')+'">'+(j.estado==="obra"?'En construcción':'Disponible')+'</span></div>'}).join("")+'</div>'}
   retos.innerHTML='<span class="cocoEyebrow">Juega · aprende · avanza</span><h2>Todos los juegos</h2><p class="cocoRetosIntro">Entrena cada día, suma puntos y avanza a tu ritmo.</p>'+lista(juegosContinuos)+'<p class="cocoRetosNota">Cada juego permite una sola partida al día y vuelve a abrirse mañana. Coco Pádel Club es una herramienta ilimitada.</p>';
  }
  return true;
@@ -6441,7 +6441,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   var TOOL_IDS=["padel"];
   var ALL_IDS=GENERAL_IDS.concat(OWN_IDS,TOOL_IDS);
   var TITLE_TO_ID={"Une los números":"numeros","Cálculo veloz":"calculo","Descifra la palabra":"palabras","Series lógicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto Tiempo":"tiempo","Reto tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Fútbol":"futbol","Coco Fútbol":"futbol","Pádel":"padel","Coco Pádel":"padel","Coco Pádel Club":"padel"};
-  var DISPLAY_NAMES={numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto Tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Coco Fútbol",padel:"Coco Pádel Club"};
+  var DISPLAY_NAMES={numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Fútbol",padel:"Pádel"};
   var GAME_META={
     numeros:{domain:"Atención y coordinación visomotora",group:"general",share:"Conecta la secuencia sin repetir casillas."},
     calculo:{domain:"Razonamiento cuantitativo",group:"general"},
@@ -6454,17 +6454,17 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     tiempo:{domain:"Velocidad de procesamiento",group:"general"},
     verdadero:{domain:"Razonamiento y conocimiento",group:"general"},
     cocomed:{domain:"Aprendizaje y razonamiento",group:"own"},
-    futbol:{domain:"Memoria y atención",group:"general",share:"Pon a prueba tu memoria futbolera en el penal de Coco."},
+    futbol:{domain:"Memoria y atención",group:"general",share:"Memoriza las zonas que se iluminan y chuta al espacio que quedó libre."},
     padel:{domain:"Actividad física y vínculo social",group:"tool"}
   };
   var clientCache=null,overlay=null,body=null,active=null,originButton=null,savedScroll=0,upgradeRaf=0,observer=null,rankingModal=null,rankingOrigin=null,familyModal=null,shareModal=null,suggestionModal=null,activeClassicId="",pendingSharedId="";
 
   var GAMES={
-    crucigrama:{id:"crucigrama",title:"Crucigrama",subtitle:"El archivo secreto de palabras de Coco",icon:"🧩",group:"general",type:"crossword",accent:"azul",description:"Cruza pistas, descubre palabras y enciende cada casilla del tablero.",features:[["Pistas claras","Aprende palabras nuevas"],["Teclado amigable","Toca o escribe"],["Progreso guardado","Una misión al día"]]},
-    tiempo:{id:"tiempo",title:"Reto Tiempo",subtitle:"La consola supersónica de Coco",icon:"⏱️",group:"general",type:"time",accent:"naranja",description:"Diez microdesafíos que mezclan cálculo, atención, patrones y velocidad.",features:[["Nivel adaptativo","Ajustado a tu edad"],["10 misiones","Una partida dinámica"],["Progreso guardado","Una misión al día"]]},
-    verdadero:{id:"verdadero",title:"Verdadero o falso",subtitle:"El laboratorio de certezas",icon:"⚖️",group:"general",type:"quiz",mode:"truefalse",accent:"verde",description:"Analiza cada afirmación, decide y descubre por qué es correcta o incorrecta.",features:[["10 afirmaciones","Ciencia, lengua y lógica"],["Explicación inmediata","Aprender importa"],["Progreso guardado","Una misión al día"]]},
-    futbol:{id:"futbol",title:"Coco Fútbol",subtitle:"Penal con memoria",icon:"⚽",group:"general",type:"football",accent:"verde",description:"Observa cinco señales rojas de una en una, recuérdalas y chuta al único lugar que nunca se encendió.",features:[["Memoria visual","Cinco señales, un único hueco"],["Secuencia limpia","Cada zona desaparece antes de la siguiente"],["3 velocidades","Básico, intermedio y avanzado"]]},
-    padel:{id:"padel",title:"Coco Pádel Club",subtitle:"Mixings que ponen al grupo en movimiento",icon:"🎾",group:"tool",type:"padel-club",accent:"azul",description:"Organiza jugadores sin límite, pistas reales, tiempos flexibles y resultados por games o sets.",features:[["Jugadores sin límite","Niveles bajo, medio y alto"],["Pistas personalizadas","Rondas y minutos configurables"],["Ranking e historial","Forma, victorias y games"]]}
+    crucigrama:{id:"crucigrama",title:"Crucigrama",subtitle:"El archivo secreto de palabras de Coco",icon:"🧩",group:"general",type:"crossword",accent:"azul",description:"Completa las palabras usando las pistas.",features:[["Pistas claras","Aprende palabras nuevas"],["Teclado amigable","Toca o escribe"],["Progreso guardado","Una misión al día"]]},
+    tiempo:{id:"tiempo",title:"Reto Tiempo",subtitle:"La consola supersónica de Coco",icon:"⏱️",group:"general",type:"time",accent:"naranja",description:"Responde antes de que se acabe el tiempo.",features:[["Nivel adaptativo","Ajustado a tu edad"],["10 misiones","Una partida dinámica"],["Progreso guardado","Una misión al día"]]},
+    verdadero:{id:"verdadero",title:"Verdadero o falso",subtitle:"El laboratorio de certezas",icon:"⚖️",group:"general",type:"quiz",mode:"truefalse",accent:"verde",description:"Decide si cada afirmación es correcta.",features:[["10 afirmaciones","Ciencia, lengua y lógica"],["Explicación inmediata","Aprender importa"],["Progreso guardado","Una misión al día"]]},
+    futbol:{id:"futbol",title:"Fútbol",subtitle:"Penal con memoria",icon:"⚽",group:"general",type:"football",accent:"verde",description:"Memoriza las zonas que se iluminan y chuta al espacio que quedó libre.",features:[["Memoria visual","Cinco señales, un único hueco"],["Secuencia limpia","Cada zona desaparece antes de la siguiente"],["3 velocidades","Básico, intermedio y avanzado"]]},
+    padel:{id:"padel",title:"Pádel",subtitle:"Mixings que ponen al grupo en movimiento",icon:"🎾",group:"tool",type:"padel-club",accent:"azul",description:"Organiza mixings y campeonatos, registra resultados y sigue la clasificación de tus jugadores.",features:[["Jugadores sin límite","Niveles bajo, medio y alto"],["Pistas personalizadas","Rondas y minutos configurables"],["Ranking e historial","Forma, victorias y games"]]}
   };
 
   var TRUE_FALSE=([
@@ -6776,19 +6776,19 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     return root+"/juego/"+encodeURIComponent(id)+"/";
   }
   var SHARE_MESSAGES_V153={
-    numeros:"Prueba Une los números en Coco en Forma 🧠 ¿Puedes completar el camino sin repetir casillas?",
-    calculo:"Prueba Cálculo veloz en Coco en Forma ⚡ Pon a prueba tu agilidad mental.",
-    palabras:"Prueba Descifra la palabra en Coco en Forma 🔤 ¿Cuántas palabras puedes resolver?",
-    series:"Prueba Series lógicas en Coco en Forma 🧩 Encuentra el patrón y reta tu lógica.",
-    memoria:"Prueba Memoria en Coco en Forma 🧠 Entrena tu capacidad de recordar jugando.",
-    sudoku:"Prueba Sudoku en Coco en Forma 🔢 Lógica, concentración y estrategia.",
-    sopa:"Prueba Sopa de letras en Coco en Forma 🔎 Encuentra las palabras antes que nadie.",
-    crucigrama:"Prueba Crucigrama en Coco en Forma ✏️ Pistas, palabras y memoria.",
-    tiempo:"Prueba Reto Tiempo en Coco en Forma ⏱️ ¿Hasta dónde llega tu velocidad mental?",
-    verdadero:"Prueba Verdadero o falso en Coco en Forma ⚖️ Decide rápido y aprende con cada respuesta.",
-    futbol:"Prueba Coco Fútbol en Coco en Forma ⚽ ¿Hasta dónde llega tu memoria futbolera?",
-    cocomed:"Prueba Coco Med en Coco en Forma 🩺 Aprende salud y medicina jugando.",
-    padel:"Descubre Coco Pádel Club 🎾 Organiza jugadores, jornadas y campeonatos en Coco en Forma."
+    numeros:"Une los números · Coco en Forma — Conecta la secuencia sin repetir casillas. Entrena planificación, atención visual y coordinación.",
+    calculo:"Cálculo veloz · Coco en Forma — Resuelve operaciones a contrarreloj.",
+    palabras:"Descifra la palabra · Coco en Forma — Ordena las letras con ayuda de una pista.",
+    series:"Series lógicas · Coco en Forma — Descubre el patrón y sigue la serie.",
+    memoria:"Memoria · Coco en Forma — Encuentra todas las parejas.",
+    sudoku:"Sudoku · Coco en Forma — Completa el tablero sin repetir números.",
+    sopa:"Sopa de letras · Coco en Forma — Encuentra las palabras escondidas.",
+    crucigrama:"Crucigrama · Coco en Forma — Completa las palabras usando las pistas.",
+    tiempo:"Reto tiempo · Coco en Forma — Responde antes de que se acabe el tiempo.",
+    verdadero:"Verdadero o falso · Coco en Forma — Decide si cada afirmación es correcta.",
+    futbol:"Fútbol · Coco en Forma — Memoriza las zonas que se iluminan y chuta al espacio que quedó libre.",
+    cocomed:"Coco Med · Coco en Forma — Pon a prueba tus conocimientos sobre salud y aprende con una explicación después de cada respuesta.",
+    padel:"Pádel · Coco en Forma — Organiza mixings y campeonatos, registra resultados y sigue la clasificación de tus jugadores."
   };
   function shareData(id){var game=GAMES[id]||{title:DISPLAY_NAMES[id]||"Coco en Forma"};return{title:game.title+" · Coco en Forma",text:SHARE_MESSAGES_V153[id]||"Entrena tu mente jugando con Coco en Forma.",url:shareUrl(id)}}
   async function copyText(text){var copied=false;try{await navigator.clipboard.writeText(text);copied=true}catch{var area=document.createElement("textarea");area.value=text;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();try{copied=document.execCommand("copy")}catch{}area.remove()}return copied}
@@ -7694,6 +7694,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 <script id="coco-v149-core" src="./coco-v144-core.js?v=15000"></script>
 <script id="coco-v152-padel" src="./coco-v152-padel.js?v=15200"></script>
 <script id="coco-v153-fixes" src="./coco-v153-fixes.js?v=15300"></script>
+<script id="coco-v155-identity" src="./coco-v155-identity.js?v=15500"></script>
 
 
 

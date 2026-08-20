@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v154.0.0-r1";
+const CACHE_VERSION = "coco-en-forma-v155.0.0-r1";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
@@ -15,6 +15,7 @@ const CORE_ASSET_PATHS = [
   "./coco-v144-core.js",
   "./coco-v152-padel.js",
   "./coco-v153-fixes.js",
+  "./coco-v155-identity.js",
   "./coco-v144-professional.css",
   "./coco-v147-refinements.css",
   "./coco-v149-refinements.css",
@@ -28,31 +29,31 @@ const CORE_ASSET_PATHS = [
   "./shortcut-icon.png",
   "./favicon.png",
   "./juego/numeros/index.html",
-  "./share/numeros-v154.jpg",
+  "./share/numeros.jpg",
   "./juego/calculo/index.html",
-  "./share/calculo-v154.jpg",
+  "./share/calculo.jpg",
   "./juego/palabras/index.html",
-  "./share/palabras-v154.jpg",
+  "./share/palabras.jpg",
   "./juego/series/index.html",
-  "./share/series-v154.jpg",
+  "./share/series.jpg",
   "./juego/memoria/index.html",
-  "./share/memoria-v154.jpg",
+  "./share/memoria.jpg",
   "./juego/sudoku/index.html",
-  "./share/sudoku-v154.jpg",
+  "./share/sudoku.jpg",
   "./juego/sopa/index.html",
-  "./share/sopa-v154.jpg",
+  "./share/sopa.jpg",
   "./juego/crucigrama/index.html",
-  "./share/crucigrama-v154.jpg",
+  "./share/crucigrama.jpg",
   "./juego/tiempo/index.html",
-  "./share/tiempo-v154.jpg",
+  "./share/tiempo.jpg",
   "./juego/verdadero/index.html",
-  "./share/verdadero-v154.jpg",
+  "./share/verdadero.jpg",
   "./juego/futbol/index.html",
-  "./share/futbol-v154.jpg",
+  "./share/futbol.jpg",
   "./juego/cocomed/index.html",
-  "./share/cocomed-v154.jpg",
+  "./share/cocomed.jpg",
   "./juego/padel/index.html",
-  "./share/padel-v154.jpg"
+  "./share/padel.jpg"
 ];
 function absolute(assetPath){return new URL(assetPath,SCOPE_URL).href}
 async function fetchAndCache(cache,assetPath){const assetUrl=absolute(assetPath);const response=await fetch(new Request(assetUrl,{cache:"reload"}));if(!response.ok)throw new Error(`Precache ${response.status}: ${assetPath}`);await cache.put(assetUrl,response.clone());return assetUrl}

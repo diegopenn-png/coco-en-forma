@@ -1,3 +1,29 @@
+COCO EN FORMA v155.0 — ACTUALIZACIÓN DE LIMPIEZA
+Fecha: 20/08/2026
+Base actual: v154.0
+
+NOVEDAD v155
+La identidad de cada juego usa ahora un único archivo físico estable: share/<id>.jpg.
+Después de publicar v155 y comprobar que funciona, si todavía existen en GitHub se pueden borrar estos 13 archivos antiguos:
+- share/numeros-v154.jpg
+- share/calculo-v154.jpg
+- share/palabras-v154.jpg
+- share/series-v154.jpg
+- share/memoria-v154.jpg
+- share/sudoku-v154.jpg
+- share/sopa-v154.jpg
+- share/crucigrama-v154.jpg
+- share/tiempo-v154.jpg
+- share/verdadero-v154.jpg
+- share/futbol-v154.jpg
+- share/cocomed-v154.jpg
+- share/padel-v154.jpg
+
+NO BORRAR EN v155:
+- share/numeros.jpg ... share/padel.jpg (13 miniaturas oficiales activas)
+- coco-v155-identity.js (capa activa que unifica catálogo/inicio/compartir)
+
+--- HISTÓRICO DE LIMPIEZA v153 ---
 COCO EN FORMA v153.0 — AUDITORÍA DE LIMPIEZA
 Fecha: 20/08/2026
 Base auditada: Coco-en-Forma-v152.0-listo-para-GitHub(1).zip
