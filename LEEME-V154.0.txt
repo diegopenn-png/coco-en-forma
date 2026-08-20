@@ -1,0 +1,7 @@
+COCO EN FORMA v154.0 — MINIATURAS SOCIALES OFICIALES
+
+1. Subir el contenido completo de este paquete a GitHub.
+2. No hace falta ejecutar SQL en Supabase: esta versión no cambia la base de datos.
+3. Las URLs /juego/<id>/ contienen Open Graph estático y apuntan a /share/<id>-v154.jpg.
+4. www.cocoenforma.com utiliza la imagen exacta de la tarjeta "Coco · Tu primer gran paso" ya referenciada por el repositorio.
+5. Las redes pueden conservar previews anteriores en caché durante un tiempo. Los nuevos nombres v154 fuerzan una URL de imagen nueva para los juegos.

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v153.0.0-r1";
+const CACHE_VERSION = "coco-en-forma-v154.0.0-r1";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
@@ -28,31 +28,31 @@ const CORE_ASSET_PATHS = [
   "./shortcut-icon.png",
   "./favicon.png",
   "./juego/numeros/index.html",
-  "./share/numeros-v153.jpg",
+  "./share/numeros-v154.jpg",
   "./juego/calculo/index.html",
-  "./share/calculo-v153.jpg",
+  "./share/calculo-v154.jpg",
   "./juego/palabras/index.html",
-  "./share/palabras-v153.jpg",
+  "./share/palabras-v154.jpg",
   "./juego/series/index.html",
-  "./share/series-v153.jpg",
+  "./share/series-v154.jpg",
   "./juego/memoria/index.html",
-  "./share/memoria-v153.jpg",
+  "./share/memoria-v154.jpg",
   "./juego/sudoku/index.html",
-  "./share/sudoku-v153.jpg",
+  "./share/sudoku-v154.jpg",
   "./juego/sopa/index.html",
-  "./share/sopa-v153.jpg",
+  "./share/sopa-v154.jpg",
   "./juego/crucigrama/index.html",
-  "./share/crucigrama-v153.jpg",
+  "./share/crucigrama-v154.jpg",
   "./juego/tiempo/index.html",
-  "./share/tiempo-v153.jpg",
+  "./share/tiempo-v154.jpg",
   "./juego/verdadero/index.html",
-  "./share/verdadero-v153.jpg",
+  "./share/verdadero-v154.jpg",
   "./juego/futbol/index.html",
-  "./share/futbol-v153.jpg",
+  "./share/futbol-v154.jpg",
   "./juego/cocomed/index.html",
-  "./share/cocomed-v153.jpg",
+  "./share/cocomed-v154.jpg",
   "./juego/padel/index.html",
-  "./share/padel-v153.jpg"
+  "./share/padel-v154.jpg"
 ];
 function absolute(assetPath){return new URL(assetPath,SCOPE_URL).href}
 async function fetchAndCache(cache,assetPath){const assetUrl=absolute(assetPath);const response=await fetch(new Request(assetUrl,{cache:"reload"}));if(!response.ok)throw new Error(`Precache ${response.status}: ${assetPath}`);await cache.put(assetUrl,response.clone());return assetUrl}
