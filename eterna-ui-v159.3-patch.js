@@ -1,200 +1,165 @@
-/* ETERNA UI v159.3 patch
- * Child-facing cleanup only. Internal backend status codes remain internal.
- * Safe additive patch: no game, score, auth, Stripe, Supabase or audio logic is changed.
+/* ETERNA UI v159.5 lightweight compatibility patch
+ * Child-facing cleanup + Safari/iPhone microphone compatibility.
+ * No global DOM MutationObserver: keeps Coco responsive.
+ * No game, score, auth, Stripe, Supabase or Worker logic is changed.
  */
 (function(){
   'use strict';
-  if(window.__ETERNA_UI_PATCH_159_3__)return;
-  window.__ETERNA_UI_PATCH_159_3__=true;
+  if(window.__ETERNA_UI_PATCH_159_5__)return;
+  window.__ETERNA_UI_PATCH_159_5__=true;
 
-  const INTERNAL_CODES=new Set([
-    'VERIFIED',
-    'NEEDS_CLARIFICATION',
-    'VERIFICATION_CONFLICT',
-    'BLOCKED_OUT_OF_SCOPE',
-    'BLOCKED_SAFETY'
-  ]);
-
-  const STATUS_UI={
-    verified:{label:'Respuesta verificada',kind:'verified',color:'#2aa36b'},
-    needs_clarification:{label:'Eterna necesita comprobar un poco más',kind:'clarification',color:'#e69a20'},
-    verification_conflict:{label:'Quiero comprobarlo mejor antes de responderte',kind:'conflict',color:'#e69a20'},
-    blocked_out_of_scope:{label:'Eterna solo responde sobre aprendizaje escolar',kind:'out_of_scope',color:'#4b8fa8'},
-    blocked_safety:{label:'Habla ahora con un adulto de confianza',kind:'safety',color:'#c85d5d'},
-    meta_instruction:{label:'Escribe tu respuesta directamente',kind:'meta_instruction',color:'#4b8fa8'}
+  var INTERNAL_CODES={
+    VERIFIED:1,
+    NEEDS_CLARIFICATION:1,
+    VERIFICATION_CONFLICT:1,
+    BLOCKED_OUT_OF_SCOPE:1,
+    BLOCKED_SAFETY:1
   };
 
-  const KNOWN_BANNER_LABELS=new Set([
-    'Respuesta verificada',
-    'Eterna necesita comprobar un poco más',
-    'Eterna ha detectado una discrepancia',
-    'Quiero comprobarlo mejor antes de responderte',
-    'Eterna solo responde sobre aprendizaje escolar',
-    'Habla ahora con un adulto de confianza',
-    'Escribe tu respuesta directamente'
-  ]);
+  var STATUS_UI={
+    verified:{label:'Respuesta verificada',kind:'ok',color:'#2aa36b'},
+    needs_clarification:{label:'Eterna necesita comprobar un poco más',kind:'warn',color:'#e69a20'},
+    verification_conflict:{label:'Quiero comprobarlo mejor antes de responderte',kind:'warn',color:'#e69a20'},
+    blocked_out_of_scope:{label:'Eterna solo responde sobre aprendizaje escolar',kind:'',color:'#4b8fa8'},
+    blocked_safety:{label:'Habla ahora con un adulto de confianza',kind:'warn',color:'#c85d5d'},
+    meta_instruction:{label:'Escribe tu respuesta directamente',kind:'',color:'#4b8fa8'}
+  };
 
-  let lastStatus=null;
-  let lastUi=null;
-  let scheduled=false;
+  function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim()}
+  function norm(v){return clean(v).toLowerCase()}
+  function root(){return document.getElementById('eternaOverlayV159')}
 
-  function cleanText(value){
-    return String(value||'').replace(/\s+/g,' ').trim();
-  }
-
-  function normalizeStatus(value){
-    return cleanText(value).toLowerCase();
-  }
-
-  function findEternaRoot(){
-    const field=document.querySelector('input[placeholder*="Escribe algo del cole"],textarea[placeholder*="Escribe algo del cole"]');
-    if(field){
-      let node=field;
-      for(let i=0;i<10&&node;i++,node=node.parentElement){
-        const txt=cleanText(node.textContent);
-        if(/\bEterna\b/i.test(txt)&&/COCO EN FORMA/i.test(txt))return node;
-      }
-    }
-    return document.body||document.documentElement;
-  }
-
-  function inferLatestStatusAndRemoveCodes(root){
-    const nodes=root.querySelectorAll('span,div,p,strong,b,small,em');
-    let inferred=null;
-    nodes.forEach(function(el){
-      if(el.tagName==='SCRIPT'||el.tagName==='STYLE')return;
-      const code=cleanText(el.textContent).toUpperCase();
-      if(!INTERNAL_CODES.has(code))return;
-
-      inferred=code.toLowerCase();
-      el.setAttribute('data-eterna-internal-status',code);
-      el.setAttribute('aria-hidden','true');
-      el.hidden=true;
-      el.style.setProperty('display','none','important');
-    });
-    if(!lastStatus&&inferred)lastStatus=inferred;
-  }
-
-  function nodeDepth(el){
-    let depth=0;
-    for(let n=el;n&&n.parentElement;n=n.parentElement)depth++;
-    return depth;
-  }
-
-  function findBannerLabel(root){
-    const marked=root.querySelector('[data-eterna-status-label="true"]');
-    if(marked)return marked;
-
-    const nodes=root.querySelectorAll('span,div,p,strong,b,small');
-    let best=null;
-    for(const el of nodes){
-      const txt=cleanText(el.textContent);
-      if(!KNOWN_BANNER_LABELS.has(txt))continue;
-      const rect=el.getBoundingClientRect();
-      if(rect.width===0&&rect.height===0)continue;
-      if(!best||nodeDepth(el)>nodeDepth(best))best=el;
-    }
-    if(best)best.setAttribute('data-eterna-status-label','true');
-    return best;
-  }
-
-  function findBannerRow(label){
-    if(!label)return null;
-    let node=label.parentElement;
-    for(let i=0;i<5&&node;i++,node=node.parentElement){
-      const txt=cleanText(node.textContent);
-      const rect=node.getBoundingClientRect();
-      if(txt.length<=120&&rect.width>=180&&rect.height>=20&&rect.height<=100)return node;
-    }
-    return label.parentElement||label;
-  }
-
-  function recolorStatusDot(row,color,label){
-    if(!row||!color)return;
-    const candidates=row.querySelectorAll('span,i,b,div');
-    for(const el of candidates){
-      if(el===label||el.contains(label))continue;
-      const rect=el.getBoundingClientRect();
-      if(rect.width<5||rect.height<5||rect.width>28||rect.height>28)continue;
-      const style=getComputedStyle(el);
-      const radius=parseFloat(style.borderRadius)||0;
-      if(radius>=rect.width/3||style.borderRadius.includes('%')){
-        el.style.setProperty('background-color',color,'important');
-        el.style.setProperty('border-color',color,'important');
-        break;
+  function hideInternalCodes(scope){
+    if(!scope)return;
+    var tags=scope.querySelectorAll('.eternaV159Tag');
+    for(var i=0;i<tags.length;i++){
+      var code=clean(tags[i].textContent).toUpperCase();
+      if(INTERNAL_CODES[code]){
+        tags[i].hidden=true;
+        tags[i].setAttribute('aria-hidden','true');
+        tags[i].style.setProperty('display','none','important');
       }
     }
   }
 
-  function applyStatusBanner(root){
-    const effective=(lastUi&&lastUi.kind==='meta_instruction')
-      ?STATUS_UI.meta_instruction
-      :(lastUi&&lastUi.label?{label:lastUi.label,kind:lastUi.kind||lastStatus,color:(STATUS_UI[lastStatus]||{}).color}:STATUS_UI[lastStatus]);
-    if(!effective||!effective.label)return;
+  function latestAssistant(scope){
+    if(!scope)return null;
+    var rows=scope.querySelectorAll('.eternaV159Msg.assistant');
+    return rows.length?rows[rows.length-1]:null;
+  }
 
-    const label=findBannerLabel(root);
-    if(!label)return;
-    label.textContent=effective.label;
-    label.setAttribute('data-eterna-status-label','true');
-    const row=findBannerRow(label);
-    if(row){
-      row.hidden=false;
-      row.style.removeProperty('display');
-      row.setAttribute('data-eterna-status-kind',effective.kind||'');
-      recolorStatusDot(row,effective.color,label);
+  function effectiveUi(data){
+    if(data&&data.ui_status&&typeof data.ui_status==='object'){
+      var ui=data.ui_status;
+      if(ui.kind==='meta_instruction')return STATUS_UI.meta_instruction;
+      if(ui.label){
+        var fallback=STATUS_UI[norm(data.verification_status)]||{};
+        return {label:String(ui.label),kind:ui.kind||fallback.kind||'',color:fallback.color||'#4b8fa8'};
+      }
+    }
+    return STATUS_UI[norm(data&&data.verification_status)]||null;
+  }
+
+  function applyData(data){
+    var scope=root();
+    if(!scope)return;
+    hideInternalCodes(scope);
+
+    var ui=effectiveUi(data);
+    if(ui){
+      var label=scope.querySelector('[data-et-status]');
+      var dot=scope.querySelector('[data-et-dot]');
+      if(label)label.textContent=ui.label;
+      if(dot){
+        dot.className='eternaV159Dot'+(ui.kind?' '+ui.kind:'');
+        dot.style.setProperty('background-color',ui.color,'important');
+        dot.style.setProperty('border-color',ui.color,'important');
+      }
+    }
+
+    var last=latestAssistant(scope);
+    var uiKind=data&&data.ui_status&&data.ui_status.kind?String(data.ui_status.kind):'';
+    var status=norm(data&&data.verification_status);
+    if(last&&(uiKind==='meta_instruction'||status==='blocked_out_of_scope'||status==='blocked_safety')){
+      var meta=last.querySelector('.eternaV159Meta');
+      if(meta){
+        meta.hidden=true;
+        meta.setAttribute('aria-hidden','true');
+        meta.style.setProperty('display','none','important');
+      }
     }
   }
 
-  function apply(){
-    scheduled=false;
-    const root=findEternaRoot();
-    if(!root)return;
-    inferLatestStatusAndRemoveCodes(root);
-    applyStatusBanner(root);
+  function scheduleApply(data){
+    setTimeout(function(){applyData(data)},0);
+    setTimeout(function(){applyData(data)},80);
   }
 
-  function scheduleApply(){
-    if(scheduled)return;
-    scheduled=true;
-    requestAnimationFrame(function(){
-      apply();
-      setTimeout(apply,60);
-    });
-  }
-
-  /* Read status from Eterna's own API response without changing the response
-   * consumed by the existing app. This lets the top banner follow the latest
-   * reply instead of getting stuck on an older warning state.
-   */
-  if(typeof window.fetch==='function'&&!window.fetch.__eterna1593Wrapped){
-    const originalFetch=window.fetch.bind(window);
-    const wrapped=async function(){
-      const response=await originalFetch.apply(null,arguments);
+  /* Read only Eterna chat responses. No document-wide observer is used. */
+  if(typeof window.fetch==='function'&&!window.fetch.__eterna1595Wrapped){
+    var originalFetch=window.fetch.bind(window);
+    var wrapped=async function(){
+      var response=await originalFetch.apply(null,arguments);
       try{
-        const request=arguments[0];
-        const url=typeof request==='string'?request:(request&&request.url)||'';
+        var request=arguments[0];
+        var url=typeof request==='string'?request:(request&&request.url)||'';
         if(/\/v1\/chat(?:\?|$)/.test(url)){
           response.clone().json().then(function(data){
-            if(!data||typeof data!=='object')return;
-            if(data.verification_status)lastStatus=normalizeStatus(data.verification_status);
-            if(data.ui_status&&typeof data.ui_status==='object')lastUi=data.ui_status;
-            else lastUi=null;
-            scheduleApply();
+            if(data&&typeof data==='object')scheduleApply(data);
           }).catch(function(){});
         }
       }catch(e){}
       return response;
     };
-    wrapped.__eterna1593Wrapped=true;
+    wrapped.__eterna1595Wrapped=true;
     window.fetch=wrapped;
   }
 
-  function start(){
-    scheduleApply();
-    const observer=new MutationObserver(scheduleApply);
-    observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+  /* Safari/iPhone may record audio/mp4 while the legacy Eterna frontend names
+   * the upload pregunta.webm. Keep the Blob untouched and correct only the
+   * filename sent in FormData, so OpenAI receives a matching container name.
+   */
+  if(typeof FormData!=='undefined'&&FormData.prototype&&
+     !FormData.prototype.append.__eterna1595Wrapped){
+    var originalAppend=FormData.prototype.append;
+    var patchedAppend=function(name,value,filename){
+      var finalName=filename;
+      try{
+        if(name==='audio'&&value instanceof Blob&&filename==='pregunta.webm'){
+          var type=String(value.type||'').toLowerCase();
+          if(type.indexOf('mp4')>=0||type.indexOf('m4a')>=0)finalName='pregunta.m4a';
+          else if(type.indexOf('ogg')>=0)finalName='pregunta.ogg';
+          else if(type.indexOf('wav')>=0)finalName='pregunta.wav';
+          else if(type.indexOf('mpeg')>=0||type.indexOf('mp3')>=0)finalName='pregunta.mp3';
+          else finalName='pregunta.webm';
+        }
+      }catch(e){}
+      if(arguments.length>=3)return originalAppend.call(this,name,value,finalName);
+      return originalAppend.call(this,name,value);
+    };
+    patchedAppend.__eterna1595Wrapped=true;
+    FormData.prototype.append=patchedAppend;
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});
-  else start();
+  /* Safari is more reliable when MediaRecorder emits small chunks. Apply this
+   * only while the Eterna dialog is open, leaving other recorders untouched.
+   */
+  if(typeof MediaRecorder!=='undefined'&&MediaRecorder.prototype&&
+     MediaRecorder.prototype.start&&!MediaRecorder.prototype.start.__eterna1595Wrapped){
+    var originalStart=MediaRecorder.prototype.start;
+    var patchedStart=function(timeslice){
+      try{
+        var open=document.querySelector('#eternaOverlayV159.is-open');
+        if(open&&arguments.length===0)return originalStart.call(this,250);
+      }catch(e){}
+      return originalStart.apply(this,arguments);
+    };
+    patchedStart.__eterna1595Wrapped=true;
+    MediaRecorder.prototype.start=patchedStart;
+  }
+
+  /* One tiny initial cleanup, limited strictly to the Eterna overlay. */
+  function initial(){hideInternalCodes(root())}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initial,{once:true});
+  else setTimeout(initial,0);
 })();
