@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "coco-eterna-v159",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-20",
+  "vars": {
+    "ALLOWED_ORIGINS": "https://www.cocoenforma.com,https://cocoenforma.com",
+    "PUBLIC_SITE_URL": "https://www.cocoenforma.com",
+    "SCOPE_MODEL": "gpt-5.4-nano",
+    "TUTOR_MODEL": "gpt-5.4-mini",
+    "VERIFIER_MODEL": "gpt-5.4-mini",
+    "TRANSCRIBE_MODEL": "gpt-4o-mini-transcribe",
+    "TTS_MODEL": "gpt-4o-mini-tts",
+    "TTS_VOICE": "marin",
+    "MAX_CHAT_REQUESTS_PER_DAY": "60"
+  }
+}

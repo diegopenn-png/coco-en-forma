@@ -1,10 +1,10 @@
 {
   "id": "./",
-  "start_url": "./?source=pwa-v158",
+  "start_url": "./?source=pwa-v159",
   "scope": "./",
   "name": "Coco en Forma",
   "short_name": "Coco",
-  "description": "Retos cognitivos breves para entrenar memoria, cálculo, lenguaje, lógica y atención jugando con Coco.",
+  "description": "Retos cognitivos de Coco en Forma y Eterna: apoyo escolar personalizado por foto, voz o texto.",
   "lang": "es",
   "dir": "ltr",
   "display": "standalone",
@@ -46,6 +46,19 @@
       "name": "Retos de hoy",
       "short_name": "Retos",
       "url": "./?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "./shortcut-icon.png",
+          "sizes": "96x96",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    },
+    {
+      "name": "Eterna · Tareas",
+      "short_name": "Eterna",
+      "url": "./?source=pwa-eterna&eterna=1",
       "icons": [
         {
           "src": "./shortcut-icon.png",

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v158.0.0-r1";
+const CACHE_VERSION = "coco-en-forma-v159.0.0-r1";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
@@ -16,6 +16,9 @@ const CORE_ASSET_PATHS = [
   "./coco-v152-padel.js",
   "./coco-v153-fixes.js",
   "./coco-v155-identity.js",
+  "./eterna-v159.js",
+  "./eterna-v159.css",
+  "./share/eterna.png",
   "./coco-v144-professional.css",
   "./coco-v147-refinements.css",
   "./coco-v149-refinements.css",
