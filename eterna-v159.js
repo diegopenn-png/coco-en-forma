@@ -1,7 +1,7 @@
 /* Coco en Forma v159.0 · ETERNA Beta · frontend aislado */
 (function(){
   "use strict";
-  var VERSION="159.0";
+  var VERSION="159.3";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
   var state={client:null,session:null,profile:null,baseProfile:null,subscription:null,parentSettings:null,learningMemory:[],history:[],imageData:null,imageName:"",mode:"homework",busy:false,recorder:null,chunks:[],lastSpeechUrl:null,lastReply:"",lastAudio:null};
   var appObserver=null,familyObserver=null;
@@ -58,4 +58,12 @@
   function boot(){ensureLauncher();startObservers();var q=new URLSearchParams(location.search);if(q.get("eterna")==="1")setTimeout(open,250)}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
   window.CocoEternaV159=Object.freeze({open:open,close:close,version:VERSION,outOfScopeMessage:OUT_SCOPE,audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true}}});
+})();
+(function(){
+  if(window.__ETERNA_UI_PATCH_159_3_LOADER__)return;
+  window.__ETERNA_UI_PATCH_159_3_LOADER__=true;
+  var s=document.createElement("script");
+  s.src="/eterna-ui-v159.3-patch.js?v=159.3";
+  s.async=false;
+  document.head.appendChild(s);
 })();
