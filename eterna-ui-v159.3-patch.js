@@ -1,12 +1,12 @@
-/* ETERNA UI v159.5 lightweight compatibility patch
+/* ETERNA UI v159.6 lightweight compatibility patch
  * Child-facing cleanup + Safari/iPhone microphone compatibility.
  * No global DOM MutationObserver: keeps Coco responsive.
  * No game, score, auth, Stripe, Supabase or Worker logic is changed.
  */
 (function(){
   'use strict';
-  if(window.__ETERNA_UI_PATCH_159_5__)return;
-  window.__ETERNA_UI_PATCH_159_5__=true;
+  if(window.__ETERNA_UI_PATCH_159_6__)return;
+  window.__ETERNA_UI_PATCH_159_6__=true;
 
   var INTERNAL_CODES={
     VERIFIED:1,
@@ -22,7 +22,8 @@
     verification_conflict:{label:'Quiero comprobarlo mejor antes de responderte',kind:'warn',color:'#e69a20'},
     blocked_out_of_scope:{label:'Eterna solo responde sobre aprendizaje escolar',kind:'',color:'#4b8fa8'},
     blocked_safety:{label:'Habla ahora con un adulto de confianza',kind:'warn',color:'#c85d5d'},
-    meta_instruction:{label:'Escribe tu respuesta directamente',kind:'',color:'#4b8fa8'}
+    meta_instruction:{label:'Escribe tu respuesta directamente',kind:'',color:'#4b8fa8'},
+    quota:{label:'Límite diario alcanzado',kind:'warn',color:'#e69a20'}
   };
 
   function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim()}
@@ -96,7 +97,7 @@
   }
 
   /* Read only Eterna chat responses. No document-wide observer is used. */
-  if(typeof window.fetch==='function'&&!window.fetch.__eterna1595Wrapped){
+  if(typeof window.fetch==='function'&&!window.fetch.__eterna1596Wrapped){
     var originalFetch=window.fetch.bind(window);
     var wrapped=async function(){
       var response=await originalFetch.apply(null,arguments);
@@ -105,13 +106,15 @@
         var url=typeof request==='string'?request:(request&&request.url)||'';
         if(/\/v1\/chat(?:\?|$)/.test(url)){
           response.clone().json().then(function(data){
-            if(data&&typeof data==='object')scheduleApply(data);
+            if(!data||typeof data!=='object')return;
+            if(data.error==='ETERNA_DAILY_LIMIT')scheduleApply({ui_status:{label:'Límite diario alcanzado',kind:'quota'}});
+            else scheduleApply(data);
           }).catch(function(){});
         }
       }catch(e){}
       return response;
     };
-    wrapped.__eterna1595Wrapped=true;
+    wrapped.__eterna1596Wrapped=true;
     window.fetch=wrapped;
   }
 
@@ -120,7 +123,7 @@
    * filename sent in FormData, so OpenAI receives a matching container name.
    */
   if(typeof FormData!=='undefined'&&FormData.prototype&&
-     !FormData.prototype.append.__eterna1595Wrapped){
+     !FormData.prototype.append.__eterna1596Wrapped){
     var originalAppend=FormData.prototype.append;
     var patchedAppend=function(name,value,filename){
       var finalName=filename;
@@ -137,7 +140,7 @@
       if(arguments.length>=3)return originalAppend.call(this,name,value,finalName);
       return originalAppend.call(this,name,value);
     };
-    patchedAppend.__eterna1595Wrapped=true;
+    patchedAppend.__eterna1596Wrapped=true;
     FormData.prototype.append=patchedAppend;
   }
 
@@ -145,7 +148,7 @@
    * only while the Eterna dialog is open, leaving other recorders untouched.
    */
   if(typeof MediaRecorder!=='undefined'&&MediaRecorder.prototype&&
-     MediaRecorder.prototype.start&&!MediaRecorder.prototype.start.__eterna1595Wrapped){
+     MediaRecorder.prototype.start&&!MediaRecorder.prototype.start.__eterna1596Wrapped){
     var originalStart=MediaRecorder.prototype.start;
     var patchedStart=function(timeslice){
       try{
@@ -154,9 +157,25 @@
       }catch(e){}
       return originalStart.apply(this,arguments);
     };
-    patchedStart.__eterna1595Wrapped=true;
+    patchedStart.__eterna1596Wrapped=true;
     MediaRecorder.prototype.start=patchedStart;
   }
+
+
+  /* iPhone/Safari: do not force the camera. Removing capture immediately before
+   * the existing file input is opened makes iOS offer Photo Library, Take Photo
+   * and Browse while preserving the same image-processing flow.
+   */
+  document.addEventListener('click',function(event){
+    try{
+      var button=event.target&&event.target.closest?event.target.closest('[data-et-camera]'):null;
+      if(!button)return;
+      var scope=root();
+      if(!scope||!scope.contains(button))return;
+      var input=scope.querySelector('[data-et-file]');
+      if(input)input.removeAttribute('capture');
+    }catch(e){}
+  },true);
 
   /* One tiny initial cleanup, limited strictly to the Eterna overlay. */
   function initial(){hideInternalCodes(root())}
