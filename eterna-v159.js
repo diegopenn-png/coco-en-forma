@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.0-final3";
+  var VERSION="160.0-final4";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -146,7 +146,23 @@
     var launcher=root.querySelector("#eternaLauncherV159")||createLauncher();
     var layout=root.querySelector("#cocoHomeFinal3");
     var login=root.querySelector(".loginCard"),carnet=root.querySelector(".carnet");
-    var left=visible(login)?login:(visible(carnet)?carnet:(login||carnet));
+    var loggedOut=visible(login);
+    launcher.classList.toggle("eternaLauncherLoggedOutFinal3",loggedOut);
+    launcher.classList.toggle("eternaLauncherLoggedInFinal3",!loggedOut);
+    var launcherCta=launcher.querySelector(".eternaLauncherCtaFinal3");
+    var launcherTitle=launcher.querySelector("h2"),launcherText=launcher.querySelector("p");
+    var launcherEyebrow=launcher.querySelector(".eternaLauncherEyebrowV159"),launcherPills=launcher.querySelectorAll(".eternaLauncherPillV159");
+    if(launcherCta)launcherCta.textContent=loggedOut?"Probar Eterna":"Abrir Eterna";
+    if(launcherTitle)launcherTitle.textContent=loggedOut?"Tu ayuda escolar personalizada":"Eterna · tu ayuda escolar";
+    if(launcherText)launcherText.textContent=loggedOut?"Haz una foto, escribe o habla. Eterna te guía paso a paso y se adapta al curso y al progreso.":"Continúa una tarea, resuelve una duda o practica lo que más te cuesta.";
+    if(launcherEyebrow)launcherEyebrow.textContent=loggedOut?"✨ ETERNA · APOYO ESCOLAR":"✨ ETERNA · LISTA PARA AYUDARTE";
+    if(launcherPills.length>=4){
+      launcherPills[0].textContent=loggedOut?"📷 Foto":"📚 Tareas";
+      launcherPills[1].textContent=loggedOut?"🎙️ Voz":"🎯 Practicar";
+      launcherPills[2].textContent=loggedOut?"✏️ Texto":"🧠 Explicar";
+      launcherPills[3].textContent=loggedOut?"📚 Exámenes":"✅ Revisar";
+    }
+    var left=loggedOut?login:(visible(carnet)?carnet:(login||carnet));
     var retos=root.querySelector("#retosCard,.retosCard");
 
     if(!left||!retos){
@@ -192,7 +208,7 @@
       "#cocoApp .cocoHomeBrainFinal3 .loginDecor,#cocoApp .cocoHomeBrainFinal3 .loginDecorMinimal{display:flex!important;width:100%!important;max-width:100%!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important;flex-direction:column!important}",
       "#cocoApp .cocoHomeBrainFinal3 .loginPoster{display:block!important;width:min(100%,560px)!important;height:auto!important;max-height:none!important;margin:auto!important;object-fit:contain!important;border-radius:21px!important;box-shadow:0 7px 0 rgba(16,69,94,.15),0 16px 32px rgba(16,69,94,.13)!important}",
       "#cocoApp .cocoHomeBrainFallbackFinal3{width:100%;min-height:270px;display:grid;place-items:center;align-content:center;gap:5px;padding:24px;text-align:center;color:#173f59}#cocoApp .cocoHomeBrainFallbackFinal3>span{font-size:56px}#cocoApp .cocoHomeBrainFallbackFinal3 strong{font-size:clamp(26px,4vw,40px);line-height:1}#cocoApp .cocoHomeBrainFallbackFinal3 small{font-size:14px;font-weight:900;color:#2b8eb7}#cocoApp .cocoHomeBrainFallbackFinal3 p{max-width:430px;color:#617c8b;font-weight:700}",
-      "#cocoApp .eternaLauncherFinal3{height:100%;min-height:360px!important;padding:24px!important;grid-template-columns:minmax(0,1.05fr) minmax(230px,.95fr)!important;gap:22px!important}",
+      "#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{height:100%;min-height:360px!important;padding:24px!important;grid-template-columns:minmax(0,1.05fr) minmax(230px,.95fr)!important;gap:22px!important}",
       "#cocoApp .eternaLauncherCopyFinal3{min-width:0}",
       "#cocoApp .eternaLauncherVisualFinal3{min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center}",
       "#cocoApp .eternaLauncherVisualFinal3 img{display:block;width:100%;max-width:520px;height:auto;aspect-ratio:1200/630;object-fit:cover;border-radius:18px;box-shadow:0 12px 28px rgba(23,57,75,.16)}",
@@ -225,7 +241,20 @@
       "#cocoApp .eternaV160Toggle input:checked + .eternaV160Switch{background:#22a06b!important}#cocoApp .eternaV160Toggle input:checked + .eternaV160Switch:after{transform:translateX(22px)!important}",
       "#cocoApp .eternaV159ParentGrid>label:not(.eternaV160Toggle){display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-height:66px!important;padding:12px 14px!important;border:1px solid #d5e9f2!important;border-radius:16px!important;background:#fff!important;color:#173f59!important;font-size:12px!important;font-weight:900!important}#cocoApp .eternaV159ParentGrid select{min-width:82px!important;min-height:40px!important;border:1px solid #cfe4ed!important;border-radius:10px!important;background:#fff!important;color:#17394b!important;padding:5px 8px!important;font:850 11px inherit!important}",
       "#cocoApp .eternaV159Buttons button{min-height:44px}",
-      "@media(max-width:900px){#cocoApp .cocoHomeAccessRowFinal3,#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:1fr!important}#cocoApp .eternaLauncherFinal3{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .eternaLauncherVisualFinal3 img{max-width:620px}#cocoApp .cocoHomeBrainFinal3{min-height:220px}}",
+      "#cocoApp .eternaLauncherLoggedInFinal3{margin:14px 0 16px!important}",
+      "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159{min-height:190px!important;padding:18px 22px!important;grid-template-columns:minmax(0,1fr) minmax(260px,390px)!important;gap:20px!important;border-radius:22px!important}",
+      "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159 h2{font-size:clamp(25px,3vw,34px)!important;line-height:1.02!important}",
+      "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159 p{max-width:760px!important;font-size:13px!important;margin-top:6px!important}",
+      "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherActionsV159{margin-top:9px!important;gap:7px!important}",
+      "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherPillV159{min-height:30px!important;padding:5px 8px!important;font-size:10px!important}",
+      "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherTrialFinal3{display:none!important}",
+      "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCtaFinal3{margin-top:10px!important;min-height:40px!important;padding:8px 14px!important}",
+      "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3 img{max-width:330px!important;border-radius:15px!important}",
+      "#cocoApp .cocoHomeGamesRowFinal3>.cocoHomeBrainFinal3,#cocoApp .cocoHomeGamesRowFinal3>.retosCard,#cocoApp .cocoHomeGamesRowFinal3>#retosCard{border:2px solid #c8e7f4!important;border-radius:25px!important;box-shadow:0 6px 0 #d7eaf3!important;background:linear-gradient(155deg,#fcfeff 0%,#eef9fd 100%)!important;overflow:hidden!important}",
+      "#cocoApp .cocoHomeGamesRowFinal3>.retosCard:after,#cocoApp .cocoHomeGamesRowFinal3>#retosCard:after{display:none!important}",
+      "#cocoApp button,#cocoApp [role=button],#cocoApp a{touch-action:manipulation}",
+      "@supports (content-visibility:auto){#cocoApp .cocoGameCard{content-visibility:auto;contain-intrinsic-size:340px}}",
+      "@media(max-width:900px){#cocoApp .cocoHomeAccessRowFinal3,#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:1fr!important}#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .cocoHomeFinal3 .eternaLauncherVisualFinal3 img{max-width:620px}#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:none!important}#cocoApp .cocoHomeBrainFinal3{min-height:220px}}",
       "@media(max-width:760px){.eternaV159{padding:0!important}.eternaV159Shell{height:100dvh!important;height:100svh!important;border-radius:0!important;border:0!important}.eternaV160ModeBar{margin:8px 10px 0;padding:10px;align-items:center}.eternaV160ModeBar small{font-size:10px}.eternaV160ChangeMode{display:inline-flex;align-items:center;justify-content:center}.eternaV160Start{margin:20px auto 12px;padding:13px}.eternaV160Start h3{font-size:21px}.eternaV160StartActions{grid-template-columns:repeat(2,minmax(0,1fr))}.eternaV160StartAction{min-height:60px;padding:9px}.eternaV160StartAction:last-child:nth-child(odd){grid-column:1/-1}.eternaV159Composer textarea{font-size:16px!important}#cocoApp .eternaV159ParentGrid,#cocoApp .eternaV160ProgressGrid{grid-template-columns:1fr!important}}",
       "@media(min-width:761px) and (max-width:1024px){.eternaV159Body{grid-template-columns:1fr!important}.eternaV159Menu{display:none!important}.eternaV160ChangeMode{display:inline-flex!important;align-items:center;justify-content:center}.eternaV159Shell{position:relative;width:min(940px,96vw)!important;height:min(1000px,96dvh)!important}.eternaV160ModeSheet{align-items:center;justify-content:center;padding:22px}.eternaV160ModePanel{max-width:740px;border-radius:24px}.eternaV159IconBtn,.eternaV159Send{min-width:52px;height:52px}.eternaV159Composer textarea{min-height:52px;font-size:16px!important}}",
       "@media(orientation:landscape) and (max-height:620px){.eternaV159Top{padding-top:8px!important;padding-bottom:8px!important}.eternaV159TopCopy p{display:none}.eternaV160Start{margin:10px auto 6px}.eternaV159Chat{padding-top:10px!important}.eternaV159Composer{padding-bottom:max(8px,env(safe-area-inset-bottom))!important}}",
@@ -648,5 +677,10 @@
     open:open,close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,
     audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true}}
   });
+  window.CocoPerformanceV160=Object.freeze({snapshot:function(){
+    var nav=(performance.getEntriesByType&&performance.getEntriesByType("navigation")[0])||null;
+    var resources=(performance.getEntriesByType&&performance.getEntriesByType("resource"))||[];
+    return {version:VERSION,domInteractive:nav?Math.round(nav.domInteractive):null,domComplete:nav?Math.round(nav.domComplete):null,loadEventEnd:nav?Math.round(nav.loadEventEnd):null,resourceCount:resources.length,transferKB:Math.round(resources.reduce(function(n,r){return n+Number(r.transferSize||0)},0)/1024)}
+  }});
   window.CocoEternaV159=window.CocoEternaV160;
 })();

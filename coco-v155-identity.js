@@ -1,7 +1,7 @@
-/* Coco en Forma · v160 FINAL3 · identidad visual con observación acotada */
+/* Coco en Forma · v160 FINAL4 · identidad visual con observación acotada */
 (function(root){
   "use strict";
-  var VERSION="2026-08-22-v160-final3";
+  var VERSION="2026-08-22-v160-final4";
   var DATA={
     numeros:{name:"Une los números",description:"Conecta la secuencia sin repetir casillas. Entrena planificación, atención visual y coordinación."},
     calculo:{name:"Cálculo veloz",description:"Resuelve operaciones a contrarreloj."},
@@ -17,7 +17,7 @@
     futbol:{name:"Fútbol",description:"Memoriza las zonas que se iluminan y chuta al espacio que quedó libre."},
     padel:{name:"Pádel",description:"Organiza mixings y campeonatos, registra resultados y sigue la clasificación de tus jugadores."}
   };
-  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16003"});
+  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16004"});
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
   var TITLE_TO_ID={};Object.keys(DATA).forEach(function(id){TITLE_TO_ID[DATA[id].name]=id});TITLE_TO_ID["Coco Fútbol"]="futbol";TITLE_TO_ID["Coco Pádel"]="padel";TITLE_TO_ID["Coco Pádel Club"]="padel";TITLE_TO_ID["Reto Tiempo"]="tiempo";
   function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String(title.textContent||"").trim()]||""}
