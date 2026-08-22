@@ -1,7 +1,7 @@
-/* Coco en Forma · v160 FINAL4.5 · identidad visual con observación acotada */
+/* Coco en Forma · v160 FINAL4.6 · identidad visual con observación acotada */
 (function(root){
   "use strict";
-  var VERSION="2026-08-23-v160-final4.5";
+  var VERSION="2026-08-23-v160-final4.6";
   var DATA={
     numeros:{name:"Une los números",description:"Conecta la secuencia sin repetir casillas. Entrena planificación, atención visual y coordinación."},
     calculo:{name:"Cálculo veloz",description:"Resuelve operaciones a contrarreloj."},
@@ -17,7 +17,7 @@
     futbol:{name:"Fútbol",description:"Memoriza las zonas que se iluminan y chuta al espacio que quedó libre."},
     padel:{name:"Pádel",description:"Organiza mixings y campeonatos, registra resultados y sigue la clasificación de tus jugadores."}
   };
-  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16005"});
+  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16006"});
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
   var TITLE_TO_ID={};Object.keys(DATA).forEach(function(id){TITLE_TO_ID[DATA[id].name]=id});TITLE_TO_ID["Coco Fútbol"]="futbol";TITLE_TO_ID["Coco Pádel"]="padel";TITLE_TO_ID["Coco Pádel Club"]="padel";TITLE_TO_ID["Reto Tiempo"]="tiempo";
   function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String(title.textContent||"").trim()]||""}
@@ -25,7 +25,110 @@
   function applyCard(card){var id=idOf(card),d=DATA[id];if(!d)return;card.dataset.cocoJuego=id;var box=card.querySelector(".emoji,.cocoIconoEspecial");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&String(desc.textContent||"").trim()!==d.description)desc.textContent=d.description}
   function applyMini(node){var id=idOf(node),d=DATA[id];if(!d)return;node.dataset.cocoJuego=id;var box=node.querySelector(".cocoMiniIcono");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}}
   function applyShare(modal){var title=modal.querySelector("#cocoShareTitle"),id=title&&TITLE_TO_ID[String(title.textContent||"").trim()]||"";if(!DATA[id])return;var box=modal.querySelector(".cocoSharePreview");if(box){box.classList.add("cocoOfficialThumbBox");box.innerHTML=imgHtml(id,DATA[id].name)}var p=modal.querySelector(".cocoShareSheet>p");if(p)p.textContent=DATA[id].description}
-  function process(node){if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;if(node.matches&&node.matches(".cocoGameCard"))applyCard(node);if(node.matches&&node.matches(".cocoMiniJuego"))applyMini(node);if(node.matches&&node.matches(".cocoShareModal"))applyShare(node);if(node.querySelectorAll){node.querySelectorAll(".cocoGameCard").forEach(applyCard);node.querySelectorAll(".cocoMiniJuego").forEach(applyMini);node.querySelectorAll(".cocoShareModal").forEach(applyShare)}}
+  function maskEmail(value){
+    var email=String(value||"").trim(),parts=email.split("@");
+    if(parts.length!==2)return email;
+    var name=parts[0],shown=name.length<=2?name.charAt(0)+"*":name.slice(0,2)+"***"+name.slice(-1);
+    return shown+"@"+parts[1]
+  }
+  function familyClient(){
+    if(root.__COCO_SUPABASE_CLIENT)return root.__COCO_SUPABASE_CLIENT;
+    var c=root.COCO_CONFIG||{};
+    if(!root.supabase||!root.supabase.createClient||!c.url||!c.clave)return null;
+    try{return root.__COCO_SUPABASE_CLIENT=(root.__COCO_SUPABASE_CLIENT||root.supabase.createClient(c.url,c.clave,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}))}catch(e){return null}
+  }
+  async function familyPinHashFinal46(pin){
+    var bytes=new TextEncoder().encode("coco-familia-"+String(pin||""));
+    var digest=await crypto.subtle.digest("SHA-256",bytes);
+    return Array.from(new Uint8Array(digest)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")
+  }
+  function familyRecoveryMessage(panel,text,kind){
+    var el=panel&&panel.querySelector("[data-family-recover-msg]");if(!el)return;
+    el.textContent=String(text||"");el.className="cocoFamilyRecoverMsgV160"+(kind?" "+kind:"")
+  }
+  function reopenFamilyAfterRecovery(pin){
+    try{sessionStorage.setItem("coco_family_pin_auto_v16043",String(pin||""))}catch(e){}
+    var close=document.querySelector("#cocoApp .cocoFamilyV129 [data-family-close]");
+    var open=document.querySelector("#cocoApp .cocoFamiliaBtn");
+    if(close&&open){
+      try{close.click()}catch(e){}
+      setTimeout(function(){try{open.click()}catch(e){location.reload()}},120)
+      return
+    }
+    setTimeout(function(){location.reload()},300)
+  }
+  function enhanceFamilyPinRecovery(scope){
+    if(!scope||scope.nodeType!==1)return;
+    var screens=[];
+    if(scope.matches&&scope.matches("#cocoApp .cocoFamilyV129 .cocoFamilyPin,.cocoFamilyV129 .cocoFamilyPin"))screens.push(scope);
+    if(scope.querySelectorAll)scope.querySelectorAll("#cocoApp .cocoFamilyV129 .cocoFamilyPin,.cocoFamilyV129 .cocoFamilyPin").forEach(function(x){screens.push(x)});
+    screens.forEach(function(screen){
+      if(screen.dataset.familyRecoverFinal46==="1")return;
+      var enter=screen.querySelector("[data-family-enter]"),pinInput=screen.querySelector("input");
+      if(!enter||!pinInput)return;
+      screen.dataset.familyRecoverFinal46="1";
+      var wrap=document.createElement("div");
+      wrap.className="cocoFamilyRecoverV160";
+      wrap.innerHTML='<button type="button" class="cocoFamilyRecoverLinkV160" data-family-recover-open>¿Has olvidado el PIN?</button>'+
+        '<section class="cocoFamilyRecoverPanelV160" data-family-recover-panel hidden aria-label="Recuperar PIN familiar">'+
+          '<div class="cocoFamilyRecoverHeadV160"><div><strong>Recuperar PIN familiar</strong><span data-family-recover-email>Confirma la contraseña de la cuenta para crear un PIN nuevo.</span></div><button type="button" data-family-recover-close aria-label="Cerrar">×</button></div>'+
+          '<label>Contraseña de la cuenta<input type="password" autocomplete="current-password" data-family-recover-password placeholder="Tu contraseña"></label>'+
+          '<div class="cocoFamilyRecoverPinGridV160"><label>Nuevo PIN<input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" data-family-recover-pin placeholder="4 cifras"></label><label>Repite el PIN<input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" data-family-recover-confirm placeholder="4 cifras"></label></div>'+
+          '<div class="cocoFamilyRecoverMsgV160" data-family-recover-msg aria-live="polite"></div>'+
+          '<div class="cocoFamilyRecoverActionsV160"><button type="button" class="cocoFamilyRecoverPrimaryV160" data-family-recover-save>Cambiar PIN</button><button type="button" class="cocoFamilyRecoverSecondaryV160" data-family-recover-password-email>También olvidé mi contraseña</button></div>'+
+          '<small>El PIN nunca se guarda en texto. Solo se sustituye su hash asociado a esta cuenta.</small>'+
+        '</section>';
+      enter.insertAdjacentElement("afterend",wrap);
+      var openBtn=wrap.querySelector("[data-family-recover-open]"),panel=wrap.querySelector("[data-family-recover-panel]"),closeBtn=wrap.querySelector("[data-family-recover-close]"),saveBtn=wrap.querySelector("[data-family-recover-save]"),mailBtn=wrap.querySelector("[data-family-recover-password-email]");
+      function closePanel(){panel.hidden=true;openBtn.setAttribute("aria-expanded","false");familyRecoveryMessage(panel,"","")}
+      openBtn.setAttribute("aria-expanded","false");
+      openBtn.onclick=async function(){
+        panel.hidden=false;openBtn.setAttribute("aria-expanded","true");
+        var cli=familyClient();
+        if(!cli){familyRecoveryMessage(panel,"No se pudo conectar con la cuenta. Inténtalo de nuevo.","error");return}
+        try{var s=await cli.auth.getSession(),session=s&&s.data&&s.data.session,email=session&&session.user&&session.user.email||"";var e=panel.querySelector("[data-family-recover-email]");if(e)e.textContent=email?"Cuenta: "+maskEmail(email)+" · confirma su contraseña y crea un PIN nuevo.":"Confirma la contraseña de la cuenta y crea un PIN nuevo."}catch(e){}
+        setTimeout(function(){var p=panel.querySelector("[data-family-recover-password]");if(p)p.focus()},30)
+      };
+      closeBtn.onclick=closePanel;
+      saveBtn.onclick=async function(){
+        var password=String(panel.querySelector("[data-family-recover-password]").value||""),newPin=String(panel.querySelector("[data-family-recover-pin]").value||"").replace(/\D/g,""),confirmPin=String(panel.querySelector("[data-family-recover-confirm]").value||"").replace(/\D/g,"");
+        if(!password){familyRecoveryMessage(panel,"Escribe la contraseña de la cuenta.","error");return}
+        if(!/^\d{4}$/.test(newPin)){familyRecoveryMessage(panel,"El nuevo PIN debe tener exactamente 4 cifras.","error");return}
+        if(newPin!==confirmPin){familyRecoveryMessage(panel,"Los dos PIN no coinciden.","error");return}
+        var cli=familyClient();if(!cli){familyRecoveryMessage(panel,"No se pudo conectar con la cuenta.","error");return}
+        saveBtn.disabled=true;mailBtn.disabled=true;familyRecoveryMessage(panel,"Verificando la cuenta…","busy");
+        try{
+          var sr=await cli.auth.getSession(),session=sr&&sr.data&&sr.data.session,uid=session&&session.user&&session.user.id,email=session&&session.user&&session.user.email;
+          if(!uid||!email)throw new Error("NO_SESSION");
+          var auth=await cli.auth.signInWithPassword({email:email,password:password});
+          if(auth&&auth.error)throw auth.error;
+          var verified=auth&&auth.data&&auth.data.user;
+          if(!verified||verified.id!==uid)throw new Error("ACCOUNT_MISMATCH");
+          var digest=await familyPinHashFinal46(newPin);
+          var write=await cli.from("eterna_family_security").upsert({user_id:uid,pin_hash:digest,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+          if(write&&write.error)throw write.error;
+          try{localStorage.setItem("coco_pin_familia",digest)}catch(e){}
+          familyRecoveryMessage(panel,"PIN actualizado. Entrando en Zona Familiar…","ok");
+          setTimeout(function(){reopenFamilyAfterRecovery(newPin)},500)
+        }catch(e){
+          familyRecoveryMessage(panel,"No se pudo verificar la contraseña o actualizar el PIN. Comprueba la contraseña e inténtalo otra vez.","error");
+          saveBtn.disabled=false;mailBtn.disabled=false
+        }
+      };
+      mailBtn.onclick=async function(){
+        var cli=familyClient();if(!cli){familyRecoveryMessage(panel,"No se pudo conectar con la cuenta.","error");return}
+        mailBtn.disabled=true;
+        try{
+          var sr=await cli.auth.getSession(),session=sr&&sr.data&&sr.data.session,email=session&&session.user&&session.user.email;
+          if(!email)throw new Error("NO_EMAIL");
+          var r=await cli.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/"});
+          if(r&&r.error)throw r.error;
+          familyRecoveryMessage(panel,"Te hemos enviado el correo para recuperar la contraseña. Después vuelve aquí y crea un PIN nuevo.","ok")
+        }catch(e){familyRecoveryMessage(panel,"No se pudo enviar el correo de recuperación. Inténtalo de nuevo.","error")}finally{mailBtn.disabled=false}
+      }
+    })
+  }
+  function process(node){if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;enhanceFamilyPinRecovery(node);if(node.matches&&node.matches(".cocoGameCard"))applyCard(node);if(node.matches&&node.matches(".cocoMiniJuego"))applyMini(node);if(node.matches&&node.matches(".cocoShareModal"))applyShare(node);if(node.querySelectorAll){node.querySelectorAll(".cocoGameCard").forEach(applyCard);node.querySelectorAll(".cocoMiniJuego").forEach(applyMini);node.querySelectorAll(".cocoShareModal").forEach(applyShare)}}
   var style=document.getElementById("coco-v155-identity-css")||document.createElement("style");style.id="coco-v155-identity-css";style.textContent=[
     "#cocoApp .cocoOfficialThumbBox{padding:0!important;overflow:hidden!important;background:#fff!important;aspect-ratio:1200/630!important;min-height:0!important}",
     "#cocoApp .cocoOfficialThumb{display:block!important;width:100%!important;height:100%!important;min-height:inherit!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:inherit!important}",
@@ -34,13 +137,24 @@
     "#cocoApp .cocoSharePreview .cocoOfficialThumb{width:100%!important;height:auto!important;aspect-ratio:1200/630!important;object-fit:cover!important}",
 
     /* Imagen oficial Eterna/Coco musculoso con cerebro visible, siempre desde el repositorio. */
-    "body #cocoApp .eternaLauncherVisualFinal3{position:relative!important;display:block!important;align-self:stretch!important;min-width:0!important;min-height:300px!important;padding:0!important;overflow:hidden!important;border-radius:22px!important;background-image:url('./share/eterna.png?v=16045')!important;background-size:cover!important;background-position:69% center!important;background-repeat:no-repeat!important;box-shadow:0 14px 30px rgba(13,52,80,.16)!important}",
+    "body #cocoApp .eternaLauncherVisualFinal3{position:relative!important;display:block!important;width:100%!important;height:auto!important;aspect-ratio:1200/630!important;align-self:center!important;min-width:0!important;min-height:0!important;padding:0!important;overflow:hidden!important;border-radius:22px!important;background-image:url('./share/eterna.png?v=16046')!important;background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important;background-color:#082b70!important;box-shadow:0 14px 30px rgba(13,52,80,.16)!important}",
     "body #cocoApp .eternaLauncherVisualFinal3>.eternaTabletV160{display:none!important}",
-    "body #cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:block!important;min-height:190px!important;border-radius:18px!important;background-position:68% center!important}",
+    "body #cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:block!important;width:100%!important;height:auto!important;aspect-ratio:1200/630!important;min-height:0!important;align-self:center!important;border-radius:18px!important;background-size:contain!important;background-position:center!important;background-color:#082b70!important}",
 
     /* Escritorio / Safari: en LOGIN se muestra completa la creatividad horizontal.
        No cambia PWA/móvil ni la home ya logueada. */
     "@media(min-width:901px){body #cocoApp .eternaLauncherLoggedOutFinal3 .eternaLauncherVisualFinal3{display:block!important;width:100%!important;min-height:0!important;height:auto!important;aspect-ratio:1200/630!important;align-self:center!important;background-size:contain!important;background-position:center!important;background-color:#082b70!important;border-radius:18px!important}}",
+
+    /* Acabado visual FINAL4.6: uniforme, accesible y sin alterar la arquitectura. */
+    "body #cocoApp{--coco-navy:#123f68;--coco-blue:#146da0;--coco-sky:#d7edf6;--coco-orange:#ef6c05;--coco-ink:#173f59;--coco-radius:22px;--coco-shadow:0 8px 24px rgba(22,69,94,.09);-webkit-tap-highlight-color:transparent}",
+    "body #cocoApp .eternaLauncherCardV159{overflow:hidden!important;border-radius:24px!important;box-shadow:0 7px 0 rgba(192,224,237,.72),0 16px 34px rgba(22,69,94,.08)!important}",
+    "body #cocoApp .eternaLauncherCopyFinal3{display:flex!important;flex-direction:column!important;justify-content:center!important;min-width:0!important}",
+    "body #cocoApp .eternaLauncherActionsV159{display:flex!important;flex-wrap:wrap!important;gap:8px!important}",
+    "body #cocoApp .eternaLauncherPillV159{white-space:nowrap!important}",
+    "body #cocoApp button,body #cocoApp [role='button'],body #cocoApp a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}",
+    "body #cocoApp button:focus-visible,body #cocoApp [role='button']:focus-visible,body #cocoApp a:focus-visible,body #cocoApp input:focus-visible,body #cocoApp select:focus-visible,body #cocoApp textarea:focus-visible{outline:3px solid rgba(42,167,216,.34)!important;outline-offset:3px!important}",
+    "@media(hover:hover) and (pointer:fine){body #cocoApp .eternaLauncherCtaFinal3,body #cocoApp .cocoFamilyRecoverPrimaryV160{transition:transform .16s ease,box-shadow .16s ease!important}body #cocoApp .eternaLauncherCtaFinal3:hover,body #cocoApp .cocoFamilyRecoverPrimaryV160:hover{transform:translateY(-1px)!important}}",
+    "@media(prefers-reduced-motion:reduce){body #cocoApp *{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}",
 
     /* Zona Familiar · formato visual opción 2. */
     "body #cocoApp .cocoFamilyV129 .cocoFamilyV129Body,body #cocoApp .cocoFamilyV129 .cocoFamilyBody{background:linear-gradient(180deg,#f5fbff 0%,#ffffff 48%,#f6fbff 100%)!important}",
@@ -70,8 +184,20 @@
     "body #cocoApp .cocoFamilyV129 .cocoFamilyPin label input{display:block!important;width:100%!important;box-sizing:border-box!important;margin:4px 0 0!important;padding:14px 16px!important;min-height:56px!important;border:2px solid #234b61!important;border-radius:15px!important;background:#fff!important;color:#173f59!important;font-size:22px!important;letter-spacing:.28em!important;text-align:center!important;outline:none!important}",
     "body #cocoApp .cocoFamilyV129 .cocoFamilyPin [data-family-enter]{min-height:50px!important;margin-top:7px!important}",
 
-    "@media(max-width:900px){body #cocoApp .eternaLauncherVisualFinal3{display:block!important;min-height:235px!important;background-position:68% center!important}body #cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:block!important;min-height:190px!important}body #cocoApp .cocoFamilyV129 .eternaV159FamilyCard{padding:17px!important}}",
-    "@media(max-width:620px){body #cocoApp .eternaLauncherVisualFinal3{min-height:195px!important;border-radius:17px!important;background-position:68% center!important}body #cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{min-height:175px!important}body #cocoApp .cocoFamilyV129 .eternaV159FamilyCard{padding:14px!important;border-radius:20px!important}body #cocoApp .cocoFamilyV129 .cocoFamilyMapIntroV160{padding:14px!important;border-radius:19px!important}}"
+    /* Recuperación de PIN: misma identidad visual, verificación con contraseña de la cuenta. */
+    "body #cocoApp .cocoFamilyRecoverV160{display:grid!important;gap:10px!important;margin-top:12px!important}",
+    "body #cocoApp .cocoFamilyRecoverLinkV160{justify-self:center!important;border:0!important;background:transparent!important;color:#255f7b!important;text-decoration:underline!important;text-underline-offset:3px!important;font:850 12px inherit!important;cursor:pointer!important;padding:7px 9px!important}",
+    "body #cocoApp .cocoFamilyRecoverPanelV160{display:grid!important;gap:12px!important;margin-top:4px!important;padding:16px!important;border:1px solid #cfe4ee!important;border-radius:19px!important;background:linear-gradient(180deg,#fbfeff,#f3faff)!important;box-shadow:0 10px 25px rgba(22,69,94,.08)!important;text-align:left!important}",
+    "body #cocoApp .cocoFamilyRecoverPanelV160[hidden]{display:none!important}",
+    "body #cocoApp .cocoFamilyRecoverHeadV160{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important}body #cocoApp .cocoFamilyRecoverHeadV160 strong{display:block!important;color:#123f68!important;font-size:17px!important}body #cocoApp .cocoFamilyRecoverHeadV160 span{display:block!important;margin-top:3px!important;color:#67808d!important;font-size:10.5px!important;font-weight:750!important;line-height:1.4!important}body #cocoApp .cocoFamilyRecoverHeadV160>button{flex:0 0 auto!important;width:38px!important;height:38px!important;border:0!important;border-radius:50%!important;background:#e8f5fa!important;color:#173f59!important;font-size:22px!important;cursor:pointer!important}",
+    "body #cocoApp .cocoFamilyRecoverPanelV160 label{display:grid!important;gap:7px!important;margin:0!important;color:#173f59!important;font-size:11px!important;font-weight:900!important}body #cocoApp .cocoFamilyRecoverPanelV160 input{width:100%!important;box-sizing:border-box!important;min-height:48px!important;margin:0!important;padding:11px 13px!important;border:1.5px solid #c7e0eb!important;border-radius:13px!important;background:#fff!important;color:#173f59!important;font-size:16px!important;letter-spacing:normal!important;text-align:left!important}",
+    "body #cocoApp .cocoFamilyRecoverPinGridV160{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}body #cocoApp .cocoFamilyRecoverPinGridV160 input{text-align:center!important;letter-spacing:.22em!important;font-size:19px!important}",
+    "body #cocoApp .cocoFamilyRecoverActionsV160{display:flex!important;flex-wrap:wrap!important;gap:9px!important}body #cocoApp .cocoFamilyRecoverActionsV160 button{min-height:44px!important;padding:9px 13px!important;border-radius:12px!important;font:900 10.5px inherit!important;cursor:pointer!important}body #cocoApp .cocoFamilyRecoverPrimaryV160{border:0!important;background:#ef6c05!important;color:#fff!important;box-shadow:0 3px 0 #bd5205!important}body #cocoApp .cocoFamilyRecoverSecondaryV160{border:1px solid #c7e0eb!important;background:#fff!important;color:#234f66!important}",
+    "body #cocoApp .cocoFamilyRecoverMsgV160{min-height:0!important;color:#657d8a!important;font-size:10.5px!important;font-weight:800!important;line-height:1.4!important}body #cocoApp .cocoFamilyRecoverMsgV160.error{color:#a94141!important}body #cocoApp .cocoFamilyRecoverMsgV160.ok{color:#16805a!important}body #cocoApp .cocoFamilyRecoverMsgV160.busy{color:#1f6f91!important}body #cocoApp .cocoFamilyRecoverPanelV160>small{color:#7a909c!important;font-size:9.5px!important;line-height:1.4!important}",
+    "@media(max-width:560px){body #cocoApp .cocoFamilyRecoverPinGridV160{grid-template-columns:1fr!important}body #cocoApp .cocoFamilyRecoverActionsV160{display:grid!important;grid-template-columns:1fr!important}}",
+
+    "@media(max-width:900px){body #cocoApp .eternaLauncherVisualFinal3{display:block!important;width:100%!important;height:auto!important;aspect-ratio:1200/630!important;min-height:0!important;align-self:center!important;background-size:contain!important;background-position:center!important}body #cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:block!important;min-height:0!important;aspect-ratio:1200/630!important}body #cocoApp .cocoFamilyV129 .eternaV159FamilyCard{padding:17px!important}}",
+    "@media(max-width:620px){body #cocoApp .eternaLauncherVisualFinal3{min-height:0!important;aspect-ratio:1200/630!important;border-radius:17px!important;background-size:contain!important;background-position:center!important}body #cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{min-height:0!important;aspect-ratio:1200/630!important}body #cocoApp .cocoFamilyV129 .eternaV159FamilyCard{padding:14px!important;border-radius:20px!important}body #cocoApp .cocoFamilyV129 .cocoFamilyMapIntroV160{padding:14px!important;border-radius:19px!important}}"
   ].join("");if(!style.parentNode)document.head.appendChild(style);
   var queued=new Set(),raf=0;
   function flush(){raf=0;var list=Array.from(queued);queued.clear();list.forEach(process);root.COCO_VERSION=VERSION}
