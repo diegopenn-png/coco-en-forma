@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.0 FINAL3
+/* Coco en Forma · ETERNA v160.0 FINAL4.2
  * Release consolidada.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.0-final4";
+  var VERSION="160.0-final4.2";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -109,6 +109,31 @@
     state.dataLoadedAt=Date.now()
   }
 
+  function rememberEternaAfterAuth(){
+    try{localStorage.setItem(RESUME_KEY,JSON.stringify({mode:state.mode,at:Date.now()}))}catch(e){}
+  }
+
+  function findCreateAccountControl(){
+    var root=document.querySelector("#cocoApp .loginCard")||document.getElementById("cocoApp");
+    if(!root)return null;
+    var nodes=root.querySelectorAll("button,a,[role='button']");
+    for(var i=0;i<nodes.length;i++){
+      if(/^\s*crear\s+cuenta\s*$/i.test(String(nodes[i].textContent||"")))return nodes[i]
+    }
+    return null
+  }
+
+  function goDirectlyToCreateAccount(){
+    rememberEternaAfterAuth();
+    var control=findCreateAccountControl();
+    if(control){
+      try{control.click();return true}catch(e){}
+    }
+    var login=document.querySelector("#cocoApp .loginCard");
+    if(login)login.scrollIntoView({behavior:"smooth",block:"center"});
+    return false
+  }
+
   function createLauncher(){
     var section=document.createElement("section");
     section.id="eternaLauncherV159";
@@ -124,7 +149,16 @@
       '</div>'+
       '<div class="eternaLauncherVisualFinal3"><img src="/eterna-social.png" alt="" loading="lazy" decoding="async"></div>'+
     '</button>';
-    section.querySelector("button").onclick=open;
+    var launcherButton=section.querySelector("button");
+    launcherButton.onclick=function(event){
+      var login=document.querySelector("#cocoApp .loginCard");
+      var orangeCta=event&&event.target&&event.target.closest?event.target.closest(".eternaLauncherCtaFinal3"):null;
+      if(login&&visible(login)&&orangeCta){
+        if(event){event.preventDefault();event.stopPropagation()}
+        if(goDirectlyToCreateAccount())return
+      }
+      open()
+    };
     return section
   }
 
@@ -241,6 +275,16 @@
       "#cocoApp .eternaV160Toggle input:checked + .eternaV160Switch{background:#22a06b!important}#cocoApp .eternaV160Toggle input:checked + .eternaV160Switch:after{transform:translateX(22px)!important}",
       "#cocoApp .eternaV159ParentGrid>label:not(.eternaV160Toggle){display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-height:66px!important;padding:12px 14px!important;border:1px solid #d5e9f2!important;border-radius:16px!important;background:#fff!important;color:#173f59!important;font-size:12px!important;font-weight:900!important}#cocoApp .eternaV159ParentGrid select{min-width:82px!important;min-height:40px!important;border:1px solid #cfe4ed!important;border-radius:10px!important;background:#fff!important;color:#17394b!important;padding:5px 8px!important;font:850 11px inherit!important}",
       "#cocoApp .eternaV159Buttons button{min-height:44px}",
+      "#cocoApp .eternaV159FamilyCard{border:2px solid #c7e8f5!important;border-radius:20px!important;background:linear-gradient(180deg,#f8fdff,#eef9fd)!important;box-shadow:0 4px 0 rgba(180,220,236,.65)!important}",
+      "#cocoApp .eternaV160FamilyEyebrow{display:inline-flex!important;margin:0 0 6px!important;padding:5px 9px!important;border-radius:999px!important;background:#173f59!important;color:#fff!important;font-size:9px!important;font-weight:900!important;letter-spacing:.07em!important}",
+      "#cocoApp .eternaV159FamilyCard>h3{margin:5px 0 5px!important;color:#173f59!important;font-size:21px!important}",
+      "#cocoApp .eternaV160FamilyScope{margin:0 0 11px!important;color:#597486!important;font-size:11px!important;font-weight:750!important;line-height:1.45!important}",
+      "#cocoApp .cocoFamilyMapIntroV160{margin:18px 0 12px!important;padding:14px 16px!important;border:2px solid #f2d5a5!important;border-radius:18px!important;background:linear-gradient(180deg,#fffaf1,#fff5e5)!important;box-shadow:0 4px 0 rgba(235,201,145,.45)!important}",
+      "#cocoApp .cocoFamilyMapIntroV160 span{display:inline-flex!important;margin-bottom:5px!important;padding:5px 8px!important;border-radius:999px!important;background:#ef6c05!important;color:#fff!important;font-size:9px!important;font-weight:900!important;letter-spacing:.07em!important}",
+      "#cocoApp .cocoFamilyMapIntroV160 h3{margin:2px 0 4px!important;color:#173f59!important;font-size:20px!important}",
+      "#cocoApp .cocoFamilyMapIntroV160 p{margin:0!important;color:#6b7880!important;font-size:11px!important;font-weight:750!important;line-height:1.45!important}",
+      "#cocoApp .cocoFamilyPin{max-width:560px!important;margin:26px auto!important}",
+      "#cocoApp .cocoFamilyPin [data-family-enter]{min-height:50px!important}",
       "#cocoApp .eternaLauncherLoggedInFinal3{margin:14px 0 16px!important}",
       "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159{min-height:190px!important;padding:18px 22px!important;grid-template-columns:minmax(0,1fr) minmax(260px,390px)!important;gap:20px!important;border-radius:22px!important}",
       "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159 h2{font-size:clamp(25px,3vw,34px)!important;line-height:1.02!important}",
@@ -325,7 +369,7 @@
   function close(){var o=document.getElementById("eternaOverlayV159");if(o){hideModePicker();o.classList.remove("is-open")}document.body.style.overflow="";stopAudio()}
 
   function goToLogin(){
-    try{localStorage.setItem(RESUME_KEY,JSON.stringify({mode:state.mode,at:Date.now()}))}catch(e){}
+    rememberEternaAfterAuth();
     close();
     var login=document.querySelector("#cocoApp .loginCard,.loginCard");
     if(login){login.scrollIntoView({behavior:"smooth",block:"center"});var email=login.querySelector("#cEmail,input[type=email],input[autocomplete=email]");if(email)setTimeout(function(){email.focus()},350)}
@@ -501,13 +545,13 @@
   function renderProgressPanel(){
     var s=progressSnapshot();
     if(!s.concepts.length&&!s.strategies.length){
-      return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso de Eterna</b><button type="button" data-et-export>Exportar informe</button></div><p class="eternaV160ProgressIntro">Aquí aparecerá el progreso cuando el alumno empiece a practicar con Eterna.</p></section>'
+      return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso escolar con Eterna</b><button type="button" data-et-export>Exportar informe</button></div><p class="eternaV160ProgressIntro">Aquí aparecerá el progreso cuando el alumno empiece a practicar con Eterna.</p></section>'
     }
     var strongest=s.strongest.length?s.strongest.map(function(x){return esc(x.concept_label)+" ("+percent(x.mastery_score)+"%)"}).join(" · "):"Todavía estamos reuniendo señales.";
     var reinforce=s.reinforce.length?s.reinforce.map(function(x){return esc(x.concept_label)}).join(" · "):"Todavía no hay suficiente información.";
     var strategies=s.strategies.length?s.strategies.map(function(x){return esc(strategyName(x.strategy_key))}).join(" · "):"Eterna seguirá probando distintas formas de ayuda.";
     var activity=(s.subjects.length?s.subjects.slice(0,5).map(esc).join(" · "):"Actividad escolar")+" · "+s.attempts+" señales o intentos";
-    return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso de Eterna</b><button type="button" data-et-export>Exportar informe</button></div><p class="eternaV160ProgressIntro">Resumen orientativo según las actividades realizadas hasta ahora. No es un diagnóstico ni una etiqueta del alumno.</p><div class="eternaV160ProgressGrid"><div class="eternaV160ProgressBox"><b>Lo que parece ir mejor</b><span>'+strongest+'</span></div><div class="eternaV160ProgressBox"><b>Lo que conviene seguir practicando</b><span>'+reinforce+'</span></div><div class="eternaV160ProgressBox"><b>Formas de ayuda que parecen funcionar</b><span>'+strategies+'</span></div><div class="eternaV160ProgressBox"><b>Actividad registrada</b><span>'+activity+'</span></div></div></section>'
+    return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso escolar con Eterna</b><button type="button" data-et-export>Exportar informe</button></div><p class="eternaV160ProgressIntro">Resumen orientativo según las actividades realizadas hasta ahora. No es un diagnóstico ni una etiqueta del alumno.</p><div class="eternaV160ProgressGrid"><div class="eternaV160ProgressBox"><b>Lo que parece ir mejor</b><span>'+strongest+'</span></div><div class="eternaV160ProgressBox"><b>Lo que conviene seguir practicando</b><span>'+reinforce+'</span></div><div class="eternaV160ProgressBox"><b>Formas de ayuda que parecen funcionar</b><span>'+strategies+'</span></div><div class="eternaV160ProgressBox"><b>Actividad registrada</b><span>'+activity+'</span></div></div></section>'
   }
 
   function humanReportHtml(exportData){
@@ -586,24 +630,108 @@
   }
 
   async function injectFamilyCard(force){
-    var body=document.querySelector("#cocoApp .cocoFamilyV129Body,#cocoApp .cocoFamilyBody,#cocoApp [class*='Family'][class*='Body']");if(!body)return;
+    var body=document.querySelector("#cocoApp .cocoFamilyV129Body,#cocoApp .cocoFamilyBody,#cocoApp [class*='Family'][class*='Body']");
+    if(!body)return;
+
+    var familyModal=body.closest(".cocoFamilyV129");
+    var titleNode=familyModal&&familyModal.querySelector("#cocoFamilyV129Title");
+    var titleText=String(titleNode&&titleNode.textContent||"").trim();
+    var pinScreen=body.querySelector(".cocoFamilyPin");
+    var headerKicker=familyModal&&familyModal.querySelector("header span");
+
+    /*
+     * PIN = PUERTA ÚNICA.
+     * Mientras la pantalla sea "Acceso familiar" o exista el formulario PIN:
+     * - no se muestra Eterna;
+     * - no se muestra progreso;
+     * - no se muestra mapa;
+     * - no se muestran controles familiares.
+     */
+    if(/acceso\s+familiar/i.test(titleText)||pinScreen){
+      body.querySelectorAll(".eternaV159FamilyCard,.cocoFamilyMapIntroV160").forEach(function(n){n.remove()});
+      if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · ACCESO PROTEGIDO";
+      if(pinScreen){
+        var pinCopy=pinScreen.querySelector("p");
+        if(pinCopy)pinCopy.textContent="El PIN protege el progreso escolar de Eterna y el mapa de fortalezas de los juegos para la mente.";
+        var pinButton=pinScreen.querySelector("[data-family-enter]");
+        if(pinButton){
+          pinButton.textContent=/crear/i.test(String(pinButton.textContent||""))?"Crear PIN y entrar":"Entrar en Zona Familiar"
+        }
+      }
+      return
+    }
+
+    /*
+     * Esperamos a que el informe de juegos esté realmente construido.
+     * Esto evita que Eterna se inserte durante el "Coco está organizando..."
+     * y sea borrada por el render posterior del mapa.
+     */
+    var gamesReportReady=body.querySelector(".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight");
+    if(!gamesReportReady)return;
+
     if(body.querySelector(".eternaV159FamilyCard")&&!force)return;
+
     var old=body.querySelector(".eternaV159FamilyCard");if(old)old.remove();
+    var oldDivider=body.querySelector(".cocoFamilyMapIntroV160");if(oldDivider)oldDivider.remove();
+
     await subscriptionStatus();
-    var active=activeSubscription(),sub=state.subscription||{},ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20},card=document.createElement("section");card.className="eternaV159FamilyCard";
+
+    /* Evita carreras si el modal se cerró o se volvió a crear mientras cargábamos. */
+    if(!document.body.contains(body))return;
+    familyModal=body.closest(".cocoFamilyV129");
+    if(!familyModal)return;
+    titleNode=familyModal.querySelector("#cocoFamilyV129Title");
+    titleText=String(titleNode&&titleNode.textContent||"").trim();
+    if(/acceso\s+familiar/i.test(titleText)||body.querySelector(".cocoFamilyPin"))return;
+    if(!body.querySelector(".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight"))return;
+
+    var headerTitle=familyModal.querySelector("#cocoFamilyV129Title");
+    var headerCopy=familyModal.querySelector("header p");
+    headerKicker=familyModal.querySelector("header span");
+    if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · PROGRESO";
+    if(headerTitle)headerTitle.textContent="Progreso y fortalezas";
+    if(headerCopy)headerCopy.textContent="Dos lecturas distintas: Eterna resume la ayuda escolar y el mapa refleja el entrenamiento de los juegos para la mente.";
+
+    var active=activeSubscription(),
+        sub=state.subscription||{},
+        ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20},
+        card=document.createElement("section");
+    card.className="eternaV159FamilyCard";
+
     var activeText=trialLabel(sub)||String(sub.status||"activa");
-    var plans=active?'<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>':
-      '<div class="eternaV159PlanGrid"><div class="eternaV159Plan"><b>Prueba gratuita · 7 días</b><span>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</span><button type="button" class="secondary" data-et-trial>Empezar prueba gratis</button></div><div class="eternaV159Plan"><b>7,99 €/mes</b><span>Plan de lanzamiento.</span><button type="button" data-et-month>Suscribirme</button></div><div class="eternaV159Plan"><b>79,99 €/año</b><span>Plan anual de lanzamiento.</span><button type="button" data-et-year>Elegir anual</button></div></div>';
+
+    var plans=active
+      ?'<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>'
+      :'<div class="eternaV159PlanGrid"><div class="eternaV159Plan"><b>Prueba gratuita · 7 días</b><span>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</span><button type="button" class="secondary" data-et-trial>Empezar prueba gratis</button></div><div class="eternaV159Plan"><b>7,99 €/mes</b><span>Plan de lanzamiento.</span><button type="button" data-et-month>Suscribirme</button></div><div class="eternaV159Plan"><b>79,99 €/año</b><span>Plan anual de lanzamiento.</span><button type="button" data-et-year>Elegir anual</button></div></div>';
+
     var promo='<div class="eternaV160FamilyPromo"><span>Enlace directo para compartir Eterna en redes o con otras familias.</span><button type="button" class="eternaV160ShareBtn" data-et-share>🔗 Compartir Eterna</button></div>';
-    var settings='<details class="eternaV159ParentSettings"><summary>Privacidad y controles familiares</summary><div class="eternaV159ParentGrid">'+
+
+    var settings='<details class="eternaV159ParentSettings"><summary>Privacidad y controles de Eterna</summary><div class="eternaV159ParentGrid">'+
       '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir voz de Eterna</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-voice '+(ps.voice_enabled!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
       '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir fotos de tareas</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-images '+(ps.allow_image_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
       '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir preguntas por micrófono</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-audio '+(ps.allow_audio_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
       '<label>Consultas máximas al día <select data-et-limit>'+[10,20,30,50].map(function(x){return'<option value="'+x+'" '+(Number(ps.max_sessions_per_day||20)===x?"selected":"")+'>'+x+"</option>"}).join("")+'</select></label>'+
-      '</div><p>Las fotos se procesan temporalmente y no se guardan por defecto. Eterna conserva señales pedagógicas y dominio por conceptos, no el texto bruto de la conversación.</p><div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-save-settings>Guardar ajustes</button><button type="button" class="eternaV159Danger" data-et-delete>Borrar memoria de Eterna</button></div></details>';
-    card.innerHTML='<span class="eternaV159FamilyStatus '+(active?"active":"")+'">'+(tester()?"beta de prueba":active?esc(activeText):"no activa")+'</span><h3>✨ Eterna</h3><p>Tutor escolar personalizado por foto, voz y texto. Se adapta al curso, al dominio de cada concepto y a las estrategias de ayuda que van funcionando mejor.</p>'+promo+plans+renderProgressPanel()+settings;
+      '</div><p>Estos controles afectan únicamente a Eterna y a la ayuda escolar. Las fotos se procesan temporalmente y no se guardan por defecto.</p><div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-save-settings>Guardar ajustes</button><button type="button" class="eternaV159Danger" data-et-delete>Borrar memoria de Eterna</button></div></details>';
+
+    card.innerHTML=
+      '<span class="eternaV160FamilyEyebrow">AYUDA ESCOLAR · ETERNA</span>'+
+      '<span class="eternaV159FamilyStatus '+(active?"active":"")+'">'+(tester()?"beta de prueba":active?esc(activeText):"no activa")+'</span>'+
+      '<h3>✨ Eterna · progreso de ayuda escolar</h3>'+
+      '<p class="eternaV160FamilyScope">Aquí ves lo que Eterna ha observado mientras ayuda con tareas, explicaciones, exámenes y práctica escolar. Es un progreso independiente de las puntuaciones de los juegos para la mente.</p>'+
+      promo+plans+renderProgressPanel()+settings;
+
+    /* Eterna: primer bloque después de introducir correctamente el PIN. */
     body.insertBefore(card,body.firstChild);
+
+    /* Separador explícito antes del mapa que ya genera Coco con las partidas. */
+    var divider=document.createElement("section");
+    divider.className="cocoFamilyMapIntroV160";
+    divider.innerHTML='<span>JUEGOS PARA LA MENTE</span><h3>Mapa de fortalezas</h3><p>Este apartado se calcula a partir de las partidas y puntuaciones de los juegos mentales de Coco. No utiliza el progreso escolar de Eterna.</p>';
+    if(card.nextSibling)body.insertBefore(divider,card.nextSibling);
+    else body.appendChild(divider);
+
     bindFamilyToggleLabels(card);
+
     var b=card.querySelector("[data-et-open]");if(b)b.onclick=function(){var closeFamily=document.querySelector("#cocoApp .cocoFamilyV129>header button");if(closeFamily)closeFamily.click();open()};
     b=card.querySelector("[data-et-portal]");if(b)b.onclick=function(){portal(b)};
     b=card.querySelector("[data-et-trial]");if(b)b.onclick=function(){startTrial(b)};
@@ -643,7 +771,7 @@
       var nodes=records[i].addedNodes||[];
       for(var j=0;j<nodes.length;j++){
         var n=nodes[j];if(n.nodeType!==1)continue;
-        if((n.matches&&n.matches(".loginCard,.carnet,#retosCard,.retosCard,.cocoFamilyV129Body,.cocoFamilyBody"))||(n.querySelector&&n.querySelector(".loginCard,.carnet,#retosCard,.retosCard,.cocoFamilyV129Body,.cocoFamilyBody")))return true
+        if((n.matches&&n.matches(".loginCard,.carnet,#retosCard,.retosCard,.cocoFamilyV129Body,.cocoFamilyBody,.cocoFamilyPin,.cocoFamilyHero,.cocoFamilyStats,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight"))||(n.querySelector&&n.querySelector(".loginCard,.carnet,#retosCard,.retosCard,.cocoFamilyV129Body,.cocoFamilyBody,.cocoFamilyPin,.cocoFamilyHero,.cocoFamilyStats,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight")))return true
       }
     }
     return false
@@ -675,7 +803,7 @@
 
   window.CocoEternaV160=Object.freeze({
     open:open,close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,
-    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true}}
+    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familySectionsSeparated:true,trialCtaOpensSignup:true}}
   });
   window.CocoPerformanceV160=Object.freeze({snapshot:function(){
     var nav=(performance.getEntriesByType&&performance.getEntriesByType("navigation")[0])||null;
