@@ -1,4 +1,4 @@
-const CACHE_VERSION = "coco-en-forma-v160.0.0-stable1";
+const CACHE_VERSION = "coco-en-forma-v160.0.0-final1";
 const CACHE_PREFIX = "coco-en-forma-";
 const SCOPE_URL = new URL("./", self.registration.scope);
 const INDEX_URL = new URL("index.html", SCOPE_URL).href;
@@ -18,6 +18,8 @@ const CORE_ASSET_PATHS = [
   "./coco-v155-identity.js",
   "./eterna-v159.js",
   "./eterna-v159.css",
+  "./eterna.html",
+  "./eterna-social.png",
   "./share/eterna.png",
   "./coco-v144-professional.css",
   "./coco-v147-refinements.css",
@@ -63,4 +65,4 @@ async function fetchAndCache(cache,assetPath){const assetUrl=absolute(assetPath)
 self.addEventListener("install",event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE_VERSION);await Promise.all(CORE_ASSET_PATHS.map(assetPath=>fetchAndCache(cache,assetPath)));self.skipWaiting()})())});
 self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_VERSION).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
 self.addEventListener("message",event=>{if(event.data&&event.data.type==="SKIP_WAITING")self.skipWaiting()});
-self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;const requestUrl=new URL(event.request.url);if(requestUrl.origin!==self.location.origin)return;const eternaFresh=/\/eterna-v159\.js$/.test(requestUrl.pathname);if(event.request.mode==="navigate"||eternaFresh){event.respondWith(fetch(event.request).then(response=>{if(response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response}).catch(()=>caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||caches.match(INDEX_URL))));return}event.respondWith(caches.match(event.request,{ignoreSearch:true}).then(cached=>{const network=fetch(event.request).then(response=>{if(response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response});return cached||network.catch(()=>caches.match(INDEX_URL))}))});
+self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;const requestUrl=new URL(event.request.url);if(requestUrl.origin!==self.location.origin)return;const eternaFresh=/\/(eterna-v159\.js|eterna\.html|eterna-social\.png)$/.test(requestUrl.pathname);if(event.request.mode==="navigate"||eternaFresh){event.respondWith(fetch(event.request).then(response=>{if(response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response}).catch(()=>caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||caches.match(INDEX_URL))));return}event.respondWith(caches.match(event.request,{ignoreSearch:true}).then(cached=>{const network=fetch(event.request).then(response=>{if(response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response});return cached||network.catch(()=>caches.match(INDEX_URL))}))});
