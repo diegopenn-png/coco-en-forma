@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160 FINAL4.3 */
-const CACHE_VERSION="coco-en-forma-v160.0.0-final4.3";
+/* Coco en Forma · Service Worker v160 FINAL4.4 */
+const CACHE_VERSION="coco-en-forma-v160.0.0-final4.4";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -8,13 +8,13 @@ const ESSENTIAL=[
   "./","./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
   "./coco-v152-padel.js","./coco-v152-pwa.js","./coco-v153-fixes.js","./coco-v155-identity.js",
-  "./eterna-v159.js","./eterna-v159.css","./eterna.html","./eterna-social.png","./og-coco.jpg",
+  "./eterna-v159.js","./eterna-v159.css","./eterna.html","./eterna-social.png","./og-coco.jpg","./share/eterna.png",
   "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
   "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./shortcut-icon.png","./favicon.png"
 ];
 
 const OPTIONAL=[
-  "./share/eterna.png","./juego/numeros/index.html","./share/numeros.jpg","./juego/calculo/index.html","./share/calculo.jpg",
+  "./juego/numeros/index.html","./share/numeros.jpg","./juego/calculo/index.html","./share/calculo.jpg",
   "./juego/palabras/index.html","./share/palabras.jpg","./juego/series/index.html","./share/series.jpg","./juego/memoria/index.html","./share/memoria.jpg",
   "./juego/sudoku/index.html","./share/sudoku.jpg","./juego/sopa/index.html","./share/sopa.jpg","./juego/crucigrama/index.html","./share/crucigrama.jpg",
   "./juego/tiempo/index.html","./share/tiempo.jpg","./juego/verdadero/index.html","./share/verdadero.jpg","./juego/futbol/index.html","./share/futbol.jpg",
@@ -35,7 +35,7 @@ function staleWhileRevalidate(event){return caches.match(event.request,{ignoreSe
 self.addEventListener("fetch",event=>{
   if(event.request.method!=="GET")return;
   const url=new URL(event.request.url);if(url.origin!==self.location.origin)return;
-  const critical=/\/(eterna-v159\.(js|css)|eterna\.html|eterna-social\.png|og-coco\.jpg|coco-v152-pwa\.js|coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(url.pathname);
+  const critical=/\/(eterna-v159\.(js|css)|eterna\.html|eterna-social\.png|og-coco\.jpg|share\/eterna\.png|coco-v152-pwa\.js|coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(url.pathname);
   const documentRequest=event.request.mode==="navigate"||event.request.destination==="document";
   if(documentRequest||critical){event.respondWith(networkFirst(event));return}
   event.respondWith(staleWhileRevalidate(event))
