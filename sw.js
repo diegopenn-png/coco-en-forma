@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160 FINAL4.4 */
-const CACHE_VERSION="coco-en-forma-v160.0.0-final4.4";
+/* Coco en Forma · Service Worker v160 FINAL4.5 */
+const CACHE_VERSION="coco-en-forma-v160.0.0-final4.5";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

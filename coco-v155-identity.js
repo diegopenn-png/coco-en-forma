@@ -1,7 +1,7 @@
-/* Coco en Forma · v160 FINAL4.4 · identidad visual con observación acotada */
+/* Coco en Forma · v160 FINAL4.5 · identidad visual con observación acotada */
 (function(root){
   "use strict";
-  var VERSION="2026-08-22-v160-final4.4";
+  var VERSION="2026-08-23-v160-final4.5";
   var DATA={
     numeros:{name:"Une los números",description:"Conecta la secuencia sin repetir casillas. Entrena planificación, atención visual y coordinación."},
     calculo:{name:"Cálculo veloz",description:"Resuelve operaciones a contrarreloj."},
@@ -17,7 +17,7 @@
     futbol:{name:"Fútbol",description:"Memoriza las zonas que se iluminan y chuta al espacio que quedó libre."},
     padel:{name:"Pádel",description:"Organiza mixings y campeonatos, registra resultados y sigue la clasificación de tus jugadores."}
   };
-  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16004"});
+  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16005"});
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
   var TITLE_TO_ID={};Object.keys(DATA).forEach(function(id){TITLE_TO_ID[DATA[id].name]=id});TITLE_TO_ID["Coco Fútbol"]="futbol";TITLE_TO_ID["Coco Pádel"]="padel";TITLE_TO_ID["Coco Pádel Club"]="padel";TITLE_TO_ID["Reto Tiempo"]="tiempo";
   function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String(title.textContent||"").trim()]||""}
@@ -34,9 +34,13 @@
     "#cocoApp .cocoSharePreview .cocoOfficialThumb{width:100%!important;height:auto!important;aspect-ratio:1200/630!important;object-fit:cover!important}",
 
     /* Imagen oficial Eterna/Coco musculoso con cerebro visible, siempre desde el repositorio. */
-    "body #cocoApp .eternaLauncherVisualFinal3{position:relative!important;display:block!important;align-self:stretch!important;min-width:0!important;min-height:300px!important;padding:0!important;overflow:hidden!important;border-radius:22px!important;background-image:url('./share/eterna.png?v=16044')!important;background-size:cover!important;background-position:69% center!important;background-repeat:no-repeat!important;box-shadow:0 14px 30px rgba(13,52,80,.16)!important}",
+    "body #cocoApp .eternaLauncherVisualFinal3{position:relative!important;display:block!important;align-self:stretch!important;min-width:0!important;min-height:300px!important;padding:0!important;overflow:hidden!important;border-radius:22px!important;background-image:url('./share/eterna.png?v=16045')!important;background-size:cover!important;background-position:69% center!important;background-repeat:no-repeat!important;box-shadow:0 14px 30px rgba(13,52,80,.16)!important}",
     "body #cocoApp .eternaLauncherVisualFinal3>.eternaTabletV160{display:none!important}",
     "body #cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:block!important;min-height:190px!important;border-radius:18px!important;background-position:68% center!important}",
+
+    /* Escritorio / Safari: en LOGIN se muestra completa la creatividad horizontal.
+       No cambia PWA/móvil ni la home ya logueada. */
+    "@media(min-width:901px){body #cocoApp .eternaLauncherLoggedOutFinal3 .eternaLauncherVisualFinal3{display:block!important;width:100%!important;min-height:0!important;height:auto!important;aspect-ratio:1200/630!important;align-self:center!important;background-size:contain!important;background-position:center!important;background-color:#082b70!important;border-radius:18px!important}}",
 
     /* Zona Familiar · formato visual opción 2. */
     "body #cocoApp .cocoFamilyV129 .cocoFamilyV129Body,body #cocoApp .cocoFamilyV129 .cocoFamilyBody{background:linear-gradient(180deg,#f5fbff 0%,#ffffff 48%,#f6fbff 100%)!important}",
