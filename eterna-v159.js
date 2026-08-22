@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.0-final4.2";
+  var VERSION="160.0-final4.3";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -147,7 +147,20 @@
         '<div class="eternaLauncherTrialFinal3"><strong>⭐ Prueba gratuita · 7 días</strong><span>Sin tarjeta ni datos bancarios para empezar.</span></div>'+
         '<span class="eternaLauncherCtaFinal3">Probar Eterna</span>'+
       '</div>'+
-      '<div class="eternaLauncherVisualFinal3"><img src="/eterna-social.png" alt="" loading="lazy" decoding="async"></div>'+
+      '<div class="eternaLauncherVisualFinal3" aria-hidden="true">'+
+        '<div class="eternaTabletV160">'+
+          '<div class="eternaTabletCameraV160"></div>'+
+          '<div class="eternaTabletScreenV160">'+
+            '<div class="eternaTabletBrandV160"><span>✦</span><b>Eterna</b></div>'+
+            '<strong>Tu ayuda escolar<br>personalizada</strong>'+
+            '<small>¿Qué necesitas entender hoy?</small>'+
+            '<div class="eternaTabletChoiceV160">📷 Resolver una tarea</div>'+
+            '<div class="eternaTabletChoiceV160">🧠 Explícame un tema</div>'+
+            '<div class="eternaTabletChoiceV160">📚 Preparar un examen</div>'+
+            '<div class="eternaTabletInputV160">Escribe, habla o haz una foto <i>→</i></div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
     '</button>';
     var launcherButton=section.querySelector("button");
     launcherButton.onclick=function(event){
@@ -244,8 +257,14 @@
       "#cocoApp .cocoHomeBrainFallbackFinal3{width:100%;min-height:270px;display:grid;place-items:center;align-content:center;gap:5px;padding:24px;text-align:center;color:#173f59}#cocoApp .cocoHomeBrainFallbackFinal3>span{font-size:56px}#cocoApp .cocoHomeBrainFallbackFinal3 strong{font-size:clamp(26px,4vw,40px);line-height:1}#cocoApp .cocoHomeBrainFallbackFinal3 small{font-size:14px;font-weight:900;color:#2b8eb7}#cocoApp .cocoHomeBrainFallbackFinal3 p{max-width:430px;color:#617c8b;font-weight:700}",
       "#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{height:100%;min-height:360px!important;padding:24px!important;grid-template-columns:minmax(0,1.05fr) minmax(230px,.95fr)!important;gap:22px!important}",
       "#cocoApp .eternaLauncherCopyFinal3{min-width:0}",
-      "#cocoApp .eternaLauncherVisualFinal3{min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center}",
-      "#cocoApp .eternaLauncherVisualFinal3 img{display:block;width:100%;max-width:520px;height:auto;aspect-ratio:1200/630;object-fit:cover;border-radius:18px;box-shadow:0 12px 28px rgba(23,57,75,.16)}",
+      "#cocoApp .eternaLauncherVisualFinal3{min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center;padding:4px 2px}",
+      "#cocoApp .eternaTabletV160{position:relative;width:min(100%,500px);aspect-ratio:1.35/1;padding:13px;border:8px solid #142331;border-radius:30px;background:#111f2a;box-shadow:0 18px 38px rgba(15,52,72,.22),inset 0 0 0 1px rgba(255,255,255,.18);transform:perspective(900px) rotateY(-7deg) rotateX(1deg);transform-origin:center}",
+      "#cocoApp .eternaTabletCameraV160{position:absolute;z-index:2;top:5px;left:50%;width:5px;height:5px;margin-left:-2px;border-radius:50%;background:#314b5c;box-shadow:0 0 0 2px #0c1821}",
+      "#cocoApp .eternaTabletScreenV160{height:100%;box-sizing:border-box;padding:17px 18px 15px;border-radius:19px;background:linear-gradient(145deg,#fafdff 0%,#edf8fd 58%,#fff8ec 100%);overflow:hidden;color:#173f59;text-align:left}",
+      "#cocoApp .eternaTabletBrandV160{display:flex;align-items:center;gap:7px;margin-bottom:10px}.eternaTabletBrandV160 span{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#ff7900;color:#fff!important;font-size:17px}.eternaTabletBrandV160 b{font-size:18px;color:#173f59}",
+      "#cocoApp .eternaTabletScreenV160>strong{display:block;font-size:clamp(20px,2.35vw,31px);line-height:1;color:#173f59}.eternaTabletScreenV160>small{display:block;margin:7px 0 11px;color:#64808f;font-size:10px;font-weight:800}",
+      "#cocoApp .eternaTabletChoiceV160{margin:6px 0;padding:8px 10px;border:1px solid #d2e8f2;border-radius:12px;background:#fff;color:#234f66;font-size:10px;font-weight:900;box-shadow:0 2px 0 #e1eef4}",
+      "#cocoApp .eternaTabletInputV160{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;padding:8px 8px 8px 10px;border:1px solid #d2e8f2;border-radius:12px;background:rgba(255,255,255,.85);color:#7b919d;font-size:8.5px;font-weight:750}.eternaTabletInputV160 i{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#ef6c05;color:#fff;font-style:normal;font-size:16px}",
       "#cocoApp .eternaLauncherTrialFinal3{display:grid;gap:2px;margin-top:12px;padding:9px 11px;border-radius:13px;background:#fff5e4;border:1px solid #ffdbab;color:#a8510d}#cocoApp .eternaLauncherTrialFinal3 strong{font-size:11px}#cocoApp .eternaLauncherTrialFinal3 span{font-size:9.5px;font-weight:750;color:#6e7d84}",
       "#cocoApp .eternaLauncherCtaFinal3{display:inline-flex;margin-top:10px;min-height:44px;padding:9px 14px;align-items:center;justify-content:center;border-radius:12px;background:#ef6c05;color:#fff;font-size:11px;font-weight:900;box-shadow:0 3px 0 #bd5205}",
       ".eternaV159Main{grid-template-rows:auto auto 1fr auto!important}",
@@ -283,8 +302,18 @@
       "#cocoApp .cocoFamilyMapIntroV160 span{display:inline-flex!important;margin-bottom:5px!important;padding:5px 8px!important;border-radius:999px!important;background:#ef6c05!important;color:#fff!important;font-size:9px!important;font-weight:900!important;letter-spacing:.07em!important}",
       "#cocoApp .cocoFamilyMapIntroV160 h3{margin:2px 0 4px!important;color:#173f59!important;font-size:20px!important}",
       "#cocoApp .cocoFamilyMapIntroV160 p{margin:0!important;color:#6b7880!important;font-size:11px!important;font-weight:750!important;line-height:1.45!important}",
-      "#cocoApp .cocoFamilyPin{max-width:560px!important;margin:26px auto!important}",
-      "#cocoApp .cocoFamilyPin [data-family-enter]{min-height:50px!important}",
+      "#cocoApp .eternaV160TrialActive{margin:12px 0;padding:12px 14px;border:1px solid #ffd39d;border-radius:16px;background:linear-gradient(180deg,#fff8e9,#fff3dc);color:#173f59}",
+      "#cocoApp .eternaV160TrialActive b{display:block;font-size:13px;color:#173f59}.eternaV160TrialActive span{display:block;margin-top:3px;color:#6f7f88;font-size:10px;font-weight:750}",
+      "#cocoApp .eternaV160UpgradeWrap{margin:12px 0 4px;padding:13px;border:1px solid #d4e8f1;border-radius:18px;background:linear-gradient(180deg,#f8fcff,#f1f9fd)}",
+      "#cocoApp .eternaV160UpgradeHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}.eternaV160UpgradeHead b{color:#173f59;font-size:14px}.eternaV160UpgradeHead span{color:#667f8c;font-size:10px;font-weight:750;max-width:560px}",
+      "#cocoApp .eternaV160PaidGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.eternaV160PaidPlan{position:relative;padding:14px;border:1px solid #cfe3ec;border-radius:16px;background:#fff;box-shadow:0 2px 0 #e0edf3}.eternaV160PaidPlan.is-annual{border:2px solid #64cdb7;background:linear-gradient(180deg,#fff,#f4fffb)}",
+      "#cocoApp .eternaV160PaidPlan .badge{position:absolute;right:10px;top:10px;padding:4px 7px;border-radius:999px;background:#e8fbf4;color:#15775f;font-size:8.5px;font-weight:900}.eternaV160PaidPlan b{display:block;color:#173f59;font-size:14px}.eternaV160PaidPlan strong{display:block;margin:5px 0 4px;color:#173f59;font-size:22px}.eternaV160PaidPlan span{display:block;color:#6c818d;font-size:9.5px;font-weight:750;line-height:1.35}.eternaV160PaidPlan button{min-height:44px;margin-top:10px;padding:8px 12px;border:0;border-radius:12px;background:#ef6c05;color:#fff;font:900 10.5px inherit;cursor:pointer;box-shadow:0 3px 0 #bd5205}",
+      "@media(max-width:640px){#cocoApp .eternaV160PaidGrid{grid-template-columns:1fr}.eternaTabletV160{transform:none!important;width:min(100%,410px)!important}}",
+      "#cocoApp .cocoFamilyPin{max-width:560px!important;margin:26px auto!important;padding:4px 10px 16px!important}",
+      "#cocoApp .cocoFamilyPin label{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:9px!important;margin:19px 0 14px!important;padding:0!important;position:static!important;background:transparent!important;border:0!important;color:#173f59!important;font-size:12px!important;font-weight:900!important;line-height:1.2!important}",
+      "#cocoApp .cocoFamilyPin label input{display:block!important;width:100%!important;box-sizing:border-box!important;margin:0!important;padding:13px 15px!important;min-height:54px!important;border:2px solid #234b61!important;border-radius:15px!important;background:#fff!important;color:#173f59!important;font-size:22px!important;letter-spacing:.28em!important;text-align:center!important;outline:none!important}",
+      "#cocoApp .cocoFamilyPin label input:focus{border-color:#2aa7d8!important;box-shadow:0 0 0 4px rgba(42,167,216,.13)!important}",
+      "#cocoApp .cocoFamilyPin [data-family-enter]{min-height:50px!important;margin-top:0!important}",
       "#cocoApp .eternaLauncherLoggedInFinal3{margin:14px 0 16px!important}",
       "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159{min-height:190px!important;padding:18px 22px!important;grid-template-columns:minmax(0,1fr) minmax(260px,390px)!important;gap:20px!important;border-radius:22px!important}",
       "#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159 h2{font-size:clamp(25px,3vw,34px)!important;line-height:1.02!important}",
@@ -629,6 +658,158 @@
     return"Prueba gratuita activa · "+days+" día"+(days===1?"":"s")+" restante"+(days===1?"":"s")
   }
 
+
+  var FAMILY_PIN_TABLE="eterna_family_security";
+  var FAMILY_PIN_CHANGE_KEY="coco_family_pin_change_v16043";
+  var FAMILY_PIN_AUTO_KEY="coco_family_pin_auto_v16043";
+
+  async function familyPinHashV160(pin){
+    var bytes=new TextEncoder().encode("coco-familia-"+String(pin||""));
+    var digest=await crypto.subtle.digest("SHA-256",bytes);
+    return Array.from(new Uint8Array(digest)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")
+  }
+
+  async function familyPinCloudRead(){
+    await refreshSession();
+    if(!state.session||!state.session.user)return null;
+    var cli=client();if(!cli)return null;
+    try{
+      var r=await cli.from(FAMILY_PIN_TABLE).select("pin_hash").eq("user_id",state.session.user.id).maybeSingle();
+      if(r&&r.error)throw r.error;
+      return r&&r.data&&r.data.pin_hash?String(r.data.pin_hash):null
+    }catch(e){return null}
+  }
+
+  async function familyPinCloudWrite(hash){
+    await refreshSession();
+    if(!state.session||!state.session.user)return false;
+    var cli=client();if(!cli)return false;
+    try{
+      var r=await cli.from(FAMILY_PIN_TABLE).upsert({user_id:state.session.user.id,pin_hash:String(hash),updated_at:new Date().toISOString()},{onConflict:"user_id"});
+      if(r&&r.error)throw r.error;
+      return true
+    }catch(e){return false}
+  }
+
+  function reopenFamilyGateWithPin(pin){
+    try{sessionStorage.setItem(FAMILY_PIN_AUTO_KEY,String(pin||""))}catch(e){}
+    var close=document.querySelector("#cocoApp .cocoFamilyV129 [data-family-close]");
+    if(close)close.click();
+    setTimeout(function(){
+      var btn=document.querySelector("#cocoApp .cocoFamiliaBtn");
+      if(btn)btn.click()
+    },80)
+  }
+
+  function enhanceFamilyPinChange(){
+    var change=document.querySelector("#cocoApp .cocoFamilyV129 [data-family-pin]");
+    if(!change||change.dataset.eternaCloudPin==="1")return;
+    change.dataset.eternaCloudPin="1";
+    var original=change.onclick;
+    change.onclick=function(event){
+      try{sessionStorage.setItem(FAMILY_PIN_CHANGE_KEY,"1")}catch(e){}
+      if(typeof original==="function")return original.call(change,event)
+    }
+  }
+
+  async function enhanceFamilyPinGate(){
+    var pinScreen=document.querySelector("#cocoApp .cocoFamilyV129 .cocoFamilyPin");
+    if(!pinScreen||pinScreen.dataset.eternaCloudPin==="1")return;
+    pinScreen.dataset.eternaCloudPin="1";
+
+    var input=pinScreen.querySelector("input");
+    var button=pinScreen.querySelector("[data-family-enter]");
+    var error=pinScreen.querySelector(".cocoFamilyError");
+    var copy=pinScreen.querySelector("p");
+    if(!input||!button)return;
+
+    var originalClick=button.onclick;
+    var initialLocal="";
+    try{initialLocal=String(localStorage.getItem("coco_pin_familia")||"")}catch(e){}
+    var changeMode=false;
+    try{changeMode=sessionStorage.getItem(FAMILY_PIN_CHANGE_KEY)==="1"}catch(e){}
+
+    button.disabled=true;
+    var cloudHash=await familyPinCloudRead();
+
+    /* First migration: Safari's working local PIN becomes the account PIN in Supabase. */
+    if(!cloudHash&&initialLocal&&/^[a-f0-9]{64}$/i.test(initialLocal)){
+      if(await familyPinCloudWrite(initialLocal))cloudHash=initialLocal
+    }
+
+    if(cloudHash&&!changeMode){
+      if(copy)copy.textContent="Introduce el PIN familiar. Es el mismo en Safari y en la app instalada.";
+      button.textContent="Entrar en Zona Familiar"
+    }else if(changeMode){
+      if(copy)copy.textContent="Crea un nuevo PIN familiar de cuatro cifras. Se actualizará para todos tus dispositivos.";
+      button.textContent="Guardar nuevo PIN y entrar"
+    }
+    input.setAttribute("autocomplete","off");
+    button.disabled=false;
+
+    button.onclick=async function(event){
+      if(event){event.preventDefault();event.stopPropagation()}
+      var pin=String(input.value||"").replace(/\D/g,"");
+      if(pin.length!==4){
+        if(error)error.textContent="Escribe exactamente cuatro cifras.";
+        return
+      }
+      button.disabled=true;
+      var digest=await familyPinHashV160(pin);
+
+      if(changeMode){
+        var changed=await familyPinCloudWrite(digest);
+        if(!changed){
+          button.disabled=false;
+          if(error)error.textContent="No se pudo guardar el nuevo PIN. Comprueba la conexión e inténtalo otra vez.";
+          return
+        }
+        cloudHash=digest;
+        try{
+          localStorage.setItem("coco_pin_familia",digest);
+          sessionStorage.removeItem(FAMILY_PIN_CHANGE_KEY)
+        }catch(e){}
+        changeMode=false
+      }else if(cloudHash){
+        if(digest!==cloudHash){
+          button.disabled=false;
+          if(error)error.textContent="El PIN no es correcto.";
+          input.select();
+          return
+        }
+        try{localStorage.setItem("coco_pin_familia",cloudHash)}catch(e){}
+      }else{
+        var created=await familyPinCloudWrite(digest);
+        if(!created){
+          button.disabled=false;
+          if(error)error.textContent="No se pudo sincronizar el PIN. Comprueba la conexión e inténtalo otra vez.";
+          return
+        }
+        cloudHash=digest;
+        try{localStorage.setItem("coco_pin_familia",digest)}catch(e){}
+      }
+
+      /*
+       * If this browser/PWA had a different local hash when the original
+       * gate was created, reopen once so the base closure captures the
+       * synchronized account hash. Otherwise the original handler can run.
+       */
+      if(initialLocal&&cloudHash&&initialLocal!==cloudHash){
+        reopenFamilyGateWithPin(pin);
+        return
+      }
+
+      if(typeof originalClick==="function")return originalClick.call(button,event)
+    };
+
+    var autoPin="";
+    try{autoPin=sessionStorage.getItem(FAMILY_PIN_AUTO_KEY)||"";if(autoPin)sessionStorage.removeItem(FAMILY_PIN_AUTO_KEY)}catch(e){}
+    if(/^\d{4}$/.test(autoPin)){
+      input.value=autoPin;
+      setTimeout(function(){button.click()},30)
+    }
+  }
+
   async function injectFamilyCard(force){
     var body=document.querySelector("#cocoApp .cocoFamilyV129Body,#cocoApp .cocoFamilyBody,#cocoApp [class*='Family'][class*='Body']");
     if(!body)return;
@@ -700,9 +881,22 @@
 
     var activeText=trialLabel(sub)||String(sub.status||"activa");
 
-    var plans=active
-      ?'<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>'
-      :'<div class="eternaV159PlanGrid"><div class="eternaV159Plan"><b>Prueba gratuita · 7 días</b><span>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</span><button type="button" class="secondary" data-et-trial>Empezar prueba gratis</button></div><div class="eternaV159Plan"><b>7,99 €/mes</b><span>Plan de lanzamiento.</span><button type="button" data-et-month>Suscribirme</button></div><div class="eternaV159Plan"><b>79,99 €/año</b><span>Plan anual de lanzamiento.</span><button type="button" data-et-year>Elegir anual</button></div></div>';
+    var paidActive=String(sub.status||"")==="active"||tester();
+    var trialActive=String(sub.status||"")==="trialing"&&active;
+    var plans="";
+    if(paidActive){
+      plans='<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>'
+    }else{
+      var trialBlock=trialActive
+        ?'<div class="eternaV160TrialActive"><b>⭐ '+esc(activeText)+'</b><span>Puedes contratar el plan mensual o anual en cualquier momento, aunque todavía estés dentro de los 7 días de prueba.</span></div>'
+        :'<div class="eternaV160TrialActive"><b>⭐ Prueba gratuita · 7 días</b><span>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</span><button type="button" class="eternaV159Secondary" data-et-trial style="margin-top:9px">Empezar prueba gratis</button></div>';
+      plans=trialBlock+
+        '<div class="eternaV160UpgradeWrap"><div class="eternaV160UpgradeHead"><div><b>Elige tu plan cuando quieras</b><span>Los planes de pago están disponibles desde el primer día de la prueba. La activación se realiza al completar el pago.</span></div></div>'+
+        '<div class="eternaV160PaidGrid">'+
+          '<article class="eternaV160PaidPlan"><b>Plan mensual</b><strong>7,99 € <small>/mes</small></strong><span>Flexibilidad mes a mes.</span><button type="button" data-et-month>Contratar mensual</button></article>'+
+          '<article class="eternaV160PaidPlan is-annual"><span class="badge">Ahorra aprox. 17%</span><b>Plan anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses con el mejor precio.</span><button type="button" data-et-year>Contratar anual</button></article>'+
+        '</div></div>'
+    }
 
     var promo='<div class="eternaV160FamilyPromo"><span>Enlace directo para compartir Eterna en redes o con otras familias.</span><button type="button" class="eternaV160ShareBtn" data-et-share>🔗 Compartir Eterna</button></div>';
 
@@ -781,6 +975,8 @@
     if(observerRaf)return;
     observerRaf=requestAnimationFrame(function(){
       observerRaf=0;ensureHomeLayout();
+      enhanceFamilyPinGate();
+      enhanceFamilyPinChange();
       if(document.querySelector("#cocoApp .cocoFamilyV129Body,#cocoApp .cocoFamilyBody,#cocoApp [class*='Family'][class*='Body']"))injectFamilyCard(false)
     })
   }
@@ -788,6 +984,8 @@
   function startObserver(){
     var root=document.getElementById("cocoApp");if(!root||appObserver)return;
     ensureHomeLayout();
+    enhanceFamilyPinGate();
+    enhanceFamilyPinChange();
     appObserver=new MutationObserver(function(records){if(observerNeedsWork(records))scheduleObserverWork()});
     appObserver.observe(root,{childList:true,subtree:true})
   }
@@ -803,7 +1001,7 @@
 
   window.CocoEternaV160=Object.freeze({
     open:open,close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,
-    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familySectionsSeparated:true,trialCtaOpensSignup:true}}
+    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true}}
   });
   window.CocoPerformanceV160=Object.freeze({snapshot:function(){
     var nav=(performance.getEntriesByType&&performance.getEntriesByType("navigation")[0])||null;
