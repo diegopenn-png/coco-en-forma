@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160 FINAL4.6 */
-const CACHE_VERSION="coco-en-forma-v160.0.0-final4.6";
+/* Coco en Forma · Service Worker v160 FINAL4.7 */
+const CACHE_VERSION="coco-en-forma-v160.0.0-final4.7";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -26,16 +26,16 @@ async function fetchAndCache(cache,path){const url=absolute(path);const response
 async function bestEffort(cache,paths){await Promise.allSettled(paths.map(path=>fetchAndCache(cache,path)))}
 
 self.addEventListener("install",event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE_VERSION);await bestEffort(cache,ESSENTIAL);event.waitUntil(bestEffort(cache,OPTIONAL));self.skipWaiting()})())});
-self.addEventListener("activate",event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_VERSION).map(key=>caches.delete(key)));await self.clients.claim()})())});
+self.addEventListener("activate",event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_VERSION).map(key=>caches.delete(key)));if(self.registration.navigationPreload)try{await self.registration.navigationPreload.enable()}catch(_e){}await self.clients.claim()})())});
 self.addEventListener("message",event=>{if(event.data&&event.data.type==="SKIP_WAITING")self.skipWaiting()});
 
-function networkFirst(event){return fetch(event.request).then(response=>{if(response&&response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response}).catch(()=>caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||caches.match(INDEX_URL)))}
-function staleWhileRevalidate(event){return caches.match(event.request,{ignoreSearch:true}).then(cached=>{const network=fetch(event.request).then(response=>{if(response&&response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response});return cached||network.catch(()=>caches.match(INDEX_URL))})}
+async function networkFirst(event){try{const preload=event.request.mode==="navigate"&&event.preloadResponse?await event.preloadResponse:null;const response=preload||await fetch(event.request);if(response&&response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response}catch(_e){return (await caches.match(event.request,{ignoreSearch:false}))||(await caches.match(event.request,{ignoreSearch:true}))||(await caches.match(INDEX_URL))}}
+function staleWhileRevalidate(event){return caches.match(event.request,{ignoreSearch:false}).then(cached=>{const network=fetch(event.request).then(response=>{if(response&&response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response});return cached||network.catch(async()=>await caches.match(event.request,{ignoreSearch:true})||await caches.match(INDEX_URL))})}
 
 self.addEventListener("fetch",event=>{
   if(event.request.method!=="GET")return;
   const url=new URL(event.request.url);if(url.origin!==self.location.origin)return;
-  const critical=/\/(eterna-v159\.(js|css)|eterna\.html|eterna-social\.png|og-coco\.jpg|share\/eterna\.png|coco-v152-pwa\.js|coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(url.pathname);
+  const critical=/\/(eterna-v159\.(js|css)|eterna\.html|coco-v152-pwa\.js|coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(url.pathname);
   const documentRequest=event.request.mode==="navigate"||event.request.destination==="document";
   if(documentRequest||critical){event.respondWith(networkFirst(event));return}
   event.respondWith(staleWhileRevalidate(event))
