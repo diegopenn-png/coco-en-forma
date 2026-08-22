@@ -1,68 +1,42 @@
-const CACHE_VERSION = "coco-en-forma-v160.0.0-final2";
-const CACHE_PREFIX = "coco-en-forma-";
-const SCOPE_URL = new URL("./", self.registration.scope);
-const INDEX_URL = new URL("index.html", SCOPE_URL).href;
-const CORE_ASSET_PATHS = [
-  "./",
-  "./index.html",
-  "./manifest.webmanifest",
-  "./manifest.json",
-  "./supabase-js-2.112.3.min.js",
-  "./coco-v142-content-extension.js",
-  "./coco-v142-runtime.js",
-  "./coco-v142-unified.js",
-  "./coco-v144-content.js",
-  "./coco-v144-core.js",
-  "./coco-v152-padel.js",
-  "./coco-v153-fixes.js",
-  "./coco-v155-identity.js",
-  "./eterna-v159.js",
-  "./eterna-v159.css",
-  "./eterna.html",
-  "./eterna-social.png",
-  "./share/eterna.png",
-  "./coco-v144-professional.css",
-  "./coco-v147-refinements.css",
-  "./coco-v149-refinements.css",
-  "./coco-v152-refinements.css",
-  "./coco-v153-release.css",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./icon-maskable-192.png",
-  "./icon-maskable-512.png",
-  "./apple-touch-icon.png",
-  "./shortcut-icon.png",
-  "./favicon.png",
-  "./juego/numeros/index.html",
-  "./share/numeros.jpg",
-  "./juego/calculo/index.html",
-  "./share/calculo.jpg",
-  "./juego/palabras/index.html",
-  "./share/palabras.jpg",
-  "./juego/series/index.html",
-  "./share/series.jpg",
-  "./juego/memoria/index.html",
-  "./share/memoria.jpg",
-  "./juego/sudoku/index.html",
-  "./share/sudoku.jpg",
-  "./juego/sopa/index.html",
-  "./share/sopa.jpg",
-  "./juego/crucigrama/index.html",
-  "./share/crucigrama.jpg",
-  "./juego/tiempo/index.html",
-  "./share/tiempo.jpg",
-  "./juego/verdadero/index.html",
-  "./share/verdadero.jpg",
-  "./juego/futbol/index.html",
-  "./share/futbol.jpg",
-  "./juego/cocomed/index.html",
-  "./share/cocomed.jpg",
-  "./juego/padel/index.html",
-  "./share/padel.jpg"
+/* Coco en Forma · Service Worker v160 FINAL3 */
+const CACHE_VERSION="coco-en-forma-v160.0.0-final3";
+const CACHE_PREFIX="coco-en-forma-";
+const SCOPE_URL=new URL("./",self.registration.scope);
+const INDEX_URL=new URL("index.html",SCOPE_URL).href;
+
+const ESSENTIAL=[
+  "./","./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
+  "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
+  "./coco-v152-padel.js","./coco-v152-pwa.js","./coco-v153-fixes.js","./coco-v155-identity.js",
+  "./eterna-v159.js","./eterna-v159.css","./eterna.html","./eterna-social.png",
+  "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
+  "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./shortcut-icon.png","./favicon.png"
 ];
-function absolute(assetPath){return new URL(assetPath,SCOPE_URL).href}
-async function fetchAndCache(cache,assetPath){const assetUrl=absolute(assetPath);const response=await fetch(new Request(assetUrl,{cache:"reload"}));if(!response.ok)throw new Error(`Precache ${response.status}: ${assetPath}`);await cache.put(assetUrl,response.clone());return assetUrl}
-self.addEventListener("install",event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE_VERSION);await Promise.all(CORE_ASSET_PATHS.map(assetPath=>fetchAndCache(cache,assetPath)));self.skipWaiting()})())});
-self.addEventListener("activate",event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_VERSION).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
+
+const OPTIONAL=[
+  "./share/eterna.png","./juego/numeros/index.html","./share/numeros.jpg","./juego/calculo/index.html","./share/calculo.jpg",
+  "./juego/palabras/index.html","./share/palabras.jpg","./juego/series/index.html","./share/series.jpg","./juego/memoria/index.html","./share/memoria.jpg",
+  "./juego/sudoku/index.html","./share/sudoku.jpg","./juego/sopa/index.html","./share/sopa.jpg","./juego/crucigrama/index.html","./share/crucigrama.jpg",
+  "./juego/tiempo/index.html","./share/tiempo.jpg","./juego/verdadero/index.html","./share/verdadero.jpg","./juego/futbol/index.html","./share/futbol.jpg",
+  "./juego/cocomed/index.html","./share/cocomed.jpg","./juego/padel/index.html","./share/padel.jpg"
+];
+
+function absolute(path){return new URL(path,SCOPE_URL).href}
+async function fetchAndCache(cache,path){const url=absolute(path);const response=await fetch(new Request(url,{cache:"reload"}));if(response&&response.ok)await cache.put(url,response.clone());return response}
+async function bestEffort(cache,paths){await Promise.allSettled(paths.map(path=>fetchAndCache(cache,path)))}
+
+self.addEventListener("install",event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE_VERSION);await bestEffort(cache,ESSENTIAL);event.waitUntil(bestEffort(cache,OPTIONAL));self.skipWaiting()})())});
+self.addEventListener("activate",event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith(CACHE_PREFIX)&&key!==CACHE_VERSION).map(key=>caches.delete(key)));await self.clients.claim()})())});
 self.addEventListener("message",event=>{if(event.data&&event.data.type==="SKIP_WAITING")self.skipWaiting()});
-self.addEventListener("fetch",event=>{if(event.request.method!=="GET")return;const requestUrl=new URL(event.request.url);if(requestUrl.origin!==self.location.origin)return;const eternaFresh=/\/(eterna-v159\.js|eterna-v159\.css|eterna\.html|eterna-social\.png)$/.test(requestUrl.pathname);if(event.request.mode==="navigate"||eternaFresh){event.respondWith(fetch(event.request).then(response=>{if(response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response}).catch(()=>caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||caches.match(INDEX_URL))));return}event.respondWith(caches.match(event.request,{ignoreSearch:true}).then(cached=>{const network=fetch(event.request).then(response=>{if(response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response});return cached||network.catch(()=>caches.match(INDEX_URL))}))});
+
+function networkFirst(event){return fetch(event.request).then(response=>{if(response&&response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response}).catch(()=>caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||caches.match(INDEX_URL)))}
+function staleWhileRevalidate(event){return caches.match(event.request,{ignoreSearch:true}).then(cached=>{const network=fetch(event.request).then(response=>{if(response&&response.ok)event.waitUntil(caches.open(CACHE_VERSION).then(cache=>cache.put(event.request,response.clone())));return response});return cached||network.catch(()=>caches.match(INDEX_URL))})}
+
+self.addEventListener("fetch",event=>{
+  if(event.request.method!=="GET")return;
+  const url=new URL(event.request.url);if(url.origin!==self.location.origin)return;
+  const critical=/\/(eterna-v159\.(js|css)|eterna\.html|eterna-social\.png|coco-v152-pwa\.js|coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(url.pathname);
+  const documentRequest=event.request.mode==="navigate"||event.request.destination==="document";
+  if(documentRequest||critical){event.respondWith(networkFirst(event));return}
+  event.respondWith(staleWhileRevalidate(event))
+});
