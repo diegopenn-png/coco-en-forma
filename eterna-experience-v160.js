@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.56 · pedagogía por edad + UX consolidada
+/* ETERNA Experience v160.57 · estado limpio + mic premium + mapa de fortalezas
  * Conversación uniforme + un solo indicador inferior + voz de un toque con VAD.
  * Capa aditiva: NO modifica Worker, Stripe, Supabase, juegos, rankings ni contratos existentes.
  * El único MutationObserver se limita al chat de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.56-age-adaptive";
+  var VERSION="160.57-premium-strengths";
   var lastPedagogicalState=null;
   var voice=null;
   var voiceSendPending=false;
@@ -68,21 +68,42 @@
       "#eternaOverlayV159 [data-et-name],#cocoApp .carnet .quien strong{text-transform:capitalize!important}",
       "#eternaOverlayV159 textarea[data-et-input]{white-space:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;resize:none!important}",
       "#eternaOverlayV159 textarea[data-et-input]::placeholder{white-space:nowrap!important}",
-      "#eternaOverlayV159 [data-et-mic]{position:relative;overflow:visible;min-width:48px!important;width:48px!important;height:48px!important;flex:0 0 48px!important;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}",
-      "#eternaOverlayV159 [data-et-mic]:hover{transform:translateY(-1px)}#eternaOverlayV159 [data-et-mic]:focus-visible{outline:3px solid rgba(42,167,216,.28);outline-offset:3px}",
-      "#eternaOverlayV159 .eternaV160MicSvg{display:block;width:22px;height:22px}#eternaOverlayV159 .eternaV160MicSvg path{fill:currentColor}",
-      "#eternaOverlayV159 [data-et-mic].recording{background:#173f59!important;border-color:#173f59!important;color:#fff!important;box-shadow:0 0 0 5px rgba(23,63,89,.14)}",
-      "#eternaOverlayV159 [data-et-mic].recording::after{content:\"\";position:absolute;inset:-4px;border-radius:inherit;border:2px solid rgba(23,63,89,.22);animation:eternaMicPulse16053 1.25s infinite ease-out}",
-      "@keyframes eternaMicPulse16053{0%{transform:scale(.92);opacity:.75}70%{transform:scale(1.08);opacity:.05}100%{transform:scale(1.12);opacity:0}}",
+      "#eternaOverlayV159 [data-et-mic]{position:relative;overflow:visible;display:grid!important;place-items:center!important;min-width:48px!important;width:48px!important;height:48px!important;flex:0 0 48px!important;padding:0!important;border:1px solid #d5e7ef!important;border-radius:16px!important;background:linear-gradient(180deg,#ffffff,#f5fafc)!important;color:#315d73!important;box-shadow:0 2px 0 rgba(169,207,222,.40)!important;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease,color .18s ease}",
+      "#eternaOverlayV159 [data-et-mic]:hover{transform:translateY(-1px);background:#eef8fc!important;border-color:#b9dce9!important;color:#1f6787!important;box-shadow:0 3px 0 rgba(169,207,222,.42)!important}#eternaOverlayV159 [data-et-mic]:focus-visible{outline:3px solid rgba(42,167,216,.24)!important;outline-offset:3px!important}",
+      "#eternaOverlayV159 [data-et-mic]:disabled{opacity:.55!important;cursor:not-allowed!important;transform:none!important}",
+      "#eternaOverlayV159 .eternaV160MicSvg{display:block;width:22px;height:22px;fill:none!important;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible}#eternaOverlayV159 .eternaV160MicSvg *{fill:none!important;stroke:currentColor!important;vector-effect:non-scaling-stroke}",
+      "#eternaOverlayV159 [data-et-mic].recording{background:linear-gradient(180deg,#fff9f4,#fff0e3)!important;border-color:#efb07d!important;color:#e86f18!important;box-shadow:0 0 0 5px rgba(239,108,5,.10),0 2px 0 rgba(224,132,64,.16)!important}",
+      "#eternaOverlayV159 [data-et-mic].recording::after{content:\"\";position:absolute;inset:-4px;border-radius:19px;border:1.8px solid rgba(232,111,24,.30);animation:eternaMicPulse16057 1.3s infinite ease-out;pointer-events:none}",
+      "@keyframes eternaMicPulse16057{0%{transform:scale(.94);opacity:.65}72%{transform:scale(1.10);opacity:.04}100%{transform:scale(1.13);opacity:0}}",
       "#eternaOverlayV159 .eternaV160MemoryNote{margin:10px 0 0;padding:9px 11px;border:1px solid #dcebf2;border-radius:12px;background:#f8fcfe;color:#657d8a;font-size:9.5px;font-weight:700;line-height:1.45;text-align:left}",
       "#eternaOverlayV159 .eternaV160MemoryNote b{color:#315d73;font-size:9.5px}#eternaOverlayV159 .eternaV160MemoryNote span{color:#657d8a}",
       "#eternaOverlayV159 .eternaV160Sources{margin-top:11px;padding-top:9px;border-top:1px solid rgba(23,63,89,.10)}",
       "#eternaOverlayV159 .eternaV160SourcesBtn{display:inline-flex;align-items:center;gap:5px;min-height:31px;padding:5px 9px;border:1px solid #cfe3ec;border-radius:9px;background:#f7fbfd;color:#315d73;font:850 9.5px inherit;cursor:pointer;touch-action:manipulation}",
       "#eternaOverlayV159 .eternaV160SourcesPanel{display:grid;gap:6px;margin-top:7px;padding:8px 9px;border:1px solid #dcebf2;border-radius:10px;background:#fff}",
       "#eternaOverlayV159 .eternaV160SourcesPanel[hidden]{display:none!important}#eternaOverlayV159 .eternaV160SourcesPanel a{color:#146da0;text-decoration:underline;text-underline-offset:2px;font-size:9.5px;font-weight:750;line-height:1.35;overflow-wrap:anywhere}",
-      "@media(max-width:760px){#eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important}#eternaOverlayV159 .eternaV160MicSvg{width:24px!important;height:24px!important}}",
+      "#cocoApp .eternaV159FamilyCard .eternaV160ProgressPanel.eternaV160StrengthMap{position:relative;overflow:hidden;margin-top:16px!important;padding:18px!important;border:1px solid #d8e9f1!important;border-radius:22px!important;background:linear-gradient(145deg,#fbfdff 0%,#f4fbfe 52%,#fffaf5 100%)!important;box-shadow:0 10px 26px rgba(23,63,89,.08)!important}",
+      "#cocoApp .eternaV160StrengthMap:before{content:\"\";position:absolute;right:-70px;top:-80px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(78,187,225,.14),rgba(78,187,225,0) 70%);pointer-events:none}",
+      "#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead{position:relative;z-index:1;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 12px!important}",
+      "#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead>b{font-family:var(--display,inherit)!important;font-size:20px!important;line-height:1.08!important;color:#173f59!important}",
+      "#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead button{min-height:36px!important;padding:7px 11px!important;border:1px solid #cfe3ec!important;border-radius:11px!important;background:#fff!important;color:#2b6784!important;font-weight:850!important;box-shadow:0 2px 0 rgba(190,217,229,.45)!important}",
+      "#cocoApp .eternaV160StrengthHero{position:relative;z-index:1;display:grid;grid-template-columns:auto minmax(0,1fr) minmax(170px,.62fr);align-items:center;gap:13px;margin:0 0 13px;padding:14px;border:1px solid #dcebf2;border-radius:18px;background:rgba(255,255,255,.88);box-shadow:inset 0 1px 0 rgba(255,255,255,.95)}",
+      "#cocoApp .eternaV160StrengthOrb{display:grid;place-items:center;width:52px;height:52px;border-radius:17px;background:linear-gradient(145deg,#e8f8fe,#fff2e7);border:1px solid #cde8f2;color:#277fa5;box-shadow:0 4px 12px rgba(37,117,150,.10)}#cocoApp .eternaV160StrengthOrb svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}",
+      "#cocoApp .eternaV160StrengthHeroCopy{min-width:0}#cocoApp .eternaV160StrengthHeroCopy>span{display:block;color:#498096;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}#cocoApp .eternaV160StrengthHeroCopy>strong{display:block;margin-top:3px;color:#173f59;font-size:16px;line-height:1.18}#cocoApp .eternaV160StrengthHeroCopy>small{display:block;margin-top:4px;color:#637d8b;font-size:10px;font-weight:700;line-height:1.4}",
+      "#cocoApp .eternaV160NextStep{align-self:stretch;display:flex;flex-direction:column;justify-content:center;min-width:0;padding:10px 11px;border:1px solid #f0d8b8;border-radius:14px;background:#fff8ef}#cocoApp .eternaV160NextStep>span{color:#a86b2c;font-size:8.5px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}#cocoApp .eternaV160NextStep>b{margin-top:3px;color:#70451e;font-size:11px;line-height:1.22;overflow-wrap:anywhere}#cocoApp .eternaV160NextStep>small{margin-top:3px;color:#98734f;font-size:8.5px;font-weight:700}",
+      "#cocoApp .eternaV160StrengthMap .eternaV160ProgressIntro{position:relative;z-index:1;margin:0 0 12px!important;padding:9px 11px!important;border-left:3px solid #9fcfe1;border-radius:0 10px 10px 0;background:rgba(241,249,252,.76);color:#637d8b!important;font-size:10px!important;line-height:1.45!important}",
+      "#cocoApp .eternaV160StrengthMap .eternaV160ProgressGrid{position:relative;z-index:1;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:11px!important}",
+      "#cocoApp .eternaV160StrengthMap .eternaV160ProgressBox{position:relative;min-width:0;min-height:122px;padding:14px 14px 13px 14px!important;border:1px solid #dfeaf0!important;border-radius:17px!important;background:#fff!important;box-shadow:0 4px 12px rgba(23,63,89,.055)!important}",
+      "#cocoApp .eternaV160StrengthMap .eternaV160ProgressBox.eternaV160MapStrength{background:linear-gradient(145deg,#f5fcf7,#fff)!important;border-color:#cce8d5!important}#cocoApp .eternaV160StrengthMap .eternaV160ProgressBox.eternaV160MapReinforce{background:linear-gradient(145deg,#fff9f0,#fff)!important;border-color:#f0d9b9!important}#cocoApp .eternaV160StrengthMap .eternaV160ProgressBox.eternaV160MapStrategy{background:linear-gradient(145deg,#f5f9ff,#fff)!important;border-color:#d6e1f3!important}#cocoApp .eternaV160StrengthMap .eternaV160ProgressBox.eternaV160MapActivity{background:linear-gradient(145deg,#f9f7ff,#fff)!important;border-color:#e0daf1!important}",
+      "#cocoApp .eternaV160StrengthBoxHead{display:flex;align-items:center;gap:8px;margin-bottom:9px}#cocoApp .eternaV160StrengthBoxIcon{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:10px;background:#edf7fb;color:#287d9f}#cocoApp .eternaV160StrengthBoxIcon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}#cocoApp .eternaV160MapReinforce .eternaV160StrengthBoxIcon{background:#fff1df;color:#b56b20}#cocoApp .eternaV160MapStrategy .eternaV160StrengthBoxIcon{background:#eef3ff;color:#506da9}#cocoApp .eternaV160MapActivity .eternaV160StrengthBoxIcon{background:#f1edfb;color:#735b9b}",
+      "#cocoApp .eternaV160StrengthMap .eternaV160ProgressBox b{color:#173f59!important;font-size:12px!important;line-height:1.18!important}#cocoApp .eternaV160StrengthMap .eternaV160ProgressBox>span{display:block;color:#536f7e!important;font-size:10px!important;font-weight:700!important;line-height:1.45!important}",
+      "#cocoApp .eternaV160MasteryList{display:grid!important;gap:8px!important}#cocoApp .eternaV160MasteryItem{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;align-items:center}#cocoApp .eternaV160MasteryItem>span{min-width:0;color:#315565;font-size:9.5px;font-weight:800;overflow-wrap:anywhere}#cocoApp .eternaV160MasteryItem>small{color:#467d62;font-size:9px;font-weight:900}",
+      "#cocoApp .eternaV160MasteryTrack{grid-column:1/-1;height:7px;border-radius:999px;background:#e7f1eb;overflow:hidden}#cocoApp .eternaV160MasteryFill{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#65b98a,#8fd2aa);transition:width .35s ease}",
+      "#cocoApp .eternaV160ChipList{display:flex!important;flex-wrap:wrap;gap:6px!important}#cocoApp .eternaV160StrengthChip{display:inline-flex!important;max-width:100%;align-items:center;padding:5px 8px;border:1px solid rgba(89,126,145,.14);border-radius:999px;background:rgba(255,255,255,.78);color:#486978!important;font-size:9px!important;font-weight:800!important;line-height:1.22!important;overflow-wrap:anywhere}",
+      "#cocoApp .eternaV160StrengthMap.eternaV160StrengthEmpty .eternaV160ProgressIntro{margin-bottom:0!important}#cocoApp .eternaV160StrengthMap.eternaV160StrengthEmpty .eternaV160StrengthHero{grid-template-columns:auto minmax(0,1fr)}",
+      "@media(max-width:700px){#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead{align-items:flex-start!important;flex-direction:column!important}#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead button{width:100%!important}#cocoApp .eternaV160StrengthHero{grid-template-columns:auto minmax(0,1fr);align-items:start}#cocoApp .eternaV160NextStep{grid-column:1/-1}#cocoApp .eternaV160StrengthMap .eternaV160ProgressGrid{grid-template-columns:1fr!important}#cocoApp .eternaV159FamilyCard .eternaV160ProgressPanel.eternaV160StrengthMap{padding:14px!important;border-radius:19px!important}}",
+      "@media(max-width:760px){#eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:17px!important}#eternaOverlayV159 .eternaV160MicSvg{width:24px!important;height:24px!important}}",
       "@media(max-width:640px){#eternaOverlayV159 .eternaV160LiveState{margin-bottom:7px;padding:8px 10px}#eternaOverlayV159 .eternaV160VoicePanel{align-items:flex-start;flex-wrap:wrap}#eternaOverlayV159 .eternaV160VoiceCopy{min-width:160px}#eternaOverlayV159 .eternaV160VoiceActions{width:100%;justify-content:flex-end}}",
-      "@media(prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160ThinkingDots i,#eternaOverlayV159 .eternaV160VoiceWave i,#eternaOverlayV159 [data-et-mic].recording::after{animation:none!important}}"
+      "@media(prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160ThinkingDots i,#eternaOverlayV159 .eternaV160VoiceWave i,#eternaOverlayV159 [data-et-mic].recording::after,#cocoApp .eternaV160StrengthMap .eternaV160MasteryFill{animation:none!important;transition:none!important}}"
     ].join("");
     document.head.appendChild(s)
   }
@@ -111,8 +132,31 @@
     syncTopLiveDuplicate(kind,text)
   }
 
+  function normalizeHeaderStatus(){
+    var o=overlay();if(!o)return;
+    var status=o.querySelector("[data-et-status]"),dot=o.querySelector("[data-et-dot]");
+    if(!status)return;
+    var text=norm(status.textContent);
+    if(text==="respuesta verificada"||
+       text==="eterna lista"||
+       text==="eterna lista · apoyo escolar verificado"||
+       text==="beta de prueba · eterna lista"){
+      status.textContent="Eterna lista";
+      if(dot)dot.className="eternaV159Dot ok"
+    }
+  }
+
+  function scheduleHeaderStatus(){
+    [0,60,150,300].forEach(function(ms){setTimeout(normalizeHeaderStatus,ms)})
+  }
+
   function micIconMarkup(){
-    return '<svg class="eternaV160MicSvg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15.2a3.9 3.9 0 0 0 3.9-3.9V6.9A3.9 3.9 0 1 0 8.1 6.9v4.4A3.9 3.9 0 0 0 12 15.2Zm6-3.9a1 1 0 1 0-2 0 4 4 0 1 1-8 0 1 1 0 0 0-2 0 6 6 0 0 0 5 5.91V20H9.6a1 1 0 0 0 0 2h4.8a1 1 0 1 0 0-2H13v-2.89A6 6 0 0 0 18 11.3Z"/></svg>'
+    return '<svg class="eternaV160MicSvg" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">'+
+      '<path d="M12 14.75a3.75 3.75 0 0 0 3.75-3.75V7a3.75 3.75 0 1 0-7.5 0v4A3.75 3.75 0 0 0 12 14.75Z"/>'+
+      '<path d="M6.5 11a5.5 5.5 0 0 0 11 0"/>'+
+      '<path d="M12 16.5V20"/>'+
+      '<path d="M9.5 20h5"/>'+
+    '</svg>'
   }
 
   function renderMicIdle(button){
@@ -314,10 +358,146 @@
     }
   }
 
+  function strengthMapIcon(kind){
+    var icons={
+      hero:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 14.2 8l4.8.7-3.5 3.4.8 4.8-4.3-2.3-4.3 2.3.8-4.8L5 8.7 9.8 8 12 3.5Z"/></svg>',
+      strength:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7.5 12.5 3 3 6-7"/><path d="M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17Z"/></svg>',
+      reinforce:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/><circle cx="12" cy="12" r="4.2"/></svg>',
+      strategy:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 15.5c-1.1-.9-1.8-2.2-1.8-3.7a5.3 5.3 0 0 1 10.6 0c0 1.5-.6 2.8-1.8 3.7-.8.7-1.2 1.4-1.2 2.2h-4.6c0-.8-.4-1.5-1.2-2.2Z"/><path d="M9.8 20h4.4"/></svg>',
+      activity:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18V9M10 18V5M15 18v-6M20 18V8"/></svg>'
+    };
+    return icons[kind]||icons.hero
+  }
+
+  function splitStrengthText(value){
+    return clean(value).split(/\s+·\s+/).map(function(x){return clean(x)}).filter(Boolean)
+  }
+
+  function masteryItems(value){
+    var out=[];
+    splitStrengthText(value).forEach(function(part){
+      var m=part.match(/^(.*?)\s*\((\d{1,3})%\)\s*$/);
+      if(!m)return;
+      out.push({label:clean(m[1]),percent:Math.max(0,Math.min(100,Number(m[2])||0))})
+    });
+    return out
+  }
+
+  function simpleItems(value){
+    var items=splitStrengthText(value);
+    if(items.length===1&&/^todav[ií]a|^eterna seguir[aá]|^actividad escolar/i.test(items[0]))return[];
+    return items
+  }
+
+  function decorateStrengthBox(box,kind,title){
+    if(!box)return;
+    box.classList.add("eternaV160Map"+kind.charAt(0).toUpperCase()+kind.slice(1));
+    var heading=box.querySelector("b");
+    if(!heading)return;
+    heading.textContent=title;
+    if(heading.parentElement&&heading.parentElement.classList.contains("eternaV160StrengthBoxHead"))return;
+    var head=document.createElement("div");
+    head.className="eternaV160StrengthBoxHead";
+    var icon=document.createElement("span");
+    icon.className="eternaV160StrengthBoxIcon";
+    icon.setAttribute("aria-hidden","true");
+    icon.innerHTML=strengthMapIcon(kind);
+    heading.parentNode.insertBefore(head,heading);
+    head.appendChild(icon);
+    head.appendChild(heading)
+  }
+
+  function renderMasteryMap(span,items){
+    if(!span||!items.length)return;
+    span.textContent="";
+    span.classList.add("eternaV160MasteryList");
+    items.forEach(function(item){
+      var row=document.createElement("span");
+      row.className="eternaV160MasteryItem";
+      var label=document.createElement("span");label.textContent=item.label;
+      var value=document.createElement("small");value.textContent=item.percent+"%";
+      var track=document.createElement("span");track.className="eternaV160MasteryTrack";
+      var fill=document.createElement("i");fill.className="eternaV160MasteryFill";fill.style.width=item.percent+"%";
+      track.appendChild(fill);row.appendChild(label);row.appendChild(value);row.appendChild(track);span.appendChild(row)
+    })
+  }
+
+  function renderChipMap(span,items){
+    if(!span||!items.length)return;
+    span.textContent="";
+    span.classList.add("eternaV160ChipList");
+    items.forEach(function(item){
+      var chip=document.createElement("span");
+      chip.className="eternaV160StrengthChip";
+      chip.textContent=item;
+      span.appendChild(chip)
+    })
+  }
+
+  function enhanceLearningProgressMap(){
+    var panel=document.querySelector("#cocoApp .eternaV159FamilyCard .eternaV160ProgressPanel");
+    if(!panel)return false;
+    if(panel.dataset.etStrengthMap==="16057")return true;
+    panel.dataset.etStrengthMap="16057";
+    panel.classList.add("eternaV160StrengthMap");
+
+    var head=panel.querySelector(".eternaV160ProgressHead");
+    if(head){
+      var title=head.querySelector("b");
+      if(title)title.textContent="Mapa de fortalezas del aprendizaje"
+    }
+
+    var grid=panel.querySelector(".eternaV160ProgressGrid");
+    var boxes=grid?Array.prototype.slice.call(grid.querySelectorAll(".eternaV160ProgressBox")):[];
+    if(!boxes.length)panel.classList.add("eternaV160StrengthEmpty");
+
+    var strongestText=boxes[0]&&boxes[0].querySelector("span")?clean(boxes[0].querySelector("span").textContent):"";
+    var reinforceText=boxes[1]&&boxes[1].querySelector("span")?clean(boxes[1].querySelector("span").textContent):"";
+    var strategyText=boxes[2]&&boxes[2].querySelector("span")?clean(boxes[2].querySelector("span").textContent):"";
+    var strong=masteryItems(strongestText),reinforce=simpleItems(reinforceText),strategies=simpleItems(strategyText);
+
+    if(boxes[0]){
+      decorateStrengthBox(boxes[0],"strength","Tus fortalezas");
+      renderMasteryMap(boxes[0].querySelector(":scope > span"),strong)
+    }
+    if(boxes[1]){
+      decorateStrengthBox(boxes[1],"reinforce","Vamos a reforzar");
+      renderChipMap(boxes[1].querySelector(":scope > span"),reinforce)
+    }
+    if(boxes[2]){
+      decorateStrengthBox(boxes[2],"strategy","Así aprendes mejor");
+      renderChipMap(boxes[2].querySelector(":scope > span"),strategies)
+    }
+    if(boxes[3])decorateStrengthBox(boxes[3],"activity","Tu recorrido");
+
+    var hero=document.createElement("div");
+    hero.className="eternaV160StrengthHero";
+    var strongLead=strong[0]||null,reinforceLead=reinforce[0]||"";
+    hero.innerHTML=
+      '<div class="eternaV160StrengthOrb" aria-hidden="true">'+strengthMapIcon("hero")+'</div>'+
+      '<div class="eternaV160StrengthHeroCopy">'+
+        '<span>PROGRESO ESCOLAR · ETERNA</span>'+
+        '<strong>'+(strongLead?'Fortaleza destacada: '+esc(strongLead.label):'Tu mapa de aprendizaje')+'</strong>'+
+        '<small>'+(strongLead?'Dominio aproximado observado: '+strongLead.percent+'%. Este mapa cambia a medida que sigues aprendiendo.':'Eterna irá completando este mapa a medida que realices actividades escolares.')+'</small>'+
+      '</div>'+
+      (reinforceLead?'<div class="eternaV160NextStep"><span>PRÓXIMO PASO</span><b>'+esc(reinforceLead)+'</b><small>Área sugerida para reforzar</small></div>':"");
+
+    var intro=panel.querySelector(".eternaV160ProgressIntro");
+    if(intro)panel.insertBefore(hero,intro);
+    else if(grid)panel.insertBefore(hero,grid);
+    else panel.appendChild(hero);
+    return true
+  }
+
+  function scheduleLearningProgressMap(){
+    [0,120,320,700,1300,1900].forEach(function(ms){setTimeout(enhanceLearningProgressMap,ms)})
+  }
+
   function normalizeConversation(){
     normalizeRaf=0;
     var o=overlay(),c=chat();if(!o||!c)return;
     ensureLiveState();
+    normalizeHeaderStatus();
     ensureMemoryNote(c);
     restoreRememberedSources(c);
     c.querySelectorAll(".eternaV159Tag").forEach(function(tag){
@@ -366,7 +546,8 @@
       }
       if(assistantAdded){
         setLive("","");
-        scrollTurnToStart(assistantAdded)
+        scrollTurnToStart(assistantAdded);
+        scheduleHeaderStatus()
       }
       queueNormalize()
     });
@@ -402,6 +583,7 @@
     ensureLiveState();
     ensureVoicePanel();
     enforceSingleLineComposer();
+    normalizeHeaderStatus();
     var mic=o.querySelector('[data-et-mic]');
     if(mic&&!mic.classList.contains('recording'))renderMicIdle(mic);
     installOverlayObserver();
@@ -692,9 +874,10 @@
             response.clone().json().then(function(data){
               if(data&&data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
               rememberSourceDisclosure(data);
-              setTimeout(function(){ensureOverlay();queueNormalize()},0);
-              setTimeout(function(){queueNormalize();restoreRememberedSources(chat())},90);
-              setTimeout(function(){restoreRememberedSources(chat())},220)
+              setTimeout(function(){ensureOverlay();queueNormalize();normalizeHeaderStatus()},0);
+              setTimeout(function(){queueNormalize();restoreRememberedSources(chat());normalizeHeaderStatus()},90);
+              setTimeout(function(){restoreRememberedSources(chat());normalizeHeaderStatus()},220);
+              setTimeout(normalizeHeaderStatus,360)
             }).catch(function(){})
           }
         }
@@ -725,10 +908,12 @@
           return
         }
         var opener=event.target&&event.target.closest?event.target.closest("#eternaLauncherV159,.eternaLauncherCardV159,[data-et-changemode],[data-et-mode],[data-et-modechoice]"):null;
-        if(opener){setTimeout(ensureOverlay,0);setTimeout(ensureOverlay,80);setTimeout(enforceSingleLineComposer,180)}
+        if(opener){setTimeout(ensureOverlay,0);setTimeout(ensureOverlay,80);setTimeout(enforceSingleLineComposer,180);scheduleHeaderStatus()}
+        var familyTrigger=event.target&&event.target.closest?event.target.closest(".cocoFamiliaBtn,[data-family-enter],[data-family-refresh],[data-et-trial],[data-et-save-settings],[data-et-family-limit]"):null;
+        if(familyTrigger)scheduleLearningProgressMap()
       }catch(e){}
     },true);
-    root.addEventListener("pageshow",function(){setTimeout(ensureOverlay,40)});
+    root.addEventListener("pageshow",function(){setTimeout(ensureOverlay,40);scheduleHeaderStatus();scheduleLearningProgressMap()});
     root.addEventListener("resize",function(){setTimeout(enforceSingleLineComposer,40)},{passive:true})
   }
 
@@ -736,6 +921,8 @@
   installFetchWrapper();
   installInteractionHooks();
   setTimeout(ensureOverlay,0);
+  setTimeout(scheduleHeaderStatus,40);
+  setTimeout(scheduleLearningProgressMap,180);
   root.ETERNA_EXPERIENCE_V16049={
     version:VERSION,
     normalize:normalizeConversation,
@@ -1014,6 +1201,22 @@ window.ETERNA_RELEASE_V16056=Object.freeze({
   mic_target_mobile_px:52,
   source_disclosure_when_provided:true,
   pedagogical_memory_notice:true,
+  preserves_v16055_session_isolation:true,
+  extra_global_observer:false
+});
+
+
+window.ETERNA_RELEASE_V16057=Object.freeze({
+  version:"160.57",
+  verified_status_shown_as_ready:true,
+  verifier_logic_untouched:true,
+  premium_line_microphone:true,
+  mic_target_mobile_px:52,
+  learning_strength_map:true,
+  strength_map_existing_data_only:true,
+  cloudflare_worker_unchanged:"160.3-age1",
+  sql_required:false,
+  preserves_age_adaptive_pedagogy:true,
   preserves_v16055_session_isolation:true,
   extra_global_observer:false
 });
