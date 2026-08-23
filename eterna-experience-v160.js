@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.54 · UX consolidada
+/* ETERNA Experience v160.56 · pedagogía por edad + UX consolidada
  * Conversación uniforme + un solo indicador inferior + voz de un toque con VAD.
  * Capa aditiva: NO modifica Worker, Stripe, Supabase, juegos, rankings ni contratos existentes.
  * El único MutationObserver se limita al chat de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.54-ux-consolidada";
+  var VERSION="160.56-age-adaptive";
   var lastPedagogicalState=null;
   var voice=null;
   var voiceSendPending=false;
@@ -19,6 +19,8 @@
   var audioSettingsCache={at:0,allowed:null};
   var browserMicCache={at:0,state:""};
   var hiddenTopStateNodes=[];
+  var voiceStudentProfileCache={uid:"",age:null,stage:null,school_year:null,at:0};
+  var sourceMemory=[];
   var originalFetch=typeof root.fetch==="function"?root.fetch.bind(root):null;
 
   function overlay(){return document.getElementById("eternaOverlayV159")}
@@ -66,12 +68,19 @@
       "#eternaOverlayV159 [data-et-name],#cocoApp .carnet .quien strong{text-transform:capitalize!important}",
       "#eternaOverlayV159 textarea[data-et-input]{white-space:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;resize:none!important}",
       "#eternaOverlayV159 textarea[data-et-input]::placeholder{white-space:nowrap!important}",
-      "#eternaOverlayV159 [data-et-mic]{position:relative;overflow:visible;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}",
+      "#eternaOverlayV159 [data-et-mic]{position:relative;overflow:visible;min-width:48px!important;width:48px!important;height:48px!important;flex:0 0 48px!important;transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}",
       "#eternaOverlayV159 [data-et-mic]:hover{transform:translateY(-1px)}#eternaOverlayV159 [data-et-mic]:focus-visible{outline:3px solid rgba(42,167,216,.28);outline-offset:3px}",
-      "#eternaOverlayV159 .eternaV160MicSvg{display:block;width:20px;height:20px}#eternaOverlayV159 .eternaV160MicSvg path{fill:currentColor}",
+      "#eternaOverlayV159 .eternaV160MicSvg{display:block;width:22px;height:22px}#eternaOverlayV159 .eternaV160MicSvg path{fill:currentColor}",
       "#eternaOverlayV159 [data-et-mic].recording{background:#173f59!important;border-color:#173f59!important;color:#fff!important;box-shadow:0 0 0 5px rgba(23,63,89,.14)}",
       "#eternaOverlayV159 [data-et-mic].recording::after{content:\"\";position:absolute;inset:-4px;border-radius:inherit;border:2px solid rgba(23,63,89,.22);animation:eternaMicPulse16053 1.25s infinite ease-out}",
       "@keyframes eternaMicPulse16053{0%{transform:scale(.92);opacity:.75}70%{transform:scale(1.08);opacity:.05}100%{transform:scale(1.12);opacity:0}}",
+      "#eternaOverlayV159 .eternaV160MemoryNote{margin:10px 0 0;padding:9px 11px;border:1px solid #dcebf2;border-radius:12px;background:#f8fcfe;color:#657d8a;font-size:9.5px;font-weight:700;line-height:1.45;text-align:left}",
+      "#eternaOverlayV159 .eternaV160MemoryNote b{color:#315d73;font-size:9.5px}#eternaOverlayV159 .eternaV160MemoryNote span{color:#657d8a}",
+      "#eternaOverlayV159 .eternaV160Sources{margin-top:11px;padding-top:9px;border-top:1px solid rgba(23,63,89,.10)}",
+      "#eternaOverlayV159 .eternaV160SourcesBtn{display:inline-flex;align-items:center;gap:5px;min-height:31px;padding:5px 9px;border:1px solid #cfe3ec;border-radius:9px;background:#f7fbfd;color:#315d73;font:850 9.5px inherit;cursor:pointer;touch-action:manipulation}",
+      "#eternaOverlayV159 .eternaV160SourcesPanel{display:grid;gap:6px;margin-top:7px;padding:8px 9px;border:1px solid #dcebf2;border-radius:10px;background:#fff}",
+      "#eternaOverlayV159 .eternaV160SourcesPanel[hidden]{display:none!important}#eternaOverlayV159 .eternaV160SourcesPanel a{color:#146da0;text-decoration:underline;text-underline-offset:2px;font-size:9.5px;font-weight:750;line-height:1.35;overflow-wrap:anywhere}",
+      "@media(max-width:760px){#eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important}#eternaOverlayV159 .eternaV160MicSvg{width:24px!important;height:24px!important}}",
       "@media(max-width:640px){#eternaOverlayV159 .eternaV160LiveState{margin-bottom:7px;padding:8px 10px}#eternaOverlayV159 .eternaV160VoicePanel{align-items:flex-start;flex-wrap:wrap}#eternaOverlayV159 .eternaV160VoiceCopy{min-width:160px}#eternaOverlayV159 .eternaV160VoiceActions{width:100%;justify-content:flex-end}}",
       "@media(prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160ThinkingDots i,#eternaOverlayV159 .eternaV160VoiceWave i,#eternaOverlayV159 [data-et-mic].recording::after{animation:none!important}}"
     ].join("");
@@ -237,10 +246,80 @@
     })
   }
 
+  function ensureMemoryNote(c){
+    if(!c)return;
+    var start=c.querySelector('.eternaV160Start');
+    if(!start||start.querySelector('[data-et-memory-note]'))return;
+    var note=document.createElement('div');
+    note.className='eternaV160MemoryNote';
+    note.setAttribute('data-et-memory-note','');
+    note.innerHTML='<b>Privacidad y memoria · </b><span>Eterna no guarda tus conversaciones como un historial. Recuerda únicamente señales pedagógicas —conceptos, nivel aproximado, errores, ayuda y estrategias que funcionan— para ayudarte a aprender mejor. No diagnostica ni etiqueta.</span>';
+    start.appendChild(note)
+  }
+
+  function safeSourceLinks(value){
+    if(!Array.isArray(value))return[];
+    var seen={},out=[];
+    value.forEach(function(x){
+      if(!x||typeof x!=='object')return;
+      var url=String(x.url||'').trim(),title=clean(x.title||'Fuente institucional');
+      try{
+        var u=new URL(url,location.href);
+        if(u.protocol!=='https:'&&u.protocol!=='http:')return;
+        url=u.href
+      }catch(e){return}
+      if(seen[url])return;seen[url]=1;
+      out.push({url:url,title:title||url})
+    });
+    return out.slice(0,6)
+  }
+
+  function rememberSourceDisclosure(data){
+    var links=safeSourceLinks(data&&data.source_links),reply=norm(data&&data.reply||'');
+    if(!links.length||!reply)return;
+    sourceMemory.push({reply:reply.slice(0,360),links:links});
+    if(sourceMemory.length>12)sourceMemory=sourceMemory.slice(-12)
+  }
+
+  function sourceEntryForBubble(bubble){
+    if(!bubble)return null;
+    var text=norm(bubble.textContent||'');
+    for(var i=sourceMemory.length-1;i>=0;i--){
+      var key=sourceMemory[i].reply;
+      if(key&&(text.indexOf(key)===0||key.indexOf(text.slice(0,Math.min(180,text.length)))===0))return sourceMemory[i]
+    }
+    return null
+  }
+
+  function attachSourceDisclosure(row,entry){
+    if(!row||!entry||!entry.links||!entry.links.length)return;
+    var bubble=row.querySelector('.eternaV159Bubble');
+    if(!bubble||bubble.querySelector('[data-et-sources]'))return;
+    var wrap=document.createElement('div');wrap.className='eternaV160Sources';wrap.setAttribute('data-et-sources','');
+    var button=document.createElement('button');button.type='button';button.className='eternaV160SourcesBtn';button.textContent='↗ Ver fuentes';
+    var panel=document.createElement('div');panel.className='eternaV160SourcesPanel';panel.hidden=true;
+    entry.links.forEach(function(x){
+      var a=document.createElement('a');a.href=x.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=x.title||x.url;panel.appendChild(a)
+    });
+    button.onclick=function(){panel.hidden=!panel.hidden;button.textContent=panel.hidden?'↗ Ver fuentes':'Ocultar fuentes'};
+    wrap.appendChild(button);wrap.appendChild(panel);bubble.appendChild(wrap)
+  }
+
+  function restoreRememberedSources(c){
+    if(!c||!sourceMemory.length)return;
+    var rows=c.querySelectorAll('.eternaV159Msg.assistant');
+    for(var i=0;i<rows.length;i++){
+      if(rows[i].querySelector('[data-et-sources]'))continue;
+      var entry=sourceEntryForBubble(rows[i]);if(entry)attachSourceDisclosure(rows[i],entry)
+    }
+  }
+
   function normalizeConversation(){
     normalizeRaf=0;
     var o=overlay(),c=chat();if(!o||!c)return;
     ensureLiveState();
+    ensureMemoryNote(c);
+    restoreRememberedSources(c);
     c.querySelectorAll(".eternaV159Tag").forEach(function(tag){
       if(/^ayuda\s+\d/i.test(clean(tag.textContent)))tag.classList.add("eternaV160HiddenHelpTag")
     });
@@ -381,6 +460,45 @@
     return audioSettingsCache.allowed
   }
 
+  function ageFromSchoolYear(year){
+    var s=norm(year||'');
+    var m=s.match(/([1-6])(?:o|º)?\s+de\s+primaria/);if(m)return 5+Number(m[1]);
+    m=s.match(/([1-4])(?:o|º)?\s+de\s+eso/);if(m)return 11+Number(m[1]);
+    m=s.match(/([1-2])(?:o|º)?\s+de\s+bachillerato/);if(m)return 15+Number(m[1]);
+    m=s.match(/infantil[^0-9]*([345])/);if(m)return Number(m[1]);
+    return null
+  }
+
+  async function loadVoiceStudentProfile(){
+    var cli=getSupabaseClient();if(!cli||!cli.auth)return voiceStudentProfileCache;
+    try{
+      var sr=await cli.auth.getSession(),session=sr&&sr.data&&sr.data.session,uid=session&&session.user&&session.user.id?String(session.user.id):'';
+      if(!uid)return voiceStudentProfileCache;
+      if(voiceStudentProfileCache.uid===uid&&Date.now()-voiceStudentProfileCache.at<5*60*1000)return voiceStudentProfileCache;
+      var results=await Promise.allSettled([
+        cli.from('perfiles').select('edad').eq('id',uid).maybeSingle(),
+        cli.from('eterna_student_profiles').select('stage,school_year').eq('user_id',uid).maybeSingle()
+      ]);
+      function dataAt(i){var x=results[i];return x&&x.status==='fulfilled'&&x.value?x.value.data:null}
+      var base=dataAt(0)||{},profile=dataAt(1)||{},age=Number(base.edad);
+      if(!isFinite(age)||age<=0)age=ageFromSchoolYear(profile.school_year);
+      voiceStudentProfileCache={uid:uid,age:age||null,stage:profile.stage||null,school_year:profile.school_year||null,at:Date.now()};
+      return voiceStudentProfileCache
+    }catch(e){return voiceStudentProfileCache}
+  }
+
+  function vadConfigForStudent(profile){
+    var age=Number(profile&&profile.age),stage=norm(profile&&profile.stage),year=norm(profile&&profile.school_year);
+    if(!isFinite(age)||age<=0)age=ageFromSchoolYear(profile&&profile.school_year);
+    if(stage.indexOf('bachillerato')>=0||year.indexOf('bachillerato')>=0)return{silenceMs:1500,noSpeechMs:9000,age:age||17,band:'bachillerato'};
+    if(age>=17)return{silenceMs:1500,noSpeechMs:9000,age:age,band:'17-18'};
+    if(age>=15)return{silenceMs:1600,noSpeechMs:9000,age:age,band:'15-16'};
+    if(age>=12)return{silenceMs:1800,noSpeechMs:10000,age:age,band:'12-14'};
+    if(age>=9)return{silenceMs:2100,noSpeechMs:11000,age:age,band:'9-11'};
+    if(age>=6)return{silenceMs:2400,noSpeechMs:12000,age:age,band:'6-8'};
+    return{silenceMs:1800,noSpeechMs:10000,age:age||null,band:'default'}
+  }
+
   function stopTracks(stream){
     try{stream&&stream.getTracks().forEach(function(t){t.stop()})}catch(e){}
   }
@@ -463,8 +581,8 @@
         v.voiceFrames++;
         if(v.voiceFrames>=2){v.voiceDetected=true;v.lastVoiceAt=now}
       }else v.voiceFrames=0;
-      if(v.voiceDetected&&now-v.lastVoiceAt>1700&&elapsed>1100){stopVoice(false,"silence");return}
-      if(!v.voiceDetected&&elapsed>9000){stopVoice(true,"no-speech");return}
+      if(v.voiceDetected&&now-v.lastVoiceAt>Number(v.silenceMs||1800)&&elapsed>1100){stopVoice(false,"silence");return}
+      if(!v.voiceDetected&&elapsed>Number(v.noSpeechMs||10000)){stopVoice(true,"no-speech");return}
       v.raf=requestAnimationFrame(tick)
     }
     v.raf=requestAnimationFrame(tick)
@@ -479,9 +597,8 @@
     }
     setLive("processing","Preparando el micrófono…");
     try{
-      var browserState=await browserMicState();
+      var prepared=await Promise.all([browserMicState(),micAllowed(),loadVoiceStudentProfile()]),browserState=prepared[0],allowed=prepared[1],studentVoiceProfile=prepared[2]||{};
       if(browserState==="denied"){setLive("info","El navegador tiene bloqueado el micrófono. Revísalo en los permisos de Safari o de la PWA.");return}
-      var allowed=await micAllowed();
       if(!allowed){setLive("info","El micrófono está desactivado desde Zona Familiar.");return}
     }catch(e){
       setLive("info","Ahora no puedo comprobar el permiso del micrófono. Inténtalo de nuevo.");
@@ -492,9 +609,11 @@
       rememberMicGrant();
       var mime=recorderMime(),rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
       var o=overlay(),mic=o&&o.querySelector("[data-et-mic]"),send=o&&o.querySelector("[data-et-send]");
+      var vadCfg=vadConfigForStudent(typeof studentVoiceProfile!=="undefined"?studentVoiceProfile:{});
       var v={
         stream:stream,recorder:rec,chunks:[],mime:mime||rec.mimeType||"audio/webm",
         startedAt:performance.now(),lastVoiceAt:0,voiceDetected:false,voiceFrames:0,noiseFloor:.006,
+        silenceMs:vadCfg.silenceMs,noSpeechMs:vadCfg.noSpeechMs,studentAge:vadCfg.age,studentBand:vadCfg.band,
         stopping:false,cancelled:false,raf:0,maxTimer:0,audioContext:null,analyser:null,
         sendWasDisabled:send?send.disabled:false
       };
@@ -572,8 +691,10 @@
             if(!response.ok)setTimeout(function(){setLive("","")},0);
             response.clone().json().then(function(data){
               if(data&&data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
+              rememberSourceDisclosure(data);
               setTimeout(function(){ensureOverlay();queueNormalize()},0);
-              setTimeout(function(){queueNormalize()},90)
+              setTimeout(function(){queueNormalize();restoreRememberedSources(chat())},90);
+              setTimeout(function(){restoreRememberedSources(chat())},220)
             }).catch(function(){})
           }
         }
@@ -623,6 +744,8 @@
       lastPedagogicalState=null;
       voiceSendPending=false;
       audioSettingsCache={at:0,allowed:null};
+      voiceStudentProfileCache={uid:"",age:null,stage:null,school_year:null,at:0};
+      sourceMemory=[];
       try{if(voice)stopVoice(true,"session-change")}catch(e){}
       voice=null;
       setLive("","")
@@ -882,6 +1005,16 @@ window.ETERNA_UX_FIX_V16055=Object.freeze({
   single_line_composer:true,
   capitalized_student_name:true,
   strict_user_session_isolation:true,
+  extra_global_observer:false
+});
+
+window.ETERNA_RELEASE_V16056=Object.freeze({
+  version:"160.56",
+  age_adaptive_vad:true,
+  mic_target_mobile_px:52,
+  source_disclosure_when_provided:true,
+  pedagogical_memory_notice:true,
+  preserves_v16055_session_isolation:true,
   extra_global_observer:false
 });
 
