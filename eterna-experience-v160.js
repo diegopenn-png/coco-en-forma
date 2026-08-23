@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.58 · legal shield + estado/mic/mapa v160.57 preservados
+/* ETERNA Experience v160.60 · micrófono premium + fix táctil legal v160.59 preservado
  * Conversación uniforme + un solo indicador inferior + voz de un toque con VAD.
  * Capa aditiva: NO modifica Worker, Stripe, Supabase, juegos, rankings ni contratos existentes.
  * El único MutationObserver se limita al chat de Eterna.
@@ -8,10 +8,14 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.57-premium-strengths";
+  var VERSION="160.60-premium-mic";
   var lastPedagogicalState=null;
   var voice=null;
   var voiceSendPending=false;
+  var voiceStarting=false;
+  var voiceTranscribing=false;
+  var primedAudioContext=null;
+  var primedAudioTimer=0;
   var overlayObserver=null;
   var observedChat=null;
   var normalizeRaf=0;
@@ -56,6 +60,8 @@
       "@keyframes eternaThinkingDot16049{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-3px);opacity:1}}",
       "#eternaOverlayV159 .eternaV160VoicePanel{display:none;align-items:center;gap:10px;margin:0 0 8px;padding:10px 11px;border:1px solid #bfe4f2;border-radius:15px;background:linear-gradient(180deg,#f4fcff,#edf9fd)}",
       "#eternaOverlayV159 .eternaV160VoicePanel.is-visible{display:flex}",
+      "#eternaOverlayV159 .eternaV160VoicePanel.has-speech{border-color:#9fd8e9;background:linear-gradient(180deg,#effbff,#e9f8fd);box-shadow:0 0 0 3px rgba(47,169,220,.07)}",
+      "#eternaOverlayV159 .eternaV160VoicePanel.manual-fallback{border-color:#ead6b7;background:linear-gradient(180deg,#fffaf3,#fff7ed)}",
       "#eternaOverlayV159 .eternaV160VoiceWave{display:flex;align-items:center;justify-content:center;gap:3px;width:58px;height:34px;flex:0 0 58px}",
       "#eternaOverlayV159 .eternaV160VoiceWave i{width:4px;border-radius:99px;background:#2fa9dc;animation:eternaWave16049 .9s infinite ease-in-out}",
       "#eternaOverlayV159 .eternaV160VoiceWave i:nth-child(1){height:10px}.eternaV160VoiceWave i:nth-child(2){height:22px;animation-delay:.08s}.eternaV160VoiceWave i:nth-child(3){height:30px;animation-delay:.16s}.eternaV160VoiceWave i:nth-child(4){height:18px;animation-delay:.24s}.eternaV160VoiceWave i:nth-child(5){height:12px;animation-delay:.32s}",
@@ -234,6 +240,63 @@
     try{return localStorage.getItem('eternaMicGrantedV16053')==='1'}catch(e){return false}
   }
 
+  function closeAudioContext(ctx){
+    try{if(ctx&&ctx.state!=="closed")ctx.close()}catch(e){}
+  }
+
+  function clearPrimedAudioTimer(){
+    if(primedAudioTimer){clearTimeout(primedAudioTimer);primedAudioTimer=0}
+  }
+
+  function primeAudioContext(){
+    var AC=root.AudioContext||root.webkitAudioContext;
+    if(!AC)return null;
+    try{
+      if(primedAudioContext&&primedAudioContext.state!=="closed"){
+        try{if(primedAudioContext.state==="suspended")primedAudioContext.resume()}catch(e){}
+        return primedAudioContext
+      }
+      var ctx=null;
+      try{ctx=new AC({latencyHint:"interactive"})}catch(e){ctx=new AC()}
+      primedAudioContext=ctx;
+      try{ctx.resume()}catch(e){}
+      clearPrimedAudioTimer();
+      primedAudioTimer=setTimeout(function(){
+        if(primedAudioContext===ctx){
+          primedAudioContext=null;
+          closeAudioContext(ctx)
+        }
+      },15000);
+      return ctx
+    }catch(e){return null}
+  }
+
+  function claimPrimedAudioContext(){
+    var ctx=primedAudioContext;
+    primedAudioContext=null;
+    clearPrimedAudioTimer();
+    return ctx&&ctx.state!=="closed"?ctx:null
+  }
+
+  function setMicDisabled(disabled){
+    var o=overlay(),mic=o&&o.querySelector("[data-et-mic]");
+    if(mic)mic.disabled=Boolean(disabled)
+  }
+
+  function releaseVoiceStartLock(){
+    voiceStarting=false;
+    if(!voice&&!voiceTranscribing)setMicDisabled(false)
+  }
+
+  function updateVoicePanelCopy(title,detail,stateClass){
+    var p=ensureVoicePanel();if(!p)return;
+    p.classList.remove("has-speech","manual-fallback");
+    if(stateClass)p.classList.add(stateClass);
+    var b=p.querySelector(".eternaV160VoiceCopy b"),span=p.querySelector(".eternaV160VoiceCopy span");
+    if(b&&title)b.textContent=title;
+    if(span&&detail)span.textContent=detail
+  }
+
   function ensureVoicePanel(){
     var c=composer();if(!c)return null;
     var p=c.querySelector("[data-et-voice-panel]");
@@ -242,7 +305,7 @@
       p.className="eternaV160VoicePanel";
       p.setAttribute("data-et-voice-panel","");
       p.innerHTML='<div class="eternaV160VoiceWave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>'+
-        '<div class="eternaV160VoiceCopy"><b>Escuchando…</b><span>Habla con normalidad. Eterna enviará la pregunta cuando detecte que has terminado.</span></div>'+
+        '<div class="eternaV160VoiceCopy"><b>Escuchando…</b><span>Habla con normalidad. Puedes hacer pausas breves; Eterna enviará la pregunta cuando termines.</span></div>'+
         '<div class="eternaV160VoiceActions"><button type="button" class="eternaV160VoiceCancel" data-et-voice-cancel>Cancelar</button><button type="button" class="eternaV160VoiceFinish" data-et-voice-finish>Terminar ahora</button></div>';
       var live=ensureLiveState();
       if(live&&live.nextSibling)c.insertBefore(p,live.nextSibling);else c.insertBefore(p,c.firstChild)
@@ -672,13 +735,13 @@
   function vadConfigForStudent(profile){
     var age=Number(profile&&profile.age),stage=norm(profile&&profile.stage),year=norm(profile&&profile.school_year);
     if(!isFinite(age)||age<=0)age=ageFromSchoolYear(profile&&profile.school_year);
-    if(stage.indexOf('bachillerato')>=0||year.indexOf('bachillerato')>=0)return{silenceMs:1500,noSpeechMs:9000,age:age||17,band:'bachillerato'};
-    if(age>=17)return{silenceMs:1500,noSpeechMs:9000,age:age,band:'17-18'};
-    if(age>=15)return{silenceMs:1600,noSpeechMs:9000,age:age,band:'15-16'};
-    if(age>=12)return{silenceMs:1800,noSpeechMs:10000,age:age,band:'12-14'};
-    if(age>=9)return{silenceMs:2100,noSpeechMs:11000,age:age,band:'9-11'};
-    if(age>=6)return{silenceMs:2400,noSpeechMs:12000,age:age,band:'6-8'};
-    return{silenceMs:1800,noSpeechMs:10000,age:age||null,band:'default'}
+    if(stage.indexOf('bachillerato')>=0||year.indexOf('bachillerato')>=0)return{silenceMs:1600,noSpeechMs:9500,minSpeechMs:150,age:age||17,band:'bachillerato'};
+    if(age>=17)return{silenceMs:1600,noSpeechMs:9500,minSpeechMs:150,age:age,band:'17-18'};
+    if(age>=15)return{silenceMs:1700,noSpeechMs:10000,minSpeechMs:160,age:age,band:'15-16'};
+    if(age>=12)return{silenceMs:1950,noSpeechMs:10500,minSpeechMs:180,age:age,band:'12-14'};
+    if(age>=9)return{silenceMs:2300,noSpeechMs:11500,minSpeechMs:200,age:age,band:'9-11'};
+    if(age>=6)return{silenceMs:2600,noSpeechMs:13000,minSpeechMs:220,age:age,band:'6-8'};
+    return{silenceMs:2000,noSpeechMs:11000,minSpeechMs:180,age:age||null,band:'default'}
   }
 
   function stopTracks(stream){
@@ -689,7 +752,7 @@
     if(!voice)return;
     if(voice.raf)cancelAnimationFrame(voice.raf);
     if(voice.maxTimer)clearTimeout(voice.maxTimer);
-    try{voice.audioContext&&voice.audioContext.close()}catch(e){}
+    closeAudioContext(voice.audioContext)
     stopTracks(voice.stream);
     var mic=overlay()&&overlay().querySelector("[data-et-mic]");
     if(mic){renderMicIdle(mic);mic.disabled=false}
@@ -705,7 +768,10 @@
     voice.stopReason=reason||"";
     if(voice.raf)cancelAnimationFrame(voice.raf);
     try{
-      if(voice.recorder&&voice.recorder.state==="recording")voice.recorder.stop();
+      if(voice.recorder&&voice.recorder.state==="recording"){
+        try{if(typeof voice.recorder.requestData==="function")voice.recorder.requestData()}catch(e){}
+        voice.recorder.stop()
+      }
       else{
         cleanupVoice();
         var why=voice.stopReason;
@@ -719,17 +785,27 @@
   }
 
   async function transcribeAndSend(blob,mime){
-    if(!blob||blob.size<700){setLive("info","No he podido escucharte bien. ¿Quieres intentarlo otra vez?");return}
+    if(!blob||blob.size<700){setLive("info","No he podido escucharte bien. Toca el micrófono para intentarlo otra vez.");return}
+    voiceTranscribing=true;
+    setMicDisabled(true);
     setLive("processing","Entendiendo lo que has dicho…");
     try{
       var token=await authToken(),url=endpoint("/v1/transcribe");
       if(!token||!url)throw new Error("NO_AUTH");
-      var fd=new FormData();
-      fd.append("audio",blob,fileNameForMime(mime||blob.type));
-      var r=await originalFetch(url,{method:"POST",headers:{Authorization:"Bearer "+token},body:fd});
-      var d=await r.json().catch(function(){return{}});
-      var text=clean(d.text);
-      if(!r.ok||!text)throw new Error("TRANSCRIPTION_FAILED");
+      var response=null,data=null,lastError=null;
+      for(var attempt=0;attempt<2;attempt++){
+        try{
+          var fd=new FormData();
+          fd.append("audio",blob,fileNameForMime(mime||blob.type));
+          response=await originalFetch(url,{method:"POST",headers:{Authorization:"Bearer "+token},body:fd});
+          data=await response.json().catch(function(){return{}});
+          if(response.ok)break;
+          if(response.status<500&&response.status!==429)break
+        }catch(fetchError){lastError=fetchError}
+        if(attempt===0)await new Promise(function(resolve){setTimeout(resolve,320)})
+      }
+      var text=clean(data&&data.text);
+      if(!response||!response.ok||!text)throw lastError||new Error("TRANSCRIPTION_FAILED");
       var o=overlay(),input=o&&o.querySelector("[data-et-input]"),send=o&&o.querySelector("[data-et-send]");
       if(!input||!send)throw new Error("UI_MISSING");
       input.value=text;
@@ -737,34 +813,73 @@
       voiceSendPending=true;
       setLive("processing","He entendido tu pregunta. Enviándola…");
       setTimeout(function(){
+        voiceTranscribing=false;
         if(!send.disabled)send.click();
         else{
           send.disabled=false;
           send.click()
         }
-      },40)
+        setMicDisabled(false)
+      },55)
     }catch(e){
-      setLive("info","No he podido escucharte bien. ¿Quieres intentarlo otra vez?")
+      voiceTranscribing=false;
+      setMicDisabled(false);
+      setLive("info","No he podido transcribirlo bien. Toca el micrófono y vuelve a intentarlo.")
     }
   }
 
   function startVad(v){
     if(!v.audioContext||!v.analyser)return;
     var data=new Uint8Array(v.analyser.fftSize);
+    v.vadAvailable=true;
     function tick(){
       if(!voice||voice!==v||v.stopping)return;
+      if(v.audioContext&&v.audioContext.state==="suspended"){
+        try{v.audioContext.resume()}catch(e){}
+      }
       v.analyser.getByteTimeDomainData(data);
       var sum=0;
       for(var i=0;i<data.length;i++){var x=(data[i]-128)/128;sum+=x*x}
       var rms=Math.sqrt(sum/data.length),now=performance.now(),elapsed=now-v.startedAt;
-      if(elapsed<450)v.noiseFloor=v.noiseFloor*0.8+rms*0.2;
-      var threshold=Math.max(0.018,v.noiseFloor*2.7);
-      if(rms>threshold){
-        v.voiceFrames++;
-        if(v.voiceFrames>=2){v.voiceDetected=true;v.lastVoiceAt=now}
-      }else v.voiceFrames=0;
-      if(v.voiceDetected&&now-v.lastVoiceAt>Number(v.silenceMs||1800)&&elapsed>1100){stopVoice(false,"silence");return}
-      if(!v.voiceDetected&&elapsed>Number(v.noSpeechMs||10000)){stopVoice(true,"no-speech");return}
+      v.smoothedRms=v.smoothedRms?(.72*v.smoothedRms+.28*rms):rms;
+      var level=v.smoothedRms;
+
+      var attack=Math.max(.014,Math.min(.065,v.noiseFloor*2.45));
+      var release=Math.max(.009,Math.min(.045,v.noiseFloor*1.55));
+
+      if(!v.voiceDetected){
+        if(!v.candidateAt&&level<attack){
+          var learn=elapsed<650?.10:.018;
+          v.noiseFloor=Math.max(.0035,Math.min(.035,v.noiseFloor*(1-learn)+level*learn))
+        }
+        attack=Math.max(.014,Math.min(.065,v.noiseFloor*2.45));
+        release=Math.max(.009,Math.min(.045,v.noiseFloor*1.55));
+
+        if(level>attack){
+          if(!v.candidateAt)v.candidateAt=now;
+          var candidateMs=now-v.candidateAt;
+          var strong=level>attack*1.75;
+          if(candidateMs>=Number(v.minSpeechMs||180)||(strong&&candidateMs>=90)){
+            v.voiceDetected=true;
+            v.speechStartedAt=v.candidateAt;
+            v.lastVoiceAt=now;
+            updateVoicePanelCopy("Te escucho…","Cuando termines, espera un momento y Eterna enviará tu pregunta.","has-speech")
+          }
+        }else if(level<release*1.12){
+          v.candidateAt=0
+        }
+      }else{
+        if(level>release)v.lastVoiceAt=now
+      }
+
+      if(v.voiceDetected&&now-v.lastVoiceAt>Number(v.silenceMs||2000)&&elapsed>1200){
+        stopVoice(false,"silence");
+        return
+      }
+      if(!v.voiceDetected&&elapsed>Number(v.noSpeechMs||11000)){
+        stopVoice(true,"no-speech");
+        return
+      }
       v.raf=requestAnimationFrame(tick)
     }
     v.raf=requestAnimationFrame(tick)
@@ -773,71 +888,153 @@
   async function startVoice(){
     ensureOverlay();
     if(voice&&voice.recorder&&voice.recorder.state==="recording"){stopVoice(false,"manual");return}
+    if(voiceStarting||voiceTranscribing)return;
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==="undefined"){
       setLive("info","Este navegador no permite grabar audio aquí. Puedes escribir tu pregunta.");
       return
     }
+
+    var o=overlay(),send=o&&o.querySelector("[data-et-send]");
+    if(send&&send.disabled){
+      setLive("info","Espera a que Eterna termine la respuesta anterior antes de volver a hablar.");
+      return
+    }
+
+    voiceStarting=true;
+    setMicDisabled(true);
+    var warmContext=claimPrimedAudioContext();
     setLive("processing","Preparando el micrófono…");
+
     try{
       var prepared=await Promise.all([browserMicState(),micAllowed(),loadVoiceStudentProfile()]),browserState=prepared[0],allowed=prepared[1],studentVoiceProfile=prepared[2]||{};
-      if(browserState==="denied"){setLive("info","El navegador tiene bloqueado el micrófono. Revísalo en los permisos de Safari o de la PWA.");return}
-      if(!allowed){setLive("info","El micrófono está desactivado desde Zona Familiar.");return}
+      if(browserState==="denied"){
+        closeAudioContext(warmContext);
+        releaseVoiceStartLock();
+        setLive("info","El navegador tiene bloqueado el micrófono. Revísalo en los permisos de Safari o de la PWA.");
+        return
+      }
+      if(!allowed){
+        closeAudioContext(warmContext);
+        releaseVoiceStartLock();
+        setLive("info","El micrófono está desactivado desde Zona Familiar.");
+        return
+      }
     }catch(e){
+      closeAudioContext(warmContext);
+      releaseVoiceStartLock();
       setLive("info","Ahora no puedo comprobar el permiso del micrófono. Inténtalo de nuevo.");
       return
     }
+
     try{
-      var stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+      var stream=await navigator.mediaDevices.getUserMedia({
+        audio:{
+          echoCancellation:{ideal:true},
+          noiseSuppression:{ideal:true},
+          autoGainControl:{ideal:true},
+          channelCount:{ideal:1}
+        }
+      });
       rememberMicGrant();
-      var mime=recorderMime(),rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
-      var o=overlay(),mic=o&&o.querySelector("[data-et-mic]"),send=o&&o.querySelector("[data-et-send]");
+
+      var mime=recorderMime(),rec=null;
+      try{rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream)}
+      catch(firstRecorderError){rec=new MediaRecorder(stream);mime=rec.mimeType||""}
+
+      o=overlay();
+      var mic=o&&o.querySelector("[data-et-mic]");
+      send=o&&o.querySelector("[data-et-send]");
       var vadCfg=vadConfigForStudent(typeof studentVoiceProfile!=="undefined"?studentVoiceProfile:{});
       var v={
         stream:stream,recorder:rec,chunks:[],mime:mime||rec.mimeType||"audio/webm",
-        startedAt:performance.now(),lastVoiceAt:0,voiceDetected:false,voiceFrames:0,noiseFloor:.006,
+        startedAt:performance.now(),lastVoiceAt:0,voiceDetected:false,candidateAt:0,speechStartedAt:0,
+        noiseFloor:.006,smoothedRms:0,vadAvailable:false,minSpeechMs:vadCfg.minSpeechMs,
         silenceMs:vadCfg.silenceMs,noSpeechMs:vadCfg.noSpeechMs,studentAge:vadCfg.age,studentBand:vadCfg.band,
         stopping:false,cancelled:false,raf:0,maxTimer:0,audioContext:null,analyser:null,
         sendWasDisabled:send?send.disabled:false
       };
       voice=v;
+
       if(mic){renderMicRecording(mic);mic.disabled=false}
       if(send)send.disabled=true;
+
       rec.ondataavailable=function(e){if(e.data&&e.data.size)v.chunks.push(e.data)};
       rec.onerror=function(){if(voice===v)stopVoice(true,"error")};
+      rec.onstart=function(){v.startedAt=performance.now()};
       rec.onstop=async function(){
         var cancelled=v.cancelled,reason=v.stopReason||"";
         var type=rec.mimeType||v.mime||(v.chunks[0]&&v.chunks[0].type)||"audio/webm";
         var blob=new Blob(v.chunks,{type:type});
+        var duration=performance.now()-v.startedAt;
         cleanupVoice();
         if(voice===v)voice=null;
+        releaseVoiceStartLock();
+
         if(cancelled){
           if(reason==="no-speech")setLive("info","No he oído una pregunta. Toca el micrófono para intentarlo otra vez.");
-          else if(reason==="error")setLive("info","No he podido escucharte bien. ¿Quieres intentarlo otra vez?");
+          else if(reason==="interrupted")setLive("info","La grabación se interrumpió. Toca el micrófono para volver a hablar.");
+          else if(reason==="error")setLive("info","No he podido escucharte bien. Toca el micrófono para intentarlo otra vez.");
           else setLive("","");
+          return
+        }
+
+        if(v.vadAvailable&&!v.voiceDetected&&duration<900){
+          setLive("info","No he oído suficiente voz. Toca el micrófono y vuelve a intentarlo.");
           return
         }
         await transcribeAndSend(blob,type)
       };
+
       try{
         var AC=root.AudioContext||root.webkitAudioContext;
         if(AC){
-          v.audioContext=new AC();
-          try{await v.audioContext.resume()}catch(e){}
+          v.audioContext=warmContext&&warmContext.state!=="closed"?warmContext:null;
+          if(!v.audioContext){
+            try{v.audioContext=new AC({latencyHint:"interactive"})}catch(e){v.audioContext=new AC()}
+          }
+          try{if(v.audioContext.state==="suspended")await v.audioContext.resume()}catch(e){}
           var source=v.audioContext.createMediaStreamSource(stream);
           v.analyser=v.audioContext.createAnalyser();
           v.analyser.fftSize=1024;
-          v.analyser.smoothingTimeConstant=.28;
+          v.analyser.smoothingTimeConstant=.22;
           source.connect(v.analyser)
         }
-      }catch(e){v.audioContext=null;v.analyser=null}
+      }catch(e){
+        closeAudioContext(warmContext);
+        v.audioContext=null;
+        v.analyser=null
+      }
+
+      var tracks=stream.getAudioTracks?stream.getAudioTracks():[];
+      tracks.forEach(function(track){
+        try{track.addEventListener("ended",function(){if(voice===v&&!v.stopping)stopVoice(true,"interrupted")},{once:true})}catch(e){}
+      });
+
       rec.start(250);
       setLive("","");
       setVoicePanel(true);
-      if(v.analyser)startVad(v);
-      v.maxTimer=setTimeout(function(){if(voice===v&&!v.stopping)stopVoice(false,"max-duration")},60000)
+      updateVoicePanelCopy("Escuchando…","Habla con normalidad. Puedes hacer pausas breves; Eterna enviará la pregunta cuando termines.","");
+
+      if(v.analyser&&(!v.audioContext||v.audioContext.state!=="suspended")){
+        startVad(v)
+      }else{
+        updateVoicePanelCopy("Escuchando…","La detección automática no está disponible en esta sesión. Pulsa «Terminar ahora» cuando acabes.","manual-fallback")
+      }
+
+      v.maxTimer=setTimeout(function(){if(voice===v&&!v.stopping)stopVoice(false,"max-duration")},60000);
+      releaseVoiceStartLock()
     }catch(e){
-      stopTracks(voice&&voice.stream);voice=null;setVoicePanel(false);
-      var msg=hasRememberedMicGrant()?"No pude reactivar el micrófono en esta sesión. Revisa el permiso del navegador o vuelve a intentarlo.":"Permite el acceso al micrófono para hablar con Eterna. Después quedará disponible para las siguientes preguntas en este dispositivo.";
+      closeAudioContext(warmContext);
+      stopTracks(voice&&voice.stream);
+      voice=null;
+      setVoicePanel(false);
+      releaseVoiceStartLock();
+      var name=String(e&&e.name||"");
+      var msg=name==="NotAllowedError"||name==="SecurityError"
+        ?"Permite el acceso al micrófono en Safari o en la PWA para hablar con Eterna."
+        :hasRememberedMicGrant()
+          ?"No pude reactivar el micrófono en esta sesión. Vuelve a intentarlo; si continúa, revisa el permiso del navegador."
+          :"Permite el acceso al micrófono para hablar con Eterna. Después quedará disponible para las siguientes preguntas en este dispositivo.";
       setLive("info",msg)
     }
   }
@@ -904,6 +1101,7 @@
         if(mic){
           event.preventDefault();
           event.stopImmediatePropagation();
+          if(!(voice&&voice.recorder&&voice.recorder.state==="recording")&&!voiceStarting&&!voiceTranscribing)primeAudioContext();
           if(root.ETERNA_LEGAL_SHIELD_V16058){
             if(typeof root.ETERNA_LEGAL_SHIELD_V16058.consumeBypass==="function"&&root.ETERNA_LEGAL_SHIELD_V16058.consumeBypass(mic)){startVoice();return}
             if(typeof root.ETERNA_LEGAL_SHIELD_V16058.gateMic==="function"){root.ETERNA_LEGAL_SHIELD_V16058.gateMic(mic);return}
@@ -918,7 +1116,10 @@
       }catch(e){}
     },true);
     root.addEventListener("pageshow",function(){setTimeout(ensureOverlay,40);scheduleHeaderStatus();scheduleLearningProgressMap()});
-    root.addEventListener("resize",function(){setTimeout(enforceSingleLineComposer,40)},{passive:true})
+    root.addEventListener("resize",function(){setTimeout(enforceSingleLineComposer,40)},{passive:true});
+    document.addEventListener("visibilitychange",function(){
+      if(document.hidden&&voice&&voice.recorder&&voice.recorder.state==="recording")stopVoice(true,"interrupted")
+    },{passive:true})
   }
 
   injectStyles();
@@ -934,6 +1135,11 @@
     resetPedagogicalState:function(){
       lastPedagogicalState=null;
       voiceSendPending=false;
+      voiceStarting=false;
+      voiceTranscribing=false;
+      closeAudioContext(primedAudioContext);
+      primedAudioContext=null;
+      clearPrimedAudioTimer();
       audioSettingsCache={at:0,allowed:null};
       voiceStudentProfileCache={uid:"",age:null,stage:null,school_year:null,at:0};
       sourceMemory=[];
@@ -1475,7 +1681,13 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
       "#cocoApp .eternaLegalV16058Head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.eternaLegalV16058Head>div{min-width:0}.eternaLegalV16058Head span{display:block;font-size:9px;font-weight:900;letter-spacing:.08em;color:#548093}.eternaLegalV16058Head h4{margin:2px 0 3px;color:#173f59;font-size:16px}.eternaLegalV16058Head p{margin:0;color:#607985;font-size:10px;line-height:1.4}",
       "#cocoApp .eternaLegalV16058Badge{flex:0 0 auto;padding:5px 8px;border-radius:999px;background:#fff0df;color:#9a5c21;font-size:9px;font-weight:900}#cocoApp .eternaLegalV16058.is-ok .eternaLegalV16058Badge{background:#e8f8ef;color:#23714b}",
       "#cocoApp .eternaLegalV16058Links{display:flex;flex-wrap:wrap;gap:6px;margin:11px 0}#cocoApp .eternaLegalV16058Links a{padding:5px 8px;border:1px solid #d9e8ef;border-radius:9px;background:#fff;color:#246b8a;font-size:9px;font-weight:800;text-decoration:none}",
-      "#cocoApp .eternaLegalV16058Form{display:grid;gap:8px;margin-top:10px}#cocoApp .eternaLegalV16058Check{display:flex;align-items:flex-start;gap:8px;padding:8px 9px;border:1px solid #e0ebf0;border-radius:11px;background:rgba(255,255,255,.82);font-size:10px;font-weight:720;line-height:1.35}#cocoApp .eternaLegalV16058Check input{margin-top:2px;accent-color:#2f9ac5;width:17px;height:17px;flex:0 0 17px}",
+      "#cocoApp .eternaLegalV16058Form{display:grid;gap:8px;margin-top:10px}",
+      "#cocoApp .eternaLegalV16058Check,.eternaLegalModalV16058 .eternaLegalV16058Check{position:relative;z-index:1;display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border:1px solid #e0ebf0;border-radius:12px;background:rgba(255,255,255,.90);font-size:10px;font-weight:720;line-height:1.35;cursor:pointer!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}",
+      "#cocoApp .eternaLegalV16058Check input[type=checkbox],.eternaLegalModalV16058 .eternaLegalV16058Check input[type=checkbox]{position:relative!important;inset:auto!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:3!important;appearance:auto!important;-webkit-appearance:checkbox!important;margin:1px 0 0!important;width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;flex:0 0 20px!important;accent-color:#2f9ac5!important;cursor:pointer!important}",
+      "#cocoApp .eternaLegalV16058Check span,.eternaLegalModalV16058 .eternaLegalV16058Check span{pointer-events:none;flex:1;min-width:0}",
+      "#cocoApp .eternaLegalV16058Check.is-checked,.eternaLegalModalV16058 .eternaLegalV16058Check.is-checked{border-color:#9dd4e6;background:#f2fbfe;box-shadow:0 0 0 2px rgba(47,154,197,.08)}",
+      "#cocoApp .eternaLegalV16058Check.is-checked span,.eternaLegalModalV16058 .eternaLegalV16058Check.is-checked span{color:#173f59}",
+      "#cocoApp .eternaLegalV16058Actions button,.eternaLegalModalV16058 button{position:relative;z-index:3;pointer-events:auto!important;touch-action:manipulation!important}",
       "#cocoApp .eternaLegalV16058 label.eternaLegalV16058Relation{display:grid;gap:4px;color:#496878;font-size:9px;font-weight:850}#cocoApp .eternaLegalV16058 select{width:100%;min-height:38px;border:1px solid #cfe2eb;border-radius:10px;background:#fff;padding:6px 9px;color:#294858;font:750 10px inherit}",
       "#cocoApp .eternaLegalV16058Actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}#cocoApp .eternaLegalV16058Actions button{min-height:38px;padding:8px 11px;border-radius:10px;font:850 10px inherit;cursor:pointer}.eternaLegalPrimaryV16058{border:0;background:#173f59;color:#fff}.eternaLegalSecondaryV16058{border:1px solid #cfe2eb;background:#fff;color:#355f73}.eternaLegalDangerV16058{border:1px solid #efc9c1;background:#fff8f6;color:#9b4738}",
       "#cocoApp .eternaLegalV16058Msg{min-height:15px;margin-top:6px;color:#7b5b36;font-size:9px;font-weight:800}#cocoApp .eternaLegalV16058Msg.ok{color:#22714a}#cocoApp .eternaLegalV16058Msg.error{color:#a24436}",
@@ -1510,6 +1722,37 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
     stateCache=d;stateAt=Date.now();return d
   }
 
+  function bindLegalCheckRows(scope){
+    if(!scope||!scope.querySelectorAll)return;
+    Array.prototype.slice.call(scope.querySelectorAll(".eternaLegalV16058Check")).forEach(function(label){
+      if(label.dataset.legalTapBound==="1")return;
+      var input=label.querySelector('input[type="checkbox"]');
+      if(!input)return;
+      label.dataset.legalTapBound="1";
+
+      function sync(){
+        label.classList.toggle("is-checked",Boolean(input.checked));
+        label.setAttribute("aria-checked",input.checked?"true":"false")
+      }
+
+      /* iOS/PWA: hacemos toda la fila táctil de forma explícita.
+         Si el toque llega al checkbox real dejamos actuar al control nativo.
+         En el resto de la fila anulamos el toggle implícito del label y lo
+         hacemos nosotros una sola vez, evitando dobles cambios. */
+      label.addEventListener("click",function(event){
+        if(event.target===input){sync();return}
+        if(event.target&&event.target.closest&&event.target.closest("a,button,select,option"))return;
+        event.preventDefault();
+        input.checked=!input.checked;
+        input.dispatchEvent(new Event("change",{bubbles:true}));
+        sync()
+      },false);
+
+      input.addEventListener("change",sync,false);
+      sync()
+    })
+  }
+
   function legalLinks(){return '<div class="eternaLegalV16058Links">'+
     '<a href="/privacidad-menores.html" target="_blank" rel="noopener">Privacidad para menores</a>'+
     '<a href="/politica-de-privacidad.html" target="_blank" rel="noopener">Privacidad completa</a>'+
@@ -1540,6 +1783,7 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
         '</div><div class="eternaLegalV16058Actions"><button type="button" class="eternaLegalPrimaryV16058" data-legal-accept>Confirmar autorización y continuar</button>'+(st.email_verified===false?'<button type="button" class="eternaLegalSecondaryV16058" data-legal-resend>Enviar verificación de correo</button>':'')+'</div><div class="eternaLegalV16058Msg" aria-live="polite"></div>';
     }
     var scope=card.querySelector(".eternaV160FamilyScope"),target=scope&&scope.nextSibling;card.insertBefore(node,target||card.firstChild);
+    bindLegalCheckRows(node);
     var accept=node.querySelector("[data-legal-accept]");if(accept)accept.onclick=async function(){
       var authority=node.querySelector("[data-legal-authority]"),docs=node.querySelector("[data-legal-docs]"),ai=node.querySelector("[data-legal-ai]"),rel=node.querySelector("[data-legal-relation]");
       if(!authority.checked||!docs.checked||!ai.checked||(minor&&(!rel||!rel.value))){message(node,"Completa las confirmaciones y, si corresponde, la relación con el menor.","error");return}
@@ -1566,6 +1810,7 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
     injectStyles();var old=document.querySelector(".eternaLegalModalV16058");if(old)old.remove();
     var monthly=plan!=="annual",price=monthly?"7,99 € / mes":"79,99 € / año",label=monthly?"Contratar y pagar 7,99 €/mes":"Contratar y pagar 79,99 €/año";
     var modal=document.createElement("div");modal.className="eternaLegalModalV16058";modal.innerHTML='<section class="eternaLegalModalCardV16058" role="dialog" aria-modal="true" aria-label="Confirmar contratación"><h3>Antes de continuar al pago</h3><p>Revisa las condiciones principales de la suscripción.</p><div class="eternaLegalPurchaseV16058"><strong>'+price+'</strong><small>Suscripción recurrente hasta cancelación. Pago procesado por Stripe. Puedes gestionar futuras renovaciones desde Zona Familiar.</small><small>Con carácter general, la contratación a distancia dispone de un derecho de desistimiento de 14 días naturales, sujeto a las condiciones y excepciones legalmente aplicables.</small></div>'+legalLinks()+'<label class="eternaLegalV16058Check" style="margin-top:10px"><input type="checkbox" data-purchase-start><span>Solicito que el servicio de pago comience inmediatamente tras completarse el pago y confirmo que he recibido la información sobre desistimiento.</span></label><div class="eternaLegalModalActionsV16058"><button type="button" class="eternaLegalPayV16058" data-purchase-pay>'+label+'</button><button type="button" class="eternaLegalCancelV16058" data-purchase-cancel>Volver</button></div></section>';document.body.appendChild(modal);
+    bindLegalCheckRows(modal);
     var cancel=modal.querySelector("[data-purchase-cancel]"),pay=modal.querySelector("[data-purchase-pay]"),start=modal.querySelector("[data-purchase-start]");cancel.onclick=function(){modal.remove()};modal.onclick=function(e){if(e.target===modal)modal.remove()};pay.onclick=async function(){if(!start.checked){start.closest("label").style.borderColor="#e4a08f";return}pay.disabled=true;try{var st=await legalState(false);if(st.backend_available){await postLegal({action:"purchase_ack",plan:plan,recurring_ack:true,withdrawal_info_ack:true,immediate_service_requested:true})}modal.remove();replay(sourceButton)}catch(e){pay.disabled=false;var card=modal.querySelector(".eternaLegalPurchaseV16058");if(card&&!card.querySelector("[data-purchase-error]")){var msg=document.createElement("small");msg.setAttribute("data-purchase-error","");msg.style.color="#a24436";msg.textContent="No se pudo registrar la información precontractual. Inténtalo de nuevo.";card.appendChild(msg)}}}
   }
 
@@ -1613,3 +1858,36 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
   [0,120,400,900].forEach(function(ms){setTimeout(ensureChildLinks,ms);setTimeout(ensureSignupLegalNotice,ms)});setTimeout(scheduleFamilyLegal,200);
   root.ETERNA_LEGAL_SHIELD_V16058=Object.freeze({version:"160.58",legal_version:LEGAL_VERSION,refresh:function(){invalidate();scheduleFamilyLegal()},gateMic:function(mic){gateElement(mic,"mic")},consumeBypass:function(el){if(!el||!bypass.has(el))return false;bypass.delete(el);return true},cloudflare_required:"160.4-legal1",sql_required:true,no_global_observer:true})
 })(window);
+
+window.ETERNA_RELEASE_V16059=Object.freeze({
+  version:"160.59",
+  ios_pwa_legal_checkbox_fix:true,
+  whole_confirmation_row_tappable:true,
+  purchase_ack_checkbox_fixed:true,
+  legal_backend_unchanged:"160.4-legal1",
+  sql_required:false,
+  preserves_v16058_legal_registry:true,
+  preserves_v16057_pedagogy_and_ux:true,
+  extra_global_observer:false
+});
+
+window.ETERNA_RELEASE_V16060=Object.freeze({
+  version:"160.60",
+  premium_microphone_v2:true,
+  ios_audio_context_priming:true,
+  duplicate_tap_lock:true,
+  adaptive_noise_floor:true,
+  vad_hysteresis:true,
+  short_noise_rejection:true,
+  age_adaptive_pause_tolerance:true,
+  transient_transcription_retry:true,
+  mediarecorder_request_data_before_stop:true,
+  graceful_background_interruption:true,
+  manual_finish_fallback:true,
+  legal_checkbox_fix_included:true,
+  cloudflare_worker_unchanged:"160.4-legal1",
+  sql_required:false,
+  preserves_v16055_session_isolation:true,
+  preserves_v16058_legal_registry:true,
+  extra_global_observer:false
+});
