@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160 FINAL4.17 · Eterna premium UX + strengths map */
-const CACHE_VERSION="coco-en-forma-v160.0.0-final4.17";
+/* Coco en Forma · Service Worker v160 FINAL4.18 · Eterna legal shield */
+const CACHE_VERSION="coco-en-forma-v160.0.0-final4.18";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -14,6 +14,8 @@ const ESSENTIAL=[
 ];
 
 const OPTIONAL=[
+  "./aviso-legal.html","./politica-de-privacidad.html","./privacidad-menores.html","./politica-de-cookies.html","./proteccion-de-datos.html",
+  "./informacion-ia-eterna.html","./suscripciones-y-desistimiento.html","./terminos-y-condiciones.html","./centro-de-confianza.html",
   "./juego/numeros/index.html","./share/numeros.jpg","./juego/calculo/index.html","./share/calculo.jpg",
   "./juego/palabras/index.html","./share/palabras.jpg","./juego/series/index.html","./share/series.jpg","./juego/memoria/index.html","./share/memoria.jpg",
   "./juego/sudoku/index.html","./share/sudoku.jpg","./juego/sopa/index.html","./share/sopa.jpg","./juego/crucigrama/index.html","./share/crucigrama.jpg",

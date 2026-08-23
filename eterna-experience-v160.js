@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.57 · estado limpio + mic premium + mapa de fortalezas
+/* ETERNA Experience v160.58 · legal shield + estado/mic/mapa v160.57 preservados
  * Conversación uniforme + un solo indicador inferior + voz de un toque con VAD.
  * Capa aditiva: NO modifica Worker, Stripe, Supabase, juegos, rankings ni contratos existentes.
  * El único MutationObserver se limita al chat de Eterna.
@@ -904,6 +904,10 @@
         if(mic){
           event.preventDefault();
           event.stopImmediatePropagation();
+          if(root.ETERNA_LEGAL_SHIELD_V16058){
+            if(typeof root.ETERNA_LEGAL_SHIELD_V16058.consumeBypass==="function"&&root.ETERNA_LEGAL_SHIELD_V16058.consumeBypass(mic)){startVoice();return}
+            if(typeof root.ETERNA_LEGAL_SHIELD_V16058.gateMic==="function"){root.ETERNA_LEGAL_SHIELD_V16058.gateMic(mic);return}
+          }
           startVoice();
           return
         }
@@ -1436,4 +1440,176 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
     preserves_same_user_token_refresh:true,
     persistent_learning_memory_untouched:true
   })
+})(window);
+
+
+/* ETERNA LEGAL SHIELD v160.58
+ * Capa aditiva, sin observers globales:
+ * - autorización/aceptación legal registrable en Zona Familiar;
+ * - verificación de correo del adulto;
+ * - bloqueo preventivo de Eterna hasta aceptación cuando Worker 160.4 está activo;
+ * - información precontractual antes de Stripe.
+ */
+(function(root){
+  "use strict";
+  if(root.__ETERNA_LEGAL_SHIELD_V16058__)return;
+  root.__ETERNA_LEGAL_SHIELD_V16058__=true;
+
+  var LEGAL_VERSION="2026-08-23-v1";
+  var stateCache=null,stateAt=0,backendAvailable=null;
+  var bypass=new WeakSet(),pendingFamilyAttempts=0;
+  var originalFetch=typeof root.fetch==="function"?root.fetch.bind(root):null;
+
+  function endpoint(path){var c=root.COCO_CONFIG||{},b=String(c.eternaEndpoint||"").replace(/\/+$/,"");return b?b+(String(path||"").charAt(0)==="/"?path:"/"+path):""}
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
+  function getClient(){if(root.__COCO_SUPABASE_CLIENT)return root.__COCO_SUPABASE_CLIENT;var c=root.COCO_CONFIG||{};try{if(root.supabase&&root.supabase.createClient&&c.url&&c.clave)return root.__COCO_SUPABASE_CLIENT=root.supabase.createClient(c.url,c.clave,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}catch(e){}return null}
+  async function session(){var c=getClient();if(!c)return null;try{var r=await c.auth.getSession();return r&&r.data&&r.data.session||null}catch(e){return null}}
+  async function token(){var s=await session();return s&&s.access_token||""}
+  function invalidate(){stateCache=null;stateAt=0}
+
+  function injectStyles(){
+    if(document.getElementById("eterna-legal-v16058-css"))return;
+    var s=document.createElement("style");s.id="eterna-legal-v16058-css";s.textContent=[
+      "#cocoApp .eternaLegalV16058{margin:14px 0;padding:16px;border:2px solid #d8eaf2;border-radius:18px;background:linear-gradient(145deg,#f7fcfe,#fffaf4);color:#294858;box-shadow:0 5px 16px rgba(23,63,89,.055)}",
+      "#cocoApp .eternaLegalV16058.is-ok{border-color:#c8e9d6;background:linear-gradient(145deg,#f3fcf7,#fff)}",
+      "#cocoApp .eternaLegalV16058Head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.eternaLegalV16058Head>div{min-width:0}.eternaLegalV16058Head span{display:block;font-size:9px;font-weight:900;letter-spacing:.08em;color:#548093}.eternaLegalV16058Head h4{margin:2px 0 3px;color:#173f59;font-size:16px}.eternaLegalV16058Head p{margin:0;color:#607985;font-size:10px;line-height:1.4}",
+      "#cocoApp .eternaLegalV16058Badge{flex:0 0 auto;padding:5px 8px;border-radius:999px;background:#fff0df;color:#9a5c21;font-size:9px;font-weight:900}#cocoApp .eternaLegalV16058.is-ok .eternaLegalV16058Badge{background:#e8f8ef;color:#23714b}",
+      "#cocoApp .eternaLegalV16058Links{display:flex;flex-wrap:wrap;gap:6px;margin:11px 0}#cocoApp .eternaLegalV16058Links a{padding:5px 8px;border:1px solid #d9e8ef;border-radius:9px;background:#fff;color:#246b8a;font-size:9px;font-weight:800;text-decoration:none}",
+      "#cocoApp .eternaLegalV16058Form{display:grid;gap:8px;margin-top:10px}#cocoApp .eternaLegalV16058Check{display:flex;align-items:flex-start;gap:8px;padding:8px 9px;border:1px solid #e0ebf0;border-radius:11px;background:rgba(255,255,255,.82);font-size:10px;font-weight:720;line-height:1.35}#cocoApp .eternaLegalV16058Check input{margin-top:2px;accent-color:#2f9ac5;width:17px;height:17px;flex:0 0 17px}",
+      "#cocoApp .eternaLegalV16058 label.eternaLegalV16058Relation{display:grid;gap:4px;color:#496878;font-size:9px;font-weight:850}#cocoApp .eternaLegalV16058 select{width:100%;min-height:38px;border:1px solid #cfe2eb;border-radius:10px;background:#fff;padding:6px 9px;color:#294858;font:750 10px inherit}",
+      "#cocoApp .eternaLegalV16058Actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}#cocoApp .eternaLegalV16058Actions button{min-height:38px;padding:8px 11px;border-radius:10px;font:850 10px inherit;cursor:pointer}.eternaLegalPrimaryV16058{border:0;background:#173f59;color:#fff}.eternaLegalSecondaryV16058{border:1px solid #cfe2eb;background:#fff;color:#355f73}.eternaLegalDangerV16058{border:1px solid #efc9c1;background:#fff8f6;color:#9b4738}",
+      "#cocoApp .eternaLegalV16058Msg{min-height:15px;margin-top:6px;color:#7b5b36;font-size:9px;font-weight:800}#cocoApp .eternaLegalV16058Msg.ok{color:#22714a}#cocoApp .eternaLegalV16058Msg.error{color:#a24436}",
+      ".eternaLegalModalV16058{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:18px;background:rgba(6,25,39,.62);backdrop-filter:blur(5px)}.eternaLegalModalV16058[hidden]{display:none!important}.eternaLegalModalCardV16058{width:min(520px,100%);max-height:min(760px,calc(100vh - 36px));overflow:auto;border-radius:22px;background:#fff;padding:20px;color:#294858;box-shadow:0 24px 70px rgba(0,0,0,.28)}.eternaLegalModalCardV16058 h3{margin:0;color:#173f59;font-size:21px}.eternaLegalModalCardV16058 p{font-size:12px;line-height:1.5}.eternaLegalPurchaseV16058{display:grid;gap:8px;padding:12px;border:1px solid #d9e8ef;border-radius:14px;background:#f7fbfd}.eternaLegalPurchaseV16058 strong{color:#173f59;font-size:19px}.eternaLegalPurchaseV16058 small{color:#627d8a;line-height:1.4}.eternaLegalModalActionsV16058{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.eternaLegalModalActionsV16058 button{min-height:42px;padding:9px 13px;border-radius:11px;font-weight:850;cursor:pointer}.eternaLegalPayV16058{border:0;background:#ef761e;color:#fff}.eternaLegalCancelV16058{border:1px solid #d5e5ec;background:#fff;color:#456778}",
+      "#eternaOverlayV159 .eternaLegalChildLinksV16058{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:4px 0 0;font-size:8.5px;font-weight:800}#eternaOverlayV159 .eternaLegalChildLinksV16058 a{color:#6a8795;text-decoration:underline;text-underline-offset:2px}",
+      "#cocoApp .cocoLegalSignupNoticeV16058{margin:10px 0 0;padding:10px 12px;border:1px solid #d7e8ef;border-radius:12px;background:#f7fbfd;color:#587483;font-size:10px;font-weight:700;line-height:1.4}#cocoApp .cocoLegalSignupNoticeV16058 a{color:#246b8a;font-weight:850}",
+      ".eternaLegalModalV16058 .eternaLegalV16058Links{display:flex;flex-wrap:wrap;gap:6px;margin:11px 0}.eternaLegalModalV16058 .eternaLegalV16058Links a{padding:5px 8px;border:1px solid #d9e8ef;border-radius:9px;background:#fff;color:#246b8a;font-size:9px;font-weight:800;text-decoration:none}",
+      "@media(max-width:640px){#cocoApp .eternaLegalV16058{padding:13px;border-radius:15px}#cocoApp .eternaLegalV16058Head{flex-direction:column}.eternaLegalModalCardV16058{padding:17px;border-radius:18px}}"
+    ].join("");document.head.appendChild(s)
+  }
+
+  async function legalState(force){
+    if(!force&&stateCache&&Date.now()-stateAt<60000)return stateCache;
+    var t=await token(),url=endpoint("/v1/legal-consent");
+    if(!t||!url)return{required:false,accepted:true,backend_available:false};
+    try{
+      var r=await originalFetch(url,{method:"GET",headers:{Authorization:"Bearer "+t,"Cache-Control":"no-store"}});
+      if(r.status===404){backendAvailable=false;return{required:false,accepted:true,backend_available:false}}
+      var d=await r.json().catch(function(){return{}});
+      if(!r.ok)throw new Error(d.error||("LEGAL_"+r.status));
+      backendAvailable=true;d.backend_available=true;stateCache=d;stateAt=Date.now();return d
+    }catch(e){
+      if(backendAvailable===false)return{required:false,accepted:true,backend_available:false};
+      return{required:false,accepted:true,backend_available:false,temporary_error:true}
+    }
+  }
+
+  async function postLegal(body){
+    var t=await token(),url=endpoint("/v1/legal-consent");if(!t||!url)throw new Error("NO_SESSION");
+    var r=await originalFetch(url,{method:"POST",headers:{Authorization:"Bearer "+t,"Content-Type":"application/json"},body:JSON.stringify(body||{})}),d=await r.json().catch(function(){return{}});
+    if(!r.ok){var e=new Error(d.error||("LEGAL_"+r.status));e.code=d.error||"LEGAL_ERROR";throw e}
+    stateCache=d;stateAt=Date.now();return d
+  }
+
+  function legalLinks(){return '<div class="eternaLegalV16058Links">'+
+    '<a href="/privacidad-menores.html" target="_blank" rel="noopener">Privacidad para menores</a>'+
+    '<a href="/politica-de-privacidad.html" target="_blank" rel="noopener">Privacidad completa</a>'+
+    '<a href="/informacion-ia-eterna.html" target="_blank" rel="noopener">Cómo funciona la IA</a>'+
+    '<a href="/terminos-y-condiciones.html" target="_blank" rel="noopener">Términos</a>'+
+    '<a href="/suscripciones-y-desistimiento.html" target="_blank" rel="noopener">Suscripción y desistimiento</a></div>'}
+
+  function familyCard(){return document.querySelector("#cocoApp .eternaV159FamilyCard")}
+  function legalNode(){return document.querySelector("#cocoApp .eternaLegalV16058")}
+  function message(node,text,kind){var m=node&&node.querySelector(".eternaLegalV16058Msg");if(m){m.textContent=String(text||"");m.className="eternaLegalV16058Msg"+(kind?" "+kind:"")}}
+
+  async function renderLegalCard(force){
+    injectStyles();var card=familyCard();if(!card)return false;
+    var old=legalNode();if(old&&!force)return true;if(old)old.remove();
+    var st=await legalState(force),node=document.createElement("section");node.className="eternaLegalV16058"+(st.accepted?" is-ok":"");node.setAttribute("aria-label","Autorización y privacidad de Eterna");
+    var minor=st.minor!==false;
+    if(st.accepted){
+      node.innerHTML='<div class="eternaLegalV16058Head"><div><span>PRIVACIDAD Y AUTORIZACIÓN</span><h4>Autorización registrada</h4><p>La cuenta tiene registrada la versión legal '+esc(st.legal_version||LEGAL_VERSION)+' para Eterna.</p></div><b class="eternaLegalV16058Badge">Protección activa ✓</b></div>'+legalLinks()+
+        '<div class="eternaLegalV16058Actions"><button type="button" class="eternaLegalDangerV16058" data-legal-withdraw>Retirar autorización</button></div><div class="eternaLegalV16058Msg" aria-live="polite"></div>';
+    }else{
+      var emailCopy=st.email_verified===false?'Antes de confirmar, verifica el correo electrónico del adulto responsable.':'La aceptación queda registrada con la cuenta, la versión documental y la fecha.';
+      node.innerHTML='<div class="eternaLegalV16058Head"><div><span>PRIVACIDAD Y AUTORIZACIÓN</span><h4>'+(minor?'Un adulto debe autorizar Eterna':'Aceptación legal de Eterna')+'</h4><p>'+emailCopy+'</p></div><b class="eternaLegalV16058Badge">Pendiente</b></div>'+legalLinks()+
+        '<div class="eternaLegalV16058Form">'+
+          (minor?'<label class="eternaLegalV16058Relation">Relación con el menor<select data-legal-relation><option value="">Selecciona</option><option value="parent">Padre</option><option value="mother">Madre</option><option value="legal_guardian">Tutor/a legal</option></select></label>':'')+
+          '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-authority><span>'+(minor?'Confirmo que soy mayor de 18 años y padre, madre o tutor/a legal del menor asociado a esta cuenta, y autorizo su uso de Eterna.':'Confirmo que soy mayor de 18 años y titular de esta cuenta.')+'</span></label>'+
+          '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-docs><span>He leído y acepto los Términos y la Política de Privacidad aplicables a Eterna.</span></label>'+
+          '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-ai><span>Entiendo que Eterna es una inteligencia artificial, puede equivocarse y es una herramienta de apoyo escolar, no una persona ni un sustituto de docentes o profesionales.</span></label>'+
+        '</div><div class="eternaLegalV16058Actions"><button type="button" class="eternaLegalPrimaryV16058" data-legal-accept>Confirmar autorización y continuar</button>'+(st.email_verified===false?'<button type="button" class="eternaLegalSecondaryV16058" data-legal-resend>Enviar verificación de correo</button>':'')+'</div><div class="eternaLegalV16058Msg" aria-live="polite"></div>';
+    }
+    var scope=card.querySelector(".eternaV160FamilyScope"),target=scope&&scope.nextSibling;card.insertBefore(node,target||card.firstChild);
+    var accept=node.querySelector("[data-legal-accept]");if(accept)accept.onclick=async function(){
+      var authority=node.querySelector("[data-legal-authority]"),docs=node.querySelector("[data-legal-docs]"),ai=node.querySelector("[data-legal-ai]"),rel=node.querySelector("[data-legal-relation]");
+      if(!authority.checked||!docs.checked||!ai.checked||(minor&&(!rel||!rel.value))){message(node,"Completa las confirmaciones y, si corresponde, la relación con el menor.","error");return}
+      accept.disabled=true;message(node,"Registrando la autorización…","");
+      try{await postLegal({action:"accept",relationship:minor?rel.value:"adult_user",terms_accepted:true,privacy_accepted:true,ai_notice_accepted:true,parental_authorization:minor});message(node,"Autorización registrada correctamente.","ok");setTimeout(function(){renderLegalCard(true)},450)}catch(e){accept.disabled=false;if(e.code==="ADULT_EMAIL_VERIFICATION_REQUIRED")message(node,"Primero confirma el correo electrónico del adulto y vuelve a intentarlo.","error");else message(node,"No se pudo registrar la autorización. Inténtalo de nuevo.","error")}
+    };
+    var resend=node.querySelector("[data-legal-resend]");if(resend)resend.onclick=async function(){var c=getClient(),s=await session(),email=s&&s.user&&s.user.email;if(!c||!email){message(node,"No se encontró el correo de la cuenta.","error");return}resend.disabled=true;try{var r=await c.auth.resend({type:"signup",email:email});if(r&&r.error)throw r.error;message(node,"Te hemos enviado un correo de verificación. Después vuelve a entrar en Zona Familiar.","ok")}catch(e){message(node,"No se pudo enviar el correo de verificación.","error")}finally{resend.disabled=false}};
+    var withdraw=node.querySelector("[data-legal-withdraw]");if(withdraw)withdraw.onclick=async function(){if(!confirm("Retirar la autorización bloqueará Eterna hasta que un adulto vuelva a autorizarla. Esto no cancela por sí solo una suscripción de pago. ¿Continuar?"))return;withdraw.disabled=true;try{await postLegal({action:"withdraw"});invalidate();await renderLegalCard(true);alert("Autorización retirada. Si existe una suscripción de pago y no quieres futuras renovaciones, gestiona también la suscripción desde Zona Familiar.")}catch(e){withdraw.disabled=false;message(node,"No se pudo retirar la autorización.","error")}};
+    return true
+  }
+
+  function scheduleFamilyLegal(){[80,220,500,900,1500,2400].forEach(function(ms){setTimeout(function(){renderLegalCard(false)},ms)})}
+
+  function openFamily(){
+    var o=document.getElementById("eternaOverlayV159"),close=o&&o.querySelector(".eternaV159Close");try{if(close)close.click()}catch(e){}
+    var tries=0;function go(){var b=document.querySelector("#cocoApp .cocoFamiliaBtn,.cocoFamiliaBtn");if(b){try{b.click()}catch(e){}scheduleFamilyLegal();return}if(++tries<7)setTimeout(go,120)}setTimeout(go,80)
+  }
+
+  function legalRequiredNotice(){openFamily();setTimeout(function(){var n=legalNode();if(n){try{n.scrollIntoView({behavior:"smooth",block:"center"})}catch(e){}message(n,"Confirma la autorización antes de continuar con Eterna.","error")}},1000)}
+
+  function replay(el){if(!el)return;bypass.add(el);setTimeout(function(){try{el.click()}catch(e){}},0)}
+
+  function purchaseModal(plan,sourceButton){
+    injectStyles();var old=document.querySelector(".eternaLegalModalV16058");if(old)old.remove();
+    var monthly=plan!=="annual",price=monthly?"7,99 € / mes":"79,99 € / año",label=monthly?"Contratar y pagar 7,99 €/mes":"Contratar y pagar 79,99 €/año";
+    var modal=document.createElement("div");modal.className="eternaLegalModalV16058";modal.innerHTML='<section class="eternaLegalModalCardV16058" role="dialog" aria-modal="true" aria-label="Confirmar contratación"><h3>Antes de continuar al pago</h3><p>Revisa las condiciones principales de la suscripción.</p><div class="eternaLegalPurchaseV16058"><strong>'+price+'</strong><small>Suscripción recurrente hasta cancelación. Pago procesado por Stripe. Puedes gestionar futuras renovaciones desde Zona Familiar.</small><small>Con carácter general, la contratación a distancia dispone de un derecho de desistimiento de 14 días naturales, sujeto a las condiciones y excepciones legalmente aplicables.</small></div>'+legalLinks()+'<label class="eternaLegalV16058Check" style="margin-top:10px"><input type="checkbox" data-purchase-start><span>Solicito que el servicio de pago comience inmediatamente tras completarse el pago y confirmo que he recibido la información sobre desistimiento.</span></label><div class="eternaLegalModalActionsV16058"><button type="button" class="eternaLegalPayV16058" data-purchase-pay>'+label+'</button><button type="button" class="eternaLegalCancelV16058" data-purchase-cancel>Volver</button></div></section>';document.body.appendChild(modal);
+    var cancel=modal.querySelector("[data-purchase-cancel]"),pay=modal.querySelector("[data-purchase-pay]"),start=modal.querySelector("[data-purchase-start]");cancel.onclick=function(){modal.remove()};modal.onclick=function(e){if(e.target===modal)modal.remove()};pay.onclick=async function(){if(!start.checked){start.closest("label").style.borderColor="#e4a08f";return}pay.disabled=true;try{var st=await legalState(false);if(st.backend_available){await postLegal({action:"purchase_ack",plan:plan,recurring_ack:true,withdrawal_info_ack:true,immediate_service_requested:true})}modal.remove();replay(sourceButton)}catch(e){pay.disabled=false;var card=modal.querySelector(".eternaLegalPurchaseV16058");if(card&&!card.querySelector("[data-purchase-error]")){var msg=document.createElement("small");msg.setAttribute("data-purchase-error","");msg.style.color="#a24436";msg.textContent="No se pudo registrar la información precontractual. Inténtalo de nuevo.";card.appendChild(msg)}}}
+  }
+
+  async function gateElement(el,kind){
+    var st=await legalState(false);
+    if(st.backend_available&&st.required&&!st.accepted){legalRequiredNotice();return}
+    if(kind==="monthly"||kind==="annual"){purchaseModal(kind,el);return}
+    replay(el)
+  }
+
+  function ensureSignupLegalNotice(){
+    var login=document.querySelector("#cocoApp .loginCard,.loginCard");if(!login||login.querySelector(".cocoLegalSignupNoticeV16058"))return;
+    var n=document.createElement("div");n.className="cocoLegalSignupNoticeV16058";n.innerHTML='Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable. <a href="/privacidad-menores.html" target="_blank" rel="noopener">Privacidad para menores</a> · <a href="/terminos-y-condiciones.html" target="_blank" rel="noopener">Términos</a>';
+    login.appendChild(n)
+  }
+
+  function installCapture(){
+    if(document.documentElement.dataset.eternaLegalV16058==="1")return;document.documentElement.dataset.eternaLegalV16058="1";
+    document.addEventListener("click",function(event){
+      try{
+        var family=event.target&&event.target.closest?event.target.closest(".cocoFamiliaBtn,[data-family-enter]"):null;if(family)scheduleFamilyLegal();
+        var el=event.target&&event.target.closest?event.target.closest("#eternaOverlayV159 [data-et-send],#eternaOverlayV159 [data-et-mic],#cocoApp [data-et-trial],#cocoApp [data-et-month],#cocoApp [data-et-year]"):null;
+        if(!el)return;if(bypass.has(el)){bypass.delete(el);return}
+        event.preventDefault();event.stopImmediatePropagation();
+        var kind=el.matches("[data-et-month]")?"monthly":el.matches("[data-et-year]")?"annual":el.matches("[data-et-trial]")?"trial":el.matches("[data-et-mic]")?"mic":"send";gateElement(el,kind)
+      }catch(e){}
+    },true);
+    document.addEventListener("keydown",function(event){
+      try{var input=event.target&&event.target.matches&&event.target.matches("#eternaOverlayV159 [data-et-input]")?event.target:null;if(!input||event.key!=="Enter"||event.shiftKey)return;var send=document.querySelector("#eternaOverlayV159 [data-et-send]");if(!send)return;event.preventDefault();event.stopImmediatePropagation();gateElement(send,"send")}catch(e){}
+    },true);
+    root.addEventListener("pageshow",function(){scheduleFamilyLegal();ensureChildLinks();ensureSignupLegalNotice();invalidate()})
+  }
+
+  function ensureChildLinks(){
+    var o=document.getElementById("eternaOverlayV159"),composer=o&&o.querySelector("[data-et-composer]");if(!composer||composer.querySelector(".eternaLegalChildLinksV16058"))return;
+    var d=document.createElement("div");d.className="eternaLegalChildLinksV16058";d.innerHTML='<a href="/privacidad-menores.html" target="_blank" rel="noopener">Tu privacidad</a><a href="/informacion-ia-eterna.html" target="_blank" rel="noopener">Cómo funciona Eterna</a>';composer.appendChild(d)
+  }
+
+  function installFetchAwareness(){
+    if(!originalFetch||root.fetch.__eternaLegal16058Wrapped)return;
+    var wrapped=async function(input,init){var r=await originalFetch(input,init),url=typeof input==="string"?input:(input&&input.url)||"";if(/\/v1\/(chat|transcribe|speak|feedback|trial|checkout)(?:\?|$)/.test(url)&&r.status===403){try{var d=await r.clone().json();if(d&&d.error==="ETERNA_LEGAL_ACCEPTANCE_REQUIRED"){invalidate();legalRequiredNotice()}}catch(e){}}return r};wrapped.__eternaLegal16058Wrapped=true;root.fetch=wrapped
+  }
+
+  injectStyles();installFetchAwareness();installCapture();
+  [0,120,400,900].forEach(function(ms){setTimeout(ensureChildLinks,ms);setTimeout(ensureSignupLegalNotice,ms)});setTimeout(scheduleFamilyLegal,200);
+  root.ETERNA_LEGAL_SHIELD_V16058=Object.freeze({version:"160.58",legal_version:LEGAL_VERSION,refresh:function(){invalidate();scheduleFamilyLegal()},gateMic:function(mic){gateElement(mic,"mic")},consumeBypass:function(el){if(!el||!bypass.has(el))return false;bypass.delete(el);return true},cloudflare_required:"160.4-legal1",sql_required:true,no_global_observer:true})
 })(window);
