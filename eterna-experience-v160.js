@@ -119,6 +119,33 @@
     return null
   }
 
+  function findPreviousUser(node){
+    var n=node&&node.previousElementSibling;
+    while(n){
+      if(n.matches&&n.matches(".eternaV159Msg.user"))return n;
+      n=n.previousElementSibling
+    }
+    return null
+  }
+
+  function scrollTurnToStart(assistantRow){
+    var c=chat();
+    if(!c||!assistantRow)return;
+    var anchor=findPreviousUser(assistantRow)||assistantRow;
+    function apply(){
+      if(!document.contains(c)||!document.contains(anchor))return;
+      try{
+        var cr=c.getBoundingClientRect(),ar=anchor.getBoundingClientRect();
+        var delta=ar.top-cr.top-12;
+        c.scrollTop=Math.max(0,c.scrollTop+delta)
+      }catch(e){}
+    }
+    requestAnimationFrame(function(){
+      apply();
+      requestAnimationFrame(apply)
+    })
+  }
+
   function normalizeConversation(){
     normalizeRaf=0;
     var o=overlay(),c=chat();if(!o||!c)return;
@@ -155,16 +182,22 @@
     observedChat=c;
     thinkingAssistantCount=c.querySelectorAll(".eternaV159Msg.assistant").length;
     overlayObserver=new MutationObserver(function(records){
-      var assistantAdded=false;
+      var assistantAdded=null;
       for(var i=0;i<records.length;i++){
         var nodes=records[i].addedNodes||[];
         for(var j=0;j<nodes.length;j++){
           var n=nodes[j];
-          if(n.nodeType===1&&((n.matches&&n.matches(".eternaV159Msg.assistant"))||(n.querySelector&&n.querySelector(".eternaV159Msg.assistant")))){assistantAdded=true;break}
+          if(n.nodeType!==1)continue;
+          if(n.matches&&n.matches(".eternaV159Msg.assistant"))assistantAdded=n;
+          else if(n.querySelector)assistantAdded=n.querySelector(".eternaV159Msg.assistant");
+          if(assistantAdded)break
         }
         if(assistantAdded)break
       }
-      if(assistantAdded)setLive("","")
+      if(assistantAdded){
+        setLive("","");
+        scrollTurnToStart(assistantAdded)
+      }
       queueNormalize()
     });
     overlayObserver.observe(c,{childList:true,subtree:true});
@@ -511,20 +544,62 @@
     document.head.appendChild(s)
   }
 
+  function familyModal(){
+    return document.querySelector("#cocoApp .cocoFamilyV129Backdrop,.cocoFamilyV129Backdrop")
+  }
+
+  function bestFamilyButton(){
+    var list=Array.prototype.slice.call(document.querySelectorAll("#cocoApp .cocoFamiliaBtn,.cocoFamiliaBtn"));
+    if(!list.length)return null;
+    function isVisible(el){
+      try{
+        var s=getComputedStyle(el),r=el.getBoundingClientRect();
+        return s.display!=="none"&&s.visibility!=="hidden"&&r.width>0&&r.height>0
+      }catch(e){return true}
+    }
+    return list.find(function(b){return b.dataset&&b.dataset.cocoFamilyVersion==="129"&&isVisible(b)})||
+           list.find(function(b){return b.dataset&&b.dataset.cocoFamilyVersion==="129"})||
+           list.find(isVisible)||
+           list[list.length-1]
+  }
+
+  function focusFamilyGate(){
+    var modal=familyModal();
+    if(!modal)return false;
+    var input=modal.querySelector(".cocoFamilyPin input,input");
+    if(input)setTimeout(function(){try{input.focus({preventScroll:true})}catch(e){try{input.focus()}catch(_e){}}},40);
+    return true
+  }
+
   function openFamilyZone(){
     var o=overlay();
+
+    /* Cierra Eterna usando su propio botón y, como respaldo, libera el scroll.
+       No toca ninguna lógica ni dato de Zona Familiar. */
     var close=o&&o.querySelector(".eternaV159Close");
     try{if(close)close.click()}catch(e){}
-    setTimeout(function(){
-      var b=document.querySelector("#cocoApp .cocoFamiliaBtn,.cocoFamiliaBtn");
+    try{
+      if(o)o.classList.remove("is-open");
+      document.body.style.overflow=""
+    }catch(e){}
+
+    var attempts=0;
+    function tryOpen(){
+      if(focusFamilyGate())return;
+      var b=bestFamilyButton();
       if(b){
-        try{b.click()}catch(e){}
-        setTimeout(function(){
-          var modal=document.querySelector("#cocoApp .cocoFamilyV129,.cocoFamilyV129");
-          if(modal)try{modal.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}
-        },100)
+        try{b.click()}catch(e){
+          try{b.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true,view:window}))}catch(_e){}
+        }
       }
-    },120)
+      if(focusFamilyGate())return;
+      attempts++;
+      if(attempts<7)setTimeout(tryOpen,attempts<3?80:160)
+    }
+
+    requestAnimationFrame(function(){
+      requestAnimationFrame(tryOpen)
+    })
   }
 
   function decorateLimit(type){
@@ -562,10 +637,19 @@
     link.className="eternaV160FamilyLimitLink";
     link.setAttribute("data-et-family-limit","");
     link.textContent="Abrir Zona Familiar →";
+    link.onclick=function(event){
+      if(event)event.preventDefault();
+      openFamilyZone()
+    };
     bubble.appendChild(link);
 
     var chat=o.querySelector("[data-et-chat]");
-    if(chat)chat.scrollTop=chat.scrollHeight;
+    if(chat){
+      try{
+        var cr=chat.getBoundingClientRect(),rr=row.getBoundingClientRect();
+        chat.scrollTop=Math.max(0,chat.scrollTop+(rr.top-cr.top)-12)
+      }catch(e){}
+    }
     return true
   }
 
@@ -623,8 +707,6 @@
         var limitLink=event.target&&event.target.closest?event.target.closest("[data-et-family-limit]"):null;
         if(limitLink){
           event.preventDefault();
-          event.stopImmediatePropagation();
-          openFamilyZone();
           return
         }
         var opener=event.target&&event.target.closest
@@ -649,3 +731,14 @@
     decorateWeekly:function(){return decorateLimit("weekly")}
   };
 })(window);
+
+
+/* ETERNA UX FIX v160.52
+ * Marcador de release: navegación familiar robusta + lectura anclada al inicio del turno.
+ */
+window.ETERNA_UX_FIX_V16052=Object.freeze({
+  version:"160.52",
+  family_limit_link:true,
+  response_start_anchor:true,
+  extra_global_observer:false
+});
