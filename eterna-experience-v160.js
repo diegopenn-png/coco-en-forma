@@ -615,7 +615,19 @@
   installFetchWrapper();
   installInteractionHooks();
   setTimeout(ensureOverlay,0);
-  root.ETERNA_EXPERIENCE_V16049={version:VERSION,normalize:normalizeConversation,getPedagogicalState:function(){return lastPedagogicalState}};
+  root.ETERNA_EXPERIENCE_V16049={
+    version:VERSION,
+    normalize:normalizeConversation,
+    getPedagogicalState:function(){return lastPedagogicalState},
+    resetPedagogicalState:function(){
+      lastPedagogicalState=null;
+      voiceSendPending=false;
+      audioSettingsCache={at:0,allowed:null};
+      try{if(voice)stopVoice(true,"session-change")}catch(e){}
+      voice=null;
+      setLive("","")
+    }
+  };
 })(window);
 
 
@@ -860,8 +872,8 @@
 /* ETERNA UX FIX v160.52
  * Marcador de release: navegación familiar robusta + lectura anclada al inicio del turno.
  */
-window.ETERNA_UX_FIX_V16054=Object.freeze({
-  version:"160.54",
+window.ETERNA_UX_FIX_V16055=Object.freeze({
+  version:"160.55",
   family_limit_link:true,
   response_start_anchor:true,
   single_bottom_live_state:true,
@@ -869,5 +881,223 @@ window.ETERNA_UX_FIX_V16054=Object.freeze({
   remembered_mic_permission_hint:true,
   single_line_composer:true,
   capitalized_student_name:true,
+  strict_user_session_isolation:true,
   extra_global_observer:false
 });
+
+
+/* ETERNA SESSION FENCE v160.55
+ * Privacidad entre cuentas:
+ * - logout = limpia inmediatamente el estado visible y recarga;
+ * - usuario A -> usuario B = limpia y recarga;
+ * - refresh de token del mismo usuario = NO limpia la conversación.
+ *
+ * La recarga es deliberada: el historial visible de eterna-v159.js vive dentro
+ * de un closure privado. Una recarga en una frontera real de autenticación es
+ * la forma más segura de garantizar que no sobreviva ningún estado temporal.
+ * No borra memoria pedagógica persistida ni datos de Supabase.
+ */
+(function(root){
+  "use strict";
+  if(root.__ETERNA_SESSION_FENCE_V16055__)return;
+  root.__ETERNA_SESSION_FENCE_V16055__=true;
+
+  var STORAGE_KEY="eterna_active_user_v16055";
+  var currentUserId="";
+  var reloadScheduled=false;
+  var subscription=null;
+
+  function overlay(){return document.getElementById("eternaOverlayV159")}
+
+  function storedUser(){
+    try{return String(sessionStorage.getItem(STORAGE_KEY)||"")}catch(e){return""}
+  }
+
+  function storeUser(uid){
+    try{
+      if(uid)sessionStorage.setItem(STORAGE_KEY,String(uid));
+      else sessionStorage.removeItem(STORAGE_KEY)
+    }catch(e){}
+  }
+
+  function stopTransientVoice(){
+    try{
+      var media=document.querySelector("#eternaOverlayV159 [data-et-mic].recording");
+      if(media){
+        media.classList.remove("recording");
+        media.disabled=false
+      }
+    }catch(e){}
+  }
+
+  function scrubVisibleEterna(){
+    var o=overlay();
+    if(!o)return;
+
+    try{
+      var chat=o.querySelector("[data-et-chat]");
+      if(chat)chat.innerHTML="";
+    }catch(e){}
+
+    try{
+      var input=o.querySelector("[data-et-input]");
+      if(input){
+        input.value="";
+        input.disabled=false
+      }
+    }catch(e){}
+
+    try{
+      var preview=o.querySelector("[data-et-preview]");
+      if(preview){
+        preview.classList.remove("show");
+        var img=preview.querySelector("img");
+        if(img)img.removeAttribute("src")
+      }
+    }catch(e){}
+
+    try{
+      var live=o.querySelector("[data-et-live-state]");
+      if(live){
+        live.className="eternaV160LiveState";
+        live.innerHTML=""
+      }
+    }catch(e){}
+
+    try{
+      var name=o.querySelector("[data-et-name]");
+      if(name)name.textContent="Alumno Coco"
+    }catch(e){}
+
+    stopTransientVoice();
+
+    /* Cierra Eterna inmediatamente para que jamás quede a la vista el hilo
+       del usuario anterior durante el cambio de cuenta. */
+    try{o.classList.remove("is-open")}catch(e){}
+    try{document.body.style.overflow=""}catch(e){}
+  }
+
+  function clearExperienceTransientState(){
+    /* Objetos públicos de las capas nuevas: no contienen conversación cruda,
+       pero reiniciamos lo que podamos antes de la recarga. */
+    try{
+      if(root.ETERNA_EXPERIENCE_V16049 &&
+         typeof root.ETERNA_EXPERIENCE_V16049.resetPedagogicalState==="function"){
+        root.ETERNA_EXPERIENCE_V16049.resetPedagogicalState()
+      }
+    }catch(e){}
+
+    try{
+      if(root.ETERNA_EXPERIENCE_V16054 &&
+         typeof root.ETERNA_EXPERIENCE_V16054.resetTransient==="function"){
+        root.ETERNA_EXPERIENCE_V16054.resetTransient()
+      }
+    }catch(e){}
+  }
+
+  function scheduleCleanReload(nextUid){
+    if(reloadScheduled)return;
+    reloadScheduled=true;
+
+    scrubVisibleEterna();
+    clearExperienceTransientState();
+    storeUser(nextUid||"");
+
+    /* Dos frames aseguran que la conversación anterior desaparezca visualmente
+       antes de que el navegador ejecute la recarga. */
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        try{location.reload()}catch(e){location.href=location.href}
+      })
+    })
+  }
+
+  function handleAuth(event,session){
+    var nextUid=session&&session.user&&session.user.id
+      ?String(session.user.id)
+      :"";
+
+    /* Cierre de sesión real. TOKEN_REFRESHED con sesión válida no entra aquí. */
+    if(!nextUid){
+      if(currentUserId||storedUser()){
+        currentUserId="";
+        scheduleCleanReload("")
+      }else{
+        scrubVisibleEterna()
+      }
+      return
+    }
+
+    var previous=currentUserId||storedUser();
+
+    /* Cambio directo de identidad sin un SIGNED_OUT intermedio. */
+    if(previous&&previous!==nextUid){
+      currentUserId=nextUid;
+      scheduleCleanReload(nextUid);
+      return
+    }
+
+    /* Primer login de esta página o refresh del mismo usuario. */
+    currentUserId=nextUid;
+    storeUser(nextUid)
+  }
+
+  async function install(){
+    var cli=null;
+    try{
+      if(root.__COCO_SUPABASE_CLIENT)cli=root.__COCO_SUPABASE_CLIENT;
+      else{
+        var c=root.COCO_CONFIG||{};
+        if(root.supabase&&root.supabase.createClient&&c.url&&c.clave){
+          cli=root.__COCO_SUPABASE_CLIENT=root.supabase.createClient(
+            c.url,
+            c.clave,
+            {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}
+          )
+        }
+      }
+    }catch(e){}
+
+    if(!cli||!cli.auth){
+      setTimeout(install,120);
+      return
+    }
+
+    try{
+      var existing=await cli.auth.getSession();
+      currentUserId=existing&&existing.data&&existing.data.session&&
+                    existing.data.session.user&&existing.data.session.user.id
+        ?String(existing.data.session.user.id)
+        :"";
+
+      var oldStored=storedUser();
+
+      /* Si la página arrancó ya con una cuenta distinta de la que estaba
+         activa en esta pestaña, limpiamos antes de continuar. */
+      if(oldStored&&currentUserId&&oldStored!==currentUserId){
+        scheduleCleanReload(currentUserId);
+        return
+      }
+
+      storeUser(currentUserId)
+    }catch(e){}
+
+    try{
+      var result=cli.auth.onAuthStateChange(function(event,session){
+        handleAuth(event,session)
+      });
+      subscription=result&&result.data&&result.data.subscription||null
+    }catch(e){}
+  }
+
+  install();
+
+  root.ETERNA_SESSION_FENCE_V16055=Object.freeze({
+    version:"160.55",
+    strict_user_isolation:true,
+    clears_on_signout:true,
+    clears_on_user_change:true,
+    preserves_same_user_token_refresh:true,
+    persistent_learning_memory_untouched:true
+  })
+})(window);
