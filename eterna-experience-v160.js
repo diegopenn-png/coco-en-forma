@@ -463,3 +463,189 @@
   setTimeout(ensureOverlay,0);
   root.ETERNA_EXPERIENCE_V16049={version:VERSION,normalize:normalizeConversation,getPedagogicalState:function(){return lastPedagogicalState}};
 })(window);
+
+
+/* ETERNA Experience v160.51 · límites + identidad visual del alumno
+ * Extensión consolidada de Fase 2:
+ * - Capitaliza el nombre del alumno solo en presentación.
+ * - Convierte límite diario/semanal en mensaje claro + acceso directo a Zona Familiar.
+ * - Adapta ETERNA_WEEKLY_LIMIT al frontend legado sin tocar eterna-v159.js.
+ */
+(function(root){
+  "use strict";
+  if(root.__ETERNA_LIMITS_IDENTITY_V16051__)return;
+  root.__ETERNA_LIMITS_IDENTITY_V16051__=true;
+
+  var previousFetch=typeof root.fetch==="function"?root.fetch.bind(root):null;
+  var lastLimitType=null;
+
+  function overlay(){return document.getElementById("eternaOverlayV159")}
+  function clean(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
+
+  function capitalizeName(value){
+    var s=clean(value);
+    if(!s)return s;
+    return s.replace(/(^|[\s\-'])[a-záéíóúüñ]/gi,function(m){
+      return m.toLocaleUpperCase("es-ES");
+    });
+  }
+
+  function refreshVisibleName(){
+    var o=overlay();if(!o)return;
+    o.querySelectorAll("[data-et-name]").forEach(function(el){
+      var before=clean(el.textContent),after=capitalizeName(before);
+      if(after&&after!==before)el.textContent=after;
+    });
+  }
+
+  function injectLimitStyles(){
+    if(document.getElementById("eterna-limits-v16051-css"))return;
+    var s=document.createElement("style");
+    s.id="eterna-limits-v16051-css";
+    s.textContent=[
+      "#eternaOverlayV159 .eternaV160FamilyLimitLink{display:inline-flex!important;align-items:center!important;gap:4px!important;margin:9px 0 0!important;padding:8px 11px!important;border:1px solid #b9deed!important;border-radius:11px!important;background:#eef9fd!important;color:#145f82!important;font:900 10.5px inherit!important;text-decoration:none!important;cursor:pointer!important;touch-action:manipulation!important}",
+      "#eternaOverlayV159 .eternaV160FamilyLimitLink:hover{background:#e3f5fc!important;color:#0f5677!important}",
+      "#eternaOverlayV159 .eternaV160FamilyLimitLink:focus-visible{outline:3px solid rgba(42,167,216,.32)!important;outline-offset:3px!important}",
+      "#eternaOverlayV159 .eternaV160LimitReset{display:block!important;margin-top:6px!important;color:#6b808c!important;font-size:9.5px!important;font-weight:750!important;line-height:1.35!important}"
+    ].join("");
+    document.head.appendChild(s)
+  }
+
+  function openFamilyZone(){
+    var o=overlay();
+    var close=o&&o.querySelector(".eternaV159Close");
+    try{if(close)close.click()}catch(e){}
+    setTimeout(function(){
+      var b=document.querySelector("#cocoApp .cocoFamiliaBtn,.cocoFamiliaBtn");
+      if(b){
+        try{b.click()}catch(e){}
+        setTimeout(function(){
+          var modal=document.querySelector("#cocoApp .cocoFamilyV129,.cocoFamilyV129");
+          if(modal)try{modal.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){}
+        },100)
+      }
+    },120)
+  }
+
+  function decorateLimit(type){
+    var o=overlay();if(!o)return false;
+    var rows=o.querySelectorAll(".eternaV159Msg.assistant");
+    if(!rows.length)return false;
+    var row=rows[rows.length-1],bubble=row.querySelector(".eternaV159Bubble");
+    if(!bubble)return false;
+
+    var text=clean(bubble.textContent);
+    if(!/l[ií]mite|consultas de eterna por hoy|consultas de eterna/i.test(text))return false;
+
+    if(bubble.querySelector("[data-et-family-limit]"))return true;
+
+    var meta=bubble.querySelector(".eternaV159Meta");if(meta)meta.remove();
+    bubble.textContent="";
+
+    var main=document.createElement("span");
+    if(type==="weekly"){
+      main.textContent="Has alcanzado el límite semanal de consultas de Eterna. Pide a tus padres que lo gestionen desde Zona Familiar.";
+    }else{
+      main.textContent="Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.";
+    }
+    bubble.appendChild(main);
+
+    var reset=document.createElement("span");
+    reset.className="eternaV160LimitReset";
+    reset.textContent=type==="weekly"
+      ?"El límite semanal se renueva automáticamente al comenzar la próxima semana."
+      :"El límite diario se renueva automáticamente al comenzar el próximo día.";
+    bubble.appendChild(reset);
+
+    var link=document.createElement("button");
+    link.type="button";
+    link.className="eternaV160FamilyLimitLink";
+    link.setAttribute("data-et-family-limit","");
+    link.textContent="Abrir Zona Familiar →";
+    bubble.appendChild(link);
+
+    var chat=o.querySelector("[data-et-chat]");
+    if(chat)chat.scrollTop=chat.scrollHeight;
+    return true
+  }
+
+  function scheduleName(){
+    [0,80,220,600,1400].forEach(function(ms){setTimeout(refreshVisibleName,ms)})
+  }
+
+  function scheduleLimit(type){
+    [0,30,80,160,300,600,1000].forEach(function(ms){
+      setTimeout(function(){decorateLimit(type)},ms)
+    })
+  }
+
+  function installFetchWrapper(){
+    if(!previousFetch||root.fetch.__eternaLimits16051Wrapped)return;
+    var wrapped=async function(input,init){
+      var url=typeof input==="string"?input:(input&&input.url)||"";
+      var isChat=/\/v1\/chat(?:\?|$)/.test(url);
+      var response=await previousFetch(input,init);
+      if(!isChat)return response;
+
+      try{
+        var data=await response.clone().json();
+        if(data&&data.error==="ETERNA_WEEKLY_LIMIT"){
+          lastLimitType="weekly";
+          scheduleLimit("weekly");
+
+          /* eterna-v159.js solo conoce ETERNA_DAILY_LIMIT. Reescribimos únicamente
+             el código de error de la copia que consume el frontend, conservando
+             status/headers y todos los datos de cuota. */
+          var rewritten=Object.assign({},data,{error:"ETERNA_DAILY_LIMIT",limit_type:"weekly"});
+          return new Response(JSON.stringify(rewritten),{
+            status:response.status,
+            statusText:response.statusText,
+            headers:new Headers(response.headers)
+          });
+        }
+        if(data&&data.error==="ETERNA_DAILY_LIMIT"){
+          lastLimitType="daily";
+          scheduleLimit("daily");
+        }
+      }catch(e){}
+      return response
+    };
+    wrapped.__eternaLimits16051Wrapped=true;
+    root.fetch=wrapped
+  }
+
+  function installHooks(){
+    if(document.documentElement.dataset.eternaLimits16051==="1")return;
+    document.documentElement.dataset.eternaLimits16051="1";
+
+    document.addEventListener("click",function(event){
+      try{
+        var limitLink=event.target&&event.target.closest?event.target.closest("[data-et-family-limit]"):null;
+        if(limitLink){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openFamilyZone();
+          return
+        }
+        var opener=event.target&&event.target.closest
+          ?event.target.closest("#eternaLauncherV159,.eternaLauncherCardV159,[data-et-mode],[data-et-modechoice],[data-et-changemode]")
+          :null;
+        if(opener)scheduleName()
+      }catch(e){}
+    },true);
+
+    root.addEventListener("pageshow",scheduleName)
+  }
+
+  injectLimitStyles();
+  installFetchWrapper();
+  installHooks();
+  scheduleName();
+
+  root.ETERNA_LIMITS_IDENTITY_V16051={
+    version:"160.51",
+    refreshName:refreshVisibleName,
+    decorateDaily:function(){return decorateLimit("daily")},
+    decorateWeekly:function(){return decorateLimit("weekly")}
+  };
+})(window);
