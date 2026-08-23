@@ -1,14 +1,15 @@
-/* ETERNA Experience v160.48 · Fase 1
+/* ETERNA Experience v160.49 · Fase 2 companion
  * Conversación uniforme + indicador visible "pensando" + voz de un toque con VAD.
  * Capa aditiva: NO modifica Worker, Stripe, Supabase, juegos, rankings ni contratos existentes.
  * El único MutationObserver se limita al chat de Eterna.
  */
 (function(root){
   "use strict";
-  if(root.__ETERNA_EXPERIENCE_V16048__)return;
-  root.__ETERNA_EXPERIENCE_V16048__=true;
+  if(root.__ETERNA_EXPERIENCE_V16049__)return;
+  root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.48-phase1";
+  var VERSION="160.49-phase2";
+  var lastPedagogicalState=null;
   var voice=null;
   var voiceSendPending=false;
   var overlayObserver=null;
@@ -34,34 +35,34 @@
   }
 
   function injectStyles(){
-    if(document.getElementById("eterna-experience-v16048-css"))return;
+    if(document.getElementById("eterna-experience-v16049-css"))return;
     var s=document.createElement("style");
-    s.id="eterna-experience-v16048-css";
+    s.id="eterna-experience-v16049-css";
     s.textContent=[
-      "#cocoApp .eternaV159Check,#cocoApp .eternaV159Mission{display:none!important}",
-      "#cocoApp .eternaV160HiddenHelpTag{display:none!important}",
-      "#cocoApp .eternaV160ConversationCheck{margin-top:14px;padding-top:12px;border-top:1px solid rgba(23,63,89,.12);font-weight:800;line-height:1.45;color:#214d65}",
-      "#cocoApp .eternaV160ConversationCheck:before{content:'A ver si lo tenemos';display:block;margin-bottom:5px;color:#6b7f8a;font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}",
-      "#cocoApp .eternaV160LiveState{display:none;align-items:center;gap:9px;margin:0 0 8px;padding:9px 12px;border:1px solid #cfe8f2;border-radius:14px;background:#f1faff;color:#315d73;font-size:11px;font-weight:900;line-height:1.2;box-shadow:0 2px 0 rgba(190,224,238,.55)}",
-      "#cocoApp .eternaV160LiveState.is-visible{display:flex}",
-      "#cocoApp .eternaV160LiveIcon{display:grid;place-items:center;width:28px;height:28px;flex:0 0 28px;border-radius:10px;background:#e2f5fc;color:#ef6c05;font-size:17px}",
-      "#cocoApp .eternaV160ThinkingDots{display:inline-flex;gap:3px;margin-left:2px;vertical-align:middle}",
-      "#cocoApp .eternaV160ThinkingDots i{display:block;width:4px;height:4px;border-radius:50%;background:currentColor;animation:eternaThinkingDot16048 1.1s infinite ease-in-out}",
-      "#cocoApp .eternaV160ThinkingDots i:nth-child(2){animation-delay:.14s}#cocoApp .eternaV160ThinkingDots i:nth-child(3){animation-delay:.28s}",
-      "@keyframes eternaThinkingDot16048{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-3px);opacity:1}}",
-      "#cocoApp .eternaV160VoicePanel{display:none;align-items:center;gap:10px;margin:0 0 8px;padding:10px 11px;border:1px solid #bfe4f2;border-radius:15px;background:linear-gradient(180deg,#f4fcff,#edf9fd)}",
-      "#cocoApp .eternaV160VoicePanel.is-visible{display:flex}",
-      "#cocoApp .eternaV160VoiceWave{display:flex;align-items:center;justify-content:center;gap:3px;width:58px;height:34px;flex:0 0 58px}",
-      "#cocoApp .eternaV160VoiceWave i{width:4px;border-radius:99px;background:#2fa9dc;animation:eternaWave16048 .9s infinite ease-in-out}",
-      "#cocoApp .eternaV160VoiceWave i:nth-child(1){height:10px}.eternaV160VoiceWave i:nth-child(2){height:22px;animation-delay:.08s}.eternaV160VoiceWave i:nth-child(3){height:30px;animation-delay:.16s}.eternaV160VoiceWave i:nth-child(4){height:18px;animation-delay:.24s}.eternaV160VoiceWave i:nth-child(5){height:12px;animation-delay:.32s}",
-      "@keyframes eternaWave16048{0%,100%{transform:scaleY(.55);opacity:.55}50%{transform:scaleY(1);opacity:1}}",
-      "#cocoApp .eternaV160VoiceCopy{min-width:0;flex:1}#cocoApp .eternaV160VoiceCopy b{display:block;color:#173f59;font-size:12px}#cocoApp .eternaV160VoiceCopy span{display:block;margin-top:2px;color:#68808e;font-size:9.5px;font-weight:750}",
-      "#cocoApp .eternaV160VoiceActions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}",
-      "#cocoApp .eternaV160VoiceActions button{min-height:34px;padding:6px 9px;border-radius:10px;font:900 9.5px inherit;cursor:pointer;touch-action:manipulation}",
-      "#cocoApp .eternaV160VoiceFinish{border:0;background:#173f59;color:#fff}#cocoApp .eternaV160VoiceCancel{border:1px solid #d3e7ef;background:#fff;color:#526f7f}",
-      "#cocoApp .eternaV159Quick{opacity:.88}#cocoApp .eternaV159Quick button{min-height:32px!important}",
-      "@media(max-width:640px){#cocoApp .eternaV160LiveState{margin-bottom:7px;padding:8px 10px}#cocoApp .eternaV160VoicePanel{align-items:flex-start;flex-wrap:wrap}#cocoApp .eternaV160VoiceCopy{min-width:160px}#cocoApp .eternaV160VoiceActions{width:100%;justify-content:flex-end}}",
-      "@media(prefers-reduced-motion:reduce){#cocoApp .eternaV160ThinkingDots i,#cocoApp .eternaV160VoiceWave i{animation:none!important}}"
+      "#eternaOverlayV159 .eternaV159Check,#eternaOverlayV159 .eternaV159Mission{display:none!important}",
+      "#eternaOverlayV159 .eternaV160HiddenHelpTag{display:none!important}",
+      "#eternaOverlayV159 .eternaV160ConversationCheck{margin-top:14px;padding-top:12px;border-top:1px solid rgba(23,63,89,.12);font-weight:800;line-height:1.45;color:#214d65}",
+      "#eternaOverlayV159 .eternaV160ConversationCheck:before{content:'A ver si lo tenemos';display:block;margin-bottom:5px;color:#6b7f8a;font-size:10px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}",
+      "#eternaOverlayV159 .eternaV160LiveState{display:none;align-items:center;gap:9px;margin:0 0 8px;padding:9px 12px;border:1px solid #cfe8f2;border-radius:14px;background:#f1faff;color:#315d73;font-size:11px;font-weight:900;line-height:1.2;box-shadow:0 2px 0 rgba(190,224,238,.55)}",
+      "#eternaOverlayV159 .eternaV160LiveState.is-visible{display:flex}",
+      "#eternaOverlayV159 .eternaV160LiveIcon{display:grid;place-items:center;width:28px;height:28px;flex:0 0 28px;border-radius:10px;background:#e2f5fc;color:#ef6c05;font-size:17px}",
+      "#eternaOverlayV159 .eternaV160ThinkingDots{display:inline-flex;gap:3px;margin-left:2px;vertical-align:middle}",
+      "#eternaOverlayV159 .eternaV160ThinkingDots i{display:block;width:4px;height:4px;border-radius:50%;background:currentColor;animation:eternaThinkingDot16049 1.1s infinite ease-in-out}",
+      "#eternaOverlayV159 .eternaV160ThinkingDots i:nth-child(2){animation-delay:.14s}#eternaOverlayV159 .eternaV160ThinkingDots i:nth-child(3){animation-delay:.28s}",
+      "@keyframes eternaThinkingDot16049{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-3px);opacity:1}}",
+      "#eternaOverlayV159 .eternaV160VoicePanel{display:none;align-items:center;gap:10px;margin:0 0 8px;padding:10px 11px;border:1px solid #bfe4f2;border-radius:15px;background:linear-gradient(180deg,#f4fcff,#edf9fd)}",
+      "#eternaOverlayV159 .eternaV160VoicePanel.is-visible{display:flex}",
+      "#eternaOverlayV159 .eternaV160VoiceWave{display:flex;align-items:center;justify-content:center;gap:3px;width:58px;height:34px;flex:0 0 58px}",
+      "#eternaOverlayV159 .eternaV160VoiceWave i{width:4px;border-radius:99px;background:#2fa9dc;animation:eternaWave16049 .9s infinite ease-in-out}",
+      "#eternaOverlayV159 .eternaV160VoiceWave i:nth-child(1){height:10px}.eternaV160VoiceWave i:nth-child(2){height:22px;animation-delay:.08s}.eternaV160VoiceWave i:nth-child(3){height:30px;animation-delay:.16s}.eternaV160VoiceWave i:nth-child(4){height:18px;animation-delay:.24s}.eternaV160VoiceWave i:nth-child(5){height:12px;animation-delay:.32s}",
+      "@keyframes eternaWave16049{0%,100%{transform:scaleY(.55);opacity:.55}50%{transform:scaleY(1);opacity:1}}",
+      "#eternaOverlayV159 .eternaV160VoiceCopy{min-width:0;flex:1}#eternaOverlayV159 .eternaV160VoiceCopy b{display:block;color:#173f59;font-size:12px}#eternaOverlayV159 .eternaV160VoiceCopy span{display:block;margin-top:2px;color:#68808e;font-size:9.5px;font-weight:750}",
+      "#eternaOverlayV159 .eternaV160VoiceActions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}",
+      "#eternaOverlayV159 .eternaV160VoiceActions button{min-height:34px;padding:6px 9px;border-radius:10px;font:900 9.5px inherit;cursor:pointer;touch-action:manipulation}",
+      "#eternaOverlayV159 .eternaV160VoiceFinish{border:0;background:#173f59;color:#fff}#eternaOverlayV159 .eternaV160VoiceCancel{border:1px solid #d3e7ef;background:#fff;color:#526f7f}",
+      "#eternaOverlayV159 .eternaV159Quick{opacity:.88}#eternaOverlayV159 .eternaV159Quick button{min-height:32px!important}",
+      "@media(max-width:640px){#eternaOverlayV159 .eternaV160LiveState{margin-bottom:7px;padding:8px 10px}#eternaOverlayV159 .eternaV160VoicePanel{align-items:flex-start;flex-wrap:wrap}#eternaOverlayV159 .eternaV160VoiceCopy{min-width:160px}#eternaOverlayV159 .eternaV160VoiceActions{width:100%;justify-content:flex-end}}",
+      "@media(prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160ThinkingDots i,#eternaOverlayV159 .eternaV160VoiceWave i{animation:none!important}}"
     ].join("");
     document.head.appendChild(s)
   }
@@ -388,22 +389,23 @@
   }
 
   function patchChatRequest(input,init){
-    if(!voiceSendPending)return{input:input,init:init};
-    voiceSendPending=false;
     try{
-      if(!init||typeof init.body!=="string")return{input:input,init:init};
+      if(!init||typeof init.body!=="string"){voiceSendPending=false;return{input:input,init:init}}
       var b=JSON.parse(init.body);
       if(b&&typeof b==="object"){
-        b.input_source="voice";
+        if(voiceSendPending)b.input_source="voice";
+        if(lastPedagogicalState&&typeof lastPedagogicalState==="object")b.pedagogical_state=lastPedagogicalState;
+        voiceSendPending=false;
         var next=Object.assign({},init,{body:JSON.stringify(b)});
         return{input:input,init:next}
       }
     }catch(e){}
+    voiceSendPending=false;
     return{input:input,init:init}
   }
 
   function installFetchWrapper(){
-    if(!originalFetch||root.fetch.__eternaExperience16048Wrapped)return;
+    if(!originalFetch||root.fetch.__eternaExperience16049Wrapped)return;
     var wrapped=async function(input,init){
       var url=typeof input==="string"?input:(input&&input.url)||"",isChat=/\/v1\/chat(?:\?|$)/.test(url);
       if(isChat){
@@ -415,7 +417,8 @@
         if(isChat){
           if(response.status!==401){
             if(!response.ok)setTimeout(function(){setLive("","")},0);
-            response.clone().json().then(function(){
+            response.clone().json().then(function(data){
+              if(data&&data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
               setTimeout(function(){ensureOverlay();queueNormalize()},0);
               setTimeout(function(){queueNormalize()},90)
             }).catch(function(){})
@@ -427,13 +430,13 @@
         throw e
       }
     };
-    wrapped.__eternaExperience16048Wrapped=true;
+    wrapped.__eternaExperience16049Wrapped=true;
     root.fetch=wrapped
   }
 
   function installInteractionHooks(){
-    if(document.documentElement.dataset.eternaExperience16048==="1")return;
-    document.documentElement.dataset.eternaExperience16048="1";
+    if(document.documentElement.dataset.eternaExperience16049==="1")return;
+    document.documentElement.dataset.eternaExperience16049="1";
     document.addEventListener("click",function(event){
       try{
         var cancel=event.target&&event.target.closest?event.target.closest("[data-et-voice-cancel]"):null;
@@ -458,5 +461,5 @@
   installFetchWrapper();
   installInteractionHooks();
   setTimeout(ensureOverlay,0);
-  root.ETERNA_EXPERIENCE_V16048={version:VERSION,normalize:normalizeConversation};
+  root.ETERNA_EXPERIENCE_V16049={version:VERSION,normalize:normalizeConversation,getPedagogicalState:function(){return lastPedagogicalState}};
 })(window);
