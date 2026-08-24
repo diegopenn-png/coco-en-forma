@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160 FINAL4.20 · Eterna premium microphone v2 */
-const CACHE_VERSION="coco-en-forma-v160.0.0-final4.20";
+/* Coco en Forma · Service Worker v160 FINAL4.21 · Zona Familiar + informe */
+const CACHE_VERSION="coco-en-forma-v160.0.0-final4.21";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -8,7 +8,7 @@ const ESSENTIAL=[
   "./","./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
   "./coco-v152-padel.js","./coco-v152-pwa.js","./coco-v153-fixes.js","./coco-v155-identity.js",
-  "./eterna-v159.js","./eterna-v159.css","./eterna-experience-v160.js","./eterna.html","./eterna-social.png","./og-coco.jpg","./share/eterna.png",
+  "./eterna-v159.js","./eterna-v159.css","./eterna-experience-v160.js","./eterna-family-v16061.js","./eterna.html","./eterna-social.png","./og-coco.jpg","./share/eterna.png",
   "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
   "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./shortcut-icon.png","./favicon.png"
 ];
@@ -37,7 +37,7 @@ function staleWhileRevalidate(event){return caches.match(event.request,{ignoreSe
 self.addEventListener("fetch",event=>{
   if(event.request.method!=="GET")return;
   const url=new URL(event.request.url);if(url.origin!==self.location.origin)return;
-  const critical=/\/(eterna-v159\.(js|css)|eterna-experience-v160\.js|eterna\.html|coco-v152-pwa\.js|coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(url.pathname);
+  const critical=/\/(eterna-v159\.(js|css)|eterna-experience-v160\.js|eterna-family-v16061\.js|eterna\.html|coco-v152-pwa\.js|coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(url.pathname);
   const documentRequest=event.request.mode==="navigate"||event.request.destination==="document";
   if(documentRequest||critical){event.respondWith(networkFirst(event));return}
   event.respondWith(staleWhileRevalidate(event))
