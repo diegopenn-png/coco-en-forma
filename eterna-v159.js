@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.0 FINAL4.2
+/* Coco en Forma · ETERNA v160.70 CORE
  * Release consolidada.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.0-final4.3";
+  var VERSION="160.70-core";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -29,10 +29,10 @@
     learningMemory:[],strategyMemory:[],history:[],imageData:null,imageName:"",mode:"homework",
     modeState:{question_number:0,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null},
     busy:false,recorder:null,chunks:[],lastSpeechUrl:null,lastReply:"",lastAudio:null,inputSource:"text",
-    dataLoadedAt:0
+    dataLoadedAt:0,secondaryLoadedAt:0
   };
 
-  var appObserver=null,observerRaf=0,authWatcherInstalled=false;
+  var appObserver=null,observerRaf=0,authWatcherInstalled=false,secondaryDataPromise=null;
 
   var CCAA=["Andalucía","Aragón","Asturias","Illes Balears","Canarias","Cantabria","Castilla-La Mancha","Castilla y León","Cataluña","Comunitat Valenciana","Extremadura","Galicia","Comunidad de Madrid","Región de Murcia","Navarra","País Vasco","La Rioja","Ceuta","Melilla"];
   var YEARS=[
@@ -86,8 +86,38 @@
     return false
   }
 
+  function perfMark(name){try{performance.mark(name)}catch(e){}}
+  function perfMeasure(name,start,end){try{performance.measure(name,start,end)}catch(e){}}
+
+  async function loadSecondaryData(force){
+    if(!state.session)return;
+    if(!force&&state.secondaryLoadedAt&&Date.now()-state.secondaryLoadedAt<DATA_CACHE_MS)return;
+    if(secondaryDataPromise&&!force)return secondaryDataPromise;
+    var cli=client(),uid=state.session.user.id;
+    var task=(async function(){
+      var results=await Promise.allSettled([
+        cli.from("eterna_student_concept_memory").select("subject,concept_label,mastery_score,last_help_level,attempts").eq("user_id",uid).order("mastery_score",{ascending:true}).limit(16),
+        cli.from("eterna_learning_strategy_memory").select("subject,strategy_key,evidence_count,success_score").eq("user_id",uid).order("success_score",{ascending:false}).limit(12)
+      ]);
+      function dataAt(i){var x=results[i];return x&&x.status==="fulfilled"&&x.value?x.value.data:null}
+      state.learningMemory=dataAt(0)||[];
+      state.strategyMemory=dataAt(1)||[];
+      state.secondaryLoadedAt=Date.now();
+      perfMark("eterna_secondary_data_ready");
+      perfMeasure("eterna_critical_to_secondary","eterna_critical_data_ready","eterna_secondary_data_ready")
+    })();
+    secondaryDataPromise=task.finally(function(){secondaryDataPromise=null});
+    return secondaryDataPromise
+  }
+
+  function scheduleSecondaryData(){
+    var run=function(){loadSecondaryData(false).catch(function(){})};
+    if("requestIdleCallback" in window)window.requestIdleCallback(run,{timeout:900});
+    else setTimeout(run,180)
+  }
+
   async function loadData(force){
-    if(!force&&state.session&&state.dataLoadedAt&&Date.now()-state.dataLoadedAt<DATA_CACHE_MS)return;
+    if(!force&&state.session&&state.dataLoadedAt&&Date.now()-state.dataLoadedAt<DATA_CACHE_MS){scheduleSecondaryData();return}
     await refreshSession();
     if(!state.session){state.dataLoadedAt=Date.now();return}
     var cli=client(),uid=state.session.user.id;
@@ -95,18 +125,17 @@
       cli.from("perfiles").select("apodo,edad").eq("id",uid).maybeSingle(),
       cli.from("eterna_student_profiles").select("*").eq("user_id",uid).maybeSingle(),
       cli.from("eterna_subscriptions").select("*").eq("user_id",uid).maybeSingle(),
-      cli.from("eterna_parent_settings").select("*").eq("user_id",uid).maybeSingle(),
-      cli.from("eterna_student_concept_memory").select("subject,concept_label,mastery_score,last_help_level,attempts").eq("user_id",uid).order("mastery_score",{ascending:true}).limit(16),
-      cli.from("eterna_learning_strategy_memory").select("subject,strategy_key,evidence_count,success_score").eq("user_id",uid).order("success_score",{ascending:false}).limit(12)
+      cli.from("eterna_parent_settings").select("*").eq("user_id",uid).maybeSingle()
     ]);
     function dataAt(i){var x=results[i];return x&&x.status==="fulfilled"&&x.value?x.value.data:null}
     state.baseProfile=dataAt(0)||null;
     state.profile=dataAt(1)||null;
     state.subscription=dataAt(2)||null;
     state.parentSettings=dataAt(3)||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20};
-    state.learningMemory=dataAt(4)||[];
-    state.strategyMemory=dataAt(5)||[];
-    state.dataLoadedAt=Date.now()
+    state.dataLoadedAt=Date.now();
+    perfMark("eterna_critical_data_ready");
+    perfMeasure("eterna_open_to_critical","eterna_open_click","eterna_critical_data_ready");
+    if(force)await loadSecondaryData(true);else scheduleSecondaryData()
   }
 
   function rememberEternaAfterAuth(){
@@ -383,12 +412,14 @@
   }
 
   function setStatus(text,kind){var o=overlay(),s=o.querySelector("[data-et-status]"),d=o.querySelector("[data-et-dot]");if(s)s.textContent=text;if(d)d.className="eternaV159Dot"+(kind?" "+kind:"")}
-  function setResultStatus(data){var status=String(data&&data.verification_status||""),ui=data&&data.ui_status,txt=ui&&ui.label?ui.label:status==="verified"?"Respuesta verificada":status==="blocked_out_of_scope"?"Eterna solo responde sobre aprendizaje escolar":status==="blocked_safety"?"Habla ahora con un adulto de confianza":status==="verification_conflict"?"Quiero comprobarlo mejor antes de responderte":"Eterna necesita comprobar un poco más",kind=status==="verified"?"ok":"warn";setStatus(txt,kind)}
+  function setResultStatus(data){var status=String(data&&data.verification_status||""),ui=data&&data.ui_status,txt=status==="verified"?"Eterna lista":status==="blocked_out_of_scope"?"Eterna solo responde sobre aprendizaje escolar":status==="blocked_safety"?"Habla ahora con un adulto de confianza":status==="verification_conflict"?"Eterna está revisando la respuesta":ui&&ui.label?ui.label:"Eterna está revisando la respuesta",kind=status==="verified"?"ok":"warn";setStatus(txt,kind)}
   function setIdentity(){var o=overlay(),name=(state.baseProfile&&state.baseProfile.apodo)||(state.session&&state.session.user&&state.session.user.user_metadata&&state.session.user.user_metadata.apodo)||"Alumno Coco";o.querySelector("[data-et-name]").textContent=name;o.querySelector("[data-et-course]").textContent=state.profile&&state.profile.school_year?state.profile.school_year:"Configura tu curso"}
   function setPlaceholder(){var i=overlay().querySelector("[data-et-input]"),m=MODE_CONFIG[state.mode]||MODE_CONFIG.homework;if(i)i.placeholder=m.placeholder}
 
   async function open(){
     var o=overlay();o.classList.add("is-open");document.body.style.overflow="hidden";
+    perfMark("eterna_overlay_visible");
+    perfMeasure("eterna_click_to_overlay","eterna_open_click","eterna_overlay_visible");
     try{var saved=localStorage.getItem("coco_eterna_mode_v160");if(MODE_CONFIG[saved])state.mode=saved}catch(e){}
     setStatus("Comprobando tu cuenta…","");
     await loadData(false);setIdentity();render();renderModeBar();
@@ -416,10 +447,8 @@
       chat.innerHTML='<div class="eternaV159Gate"><h3>Prueba Eterna gratis durante 7 días</h3><p>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</p><div class="eternaV159GateList"><div>📸 Ayuda con tareas por foto</div><div>🎙️ Preguntas por voz</div><div>🧠 Memoria pedagógica</div><div>🔒 Solo apoyo escolar</div></div><div class="eternaV159Buttons"><button type="button" class="eternaV159Primary" data-et-family>Pedir a un adulto que la active</button><button type="button" class="eternaV159Secondary" data-et-close>Ahora no</button></div></div>';
       chat.querySelector("[data-et-family]").onclick=function(){close();var b=document.querySelector("#cocoApp .cocoFamiliaBtn");if(b)b.click()};chat.querySelector("[data-et-close]").onclick=close;setStatus("Activación familiar necesaria","warn");return
     }
-    var age=state.baseProfile&&Number(state.baseProfile.edad);
-    if(age&&age<6){composer.style.display="none";chat.innerHTML='<div class="eternaV159Gate"><h3>Eterna se usa con un adulto en esta etapa</h3><p>Para menores de 6 años, Coco mantiene una experiencia guiada por la familia.</p><button type="button" class="eternaV159Secondary" data-et-close>Volver</button></div>';chat.querySelector("[data-et-close]").onclick=close;setStatus("Uso acompañado por familia","warn");return}
     if(!state.profile||!state.profile.school_year||!state.profile.autonomous_community){composer.style.display="none";renderSetup(chat);setStatus("Falta configurar el curso","warn");return}
-    composer.style.display="block";renderConversation(chat);setStatus(tester()?"Beta de prueba · Eterna lista":"Eterna lista · apoyo escolar verificado","ok")
+    composer.style.display="block";renderConversation(chat);setStatus("Eterna lista","ok")
   }
 
   function renderSetup(chat){
@@ -1001,7 +1030,7 @@
 
   window.CocoEternaV160=Object.freeze({
     open:open,close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,
-    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true}}
+    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true,ageAccessGate:false,agePedagogyOnly:true,criticalSecondaryDataSplit:true}}
   });
   window.CocoPerformanceV160=Object.freeze({snapshot:function(){
     var nav=(performance.getEntriesByType&&performance.getEntriesByType("navigation")[0])||null;

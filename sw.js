@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160 FINAL4.29 · shell rápido Safari/PWA */
-const CACHE_VERSION="coco-en-forma-v160.0.0-final4.29";
+/* Coco en Forma · Service Worker v160 FINAL4.30 · shell rápido Safari/PWA */
+const CACHE_VERSION="coco-en-forma-v160.0.0-final4.30";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -7,7 +7,7 @@ const CORE=[
   "./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
   "./coco-v152-pwa.js","./coco-v153-fixes.js","./coco-v155-identity.js",
-  "./eterna-v159.js","./eterna-v159.css","./eterna-experience-v160.js?v=16069",
+  "./eterna-v159.js","./eterna-v159.css",
   "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
   "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"
 ];
