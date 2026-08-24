@@ -1,4 +1,4 @@
-/* Coco en Forma · v160 FINAL4.26 · lanzamiento Eterna optimizado */
+/* Coco en Forma · v160 FINAL4.27 · alta/PIN/chat corregidos */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -40,32 +40,32 @@
   }
 
   function loadOnboarding(){
-    if(root.__ETERNA_ONBOARDING_V16066_LOADER__)return;
-    root.__ETERNA_ONBOARDING_V16066_LOADER__=true;
+    if(root.__ETERNA_ONBOARDING_V16067_LOADER__)return;
+    root.__ETERNA_ONBOARDING_V16067_LOADER__=true;
     var p=document.createElement("script");
-    p.src="./eterna-onboarding-v16066.js?v=16066";
+    p.src="./eterna-onboarding-v16067.js?v=16067";
     p.async=true;
-    p.dataset.cocoModule="eterna-onboarding-v16066";
+    p.dataset.cocoModule="eterna-onboarding-v16067";
     p.onload=scheduleFamilyIdle;
-    p.onerror=function(){root.__ETERNA_ONBOARDING_V16066_LOADER__=false;scheduleFamilyIdle()};
+    p.onerror=function(){root.__ETERNA_ONBOARDING_V16067_LOADER__=false;scheduleFamilyIdle()};
     document.head.appendChild(p)
   }
 
   function loadEternaExperience(){
-    if(root.__ETERNA_EXPERIENCE_V16066_LOADER__)return;
-    root.__ETERNA_EXPERIENCE_V16066_LOADER__=true;
+    if(root.__ETERNA_EXPERIENCE_V16067_LOADER__)return;
+    root.__ETERNA_EXPERIENCE_V16067_LOADER__=true;
     var s=document.createElement("script");
-    s.src="./eterna-experience-v160.js?v=16060";
+    s.src="./eterna-experience-v160.js?v=16067";
     s.async=true;
-    s.dataset.cocoModule="eterna-experience-v16060";
+    s.dataset.cocoModule="eterna-experience-v16067";
     s.onload=loadOnboarding;
-    s.onerror=function(){root.__ETERNA_EXPERIENCE_V16066_LOADER__=false};
+    s.onerror=function(){root.__ETERNA_EXPERIENCE_V16067_LOADER__=false};
     document.head.appendChild(s)
   }
 
-  function flush(){raf=0;var nodes=Array.from(queued);queued.clear();nodes.forEach(processNode);root.COCO_VERSION="2026-08-24-v160-final4.26"}
+  function flush(){raf=0;var nodes=Array.from(queued);queued.clear();nodes.forEach(processNode);root.COCO_VERSION="2026-08-24-v160-final4.27"}
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
-  function initial(){var app=document.getElementById("cocoApp");if(app)processNode(app);loadEternaExperience();root.COCO_VERSION="2026-08-24-v160-final4.26"}
+  function initial(){var app=document.getElementById("cocoApp");if(app)processNode(app);loadEternaExperience();root.COCO_VERSION="2026-08-24-v160-final4.27"}
   function observe(){var app=document.getElementById("cocoApp");if(!app)return;new MutationObserver(function(records){records.forEach(function(r){r.addedNodes.forEach(function(n){if(relevantNode(n))queue(n)})})}).observe(app,{childList:true,subtree:true})}
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){initial();observe()},{once:true});else{initial();observe()}

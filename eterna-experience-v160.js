@@ -1,14 +1,15 @@
-/* ETERNA Experience v160.60 · micrófono premium + fix táctil legal v160.59 preservado
- * Conversación uniforme + un solo indicador inferior + voz de un toque con VAD.
- * Capa aditiva: NO modifica Worker, Stripe, Supabase, juegos, rankings ni contratos existentes.
- * El único MutationObserver se limita al chat de Eterna.
+/* ETERNA Experience v160.67 · chat infantil acompañado + curso protegido + micrófono premium
+ * Corrige el caso en que un gate/setup ocultaba el compositor y luego un cambio de modo dejaba Eterna sin campo de escritura.
+ * Para menores de 6 años mantiene uso acompañado por adulto, pero permite escribir/voz en lugar de bloquear el chat.
+ * Si falta configurar curso (6+), impide que cambiar de modo salte el formulario de configuración.
+ * Conserva micrófono premium, legal shield y el único MutationObserver limitado al chat de Eterna.
  */
 (function(root){
   "use strict";
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.60-premium-mic";
+  var VERSION="160.67-chat-readiness";
   var lastPedagogicalState=null;
   var voice=null;
   var voiceSendPending=false;
@@ -82,6 +83,16 @@
       "#eternaOverlayV159 [data-et-mic].recording::after{content:\"\";position:absolute;inset:-4px;border-radius:19px;border:1.8px solid rgba(232,111,24,.30);animation:eternaMicPulse16057 1.3s infinite ease-out;pointer-events:none}",
       "@keyframes eternaMicPulse16057{0%{transform:scale(.94);opacity:.65}72%{transform:scale(1.10);opacity:.04}100%{transform:scale(1.13);opacity:0}}",
       "#eternaOverlayV159 .eternaV160MemoryNote{margin:10px 0 0;padding:9px 11px;border:1px solid #dcebf2;border-radius:12px;background:#f8fcfe;color:#657d8a;font-size:9.5px;font-weight:700;line-height:1.45;text-align:left}",
+      "#eternaOverlayV159 .eternaV160EarlyYearsReady{margin:8px 0 12px;padding:14px 15px;border:1px solid #f0d5b5;border-radius:16px;background:linear-gradient(180deg,#fffaf3,#fff6e9);color:#5a4a3d;line-height:1.45}",
+      "#eternaOverlayV159 .eternaV160EarlyYearsReady span{display:inline-flex;margin-bottom:6px;padding:5px 8px;border-radius:999px;background:#ffe4c6;color:#9a520f;font-size:9px;font-weight:950;letter-spacing:.04em}",
+      "#eternaOverlayV159 .eternaV160EarlyYearsReady h3{margin:0 0 5px;color:#173f59;font-size:17px}",
+      "#eternaOverlayV159 .eternaV160EarlyYearsReady p{margin:0;color:#647985;font-size:11px;font-weight:750}",
+      "#eternaOverlayV159 .eternaV160EarlyYearsActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}",
+      "#eternaOverlayV159 .eternaV160EarlyYearsActions button{min-height:38px;padding:8px 12px;border-radius:11px;font:900 10px inherit;cursor:pointer;touch-action:manipulation}",
+      "#eternaOverlayV159 .eternaV160EarlyWrite{border:0;background:#ef761e;color:#fff}.eternaV160EarlyVoice{border:1px solid #cfe2eb;background:#fff;color:#355f73}",
+      "#eternaOverlayV159 .eternaV160NeedCourse{margin:8px 0 12px;padding:16px;border:1px solid #cfe4ed;border-radius:16px;background:#f7fbfd;color:#315d73;text-align:center}",
+      "#eternaOverlayV159 .eternaV160NeedCourse h3{margin:0 0 6px;color:#173f59;font-size:18px}.eternaV160NeedCourse p{margin:0 auto 12px;max-width:560px;font-size:11px;font-weight:750;line-height:1.5}",
+      "#eternaOverlayV159 .eternaV160NeedCourse button{min-height:42px;padding:9px 14px;border:0;border-radius:11px;background:#173f59;color:#fff;font:900 10.5px inherit;cursor:pointer}",
       "#eternaOverlayV159 .eternaV160MemoryNote b{color:#315d73;font-size:9.5px}#eternaOverlayV159 .eternaV160MemoryNote span{color:#657d8a}",
       "#eternaOverlayV159 .eternaV160Sources{margin-top:11px;padding-top:9px;border-top:1px solid rgba(23,63,89,.10)}",
       "#eternaOverlayV159 .eternaV160SourcesBtn{display:inline-flex;align-items:center;gap:5px;min-height:31px;padding:5px 9px;border:1px solid #cfe3ec;border-radius:9px;background:#f7fbfd;color:#315d73;font:850 9.5px inherit;cursor:pointer;touch-action:manipulation}",
@@ -556,12 +567,90 @@
     [0,120,320,700,1300,1900].forEach(function(ms){setTimeout(enhanceLearningProgressMap,ms)})
   }
 
+
+  function courseIsConfigured(){
+    var o=overlay(),label=o&&o.querySelector("[data-et-course]");
+    var text=norm(label&&label.textContent);
+    return !!text&&text.indexOf("configura tu curso")<0
+  }
+
+  function setStatusDom(text,kind){
+    var o=overlay(),s=o&&o.querySelector("[data-et-status]"),d=o&&o.querySelector("[data-et-dot]");
+    if(s)s.textContent=text;
+    if(d)d.className="eternaV159Dot"+(kind?" "+kind:"")
+  }
+
+  function showEarlyYearsReady(c){
+    if(!c)return false;
+    var gate=c.querySelector(".eternaV159Gate");
+    if(!gate)return false;
+    var txt=norm(gate.textContent);
+    if(txt.indexOf("menores de 6")<0&&txt.indexOf("usa con un adulto en esta etapa")<0&&txt.indexOf("uso acompanado por familia")<0)return false;
+
+    var comp=composer();
+    if(comp)comp.style.display="block";
+    gate.className="eternaV160EarlyYearsReady";
+    gate.innerHTML=
+      '<span>ETAPA INFANTIL · USO ACOMPAÑADO</span>'+
+      '<h3>Podéis empezar ahora con un adulto</h3>'+
+      '<p>Para menores de 6 años, Eterna se usa junto a un padre, madre o tutor. Podéis escribir la pregunta juntos o usar el micrófono. Eterna seguirá limitada al aprendizaje escolar.</p>'+
+      '<div class="eternaV160EarlyYearsActions">'+
+        '<button type="button" class="eternaV160EarlyWrite" data-et-early-write>✏️ Empezar a escribir</button>'+
+        '<button type="button" class="eternaV160EarlyVoice" data-et-early-voice>🎙️ Preguntar por voz</button>'+
+      '</div>';
+
+    var write=gate.querySelector("[data-et-early-write]"),voiceBtn=gate.querySelector("[data-et-early-voice]");
+    if(write)write.onclick=function(){var i=overlay()&&overlay().querySelector("[data-et-input]");if(i)i.focus()};
+    if(voiceBtn)voiceBtn.onclick=function(){var b=overlay()&&overlay().querySelector("[data-et-mic]");if(b)b.click()};
+    setStatusDom("Eterna lista · uso acompañado por un adulto","ok");
+    return true
+  }
+
+  function repairHiddenStarter(c){
+    if(!c)return false;
+    var comp=composer(),starter=c.querySelector(".eternaV160Start");
+    if(!comp||!starter)return false;
+
+    var hidden=false;
+    try{hidden=getComputedStyle(comp).display==="none"}catch(e){hidden=comp.style.display==="none"}
+    if(!hidden)return false;
+
+    if(courseIsConfigured()){
+      /* Caso heredado del gate <6: al cambiar de modo, el starter sustituía el aviso pero el compositor seguía oculto. */
+      comp.style.display="block";
+      setStatusDom("Eterna lista · uso acompañado por un adulto","ok");
+      return true
+    }
+
+    if(starter.dataset.etNeedsCourseV16067==="1")return true;
+    starter.dataset.etNeedsCourseV16067="1";
+    starter.className="eternaV160NeedCourse";
+    starter.innerHTML=
+      '<h3>Primero configura el curso</h3>'+
+      '<p>Eterna necesita saber el curso y la comunidad autónoma para adaptar correctamente el nivel y el currículo. Después podrás escribir, hablar o enviar una foto.</p>'+
+      '<button type="button" data-et-reopen-setup>Configurar curso ahora</button>';
+    var b=starter.querySelector("[data-et-reopen-setup]");
+    if(b)b.onclick=function(){
+      try{
+        if(root.CocoEternaV160&&typeof root.CocoEternaV160.open==="function")root.CocoEternaV160.open()
+      }catch(e){}
+    };
+    setStatusDom("Falta configurar el curso","warn");
+    return true
+  }
+
+  function repairChatReadiness(c){
+    if(showEarlyYearsReady(c))return;
+    repairHiddenStarter(c)
+  }
+
   function normalizeConversation(){
     normalizeRaf=0;
     var o=overlay(),c=chat();if(!o||!c)return;
     ensureLiveState();
     normalizeHeaderStatus();
     ensureMemoryNote(c);
+    repairChatReadiness(c);
     restoreRememberedSources(c);
     c.querySelectorAll(".eternaV159Tag").forEach(function(tag){
       if(/^ayuda\s+\d/i.test(clean(tag.textContent)))tag.classList.add("eternaV160HiddenHelpTag")
@@ -1108,6 +1197,18 @@
           }
           startVoice();
           return
+        }
+        var modeAttempt=event.target&&event.target.closest?event.target.closest("#eternaOverlayV159 [data-et-changemode],#eternaOverlayV159 [data-et-mode],#eternaOverlayV159 [data-et-modechoice]"):null;
+        if(modeAttempt&&!courseIsConfigured()){
+          var currentChat=chat(),setup=currentChat&&currentChat.querySelector(".eternaV159Setup");
+          if(setup){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            setStatusDom("Primero configura el curso","warn");
+            try{setup.scrollIntoView({behavior:"smooth",block:"center"})}catch(e){}
+            var first=setup.querySelector("[data-et-year]");if(first)setTimeout(function(){try{first.focus()}catch(e){}},60);
+            return
+          }
         }
         var opener=event.target&&event.target.closest?event.target.closest("#eternaLauncherV159,.eternaLauncherCardV159,[data-et-changemode],[data-et-mode],[data-et-modechoice]"):null;
         if(opener){setTimeout(ensureOverlay,0);setTimeout(ensureOverlay,80);setTimeout(enforceSingleLineComposer,180);scheduleHeaderStatus()}
@@ -1891,3 +1992,5 @@ window.ETERNA_RELEASE_V16060=Object.freeze({
   preserves_v16058_legal_registry:true,
   extra_global_observer:false
 });
+
+window.ETERNA_RELEASE_V16067=Object.freeze({version:"160.67",chat_composer_repair:true,early_years_accompanied_chat:true,course_setup_mode_guard:true,premium_microphone_v2_preserved:true,legal_checkbox_fix_preserved:true,worker_unchanged:"160.4-legal1",sql_required:false,extra_global_observer:false});
