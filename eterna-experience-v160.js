@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.67 · chat infantil acompañado + curso protegido + micrófono premium
+/* ETERNA Experience v160.68 · controlador consolidado de lanzamiento + micrófono premium
  * Corrige el caso en que un gate/setup ocultaba el compositor y luego un cambio de modo dejaba Eterna sin campo de escritura.
  * Para menores de 6 años mantiene uso acompañado por adulto, pero permite escribir/voz en lugar de bloquear el chat.
  * Si falta configurar curso (6+), impide que cambiar de modo salte el formulario de configuración.
@@ -9,7 +9,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.67-chat-readiness";
+  var VERSION="160.68-consolidated-launch";
   var lastPedagogicalState=null;
   var voice=null;
   var voiceSendPending=false;
@@ -71,6 +71,8 @@
       "#eternaOverlayV159 .eternaV160VoiceActions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}",
       "#eternaOverlayV159 .eternaV160VoiceActions button{min-height:34px;padding:6px 9px;border-radius:10px;font:900 9.5px inherit;cursor:pointer;touch-action:manipulation}",
       "#eternaOverlayV159 .eternaV160VoiceFinish{border:0;background:#173f59;color:#fff}#eternaOverlayV159 .eternaV160VoiceCancel{border:1px solid #d3e7ef;background:#fff;color:#526f7f}",
+      "#eternaOverlayV159 .eternaV160RetryVerification{display:inline-flex;margin-top:10px;min-height:38px;padding:8px 12px;border:0;border-radius:11px;background:#173f59;color:#fff;font:900 10px inherit;cursor:pointer}",
+      "#eternaOverlayV159 .eternaV160EarlyYearsActions{display:flex;gap:8px;flex-wrap:wrap}#eternaOverlayV159 .eternaV160EarlyYearsActions button{min-height:42px;padding:9px 12px;border-radius:11px;font-weight:900;cursor:pointer}.eternaV160EarlyPhoto{border:1px solid #d3e7ef;background:#fff;color:#315d73}",
       "#eternaOverlayV159 .eternaV159Quick{opacity:.88}#eternaOverlayV159 .eternaV159Quick button{min-height:32px!important}",
       "#eternaOverlayV159 [data-et-name],#cocoApp .carnet .quien strong{text-transform:capitalize!important}",
       "#eternaOverlayV159 textarea[data-et-input]{white-space:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;resize:none!important}",
@@ -154,6 +156,11 @@
     var status=o.querySelector("[data-et-status]"),dot=o.querySelector("[data-et-dot]");
     if(!status)return;
     var text=norm(status.textContent);
+    if(text==="no se pudo verificar"||text==="quiero comprobarlo mejor antes de responderte"||text==="eterna esta revisando la respuesta"){
+      status.textContent="Eterna está revisando la respuesta";
+      if(dot)dot.className="eternaV159Dot warn";
+      return
+    }
     if(text==="respuesta verificada"||
        text==="eterna lista"||
        text==="eterna lista · apoyo escolar verificado"||
@@ -164,7 +171,7 @@
   }
 
   function scheduleHeaderStatus(){
-    [0,60,150,300].forEach(function(ms){setTimeout(normalizeHeaderStatus,ms)})
+    [0,140].forEach(function(ms){setTimeout(normalizeHeaderStatus,ms)})
   }
 
   function micIconMarkup(){
@@ -564,7 +571,7 @@
   }
 
   function scheduleLearningProgressMap(){
-    [0,120,320,700,1300,1900].forEach(function(ms){setTimeout(enhanceLearningProgressMap,ms)})
+    [0,260,900].forEach(function(ms){setTimeout(enhanceLearningProgressMap,ms)})
   }
 
 
@@ -593,16 +600,48 @@
     gate.innerHTML=
       '<span>ETAPA INFANTIL · USO ACOMPAÑADO</span>'+
       '<h3>Podéis empezar ahora con un adulto</h3>'+
-      '<p>Para menores de 6 años, Eterna se usa junto a un padre, madre o tutor. Podéis escribir la pregunta juntos o usar el micrófono. Eterna seguirá limitada al aprendizaje escolar.</p>'+
+      '<p>Para menores de 6 años, Eterna se utiliza junto a un padre, madre o tutor. Podéis escribir la pregunta juntos, hablar o hacer una foto. Eterna seguirá limitada al aprendizaje escolar.</p>'+
       '<div class="eternaV160EarlyYearsActions">'+
         '<button type="button" class="eternaV160EarlyWrite" data-et-early-write>✏️ Empezar a escribir</button>'+
         '<button type="button" class="eternaV160EarlyVoice" data-et-early-voice>🎙️ Preguntar por voz</button>'+
+        '<button type="button" class="eternaV160EarlyPhoto" data-et-early-photo>📷 Hacer una foto</button>'+
       '</div>';
 
-    var write=gate.querySelector("[data-et-early-write]"),voiceBtn=gate.querySelector("[data-et-early-voice]");
+    var write=gate.querySelector("[data-et-early-write]"),voiceBtn=gate.querySelector("[data-et-early-voice]"),photoBtn=gate.querySelector("[data-et-early-photo]");
     if(write)write.onclick=function(){var i=overlay()&&overlay().querySelector("[data-et-input]");if(i)i.focus()};
     if(voiceBtn)voiceBtn.onclick=function(){var b=overlay()&&overlay().querySelector("[data-et-mic]");if(b)b.click()};
+    if(photoBtn)photoBtn.onclick=function(){var b=overlay()&&overlay().querySelector("[data-et-camera]");if(b)b.click()};
     setStatusDom("Eterna lista · uso acompañado por un adulto","ok");
+    return true
+  }
+
+  function renderUnder6CourseSetup(c){
+    if(!c||courseIsConfigured())return false;
+    var gate=c.querySelector(".eternaV159Gate");
+    if(!gate)return false;
+    var txt=norm(gate.textContent);
+    if(txt.indexOf("menores de 6")<0&&txt.indexOf("usa con un adulto en esta etapa")<0)return false;
+    if(gate.dataset.etCourseSetupV16068==="1")return true;
+    gate.dataset.etCourseSetupV16068="1";
+    var ccaa=["Andalucía","Aragón","Asturias","Illes Balears","Canarias","Cantabria","Castilla-La Mancha","Castilla y León","Cataluña","Comunitat Valenciana","Extremadura","Galicia","Comunidad de Madrid","Región de Murcia","Navarra","País Vasco","La Rioja","Ceuta","Melilla"];
+    gate.className="eternaV159Setup eternaV160CourseFallback";
+    gate.innerHTML='<h3>Configura su contexto escolar</h3><p>Antes de empezar, dinos el curso y la comunidad autónoma. Así Eterna adapta el nivel y utiliza el currículo adecuado.</p><label>Curso</label><select data-et-fallback-year><option value="">Selecciona</option><option>Infantil · 3 años</option><option>Infantil · 4 años</option><option>Infantil · 5 años</option></select><label>Comunidad autónoma</label><select data-et-fallback-ccaa><option value="">Selecciona</option>'+ccaa.map(function(x){return'<option>'+esc(x)+'</option>'}).join('')+'</select><div class="eternaV159Buttons" style="margin-top:14px"><button type="button" class="eternaV159Primary" data-et-fallback-save>Guardar y empezar</button></div><div data-et-fallback-msg style="margin-top:8px;font-size:10px;font-weight:800;color:#a14a3d"></div>';
+    var save=gate.querySelector("[data-et-fallback-save]");
+    save.onclick=async function(){
+      var year=gate.querySelector("[data-et-fallback-year]").value,community=gate.querySelector("[data-et-fallback-ccaa]").value,msg=gate.querySelector("[data-et-fallback-msg]");
+      if(!year||!community){msg.textContent="Selecciona curso y comunidad autónoma.";return}
+      save.disabled=true;
+      try{
+        var conf=root.COCO_CONFIG||{},cli=root.__COCO_SUPABASE_CLIENT||(root.supabase&&root.supabase.createClient&&root.supabase.createClient(conf.url,conf.clave,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}));
+        if(!cli)throw new Error("NO_CLIENT");root.__COCO_SUPABASE_CLIENT=cli;
+        var sr=await cli.auth.getSession(),ss=sr&&sr.data&&sr.data.session;if(!ss)throw new Error("NO_SESSION");
+        var wr=await cli.from("eterna_student_profiles").upsert({user_id:ss.user.id,stage:"infantil",school_year:year,autonomous_community:community,preferred_language:"es",updated_at:new Date().toISOString()},{onConflict:"user_id"});if(wr&&wr.error)throw wr.error;
+        var label=overlay()&&overlay().querySelector("[data-et-course]");if(label)label.textContent=year;
+        gate.className="eternaV159Gate";gate.removeAttribute("data-et-course-setup-v16068");gate.innerHTML='<h3>Eterna se usa con un adulto en esta etapa</h3><p>Para menores de 6 años, Coco mantiene una experiencia guiada por la familia.</p>';
+        showEarlyYearsReady(c)
+      }catch(e){save.disabled=false;msg.textContent="No se pudo guardar el contexto escolar. Inténtalo de nuevo."}
+    };
+    setStatusDom("Falta configurar el curso","warn");
     return true
   }
 
@@ -640,9 +679,27 @@
   }
 
   function repairChatReadiness(c){
+    if(!courseIsConfigured()){if(renderUnder6CourseSetup(c))return;repairHiddenStarter(c);return}
     if(showEarlyYearsReady(c))return;
     repairHiddenStarter(c)
   }
+
+  function enhanceRetryableVerification(c){
+    if(!c)return;
+    var rows=c.querySelectorAll(".eternaV159Msg.assistant");
+    rows.forEach(function(row){
+      if(row.querySelector("[data-et-retry-verification]"))return;
+      var bubble=row.querySelector(".eternaV159Bubble"),txt=norm(bubble&&bubble.textContent);
+      if(txt.indexOf("problema temporal para comprobar")<0)return;
+      var user=findPreviousUser(row),userBubble=user&&user.querySelector(".eternaV159Bubble"),question=clean(userBubble&&userBubble.textContent);
+      if(!question)return;
+      var b=document.createElement("button");b.type="button";b.setAttribute("data-et-retry-verification","");b.className="eternaV160RetryVerification";b.textContent="Intentar de nuevo";
+      b.onclick=function(){var o=overlay(),i=o&&o.querySelector("[data-et-input]"),send=o&&o.querySelector("[data-et-send]");if(!i||!send)return;i.value=question;i.dispatchEvent(new Event("input",{bubbles:true}));send.click()};
+      bubble.appendChild(b)
+    })
+  }
+  function perfMark(name){try{performance.mark(name)}catch(e){}}
+  function perfMeasure(name,start,end){try{performance.measure(name,start,end)}catch(e){}}
 
   function normalizeConversation(){
     normalizeRaf=0;
@@ -652,6 +709,7 @@
     ensureMemoryNote(c);
     repairChatReadiness(c);
     restoreRememberedSources(c);
+    enhanceRetryableVerification(c);
     c.querySelectorAll(".eternaV159Tag").forEach(function(tag){
       if(/^ayuda\s+\d/i.test(clean(tag.textContent)))tag.classList.add("eternaV160HiddenHelpTag")
     });
@@ -1993,4 +2051,434 @@ window.ETERNA_RELEASE_V16060=Object.freeze({
   extra_global_observer:false
 });
 
-window.ETERNA_RELEASE_V16067=Object.freeze({version:"160.67",chat_composer_repair:true,early_years_accompanied_chat:true,course_setup_mode_guard:true,premium_microphone_v2_preserved:true,legal_checkbox_fix_preserved:true,worker_unchanged:"160.4-legal1",sql_required:false,extra_global_observer:false});
+window.ETERNA_RELEASE_V16068=Object.freeze({version:"160.68",consolidated_controller:true,chat_composer_repair:true,early_years_accompanied_chat:true,early_years_photo:true,course_setup_required:true,retryable_verification_ui:true,premium_microphone_v2_preserved:true,legal_checkbox_fix_preserved:true,worker_required:"160.5-launch1",sql_required:false,extra_global_observer:false});
+
+/* ETERNA v160.68 · Zona Familiar consolidada en eterna-experience
+ * Oculta el inicio independiente del trial mientras se comprueba o falta autorización.
+ * Si la autorización está pendiente, la integra dentro de Acceso y planes.
+ * El único CTA pendiente es “Autorizar y empezar prueba gratis”.
+ * Cuando ya está autorizada, el inicio de trial vuelve a estar disponible y destacado.
+ * Sin MutationObserver nuevo. No modifica Worker, Stripe, Supabase ni memoria pedagógica.
+ */
+(function(root){
+  "use strict";
+  if(root.__ETERNA_FAMILY_EMBEDDED_V16068__)return;
+  root.__ETERNA_FAMILY_EMBEDDED_V16068__=true;
+
+  var VERSION="160.68-family-embedded";
+  var retryTimers=[];
+
+  function clean(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
+  function capName(v){
+    var s=clean(v);
+    if(!s)return"Alumno Coco";
+    return s.charAt(0).toLocaleUpperCase("es-ES")+s.slice(1)
+  }
+  function clamp01(n){n=Number(n);return isFinite(n)?Math.max(0,Math.min(1,n)):0}
+  function percent(n){return Math.round(clamp01(n)*100)}
+  function dateES(value){
+    try{return new Intl.DateTimeFormat("es-ES",{day:"2-digit",month:"long",year:"numeric"}).format(value?new Date(value):new Date())}
+    catch(e){return new Date().toLocaleDateString("es-ES")}
+  }
+  function strategyName(k){
+    return({socratic_question:"preguntas guiadas",worked_example:"ejemplos similares",analogy:"analogías",visual_structure:"apoyo visual y estructura",retrieval_practice:"preguntas de recuerdo",step_by_step:"pasos cortos",error_analysis:"análisis de errores",direct_explanation:"explicación directa"})[k]||k
+  }
+  function endpoint(path){
+    var c=root.COCO_CONFIG||{},base=String(c.eternaEndpoint||"").replace(/\/+$/,""),p=String(path||"");
+    return base?base+(p.charAt(0)==="/"?p:"/"+p):""
+  }
+  function getClient(){
+    if(root.__COCO_SUPABASE_CLIENT)return root.__COCO_SUPABASE_CLIENT;
+    var c=root.COCO_CONFIG||{};
+    if(root.supabase&&root.supabase.createClient&&c.url&&c.clave){
+      try{return root.__COCO_SUPABASE_CLIENT=(root.supabase.createClient(c.url,c.clave,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}))}catch(e){}
+    }
+    return null
+  }
+  async function getSession(){
+    var c=getClient();if(!c||!c.auth)return null;
+    try{var r=await c.auth.getSession();return r&&r.data?r.data.session:null}catch(e){return null}
+  }
+  async function api(path,options){
+    var url=endpoint(path);if(!url)throw new Error("ETERNA_ENDPOINT_NOT_CONFIGURED");
+    var s=await getSession(),headers=Object.assign({},options&&options.headers||{});
+    if(s&&s.access_token)headers.Authorization="Bearer "+s.access_token;
+    return fetch(url,Object.assign({},options||{},{headers:headers}))
+  }
+
+  function injectStyles(){
+    if(document.getElementById("eterna-family-v16066-css"))return;
+    var s=document.createElement("style");s.id="eterna-family-v16066-css";
+    s.textContent=[
+      "#cocoApp .eternaV16061SubscriptionTop{position:relative;margin:0 0 16px;padding:16px;border:2px solid #f0d09f;border-radius:20px;background:linear-gradient(180deg,#fffaf0,#fff5e5);box-shadow:0 4px 0 rgba(235,201,145,.38)}",
+      "#cocoApp .eternaV16061SubscriptionHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}",
+      "#cocoApp .eternaV16061SubscriptionHead span{display:inline-flex;padding:5px 9px;border-radius:999px;background:#ef6c05;color:#fff;font-size:9px;font-weight:900;letter-spacing:.07em}",
+      "#cocoApp .eternaV16061SubscriptionHead h4{width:100%;margin:0;color:#173f59;font-size:20px;line-height:1.08}",
+      "#cocoApp .eternaV16061SubscriptionHead p{margin:0;color:#6b7880;font-size:10px;font-weight:750;line-height:1.45}",
+      "#cocoApp .eternaV16061SubscriptionTop>.eternaV160TrialActive,#cocoApp .eternaV16061SubscriptionTop>.eternaV160UpgradeWrap,#cocoApp .eternaV16061SubscriptionTop>.eternaV159Buttons{margin-left:0!important;margin-right:0!important}",
+      "#cocoApp .eternaV16061TesterNote{margin:0 0 10px;padding:11px 13px;border:1px solid #ffd39d;border-radius:14px;background:#fff8e9;color:#173f59}",
+      "#cocoApp .eternaV16061TesterNote b{display:block;font-size:13px}.eternaV16061TesterNote span{display:block;margin-top:3px;color:#6f7f88;font-size:10px;font-weight:750}",
+      "#cocoApp .eternaLegalV16058[data-et-family-legal-end='1']{margin-top:18px!important}",
+      "#cocoApp .eternaV16061SubscriptionTop .eternaLegalV16058[data-et-family-legal-inline='1']{margin:12px 0!important;background:#fff!important;border-color:#cfe3ec!important;box-shadow:0 2px 0 rgba(200,220,230,.42)!important}",
+      "#cocoApp .eternaV16061SubscriptionTop .eternaLegalV16058[data-et-family-legal-inline='1'] .eternaLegalV16058Head h4{font-size:17px!important}",
+      "#cocoApp .eternaV16061SubscriptionTop [data-et-trial][data-hidden-by-legal='1']{display:none!important}",
+      "#cocoApp .eternaV16061SubscriptionTop[data-et-legal-state='checking'] [data-et-trial],#cocoApp .eternaV16061SubscriptionTop[data-et-legal-state='pending'] [data-et-trial]{display:none!important}",
+      "#cocoApp .eternaV16061SubscriptionTop [data-et-trial]{min-height:54px!important;padding:12px 20px!important;border:0!important;border-radius:14px!important;background:linear-gradient(180deg,#f47b12,#e66408)!important;color:#fff!important;font-weight:950!important;font-size:12px!important;box-shadow:0 4px 0 #b64e05,0 10px 22px rgba(230,100,8,.18)!important;cursor:pointer!important}",
+      "#cocoApp .eternaV16061SubscriptionTop [data-et-trial]:hover{transform:translateY(-1px)!important;filter:brightness(1.03)!important}",
+      "#cocoApp .eternaV16061SubscriptionTop .eternaLegalV16058[data-et-family-legal-inline='1'] [data-legal-accept]{min-height:56px!important;padding:12px 18px!important;border:0!important;border-radius:14px!important;background:linear-gradient(180deg,#f47b12,#e66408)!important;color:#fff!important;font-weight:950!important;font-size:12px!important;box-shadow:0 4px 0 #b64e05,0 10px 22px rgba(230,100,8,.18)!important;cursor:pointer!important}",
+      "#cocoApp .eternaV16066LegalChecking{margin:10px 0;padding:11px 13px;border:1px solid #d6e8ef;border-radius:13px;background:#f7fbfd;color:#5f7a88;font-size:10px;font-weight:800;line-height:1.4}",
+
+      "@media(max-width:640px){#cocoApp .eternaV16061SubscriptionTop{padding:13px;border-radius:18px}}"
+    ].join("");
+    document.head.appendChild(s)
+  }
+
+  function familyCard(){return document.querySelector("#cocoApp .eternaV159FamilyCard")}
+
+  function directChildren(card,className){
+    return Array.prototype.filter.call(card&&card.children||[],function(n){return n.classList&&n.classList.contains(className)})
+  }
+
+  async function checkout(plan,button){
+    var original=button.textContent;
+    button.disabled=true;button.textContent="Abriendo pago…";
+    try{
+      var r=await api("/v1/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan})});
+      var data=await r.json().catch(function(){return{}});
+      if(!r.ok)throw new Error(data.error||"CHECKOUT");
+      if(!data.url)throw new Error("CHECKOUT_URL");
+      location.href=data.url
+    }catch(e){
+      button.disabled=false;button.textContent=original;
+      alert("No se pudo abrir la pasarela de pago. Inténtalo de nuevo.")
+    }
+  }
+
+  function bindCreatedPlanButtons(rootNode){
+    if(!rootNode)return;
+    var m=rootNode.querySelector("[data-et-month][data-v16061-created]");
+    var y=rootNode.querySelector("[data-et-year][data-v16061-created]");
+    if(m&&!m.dataset.boundV16061){m.dataset.boundV16061="1";m.onclick=function(){checkout("monthly",m)}}
+    if(y&&!y.dataset.boundV16061){y.dataset.boundV16061="1";y.onclick=function(){checkout("annual",y)}}
+  }
+
+  function createTesterPlans(){
+    var frag=document.createElement("div");
+    frag.innerHTML=
+      '<div class="eternaV16061TesterNote"><b>⭐ Acceso de prueba activo</b><span>Puedes contratar Eterna en cualquier momento desde Zona Familiar.</span></div>'+
+      '<div class="eternaV160UpgradeWrap"><div class="eternaV160UpgradeHead"><div><b>Elige tu plan cuando quieras</b><span>La suscripción se activa al completar el pago. Pago procesado por Stripe.</span></div></div>'+
+        '<div class="eternaV160PaidGrid">'+
+          '<article class="eternaV160PaidPlan"><b>Plan mensual</b><strong>7,99 € <small>/mes</small></strong><span>Flexibilidad mes a mes.</span><button type="button" data-et-month data-v16061-created="1">Contratar mensual</button></article>'+
+          '<article class="eternaV160PaidPlan is-annual"><span class="badge">Ahorra aprox. 17%</span><b>Plan anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses con el mejor precio.</span><button type="button" data-et-year data-v16061-created="1">Contratar anual</button></article>'+
+        '</div>'+
+      '</div>';
+    return frag
+  }
+
+  function moveSubscriptionFirst(card){
+    if(!card)return false;
+    var existing=directChildren(card,"eternaV16061SubscriptionTop")[0];
+    if(existing){bindCreatedPlanButtons(existing);return true}
+
+    var status=card.querySelector(".eternaV159FamilyStatus"),statusText=clean(status&&status.textContent).toLowerCase();
+    var trial=directChildren(card,"eternaV160TrialActive")[0]||null;
+    var upgrade=directChildren(card,"eternaV160UpgradeWrap")[0]||null;
+    var paidButtons=directChildren(card,"eternaV159Buttons").filter(function(n){
+      return !!n.querySelector("[data-et-open],[data-et-portal]")
+    })[0]||null;
+
+    var wrap=document.createElement("section");
+    wrap.className="eternaV16061SubscriptionTop";
+    wrap.setAttribute("aria-label","Suscripción Eterna");
+    wrap.dataset.etLegalState="checking";
+    wrap.innerHTML='<div class="eternaV16061SubscriptionHead"><span>SUSCRIPCIÓN ETERNA</span><h4>Acceso y planes</h4><p>La suscripción y su gestión están siempre disponibles al entrar en Zona Familiar.</p></div>';
+
+    if(trial)wrap.appendChild(trial);
+    if(upgrade)wrap.appendChild(upgrade);
+
+    if(!trial&&!upgrade&&/beta de prueba/.test(statusText)){
+      var tester=createTesterPlans();
+      while(tester.firstChild)wrap.appendChild(tester.firstChild)
+    }else if(!trial&&!upgrade&&paidButtons){
+      var note=document.createElement("div");note.className="eternaV16061TesterNote";
+      note.innerHTML="<b>✓ Suscripción activa</b><span>Puedes abrir Eterna o gestionar tu suscripción desde aquí.</span>";
+      wrap.appendChild(note);wrap.appendChild(paidButtons)
+    }else if(!trial&&!upgrade&&!paidButtons&&status&&status.classList.contains("active")){
+      var active=document.createElement("div");active.className="eternaV16061TesterNote";
+      active.innerHTML="<b>✓ Acceso activo</b><span>Tu acceso a Eterna está activo.</span>";wrap.appendChild(active)
+    }
+
+    card.insertBefore(wrap,card.firstChild);
+    bindCreatedPlanButtons(wrap);
+    return true
+  }
+
+  function legalCheckingNote(subscription,show){
+    if(!subscription)return;
+    var note=subscription.querySelector(".eternaV16066LegalChecking");
+    if(show&&!note){
+      note=document.createElement("div");
+      note.className="eternaV16066LegalChecking";
+      note.textContent="Comprobando la autorización necesaria para comenzar la prueba…";
+      var upgrade=subscription.querySelector(".eternaV160UpgradeWrap");
+      subscription.insertBefore(note,upgrade||null)
+    }else if(!show&&note)note.remove()
+  }
+
+  function placeLegal(card){
+    if(!card)return false;
+    var subscription=card.querySelector(".eternaV16061SubscriptionTop");
+    var trialButton=subscription&&subscription.querySelector("[data-et-trial]");
+    var nodes=Array.prototype.slice.call(card.querySelectorAll(".eternaLegalV16058"));
+
+    if(!nodes.length){
+      if(subscription){
+        subscription.dataset.etLegalState="checking";
+        legalCheckingNote(subscription,true)
+      }
+      return false
+    }
+
+    legalCheckingNote(subscription,false);
+    var keep=nodes.filter(function(n){return n.classList.contains("is-ok")})[0]||nodes[nodes.length-1];
+    nodes.forEach(function(n){if(n!==keep)n.remove()});
+
+    if(!keep.classList.contains("is-ok")&&subscription){
+      subscription.dataset.etLegalState="pending";
+      keep.dataset.etFamilyLegalInline="1";
+      keep.removeAttribute("data-et-family-legal-end");
+
+      var upgrade=subscription.querySelector(".eternaV160UpgradeWrap");
+      subscription.insertBefore(keep,upgrade||null);
+
+      var accept=keep.querySelector("[data-legal-accept]");
+      if(accept){
+        accept.textContent="Autorizar y empezar prueba gratis";
+        accept.setAttribute("aria-label","Autorizar Eterna y empezar la prueba gratuita de 7 días")
+      }
+
+      if(trialButton){
+        trialButton.dataset.hiddenByLegal="1";
+        trialButton.setAttribute("aria-hidden","true")
+      }
+    }else{
+      if(subscription)subscription.dataset.etLegalState="accepted";
+      keep.removeAttribute("data-et-family-legal-inline");
+      keep.dataset.etFamilyLegalEnd="1";
+      card.appendChild(keep);
+
+      if(trialButton&&trialButton.dataset.hiddenByLegal==="1"){
+        delete trialButton.dataset.hiddenByLegal;
+        trialButton.removeAttribute("aria-hidden")
+      }
+      if(trialButton)trialButton.textContent="Empezar prueba gratis · 7 días"
+    }
+    return true
+  }
+
+  function applyFamilyLayout(){
+    injectStyles();
+    var card=familyCard();if(!card)return false;
+    moveSubscriptionFirst(card);
+    placeLegal(card);
+    return true
+  }
+
+  function clearRetries(){retryTimers.forEach(function(id){clearTimeout(id)});retryTimers=[]}
+  function scheduleFamilyLayout(){
+    clearRetries();
+    [0,220].forEach(function(ms){
+      retryTimers.push(setTimeout(function(){applyFamilyLayout()},ms))
+    })
+  }
+
+  function progressSnapshot(exportData,strategies){
+    exportData=exportData||{};
+    var concepts=Array.isArray(exportData.student_concept_memory)?exportData.student_concept_memory.slice():[];
+    var strongest=concepts.slice().sort(function(a,b){return Number(b.mastery_score||0)-Number(a.mastery_score||0)}).slice(0,3);
+    var reinforce=concepts.slice().sort(function(a,b){return Number(a.mastery_score||0)-Number(b.mastery_score||0)}).slice(0,3);
+    var subjects=[],seen={};
+    concepts.forEach(function(x){var s=clean(x.subject);if(s&&!seen[s]){seen[s]=1;subjects.push(s)}});
+    if(Array.isArray(exportData.mastery))exportData.mastery.forEach(function(x){var s=x&&x.eterna_concepts&&x.eterna_concepts.subject;if(s&&!seen[s]){seen[s]=1;subjects.push(s)}});
+    var attempts=Array.isArray(exportData.attempts)?exportData.attempts.length:concepts.reduce(function(sum,x){return sum+Number(x.attempts||0)},0);
+    var useful=(strategies||[]).filter(function(x){return Number(x.evidence_count||0)>=2}).slice(0,3);
+    return{concepts:concepts,strategies:useful,strongest:strongest,reinforce:reinforce,subjects:subjects,attempts:attempts}
+  }
+
+  async function reportSupport(){
+    var s=await getSession(),c=getClient();
+    var out={name:"Alumno Coco",strategies:[]};
+    if(!s||!s.user||!c)return out;
+    try{
+      var results=await Promise.allSettled([
+        c.from("perfiles").select("apodo").eq("id",s.user.id).maybeSingle(),
+        c.from("eterna_learning_strategy_memory").select("strategy_key,evidence_count,success_score").eq("user_id",s.user.id).order("success_score",{ascending:false}).limit(12)
+      ]);
+      if(results[0].status==="fulfilled"&&results[0].value&&results[0].value.data&&results[0].value.data.apodo)out.name=capName(results[0].value.data.apodo);
+      else if(s.user.user_metadata&&s.user.user_metadata.apodo)out.name=capName(s.user.user_metadata.apodo);
+      if(results[1].status==="fulfilled"&&results[1].value&&Array.isArray(results[1].value.data))out.strategies=results[1].value.data
+    }catch(e){
+      if(s.user.user_metadata&&s.user.user_metadata.apodo)out.name=capName(s.user.user_metadata.apodo)
+    }
+    return out
+  }
+
+  function reportHtml(exportData,support){
+    exportData=exportData||{};support=support||{};
+    var s=progressSnapshot(exportData,support.strategies||[]),name=capName(support.name||"Alumno Coco");
+    var profile=exportData.student_profile||{},course=profile.school_year||"Curso no indicado",community=profile.autonomous_community||"";
+    var strongest=s.strongest,reinforce=s.reinforce,strategies=s.strategies;
+    var summary=s.concepts.length?"Según las actividades realizadas, Eterna ya dispone de algunas señales para orientar la práctica. Estas observaciones pueden cambiar a medida que el alumno siga trabajando.":"Todavía hay pocas actividades para elaborar conclusiones sobre el progreso. Este informe irá ganando detalle con la práctica.";
+    var recommendation=reinforce.length?"Una buena próxima práctica sería trabajar "+clean(reinforce[0].concept_label||"el concepto que necesita más refuerzo")+" con pasos cortos y una comprobación al final.":"Una buena próxima práctica sería realizar algunas actividades variadas para que Eterna pueda observar qué conceptos conviene reforzar.";
+    function list(items,formatter,empty){return items.length?"<ul>"+items.map(function(x){return"<li>"+formatter(x)+"</li>"}).join("")+"</ul>":"<p>"+empty+"</p>"}
+    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Progreso de Eterna · '+esc(name)+'</title><style>'+
+      'body{margin:0;background:#eef7fb;color:#173f59;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.page{max-width:850px;margin:28px auto;background:#fff;border-radius:24px;padding:34px;box-shadow:0 18px 50px rgba(23,63,89,.12)}.brand{color:#2a88ad;font-weight:850;font-size:12px;letter-spacing:.08em}.title{font-size:36px;margin:8px 0 2px}.meta{color:#667f8d;margin-bottom:24px}.meta strong{color:#173f59}.summary{padding:16px;border-radius:16px;background:#eef9fd}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.box{border:1px solid #d8ebf3;border-radius:16px;padding:15px}.box h2{font-size:16px;margin:0 0 8px}.box p,.box li{font-size:14px;line-height:1.5}.recommend{margin-top:16px;padding:16px;border-radius:16px;background:#fff6e8;border:1px solid #ffddb0}.foot{margin-top:22px;color:#718793;font-size:11px;line-height:1.45}.actions{margin:18px 0}.actions button{border:0;border-radius:12px;background:#173f59;color:#fff;padding:10px 14px;font-weight:800;cursor:pointer}@media(max-width:650px){.page{margin:0;border-radius:0;padding:22px}.grid{grid-template-columns:1fr}.title{font-size:30px}}@media print{body{background:#fff}.page{box-shadow:none;margin:0;max-width:none}.actions{display:none}}'+
+      '</style></head><body><main class="page"><div class="brand">COCO EN FORMA · ETERNA</div><h1 class="title">Progreso de Eterna</h1><div class="meta"><strong>'+esc(name)+'</strong> · '+esc(course)+(community?" · "+esc(community):"")+'<br>Informe del '+esc(dateES())+'</div>'+
+      '<section class="summary"><strong>Resumen</strong><p>'+esc(summary)+'</p></section><div class="grid">'+
+      '<section class="box"><h2>Lo que está practicando</h2>'+list(s.subjects,function(x){return esc(x)},"Todavía no hay suficiente actividad para resumir las materias practicadas.")+'</section>'+
+      '<section class="box"><h2>Lo que parece dominar mejor</h2>'+list(strongest,function(x){return esc(x.concept_label)+" · "+percent(x.mastery_score)+"% de dominio estimado"},"Todavía no hay suficientes señales para destacarlo.")+'</section>'+
+      '<section class="box"><h2>Lo que conviene seguir practicando</h2>'+list(reinforce,function(x){return esc(x.concept_label)},"Todavía no hay suficientes señales para recomendar un refuerzo concreto.")+'</section>'+
+      '<section class="box"><h2>Formas de ayuda que parecen funcionar mejor</h2>'+list(strategies,function(x){return esc(strategyName(x.strategy_key))+" · "+Number(x.evidence_count||0)+" evidencias"},"Eterna seguirá probando distintas formas de ayuda.")+'</section>'+
+      '<section class="box"><h2>Actividad</h2><p>Conceptos con señales: <strong>'+s.concepts.length+'</strong><br>Intentos o señales registradas: <strong>'+s.attempts+'</strong></p></section>'+
+      '<section class="box"><h2>Cómo interpretar este informe</h2><p>Las observaciones expresan tendencias de las actividades realizadas hasta ahora. No describen de forma permanente al alumno.</p></section>'+
+      '</div><section class="recommend"><strong>Recomendación</strong><p>'+esc(recommendation)+'</p></section><div class="actions"><button onclick="window.print()">Imprimir o guardar como PDF</button></div><div class="foot">Eterna utiliza expresiones como “parece ayudarle”, “hasta ahora” y “según las actividades realizadas”. Este informe es pedagógico y orientativo; no constituye una evaluación psicológica, médica ni diagnóstica.</div></main></body></html>'
+  }
+
+  async function exportReport(button){
+    var original=button.textContent,touch=/iPad|iPhone|Android/i.test(navigator.userAgent||"")||navigator.maxTouchPoints>1,preview=null;
+    if(!touch)try{preview=window.open("","_blank")}catch(e){}
+    button.disabled=true;button.textContent="Preparando informe…";
+    try{
+      var both=await Promise.all([api("/v1/export",{method:"GET"}),reportSupport()]);
+      var r=both[0],support=both[1],d=await r.json().catch(function(){return{}});
+      if(!r.ok)throw new Error(d.error||"EXPORT");
+      var html=reportHtml(d,support),filename="progreso-eterna-"+new Date().toISOString().slice(0,10)+".html";
+      var blob=new Blob([html],{type:"text/html;charset=utf-8"}),file=null;
+      try{file=new File([blob],filename,{type:"text/html"})}catch(e){}
+      if(touch&&file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
+        try{await navigator.share({title:"Progreso de Eterna",text:"Informe de progreso pedagógico de Eterna.",files:[file]});button.textContent="Informe compartido ✓"}
+        catch(shareErr){if(shareErr&&shareErr.name!=="AbortError")throw shareErr;button.textContent="Listo"}
+      }else if(preview&&!preview.closed){
+        preview.document.open();preview.document.write(html);preview.document.close();button.textContent="Informe abierto ✓"
+      }else{
+        var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},60000);button.textContent="Informe descargado ✓"
+      }
+      setTimeout(function(){button.textContent=original;button.disabled=false},1400)
+    }catch(e){
+      if(preview&&!preview.closed)preview.close();
+      button.disabled=false;button.textContent=original;
+      alert("No se pudo preparar el informe de progreso de Eterna.")
+    }
+  }
+
+  function install(){
+    injectStyles();
+    document.addEventListener("click",function(event){
+      var target=event.target&&event.target.closest?event.target.closest("[data-et-export]"):null;
+      if(target){
+        event.preventDefault();event.stopImmediatePropagation();
+        exportReport(target);return
+      }
+      var family=event.target&&event.target.closest?event.target.closest(".cocoFamiliaBtn,[data-family-enter],[data-et-trial],[data-et-delete],[data-legal-accept],[data-legal-withdraw]"):null;
+      if(family)scheduleFamilyLayout()
+    },true);
+    root.ETERNA_FAMILY_V16068=Object.freeze({
+      version:VERSION,
+      subscription_first:true,
+      legal_after_strength_map:true,
+      legal_dedupe:true,
+      capitalized_report_name:true,
+      performance_optimized:true,
+      pending_legal_inline_with_trial:true,
+      trial_hidden_while_legal_checking:true,
+      trial_button_hidden_until_authorized:true,
+      prominent_trial_cta:true,
+      refresh:applyFamilyLayout,
+      schedule:scheduleFamilyLayout,
+      extra_mutation_observer:false,
+      worker_unchanged:"160.4-legal1"
+    })
+  }
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});else install()
+})(window);
+
+
+
+/* ETERNA v160.68 · STATE MACHINE DE LANZAMIENTO
+ * Sustituye la cadena externa onboarding/family para el funnel Eterna.
+ * Estados: SIN_CUENTA → EMAIL_PENDIENTE → EMAIL_CONFIRMADO → PIN → LEGAL → TRIAL → CURSO → LISTA.
+ * No usa polling global ni MutationObserver global.
+ */
+(function(root){
+  "use strict";
+  if(root.__ETERNA_LAUNCH_STATE_V16068__)return;root.__ETERNA_LAUNCH_STATE_V16068__=true;
+  var INTENT="coco_eterna_launch_intent_v16068",PINPASS="coco_eterna_pin_pass_v16068",SCHOOL="coco_eterna_school_v16068",LAST_UID="coco_eterna_last_uid_v16068";
+  var INTENT_TTL=24*60*60*1000,currentModal=null,running=false,authPatched=false;
+  var CCAA=["Andalucía","Aragón","Asturias","Illes Balears","Canarias","Cantabria","Castilla-La Mancha","Castilla y León","Cataluña","Comunitat Valenciana","Extremadura","Galicia","Comunidad de Madrid","Región de Murcia","Navarra","País Vasco","La Rioja","Ceuta","Melilla"];
+  var YEARS={infantil:["Infantil · 3 años","Infantil · 4 años","Infantil · 5 años"],primaria:["1º de Primaria","2º de Primaria","3º de Primaria","4º de Primaria","5º de Primaria","6º de Primaria"],eso:["1º de ESO","2º de ESO","3º de ESO","4º de ESO"],bachillerato:["1º de Bachillerato","2º de Bachillerato"]};
+  function clean(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
+  function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
+  function cfg(){return root.COCO_CONFIG||{}}
+  function endpoint(p){var b=String(cfg().eternaEndpoint||"").replace(/\/+$/,"");return b?b+(String(p).charAt(0)==="/"?p:"/"+p):""}
+  function client(){if(root.__COCO_SUPABASE_CLIENT)return root.__COCO_SUPABASE_CLIENT;var c=cfg();try{if(root.supabase&&root.supabase.createClient&&c.url&&c.clave)return root.__COCO_SUPABASE_CLIENT=root.supabase.createClient(c.url,c.clave,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}catch(e){}return null}
+  async function session(){var c=client();if(!c)return null;try{var r=await c.auth.getSession();return r&&r.data&&r.data.session||null}catch(e){return null}}
+  function setIntent(source){try{localStorage.setItem(INTENT,JSON.stringify({at:Date.now(),source:source||"web"}));localStorage.removeItem("coco_eterna_resume_after_auth_v1603")}catch(e){}}
+  function goCreateAccount(){try{if(root.CocoEternaV160&&typeof root.CocoEternaV160.close==="function")root.CocoEternaV160.close()}catch(e){}var area=document.querySelector("#cocoApp .loginCard")||document.getElementById("cocoApp");if(!area)return false;var controls=area.querySelectorAll("button,a,[role='button']");for(var i=0;i<controls.length;i++){if(/^crear\s+cuenta$/i.test(clean(controls[i].textContent))){try{controls[i].click();return true}catch(e){}}}return false}
+  function intent(){try{var d=JSON.parse(localStorage.getItem(INTENT)||"null");if(!d||!d.at||Date.now()-d.at>INTENT_TTL){localStorage.removeItem(INTENT);return null}return d}catch(e){return null}}
+  function pinPassKey(uid){return PINPASS+":"+String(uid||"")}
+  function syncUserBoundary(s){var uid=s&&s.user&&s.user.id?String(s.user.id):"";if(!uid)return;try{var prev=localStorage.getItem(LAST_UID)||"";if(prev&&prev!==uid)localStorage.removeItem("coco_pin_familia");localStorage.setItem(LAST_UID,uid)}catch(e){}}
+  function clearIntent(){try{localStorage.removeItem(INTENT);localStorage.removeItem("coco_eterna_resume_after_auth_v1603")}catch(e){}}
+  function emailVerified(s){var u=s&&s.user;return !!(u&&(u.email_confirmed_at||u.confirmed_at||u.user_metadata&&u.user_metadata.email_verified===true))}
+  function maskEmail(v){var p=String(v||"").split("@");if(p.length!==2)return v||"tu correo";var n=p[0];return(n.length<3?n.charAt(0)+"***":n.slice(0,2)+"***"+n.slice(-1))+"@"+p[1]}
+  async function api(path,options,s){var ss=s||await session(),h=Object.assign({},options&&options.headers||{});if(ss&&ss.access_token)h.Authorization="Bearer "+ss.access_token;return fetch(endpoint(path),Object.assign({},options||{},{headers:h}))}
+  async function pinHash(pin){var bytes=new TextEncoder().encode("coco-familia-"+String(pin||"")),d=await crypto.subtle.digest("SHA-256",bytes);return Array.from(new Uint8Array(d)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
+  function preconnect(){[cfg().url,cfg().eternaEndpoint].forEach(function(raw){if(!raw)return;try{var origin=new URL(raw,location.href).origin;if(document.head.querySelector('link[rel="preconnect"][href="'+origin+'"]'))return;var l=document.createElement("link");l.rel="preconnect";l.href=origin;l.crossOrigin="anonymous";document.head.appendChild(l)}catch(e){}})}
+  function inject(){preconnect();if(document.getElementById("eterna-launch-v16068-css"))return;var s=document.createElement("style");s.id="eterna-launch-v16068-css";s.textContent=[
+    "#cocoApp #eternaLauncherV159 .eternaLauncherCardV159{cursor:default!important}#cocoApp #eternaLauncherV159 .eternaLauncherTrialFinal3{pointer-events:none!important;cursor:default!important}#cocoApp #eternaLauncherV159 .eternaLauncherCtaFinal3{pointer-events:auto!important;cursor:pointer!important;touch-action:manipulation!important;user-select:none!important}.eternaLaunchV16068{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;padding:18px;background:rgba(4,25,39,.68);backdrop-filter:blur(5px)}.eternaLaunchV16068Card{width:min(680px,100%);max-height:min(820px,calc(100vh - 36px));overflow:auto;border-radius:24px;background:#fff;padding:24px;color:#294858;box-shadow:0 28px 80px rgba(0,0,0,.3)}",
+    ".eternaLaunchV16068Head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:17px}.eternaLaunchV16068Head small{display:block;color:#3184a7;font-size:9px;font-weight:950;letter-spacing:.09em}.eternaLaunchV16068Head h2{margin:4px 0 4px;color:#123e5b;font-size:25px;line-height:1.05}.eternaLaunchV16068Head p{margin:0;color:#647d8b;font-size:12px;line-height:1.5}.eternaLaunchV16068Close{border:1px solid #d6e7ee;background:#fff;color:#547080;border-radius:12px;width:38px;height:38px;font-size:21px;cursor:pointer}",
+    ".eternaLaunchV16068Info{padding:14px 15px;border:1px solid #cce7d8;border-radius:15px;background:#f0faf4;color:#315c49;font-size:12px;line-height:1.55}.eternaLaunchV16068Info strong{display:block;color:#174f39;font-size:14px;margin-bottom:3px}",
+    ".eternaLaunchV16068Grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.eternaLaunchV16068 label{display:grid;gap:5px;color:#496878;font-size:10px;font-weight:900}.eternaLaunchV16068 input,.eternaLaunchV16068 select{width:100%;min-height:46px;border:1px solid #cfe2eb;border-radius:11px;background:#fff;padding:9px 11px;color:#294858;font:750 13px inherit;box-sizing:border-box}.eternaLaunchV16068Checks{display:grid;gap:8px;margin-top:12px}.eternaLaunchV16068Check{display:flex!important;grid-template-columns:none!important;flex-direction:row!important;align-items:flex-start;gap:10px!important;padding:11px;border:1px solid #dfeaf0;border-radius:12px;background:#fbfdfe;font-size:10px!important;line-height:1.4}.eternaLaunchV16068Check input{width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;padding:0;margin:0}",
+    ".eternaLaunchV16068Actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.eternaLaunchV16068Primary{min-height:52px;padding:12px 18px;border:0;border-radius:13px;background:linear-gradient(180deg,#f47b12,#e66408);color:#fff;font-weight:950;cursor:pointer;box-shadow:0 4px 0 #b64e05,0 10px 22px rgba(230,100,8,.18)}.eternaLaunchV16068Secondary{min-height:46px;padding:10px 14px;border:1px solid #d4e5ec;border-radius:12px;background:#fff;color:#365e72;font-weight:900;cursor:pointer}.eternaLaunchV16068Link{border:0;background:none;color:#287698;text-decoration:underline;font-weight:850;cursor:pointer;padding:7px 0}.eternaLaunchV16068Msg{min-height:18px;margin-top:8px;color:#a04a3c;font-size:10px;font-weight:850}",
+    ".eternaLaunchV16068Plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.eternaLaunchV16068Plan{padding:14px;border:1px solid #d9e8ef;border-radius:15px;background:#f8fbfd}.eternaLaunchV16068Plan b{display:block;color:#173f59}.eternaLaunchV16068Plan strong{display:block;margin:5px 0;color:#173f59;font-size:22px}.eternaLaunchV16068Plan button{min-height:40px;border:1px solid #e4a36b;border-radius:10px;background:#fff7ef;color:#a35418;font-weight:900;cursor:pointer}",
+    "@media(max-width:640px){.eternaLaunchV16068{padding:10px}.eternaLaunchV16068Card{padding:18px;border-radius:19px}.eternaLaunchV16068Grid,.eternaLaunchV16068Plans{grid-template-columns:1fr}.eternaLaunchV16068Head h2{font-size:22px}.eternaLaunchV16068Primary{width:100%}}"
+  ].join("");document.head.appendChild(s)}
+  function closeModal(){if(currentModal){currentModal.remove();currentModal=null}}
+  function modal(title,subtitle,html,closable){inject();closeModal();var m=document.createElement("section");m.className="eternaLaunchV16068";m.innerHTML='<div class="eternaLaunchV16068Card"><div class="eternaLaunchV16068Head"><div><small>COCO EN FORMA · ETERNA</small><h2>'+esc(title)+'</h2><p>'+esc(subtitle||"")+'</p></div>'+(closable!==false?'<button type="button" class="eternaLaunchV16068Close" aria-label="Cerrar">×</button>':'')+'</div>'+html+'</div>';document.body.appendChild(m);currentModal=m;var x=m.querySelector(".eternaLaunchV16068Close");if(x)x.onclick=closeModal;return m}
+  function msg(m,text,ok){var n=m&&m.querySelector(".eternaLaunchV16068Msg");if(n){n.textContent=text||"";n.style.color=ok?"#26714b":"#a04a3c"}}
+  function mark(name){try{performance.mark(name)}catch(e){}}
+  function measure(name,a,b){try{performance.measure(name,a,b)}catch(e){}}
+  function showEmailGate(email){mark("eterna-email-gate");var m=modal("📧 Revisa tu correo para activar la cuenta","La cuenta se ha creado correctamente.",'<div class="eternaLaunchV16068Info"><strong>Falta confirmar el correo electrónico</strong>Te hemos enviado un correo a <b>'+esc(maskEmail(email))+'</b>. Abre ese correo y pulsa el enlace de confirmación. Después vuelve a Coco en Forma e inicia sesión con el email y la contraseña que acabas de crear.<br><br>Si no lo encuentras, revisa también Spam o Correo no deseado.</div><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-resend>Reenviar correo de activación</button><button class="eternaLaunchV16068Secondary" data-home>Volver al inicio</button></div><div class="eternaLaunchV16068Msg"></div>',false);m.querySelector("[data-home]").onclick=function(){location.href=location.origin+"/"};m.querySelector("[data-resend]").onclick=async function(){var b=this;b.disabled=true;try{var c=client(),r=await c.auth.resend({type:"signup",email:email});if(r&&r.error)throw r.error;msg(m,"Correo reenviado. Revisa también Spam o Correo no deseado.",true)}catch(e){msg(m,"No se pudo reenviar el correo. Inténtalo de nuevo.")}finally{b.disabled=false}}}
+  async function pinRecord(s){var c=client();try{var r=await c.from("eterna_family_security").select("pin_hash").eq("user_id",s.user.id).maybeSingle();if(r&&r.error)throw r.error;return r&&r.data&&r.data.pin_hash?String(r.data.pin_hash):""}catch(e){return null}}
+  async function savePin(s,pin){var hash=await pinHash(pin),c=client(),r=await c.from("eterna_family_security").upsert({user_id:s.user.id,pin_hash:hash,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(r&&r.error)throw r.error;try{localStorage.setItem("coco_pin_familia",hash);sessionStorage.setItem(pinPassKey(s.user.id),"1")}catch(e){}return true}
+  function showCreatePin(s){var m=modal("Crea tu PIN familiar","Es la primera vez que entras en Zona Familiar. No tienes que haber recibido ningún PIN: lo eliges tú ahora.",'<div class="eternaLaunchV16068Info"><strong>🔐 Tu primer PIN</strong>Elige 4 cifras que recuerdes. Este PIN protege la Zona Familiar y no se guarda en texto plano.</div><div class="eternaLaunchV16068Grid" style="margin-top:14px"><label>Nuevo PIN<input data-pin1 type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="4 cifras"></label><label>Repite el PIN<input data-pin2 type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="Repite las 4 cifras"></label></div><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-create>Crear PIN y continuar</button></div><div class="eternaLaunchV16068Msg"></div>',false);m.querySelector("[data-create]").onclick=async function(){var a=clean(m.querySelector("[data-pin1]").value).replace(/\D/g,""),b=clean(m.querySelector("[data-pin2]").value).replace(/\D/g,"");if(!/^\d{4}$/.test(a))return msg(m,"El PIN debe tener exactamente 4 cifras.");if(a!==b)return msg(m,"Los dos PIN no coinciden.");this.disabled=true;try{await savePin(s,a);closeModal();await runState()}catch(e){this.disabled=false;msg(m,"No se pudo crear el PIN. Inténtalo otra vez.")}}}
+  function showExistingPin(s,hash){var m=modal("Zona Familiar","Introduce tu PIN familiar.",'<label>PIN familiar<input data-pin type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"></label><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-enter>Entrar en Zona Familiar</button></div><button class="eternaLaunchV16068Link" data-forgot>¿Has olvidado tu PIN?</button><div class="eternaLaunchV16068Msg"></div>',true);m.querySelector("[data-enter]").onclick=async function(){var p=clean(m.querySelector("[data-pin]").value).replace(/\D/g,"");if(!/^\d{4}$/.test(p))return msg(m,"Escribe las 4 cifras de tu PIN.");if(await pinHash(p)!==hash)return msg(m,"El PIN no es correcto. Inténtalo de nuevo.");try{sessionStorage.setItem(pinPassKey(s.user.id),"1")}catch(e){}closeModal();await runState()};m.querySelector("[data-forgot]").onclick=function(){showRecoverPin(s)}}
+  function showRecoverPin(s){var m=modal("Recuperar PIN familiar","Confirma la contraseña de la cuenta y crea un PIN nuevo.",'<label>Contraseña de la cuenta<input data-pass type="password" autocomplete="current-password" placeholder="Tu contraseña"></label><div class="eternaLaunchV16068Grid" style="margin-top:12px"><label>Nuevo PIN<input data-new type="password" inputmode="numeric" maxlength="4" placeholder="4 cifras"></label><label>Repite el PIN<input data-repeat type="password" inputmode="numeric" maxlength="4" placeholder="Repite"></label></div><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-save>Cambiar PIN</button></div><button class="eternaLaunchV16068Link" data-forgotpass>También olvidé mi contraseña</button><div class="eternaLaunchV16068Msg"></div>',true);m.querySelector("[data-save]").onclick=async function(){var pass=m.querySelector("[data-pass]").value,a=m.querySelector("[data-new]").value.replace(/\D/g,""),b=m.querySelector("[data-repeat]").value.replace(/\D/g,"");if(!pass)return msg(m,"Escribe la contraseña de la cuenta.");if(!/^\d{4}$/.test(a)||a!==b)return msg(m,"Comprueba que los dos PIN de 4 cifras coinciden.");this.disabled=true;try{var c=client(),auth=await c.auth.signInWithPassword({email:s.user.email,password:pass});if(auth&&auth.error)throw auth.error;await savePin(s,a);msg(m,"PIN actualizado. Continuando…",true);closeModal();await runState()}catch(e){this.disabled=false;msg(m,"No se pudo verificar la contraseña. Compruébala e inténtalo de nuevo.")}};m.querySelector("[data-forgotpass]").onclick=async function(){var b=this;b.disabled=true;try{var c=client(),r=await c.auth.resetPasswordForEmail(s.user.email,{redirectTo:location.origin+"/"});if(r&&r.error)throw r.error;msg(m,"Te hemos enviado un correo para crear una nueva contraseña. Después vuelve a Coco en Forma y recupera tu PIN.",true)}catch(e){msg(m,"No se pudo enviar el correo de recuperación.")}finally{b.disabled=false}}}
+  async function legalState(s){try{var r=await api("/v1/legal-consent",{method:"GET",headers:{"Cache-Control":"no-store"}},s),d=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(d.error||"LEGAL");return d}catch(e){return{required:true,accepted:false,temporary_error:true}}}
+  async function subscription(s){var c=client(),test=(cfg().cuentasPruebaIlimitadas||[]).some(function(x){return String(x).toLowerCase()===String(s.user.email||"").toLowerCase()});if(test)return{status:"active",tester:true};try{var r=await c.from("eterna_subscriptions").select("*").eq("user_id",s.user.id).maybeSingle();if(r&&r.error)throw r.error;return r&&r.data||{status:"inactive"}}catch(e){return{status:"unknown",temporary_error:true}}}
+  function activeSub(x){if(!x)return false;if(x.status==="active")return true;if(x.status==="trialing")return !x.trial_end||new Date(x.trial_end).getTime()>Date.now();return false}
+  function trialUsed(x){return !!(x&&x.trial_end)}
+  function planCards(){return '<div class="eternaLaunchV16068Plans"><div class="eternaLaunchV16068Plan"><b>Plan mensual</b><strong>7,99 € <small>/mes</small></strong><span>Flexibilidad mes a mes.</span><button type="button" data-paid-plan="monthly">Contratar mensual</button></div><div class="eternaLaunchV16068Plan"><b>Plan anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses con el mejor precio.</span><button type="button" data-paid-plan="annual">Contratar anual</button></div></div>'}
+  function bindPaidPlans(m,s,legalAccepted){if(!m)return;m.querySelectorAll("[data-paid-plan]").forEach(function(b){b.onclick=function(){if(!legalAccepted){msg(m,"Primero completa la autorización con el botón principal. Después podrás contratar el plan que prefieras.");return}showPurchaseAck(s,b.dataset.paidPlan)}})}
+  function showPurchaseAck(s,plan){var annual=plan==="annual",price=annual?"79,99 € / año":"7,99 € / mes",m=modal("Confirmar suscripción",price+" · pago seguro con Stripe.",'<div class="eternaLaunchV16068Info"><strong>'+esc(annual?"Plan anual":"Plan mensual")+'</strong>La suscripción es recurrente hasta cancelación. Puedes gestionarla desde Zona Familiar. Consulta la información de suscripción y desistimiento antes de pagar.</div>'+legalLinks()+'<label class="eternaLaunchV16068Check" style="margin-top:12px"><input data-start-now type="checkbox"><span>Solicito que el servicio comience inmediatamente al completar el pago y entiendo la información sobre desistimiento.</span></label><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-pay>Continuar a Stripe</button><button class="eternaLaunchV16068Secondary" data-cancel>Cancelar</button></div><div class="eternaLaunchV16068Msg"></div>',true);m.querySelector("[data-cancel]").onclick=closeModal;m.querySelector("[data-pay]").onclick=async function(){if(!m.querySelector("[data-start-now]").checked)return msg(m,"Marca la confirmación para continuar.");this.disabled=true;try{var ack=await api("/v1/legal-consent",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"purchase_ack",plan:plan,recurring_ack:true,withdrawal_info_ack:true,immediate_service_requested:true})},s),ad=await ack.json().catch(function(){return{}});if(!ack.ok)throw new Error(ad.error||"ACK");var r=await api("/v1/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan})},s),d=await r.json().catch(function(){return{}});if(!r.ok||!d.url)throw new Error(d.error||"CHECKOUT");location.href=d.url}catch(e){this.disabled=false;msg(m,"No se pudo abrir el pago. Inténtalo de nuevo.")}}}
+
+  function legalLinks(){return '<div style="margin-top:10px;font-size:9px"><a href="/privacidad-menores.html" target="_blank">Privacidad para menores</a> · <a href="/politica-de-privacidad.html" target="_blank">Privacidad</a> · <a href="/terminos-y-condiciones.html" target="_blank">Términos</a> · <a href="/informacion-ia-eterna.html" target="_blank">Cómo funciona la IA</a></div>'}
+  async function confirmLegalAccepted(s){var st=await legalState(s);if(st.temporary_error||st.required&&!st.accepted)throw new Error("LEGAL_NOT_CONFIRMED");return st}
+  async function confirmTrialActive(s){var sub=await subscription(s);if(sub.temporary_error||!activeSub(sub))throw new Error("TRIAL_NOT_CONFIRMED");return sub}
+  function showAuthorization(s,st){var minor=st.minor!==false,m=modal("Acceso y planes","⭐ Prueba gratuita · 7 días · Sin tarjeta.",'<div class="eternaLaunchV16068Info"><strong>Autorización necesaria</strong>Completa estas confirmaciones una sola vez para activar la prueba de Eterna.</div><div style="margin-top:13px">'+(minor?'<label>Relación con el menor<select data-rel><option value="">Selecciona</option><option value="parent">Padre</option><option value="mother">Madre</option><option value="legal_guardian">Tutor/a legal</option></select></label>':'')+'<div class="eternaLaunchV16068Checks"><label class="eternaLaunchV16068Check"><input data-a type="checkbox"><span>'+(minor?'Confirmo que soy mayor de 18 años y padre, madre o tutor/a legal del menor asociado a esta cuenta y autorizo su uso de Eterna.':'Confirmo que soy mayor de 18 años y titular de esta cuenta.')+'</span></label><label class="eternaLaunchV16068Check"><input data-d type="checkbox"><span>He leído y acepto los Términos y la Política de Privacidad aplicables a Eterna.</span></label><label class="eternaLaunchV16068Check"><input data-ai type="checkbox"><span>Entiendo que Eterna es una inteligencia artificial, puede equivocarse y es una herramienta de apoyo escolar.</span></label></div>'+legalLinks()+'</div><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-authorize>Autorizar y empezar prueba gratis</button></div>'+planCards()+'<div class="eternaLaunchV16068Msg"></div>',false);m.querySelector("[data-authorize]").onclick=async function(){var rel=m.querySelector("[data-rel]");if(minor&&(!rel||!rel.value))return msg(m,"Selecciona la relación con el menor.");if(!m.querySelector("[data-a]").checked||!m.querySelector("[data-d]").checked||!m.querySelector("[data-ai]").checked)return msg(m,"Completa las tres confirmaciones para continuar.");this.disabled=true;msg(m,"Registrando autorización…",true);try{var r=await api("/v1/legal-consent",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"accept",relationship:minor?rel.value:"adult_user",terms_accepted:true,privacy_accepted:true,ai_notice_accepted:true,parental_authorization:minor})},s),d=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(d.error||"LEGAL");msg(m,"Comprobando autorización…",true);await confirmLegalAccepted(s);msg(m,"Activando los 7 días gratis…",true);var t=await api("/v1/trial",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"},s),td=await t.json().catch(function(){return{}});if(!t.ok){if(t.status===409&&td.error==="TRIAL_ALREADY_USED"){closeModal();await runState();return}throw new Error(td.error||"TRIAL")}await confirmTrialActive(s);closeModal();await runState()}catch(e){this.disabled=false;var em=String(e&&e.message||"");msg(m,em==="ADULT_EMAIL_VERIFICATION_REQUIRED"?"Primero confirma el correo electrónico y vuelve a iniciar sesión.":em==="LEGAL_NOT_CONFIRMED"?"La autorización todavía no aparece registrada. No se ha iniciado la prueba; inténtalo de nuevo.":em==="TRIAL_NOT_CONFIRMED"?"La prueba se solicitó, pero aún no podemos confirmar que esté activa. Inténtalo de nuevo en un momento.":"No se pudo completar la activación. Inténtalo de nuevo.")}};bindPaidPlans(m,s,false)}
+  function showTrial(s){var m=modal("Empieza tu prueba gratuita","7 días · sin tarjeta · después tú decides si continúas.",'<div class="eternaLaunchV16068Info"><strong>⭐ Prueba gratuita · 7 días</strong>Durante la prueba puedes utilizar Eterna y comprobar si encaja con la forma de estudiar del alumno.</div><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-trial>Empezar prueba gratis · 7 días</button></div>'+planCards()+'<div class="eternaLaunchV16068Msg"></div>',false);m.querySelector("[data-trial]").onclick=async function(){this.disabled=true;msg(m,"Activando los 7 días gratis…",true);try{var r=await api("/v1/trial",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"},s),d=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(d.error||"TRIAL");await confirmTrialActive(s);closeModal();await runState()}catch(e){this.disabled=false;var em=String(e&&e.message||"");msg(m,em==="TRIAL_ALREADY_USED"?"Esta cuenta ya utilizó su prueba gratuita. Puedes elegir un plan para continuar.":em==="TRIAL_NOT_CONFIRMED"?"La prueba se solicitó, pero aún no podemos confirmar que esté activa. Inténtalo de nuevo en un momento.":"No se pudo activar la prueba. Inténtalo de nuevo.")}};bindPaidPlans(m,s,true)}
+  function showPlansOnly(s){var m=modal("Continúa con Eterna","La prueba gratuita de esta cuenta ya fue utilizada.",planCards()+'<div class="eternaLaunchV16068Info" style="margin-top:14px">Puedes contratar directamente el plan que prefieras. Antes de Stripe verás la información precontractual y la confirmación de inicio inmediato.</div><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-family>Ir a Zona Familiar</button></div>',true);m.querySelector("[data-family]").onclick=function(){closeModal();var b=document.querySelector("#cocoApp .cocoFamiliaBtn");if(b)b.click()};bindPaidPlans(m,s,true)}
+  async function schoolProfile(s){var c=client();try{var r=await c.from("eterna_student_profiles").select("stage,school_year,autonomous_community").eq("user_id",s.user.id).maybeSingle();if(r&&r.error)throw r.error;return r&&r.data||null}catch(e){return{__error:true}}}
+  function courseOptions(stage){return (YEARS[stage]||[]).map(function(x){return '<option>'+esc(x)+'</option>'}).join("")}
+  function showCourse(s){var m=modal("Configura su contexto escolar","Esto permite que Eterna adapte el nivel y utilice el currículo adecuado.",'<div class="eternaLaunchV16068Grid"><label>Etapa<select data-stage><option value="">Selecciona</option><option value="infantil">Infantil</option><option value="primaria">Primaria</option><option value="eso">ESO</option><option value="bachillerato">Bachillerato</option></select></label><label>Curso<select data-year disabled><option value="">Selecciona primero la etapa</option></select></label></div><label style="margin-top:12px">Comunidad Autónoma<select data-ccaa><option value="">Selecciona</option>'+CCAA.map(function(x){return '<option>'+esc(x)+'</option>'}).join("")+'</select></label><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-save>Guardar y empezar</button></div><div class="eternaLaunchV16068Msg"></div>',false),st=m.querySelector("[data-stage]"),yr=m.querySelector("[data-year]");st.onchange=function(){yr.disabled=!st.value;yr.innerHTML=st.value?'<option value="">Selecciona curso</option>'+courseOptions(st.value):'<option value="">Selecciona primero la etapa</option>'};m.querySelector("[data-save]").onclick=async function(){var stage=st.value,year=yr.value,ccaa=m.querySelector("[data-ccaa]").value;if(!stage||!year||!ccaa)return msg(m,"Selecciona etapa, curso y comunidad autónoma.");this.disabled=true;try{var c=client(),r=await c.from("eterna_student_profiles").upsert({user_id:s.user.id,stage:stage,school_year:year,autonomous_community:ccaa,preferred_language:"es",updated_at:new Date().toISOString()},{onConflict:"user_id"});if(r&&r.error)throw r.error;try{localStorage.setItem(SCHOOL,JSON.stringify({stage:stage,school_year:year,autonomous_community:ccaa,at:Date.now()}))}catch(e){}closeModal();ready()}catch(e){this.disabled=false;msg(m,"No se pudo guardar el contexto escolar.")}}}
+  function showTemporaryError(text){var m=modal("No hemos podido comprobar tu cuenta",text||"Hay un problema temporal de conexión. No vamos a cambiar ningún dato hasta poder comprobarlo.",'<div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-retry>Intentar de nuevo</button></div>',true);m.querySelector("[data-retry]").onclick=function(){closeModal();runState()}}
+  function ready(){clearIntent();mark("eterna-onboarding-ready");try{measure("eterna-onboarding-total","eterna-onboarding-start","eterna-onboarding-ready")}catch(e){};if(root.CocoEternaV160&&typeof root.CocoEternaV160.open==="function")root.CocoEternaV160.open()}
+  async function runState(){if(running||!intent())return;running=true;mark("eterna-onboarding-start");try{var s=await session();if(!s){running=false;return}syncUserBoundary(s);try{localStorage.removeItem("coco_eterna_resume_after_auth_v1603")}catch(e){}if(!emailVerified(s)){showEmailGate(s.user.email);return}var both=await Promise.all([legalState(s),subscription(s)]),legal=both[0],sub=both[1];if(legal.temporary_error||sub.temporary_error){showTemporaryError("No hemos podido comprobar autorización y acceso a Eterna. Tus datos no se han modificado.");return}if(activeSub(sub)&&(!legal.required||legal.accepted)){var activeProfile=await schoolProfile(s);if(activeProfile&&activeProfile.__error){showTemporaryError("No hemos podido comprobar el contexto escolar. Inténtalo de nuevo.");return}if(!activeProfile||!activeProfile.stage||!activeProfile.school_year||!activeProfile.autonomous_community){showCourse(s);return}try{localStorage.setItem(SCHOOL,JSON.stringify({stage:activeProfile.stage,school_year:activeProfile.school_year,autonomous_community:activeProfile.autonomous_community,at:Date.now()}))}catch(e){}ready();return}var hash=await pinRecord(s),pass=false;if(hash===null){showTemporaryError("No hemos podido comprobar el PIN familiar. Inténtalo de nuevo dentro de un momento.");return}try{pass=sessionStorage.getItem(pinPassKey(s.user.id))==="1"}catch(e){}if(!hash){showCreatePin(s);return}if(!pass){showExistingPin(s,hash);return}if(legal.required&&!legal.accepted){showAuthorization(s,legal);return}if(!activeSub(sub)){if(trialUsed(sub)){showPlansOnly(s);return}showTrial(s);return}var profile=await schoolProfile(s);if(profile&&profile.__error){showTemporaryError("No hemos podido comprobar el contexto escolar. Inténtalo de nuevo.");return}if(!profile||!profile.stage||!profile.school_year||!profile.autonomous_community){showCourse(s);return}try{localStorage.setItem(SCHOOL,JSON.stringify({stage:profile.stage,school_year:profile.school_year,autonomous_community:profile.autonomous_community,at:Date.now()}))}catch(e){}ready()}finally{running=false}}
+  function loginVisible(){var el=document.querySelector("#cocoApp .loginCard");if(!el)return false;try{var st=getComputedStyle(el);return st.display!=="none"&&st.visibility!=="hidden"}catch(e){return true}}
+  function normalizeLauncher(){var l=document.getElementById("eternaLauncherV159"),cta=l&&l.querySelector(".eternaLauncherCtaFinal3"),trial=l&&l.querySelector(".eternaLauncherTrialFinal3");if(cta)cta.textContent=loginVisible()?"Probar Eterna gratis 7 días":"Abrir Eterna";if(trial){var b=trial.querySelector("strong"),sp=trial.querySelector("span");if(b)b.textContent="⭐ 7 días gratis";if(sp)sp.textContent="Sin tarjeta ni datos bancarios para empezar."}}
+  function patchAuth(){if(authPatched)return;var c=client();if(!c||!c.auth)return;authPatched=true;var original=c.auth.signUp&&c.auth.signUp.bind(c.auth);if(original&&!c.auth.signUp.__eterna16068){var wrapped=function(payload){setIntent("signup");var p=original(payload);return Promise.resolve(p).then(function(r){var u=r&&r.data&&r.data.user,s=r&&r.data&&r.data.session;if(u&&!s)showEmailGate(u.email||payload&&payload.email);else if(s)setTimeout(runState,0);return r})};wrapped.__eterna16068=true;c.auth.signUp=wrapped}try{c.auth.onAuthStateChange(function(event,s){normalizeLauncher();if(s)syncUserBoundary(s);if(s&&intent())setTimeout(runState,0)})}catch(e){}}
+  function intercept(){document.addEventListener("click",function(e){var launcher=e.target&&e.target.closest?e.target.closest("#eternaLauncherV159 .eternaLauncherCardV159"):null,cta=e.target&&e.target.closest?e.target.closest("#eternaLauncherV159 .eternaLauncherCtaFinal3"):null;if(launcher&&!cta){e.preventDefault();e.stopImmediatePropagation();return}if(cta){e.preventDefault();e.stopImmediatePropagation();setIntent("home");mark("eterna-cta-click");patchAuth();if(loginVisible())goCreateAccount();else runState();return}var trialLink=e.target&&e.target.closest?e.target.closest("a[href*='open=eterna'],a[href*='eterna=1']"):null;if(trialLink)setIntent("landing")},true);var originalAlert=root.alert&&root.alert.bind(root);if(originalAlert)root.alert=function(v){if(intent()&&/^muy\s+bien[!.]?$/i.test(clean(v)))return;return originalAlert(v)}}
+  inject();patchAuth();intercept();normalizeLauncher();requestAnimationFrame(normalizeLauncher);var deepLink=false;try{var q=new URLSearchParams(location.search);if(q.get("open")==="eterna"||q.get("eterna")==="1"){deepLink=true;setIntent(q.get("source")||"direct")}}catch(e){}if(intent())session().then(function(s){if(s)runState();else if(deepLink){goCreateAccount();setTimeout(goCreateAccount,260)}});
+  root.ETERNA_LAUNCH_STATE_V16068=Object.freeze({version:"160.68",run:runState,setIntent:setIntent,states:["SIN_CUENTA","EMAIL_PENDIENTE","EMAIL_CONFIRMADO","PIN_SIN_CREAR","PIN_NECESARIO","PIN_OK","AUTORIZACION_PENDIENTE","TRIAL_PENDIENTE","TRIAL_ACTIVO","CURSO_PENDIENTE","ETERNA_LISTA"],global_observer:false});
+})(window);
