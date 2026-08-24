@@ -1,4 +1,4 @@
-/* Coco en Forma · v160 FINAL4.23 · PIN directo + rendimiento */
+/* Coco en Forma · v160 FINAL4.25 · onboarding Eterna final */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -11,25 +11,30 @@
   function fixPadel(card,id){if(id!=="padel")return;card.classList.remove("cocoConstruccion","proximo");card.querySelectorAll(".cocoEstadoObra,.cintaObras").forEach(function(n){n.remove()});var btn=card.querySelector(".cocoBotonJuego,.btn");if(btn){if(/construcci|pr[oó]xim/i.test(btn.textContent||""))btn.textContent="Abrir Coco Pádel";btn.disabled=false;btn.removeAttribute("aria-disabled")}}
   function applyCard(card){var id=idOf(card);if(RETIRED.has(id)){card.remove();return}cleanScoreNoise(card);scoreStatus(card,id);fixPadel(card,id)}
   function processNode(node){if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;if(node.matches&&node.matches("[data-coco-juego]")&&RETIRED.has(idOf(node))){node.remove();return}if(node.matches&&node.matches(".cocoGameCard[data-coco-juego]"))applyCard(node);if(node.querySelectorAll){node.querySelectorAll("[data-coco-juego]").forEach(function(n){if(RETIRED.has(idOf(n)))n.remove()});node.querySelectorAll(".cocoGameCard[data-coco-juego]").forEach(applyCard)}}
+  function relevantNode(node){
+    if(!node||node.nodeType!==1)return false;
+    if(node.matches&&node.matches("[data-coco-juego],.cocoGameCard,#retosCard,.retosCard"))return true;
+    return !!(node.querySelector&&node.querySelector("[data-coco-juego],.cocoGameCard,#retosCard,.retosCard"))
+  }
   function loadOnboarding(){
-    if(root.__ETERNA_ONBOARDING_V16063_LOADER__)return;root.__ETERNA_ONBOARDING_V16063_LOADER__=true;
-    var p=document.createElement("script");p.src="./eterna-onboarding-v16063.js?v=16063";p.async=true;p.dataset.cocoModule="eterna-onboarding-v16063";
-    p.onerror=function(){root.__ETERNA_ONBOARDING_V16063_LOADER__=false};document.head.appendChild(p)
+    if(root.__ETERNA_ONBOARDING_V16065_LOADER__)return;root.__ETERNA_ONBOARDING_V16065_LOADER__=true;
+    var p=document.createElement("script");p.src="./eterna-onboarding-v16065.js?v=16065";p.async=true;p.dataset.cocoModule="eterna-onboarding-v16065";
+    p.onerror=function(){root.__ETERNA_ONBOARDING_V16065_LOADER__=false};document.head.appendChild(p)
   }
   function loadFamily(){
-    if(root.__ETERNA_FAMILY_V16063_LOADER__){loadOnboarding();return}
-    root.__ETERNA_FAMILY_V16063_LOADER__=true;
-    var p=document.createElement("script");p.src="./eterna-family-v16063.js?v=16063";p.async=true;p.dataset.cocoModule="eterna-family-v16063";
-    p.onload=loadOnboarding;p.onerror=function(){root.__ETERNA_FAMILY_V16063_LOADER__=false;loadOnboarding()};document.head.appendChild(p)
+    if(root.__ETERNA_FAMILY_V16065_LOADER__){loadOnboarding();return}
+    root.__ETERNA_FAMILY_V16065_LOADER__=true;
+    var p=document.createElement("script");p.src="./eterna-family-v16065.js?v=16065";p.async=true;p.dataset.cocoModule="eterna-family-v16065";
+    p.onload=loadOnboarding;p.onerror=function(){root.__ETERNA_FAMILY_V16065_LOADER__=false;loadOnboarding()};document.head.appendChild(p)
   }
   function loadEternaExperience(){
-    if(root.__ETERNA_EXPERIENCE_V16063_LOADER__)return;root.__ETERNA_EXPERIENCE_V16063_LOADER__=true;
+    if(root.__ETERNA_EXPERIENCE_V16065_LOADER__)return;root.__ETERNA_EXPERIENCE_V16065_LOADER__=true;
     var s=document.createElement("script");s.src="./eterna-experience-v160.js?v=16060";s.async=true;s.dataset.cocoModule="eterna-experience-v16060";
-    s.onload=loadFamily;s.onerror=function(){root.__ETERNA_EXPERIENCE_V16063_LOADER__=false};document.head.appendChild(s)
+    s.onload=loadFamily;s.onerror=function(){root.__ETERNA_EXPERIENCE_V16065_LOADER__=false};document.head.appendChild(s)
   }
-  function flush(){raf=0;var nodes=Array.from(queued);queued.clear();nodes.forEach(processNode);root.COCO_VERSION="2026-08-24-v160-final4.23"}
+  function flush(){raf=0;var nodes=Array.from(queued);queued.clear();nodes.forEach(processNode);root.COCO_VERSION="2026-08-24-v160-final4.25"}
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
-  function initial(){var app=document.getElementById("cocoApp");if(app)processNode(app);loadEternaExperience();root.COCO_VERSION="2026-08-24-v160-final4.23"}
-  function observe(){var app=document.getElementById("cocoApp");if(!app)return;new MutationObserver(function(records){records.forEach(function(r){r.addedNodes.forEach(queue)})}).observe(app,{childList:true,subtree:true})}
+  function initial(){var app=document.getElementById("cocoApp");if(app)processNode(app);loadEternaExperience();root.COCO_VERSION="2026-08-24-v160-final4.25"}
+  function observe(){var app=document.getElementById("cocoApp");if(!app)return;new MutationObserver(function(records){records.forEach(function(r){r.addedNodes.forEach(function(n){if(relevantNode(n))queue(n)})})}).observe(app,{childList:true,subtree:true})}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){initial();observe()},{once:true});else{initial();observe()}
 })(window);
