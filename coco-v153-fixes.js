@@ -1,4 +1,4 @@
-/* Coco en Forma · v160 FINAL4.30 · Safari desktop + Eterna v160.70 bajo demanda */
+/* Coco en Forma · v160 FINAL4.31 · paridad Family/Eterna + Safari desktop por intención */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -20,7 +20,7 @@
     if(root.ETERNA_LAUNCH_STATE_V16070||root.ETERNA_LAUNCH_STATE_V16069||root.ETERNA_EXPERIENCE_V16049)return Promise.resolve(true);
     if(eternaPromise)return eternaPromise;
     eternaPromise=new Promise(function(resolve,reject){
-      var s=document.createElement("script");s.src="./eterna-experience-v160.js?v=16070";s.async=true;s.dataset.cocoModule="eterna-experience-v16070";
+      var s=document.createElement("script");s.src="./eterna-experience-v160.js?v=16071";s.async=true;s.dataset.cocoModule="eterna-experience-v16071";
       s.onload=function(){try{performance.mark("eterna_core_ready")}catch(e){}resolve(true)};
       s.onerror=function(){eternaPromise=null;reject(new Error("ETERNA_LOAD_FAILED"))};document.head.appendChild(s)
     });
@@ -30,15 +30,20 @@
   function installEternaDemandLoader(){
     document.addEventListener("click",function(event){
       if(replaying||root.ETERNA_LAUNCH_STATE_V16070||root.ETERNA_LAUNCH_STATE_V16069)return;
-      var t=event.target&&event.target.closest?event.target.closest("#eternaLauncherV159 .eternaLauncherCtaFinal3,#eternaLauncherV159 .eternaLauncherCardV159"):null;if(!t)return;
-      event.preventDefault();event.stopImmediatePropagation();try{performance.mark("eterna_open_click")}catch(e){}
-      loadEternaExperience().then(function(){replaying=true;try{t.click()}finally{setTimeout(function(){replaying=false},0)}}).catch(function(){replaying=false})
+      var target=event.target&&event.target.closest?event.target.closest("#eternaLauncherV159 .eternaLauncherCtaFinal3,#eternaLauncherV159 .eternaLauncherCardV159,#cocoApp .cocoFamiliaBtn,.cocoFamiliaBtn"):null;if(!target)return;
+      var family=!!(target.matches&&target.matches("#cocoApp .cocoFamiliaBtn,.cocoFamiliaBtn"));
+      event.preventDefault();event.stopImmediatePropagation();
+      try{performance.mark(family?"family_open_click":"eterna_open_click")}catch(e){}
+      loadEternaExperience().then(function(){
+        try{if(family){performance.mark("family_module_ready");performance.measure("family_click_to_module","family_open_click","family_module_ready")}}catch(e){}
+        replaying=true;try{target.click()}finally{setTimeout(function(){replaying=false},0)}
+      }).catch(function(){replaying=false})
     },true)
   }
 
-  function flush(){raf=0;var nodes=Array.from(queued);queued.clear();nodes.forEach(processNode);root.COCO_VERSION="2026-08-25-v160-final4.30"}
+  function flush(){raf=0;var nodes=Array.from(queued);queued.clear();nodes.forEach(processNode);root.COCO_VERSION="2026-08-25-v160-final4.31"}
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
-  function initial(){var app=document.getElementById("cocoApp");try{performance.mark("coco_home_visible");performance.measure("coco_boot_to_home","coco_boot_start","coco_home_visible")}catch(e){}if(app){if(DESKTOP_SAFARI){var polish=function(){processNode(app)};if("requestIdleCallback" in root)root.requestIdleCallback(polish,{timeout:500});else setTimeout(polish,120)}else processNode(app)}scheduleEternaIdle();root.COCO_VERSION="2026-08-25-v160-final4.30"}
+  function initial(){var app=document.getElementById("cocoApp");try{performance.mark("coco_home_visible");performance.measure("coco_boot_to_home","coco_boot_start","coco_home_visible")}catch(e){}if(app){if(DESKTOP_SAFARI){var polish=function(){processNode(app)};if("requestIdleCallback" in root)root.requestIdleCallback(polish,{timeout:500});else setTimeout(polish,120)}else processNode(app)}scheduleEternaIdle();root.COCO_VERSION="2026-08-25-v160-final4.31"}
   function observe(){var app=document.getElementById("cocoApp");if(!app)return;new MutationObserver(function(records){records.forEach(function(r){r.addedNodes.forEach(function(n){if(relevantNode(n))queue(n)})})}).observe(app,{childList:true,subtree:true})}
 
   installEternaDemandLoader();

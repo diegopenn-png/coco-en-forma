@@ -1,8 +1,10 @@
-/* Coco en Forma · Service Worker v160 FINAL4.30 · shell rápido Safari/PWA */
-const CACHE_VERSION="coco-en-forma-v160.0.0-final4.30";
+/* Coco en Forma · Service Worker v160 FINAL4.31 · PWA shell rápido + Safari macOS navegación única */
+const CACHE_VERSION="coco-en-forma-v160.0.0-final4.31";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
+const SW_UA=String((self.navigator&&self.navigator.userAgent)||"");
+const DESKTOP_SAFARI=/Safari\//.test(SW_UA)&&!/(Chrome|Chromium|CriOS|FxiOS|EdgiOS|OPR)\//.test(SW_UA)&&/Macintosh/.test(SW_UA)&&!/Mobile\//.test(SW_UA);
 const CORE=[
   "./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
@@ -20,4 +22,4 @@ async function updateShell(){try{const r=await fetch(new Request(INDEX_URL,{cach
 async function shellFast(e){const c=await caches.open(CACHE_VERSION),cached=await c.match(INDEX_URL);if(cached){e.waitUntil(updateShell());return cached}try{const r=await fetch(e.request);if(r&&r.ok)e.waitUntil(c.put(INDEX_URL,r.clone()));return r}catch(_e){return new Response("Sin conexión",{status:503,headers:{"Content-Type":"text/plain; charset=utf-8"}})}}
 async function networkFirst(e){try{const r=await fetch(e.request);if(r&&r.ok)e.waitUntil(caches.open(CACHE_VERSION).then(c=>c.put(e.request,r.clone())));return r}catch(_e){return(await caches.match(e.request,{ignoreSearch:false}))||(await caches.match(e.request,{ignoreSearch:true}))||(await caches.match(INDEX_URL))}}
 function stale(e){return caches.match(e.request,{ignoreSearch:false}).then(cached=>{const net=fetch(e.request).then(r=>{if(r&&r.ok)e.waitUntil(caches.open(CACHE_VERSION).then(c=>c.put(e.request,r.clone())));return r});return cached||net.catch(async()=>await caches.match(e.request,{ignoreSearch:true})||await caches.match(INDEX_URL))})}
-self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;const doc=e.request.mode==="navigate"||e.request.destination==="document",shellDoc=doc&&(u.pathname===SCOPE_URL.pathname||u.pathname===new URL("index.html",SCOPE_URL).pathname),bootstrap=/\/(coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(u.pathname);if(shellDoc){e.respondWith(shellFast(e));return}if(doc){e.respondWith(networkFirst(e));return}if(bootstrap){e.respondWith(stale(e));return}e.respondWith(stale(e))});
+self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;const doc=e.request.mode==="navigate"||e.request.destination==="document",shellDoc=doc&&(u.pathname===SCOPE_URL.pathname||u.pathname===new URL("index.html",SCOPE_URL).pathname),bootstrap=/\/(coco-v153-fixes\.js|coco-v155-identity\.js)$/.test(u.pathname);if(shellDoc){e.respondWith(DESKTOP_SAFARI?networkFirst(e):shellFast(e));return}if(doc){e.respondWith(networkFirst(e));return}if(bootstrap){e.respondWith(stale(e));return}e.respondWith(stale(e))});
