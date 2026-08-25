@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.74 · final stabilization + contexto UX
+/* ETERNA Experience v160.79 · subscription state UX + final stabilization + contexto UX
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.74-final-stabilization";
+  var VERSION="160.79-subscription-ui";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
@@ -2259,7 +2259,9 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   if(root.__ETERNA_FAMILY_EMBEDDED_V16068__)return;
   root.__ETERNA_FAMILY_EMBEDDED_V16068__=true;
 
-  var VERSION="160.74-family-lifecycle";
+  var VERSION="160.79-family-subscription-ui";
+  var subscriptionUiCache={uid:"",at:0,data:null,promise:null};
+
 
   function clean(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
   function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
@@ -2300,6 +2302,77 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     return fetch(url,Object.assign({},options||{},{headers:headers}))
   }
 
+  function paymentJustSucceeded(){
+    try{return new URLSearchParams(location.search).get("payment")==="success"}catch(e){return false}
+  }
+  function planMeta(plan){
+    plan=clean(plan).toLowerCase();
+    if(plan==="monthly")return{key:"monthly",name:"Plan mensual",price:"7,99 € / mes"};
+    if(plan==="annual")return{key:"annual",name:"Plan anual",price:"79,99 € / año"};
+    if(plan==="tester")return{key:"tester",name:"Acceso de prueba",price:""};
+    var label=plan?plan.charAt(0).toUpperCase()+plan.slice(1):"Eterna";
+    return{key:plan||"unknown",name:"Plan "+label,price:""}
+  }
+  function activePaidSubscription(sub){return !!(sub&&String(sub.status||"")==="active"&&String(sub.provider||"")==="stripe")}
+  function clearSubscriptionUiCache(){subscriptionUiCache={uid:"",at:0,data:null,promise:null}}
+  async function readSubscriptionUi(force){
+    var session=await getSession(),uid=session&&session.user&&session.user.id;if(!uid)return null;
+    var now=Date.now();
+    if(!force&&subscriptionUiCache.uid===uid&&subscriptionUiCache.at&&now-subscriptionUiCache.at<5000)return subscriptionUiCache.data;
+    if(subscriptionUiCache.promise&&subscriptionUiCache.uid===uid)return subscriptionUiCache.promise;
+    var c=getClient();if(!c)return null;
+    subscriptionUiCache.uid=uid;
+    subscriptionUiCache.promise=Promise.resolve(c.from("eterna_subscriptions").select("status,plan,provider,provider_customer_id,provider_subscription_id,current_period_end,cancel_at_period_end,trial_end,updated_at").eq("user_id",uid).maybeSingle()).then(function(r){
+      if(r&&r.error)throw r.error;subscriptionUiCache.data=r&&r.data||null;subscriptionUiCache.at=Date.now();return subscriptionUiCache.data
+    }).catch(function(){subscriptionUiCache.data=null;subscriptionUiCache.at=Date.now();return null}).finally(function(){subscriptionUiCache.promise=null});
+    return subscriptionUiCache.promise
+  }
+  async function openSubscriptionPortal(button){
+    var original=button&&button.textContent||"Gestionar suscripción";if(button){button.disabled=true;button.textContent="Abriendo gestión…"}
+    try{
+      var r=await api("/v1/portal",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),data=await r.json().catch(function(){return{}});
+      if(!r.ok||!data.url)throw new Error(data.error||"PORTAL");location.href=data.url
+    }catch(e){if(button){button.disabled=false;button.textContent=original}alert("No se pudo abrir la gestión de la suscripción.")}
+  }
+  function openEternaFromFamily(){
+    var close=document.querySelector("#cocoApp .cocoFamilyV129 [data-family-close],#cocoApp .cocoFamilyV129>header button");if(close)try{close.click()}catch(e){}
+    queueMicrotask(function(){try{if(root.CocoEternaV160&&typeof root.CocoEternaV160.open==="function")root.CocoEternaV160.open()}catch(e){}})
+  }
+  function currentPlanHtml(sub){
+    var meta=planMeta(sub&&sub.plan),end=sub&&sub.current_period_end?dateES(sub.current_period_end):"",cancel=!!(sub&&sub.cancel_at_period_end);
+    var statusLine=cancel?(end?"Cancelación programada · acceso hasta "+end:"Cancelación programada al final del periodo"):(end?"Próxima renovación: "+end:"Suscripción activa");
+    var alternative=meta.key==="monthly"?'<div class="eternaV16079Alternative"><div><b>¿Prefieres el plan anual?</b><span>79,99 € / año. El cambio se hace sobre esta misma suscripción para evitar pagos duplicados.</span></div><button type="button" data-et-v16079-manage>Gestionar cambio</button></div>':"";
+    return '<div class="eternaV16079CurrentPlan" data-et-current-plan="'+esc(meta.key)+'"><div class="eternaV16079CurrentPlanHead"><div><span class="eternaV16079CurrentPlanLabel">TU PLAN ACTUAL</span><h5>'+esc(meta.name)+'</h5>'+(meta.price?'<strong class="eternaV16079CurrentPlanPrice">'+esc(meta.price)+'</strong>':"")+'</div></div><p class="eternaV16079CurrentPlanMeta">'+esc(statusLine)+'</p><div class="eternaV16079PlanActions"><button type="button" class="is-primary" data-et-v16079-open>Abrir Eterna</button>'+(sub&&sub.provider_customer_id?'<button type="button" class="is-secondary" data-et-v16079-manage>Gestionar / cambiar plan</button>':"")+'</div>'+alternative+'</div>'
+  }
+  function bindSubscriptionUi(wrap){
+    if(!wrap)return;wrap.querySelectorAll("[data-et-v16079-open]").forEach(function(b){if(b.dataset.boundV16079)return;b.dataset.boundV16079="1";b.onclick=openEternaFromFamily});
+    wrap.querySelectorAll("[data-et-v16079-manage]").forEach(function(b){if(b.dataset.boundV16079)return;b.dataset.boundV16079="1";b.onclick=function(){openSubscriptionPortal(b)}});
+    var refresh=wrap.querySelector("[data-et-v16079-refresh]");if(refresh&&!refresh.dataset.boundV16079){refresh.dataset.boundV16079="1";refresh.onclick=function(){clearSubscriptionUiCache();refresh.disabled=true;refresh.textContent="Actualizando…";syncSubscriptionUi(wrap,true)}}
+  }
+  function renderPaidSubscription(wrap,sub){
+    if(!wrap||!activePaidSubscription(sub))return false;
+    wrap.querySelectorAll(".eternaV160TrialActive,.eternaV160UpgradeWrap,.eternaV16061TesterNote,.eternaV16079PaymentPending,.eternaV159Buttons").forEach(function(n){n.remove()});
+    var old=wrap.querySelector(".eternaV16079CurrentPlan");if(old)old.remove();
+    var head=wrap.querySelector(".eternaV16061SubscriptionHead"),holder=document.createElement("div");holder.innerHTML=currentPlanHtml(sub);
+    if(head&&head.nextSibling)wrap.insertBefore(holder.firstChild,head.nextSibling);else wrap.appendChild(holder.firstChild);
+    wrap.dataset.etPlanState="active";bindSubscriptionUi(wrap);
+    try{var u=new URL(location.href);if(u.searchParams.get("payment")==="success"){u.searchParams.delete("payment");history.replaceState(history.state,"",u.pathname+(u.searchParams.toString()?"?"+u.searchParams.toString():"")+u.hash)}}catch(e){}
+    return true
+  }
+  function renderPaymentPending(wrap){
+    if(!wrap||wrap.querySelector(".eternaV16079PaymentPending"))return;
+    var note=document.createElement("div");note.className="eternaV16079PaymentPending";note.innerHTML='<b>✓ Pago recibido por Stripe</b><span>Estamos actualizando el estado de tu suscripción. No vuelvas a contratar otro plan mientras se confirma.</span><button type="button" data-et-v16079-refresh>Actualizar estado</button>';
+    var head=wrap.querySelector(".eternaV16061SubscriptionHead");if(head&&head.nextSibling)wrap.insertBefore(note,head.nextSibling);else wrap.appendChild(note);bindSubscriptionUi(wrap)
+  }
+  async function syncSubscriptionUi(wrap,force){
+    if(!wrap)return;
+    if(wrap.dataset.etSubscriptionSync==="loading"&&!force)return;wrap.dataset.etSubscriptionSync="loading";
+    var sub=await readSubscriptionUi(!!force);
+    if(activePaidSubscription(sub)){renderPaidSubscription(wrap,sub)}else if(paymentJustSucceeded()){renderPaymentPending(wrap);wrap.dataset.etPlanState="confirming"}
+    else wrap.dataset.etPlanState=sub&&sub.status||"unknown";
+    wrap.dataset.etSubscriptionSync="done";bindSubscriptionUi(wrap)
+  }
+
   function injectStyles(){
     if(document.getElementById("eterna-family-v16066-css"))return;
     var s=document.createElement("style");s.id="eterna-family-v16066-css";
@@ -2312,6 +2385,21 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
       "#cocoApp .eternaV16061SubscriptionTop>.eternaV160TrialActive,#cocoApp .eternaV16061SubscriptionTop>.eternaV160UpgradeWrap,#cocoApp .eternaV16061SubscriptionTop>.eternaV159Buttons{margin-left:0!important;margin-right:0!important}",
       "#cocoApp .eternaV16061TesterNote{margin:0 0 10px;padding:11px 13px;border:1px solid #ffd39d;border-radius:14px;background:#fff8e9;color:#173f59}",
       "#cocoApp .eternaV16061TesterNote b{display:block;font-size:13px}.eternaV16061TesterNote span{display:block;margin-top:3px;color:#6f7f88;font-size:10px;font-weight:750}",
+      "#cocoApp .eternaV16079CurrentPlan{display:grid;gap:12px;margin:0 0 12px;padding:15px;border:1px solid #b9dec9;border-radius:16px;background:linear-gradient(180deg,#f4fcf7,#eef9f3);box-shadow:0 3px 0 rgba(139,201,166,.28)}",
+      "#cocoApp .eternaV16079CurrentPlanHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}",
+      "#cocoApp .eternaV16079CurrentPlanLabel{display:inline-flex;padding:5px 9px;border-radius:999px;background:#20895a;color:#fff;font-size:9px;font-weight:950;letter-spacing:.06em}",
+      "#cocoApp .eternaV16079CurrentPlan h5{margin:6px 0 2px;color:#173f59;font-size:20px;line-height:1.08}",
+      "#cocoApp .eternaV16079CurrentPlanPrice{display:block;color:#20895a;font-size:13px;font-weight:950}",
+      "#cocoApp .eternaV16079CurrentPlanMeta{margin:0;color:#607987;font-size:10px;font-weight:800;line-height:1.45}",
+      "#cocoApp .eternaV16079PlanActions{display:flex;gap:8px;flex-wrap:wrap}",
+      "#cocoApp .eternaV16079PlanActions button{min-height:42px;padding:9px 13px;border-radius:12px;font:900 10.5px inherit;cursor:pointer}",
+      "#cocoApp .eternaV16079PlanActions .is-primary{border:0;background:#173f59;color:#fff;box-shadow:0 3px 0 #0e2b3e}",
+      "#cocoApp .eternaV16079PlanActions .is-secondary{border:1px solid #bdd8e4;background:#fff;color:#2d6884;box-shadow:0 2px 0 rgba(180,211,224,.5)}",
+      "#cocoApp .eternaV16079Alternative{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 13px;border:1px solid #f0d09f;border-radius:14px;background:#fffaf0;color:#173f59}",
+      "#cocoApp .eternaV16079Alternative b{display:block;font-size:12px}.eternaV16079Alternative span{display:block;margin-top:2px;color:#6b7880;font-size:9.5px;font-weight:750}",
+      "#cocoApp .eternaV16079Alternative button{min-height:38px;padding:8px 11px;border:0;border-radius:10px;background:#ef6c05;color:#fff;font:900 9.5px inherit;cursor:pointer}",
+      "#cocoApp .eternaV16079PaymentPending{margin:0 0 12px;padding:13px;border:1px solid #ffd39d;border-radius:14px;background:#fff8e9;color:#173f59}",
+      "#cocoApp .eternaV16079PaymentPending b{display:block;font-size:12px}.eternaV16079PaymentPending span{display:block;margin:3px 0 8px;color:#6f7f88;font-size:9.5px;font-weight:750;line-height:1.4}.eternaV16079PaymentPending button{min-height:36px;padding:7px 10px;border:0;border-radius:10px;background:#173f59;color:#fff;font:900 9.5px inherit;cursor:pointer}",
       "#cocoApp .eternaLegalV16058[data-et-family-legal-end='1']{margin-top:18px!important}",
       "#cocoApp .eternaV16061SubscriptionTop .eternaLegalV16058[data-et-family-legal-inline='1']{margin:12px 0!important;background:#fff!important;border-color:#cfe3ec!important;box-shadow:0 2px 0 rgba(200,220,230,.42)!important}",
       "#cocoApp .eternaV16061SubscriptionTop .eternaLegalV16058[data-et-family-legal-inline='1'] .eternaLegalV16058Head h4{font-size:17px!important}",
@@ -2372,7 +2460,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   function moveSubscriptionFirst(card){
     if(!card)return false;
     var existing=directChildren(card,"eternaV16061SubscriptionTop")[0];
-    if(existing){bindCreatedPlanButtons(existing);return true}
+    if(existing){bindCreatedPlanButtons(existing);syncSubscriptionUi(existing,false);return true}
 
     var status=card.querySelector(".eternaV159FamilyStatus"),statusText=clean(status&&status.textContent).toLowerCase();
     var trial=directChildren(card,"eternaV160TrialActive")[0]||null;
@@ -2404,6 +2492,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
 
     card.insertBefore(wrap,card.firstChild);
     bindCreatedPlanButtons(wrap);
+    syncSubscriptionUi(wrap,false);
     return true
   }
 

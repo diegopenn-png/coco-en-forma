@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.78 LIFETIME FIX · PWA estable + Safari macOS navigation preload */
-const CACHE_VERSION="coco-en-forma-v160.78-sw-lifetime-fix";
+/* Coco en Forma · Service Worker v160.79 SUBSCRIPTION UI · v160.78 lifetime fix preservado */
+const CACHE_VERSION="coco-en-forma-v160.79-subscription-ui";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
