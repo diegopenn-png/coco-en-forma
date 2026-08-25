@@ -1,4 +1,4 @@
-/* Coco en Forma · v160.76 RUNTIME STABILITY · Session bridge + ranking observer stabilization + Family/Safari preservados */
+/* Coco en Forma · v160.77 RUNTIME LOOP GUARD · Legacy observer filtrado + daily reads coalescidas + Family/Safari preservados */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -8,6 +8,83 @@
   var longTaskObserver=null,longTasks=[];
   var DESKTOP_SAFARI=/Safari\//.test(navigator.userAgent||"")&&!/(Chrome|Chromium|CriOS|FxiOS|EdgiOS|OPR)\//.test(navigator.userAgent||"")&&/Macintosh/.test(navigator.userAgent||"")&&Number(navigator.maxTouchPoints||0)===0;
   try{performance.mark("coco_boot_start")}catch(e){}
+
+  /* v160.77: intercept only the legacy scheduleUpgrade MutationObserver.
+     The legacy observer watched every childList mutation in #cocoApp, including
+     mutations created by upgradeAll() itself. That formed an endless feedback
+     loop. Keep legitimate structural upgrades, ignore self-generated polish. */
+  var legacyObserverGuardInstalled=false,legacyObserverInstances=0,legacyObserverDeliveries=0,legacyObserverIgnored=0;
+  var LEGACY_STRUCTURAL_SELECTOR=".cocoGameCard,[data-coco-juego],.cocoMiniJuego,.cocoMiniLista,#nPas,#nPas2,[data-password-recovery],.barraVolver,#cocoMedContenido,#medSiguiente,#medExplicarMejor,.cocoMedAutoNext,.caja,.juego-contenedor,.cocoFamiliaBtn,.cocoFamilyV129,#eternaLauncherV159,#retosCard,.retosCard,.cocoRetosNota,.carnet,.avatarCarnet,.cocoRanking,[data-coco-ranking]";
+  function legacyStructuralNode(node){
+    if(!node||node.nodeType!==1)return false;
+    try{
+      if(node.matches&&node.matches(LEGACY_STRUCTURAL_SELECTOR))return true;
+      return !!(node.querySelector&&node.querySelector(LEGACY_STRUCTURAL_SELECTOR))
+    }catch(e){return false}
+  }
+  function installLegacyObserverGuard(){
+    var Native=root.MutationObserver;
+    if(legacyObserverGuardInstalled||typeof Native!=="function"||Native.__cocoRuntime16077)return legacyObserverGuardInstalled;
+    function CocoMutationObserver(callback){
+      var name=String(callback&&callback.name||""),source="";
+      try{source=Function.prototype.toString.call(callback)}catch(e){}
+      var isLegacy=name==="scheduleUpgrade"||/^function\s+scheduleUpgrade\b/.test(source);
+      if(!isLegacy)return new Native(callback);
+      legacyObserverInstances++;
+      return new Native(function(records,observer){
+        for(var i=0;i<records.length;i++){
+          var added=records[i]&&records[i].addedNodes;
+          if(!added)continue;
+          for(var j=0;j<added.length;j++){
+            if(legacyStructuralNode(added[j])){
+              legacyObserverDeliveries++;
+              callback(records,observer);
+              return
+            }
+          }
+        }
+        legacyObserverIgnored++
+      })
+    }
+    CocoMutationObserver.prototype=Native.prototype;
+    try{Object.setPrototypeOf(CocoMutationObserver,Native)}catch(e){}
+    try{Object.defineProperty(CocoMutationObserver,"__cocoRuntime16077",{value:true})}catch(e){CocoMutationObserver.__cocoRuntime16077=true}
+    root.MutationObserver=CocoMutationObserver;
+    legacyObserverGuardInstalled=true;
+    return true
+  }
+  installLegacyObserverGuard();
+
+  /* v160.77: fail-safe for daily availability. Distinct cards may ask at once;
+     identical game/user/day reads are coalesced and cached briefly. The cache is
+     invalidated on coco:daily-updated so the one-play-per-day rule stays fresh. */
+  var dailyCanPlayCache=new Map(),dailyCanPlayInFlight=new Map(),dailyGuardInstalled=false,dailyGuardCalls=0,dailyGuardNativeCalls=0;
+  function localDayKey(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+  function clearDailyGuardCache(){dailyCanPlayCache.clear();dailyCanPlayInFlight.clear()}
+  function installDailyCanPlayGuard(){
+    var daily=root.CocoDailyV134;
+    if(!daily||typeof daily.canPlay!=="function")return false;
+    if(daily.canPlay.__cocoRuntime16077){dailyGuardInstalled=true;return true}
+    var nativeCanPlay=daily.canPlay;
+    function guardedCanPlay(gameId,userId){
+      dailyGuardCalls++;
+      var key=String(userId||"visitante")+"|"+String(gameId||"")+"|"+localDayKey(),now=Date.now(),hit=dailyCanPlayCache.get(key);
+      if(hit&&now-hit.at<5000)return Promise.resolve(hit.value);
+      if(dailyCanPlayInFlight.has(key))return dailyCanPlayInFlight.get(key);
+      dailyGuardNativeCalls++;
+      var p=Promise.resolve().then(function(){return nativeCanPlay.call(daily,gameId,userId)}).then(function(value){
+        dailyCanPlayCache.set(key,{value:value,at:Date.now()});return value
+      }).finally(function(){dailyCanPlayInFlight.delete(key)});
+      dailyCanPlayInFlight.set(key,p);return p
+    }
+    guardedCanPlay.__cocoRuntime16077=true;
+    guardedCanPlay.__cocoNative=nativeCanPlay;
+    try{daily.canPlay=guardedCanPlay}catch(e){return false}
+    dailyGuardInstalled=daily.canPlay===guardedCanPlay;
+    return dailyGuardInstalled
+  }
+  installDailyCanPlayGuard();
+  root.addEventListener("coco:daily-updated",function(){clearDailyGuardCache();installDailyCanPlayGuard()},{passive:true});
 
   /* v160.76: compatibility bridge for the inline arcade runtime.
      The current index calls arcadeSession() from refreshCardScore(), but that
@@ -26,7 +103,7 @@
   function bindArcadeAuth(cli){
     if(arcadeAuthBound||!cli||!cli.auth||typeof cli.auth.onAuthStateChange!=="function")return;
     arcadeAuthBound=true;
-    try{cli.auth.onAuthStateChange(function(_event,session){arcadeSessionCache=session||null;arcadeSessionCacheAt=Date.now()})}catch(e){}
+    try{cli.auth.onAuthStateChange(function(_event,session){arcadeSessionCache=session||null;arcadeSessionCacheAt=Date.now();clearDailyGuardCache()})}catch(e){}
   }
   if(typeof root.arcadeSession!=="function")root.arcadeSession=async function(){
     var now=Date.now();
@@ -41,10 +118,7 @@
     return arcadeSessionInFlight
   };
 
-  /* v160.76: the legacy inline bootstrap rewrites .cocoLigaBadge on every
-     upgradeAll(). Its own childList MutationObserver then schedules upgradeAll
-     again. Stabilizing only those badge innerHTML writes breaks that feedback
-     loop without suppressing legitimate DOM observation elsewhere. */
+  /* v160.76: idempotent ranking badge writes remain as a second guard. */
   var nativeInnerHTML=(typeof Element!=="undefined"&&Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML"))||null;
   function stabilizeRankingBadge(badge){
     if(!badge||badge.dataset.cocoStableInnerHtml==="16076")return badge;
@@ -205,7 +279,7 @@
     raf=0;
     var nodes=Array.from(queued);queued.clear();
     nodes.forEach(processNode);
-    root.COCO_VERSION="2026-08-25-v160.76-runtime-stability"
+    root.COCO_VERSION="2026-08-25-v160.77-runtime-loop-guard"
   }
 
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
@@ -213,6 +287,7 @@
   function initial(){
     var app=document.getElementById("cocoApp");
     try{performance.mark("coco_home_visible");performance.measure("coco_boot_to_home","coco_boot_start","coco_home_visible")}catch(e){}
+    installDailyCanPlayGuard();
     if(app){
       if(DESKTOP_SAFARI){
         var polish=function(){processNode(app)};
@@ -221,7 +296,7 @@
       }else processNode(app)
     }
     scheduleEternaIdle();
-    root.COCO_VERSION="2026-08-25-v160.76-runtime-stability"
+    root.COCO_VERSION="2026-08-25-v160.77-runtime-loop-guard"
   }
 
   function observe(){
@@ -260,12 +335,12 @@
     var measures=(performance.getEntriesByType&&performance.getEntriesByType("measure")||[]).filter(function(e){return /^(coco_|eterna_|family_)/.test(e.name)}).map(function(e){return{name:e.name,duration:Math.round(e.duration)}});
     var card=familyCardNode(),legalCount=card?card.querySelectorAll(".eternaLegalV16058").length:0;
     return{
-      version:"160.76-runtime-stability",
+      version:"160.77-runtime-loop-guard",
       desktopSafari:DESKTOP_SAFARI,
       navigation:nav?{domInteractive:Math.round(nav.domInteractive),domComplete:Math.round(nav.domComplete),loadEventEnd:Math.round(nav.loadEventEnd),type:nav.type}:null,
       resources:{count:resources.length,slowest:resources.slice(0,12)},
       family:{active:familyLifecycle.active,settled:familyLifecycle.settled,legalNodes:legalCount,canonicalLegal:!!canonicalLegalNode(card)},
-      knownRuntime:{bootstrapMutationObservers:1,eternaChatObserver:root.ETERNA_EXPERIENCE_V16049?1:0,familyLegalPolling:0,familyLayoutPolling:0,nameRetryChain:0,progressRetryChain:0,externalTelemetry:false},
+      knownRuntime:{bootstrapMutationObservers:1,legacyObserverGuard:legacyObserverGuardInstalled,eternaChatObserver:root.ETERNA_EXPERIENCE_V16049?1:0,familyLegalPolling:0,familyLayoutPolling:0,nameRetryChain:0,progressRetryChain:0,externalTelemetry:false},
       marks:marks,
       measures:measures,
       longTasks:longTasks.slice()
@@ -273,12 +348,36 @@
   }
 
   var perfApi=Object.freeze({startDiagnostics:startLongTaskDiagnostics,stopDiagnostics:stopLongTaskDiagnostics,diagnostics:diagnostics});
+  root.CocoPerformanceV16077=perfApi;
   root.CocoPerformanceV16076=perfApi;
   root.CocoPerformanceV16074=perfApi;
   root.CocoPerformanceV16072=perfApi;
-  root.CocoRuntimeStabilityV16076=Object.freeze({version:"160.76-runtime-stability",arcadeSessionBridge:typeof root.arcadeSession==="function",rankingBadgeGuard:true,audit:function(){return{arcadeSessionBridge:typeof root.arcadeSession==="function",stabilizedBadges:document.querySelectorAll("#cocoApp .cocoLigaBadge[data-coco-stable-inner-html='16076']").length}}});
+  root.CocoRuntimeStabilityV16077=Object.freeze({
+    version:"160.77-runtime-loop-guard",
+    arcadeSessionBridge:typeof root.arcadeSession==="function",
+    rankingBadgeGuard:true,
+    legacyObserverGuard:true,
+    dailyCanPlayGuard:true,
+    audit:function(){
+      installDailyCanPlayGuard();
+      return{
+        arcadeSessionBridge:typeof root.arcadeSession==="function",
+        stabilizedBadges:document.querySelectorAll("#cocoApp .cocoLigaBadge[data-coco-stable-inner-html='16076']").length,
+        legacyObserverGuardInstalled:legacyObserverGuardInstalled,
+        legacyObserverInstances:legacyObserverInstances,
+        legacyObserverDeliveries:legacyObserverDeliveries,
+        legacyObserverIgnored:legacyObserverIgnored,
+        dailyGuardInstalled:dailyGuardInstalled,
+        dailyGuardCalls:dailyGuardCalls,
+        dailyGuardNativeCalls:dailyGuardNativeCalls,
+        dailyCacheEntries:dailyCanPlayCache.size,
+        dailyInflight:dailyCanPlayInFlight.size
+      }
+    }
+  });
+  root.CocoRuntimeStabilityV16076=root.CocoRuntimeStabilityV16076||root.CocoRuntimeStabilityV16077;
 
   installEternaDemandLoader();
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){initial();observe()},{once:true});
-  else{initial();observe()}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){installDailyCanPlayGuard();initial();observe()},{once:true});
+  else{installDailyCanPlayGuard();initial();observe()}
 })(window);

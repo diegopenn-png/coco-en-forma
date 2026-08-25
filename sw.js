@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.76 RUNTIME STABILITY · PWA estable + Safari macOS navigation preload */
-const CACHE_VERSION="coco-en-forma-v160.76-runtime-stability";
+/* Coco en Forma · Service Worker v160.77 RUNTIME LOOP GUARD · PWA estable + Safari macOS navigation preload */
+const CACHE_VERSION="coco-en-forma-v160.77-runtime-loop-guard";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
