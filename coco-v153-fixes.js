@@ -1,4 +1,4 @@
-/* Coco en Forma · v160.73 STABILITY · Family lifecycle por eventos + Safari macOS por intención */
+/* Coco en Forma · v160.74 FINAL STABILIZATION · Family lifecycle por eventos + Safari macOS por intención */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -36,9 +36,9 @@
     root.__COCO_ETERNA_LOAD_INTENT__=intent;
     eternaPromise=new Promise(function(resolve,reject){
       var s=document.createElement("script");
-      s.src="./eterna-experience-v160.js?v=16073";
+      s.src="./eterna-experience-v160.js?v=16074";
       s.async=true;
-      s.dataset.cocoModule="eterna-experience-v16073";
+      s.dataset.cocoModule="eterna-experience-v16074";
       s.onload=function(){
         try{performance.mark("eterna_core_ready")}catch(e){}
         activateEternaModule(intent);
@@ -160,7 +160,7 @@
     raf=0;
     var nodes=Array.from(queued);queued.clear();
     nodes.forEach(processNode);
-    root.COCO_VERSION="2026-08-25-v160.73-stability"
+    root.COCO_VERSION="2026-08-25-v160.74-final"
   }
 
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
@@ -176,7 +176,7 @@
       }else processNode(app)
     }
     scheduleEternaIdle();
-    root.COCO_VERSION="2026-08-25-v160.73-stability"
+    root.COCO_VERSION="2026-08-25-v160.74-final"
   }
 
   function observe(){
@@ -215,7 +215,7 @@
     var measures=(performance.getEntriesByType&&performance.getEntriesByType("measure")||[]).filter(function(e){return /^(coco_|eterna_|family_)/.test(e.name)}).map(function(e){return{name:e.name,duration:Math.round(e.duration)}});
     var card=familyCardNode(),legalCount=card?card.querySelectorAll(".eternaLegalV16058").length:0;
     return{
-      version:"160.73-stability",
+      version:"160.74-final",
       desktopSafari:DESKTOP_SAFARI,
       navigation:nav?{domInteractive:Math.round(nav.domInteractive),domComplete:Math.round(nav.domComplete),loadEventEnd:Math.round(nav.loadEventEnd),type:nav.type}:null,
       resources:{count:resources.length,slowest:resources.slice(0,12)},
@@ -228,7 +228,7 @@
   }
 
   var perfApi=Object.freeze({startDiagnostics:startLongTaskDiagnostics,stopDiagnostics:stopLongTaskDiagnostics,diagnostics:diagnostics});
-  root.CocoPerformanceV16073=perfApi;
+  root.CocoPerformanceV16074=perfApi;
   root.CocoPerformanceV16072=perfApi;
 
   installEternaDemandLoader();
