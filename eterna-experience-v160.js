@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.70 · estructural + contexto UX
+/* ETERNA Experience v160.74 · final stabilization + contexto UX
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,11 +8,12 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.73-stability";
+  var VERSION="160.74-final-stabilization";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
-  var PENDING_JOB_KEY="coco_eterna_pending_job_v16073";
+  var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
-  var experienceActivated=false,resizeRaf=0,pendingJobResumePromise=null;
+  var experienceActivated=false,resizeRaf=0,pendingJobResumePromise=null,activeBackgroundJobId="";
+  var consumedResponseIds=new Set();
   var lastPedagogicalState=null;
   var voice=null;
   var voiceSendPending=false;
@@ -1161,6 +1162,38 @@
     try{localStorage.setItem(PENDING_JOB_KEY,JSON.stringify({id:String(id||""),at:Date.now()}))}catch(e){}
   }
 
+  function responseIdentity(response){
+    try{return clean(response&&response.headers&&response.headers.get("X-Eterna-Response-Id")||"")}catch(e){return""}
+  }
+
+  function markResponseConsumed(responseId){
+    responseId=clean(responseId);if(!responseId)return;
+    consumedResponseIds.add(responseId);
+    if(consumedResponseIds.size>80){var first=consumedResponseIds.values().next().value;if(first)consumedResponseIds.delete(first)}
+  }
+
+  function responseWasConsumed(responseId){return Boolean(responseId&&consumedResponseIds.has(clean(responseId)))}
+
+  function assistantReplyText(bubble){
+    if(!bubble)return"";
+    try{
+      var clone=bubble.cloneNode(true),checks=clone.querySelectorAll(".eternaV160ConversationCheck,[data-et-sources]");
+      checks.forEach(function(n){n.remove()});
+      return norm(clone.textContent)
+    }catch(e){return norm(bubble.textContent)}
+  }
+
+  function replyAlreadyVisible(reply){
+    var c=chat(),target=norm(reply);if(!c||!target)return false;
+    var rows=c.querySelectorAll(".eternaV159Msg.assistant .eternaV159Bubble");
+    for(var i=Math.max(0,rows.length-8);i<rows.length;i++){
+      var existing=assistantReplyText(rows[i]);
+      if(!existing)continue;
+      if(existing===target||existing.indexOf(target)===0||target.indexOf(existing)===0)return true
+    }
+    return false
+  }
+
   function pendingJobClear(id){
     try{
       var d=pendingJobRead();
@@ -1191,6 +1224,7 @@
       var response=await originalFetch(resultUrl,{method:"GET",headers:headers,cache:"no-store"});
       if(response.status===202){await delay(550);continue}
       if(response.status===404){pendingJobClear(jobId);throw new Error("ETERNA_BACKGROUND_RESULT_EXPIRED")}
+      var rid=responseIdentity(response);if(rid)markResponseConsumed(rid);
       pendingJobClear(jobId);
       return response
     }
@@ -1211,17 +1245,25 @@
       var job=await startResponse.json().catch(function(){return{}});
       if(!job.job_id)throw new Error("ETERNA_BACKGROUND_JOB_INVALID");
       pendingJobWrite(job.job_id);
-      return await pollChatJob(job.job_id,headers,Date.now())
+      activeBackgroundJobId=String(job.job_id);
+      try{return await pollChatJob(job.job_id,headers,Date.now())}
+      finally{if(activeBackgroundJobId===String(job.job_id))activeBackgroundJobId=""}
     }catch(e){
       /* No repetir /v1/chat tras un error de red ambiguo: el POST del job puede
          haber llegado al Worker aunque Safari/iOS haya perdido la respuesta. */
+      activeBackgroundJobId="";
       throw e
     }
   }
 
-  function recoveredReplyRow(data,jobId){
+  function recoveredReplyRow(data,jobId,responseId){
     var c=chat();if(!c||!data||!data.reply)return false;
-    if(c.querySelector('[data-et-recovered-job="'+String(jobId).replace(/"/g,"")+'"]'))return true;
+    responseId=clean(responseId);
+    if(responseWasConsumed(responseId)||replyAlreadyVisible(data.reply)){
+      if(responseId)markResponseConsumed(responseId);
+      return false
+    }
+    if(c.querySelector('[data-et-recovered-job="'+String(jobId).replace(/"/g,"")+'"]'))return false;
     var start=c.querySelector(".eternaV160Start");if(start)start.remove();
     var note=document.createElement("div");note.className="eternaV160MemoryNote";note.setAttribute("data-et-recovered-job",String(jobId));
     note.textContent="He recuperado la respuesta que Eterna estaba procesando mientras estabas fuera de la app.";
@@ -1238,6 +1280,7 @@
     var status=overlay()&&overlay().querySelector("[data-et-status]"),dot=overlay()&&overlay().querySelector("[data-et-dot]");
     if(status)status.textContent=data.verification_status==="verified"?"Eterna lista":"Eterna está revisando la respuesta";
     if(dot)dot.className="eternaV159Dot "+(data.verification_status==="verified"?"ok":"warn");
+    if(responseId)markResponseConsumed(responseId);
     c.scrollTop=c.scrollHeight;
     return true
   }
@@ -1245,6 +1288,9 @@
   async function resumePendingChatJob(){
     if(pendingJobResumePromise)return pendingJobResumePromise;
     var pending=pendingJobRead();if(!pending)return false;
+    /* Si el fetch original sigue vivo en esta misma página, él es el único consumidor.
+       Tras una recarga real de iOS este estado en memoria desaparece y resume sí actúa. */
+    if(activeBackgroundJobId&&String(activeBackgroundJobId)===String(pending.id))return false;
     pendingJobResumePromise=(async function(){
       try{
         var t=await authToken();if(!t)return false;
@@ -1254,14 +1300,18 @@
           return false
         }
         if(response.status===404){pendingJobClear(pending.id);return false}
-        var data=await response.clone().json().catch(function(){return{}});
+        var responseId=responseIdentity(response),data=await response.clone().json().catch(function(){return{}});
+        if(responseWasConsumed(responseId)||replyAlreadyVisible(data&&data.reply)){
+          if(responseId)markResponseConsumed(responseId);
+          pendingJobClear(pending.id);
+          return false
+        }
         pendingJobClear(pending.id);
         if(root.CocoEternaV160&&typeof root.CocoEternaV160.open==="function"){
           try{await root.CocoEternaV160.open()}catch(e){}
         }
         ensureOverlay();
-        recoveredReplyRow(data,pending.id);
-        return true
+        return recoveredReplyRow(data,pending.id,responseId)
       }catch(e){return false}
       finally{pendingJobResumePromise=null}
     })();
@@ -1281,7 +1331,7 @@
   }
 
   function installFetchWrapper(){
-    if(!originalFetch||root.fetch.__eternaExperience16073Wrapped)return;
+    if(!originalFetch||root.fetch.__eternaExperience16074Wrapped)return;
     var wrapped=async function(input,init){
       var url=typeof input==="string"?input:(input&&input.url)||"",isChat=/\/v1\/chat(?:\?|$)/.test(url);
       if(isChat){
@@ -1297,13 +1347,13 @@
         throw e
       }
     };
-    wrapped.__eternaExperience16073Wrapped=true;
+    wrapped.__eternaExperience16074Wrapped=true;
     root.fetch=wrapped
   }
 
   function installInteractionHooks(){
-    if(document.documentElement.dataset.eternaExperience16073==="1")return;
-    document.documentElement.dataset.eternaExperience16073="1";
+    if(document.documentElement.dataset.eternaExperience16074==="1")return;
+    document.documentElement.dataset.eternaExperience16074="1";
     document.addEventListener("click",function(event){
       try{
         var cancel=event.target&&event.target.closest?event.target.closest("[data-et-voice-cancel]"):null;
@@ -1623,7 +1673,7 @@
   scheduleName();
 
   root.ETERNA_LIMITS_IDENTITY_V16051={
-    version:"160.73",
+    version:"160.74",
     refreshName:refreshVisibleName,
     clearStaleLimit:clearStaleLimitHeader,
     decorateDaily:function(){return decorateLimit("daily")},
@@ -2159,7 +2209,7 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
 
   injectStyles();installFetchAwareness();installCapture();ensureChildLinks();ensureSignupLegalNotice();
   if(familyCard())renderLegalCard(false);
-  root.ETERNA_LEGAL_SHIELD_V16058=Object.freeze({version:"160.73",legal_version:LEGAL_VERSION,refresh:function(){invalidate();return renderLegalCard(true)},render:renderLegalCard,ensureCanonicalLegalNode:ensureCanonicalLegalNode,gateMic:function(mic){gateElement(mic,"mic")},consumeBypass:function(el){if(!el||!bypass.has(el))return false;bypass.delete(el);return true},cloudflare_required:"160.10-stability3",sql_required:false,no_global_observer:true,canonical_before_await:true,shared_legal_state_promise:true})
+  root.ETERNA_LEGAL_SHIELD_V16058=Object.freeze({version:"160.74",legal_version:LEGAL_VERSION,refresh:function(){invalidate();return renderLegalCard(true)},render:renderLegalCard,ensureCanonicalLegalNode:ensureCanonicalLegalNode,gateMic:function(mic){gateElement(mic,"mic")},consumeBypass:function(el){if(!el||!bypass.has(el))return false;bypass.delete(el);return true},cloudflare_required:"160.11-final4",sql_required:false,no_global_observer:true,canonical_before_await:true,shared_legal_state_promise:true})
 })(window);
 
 window.ETERNA_RELEASE_V16059=Object.freeze({
@@ -2209,7 +2259,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   if(root.__ETERNA_FAMILY_EMBEDDED_V16068__)return;
   root.__ETERNA_FAMILY_EMBEDDED_V16068__=true;
 
-  var VERSION="160.73-family-lifecycle";
+  var VERSION="160.74-family-lifecycle";
 
   function clean(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
   function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
@@ -2540,7 +2590,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
       refresh:applyFamilyLayout,
       schedule:scheduleFamilyLayout,
       extra_mutation_observer:false,
-      worker_required:"160.10-stability3"
+      worker_required:"160.11-final4"
     })
   }
 
