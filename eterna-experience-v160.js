@@ -8,7 +8,11 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.70-structural";
+  var VERSION="160.73-stability";
+  var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
+  var PENDING_JOB_KEY="coco_eterna_pending_job_v16073";
+  var BACKGROUND_JOB_TTL_MS=5*60*1000;
+  var experienceActivated=false,resizeRaf=0,pendingJobResumePromise=null;
   var lastPedagogicalState=null;
   var voice=null;
   var voiceSendPending=false;
@@ -113,6 +117,7 @@
       "@media(max-width:700px){#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead{align-items:flex-start!important;flex-direction:column!important}#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead button{width:100%!important}#cocoApp .eternaV160StrengthHero{grid-template-columns:auto minmax(0,1fr);align-items:start}#cocoApp .eternaV160NextStep{grid-column:1/-1}#cocoApp .eternaV160StrengthMap .eternaV160ProgressGrid{grid-template-columns:1fr!important}#cocoApp .eternaV159FamilyCard .eternaV160ProgressPanel.eternaV160StrengthMap{padding:14px!important;border-radius:19px!important}}",
       "@media(max-width:760px){#eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:17px!important}#eternaOverlayV159 .eternaV160MicSvg{width:24px!important;height:24px!important}}",
       "@media(max-width:640px){#eternaOverlayV159 .eternaV160LiveState{margin-bottom:7px;padding:8px 10px}#eternaOverlayV159 .eternaV160VoicePanel{align-items:flex-start;flex-wrap:wrap}#eternaOverlayV159 .eternaV160VoiceCopy{min-width:160px}#eternaOverlayV159 .eternaV160VoiceActions{width:100%;justify-content:flex-end}}",
+      "@media(max-width:760px){#eternaOverlayV159 .eternaV159Main{min-height:0!important;overflow:hidden!important}#eternaOverlayV159 .eternaV159Chat{scroll-padding-top:12px!important;scroll-padding-bottom:calc(118px + env(safe-area-inset-bottom))!important;padding-bottom:calc(22px + env(safe-area-inset-bottom))!important}#eternaOverlayV159 .eternaV159Msg{scroll-margin-top:12px!important;scroll-margin-bottom:18px!important}#eternaOverlayV159 .eternaV160ModeBar{position:relative!important;z-index:2!important;flex:0 0 auto!important}#eternaOverlayV159 .eternaV159Composer{position:relative!important;z-index:3!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important}#eternaOverlayV159 .eternaV159InputRow{align-items:center!important}}",
       "@media(prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160ThinkingDots i,#eternaOverlayV159 .eternaV160VoiceWave i,#eternaOverlayV159 [data-et-mic].recording::after,#cocoApp .eternaV160StrengthMap .eternaV160MasteryFill{animation:none!important;transition:none!important}}"
     ].join("");
     document.head.appendChild(s)
@@ -162,7 +167,8 @@
   }
 
   function scheduleHeaderStatus(){
-    [0,140].forEach(function(ms){setTimeout(normalizeHeaderStatus,ms)})
+    if(typeof queueMicrotask==="function")queueMicrotask(normalizeHeaderStatus);
+    else requestAnimationFrame(normalizeHeaderStatus)
   }
 
   function micIconMarkup(){
@@ -562,7 +568,7 @@
   }
 
   function scheduleLearningProgressMap(){
-    [0,260,900].forEach(function(ms){setTimeout(enhanceLearningProgressMap,ms)})
+    return enhanceLearningProgressMap()
   }
 
 
@@ -1143,8 +1149,139 @@
     return{input:input,init:init}
   }
 
+  function pendingJobRead(){
+    try{
+      var d=JSON.parse(localStorage.getItem(PENDING_JOB_KEY)||"null");
+      if(!d||!d.id||!d.at||Date.now()-Number(d.at)>BACKGROUND_JOB_TTL_MS){localStorage.removeItem(PENDING_JOB_KEY);return null}
+      return d
+    }catch(e){return null}
+  }
+
+  function pendingJobWrite(id){
+    try{localStorage.setItem(PENDING_JOB_KEY,JSON.stringify({id:String(id||""),at:Date.now()}))}catch(e){}
+  }
+
+  function pendingJobClear(id){
+    try{
+      var d=pendingJobRead();
+      if(!id||!d||String(d.id)===String(id))localStorage.removeItem(PENDING_JOB_KEY)
+    }catch(e){}
+  }
+
+  function waitForForeground(){
+    if(!document.hidden)return Promise.resolve();
+    return new Promise(function(resolve){
+      function done(){
+        if(document.hidden)return;
+        document.removeEventListener("visibilitychange",done);
+        root.removeEventListener("pageshow",done);
+        resolve()
+      }
+      document.addEventListener("visibilitychange",done,{passive:true});
+      root.addEventListener("pageshow",done,{passive:true})
+    })
+  }
+
+  function delay(ms){return new Promise(function(resolve){setTimeout(resolve,ms)})}
+
+  async function pollChatJob(jobId,headers,startedAt){
+    var resultUrl=endpoint("/v1/chat-result")+"?id="+encodeURIComponent(jobId),start=Number(startedAt||Date.now());
+    while(Date.now()-start<BACKGROUND_JOB_TTL_MS){
+      if(document.hidden)await waitForForeground();
+      var response=await originalFetch(resultUrl,{method:"GET",headers:headers,cache:"no-store"});
+      if(response.status===202){await delay(550);continue}
+      if(response.status===404){pendingJobClear(jobId);throw new Error("ETERNA_BACKGROUND_RESULT_EXPIRED")}
+      pendingJobClear(jobId);
+      return response
+    }
+    pendingJobClear(jobId);
+    throw new Error("ETERNA_BACKGROUND_RESULT_EXPIRED")
+  }
+
+  async function backgroundChatFetch(input,init){
+    var jobUrl=endpoint("/v1/chat-job");
+    if(!jobUrl||!init||typeof init.body!=="string")return originalFetch(input,init);
+    var headers=new Headers(init.headers||{});
+    try{
+      var startResponse=await originalFetch(jobUrl,{method:"POST",headers:headers,body:init.body,cache:"no-store"});
+      if(startResponse.status!==202){
+        if([404,405,501,503].indexOf(startResponse.status)>=0)return originalFetch(input,init);
+        return startResponse
+      }
+      var job=await startResponse.json().catch(function(){return{}});
+      if(!job.job_id)throw new Error("ETERNA_BACKGROUND_JOB_INVALID");
+      pendingJobWrite(job.job_id);
+      return await pollChatJob(job.job_id,headers,Date.now())
+    }catch(e){
+      /* No repetir /v1/chat tras un error de red ambiguo: el POST del job puede
+         haber llegado al Worker aunque Safari/iOS haya perdido la respuesta. */
+      throw e
+    }
+  }
+
+  function recoveredReplyRow(data,jobId){
+    var c=chat();if(!c||!data||!data.reply)return false;
+    if(c.querySelector('[data-et-recovered-job="'+String(jobId).replace(/"/g,"")+'"]'))return true;
+    var start=c.querySelector(".eternaV160Start");if(start)start.remove();
+    var note=document.createElement("div");note.className="eternaV160MemoryNote";note.setAttribute("data-et-recovered-job",String(jobId));
+    note.textContent="He recuperado la respuesta que Eterna estaba procesando mientras estabas fuera de la app.";
+    c.appendChild(note);
+    var row=document.createElement("div");row.className="eternaV159Msg assistant";
+    var bubble=document.createElement("div");bubble.className="eternaV159Bubble";bubble.textContent=clean(data.reply);
+    row.innerHTML='<div class="eternaV159Avatar" aria-hidden="true">✦</div>';
+    row.appendChild(bubble);c.appendChild(row);
+    if(data.check_question){
+      var check=document.createElement("div");check.className="eternaV160ConversationCheck";check.textContent=clean(data.check_question);bubble.appendChild(check)
+    }
+    if(data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
+    rememberSourceDisclosure(data);restoreRememberedSources(c);normalizeHeaderStatus();
+    var status=overlay()&&overlay().querySelector("[data-et-status]"),dot=overlay()&&overlay().querySelector("[data-et-dot]");
+    if(status)status.textContent=data.verification_status==="verified"?"Eterna lista":"Eterna está revisando la respuesta";
+    if(dot)dot.className="eternaV159Dot "+(data.verification_status==="verified"?"ok":"warn");
+    c.scrollTop=c.scrollHeight;
+    return true
+  }
+
+  async function resumePendingChatJob(){
+    if(pendingJobResumePromise)return pendingJobResumePromise;
+    var pending=pendingJobRead();if(!pending)return false;
+    pendingJobResumePromise=(async function(){
+      try{
+        var t=await authToken();if(!t)return false;
+        var response=await originalFetch(endpoint("/v1/chat-result")+"?id="+encodeURIComponent(pending.id),{method:"GET",headers:{Authorization:"Bearer "+t},cache:"no-store"});
+        if(response.status===202){
+          if(!document.hidden)setTimeout(function(){pendingJobResumePromise=null;resumePendingChatJob()},700);
+          return false
+        }
+        if(response.status===404){pendingJobClear(pending.id);return false}
+        var data=await response.clone().json().catch(function(){return{}});
+        pendingJobClear(pending.id);
+        if(root.CocoEternaV160&&typeof root.CocoEternaV160.open==="function"){
+          try{await root.CocoEternaV160.open()}catch(e){}
+        }
+        ensureOverlay();
+        recoveredReplyRow(data,pending.id);
+        return true
+      }catch(e){return false}
+      finally{pendingJobResumePromise=null}
+    })();
+    return pendingJobResumePromise
+  }
+
+  function handleChatResponse(response){
+    if(!response||response.status===401)return;
+    if(!response.ok)setLive("","");
+    response.clone().json().then(function(data){
+      if(data&&data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
+      rememberSourceDisclosure(data);
+      ensureOverlay();
+      queueNormalize();
+      normalizeHeaderStatus()
+    }).catch(function(){})
+  }
+
   function installFetchWrapper(){
-    if(!originalFetch||root.fetch.__eternaExperience16049Wrapped)return;
+    if(!originalFetch||root.fetch.__eternaExperience16073Wrapped)return;
     var wrapped=async function(input,init){
       var url=typeof input==="string"?input:(input&&input.url)||"",isChat=/\/v1\/chat(?:\?|$)/.test(url);
       if(isChat){
@@ -1152,33 +1289,21 @@
         showThinking()
       }
       try{
-        var response=await originalFetch(input,init);
-        if(isChat){
-          if(response.status!==401){
-            if(!response.ok)setTimeout(function(){setLive("","")},0);
-            response.clone().json().then(function(data){
-              if(data&&data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
-              rememberSourceDisclosure(data);
-              setTimeout(function(){ensureOverlay();queueNormalize();normalizeHeaderStatus()},0);
-              setTimeout(function(){queueNormalize();restoreRememberedSources(chat());normalizeHeaderStatus()},90);
-              setTimeout(function(){restoreRememberedSources(chat());normalizeHeaderStatus()},220);
-              setTimeout(normalizeHeaderStatus,360)
-            }).catch(function(){})
-          }
-        }
+        var response=isChat?await backgroundChatFetch(input,init):await originalFetch(input,init);
+        if(isChat)handleChatResponse(response);
         return response
       }catch(e){
         if(isChat)setLive("","");
         throw e
       }
     };
-    wrapped.__eternaExperience16049Wrapped=true;
+    wrapped.__eternaExperience16073Wrapped=true;
     root.fetch=wrapped
   }
 
   function installInteractionHooks(){
-    if(document.documentElement.dataset.eternaExperience16049==="1")return;
-    document.documentElement.dataset.eternaExperience16049="1";
+    if(document.documentElement.dataset.eternaExperience16073==="1")return;
+    document.documentElement.dataset.eternaExperience16073="1";
     document.addEventListener("click",function(event){
       try{
         var cancel=event.target&&event.target.closest?event.target.closest("[data-et-voice-cancel]"):null;
@@ -1210,25 +1335,46 @@
           }
         }
         var opener=event.target&&event.target.closest?event.target.closest("#eternaLauncherV159,.eternaLauncherCardV159,[data-et-changemode],[data-et-mode],[data-et-modechoice]"):null;
-        if(opener){setTimeout(ensureOverlay,0);setTimeout(function(){syncModePlaceholder();enforceSingleLineComposer()},90);scheduleHeaderStatus()}
-        var familyTrigger=event.target&&event.target.closest?event.target.closest(".cocoFamiliaBtn,[data-family-enter],[data-family-refresh],[data-et-trial],[data-et-save-settings],[data-et-family-limit]"):null;
-        if(familyTrigger)scheduleLearningProgressMap()
+        if(opener)requestAnimationFrame(function(){ensureOverlay();syncModePlaceholder();enforceSingleLineComposer();normalizeHeaderStatus()})
       }catch(e){}
     },true);
-    root.addEventListener("pageshow",function(){setTimeout(ensureOverlay,40);scheduleHeaderStatus();scheduleLearningProgressMap()});
-    root.addEventListener("resize",function(){setTimeout(enforceSingleLineComposer,40)},{passive:true});
+    root.addEventListener("pageshow",function(){
+      var o=overlay();
+      if(o&&o.classList.contains("is-open"))requestAnimationFrame(function(){ensureOverlay();normalizeHeaderStatus()});
+      resumePendingChatJob()
+    },{passive:true});
+    root.addEventListener("resize",function(){
+      if(resizeRaf)return;
+      resizeRaf=requestAnimationFrame(function(){resizeRaf=0;if(overlay())enforceSingleLineComposer()})
+    },{passive:true});
     document.addEventListener("visibilitychange",function(){
-      if(document.hidden&&voice&&voice.recorder&&voice.recorder.state==="recording")stopVoice(true,"interrupted")
+      if(document.hidden){
+        if(voice&&voice.recorder&&voice.recorder.state==="recording")stopVoice(true,"interrupted")
+      }else{
+        resumePendingChatJob()
+      }
     },{passive:true})
   }
 
+  function activateExperience(){
+    if(experienceActivated)return true;
+    experienceActivated=true;
+    LOAD_INTENT="eterna";
+    injectStyles();
+    installFetchWrapper();
+    installInteractionHooks();
+    if(document.getElementById("eternaOverlayV159"))ensureOverlay();
+    resumePendingChatJob();
+    return true
+  }
+
   injectStyles();
-  installFetchWrapper();
-  installInteractionHooks();
-  if(document.getElementById("eternaOverlayV159"))ensureOverlay();
   root.ETERNA_EXPERIENCE_V16049={
     version:VERSION,
     normalize:normalizeConversation,
+    activate:activateExperience,
+    resumePending:resumePendingChatJob,
+    enhanceFamilyProgress:enhanceLearningProgressMap,
     getPedagogicalState:function(){return lastPedagogicalState},
     resetPedagogicalState:function(){
       lastPedagogicalState=null;
@@ -1241,11 +1387,13 @@
       audioSettingsCache={at:0,allowed:null};
       voiceStudentProfileCache={uid:"",age:null,stage:null,school_year:null,at:0};
       sourceMemory=[];
+      pendingJobClear();
       try{if(voice)stopVoice(true,"session-change")}catch(e){}
       voice=null;
       setLive("","")
     }
   };
+  activateExperience()
 })(window);
 
 
@@ -1261,7 +1409,7 @@
   root.__ETERNA_LIMITS_IDENTITY_V16051__=true;
 
   var previousFetch=typeof root.fetch==="function"?root.fetch.bind(root):null;
-  var lastLimitType=null;
+  var lastLimitType=null,limitRaf=0;
 
   function overlay(){return document.getElementById("eternaOverlayV159")}
   function clean(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
@@ -1326,34 +1474,14 @@
   }
 
   function openFamilyZone(){
-    var o=overlay();
-
-    /* Cierra Eterna usando su propio botón y, como respaldo, libera el scroll.
-       No toca ninguna lógica ni dato de Zona Familiar. */
-    var close=o&&o.querySelector(".eternaV159Close");
+    var o=overlay(),close=o&&o.querySelector(".eternaV159Close");
     try{if(close)close.click()}catch(e){}
-    try{
-      if(o)o.classList.remove("is-open");
-      document.body.style.overflow=""
-    }catch(e){}
-
-    var attempts=0;
-    function tryOpen(){
-      if(focusFamilyGate())return;
-      var b=bestFamilyButton();
-      if(b){
-        try{b.click()}catch(e){
-          try{b.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true,view:window}))}catch(_e){}
-        }
-      }
-      if(focusFamilyGate())return;
-      attempts++;
-      if(attempts<7)setTimeout(tryOpen,attempts<3?80:160)
+    try{if(o)o.classList.remove("is-open");document.body.style.overflow=""}catch(e){}
+    var b=bestFamilyButton();
+    if(b){
+      try{b.click()}catch(e){try{b.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true,view:window}))}catch(_e){}}
     }
-
-    requestAnimationFrame(function(){
-      requestAnimationFrame(tryOpen)
-    })
+    requestAnimationFrame(focusFamilyGate)
   }
 
   function decorateLimit(type){
@@ -1408,13 +1536,26 @@
   }
 
   function scheduleName(){
-    [0,80,220,600,1400].forEach(function(ms){setTimeout(refreshVisibleName,ms)})
+    requestAnimationFrame(refreshVisibleName)
+  }
+
+  function syncLimitHeader(type){
+    var o=overlay(),s=o&&o.querySelector("[data-et-status]"),d=o&&o.querySelector("[data-et-dot]");
+    if(!s)return;
+    if(type==="weekly")s.textContent="Límite semanal alcanzado";
+    else if(type==="daily")s.textContent="Límite diario alcanzado";
+    if(d)d.className="eternaV159Dot warn"
+  }
+
+  function clearStaleLimitHeader(){
+    var o=overlay(),s=o&&o.querySelector("[data-et-status]"),d=o&&o.querySelector("[data-et-dot]");
+    if(!s||!/l[ií]mite\s+(diario|semanal)/i.test(String(s.textContent||"")))return;
+    s.textContent="Eterna lista";if(d)d.className="eternaV159Dot ok"
   }
 
   function scheduleLimit(type){
-    [0,30,80,160,300,600,1000].forEach(function(ms){
-      setTimeout(function(){decorateLimit(type)},ms)
-    })
+    if(limitRaf)cancelAnimationFrame(limitRaf);
+    limitRaf=requestAnimationFrame(function(){limitRaf=0;decorateLimit(type);syncLimitHeader(type)})
   }
 
   function installFetchWrapper(){
@@ -1444,6 +1585,9 @@
         if(data&&data.error==="ETERNA_DAILY_LIMIT"){
           lastLimitType="daily";
           scheduleLimit("daily");
+        }else if(response.ok){
+          lastLimitType=null;
+          requestAnimationFrame(clearStaleLimitHeader)
         }
       }catch(e){}
       return response
@@ -1470,7 +1614,7 @@
       }catch(e){}
     },true);
 
-    root.addEventListener("pageshow",scheduleName)
+    root.addEventListener("pageshow",function(){if(overlay())scheduleName()},{passive:true})
   }
 
   injectLimitStyles();
@@ -1479,8 +1623,9 @@
   scheduleName();
 
   root.ETERNA_LIMITS_IDENTITY_V16051={
-    version:"160.51",
+    version:"160.73",
     refreshName:refreshVisibleName,
+    clearStaleLimit:clearStaleLimitHeader,
     decorateDaily:function(){return decorateLimit("daily")},
     decorateWeekly:function(){return decorateLimit("weekly")}
   };
@@ -1760,8 +1905,8 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
   root.__ETERNA_LEGAL_SHIELD_V16058__=true;
 
   var LEGAL_VERSION="2026-08-23-v1";
-  var stateCache=null,stateAt=0,backendAvailable=null;
-  var bypass=new WeakSet(),pendingFamilyAttempts=0;
+  var stateCache=null,stateAt=0,backendAvailable=null,legalStatePromise=null,legalRenderPromise=null;
+  var bypass=new WeakSet();
   var originalFetch=typeof root.fetch==="function"?root.fetch.bind(root):null;
 
   function endpoint(path){var c=root.COCO_CONFIG||{},b=String(c.eternaEndpoint||"").replace(/\/+$/,"");return b?b+(String(path||"").charAt(0)==="/"?path:"/"+path):""}
@@ -1798,19 +1943,25 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
   }
 
   async function legalState(force){
-    if(!force&&stateCache&&Date.now()-stateAt<60000)return stateCache;
-    var t=await token(),url=endpoint("/v1/legal-consent");
-    if(!t||!url)return{required:false,accepted:true,backend_available:false};
-    try{
-      var r=await originalFetch(url,{method:"GET",headers:{Authorization:"Bearer "+t,"Cache-Control":"no-store"}});
-      if(r.status===404){backendAvailable=false;return{required:false,accepted:true,backend_available:false}}
-      var d=await r.json().catch(function(){return{}});
-      if(!r.ok)throw new Error(d.error||("LEGAL_"+r.status));
-      backendAvailable=true;d.backend_available=true;stateCache=d;stateAt=Date.now();return d
-    }catch(e){
-      if(backendAvailable===false)return{required:false,accepted:true,backend_available:false};
-      return{required:false,accepted:true,backend_available:false,temporary_error:true}
-    }
+    if(force){stateCache=null;stateAt=0}
+    if(stateCache&&Date.now()-stateAt<60000)return stateCache;
+    if(legalStatePromise)return legalStatePromise;
+    var task=(async function(){
+      var t=await token(),url=endpoint("/v1/legal-consent");
+      if(!t||!url)return{required:false,accepted:true,backend_available:false};
+      try{
+        var r=await originalFetch(url,{method:"GET",headers:{Authorization:"Bearer "+t,"Cache-Control":"no-store"}});
+        if(r.status===404){backendAvailable=false;return{required:false,accepted:true,backend_available:false}}
+        var d=await r.json().catch(function(){return{}});
+        if(!r.ok)throw new Error(d.error||("LEGAL_"+r.status));
+        backendAvailable=true;d.backend_available=true;stateCache=d;stateAt=Date.now();return d
+      }catch(e){
+        if(backendAvailable===false)return{required:false,accepted:true,backend_available:false};
+        return{required:false,accepted:true,backend_available:false,temporary_error:true}
+      }
+    })();
+    legalStatePromise=task;
+    try{return await task}finally{if(legalStatePromise===task)legalStatePromise=null}
   }
 
   async function postLegal(body){
@@ -1859,50 +2010,103 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
     '<a href="/suscripciones-y-desistimiento.html" target="_blank" rel="noopener">Suscripción y desistimiento</a></div>'}
 
   function familyCard(){return document.querySelector("#cocoApp .eternaV159FamilyCard")}
-  function legalNode(){return document.querySelector("#cocoApp .eternaLegalV16058")}
+  function legalNode(card){var scope=card||familyCard();return scope&&scope.querySelector(".eternaLegalV16058[data-et-legal-canonical='1'],.eternaLegalV16058")}
   function message(node,text,kind){var m=node&&node.querySelector(".eternaLegalV16058Msg");if(m){m.textContent=String(text||"");m.className="eternaLegalV16058Msg"+(kind?" "+kind:"")}}
 
-  async function renderLegalCard(force){
-    injectStyles();var card=familyCard();if(!card)return false;
-    var old=legalNode();if(old&&!force)return true;if(old)old.remove();
-    var st=await legalState(force),node=document.createElement("section");node.className="eternaLegalV16058"+(st.accepted?" is-ok":"");node.setAttribute("aria-label","Autorización y privacidad de Eterna");
-    var minor=st.minor!==false;
-    if(st.accepted){
-      node.innerHTML='<div class="eternaLegalV16058Head"><div><span>PRIVACIDAD Y AUTORIZACIÓN</span><h4>Autorización registrada</h4><p>La cuenta tiene registrada la versión legal '+esc(st.legal_version||LEGAL_VERSION)+' para Eterna.</p></div><b class="eternaLegalV16058Badge">Protección activa ✓</b></div>'+legalLinks()+
-        '<div class="eternaLegalV16058Actions"><button type="button" class="eternaLegalDangerV16058" data-legal-withdraw>Retirar autorización</button></div><div class="eternaLegalV16058Msg" aria-live="polite"></div>';
+  function ensureCanonicalLegalNode(card){
+    if(!card)return null;
+    var node=legalNode(card);
+    if(!node){
+      node=document.createElement("section");
+      node.className="eternaLegalV16058";
+      node.setAttribute("data-et-legal-canonical","1");
+      node.setAttribute("aria-label","Autorización y privacidad de Eterna");
+      node.innerHTML='<div class="eternaLegalV16058Head"><div><span>PRIVACIDAD Y AUTORIZACIÓN</span><h4>Comprobando autorización…</h4><p>Estamos comprobando el estado registrado de esta cuenta.</p></div><b class="eternaLegalV16058Badge">Comprobando</b></div>';
+      var scope=card.querySelector(".eternaV160FamilyScope"),target=scope&&scope.nextSibling;
+      card.insertBefore(node,target||card.firstChild)
     }else{
-      var emailCopy=st.email_verified===false?'Antes de confirmar, verifica el correo electrónico del adulto responsable.':'La aceptación queda registrada con la cuenta, la versión documental y la fecha.';
-      node.innerHTML='<div class="eternaLegalV16058Head"><div><span>PRIVACIDAD Y AUTORIZACIÓN</span><h4>'+(minor?'Un adulto debe autorizar Eterna':'Aceptación legal de Eterna')+'</h4><p>'+emailCopy+'</p></div><b class="eternaLegalV16058Badge">Pendiente</b></div>'+legalLinks()+
-        '<div class="eternaLegalV16058Form">'+
-          (minor?'<label class="eternaLegalV16058Relation">Relación con el menor<select data-legal-relation><option value="">Selecciona</option><option value="parent">Padre</option><option value="mother">Madre</option><option value="legal_guardian">Tutor/a legal</option></select></label>':'')+
-          '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-authority><span>'+(minor?'Confirmo que soy mayor de 18 años y padre, madre o tutor/a legal del menor asociado a esta cuenta, y autorizo su uso de Eterna.':'Confirmo que soy mayor de 18 años y titular de esta cuenta.')+'</span></label>'+
-          '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-docs><span>He leído y acepto los Términos y la Política de Privacidad aplicables a Eterna.</span></label>'+
-          '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-ai><span>Entiendo que Eterna es una inteligencia artificial, puede equivocarse y es una herramienta de apoyo escolar, no una persona ni un sustituto de docentes o profesionales.</span></label>'+
-        '</div><div class="eternaLegalV16058Actions"><button type="button" class="eternaLegalPrimaryV16058" data-legal-accept>Confirmar autorización y continuar</button>'+(st.email_verified===false?'<button type="button" class="eternaLegalSecondaryV16058" data-legal-resend>Enviar verificación de correo</button>':'')+'</div><div class="eternaLegalV16058Msg" aria-live="polite"></div>';
+      node.setAttribute("data-et-legal-canonical","1")
     }
-    var scope=card.querySelector(".eternaV160FamilyScope"),target=scope&&scope.nextSibling;card.insertBefore(node,target||card.firstChild);
-    bindLegalCheckRows(node);
-    var accept=node.querySelector("[data-legal-accept]");if(accept)accept.onclick=async function(){
-      var authority=node.querySelector("[data-legal-authority]"),docs=node.querySelector("[data-legal-docs]"),ai=node.querySelector("[data-legal-ai]"),rel=node.querySelector("[data-legal-relation]");
-      if(!authority.checked||!docs.checked||!ai.checked||(minor&&(!rel||!rel.value))){message(node,"Completa las confirmaciones y, si corresponde, la relación con el menor.","error");return}
-      accept.disabled=true;message(node,"Registrando la autorización…","");
-      try{await postLegal({action:"accept",relationship:minor?rel.value:"adult_user",terms_accepted:true,privacy_accepted:true,ai_notice_accepted:true,parental_authorization:minor});message(node,"Autorización registrada correctamente.","ok");setTimeout(function(){renderLegalCard(true)},450)}catch(e){accept.disabled=false;if(e.code==="ADULT_EMAIL_VERIFICATION_REQUIRED")message(node,"Primero confirma el correo electrónico del adulto y vuelve a intentarlo.","error");else message(node,"No se pudo registrar la autorización. Inténtalo de nuevo.","error")}
-    };
-    var resend=node.querySelector("[data-legal-resend]");if(resend)resend.onclick=async function(){var c=getClient(),s=await session(),email=s&&s.user&&s.user.email;if(!c||!email){message(node,"No se encontró el correo de la cuenta.","error");return}resend.disabled=true;try{var r=await c.auth.resend({type:"signup",email:email});if(r&&r.error)throw r.error;message(node,"Te hemos enviado un correo de verificación. Después vuelve a entrar en Zona Familiar.","ok")}catch(e){message(node,"No se pudo enviar el correo de verificación.","error")}finally{resend.disabled=false}};
-    var withdraw=node.querySelector("[data-legal-withdraw]");if(withdraw)withdraw.onclick=async function(){if(!confirm("Retirar la autorización bloqueará Eterna hasta que un adulto vuelva a autorizarla. Esto no cancela por sí solo una suscripción de pago. ¿Continuar?"))return;withdraw.disabled=true;try{await postLegal({action:"withdraw"});invalidate();await renderLegalCard(true);alert("Autorización retirada. Si existe una suscripción de pago y no quieres futuras renovaciones, gestiona también la suscripción desde Zona Familiar.")}catch(e){withdraw.disabled=false;message(node,"No se pudo retirar la autorización.","error")}};
-    return true
+    return node
   }
 
-  function scheduleFamilyLegal(){[80,220,500,900,1500,2400].forEach(function(ms){setTimeout(function(){renderLegalCard(false)},ms)})}
+  async function renderLegalCard(force){
+    injectStyles();
+    var card=familyCard();if(!card)return false;
+    var node=ensureCanonicalLegalNode(card);if(!node)return false;
+    if(legalRenderPromise)return legalRenderPromise;
+    var task=(async function(){
+      var st=await legalState(force);
+      if(!document.body.contains(card)||!document.body.contains(node))return false;
+      var minor=st.minor!==false;
+      node.className="eternaLegalV16058"+(st.accepted?" is-ok":"");
+      node.setAttribute("data-et-legal-canonical","1");
+      node.setAttribute("aria-label","Autorización y privacidad de Eterna");
+      if(st.accepted){
+        node.innerHTML='<div class="eternaLegalV16058Head"><div><span>PRIVACIDAD Y AUTORIZACIÓN</span><h4>Autorización registrada</h4><p>La cuenta tiene registrada la versión legal '+esc(st.legal_version||LEGAL_VERSION)+' para Eterna.</p></div><b class="eternaLegalV16058Badge">Protección activa ✓</b></div>'+legalLinks()+
+          '<div class="eternaLegalV16058Actions"><button type="button" class="eternaLegalDangerV16058" data-legal-withdraw>Retirar autorización</button></div><div class="eternaLegalV16058Msg" aria-live="polite"></div>';
+      }else{
+        var emailCopy=st.email_verified===false?'Antes de confirmar, verifica el correo electrónico del adulto responsable.':'La aceptación queda registrada con la cuenta, la versión documental y la fecha.';
+        node.innerHTML='<div class="eternaLegalV16058Head"><div><span>PRIVACIDAD Y AUTORIZACIÓN</span><h4>'+(minor?'Un adulto debe autorizar Eterna':'Aceptación legal de Eterna')+'</h4><p>'+emailCopy+'</p></div><b class="eternaLegalV16058Badge">Pendiente</b></div>'+legalLinks()+
+          '<div class="eternaLegalV16058Form">'+
+            (minor?'<label class="eternaLegalV16058Relation">Relación con el menor<select data-legal-relation><option value="">Selecciona</option><option value="parent">Padre</option><option value="mother">Madre</option><option value="legal_guardian">Tutor/a legal</option></select></label>':'')+
+            '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-authority><span>'+(minor?'Confirmo que soy mayor de 18 años y padre, madre o tutor/a legal del menor asociado a esta cuenta, y autorizo su uso de Eterna.':'Confirmo que soy mayor de 18 años y titular de esta cuenta.')+'</span></label>'+
+            '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-docs><span>He leído y acepto los Términos y la Política de Privacidad aplicables a Eterna.</span></label>'+
+            '<label class="eternaLegalV16058Check"><input type="checkbox" data-legal-ai><span>Entiendo que Eterna es una inteligencia artificial, puede equivocarse y es una herramienta de apoyo escolar, no una persona ni un sustituto de docentes o profesionales.</span></label>'+
+          '</div><div class="eternaLegalV16058Actions"><button type="button" class="eternaLegalPrimaryV16058" data-legal-accept>Confirmar autorización y continuar</button>'+(st.email_verified===false?'<button type="button" class="eternaLegalSecondaryV16058" data-legal-resend>Enviar verificación de correo</button>':'')+'</div><div class="eternaLegalV16058Msg" aria-live="polite"></div>';
+      }
+      bindLegalCheckRows(node);
+      var accept=node.querySelector("[data-legal-accept]");if(accept)accept.onclick=async function(){
+        var authority=node.querySelector("[data-legal-authority]"),docs=node.querySelector("[data-legal-docs]"),ai=node.querySelector("[data-legal-ai]"),rel=node.querySelector("[data-legal-relation]");
+        if(!authority||!docs||!ai||!authority.checked||!docs.checked||!ai.checked||(minor&&(!rel||!rel.value))){message(node,"Completa las confirmaciones y, si corresponde, la relación con el menor.","error");return}
+        accept.disabled=true;message(node,"Registrando la autorización…","");
+        try{
+          await postLegal({action:"accept",relationship:minor?rel.value:"adult_user",terms_accepted:true,privacy_accepted:true,ai_notice_accepted:true,parental_authorization:minor});
+          message(node,"Autorización registrada correctamente.","ok");
+          await renderLegalCard(false)
+        }catch(e){
+          accept.disabled=false;
+          if(e.code==="ADULT_EMAIL_VERIFICATION_REQUIRED")message(node,"Primero confirma el correo electrónico del adulto y vuelve a intentarlo.","error");
+          else message(node,"No se pudo registrar la autorización. Inténtalo de nuevo.","error")
+        }
+      };
+      var resend=node.querySelector("[data-legal-resend]");if(resend)resend.onclick=async function(){var c=getClient(),s=await session(),email=s&&s.user&&s.user.email;if(!c||!email){message(node,"No se encontró el correo de la cuenta.","error");return}resend.disabled=true;try{var r=await c.auth.resend({type:"signup",email:email});if(r&&r.error)throw r.error;message(node,"Te hemos enviado un correo de verificación. Después vuelve a entrar en Zona Familiar.","ok")}catch(e){message(node,"No se pudo enviar el correo de verificación.","error")}finally{resend.disabled=false}};
+      var withdraw=node.querySelector("[data-legal-withdraw]");if(withdraw)withdraw.onclick=async function(){if(!confirm("Retirar la autorización bloqueará Eterna hasta que un adulto vuelva a autorizarla. Esto no cancela por sí solo una suscripción de pago. ¿Continuar?"))return;withdraw.disabled=true;try{await postLegal({action:"withdraw"});await renderLegalCard(false);alert("Autorización retirada. Si existe una suscripción de pago y no quieres futuras renovaciones, gestiona también la suscripción desde Zona Familiar.")}catch(e){withdraw.disabled=false;message(node,"No se pudo retirar la autorización.","error")}};
+      try{performance.mark("family_legal_ready")}catch(e){}
+      try{root.dispatchEvent(new CustomEvent("coco:family-legal-ready",{detail:{card:card,node:node,state:st}}))}catch(e){}
+      return true
+    })();
+    legalRenderPromise=task;
+    try{return await task}finally{if(legalRenderPromise===task)legalRenderPromise=null}
+  }
 
-  function openFamily(){
+  function waitForFamilyCard(){
+    var card=familyCard();if(card)return Promise.resolve(card);
+    return new Promise(function(resolve){
+      function ready(event){
+        var c=event&&event.detail&&event.detail.card||familyCard();
+        if(!c)return;
+        root.removeEventListener("coco:family-card-ready",ready);
+        resolve(c)
+      }
+      root.addEventListener("coco:family-card-ready",ready)
+    })
+  }
+
+  async function openFamily(){
     var o=document.getElementById("eternaOverlayV159"),close=o&&o.querySelector(".eternaV159Close");try{if(close)close.click()}catch(e){}
-    var tries=0;function go(){var b=document.querySelector("#cocoApp .cocoFamiliaBtn,.cocoFamiliaBtn");if(b){try{b.click()}catch(e){}scheduleFamilyLegal();return}if(++tries<7)setTimeout(go,120)}setTimeout(go,80)
+    var b=document.querySelector("#cocoApp .cocoFamiliaBtn,.cocoFamiliaBtn");if(!b)return null;
+    try{b.click()}catch(e){}
+    return await waitForFamilyCard()
   }
 
-  function legalRequiredNotice(){openFamily();setTimeout(function(){var n=legalNode();if(n){try{n.scrollIntoView({behavior:"smooth",block:"center"})}catch(e){}message(n,"Confirma la autorización antes de continuar con Eterna.","error")}},1000)}
+  async function legalRequiredNotice(){
+    var card=await openFamily();if(!card)return;
+    await renderLegalCard(false);
+    var n=legalNode(card);if(n){try{n.scrollIntoView({behavior:"smooth",block:"center"})}catch(e){}message(n,"Confirma la autorización antes de continuar con Eterna.","error")}
+  }
 
-  function replay(el){if(!el)return;bypass.add(el);setTimeout(function(){try{el.click()}catch(e){}},0)}
+  function replay(el){if(!el)return;bypass.add(el);if(typeof queueMicrotask==="function")queueMicrotask(function(){try{el.click()}catch(e){}});else requestAnimationFrame(function(){try{el.click()}catch(e){}})}
 
   function purchaseModal(plan,sourceButton){
     injectStyles();var old=document.querySelector(".eternaLegalModalV16058");if(old)old.remove();
@@ -1926,12 +2130,12 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
   }
 
   function installCapture(){
-    if(document.documentElement.dataset.eternaLegalV16058==="1")return;document.documentElement.dataset.eternaLegalV16058="1";
+    if(document.documentElement.dataset.eternaLegalV16073==="1")return;document.documentElement.dataset.eternaLegalV16073="1";
     document.addEventListener("click",function(event){
       try{
-        var family=event.target&&event.target.closest?event.target.closest(".cocoFamiliaBtn,[data-family-enter]"):null;if(family)scheduleFamilyLegal();
         var el=event.target&&event.target.closest?event.target.closest("#eternaOverlayV159 [data-et-send],#eternaOverlayV159 [data-et-mic],#cocoApp [data-et-trial],#cocoApp [data-et-month],#cocoApp [data-et-year]"):null;
         if(!el)return;if(bypass.has(el)){bypass.delete(el);return}
+        ensureChildLinks();
         event.preventDefault();event.stopImmediatePropagation();
         var kind=el.matches("[data-et-month]")?"monthly":el.matches("[data-et-year]")?"annual":el.matches("[data-et-trial]")?"trial":el.matches("[data-et-mic]")?"mic":"send";gateElement(el,kind)
       }catch(e){}
@@ -1939,7 +2143,8 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
     document.addEventListener("keydown",function(event){
       try{var input=event.target&&event.target.matches&&event.target.matches("#eternaOverlayV159 [data-et-input]")?event.target:null;if(!input||event.key!=="Enter"||event.shiftKey)return;var send=document.querySelector("#eternaOverlayV159 [data-et-send]");if(!send)return;event.preventDefault();event.stopImmediatePropagation();gateElement(send,"send")}catch(e){}
     },true);
-    root.addEventListener("pageshow",function(){scheduleFamilyLegal();ensureChildLinks();ensureSignupLegalNotice();invalidate()})
+    root.addEventListener("coco:family-card-ready",function(){renderLegalCard(false)},{passive:true});
+    root.addEventListener("pageshow",function(){invalidate();ensureChildLinks();ensureSignupLegalNotice();if(familyCard())renderLegalCard(false)},{passive:true})
   }
 
   function ensureChildLinks(){
@@ -1952,9 +2157,9 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
     var wrapped=async function(input,init){var r=await originalFetch(input,init),url=typeof input==="string"?input:(input&&input.url)||"";if(/\/v1\/(chat|transcribe|speak|feedback|trial|checkout)(?:\?|$)/.test(url)&&r.status===403){try{var d=await r.clone().json();if(d&&d.error==="ETERNA_LEGAL_ACCEPTANCE_REQUIRED"){invalidate();legalRequiredNotice()}}catch(e){}}return r};wrapped.__eternaLegal16058Wrapped=true;root.fetch=wrapped
   }
 
-  injectStyles();installFetchAwareness();installCapture();
-  [0,120,400,900].forEach(function(ms){setTimeout(ensureChildLinks,ms);setTimeout(ensureSignupLegalNotice,ms)});setTimeout(scheduleFamilyLegal,200);
-  root.ETERNA_LEGAL_SHIELD_V16058=Object.freeze({version:"160.58",legal_version:LEGAL_VERSION,refresh:function(){invalidate();scheduleFamilyLegal()},gateMic:function(mic){gateElement(mic,"mic")},consumeBypass:function(el){if(!el||!bypass.has(el))return false;bypass.delete(el);return true},cloudflare_required:"160.4-legal1",sql_required:true,no_global_observer:true})
+  injectStyles();installFetchAwareness();installCapture();ensureChildLinks();ensureSignupLegalNotice();
+  if(familyCard())renderLegalCard(false);
+  root.ETERNA_LEGAL_SHIELD_V16058=Object.freeze({version:"160.73",legal_version:LEGAL_VERSION,refresh:function(){invalidate();return renderLegalCard(true)},render:renderLegalCard,ensureCanonicalLegalNode:ensureCanonicalLegalNode,gateMic:function(mic){gateElement(mic,"mic")},consumeBypass:function(el){if(!el||!bypass.has(el))return false;bypass.delete(el);return true},cloudflare_required:"160.10-stability3",sql_required:false,no_global_observer:true,canonical_before_await:true,shared_legal_state_promise:true})
 })(window);
 
 window.ETERNA_RELEASE_V16059=Object.freeze({
@@ -2004,8 +2209,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   if(root.__ETERNA_FAMILY_EMBEDDED_V16068__)return;
   root.__ETERNA_FAMILY_EMBEDDED_V16068__=true;
 
-  var VERSION="160.70-family-embedded";
-  var retryTimers=[];
+  var VERSION="160.73-family-lifecycle";
 
   function clean(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
   function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
@@ -2169,9 +2373,9 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     if(!card)return false;
     var subscription=card.querySelector(".eternaV16061SubscriptionTop");
     var trialButton=subscription&&subscription.querySelector("[data-et-trial]");
-    var nodes=Array.prototype.slice.call(card.querySelectorAll(".eternaLegalV16058"));
+    var keep=card.querySelector(".eternaLegalV16058[data-et-legal-canonical='1']");
 
-    if(!nodes.length){
+    if(!keep){
       if(subscription){
         subscription.dataset.etLegalState="checking";
         legalCheckingNote(subscription,true)
@@ -2180,8 +2384,6 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     }
 
     legalCheckingNote(subscription,false);
-    var keep=nodes.filter(function(n){return n.classList.contains("is-ok")})[0]||nodes[nodes.length-1];
-    nodes.forEach(function(n){if(n!==keep)n.remove()});
 
     if(!keep.classList.contains("is-ok")&&subscription){
       subscription.dataset.etLegalState="pending";
@@ -2220,16 +2422,17 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     injectStyles();
     var card=familyCard();if(!card)return false;
     moveSubscriptionFirst(card);
-    placeLegal(card);
+    var legalReady=placeLegal(card);
+    try{if(root.ETERNA_EXPERIENCE_V16049&&typeof root.ETERNA_EXPERIENCE_V16049.enhanceFamilyProgress==="function")root.ETERNA_EXPERIENCE_V16049.enhanceFamilyProgress()}catch(e){}
+    if(legalReady){
+      try{performance.mark("family_ui_ready")}catch(e){}
+      try{root.dispatchEvent(new CustomEvent("coco:family-ui-ready",{detail:{card:card}}))}catch(e){}
+    }
     return true
   }
 
-  function clearRetries(){retryTimers.forEach(function(id){clearTimeout(id)});retryTimers=[]}
   function scheduleFamilyLayout(){
-    clearRetries();
-    [0,220].forEach(function(ms){
-      retryTimers.push(setTimeout(function(){applyFamilyLayout()},ms))
-    })
+    return applyFamilyLayout()
   }
 
   function progressSnapshot(exportData,strategies){
@@ -2317,16 +2520,17 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
       var target=event.target&&event.target.closest?event.target.closest("[data-et-export]"):null;
       if(target){
         event.preventDefault();event.stopImmediatePropagation();
-        exportReport(target);return
+        exportReport(target)
       }
-      var family=event.target&&event.target.closest?event.target.closest(".cocoFamiliaBtn,[data-family-enter],[data-et-trial],[data-et-delete],[data-legal-accept],[data-legal-withdraw]"):null;
-      if(family)scheduleFamilyLayout()
     },true);
+    root.addEventListener("coco:family-card-ready",applyFamilyLayout,{passive:true});
+    root.addEventListener("coco:family-legal-ready",applyFamilyLayout,{passive:true});
     root.ETERNA_FAMILY_V16070=root.ETERNA_FAMILY_V16069=root.ETERNA_FAMILY_V16068=Object.freeze({
       version:VERSION,
       subscription_first:true,
-      legal_after_strength_map:true,
-      legal_dedupe:true,
+      canonical_legal_node:true,
+      legal_dedupe:false,
+      family_polling:false,
       capitalized_report_name:true,
       performance_optimized:true,
       pending_legal_inline_with_trial:true,
@@ -2336,7 +2540,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
       refresh:applyFamilyLayout,
       schedule:scheduleFamilyLayout,
       extra_mutation_observer:false,
-      worker_unchanged:"160.4-legal1"
+      worker_required:"160.10-stability3"
     })
   }
 
