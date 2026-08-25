@@ -1,4 +1,4 @@
-/* Coco en Forma · v160.74 FINAL STABILIZATION · Family lifecycle por eventos + Safari macOS por intención */
+/* Coco en Forma · v160.76 RUNTIME STABILITY · Session bridge + ranking observer stabilization + Family/Safari preservados */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -9,10 +9,55 @@
   var DESKTOP_SAFARI=/Safari\//.test(navigator.userAgent||"")&&!/(Chrome|Chromium|CriOS|FxiOS|EdgiOS|OPR)\//.test(navigator.userAgent||"")&&/Macintosh/.test(navigator.userAgent||"")&&Number(navigator.maxTouchPoints||0)===0;
   try{performance.mark("coco_boot_start")}catch(e){}
 
+  /* v160.76: compatibility bridge for the inline arcade runtime.
+     The current index calls arcadeSession() from refreshCardScore(), but that
+     helper was removed while arcadeUserId() remained. Keep one coalesced
+     Supabase session read for all cards instead of creating per-card auth work. */
+  var arcadeSessionCache=null,arcadeSessionCacheAt=0,arcadeSessionInFlight=null,arcadeAuthBound=false;
+  function arcadeClient(){
+    var cli=root.__COCO_SUPABASE_CLIENT||null;if(cli)return cli;
+    var cfg=root.COCO_CONFIG||{};
+    if(!root.supabase||!root.supabase.createClient||!cfg.url||!cfg.clave)return null;
+    try{
+      cli=root.supabase.createClient(String(cfg.url).replace(/\/+$/, ""),String(cfg.clave).trim(),{auth:{detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
+      root.__COCO_SUPABASE_CLIENT=cli;return cli
+    }catch(e){return null}
+  }
+  function bindArcadeAuth(cli){
+    if(arcadeAuthBound||!cli||!cli.auth||typeof cli.auth.onAuthStateChange!=="function")return;
+    arcadeAuthBound=true;
+    try{cli.auth.onAuthStateChange(function(_event,session){arcadeSessionCache=session||null;arcadeSessionCacheAt=Date.now()})}catch(e){}
+  }
+  if(typeof root.arcadeSession!=="function")root.arcadeSession=async function(){
+    var now=Date.now();
+    if(arcadeSessionCacheAt&&now-arcadeSessionCacheAt<5000)return arcadeSessionCache;
+    if(arcadeSessionInFlight)return arcadeSessionInFlight;
+    var cli=arcadeClient();
+    if(!cli||!cli.auth||typeof cli.auth.getSession!=="function"){arcadeSessionCache=null;arcadeSessionCacheAt=now;return null}
+    bindArcadeAuth(cli);
+    arcadeSessionInFlight=Promise.resolve().then(function(){return cli.auth.getSession()}).then(function(read){
+      arcadeSessionCache=read&&read.data?read.data.session:null;arcadeSessionCacheAt=Date.now();return arcadeSessionCache
+    }).catch(function(){arcadeSessionCache=null;arcadeSessionCacheAt=Date.now();return null}).finally(function(){arcadeSessionInFlight=null});
+    return arcadeSessionInFlight
+  };
+
+  /* v160.76: the legacy inline bootstrap rewrites .cocoLigaBadge on every
+     upgradeAll(). Its own childList MutationObserver then schedules upgradeAll
+     again. Stabilizing only those badge innerHTML writes breaks that feedback
+     loop without suppressing legitimate DOM observation elsewhere. */
+  var nativeInnerHTML=(typeof Element!=="undefined"&&Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML"))||null;
+  function stabilizeRankingBadge(badge){
+    if(!badge||badge.dataset.cocoStableInnerHtml==="16076")return badge;
+    if(nativeInnerHTML&&nativeInnerHTML.get&&nativeInnerHTML.set){
+      try{Object.defineProperty(badge,"innerHTML",{configurable:true,get:function(){return nativeInnerHTML.get.call(this)},set:function(value){var next=String(value);if(nativeInnerHTML.get.call(this)===next)return;nativeInnerHTML.set.call(this,next)}})}catch(e){}
+    }
+    badge.dataset.cocoStableInnerHtml="16076";return badge
+  }
+
   function normalizeText(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
   function idOf(node){return String(node&&node.dataset&&node.dataset.cocoJuego||"").toLowerCase()}
   function cleanScoreNoise(card){card.querySelectorAll(".cocoArcadeCardScore,.cocoScoreCopy").forEach(function(n){n.remove()});card.querySelectorAll("p.pequeno").forEach(function(n){var t=normalizeText(n.textContent);if(/\b(puntos?|pts?)\b/.test(t)&&!/partida|reto|dia/.test(t))n.remove()});card.querySelectorAll(".pesas").forEach(function(n){var next=n.nextElementSibling;if(next&&/puntos?|pts?/i.test(next.textContent||""))next.remove();n.remove()})}
-  function scoreStatus(card,id){var badge=card.querySelector(".cocoLigaBadge");if(!badge){badge=document.createElement("div");var btn=card.querySelector(".btn,.cocoBotonJuego");card.insertBefore(badge,btn||null)}var general=GENERAL.has(id);badge.className="cocoLigaBadge c153ScoreStatus";badge.dataset.general=general?"yes":"no";badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";badge.innerHTML="<span>"+(general?"🏆":"•")+"</span><b>"+(general?"Puntúa para la clasificación general":"No puntúa para la clasificación general")+"</b>"}
+  function scoreStatus(card,id){var badge=card.querySelector(".cocoLigaBadge");if(!badge){badge=document.createElement("div");var btn=card.querySelector(".btn,.cocoBotonJuego");card.insertBefore(badge,btn||null)}var general=GENERAL.has(id),html='<span aria-hidden="true">'+(general?"🏆":"•")+'</span><b>'+(general?"Puntúa para la clasificación general":"No puntúa para la clasificación general")+'</b>';stabilizeRankingBadge(badge);badge.className="cocoLigaBadge c153ScoreStatus";badge.dataset.general=general?"yes":"no";badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";if(badge.innerHTML!==html)badge.innerHTML=html}
   function fixPadel(card,id){if(id!=="padel")return;card.classList.remove("cocoConstruccion","proximo");card.querySelectorAll(".cocoEstadoObra,.cintaObras").forEach(function(n){n.remove()});var btn=card.querySelector(".cocoBotonJuego,.btn");if(btn){if(/construcci|pr[oó]xim/i.test(btn.textContent||""))btn.textContent="Abrir Coco Pádel";btn.disabled=false;btn.removeAttribute("aria-disabled")}}
   function applyCard(card){var id=idOf(card);if(RETIRED.has(id)){card.remove();return}cleanScoreNoise(card);scoreStatus(card,id);fixPadel(card,id)}
   function processNode(node){if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;if(node.matches&&node.matches("[data-coco-juego]")&&RETIRED.has(idOf(node))){node.remove();return}if(node.matches&&node.matches(".cocoGameCard[data-coco-juego]"))applyCard(node);if(node.querySelectorAll){node.querySelectorAll("[data-coco-juego]").forEach(function(n){if(RETIRED.has(idOf(n)))n.remove()});node.querySelectorAll(".cocoGameCard[data-coco-juego]").forEach(applyCard)}}
@@ -160,7 +205,7 @@
     raf=0;
     var nodes=Array.from(queued);queued.clear();
     nodes.forEach(processNode);
-    root.COCO_VERSION="2026-08-25-v160.74-final"
+    root.COCO_VERSION="2026-08-25-v160.76-runtime-stability"
   }
 
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
@@ -176,7 +221,7 @@
       }else processNode(app)
     }
     scheduleEternaIdle();
-    root.COCO_VERSION="2026-08-25-v160.74-final"
+    root.COCO_VERSION="2026-08-25-v160.76-runtime-stability"
   }
 
   function observe(){
@@ -215,7 +260,7 @@
     var measures=(performance.getEntriesByType&&performance.getEntriesByType("measure")||[]).filter(function(e){return /^(coco_|eterna_|family_)/.test(e.name)}).map(function(e){return{name:e.name,duration:Math.round(e.duration)}});
     var card=familyCardNode(),legalCount=card?card.querySelectorAll(".eternaLegalV16058").length:0;
     return{
-      version:"160.74-final",
+      version:"160.76-runtime-stability",
       desktopSafari:DESKTOP_SAFARI,
       navigation:nav?{domInteractive:Math.round(nav.domInteractive),domComplete:Math.round(nav.domComplete),loadEventEnd:Math.round(nav.loadEventEnd),type:nav.type}:null,
       resources:{count:resources.length,slowest:resources.slice(0,12)},
@@ -228,8 +273,10 @@
   }
 
   var perfApi=Object.freeze({startDiagnostics:startLongTaskDiagnostics,stopDiagnostics:stopLongTaskDiagnostics,diagnostics:diagnostics});
+  root.CocoPerformanceV16076=perfApi;
   root.CocoPerformanceV16074=perfApi;
   root.CocoPerformanceV16072=perfApi;
+  root.CocoRuntimeStabilityV16076=Object.freeze({version:"160.76-runtime-stability",arcadeSessionBridge:typeof root.arcadeSession==="function",rankingBadgeGuard:true,audit:function(){return{arcadeSessionBridge:typeof root.arcadeSession==="function",stabilizedBadges:document.querySelectorAll("#cocoApp .cocoLigaBadge[data-coco-stable-inner-html='16076']").length}}});
 
   installEternaDemandLoader();
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){initial();observe()},{once:true});
