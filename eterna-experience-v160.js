@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.80 · direct plan switch + subscription state UX + final stabilization + contexto UX
+/* ETERNA Experience v160.81 · family maps clarity + direct plan switch + final stabilization + contexto UX
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.80-direct-plan-switch";
+  var VERSION="160.81-family-maps";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
@@ -2259,7 +2259,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   if(root.__ETERNA_FAMILY_EMBEDDED_V16068__)return;
   root.__ETERNA_FAMILY_EMBEDDED_V16068__=true;
 
-  var VERSION="160.80-family-direct-plan-switch";
+  var VERSION="160.81-family-maps";
   var subscriptionUiCache={uid:"",at:0,data:null,promise:null};
 
 
@@ -2424,6 +2424,18 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
       "#cocoApp .eternaV16061SubscriptionTop .eternaLegalV16058[data-et-family-legal-inline='1'] [data-legal-accept]{min-height:56px!important;padding:12px 18px!important;border:0!important;border-radius:14px!important;background:linear-gradient(180deg,#f47b12,#e66408)!important;color:#fff!important;font-weight:950!important;font-size:12px!important;box-shadow:0 4px 0 #b64e05,0 10px 22px rgba(230,100,8,.18)!important;cursor:pointer!important}",
       "#cocoApp .eternaV16066LegalChecking{margin:10px 0;padding:11px 13px;border:1px solid #d6e8ef;border-radius:13px;background:#f7fbfd;color:#5f7a88;font-size:10px;font-weight:800;line-height:1.4}",
 
+      "#cocoApp .eternaV159FamilyStatus[data-et-v16081-beta='1']{background:#eaf8f1!important;color:#315f4b!important;border:1px solid #ccebdc!important;padding:6px 10px!important;border-radius:999px!important;font-size:9px!important;font-weight:900!important;letter-spacing:.02em!important}",
+      "#cocoApp .eternaV16081LearningMapBlock,#cocoApp .eternaV16081GameMapBlock{position:relative!important;overflow:hidden!important;margin-top:18px!important;border:1px solid #d8e9f1!important;border-radius:22px!important;background:linear-gradient(145deg,#fbfdff 0%,#f4fbfe 58%,#fffaf5 100%)!important;box-shadow:0 10px 26px rgba(23,63,89,.08)!important}",
+      "#cocoApp .eternaV16081GameMapBlock{padding:18px!important;box-sizing:border-box!important}",
+      "#cocoApp .eternaV16081GameMapBlock:before{content:\"\";position:absolute;right:-70px;top:-80px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(239,108,5,.10),rgba(239,108,5,0) 70%);pointer-events:none}",
+      "#cocoApp .eternaV16081MapIdentity{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;padding:0 0 12px;border-bottom:1px solid rgba(23,63,89,.10)}",
+      "#cocoApp .eternaV16081MapIdentity span{display:inline-flex;align-items:center;min-height:28px;padding:5px 10px;border-radius:999px;background:#0f5677;color:#fff!important;font-size:9px;font-weight:950;letter-spacing:.075em;text-transform:uppercase}",
+      "#cocoApp .eternaV16081MapIdentity.is-games span{background:#ef6c05}",
+      "#cocoApp .eternaV16081MapIdentity small{display:block;flex:1 1 280px;color:#617985!important;font-size:10px;font-weight:800;line-height:1.42}",
+      "#cocoApp .eternaV16081GameMapBlock h2,#cocoApp .eternaV16081GameMapBlock h3,#cocoApp .eternaV16081GameMapBlock h4{position:relative;z-index:1;color:#173f59!important;font-family:var(--display,inherit)!important;line-height:1.08!important}",
+      "#cocoApp .eternaV16081LearningMapBlock .eternaV160ProgressHead>b{font-size:24px!important}",
+      "#cocoApp .eternaV16081GameMapBlock[data-et-v16081-games-map='1']{scroll-margin-top:18px}",
+      "@media(max-width:640px){#cocoApp .eternaV16081MapIdentity{align-items:flex-start}#cocoApp .eternaV16081MapIdentity small{flex-basis:100%}#cocoApp .eternaV16081GameMapBlock{padding:14px!important}#cocoApp .eternaV16081LearningMapBlock .eternaV160ProgressHead>b{font-size:21px!important}}",
       "@media(max-width:640px){#cocoApp .eternaV16061SubscriptionTop{padding:13px;border-radius:18px}}"
     ].join("");
     document.head.appendChild(s)
@@ -2571,12 +2583,136 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     return true
   }
 
+
+  function normalizeFamilyBetaLabel(card){
+    var status=card&&card.querySelector(".eternaV159FamilyStatus");
+    if(!status)return;
+    if(/beta\s+de\s+prueba/i.test(clean(status.textContent))){
+      status.textContent="Versión beta";
+      status.dataset.etV16081Beta="1"
+    }
+  }
+
+  function removeDuplicateFamilyCommercialActions(card){
+    if(!card)return;
+    Array.prototype.slice.call(card.querySelectorAll(".eternaV159Buttons")).forEach(function(group){
+      if(group.closest&&group.closest(".eternaV16061SubscriptionTop"))return;
+      if(group.querySelector("[data-et-open],[data-et-portal]"))group.remove()
+    })
+  }
+
+  function clarifyFamilyHeader(card){
+    var modal=card&&card.closest?card.closest(".cocoFamilyV129Backdrop"):null;
+    if(!modal)modal=document.querySelector("#cocoApp .cocoFamilyV129Backdrop,.cocoFamilyV129Backdrop");
+    if(!modal)return null;
+    var shell=modal.querySelector(".cocoFamilyV129")||modal;
+    var header=shell.querySelector(":scope > header")||shell.querySelector("header");
+    if(header){
+      Array.prototype.slice.call(header.querySelectorAll("p,small")).some(function(node){
+        var text=norm(node.textContent);
+        if(text.indexOf("dos lecturas distintas")>=0||text.indexOf("eterna resume la ayuda escolar")>=0){
+          node.textContent="Dos mapas complementarios: aprendizaje escolar con Eterna y entrenamiento cognitivo con Coco.";
+          return true
+        }
+        return false
+      })
+    }
+    return modal
+  }
+
+  function ensureMapIdentity(block,type,label,description){
+    if(!block)return;
+    var key="map-"+type,existing=block.querySelector("[data-et-v16081-map='"+key+"']");
+    if(existing)return existing;
+    var identity=document.createElement("div");
+    identity.className="eternaV16081MapIdentity"+(type==="games"?" is-games":" is-learning");
+    identity.dataset.etV16081Map=key;
+    identity.innerHTML="<span>"+esc(label)+"</span><small>"+esc(description)+"</small>";
+    var head=block.querySelector(".eternaV160ProgressHead,h2,h3,h4,h5");
+    if(head)block.insertBefore(identity,head);else block.insertBefore(identity,block.firstChild);
+    return identity
+  }
+
+  function enhanceLearningMapIdentity(card){
+    var panel=card&&card.querySelector(".eternaV160StrengthMap,.eternaV160ProgressPanel");
+    if(!panel)return false;
+    panel.classList.add("eternaV16081LearningMapBlock");
+    var head=panel.querySelector(".eternaV160ProgressHead");
+    if(head){
+      var title=head.querySelector("b,h2,h3,h4");
+      if(title)title.textContent="Mapa de fortalezas del aprendizaje"
+    }
+    ensureMapIdentity(
+      panel,
+      "learning",
+      "APRENDIZAJE · ETERNA",
+      "Tareas, explicaciones, práctica y exámenes: señales académicas que evolucionan con el alumno."
+    );
+    return true
+  }
+
+  function gameStrengthHeading(modal,card){
+    if(!modal)return null;
+    var list=Array.prototype.slice.call(modal.querySelectorAll("h2,h3,h4,h5,b,strong"));
+    for(var i=0;i<list.length;i++){
+      var node=list[i];
+      if(card&&card.contains(node))continue;
+      if(node.closest&&node.closest("header"))continue;
+      var text=norm(node.textContent);
+      if(text==="progreso y fortalezas")continue;
+      if(text.indexOf("mapa de fortalezas")>=0)return node;
+      if(text.indexOf("fortalezas")>=0&&(text.indexOf("juegos")>=0||text.indexOf("mente")>=0))return node
+    }
+    return null
+  }
+
+  function gameStrengthBlock(heading,modal){
+    if(!heading)return null;
+    var known=heading.closest("section,article,.caja,.cocoFamilySection,.cocoFamilyPanel,.cocoStrengthMap,.cocoFamilyStrengths,.mapaFortalezas");
+    if(known)return known;
+    var node=heading.parentElement,last=node,steps=0;
+    while(node&&node!==modal&&steps<4){
+      last=node;
+      if(node.querySelectorAll&&node.querySelectorAll("[role='progressbar'],progress,.barra,.cocoFortaleza,.fortaleza").length>=2)return node;
+      node=node.parentElement;steps++
+    }
+    return last
+  }
+
+  function enhanceGamesStrengthMap(modal,card){
+    var heading=gameStrengthHeading(modal,card);
+    if(!heading)return false;
+    heading.textContent="Mapa de fortalezas de juegos para la mente";
+    var block=gameStrengthBlock(heading,modal);
+    if(!block)return false;
+    block.classList.add("eternaV16081GameMapBlock");
+    block.dataset.etV16081GamesMap="1";
+    ensureMapIdentity(
+      block,
+      "games",
+      "JUEGOS PARA LA MENTE · COCO",
+      "Memoria, atención, cálculo, lógica y lenguaje a partir del entrenamiento cognitivo de Coco."
+    );
+    return true
+  }
+
+  function enhanceFamilyInformationArchitecture(card){
+    if(!card)return false;
+    removeDuplicateFamilyCommercialActions(card);
+    normalizeFamilyBetaLabel(card);
+    var modal=clarifyFamilyHeader(card);
+    enhanceLearningMapIdentity(card);
+    enhanceGamesStrengthMap(modal,card);
+    return true
+  }
+
   function applyFamilyLayout(){
     injectStyles();
     var card=familyCard();if(!card)return false;
     moveSubscriptionFirst(card);
     var legalReady=placeLegal(card);
     try{if(root.ETERNA_EXPERIENCE_V16049&&typeof root.ETERNA_EXPERIENCE_V16049.enhanceFamilyProgress==="function")root.ETERNA_EXPERIENCE_V16049.enhanceFamilyProgress()}catch(e){}
+    enhanceFamilyInformationArchitecture(card);
     if(legalReady){
       try{performance.mark("family_ui_ready")}catch(e){}
       try{root.dispatchEvent(new CustomEvent("coco:family-ui-ready",{detail:{card:card}}))}catch(e){}

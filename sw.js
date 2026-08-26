@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.80 DIRECT PLAN SWITCH · v160.78 lifetime fix preservado */
-const CACHE_VERSION="coco-en-forma-v160.80-direct-plan-switch";
+/* Coco en Forma · Service Worker v160.81 FAMILY MAP CLARITY · v160.78 lifetime fix preservado */
+const CACHE_VERSION="coco-en-forma-v160.81-family-map-clarity";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
