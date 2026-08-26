@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.81 FAMILY MAP CLARITY · v160.78 lifetime fix preservado */
-const CACHE_VERSION="coco-en-forma-v160.81-family-map-clarity";
+/* Coco en Forma · Service Worker v160.82 FAMILY REPORTS + GAME ORDER · v160.78 lifetime fix preservado */
+const CACHE_VERSION="coco-en-forma-v160.82-family-reports-game-order";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
