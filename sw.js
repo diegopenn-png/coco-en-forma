@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.83 PREMIUM FAMILY REPORTING · v160.78 lifetime fix preservado */
-const CACHE_VERSION="coco-en-forma-v160.83-premium-family-reporting";
+/* Coco en Forma · Service Worker v160.84 CONSOLIDATION + PERFORMANCE · v160.78 lifetime fix preservado */
+const CACHE_VERSION="coco-en-forma-v160.84-consolidation-performance";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
