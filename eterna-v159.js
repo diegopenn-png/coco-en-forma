@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.86 FAMILY INTEGRAL
+/* Coco en Forma · ETERNA v160.87 FAMILY INTEGRAL LIFECYCLE
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.86-family-integral";
+  var VERSION="160.87-family-integral-lifecycle";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -33,7 +33,7 @@
     dataLoadedAt:0,secondaryLoadedAt:0
   };
 
-  var appObserver=null,observerRaf=0,authWatcherInstalled=false,secondaryDataPromise=null,familyRenderPromise=null,familyRenderBody=null;
+  var appObserver=null,observerRaf=0,authWatcherInstalled=false,secondaryDataPromise=null,familyRenderPromise=null,familyRenderBody=null,familyLearningReportCache={at:0,model:null,promise:null};
 
   var CCAA=["Andalucía","Aragón","Asturias","Illes Balears","Canarias","Cantabria","Castilla-La Mancha","Castilla y León","Cataluña","Comunitat Valenciana","Extremadura","Galicia","Comunidad de Madrid","Región de Murcia","Navarra","País Vasco","La Rioja","Ceuta","Melilla"];
   var YEARS=[
@@ -659,6 +659,21 @@
 
   function strategyName(k){return({socratic_question:"preguntas guiadas",worked_example:"ejemplos similares",analogy:"analogías",visual_structure:"apoyo visual y estructura",retrieval_practice:"preguntas de recuerdo",step_by_step:"pasos cortos",error_analysis:"análisis de errores",direct_explanation:"explicación directa"})[k]||k}
 
+  function familyUniqueStrings(values){var seen=Object.create(null),out=[];(values||[]).forEach(function(v){v=cleanText(v);if(v&&!seen[v]){seen[v]=1;out.push(v)}});return out}
+  function familyRecentUsageDays(usage){var now=Date.now(),cut=now-6*86400000,seen=Object.create(null);(usage||[]).forEach(function(row){var raw=row&&(row.usage_date||row.created_at||row.updated_at),d=raw?new Date(raw):null;if(d&&!isNaN(d.getTime())&&d.getTime()>=cut){seen[d.toISOString().slice(0,10)]=1}});return Object.keys(seen).length}
+  function familyLearningSupportName(){var name=state.baseProfile&&state.baseProfile.apodo||state.session&&state.session.user&&state.session.user.user_metadata&&state.session.user.user_metadata.apodo||"Alumno Coco";name=cleanText(name);return name?name.charAt(0).toLocaleUpperCase("es-ES")+name.slice(1):"Alumno Coco"}
+  function buildFamilyLearningReportModel(exportData){
+    exportData=exportData||{};var concepts=(Array.isArray(exportData.student_concept_memory)?exportData.student_concept_memory:[]).filter(function(x){return x&&cleanText(x.concept_label)}),observed=concepts.filter(function(x){return Number(x.attempts||0)>0}),strongest=observed.slice().sort(function(a,b){return Number(b.mastery_score||0)-Number(a.mastery_score||0)}).slice(0,3),reinforce=observed.slice().sort(function(a,b){return Number(a.mastery_score||0)-Number(b.mastery_score||0)}).slice(0,3),strategies=(Array.isArray(exportData.learning_strategy_memory)?exportData.learning_strategy_memory:[]).filter(function(x){return x&&cleanText(x.strategy_key)&&Number(x.evidence_count||0)>0}).sort(function(a,b){var ds=Number(b.success_score||0)-Number(a.success_score||0);return Math.abs(ds)>.001?ds:Number(b.evidence_count||0)-Number(a.evidence_count||0)}).slice(0,3),profile=exportData.student_profile||state.profile||{},subjects=familyUniqueStrings(concepts.map(function(x){return x.subject})),attemptRows=Array.isArray(exportData.attempts)?exportData.attempts:[],attempts=attemptRows.length||concepts.reduce(function(sum,x){return sum+Number(x.attempts||0)},0),errors=concepts.reduce(function(sum,x){return sum+Number(x.errors||0)},0),partials=concepts.reduce(function(sum,x){return sum+Number(x.partials||0)},0),independent=concepts.reduce(function(sum,x){return sum+Number(x.independent_successes||0)},0),assisted=concepts.reduce(function(sum,x){return sum+Number(x.assisted_successes||0)},0),activeDays=familyRecentUsageDays(exportData.usage||[]),lead=strongest[0]||null,next=reinforce[0]||null;
+    var barSource=observed.slice().sort(function(a,b){return Number(b.attempts||0)-Number(a.attempts||0)}).slice(0,6),bars=barSource.map(function(x){return{label:cleanText(x.concept_label),sublabel:cleanText(x.subject)||"Aprendizaje",value:percent(x.mastery_score),detail:Number(x.attempts||0)+" señales observadas"}}),panels=[{tone:"strength",icon:"★",eyebrow:"TUS FORTALEZAS",title:"Lo que parece estar más consolidado",text:"Según las actividades realizadas hasta ahora.",items:strongest.map(function(x){return{label:cleanText(x.concept_label),detail:cleanText(x.subject)||"Aprendizaje",percent:percent(x.mastery_score)}})},{tone:"reinforce",icon:"↗",eyebrow:"VAMOS A REFORZAR",title:"Áreas sugeridas para seguir practicando",text:"Son señales de práctica, no etiquetas permanentes.",items:reinforce.map(function(x){return{label:cleanText(x.concept_label),detail:(cleanText(x.subject)||"Aprendizaje")+" · "+Number(x.attempts||0)+" intentos",percent:percent(x.mastery_score)}})},{tone:"strategy",icon:"💡",eyebrow:"ASÍ PARECE AYUDARLE MÁS",title:"Estrategias que están funcionando",text:"Eterna seguirá ajustando la forma de explicar según la evidencia acumulada.",items:strategies.map(function(x){var score=Number(x.success_score);return{label:strategyName(x.strategy_key),detail:Number(x.evidence_count||0)+" evidencias",percent:isFinite(score)?percent(score):null}})},{tone:"activity",icon:"◎",eyebrow:"TU RECORRIDO",title:"Actividad observada",items:[{label:"Aciertos con poca ayuda",value:independent},{label:"Aciertos con apoyo",value:assisted},{label:"Errores registrados",value:errors},{label:"Respuestas parciales",value:partials}]}];
+    return{theme:"learning",eyebrow:"APRENDIZAJE · ETERNA",title:"Mapa de fortalezas del aprendizaje",subtitle:"Tareas, explicaciones, preguntas escolares, práctica y preparación de exámenes: una lectura visual de las señales académicas observadas.",personName:familyLearningSupportName(),personMeta:[profile.school_year||"Curso no indicado",profile.autonomous_community||""].filter(Boolean).join(" · "),hero:{eyebrow:"FORTALEZA DESTACADA",title:lead?"Fortaleza destacada: "+cleanText(lead.concept_label):"Tu mapa de aprendizaje está empezando",text:lead?"Según las actividades realizadas, esta es la señal de dominio más alta observada hasta ahora. Puede cambiar con nueva práctica.":"Eterna irá completando este mapa a medida que haya más actividades escolares.",percent:lead?percent(lead.mastery_score):null},metrics:[{value:concepts.length,label:"conceptos con señales"},{value:attempts,label:"intentos o señales"},{value:subjects.length,label:"materias trabajadas"},{value:activeDays+"/7",label:"días activos esta semana"}],bars:bars,barEyebrow:"CONCEPTOS OBSERVADOS",barTitle:"Progreso por conceptos",barScale:"Dominio aproximado · 0–100",panels:panels,groups:subjects.length?[{title:"Materias trabajadas",items:subjects}]:[],groupEyebrow:"CONTEXTO ESCOLAR",groupTitle:"Dónde se están generando señales",nextStep:{eyebrow:"PRÓXIMO PASO",title:next?"Reforzar: "+cleanText(next.concept_label):"Seguir creando señales variadas",text:next?"Una buena próxima práctica sería trabajar este concepto con pasos cortos y una comprobación al final.":"Realiza actividades variadas para que Eterna pueda distinguir fortalezas y áreas para reforzar con más fundamento."},note:"Informe pedagógico y orientativo. Expresa señales observadas según las actividades realizadas hasta ahora; no clasifica al alumno ni describe de forma permanente su manera de aprender."}
+  }
+  async function getFamilyLearningReportModel(force){
+    var now=Date.now();if(!force&&familyLearningReportCache.model&&now-familyLearningReportCache.at<DATA_CACHE_MS)return familyLearningReportCache.model;if(familyLearningReportCache.promise)return familyLearningReportCache.promise;
+    familyLearningReportCache.promise=(async function(){await loadData(false);if(!state.session)return null;var r=await api("/v1/export",{method:"GET"}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"EXPORT");var model=buildFamilyLearningReportModel(d);familyLearningReportCache.model=model;familyLearningReportCache.at=Date.now();return model})().finally(function(){familyLearningReportCache.promise=null});
+    return familyLearningReportCache.promise
+  }
+  function invalidateFamilyLearningReport(){familyLearningReportCache.at=0;familyLearningReportCache.model=null;familyLearningReportCache.promise=null}
+
   function progressSnapshot(exportData){
     var concepts=(state.learningMemory||[]).slice();
     if(exportData&&Array.isArray(exportData.student_concept_memory)&&exportData.student_concept_memory.length)concepts=exportData.student_concept_memory.slice();
@@ -714,7 +729,7 @@
     try{
       var r=await api("/v1/delete-data",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"DELETE");
       await restoreProtectedData(protectedProfile,protectedSettings);
-      state.history=[];state.learningMemory=[];state.strategyMemory=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.dataLoadedAt=0;await loadData(true);
+      state.history=[];state.learningMemory=[];state.strategyMemory=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.dataLoadedAt=0;invalidateFamilyLearningReport();await loadData(true);
       button.textContent="Memoria borrada ✓";alert("La memoria pedagógica de Eterna se ha borrado. La cuenta, el curso, los controles familiares y la suscripción se conservan.");await injectFamilyCard(true)
     }catch(e){button.disabled=false;button.textContent=original;alert("No se pudo borrar la memoria de Eterna.")}
   }
@@ -1071,6 +1086,8 @@
   }
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+
+  window.CocoEternaFamilyReportDataV16087=Object.freeze({version:"160.87",getLearningModel:getFamilyLearningReportModel,invalidate:invalidateFamilyLearningReport,readOnly:true});
 
   window.CocoEternaV160=Object.freeze({
     open:open,close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,

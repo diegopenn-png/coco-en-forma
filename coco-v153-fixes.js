@@ -1,4 +1,4 @@
-/* Coco en Forma · v160.86 FAMILY INTEGRAL · Reporte único Family + reporting premium + catálogo estable + Safari optimizado */
+/* Coco en Forma · v160.87 FAMILY INTEGRAL LIFECYCLE · owner único + carga directa + Safari optimizado */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -139,7 +139,7 @@
   function reportDate(){try{return new Intl.DateTimeFormat("es-ES",{day:"2-digit",month:"long",year:"numeric"}).format(new Date())}catch(e){return new Date().toLocaleDateString("es-ES")}}
   function modelSignature(model){try{return JSON.stringify(model)}catch(e){return String(Date.now())}}
 
-  var familyReportState={games:null,learning:null,renderQueued:false,lastSignature:""};
+  var familyReportState={games:null,learning:null,gamesStatus:"idle",learningStatus:"idle",learningPromise:null,renderQueued:false,lastSignature:"",generation:0};
 
   function reportBodyHtml(model){
     model=model||{};var theme=model.theme==="games"?"games":"learning",hero=model.hero||{},metrics=Array.isArray(model.metrics)?model.metrics:[],bars=Array.isArray(model.bars)?model.bars:[],panels=Array.isArray(model.panels)?model.panels:[],groups=Array.isArray(model.groups)?model.groups:[],next=model.nextStep||null;
@@ -155,26 +155,29 @@
       '<p class="cocoV16083ReportNote">'+escapeReportHtml(model.note||"Este mapa resume señales observadas en la actividad y puede cambiar con nuevas experiencias. No clasifica al alumno ni sustituye el criterio educativo de la familia o del profesorado.")+'</p></div>'
   }
 
+  function canonicalFamilyCardForReport(modal,card){
+    if(!modal)return null;
+    var resolved=card&&modal.contains(card)?card:modal.querySelector(".eternaV159FamilyCard[data-et-family-canonical='1'],.eternaV159FamilyCard");
+    if(!resolved||resolved.dataset.etFamilyState!=="ready"||resolved.getAttribute("aria-busy")==="true")return null;
+    return resolved
+  }
+
   function queueFamilyIntegralRender(){
     if(familyReportState.renderQueued)return;
     familyReportState.renderQueued=true;
     queueMicrotask(function(){
       familyReportState.renderQueued=false;
-      var modal=document.querySelector("#cocoApp .cocoFamilyV129,.cocoFamilyV129"),card=modal&&modal.querySelector(".eternaV159FamilyCard");
-      if(modal)renderFamilyIntegral(modal,card)
+      var modal=document.querySelector("#cocoApp .cocoFamilyV129,.cocoFamilyV129"),card=canonicalFamilyCardForReport(modal,null);
+      if(modal&&card)renderFamilyIntegral(modal,card)
     })
   }
 
-  function captureLearningReportModel(model){
-    if(!model||model.theme!=="learning")return false;
-    familyReportState.learning=model;
-    queueFamilyIntegralRender();
-    return true
-  }
+  /* Compatibilidad: los renderers legacy pueden seguir llamando coreHtml(), pero
+     el modelo Family ya NO depende de capturar ese efecto visual. */
+  function captureLearningReportModel(model){return !!(model&&model.theme==="learning")}
 
   function reportCoreHtml(model,options){
     model=model||{};options=options||{};
-    if(options.capture!==false&&model.theme==="learning")captureLearningReportModel(model);
     var showPerson=options.showPerson===true,theme=model.theme==="games"?"games":"learning",personHtml=showPerson?'<div class="cocoV16083Person"><b>'+escapeReportHtml(model.personName||"Alumno Coco")+'</b><span>'+escapeReportHtml(model.personMeta||"")+'</span></div>':"";
     return '<div class="cocoV16083ReportCore '+theme+'"><header class="cocoV16083ReportHeader"><div class="cocoV16085HeaderCopy"><span>'+escapeReportHtml(model.eyebrow||"")+'</span><h2>'+escapeReportHtml(model.title||"")+'</h2><p>'+escapeReportHtml(model.subtitle||"")+'</p></div><div class="cocoV16085HeaderAside">'+personHtml+'</div></header>'+reportBodyHtml(model)+'</div>'
   }
@@ -197,7 +200,7 @@
     '.cocoV16083Next{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;padding:16px;border:1px solid #f1d4aa;border-radius:20px;background:linear-gradient(145deg,#fffaf2,#fff5e6)}.cocoV16083Next>span{padding:6px 9px;border-radius:999px;background:#ef6c05;color:#fff}.cocoV16083Next h3{margin:0 0 3px;font-size:15px}.cocoV16083Next p{margin:0;color:#765f4f;font-size:10px;line-height:1.45}.cocoV16083ReportNote{margin:0;padding:0 4px;color:#718692;font-size:9px;line-height:1.45}',
     '.cocoV16083InlineActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.cocoV16083InlineActions button{min-height:40px;padding:9px 13px;border-radius:12px;border:1px solid #cfe3ec;background:#fff;color:#245b77;font:900 10px inherit;cursor:pointer;box-shadow:0 2px 0 rgba(190,217,229,.42)}.cocoV16083InlineActions button[data-report-share]{background:#effaf4;border-color:#bfe4cf;color:#1f7149}',
     '.cocoV16085HeaderActions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}.cocoV16085HeaderActions button{min-height:38px;padding:8px 12px;border:1px solid #cfe3ec;border-radius:11px;background:#173f59;color:#fff;font:900 9.5px inherit;cursor:pointer;box-shadow:0 2px 0 rgba(15,55,78,.18);white-space:nowrap}.cocoV16085HeaderActions button:disabled{opacity:.65;cursor:wait}',
-    '.cocoV16086FamilyIntegral{display:grid;gap:16px;margin:18px 0 4px}.cocoV16086FamilyHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:20px;border:1px solid #d7e8ef;border-radius:23px;background:linear-gradient(145deg,#fbfdff,#f3fbfe 58%,#fff7ed);box-shadow:0 9px 24px rgba(23,63,89,.075)}.cocoV16086FamilyHeaderCopy{min-width:0;flex:1}.cocoV16086FamilyHeaderCopy>span,.cocoV16086ChapterHead>span{display:inline-flex;padding:6px 10px;border-radius:999px;background:#173f59;color:#fff;font-size:9px;font-weight:950;letter-spacing:.075em}.cocoV16086FamilyHeader h2{margin:9px 0 5px;font-size:28px;line-height:1.05}.cocoV16086FamilyHeader p{margin:0;max-width:690px;color:#607985;font-size:12px;font-weight:700;line-height:1.48}.cocoV16086ScreenExport{flex:0 0 auto;min-height:42px;padding:9px 14px;border:0;border-radius:12px;background:#173f59;color:#fff;font:900 10px inherit;cursor:pointer;box-shadow:0 3px 0 #0e2b3e;white-space:nowrap}.cocoV16086ScreenExport:disabled{opacity:.58;cursor:wait}.cocoV16086Chapter{--accent:#1784b1;--accent2:#2fa9dc;--soft:#edf9fd;display:grid;gap:14px;padding:18px;border:1px solid #d9e9f0;border-radius:23px;background:#fff}.cocoV16086Chapter.games{--accent:#ef6c05;--accent2:#2fa9dc;--soft:#fff7ed}.cocoV16086ChapterHead{padding-bottom:13px;border-bottom:1px solid #e2edf2}.cocoV16086ChapterHead>span{background:var(--accent)}.cocoV16086ChapterHead h3{margin:8px 0 4px;color:#173f59;font-size:22px;line-height:1.08}.cocoV16086ChapterHead p{margin:0;color:#647d89;font-size:11px;font-weight:700;line-height:1.45}.cocoV16086Chapter .cocoV16083ReportBody{display:grid;gap:14px;min-width:0}.cocoV16086Pending{padding:18px;border:1px dashed #bddae6;border-radius:18px;background:#f7fbfd;color:#617985;font-size:11px;font-weight:800;line-height:1.45}.cocoV16086DataSource[hidden]{display:none!important}.cocoV16086ExportIdentity{display:grid;justify-items:end;gap:3px;min-width:160px}.cocoV16086ExportIdentity b{color:#173f59;font-size:15px}.cocoV16086ExportIdentity span{color:#708590;font-size:10px;font-weight:750}.cocoV16086DocumentTitle{display:block;margin-top:4px;color:#173f59;font-size:20px;font-weight:950;line-height:1.1}',
+    '.cocoV16086FamilyIntegral{display:grid;gap:16px;margin:18px 0 4px}.cocoV16086FamilyHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:20px;border:1px solid #d7e8ef;border-radius:23px;background:linear-gradient(145deg,#fbfdff,#f3fbfe 58%,#fff7ed);box-shadow:0 9px 24px rgba(23,63,89,.075)}.cocoV16086FamilyHeaderCopy{min-width:0;flex:1}.cocoV16086FamilyHeaderCopy>span,.cocoV16086ChapterHead>span{display:inline-flex;padding:6px 10px;border-radius:999px;background:#173f59;color:#fff;font-size:9px;font-weight:950;letter-spacing:.075em}.cocoV16086FamilyHeader h2{margin:9px 0 5px;font-size:28px;line-height:1.05}.cocoV16086FamilyHeader p{margin:0;max-width:690px;color:#607985;font-size:12px;font-weight:700;line-height:1.48}.cocoV16086ScreenExport{flex:0 0 auto;min-height:42px;padding:9px 14px;border:0;border-radius:12px;background:#173f59;color:#fff;font:900 10px inherit;cursor:pointer;box-shadow:0 3px 0 #0e2b3e;white-space:nowrap}.cocoV16086ScreenExport:disabled{opacity:.58;cursor:wait}.cocoV16086Chapter{--accent:#1784b1;--accent2:#2fa9dc;--soft:#edf9fd;display:grid;gap:14px;padding:18px;border:1px solid #d9e9f0;border-radius:23px;background:#fff}.cocoV16086Chapter.games{--accent:#ef6c05;--accent2:#2fa9dc;--soft:#fff7ed}.cocoV16086ChapterHead{padding-bottom:13px;border-bottom:1px solid #e2edf2}.cocoV16086ChapterHead>span{background:var(--accent)}.cocoV16086ChapterHead h3{margin:8px 0 4px;color:#173f59;font-size:22px;line-height:1.08}.cocoV16086ChapterHead p{margin:0;color:#647d89;font-size:11px;font-weight:700;line-height:1.45}.cocoV16086Chapter .cocoV16083ReportBody{display:grid;gap:14px;min-width:0}.cocoV16086Pending{padding:18px;border:1px dashed #bddae6;border-radius:18px;background:#f7fbfd;color:#617985;font-size:11px;font-weight:800;line-height:1.45}.cocoV16087LoadError{display:grid;gap:7px;padding:16px;border:1px solid #efc9bd;border-radius:17px;background:#fff8f5;color:#6f5349}.cocoV16087LoadError b{color:#7f3f31;font-size:12px}.cocoV16087LoadError span{font-size:10px;font-weight:700}.cocoV16087LoadError button{width:max-content;min-height:38px;padding:8px 12px;border:0;border-radius:10px;background:#173f59;color:#fff;font:900 10px inherit;cursor:pointer}.cocoV16086DataSource[hidden]{display:none!important}.cocoV16086ExportIdentity{display:grid;justify-items:end;gap:3px;min-width:160px}.cocoV16086ExportIdentity b{color:#173f59;font-size:15px}.cocoV16086ExportIdentity span{color:#708590;font-size:10px;font-weight:750}.cocoV16086DocumentTitle{display:block;margin-top:4px;color:#173f59;font-size:20px;font-weight:950;line-height:1.1}',
     '.cocoParticipationV16084{grid-column:1/-1!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:14px!important;width:min(900px,calc(100% - 28px))!important;max-width:900px!important;margin:18px auto 0!important;padding:14px 16px!important;min-height:0!important;border:1.5px dashed #9fd8e9!important;border-radius:20px!important;background:linear-gradient(135deg,#f2fbff,#fff8ee)!important;box-shadow:none!important}.cocoParticipationV16084 img,.cocoParticipationV16084 .miniatura,.cocoParticipationV16084 .cocoGameThumb{max-width:72px!important;max-height:72px!important;object-fit:contain!important}.cocoParticipationV16084 .cocoParticipationEyebrow{display:inline-flex!important;width:max-content!important;padding:5px 9px!important;border-radius:999px!important;background:#173f59!important;color:#fff!important;font-size:8.5px!important;font-weight:950!important;letter-spacing:.07em!important}.cocoParticipationV16084 h3{margin:3px 0!important;font-size:clamp(16px,2vw,20px)!important}.cocoParticipationV16084 .cocoDescripcion{margin:0!important;font-size:11px!important}.cocoParticipationV16084 .cocoSuggestionPromise{display:none!important}.cocoParticipationV16084 .cocoBotonJuego,.cocoParticipationV16084>.btn{width:auto!important;min-width:170px!important;max-width:220px!important;justify-self:end!important;margin:0!important;padding:10px 18px!important}',
     '@media(max-width:700px){.cocoV16083Document{margin:0;border-radius:0;padding:16px}.cocoV16083DocTop{align-items:flex-start;flex-wrap:wrap}.cocoV16085DocActions{width:100%;justify-content:flex-start}.cocoV16083DocTop button{width:100%;max-width:280px}.cocoV16083ReportHeader{display:grid}.cocoV16085HeaderAside{justify-items:start;min-width:0}.cocoV16083Person{text-align:left;min-width:0}.cocoV16085HeaderActions{justify-content:flex-start}.cocoV16085HeaderActions button{width:100%;max-width:260px;white-space:normal}.cocoV16083Hero{grid-template-columns:auto 1fr}.cocoV16083HeroGauge{grid-column:1/-1}.cocoV16083Metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.cocoV16083PanelGrid,.cocoV16083GroupGrid{grid-template-columns:1fr}.cocoV16083BarList article{grid-template-columns:1fr 45px}.cocoV16083Track{grid-column:1/-1;grid-row:2}.cocoV16083BarList article>strong{grid-column:2;grid-row:1}.cocoParticipationV16084{grid-template-columns:auto minmax(0,1fr)!important;width:calc(100% - 20px)!important;padding:13px!important}.cocoParticipationV16084 .cocoBotonJuego,.cocoParticipationV16084>.btn{grid-column:1/-1!important;width:min(100%,240px)!important;min-width:0!important;justify-self:center!important}.cocoFreemiumV16084{grid-template-columns:1fr!important}.cocoV16086FamilyHeader{display:grid;gap:12px;padding:16px}.cocoV16086ScreenExport{width:100%;max-width:280px;white-space:normal}.cocoV16086Chapter{padding:14px}.cocoV16086ChapterHead h3{font-size:20px}.cocoV16086ExportIdentity{justify-items:start;min-width:0}}',
     '@media print{body{background:#fff}.cocoV16083Document{box-shadow:none;margin:0;max-width:none;padding:0}.cocoV16083DocTop button,.cocoV16083InlineActions,.cocoV16085HeaderActions,.cocoV16086ScreenExport{display:none!important}.cocoV16083ReportCore{break-inside:auto}.cocoV16083ReportHeader,.cocoV16083Section,.cocoV16083Panel,.cocoV16083Hero,.cocoV16083Metrics,.cocoV16083Metrics article,.cocoV16083BarList article,.cocoV16083GroupGrid article,.cocoV16083Next,.cocoV16086FamilyHeader,.cocoV16086ChapterHead{break-inside:avoid}.cocoV16086Chapter{break-inside:auto;page-break-before:auto}.cocoV16086Chapter+.cocoV16086Chapter{margin-top:8mm}}'
@@ -229,7 +232,7 @@
 
   function placeReportExportAction(scope,button){if(!scope)return false;button=button||scope.querySelector("[data-report-export],[data-et-export]");var header=scope.querySelector(".cocoV16083ReportHeader"),aside=header&&header.querySelector(".cocoV16085HeaderAside");if(!button||!header)return false;if(!aside){aside=document.createElement("div");aside.className="cocoV16085HeaderAside";header.appendChild(aside)}if(button.textContent!=="Exportar PDF")button.textContent="Exportar PDF";if(!button.classList.contains("cocoV16085HeaderExport"))button.classList.add("cocoV16085HeaderExport");var actions=aside.querySelector(".cocoV16085HeaderActions");if(!actions){actions=document.createElement("div");actions.className="cocoV16085HeaderActions";aside.appendChild(actions)}if(button.parentElement!==actions)actions.appendChild(button);var inline=scope.querySelector(".cocoV16083InlineActions");if(inline&&!inline.children.length)inline.remove();return true}
 
-  var reportKitV16084=Object.freeze({version:"160.86-family-integral",coreHtml:reportCoreHtml,documentHtml:reportDocumentHtml,signature:modelSignature,export:exportReportModel,share:shareReportModel,placeExport:placeReportExportAction,captureLearning:captureLearningReportModel,familyDocumentHtml:familyReportDocumentHtml,familyHtml:familyReportHtml});root.CocoFamilyReportKitV16084=reportKitV16084;root.CocoFamilyReportKitV16083=reportKitV16084;
+  var reportKitV16084=Object.freeze({version:"160.87-family-integral-lifecycle",coreHtml:reportCoreHtml,documentHtml:reportDocumentHtml,signature:modelSignature,export:exportReportModel,share:shareReportModel,placeExport:placeReportExportAction,captureLearning:captureLearningReportModel,familyDocumentHtml:familyReportDocumentHtml,familyHtml:familyReportHtml});root.CocoFamilyReportKitV16084=reportKitV16084;root.CocoFamilyReportKitV16083=reportKitV16084;
 
   function numberFromText(v){var m=String(v||"").replace(/\./g,"").replace(",",".").match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):0}
   function buildGamesReportModel(modal,card){
@@ -255,18 +258,19 @@
     var gameName=games&&games.personName||"",learningName=learning&&learning.personName||"";
     if(learning&&!genericStudentName(gameName)&&!genericStudentName(learningName)&&normalizeText(gameName)!==normalizeText(learningName)){learning=null}
     var learningMeta=splitPersonMeta(learning&&learning.personMeta),name=!genericStudentName(gameName)?gameName:(!genericStudentName(learningName)?learningName:(gameName||learningName||"Alumno Coco"));
-    return{kind:"family",title:"Informe integral de progreso",subtitle:"Una visión conjunta del aprendizaje escolar con Eterna y del entrenamiento cognitivo con los juegos de Coco.",generatedAt:new Date().toISOString(),student:{name:name,age:games&&games.personMeta||"",schoolYear:learningMeta.schoolYear,ccaa:learningMeta.ccaa},learning:learning,games:games}
+    return{kind:"family",title:"Informe integral de progreso",subtitle:"Una visión conjunta del aprendizaje escolar con Eterna y del entrenamiento cognitivo con los juegos de Coco.",generatedAt:new Date().toISOString(),student:{name:name,age:games&&games.personMeta||"",schoolYear:learningMeta.schoolYear,ccaa:learningMeta.ccaa},learning:learning,games:games,learningStatus:familyReportState.learningStatus,gamesStatus:familyReportState.gamesStatus}
   }
 
-  function familyChapterHtml(model,kind){
+  function familyChapterHtml(model,kind,status){
     var learning=kind==="learning",eyebrow=learning?"APRENDIZAJE · ETERNA":"JUEGOS PARA LA MENTE · COCO",title=learning?"Mapa de fortalezas del aprendizaje":"Mapa de capacidades",subtitle=model&&model.subtitle||(learning?"Tareas, explicaciones, práctica y exámenes: señales académicas que evolucionan con el alumno.":"Memoria, atención, cálculo, lógica, lenguaje, velocidad, percepción y coordinación a partir del entrenamiento cognitivo de Coco.");
-    if(!model)return '<section class="cocoV16086Chapter '+kind+'"><div class="cocoV16086ChapterHead"><span>'+eyebrow+'</span><h3>'+title+'</h3><p>'+escapeReportHtml(subtitle)+'</p></div><div class="cocoV16086Pending">Preparando las señales de '+(learning?"aprendizaje de Eterna":"los juegos de Coco")+'…</div></section>';
-    return '<section class="cocoV16086Chapter '+kind+'"><div class="cocoV16086ChapterHead"><span>'+eyebrow+'</span><h3>'+title+'</h3><p>'+escapeReportHtml(subtitle)+'</p></div>'+reportBodyHtml(model)+'</section>'
+    if(!model&&status==="error")return '<section class="cocoV16086Chapter '+kind+'" data-family-integral-chapter="'+kind+'"><div class="cocoV16086ChapterHead"><span>'+eyebrow+'</span><h3>'+title+'</h3><p>'+escapeReportHtml(subtitle)+'</p></div><div class="cocoV16087LoadError"><b>No se pudo actualizar esta sección.</b><span>Los demás datos de Zona Familiar siguen disponibles.</span><button type="button" data-family-integral-retry="'+kind+'">Reintentar</button></div></section>';
+    if(!model)return '<section class="cocoV16086Chapter '+kind+'" data-family-integral-chapter="'+kind+'"><div class="cocoV16086ChapterHead"><span>'+eyebrow+'</span><h3>'+title+'</h3><p>'+escapeReportHtml(subtitle)+'</p></div><div class="cocoV16086Pending">Preparando las señales de '+(learning?"aprendizaje de Eterna":"los juegos de Coco")+'…</div></section>';
+    return '<section class="cocoV16086Chapter '+kind+'" data-family-integral-chapter="'+kind+'"><div class="cocoV16086ChapterHead"><span>'+eyebrow+'</span><h3>'+title+'</h3><p>'+escapeReportHtml(subtitle)+'</p></div>'+reportBodyHtml(model)+'</section>'
   }
 
   function familyReportHtml(family,screenMode){
     family=family||{};var ready=!!(family.learning&&family.games),button=screenMode?'<button type="button" class="cocoV16086ScreenExport" data-family-integral-export'+(ready?"":" disabled")+'>'+(ready?"Exportar PDF":"Preparando informe…")+'</button>':"",header=screenMode?'<header class="cocoV16086FamilyHeader"><div class="cocoV16086FamilyHeaderCopy"><span>ZONA FAMILIAR · PROGRESO</span><h2>Informe integral de progreso</h2><p>Una visión conjunta del aprendizaje escolar con Eterna y del entrenamiento cognitivo con los juegos de Coco.</p></div>'+button+'</header>':"";
-    return '<section class="cocoV16086FamilyIntegral" data-family-integral-report="1">'+header+familyChapterHtml(family.learning,"learning")+familyChapterHtml(family.games,"games")+'</section>'
+    return '<section class="cocoV16086FamilyIntegral" data-family-integral-report="1">'+header+familyChapterHtml(family.learning,"learning",family.learningStatus)+familyChapterHtml(family.games,"games",family.gamesStatus)+'</section>'
   }
 
   function familyStudentHtml(student){
@@ -279,19 +283,19 @@
     return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Informe integral de progreso · Coco en Forma</title><style>body{margin:0;background:#edf6fa;color:#173f59}'+reportKitCss(true)+'.cocoV16083Document>footer{margin-top:18px;padding-top:13px;border-top:1px solid #dceaf0;color:#718692;font-size:10px;line-height:1.45}</style></head><body data-coco-return-url="'+escapeReportHtml(returnUrl)+'"><main class="cocoV16083Document"><div class="cocoV16083DocTop"><div><b>COCO EN FORMA · ZONA FAMILIAR</b><strong class="cocoV16086DocumentTitle">Informe integral de progreso</strong><span>'+escapeReportHtml(reportDate())+'</span></div><div>'+familyStudentHtml(family.student)+'<div class="cocoV16085DocActions"><button type="button" class="is-back" onclick="try{var u=document.body.getAttribute(\'data-coco-return-url\')||\'/\';if(window.opener&&!window.opener.closed){window.opener.focus();window.close()}else{location.href=u}}catch(e){location.href=document.body.getAttribute(\'data-coco-return-url\')||\'/\'}">← Volver</button><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></div></div>'+familyReportHtml(family,false)+'<footer>Informe orientativo. Aprendizaje escolar y entrenamiento cognitivo se muestran como dimensiones complementarias y no se combinan en una puntuación única.</footer></main></body></html>'
   }
 
-  function gamesDataBucket(modal){
-    if(!modal)return null;var body=modal.querySelector(".cocoFamilyV129Body,.cocoFamilyBody,[class*='Family'][class*='Body']")||modal,bucket=body.querySelector(":scope > [data-coco-family-data-source='games']");
-    if(!bucket){bucket=document.createElement("div");bucket.className="cocoV16086DataSource";bucket.hidden=true;bucket.setAttribute("aria-hidden","true");bucket.dataset.cocoFamilyDataSource="games";body.appendChild(bucket)}
+  function gamesDataBucket(modal,card){
+    if(!modal||!card)return null;var bucket=card.querySelector(":scope > [data-coco-family-data-source='games']");
+    if(!bucket){bucket=document.createElement("div");bucket.className="cocoV16086DataSource";bucket.hidden=true;bucket.setAttribute("aria-hidden","true");bucket.dataset.cocoFamilyDataSource="games";card.appendChild(bucket)}
     return bucket
   }
 
-  function separateGamesDataFromPresentation(modal){
-    if(!modal)return 0;var nodes=gameSourceNodes(modal),bucket=gamesDataBucket(modal);if(!bucket)return 0;nodes.forEach(function(n){if(n&&n.parentElement!==bucket)bucket.appendChild(n);if(n){n.hidden=true;n.setAttribute("aria-hidden","true");n.dataset.cocoCanonicalGameSource="16086"}});return nodes.length
+  function separateGamesDataFromPresentation(modal,card){
+    if(!modal||!card)return 0;var nodes=gameSourceNodes(modal),bucket=gamesDataBucket(modal,card);if(!bucket)return 0;nodes.forEach(function(n){if(n&&n.parentElement!==bucket)bucket.appendChild(n);if(n){n.hidden=true;n.setAttribute("aria-hidden","true");n.dataset.cocoCanonicalGameSource="16087"}});return nodes.length
   }
 
   function removeLegacyGamesPresentation(modal,card){
     if(!modal)return 0;var removed=0,body=modal.querySelector(".cocoFamilyV129Body,.cocoFamilyBody,[class*='Family'][class*='Body']")||modal;
-    function gone(n){if(!n||n===modal||n===body||(card&&card.contains(n))||(n.closest&&n.closest("[data-family-integral-report='1'],[data-coco-family-data-source='games']")))return false;n.remove();removed++;return true}
+    function gone(n){if(!n||n===modal||n===body||(n.closest&&n.closest("[data-family-integral-report='1'],[data-coco-family-data-source='games']")))return false;n.remove();removed++;return true}
     Array.prototype.slice.call(modal.querySelectorAll(".cocoV16083GamesReport,.eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games']")).forEach(gone);
     Array.prototype.slice.call(modal.querySelectorAll("p,small")).forEach(function(copy){
       if(normalizeText(copy.textContent).indexOf("este apartado se calcula a partir")!==0)return;
@@ -314,35 +318,68 @@
     Array.prototype.slice.call(header.querySelectorAll("span,b,strong,h1,h2,h3,h4")).forEach(function(n){if(n.closest&&n.closest("button"))return;var t=normalizeText(n.textContent);if(t==="zona familiar progreso"||t==="zona familiar · progreso")n.remove()})
   }
 
-  function bindFamilyIntegralExport(block,family){
-    var button=block&&block.querySelector("[data-family-integral-export]");if(!button||button.disabled)return false;button.onclick=function(){exportReportModel(family,button)};return true
+  function ensureSingleFamilyIntegralReport(modal,card){
+    if(!modal||!card)return null;var all=Array.prototype.slice.call(modal.querySelectorAll("[data-family-integral-report='1']")),canonical=all.find(function(n){return n.parentElement===card})||all.find(function(n){return card.contains(n)})||null;
+    if(!canonical&&all.length){canonical=all[0];placeFamilyIntegralBlock(card,canonical)}
+    all.forEach(function(n){if(n!==canonical)n.remove()});
+    if(canonical&&canonical.parentElement!==card)placeFamilyIntegralBlock(card,canonical);
+    return canonical
+  }
+
+  function bindFamilyIntegralActions(block,family,modal,card){
+    if(!block)return false;var button=block.querySelector("[data-family-integral-export]");
+    if(button&&!button.disabled)button.onclick=function(){exportReportModel(family,button)};
+    Array.prototype.slice.call(block.querySelectorAll("[data-family-integral-retry]")).forEach(function(retry){
+      retry.onclick=function(){var kind=retry.dataset.familyIntegralRetry;if(kind==="learning"){retry.disabled=true;retry.textContent="Actualizando…";loadFamilyLearning(modal,card,true)}else if(kind==="games"){familyReportState.games=null;familyReportState.gamesStatus="idle";renderFamilyIntegral(modal,card,{skipLearningLoad:true})}}
+    });
+    return true
   }
 
   function placeFamilyIntegralBlock(card,block){
     if(!card||!block)return false;
     var subscription=card.querySelector(":scope > .eternaV16061SubscriptionTop"),reference=subscription?subscription.nextSibling:null;
     if(subscription){if(reference!==block)card.insertBefore(block,reference);return true}
-    var firstContent=Array.prototype.slice.call(card.children||[]).find(function(n){return n!==block&&!(n.matches&&n.matches(".eternaV159FamilyStatus,.eternaV160FamilyPromo,.eternaV160ProgressPanel,.eternaV159ParentSettings,.eternaLegalV16058"))});
+    var firstContent=Array.prototype.slice.call(card.children||[]).find(function(n){return n!==block&&!(n.matches&&n.matches(".eternaV159FamilyStatus,.eternaV160FamilyPromo,.eternaV160ProgressPanel,.eternaV159ParentSettings,.eternaLegalV16058,[data-coco-family-data-source='games']"))});
     if(firstContent)card.insertBefore(block,firstContent);else{var legal=card.querySelector(":scope > .eternaLegalV16058[data-et-family-legal-end='1'],:scope > .eternaLegalV16058[data-et-legal-canonical='1']"),first=card.firstElementChild||(card.children&&card.children[0])||null;if(legal)card.insertBefore(block,legal);else if(first!==block)card.insertBefore(block,first)}
     return true
   }
 
-  function renderFamilyIntegral(modal,card){
-    if(!modal)return false;injectV16084Styles();
-    var freshGames=buildGamesReportModel(modal,card);if(freshGames)familyReportState.games=freshGames;
-    separateGamesDataFromPresentation(modal);removeLegacyGamesPresentation(modal,card);normalizeFamilyModalChrome(modal);if(card)suppressLearningPresentation(card);
-    var family=buildFamilyReportModel(modal,card),host=card||modal.querySelector(".cocoFamilyV129Body,.cocoFamilyBody,[class*='Family'][class*='Body']")||modal,existing=host.querySelector(":scope > [data-family-integral-report='1']"),signature=modelSignature({student:family.student,learning:family.learning,games:family.games}),html=familyReportHtml(family,true);
-    if(existing&&existing.dataset.signature===signature){if(card)placeFamilyIntegralBlock(card,existing);bindFamilyIntegralExport(existing,family);return true}
-    var block=document.createElement("div");block.innerHTML=html;block=block.firstElementChild;block.dataset.signature=signature;
-    if(existing)existing.replaceWith(block);else if(card)placeFamilyIntegralBlock(card,block);else host.appendChild(block);
-    if(card)placeFamilyIntegralBlock(card,block);suppressLearningPresentation(card);bindFamilyIntegralExport(block,family);familyReportState.lastSignature=signature;gameReportRenderRuns++;return true
+  function learningDataApi(){var api=root.CocoEternaFamilyReportDataV16087;return api&&typeof api.getLearningModel==="function"?api:null}
+  function loadFamilyLearning(modal,card,force){
+    card=canonicalFamilyCardForReport(modal,card);if(!modal||!card)return Promise.resolve(null);var generation=familyReportState.generation,api=learningDataApi();
+    if(!api){familyReportState.learning=null;familyReportState.learningStatus="error";renderFamilyIntegral(modal,card,{skipLearningLoad:true});return Promise.resolve(null)}
+    if(familyReportState.learningPromise&&!force)return familyReportState.learningPromise;
+    familyReportState.learningStatus="loading";
+    var task=Promise.resolve().then(function(){return api.getLearningModel(!!force)}).then(function(model){
+      if(generation!==familyReportState.generation)return model||null;
+      if(model&&model.theme==="learning"){familyReportState.learning=model;familyReportState.learningStatus="ready"}else{familyReportState.learning=null;familyReportState.learningStatus="error"}
+      var liveCard=canonicalFamilyCardForReport(modal,card);if(liveCard&&document.body.contains(liveCard))renderFamilyIntegral(modal,liveCard,{skipLearningLoad:true});return model||null
+    }).catch(function(){
+      if(generation!==familyReportState.generation)return null;familyReportState.learning=null;familyReportState.learningStatus="error";var liveCard=canonicalFamilyCardForReport(modal,card);if(liveCard&&document.body.contains(liveCard))renderFamilyIntegral(modal,liveCard,{skipLearningLoad:true});return null
+    }).finally(function(){if(familyReportState.learningPromise===task)familyReportState.learningPromise=null});
+    familyReportState.learningPromise=task;return task
+  }
+
+  function renderFamilyIntegral(modal,card,options){
+    options=options||{};card=canonicalFamilyCardForReport(modal,card);if(!modal||!card)return false;injectV16084Styles();
+    var baseReady=modal.querySelector(".cocoFamilyHero")&&modal.querySelector(".cocoFamilyBars");if(!baseReady)return false;
+    var freshGames=buildGamesReportModel(modal,card);if(freshGames){familyReportState.games=freshGames;familyReportState.gamesStatus="ready"}else if(familyReportState.gamesStatus!=="ready")familyReportState.gamesStatus="error";
+    separateGamesDataFromPresentation(modal,card);removeLegacyGamesPresentation(modal,card);normalizeFamilyModalChrome(modal);suppressLearningPresentation(card);
+    var existing=ensureSingleFamilyIntegralReport(modal,card),family=buildFamilyReportModel(modal,card),signature=modelSignature({student:family.student,learning:family.learning,games:family.games,learningStatus:family.learningStatus,gamesStatus:family.gamesStatus}),html=familyReportHtml(family,true);
+    if(existing&&existing.dataset.signature===signature){placeFamilyIntegralBlock(card,existing);bindFamilyIntegralActions(existing,family,modal,card)}else{
+      var wrap=document.createElement("div");wrap.innerHTML=html;var block=wrap.firstElementChild;block.dataset.signature=signature;
+      if(existing)existing.replaceWith(block);else placeFamilyIntegralBlock(card,block);existing=block;bindFamilyIntegralActions(block,family,modal,card);gameReportRenderRuns++
+    }
+    ensureSingleFamilyIntegralReport(modal,card);suppressLearningPresentation(card);familyReportState.lastSignature=signature;
+    if(!options.skipLearningLoad&&(familyReportState.learningStatus==="idle"||familyReportState.learningStatus==="error"&&!familyReportState.learning))loadFamilyLearning(modal,card,false);
+    return true
   }
 
   function gameSourceNodes(modal){return Array.prototype.slice.call(modal.querySelectorAll(".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyBars,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight,.cocoFamilyEvidence"))}
   function hideCanonicalGameSources(nodes){(nodes||[]).forEach(function(n){if(!n)return;n.hidden=true;n.setAttribute("aria-hidden","true");n.dataset.cocoCanonicalGameSource="16084"})}
 
   function legacyGamesTitleText(value){var t=normalizeText(value);return t==="mapa de fortalezas"||t==="mapa de fortalezas de juegos para la mente"||t==="juegos para la mente mapa de fortalezas"}
-  function removeLegacyGamesHeader(modal){var card=modal&&modal.querySelector(".eternaV159FamilyCard");separateGamesDataFromPresentation(modal);return removeLegacyGamesPresentation(modal,card)}
+  function removeLegacyGamesHeader(modal){var card=modal&&modal.querySelector(".eternaV159FamilyCard");separateGamesDataFromPresentation(modal,card);return removeLegacyGamesPresentation(modal,card)}
   function renderGamesPremium(modal,card){return renderFamilyIntegral(modal,card)}
   function polishLearningFallback(card){if(!card)return;suppressLearningPresentation(card);var modal=card.closest&&card.closest(".cocoFamilyV129");if(modal)renderFamilyIntegral(modal,card)}
 
@@ -563,8 +600,9 @@
     if(baseReady&&perfMarkOnce("family_base_ready"))emitFamily("coco:family-base-ready",{modal:modal,body:body});
 
     var card=familyCardNode();
-    if(!card)return;
-    if(perfMarkOnce("family_data_ready"))emitFamily("coco:family-card-ready",{card:card,body:body,modal:modal});
+    if(!card||card.dataset.etFamilyState!=="ready"||card.getAttribute("aria-busy")==="true")return;
+    perfMarkOnce("family_data_ready");
+    renderFamilyIntegral(modal,card);
 
     var legal=canonicalLegalNode(card);
     if(legal)perfMarkOnce("family_legal_ready");
@@ -575,14 +613,15 @@
     familyLifecycle.active=true;
     familyLifecycle.settled=false;
     familyLifecycle.marks=Object.create(null);
-    familyReportState.games=null;familyReportState.lastSignature="";
+    familyReportState.generation++;familyReportState.games=null;familyReportState.learning=null;familyReportState.gamesStatus="idle";familyReportState.learningStatus="idle";familyReportState.learningPromise=null;familyReportState.lastSignature="";
     try{performance.mark("family_open_click")}catch(e){}
     queueMicrotask(syncFamilyLifecycle)
   }
 
   function endFamilyLifecycle(){
     familyLifecycle.active=false;
-    familyLifecycle.settled=false
+    familyLifecycle.settled=false;
+    familyReportState.generation++
   }
 
   function installEternaDemandLoader(){
