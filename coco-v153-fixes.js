@@ -223,15 +223,30 @@
 
   function legacyGamesTitleText(value){var t=normalizeText(value);return t==="mapa de fortalezas"||t==="mapa de fortalezas de juegos para la mente"||t==="juegos para la mente mapa de fortalezas"}
   function removeLegacyGamesHeader(modal){
-    if(!modal)return 0;var removed=0,sourceSelector=".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyBars,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight,.cocoFamilyEvidence";
-    Array.prototype.slice.call(modal.querySelectorAll(".eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games']")).forEach(function(n){if(n.closest&&n.closest(".cocoV16083GamesReport"))return;n.remove();removed++});
-    var heads=Array.prototype.slice.call(modal.querySelectorAll("h2,h3,h4,h5"));
+    if(!modal)return 0;var removed=0,sourceSelector=".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyBars,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight,.cocoFamilyEvidence",body=modal.querySelector(".cocoFamilyV129Body,.cocoFamilyBody,[class*='Family'][class*='Body']")||modal;
+    function removeNode(n){if(!n||n===modal||n===body||(n.closest&&n.closest(".cocoV16083GamesReport")))return false;n.remove();removed++;return true}
+    function isLegacyGamesCopy(node){
+      if(!node||node===body||!node.textContent||(node.closest&&node.closest(".cocoV16083GamesReport")))return false;
+      var text=normalizeText(node.textContent),compact=text.replace(/\s+/g," ");
+      if(!compact)return false;
+      var hasEyebrow=compact.indexOf("juegos para la mente")>=0;
+      var hasTitle=compact.indexOf("mapa de fortalezas")>=0;
+      var hasLegacyLead=compact.indexOf("este apartado se calcula a partir")>=0;
+      if(!(hasEyebrow&&hasTitle))return false;
+      if(node.matches&&node.matches(".cocoFamilyHero,.eternaV16081GameMapBlock,[data-et-v16081-games-map='1']"))return true;
+      if(hasLegacyLead)return true;
+      var tags=node.querySelectorAll?node.querySelectorAll("h1,h2,h3,h4,h5,p,span,b,strong") : [];
+      return tags&&tags.length>1&&compact.length<1200
+    }
+    Array.prototype.slice.call(modal.querySelectorAll(".eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games']")).forEach(function(n){removeNode(n)});
+    Array.prototype.slice.call(body.children||[]).forEach(function(n){if(isLegacyGamesCopy(n))removeNode(n)});
+    var heads=Array.prototype.slice.call(modal.querySelectorAll("h1,h2,h3,h4,h5"));
     heads.forEach(function(h){
       if(!h.parentElement||(h.closest&&h.closest(".cocoV16083GamesReport"))||!legacyGamesTitleText(h.textContent))return;
-      var parent=h.parentElement,container=h.closest&&h.closest(".eternaV16081GameMapBlock,[data-et-v16081-games-map='1'],section,article,.caja,.cocoFamilySection,.cocoFamilyPanel"),hasSource=container&&container.querySelector&&container.querySelector(sourceSelector),text=container?normalizeText(container.textContent):"";
-      if(container&&container!==modal&&!hasSource&&text.length<1200){container.remove();removed++;return}
-      Array.prototype.slice.call(parent.children||[]).forEach(function(n){if(n===h)return;var tx=normalizeText(n.textContent);if(tx==="juegos para la mente"||tx==="juegos para la mente coco"||tx.indexOf("este apartado se calcula a partir")===0||(n.matches&&n.matches(".eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games']"))){n.remove();removed++}});
-      h.remove();removed++
+      var parent=h.parentElement,container=h.closest&&h.closest(".cocoFamilyHero,.eternaV16081GameMapBlock,[data-et-v16081-games-map='1'],section,article,.caja,.cocoFamilySection,.cocoFamilyPanel,.card,.panel,div"),hasSource=container&&container.querySelector&&container.querySelector(sourceSelector),text=container?normalizeText(container.textContent):"";
+      if(container&&container!==modal&&!hasSource&&text.length<1200){removeNode(container);return}
+      Array.prototype.slice.call(parent.children||[]).forEach(function(n){if(n===h)return;var tx=normalizeText(n.textContent);if(tx==="juegos para la mente"||tx==="juegos para la mente coco"||tx.indexOf("este apartado se calcula a partir")===0||(n.matches&&n.matches(".eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games']"))){removeNode(n)}});
+      removeNode(h)
     });
     if(removed)legacyGamesHeaderRemovals+=removed;
     return removed
