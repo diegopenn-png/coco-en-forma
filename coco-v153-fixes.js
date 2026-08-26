@@ -1,4 +1,4 @@
-/* Coco en Forma · v160.82 FAMILY REPORTS + GAME ORDER · Runtime estable + informes + V/F equilibrado */
+/* Coco en Forma · v160.83 PREMIUM FAMILY REPORTING · Modelos compartidos + catálogo definitivo + V/F equilibrado */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -6,7 +6,7 @@
   var queued=new Set(),raf=0,eternaPromise=null,replaying=false;
   var familyLifecycle={active:false,settled:false,marks:Object.create(null)};
   var longTaskObserver=null,longTasks=[];
-  var trueFalseMixInstalled=false,gameOrderRuns=0,familyPolishRuns=0;
+  var trueFalseMixInstalled=false,gameOrderRuns=0,familyPolishRuns=0,suggestionPlacementRuns=0,gameReportRenderRuns=0;
   var DESKTOP_SAFARI=/Safari\//.test(navigator.userAgent||"")&&!/(Chrome|Chromium|CriOS|FxiOS|EdgiOS|OPR)\//.test(navigator.userAgent||"")&&/Macintosh/.test(navigator.userAgent||"")&&Number(navigator.maxTouchPoints||0)===0;
   try{performance.mark("coco_boot_start")}catch(e){}
 
@@ -130,178 +130,102 @@
   }
 
 
-  /* v160.82: no new observer or polling. These helpers run inside the existing
-     Coco bootstrap lifecycle so Family re-renders cannot restore obsolete UI. */
-  function injectV16082Styles(){
-    if(document.getElementById("coco-v16082-family-report-css"))return;
-    var style=document.createElement("style");
-    style.id="coco-v16082-family-report-css";
-    style.textContent=[
-      "#cocoApp .eternaV159FamilyCard>.eternaV159Buttons{display:none!important}",
-      "#cocoApp .cocoV16082ReportActions{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-left:auto}",
-      "#cocoApp .cocoV16082ReportActions button{min-height:38px;padding:8px 12px;border-radius:11px;border:1px solid #cfe3ec;background:#fff;color:#245b77;font:900 10px inherit;cursor:pointer;box-shadow:0 2px 0 rgba(190,217,229,.42)}",
-      "#cocoApp .cocoV16082ReportActions button.cocoV16082WhatsApp{border-color:#bfe4cf;background:#effaf4;color:#1f7149}",
-      "#cocoApp .cocoV16082MapIdentity{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 13px;padding:0 0 11px;border-bottom:1px solid rgba(23,63,89,.10)}",
-      "#cocoApp .cocoV16082MapIdentity span{display:inline-flex;padding:6px 10px;border-radius:999px;background:#0f5677;color:#fff!important;font-size:9px;font-weight:950;letter-spacing:.07em;text-transform:uppercase}",
-      "#cocoApp .cocoV16082MapIdentity.is-games span{background:#1784b1}",
-      "#cocoApp .cocoV16082MapIdentity small{flex:1 1 250px;color:#627b89!important;font-size:10px;font-weight:800;line-height:1.42}",
-      "#cocoApp .cocoV16082GameReportBar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid rgba(23,63,89,.10)}",
-      "#cocoApp .cocoV16082GameReportBar button{min-height:40px;padding:9px 13px;border-radius:12px;border:1px solid #cfe3ec;background:#fff;color:#245b77;font:900 10px inherit;cursor:pointer;box-shadow:0 2px 0 rgba(190,217,229,.42)}",
-      "#cocoApp .cocoV16082GameReportBar button:last-child{background:#effaf4;border-color:#bfe4cf;color:#1f7149}",
-      "@media(max-width:640px){#cocoApp .cocoV16082ReportActions{width:100%;justify-content:flex-start;margin-left:0}#cocoApp .cocoV16082ReportActions button,#cocoApp .cocoV16082GameReportBar button{flex:1 1 155px}}"
-    ].join("");
-    document.head.appendChild(style)
+  /* v160.83 · REPORT KIT ÚNICO
+     DATOS -> MODELO -> COMPONENTES VISUALES.
+     El mismo report model se usa en Zona Familiar, exportación e intercambio.
+     No se añade ningún observer, polling, timer o listener persistente. */
+  function escapeReportHtml(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
+  function reportValue(n){n=Number(n);return isFinite(n)?Math.max(0,Math.min(100,Math.round(n))):0}
+  function reportDate(){try{return new Intl.DateTimeFormat("es-ES",{day:"2-digit",month:"long",year:"numeric"}).format(new Date())}catch(e){return new Date().toLocaleDateString("es-ES")}}
+  function modelSignature(model){try{return JSON.stringify(model)}catch(e){return String(Date.now())}}
+
+  function reportCoreHtml(model){
+    model=model||{};var theme=model.theme==="games"?"games":"learning",hero=model.hero||{},metrics=Array.isArray(model.metrics)?model.metrics:[],bars=Array.isArray(model.bars)?model.bars:[],panels=Array.isArray(model.panels)?model.panels:[],groups=Array.isArray(model.groups)?model.groups:[],next=model.nextStep||null;
+    var heroPercent=hero.percent==null?null:reportValue(hero.percent);
+    var metricsHtml=metrics.length?'<div class="cocoV16083Metrics">'+metrics.map(function(x){return'<article><strong>'+escapeReportHtml(x.value)+'</strong><span>'+escapeReportHtml(x.label)+'</span>'+(x.detail?'<small>'+escapeReportHtml(x.detail)+'</small>':"")+'</article>'}).join("")+'</div>':"";
+    var barsHtml=bars.length?'<section class="cocoV16083Section cocoV16083Bars"><div class="cocoV16083SectionHead"><div><span>'+escapeReportHtml(model.barEyebrow||"MAPA VISUAL")+'</span><h3>'+escapeReportHtml(model.barTitle||"Progreso observado")+'</h3></div><small>'+escapeReportHtml(model.barScale||"0–100")+'</small></div><div class="cocoV16083BarList">'+bars.map(function(x){var value=reportValue(x.value);return'<article><div class="cocoV16083BarLabel"><b>'+escapeReportHtml(x.label)+'</b>'+(x.sublabel?'<span>'+escapeReportHtml(x.sublabel)+'</span>':"")+'</div><div class="cocoV16083Track"><i style="width:'+value+'%"></i></div><strong>'+value+'</strong>'+(x.detail?'<small>'+escapeReportHtml(x.detail)+'</small>':"")+'</article>'}).join("")+'</div></section>':"";
+    var panelsHtml=panels.length?'<div class="cocoV16083PanelGrid">'+panels.map(function(p){var items=Array.isArray(p.items)?p.items:[];return'<section class="cocoV16083Panel '+escapeReportHtml(p.tone||"")+'"><div class="cocoV16083PanelTitle"><span aria-hidden="true">'+escapeReportHtml(p.icon||"✦")+'</span><div><small>'+escapeReportHtml(p.eyebrow||"")+'</small><h3>'+escapeReportHtml(p.title||"")+'</h3></div></div>'+(p.text?'<p>'+escapeReportHtml(p.text)+'</p>':"")+(items.length?'<div class="cocoV16083ItemList">'+items.map(function(i){var hasPct=i.percent!=null;return'<div class="cocoV16083Item"><div><b>'+escapeReportHtml(i.label||"")+'</b>'+(i.detail?'<span>'+escapeReportHtml(i.detail)+'</span>':"")+'</div>'+(hasPct?'<div class="cocoV16083Mini"><i style="width:'+reportValue(i.percent)+'%"></i></div><strong>'+reportValue(i.percent)+'%</strong>':i.value!=null?'<strong>'+escapeReportHtml(i.value)+'</strong>':"")+'</div>'}).join("")+'</div>':"")+'</section>'}).join("")+'</div>':"";
+    var groupsHtml=groups.length?'<section class="cocoV16083Section"><div class="cocoV16083SectionHead"><div><span>'+escapeReportHtml(model.groupEyebrow||"VINCULACIÓN")+'</span><h3>'+escapeReportHtml(model.groupTitle||"Qué contribuye a cada área")+'</h3></div></div><div class="cocoV16083GroupGrid">'+groups.map(function(g){return'<article><b>'+escapeReportHtml(g.title)+'</b><div>'+((g.items||[]).map(function(item){return'<span>'+escapeReportHtml(item)+'</span>'}).join(""))+'</div></article>'}).join("")+'</div></section>':"";
+    var nextHtml=next?'<section class="cocoV16083Next"><span>'+escapeReportHtml(next.eyebrow||"PRÓXIMO PASO")+'</span><div><h3>'+escapeReportHtml(next.title||"")+'</h3><p>'+escapeReportHtml(next.text||"")+'</p></div></section>':"";
+    return '<div class="cocoV16083ReportCore '+theme+'">'+
+      '<header class="cocoV16083ReportHeader"><div><span>'+escapeReportHtml(model.eyebrow||"")+'</span><h2>'+escapeReportHtml(model.title||"")+'</h2><p>'+escapeReportHtml(model.subtitle||"")+'</p></div><div class="cocoV16083Person"><b>'+escapeReportHtml(model.personName||"Alumno Coco")+'</b><span>'+escapeReportHtml(model.personMeta||"")+'</span></div></header>'+
+      '<section class="cocoV16083Hero"><div class="cocoV16083HeroOrb"><span>'+escapeReportHtml(theme==="games"?"🧠":"✦")+'</span>'+(heroPercent!=null?'<b>'+heroPercent+'%</b>':"")+'</div><div><span>'+escapeReportHtml(hero.eyebrow||"FORTALEZA DESTACADA")+'</span><h3>'+escapeReportHtml(hero.title||"El mapa crecerá con la actividad")+'</h3><p>'+escapeReportHtml(hero.text||"")+'</p></div>'+(heroPercent!=null?'<div class="cocoV16083HeroGauge"><i style="width:'+heroPercent+'%"></i><small>Señal observada · '+heroPercent+'/100</small></div>':"")+'</section>'+
+      metricsHtml+barsHtml+panelsHtml+groupsHtml+nextHtml+
+      '<p class="cocoV16083ReportNote">'+escapeReportHtml(model.note||"Este mapa resume señales observadas en la actividad y puede cambiar con nuevas experiencias. No clasifica al alumno ni sustituye el criterio educativo de la familia o del profesorado.")+'</p>'+
+    '</div>'
   }
 
-  function cleanReportText(value){
-    return String(value||"").replace(/\u00a0/g," ").replace(/[ \t]+/g," ").replace(/\n[ \t]+/g,"\n").replace(/\n{3,}/g,"\n\n").trim()
+  function reportDocumentHtml(model){
+    var core=reportCoreHtml(model);
+    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeReportHtml(model.title||"Informe Coco en Forma")+'</title><style>body{margin:0;background:#edf6fa;color:#173f59}'+reportKitCss(true)+'.cocoV16083Document>footer{margin-top:18px;padding-top:13px;border-top:1px solid #dceaf0;color:#718692;font-size:10px;line-height:1.45}</style></head><body><main class="cocoV16083Document"><div class="cocoV16083DocTop"><div><b>COCO EN FORMA · ZONA FAMILIAR</b><span>Informe visual para la familia · '+escapeReportHtml(reportDate())+'</span></div><button onclick="window.print()">Imprimir o guardar como PDF</button></div>'+core+'<footer>Informe orientativo. Las fortalezas y áreas para reforzar describen señales de la actividad realizada hasta ahora y no etiquetas permanentes del alumno.</footer></main></body></html>'
   }
 
-  function reportTextFromNode(node,title){
-    var raw="";
-    try{raw=cleanReportText(node&&node.innerText||node&&node.textContent||"")}catch(e){raw=""}
-    [
-      "Exportar informe","Exportar para padres","Compartir por WhatsApp","Actualizar",
-      "Abrir Eterna","Gestionar suscripción","Cambiar a plan anual","Ver planes disponibles"
-    ].forEach(function(label){raw=raw.replace(new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"")});
-    raw=cleanReportText(raw);
-    return "Coco en Forma · "+title+"\n\n"+raw+"\n\nInforme orientativo basado en la actividad registrada hasta ahora."
+  function reportKitCss(documentMode){return [
+    '.cocoV16083Document,.cocoV16083ReportCore{font-family:Fredoka,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#173f59}.cocoV16083Document *,.cocoV16083ReportCore *{box-sizing:border-box}',
+    '.cocoV16083Document{max-width:980px;margin:26px auto;padding:24px;background:#fff;border-radius:28px;box-shadow:0 18px 50px rgba(23,63,89,.12)}.cocoV16083DocTop{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 18px;padding:0 2px 15px;border-bottom:1px solid #dceaf0}.cocoV16083DocTop b{display:block;color:#0f5677;font-size:12px;letter-spacing:.08em}.cocoV16083DocTop span{display:block;margin-top:4px;color:#718590;font-size:11px}.cocoV16083DocTop button{border:0;border-radius:12px;background:#173f59;color:#fff;padding:10px 14px;font-weight:900;cursor:pointer}',
+    '.cocoV16083ReportCore{--accent:#1784b1;--accent2:#2fa9dc;--soft:#edf9fd;display:grid;gap:15px;color:#173f59}.cocoV16083ReportCore.games{--accent:#ef6c05;--accent2:#2fa9dc;--soft:#fff7ed}.cocoV16083ReportHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:19px;border:1px solid #d7e8ef;border-radius:22px;background:linear-gradient(145deg,#fbfdff,#f4fbfe 58%,var(--soft));box-shadow:0 8px 22px rgba(23,63,89,.07)}.cocoV16083ReportHeader>div>span{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--accent);color:#fff;font-size:9px;font-weight:950;letter-spacing:.07em}.cocoV16083ReportHeader h2{margin:9px 0 5px;font-size:27px;line-height:1.05}.cocoV16083ReportHeader p{margin:0;max-width:650px;color:#607985;font-size:12px;font-weight:700;line-height:1.45}.cocoV16083Person{text-align:right;min-width:145px}.cocoV16083Person b{display:block;font-size:16px}.cocoV16083Person span{display:block;margin-top:4px;color:#748995;font-size:10px}',
+    '.cocoV16083Hero{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(150px,.38fr);align-items:center;gap:16px;padding:18px;border:1px solid #d9e9f0;border-radius:22px;background:#fff}.cocoV16083HeroOrb{width:92px;height:92px;border-radius:28px;display:grid;place-items:center;align-content:center;background:radial-gradient(circle at 35% 28%,#fff,var(--soft));border:1px solid #d8eaf1;box-shadow:0 5px 14px rgba(23,63,89,.08)}.cocoV16083HeroOrb span{font-size:29px}.cocoV16083HeroOrb b{margin-top:2px;color:var(--accent);font-size:19px}.cocoV16083Hero>div:nth-child(2)>span,.cocoV16083Next>span,.cocoV16083SectionHead span,.cocoV16083PanelTitle small{color:var(--accent);font-size:9px;font-weight:950;letter-spacing:.07em}.cocoV16083Hero h3{margin:4px 0;font-size:20px}.cocoV16083Hero p{margin:0;color:#657c88;font-size:11px;font-weight:700;line-height:1.45}.cocoV16083HeroGauge{display:grid;gap:7px}.cocoV16083HeroGauge:before{content:"";height:10px;border-radius:999px;background:#e4eff4}.cocoV16083HeroGauge i{height:10px;border-radius:999px;background:linear-gradient(90deg,var(--accent2),var(--accent));margin-top:-17px}.cocoV16083HeroGauge small{color:#718793;font-size:9px;font-weight:800}',
+    '.cocoV16083Metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.cocoV16083Metrics article{padding:14px;border:1px solid #dceaf0;border-radius:17px;background:#fff;text-align:center}.cocoV16083Metrics strong{display:block;color:var(--accent);font-size:24px}.cocoV16083Metrics span{display:block;margin-top:3px;font-size:10px;font-weight:900}.cocoV16083Metrics small{display:block;margin-top:3px;color:#7a8d96;font-size:9px}',
+    '.cocoV16083Section{padding:17px;border:1px solid #d9e9f0;border-radius:22px;background:#fff}.cocoV16083SectionHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:13px}.cocoV16083SectionHead h3{margin:3px 0 0;font-size:18px}.cocoV16083SectionHead small{color:#788c96;font-size:9px;font-weight:800}.cocoV16083BarList{display:grid;gap:10px}.cocoV16083BarList article{display:grid;grid-template-columns:minmax(145px,.7fr) minmax(140px,1fr) 40px;align-items:center;gap:10px}.cocoV16083BarLabel b{display:block;font-size:11px}.cocoV16083BarLabel span,.cocoV16083BarList article>small{display:block;color:#788b95;font-size:9px}.cocoV16083Track{height:11px;border-radius:999px;background:#e8f0f4;overflow:hidden}.cocoV16083Track i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent2),var(--accent))}.cocoV16083BarList article>strong{color:var(--accent);font-size:14px;text-align:right}',
+    '.cocoV16083PanelGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cocoV16083Panel{padding:16px;border:1px solid #dceaf0;border-radius:20px;background:#fff}.cocoV16083Panel.reinforce{background:#fff9f1;border-color:#f4ddbd}.cocoV16083Panel.strategy{background:#f2fbf7;border-color:#cfeadd}.cocoV16083PanelTitle{display:flex;align-items:center;gap:9px;margin-bottom:10px}.cocoV16083PanelTitle>span{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:var(--soft)}.cocoV16083PanelTitle h3{margin:2px 0 0;font-size:15px}.cocoV16083Panel p{margin:0;color:#657c88;font-size:10px;line-height:1.45}.cocoV16083ItemList{display:grid;gap:8px}.cocoV16083Item{display:grid;grid-template-columns:minmax(0,1fr) minmax(70px,.5fr) auto;align-items:center;gap:8px;padding-top:8px;border-top:1px solid #edf2f5}.cocoV16083Item:first-child{padding-top:0;border-top:0}.cocoV16083Item b{display:block;font-size:10px}.cocoV16083Item span{display:block;color:#7a8d96;font-size:8.5px}.cocoV16083Item>strong{color:var(--accent);font-size:11px}.cocoV16083Mini{height:7px;border-radius:999px;background:#e7f0f4;overflow:hidden}.cocoV16083Mini i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent2),var(--accent))}',
+    '.cocoV16083GroupGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.cocoV16083GroupGrid article{padding:12px;border:1px solid #e0ebef;border-radius:15px;background:#f9fcfd}.cocoV16083GroupGrid b{display:block;margin-bottom:7px;font-size:10px}.cocoV16083GroupGrid article div{display:flex;gap:5px;flex-wrap:wrap}.cocoV16083GroupGrid span{display:inline-flex;padding:4px 7px;border-radius:999px;background:#fff;border:1px solid #dce9ef;color:#56717f;font-size:8.5px;font-weight:800}',
+    '.cocoV16083Next{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;padding:16px;border:1px solid #f1d4aa;border-radius:20px;background:linear-gradient(145deg,#fffaf2,#fff5e6)}.cocoV16083Next>span{padding:6px 9px;border-radius:999px;background:#ef6c05;color:#fff}.cocoV16083Next h3{margin:0 0 3px;font-size:15px}.cocoV16083Next p{margin:0;color:#765f4f;font-size:10px;line-height:1.45}.cocoV16083ReportNote{margin:0;padding:0 4px;color:#718692;font-size:9px;line-height:1.45}',
+    '.cocoV16083InlineActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.cocoV16083InlineActions button{min-height:40px;padding:9px 13px;border-radius:12px;border:1px solid #cfe3ec;background:#fff;color:#245b77;font:900 10px inherit;cursor:pointer;box-shadow:0 2px 0 rgba(190,217,229,.42)}.cocoV16083InlineActions button[data-report-share]{background:#effaf4;border-color:#bfe4cf;color:#1f7149}',
+    '.cocoParticipationV16083{grid-column:1/-1!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:16px!important;padding:18px!important;border:2px dashed #9fd8e9!important;background:linear-gradient(135deg,#f2fbff,#fff8ee)!important;box-shadow:none!important}.cocoParticipationV16083 .cocoParticipationEyebrow{display:inline-flex!important;width:max-content!important;padding:6px 10px!important;border-radius:999px!important;background:#173f59!important;color:#fff!important;font-size:9px!important;font-weight:950!important;letter-spacing:.07em!important}.cocoParticipationV16083 h3{margin:4px 0!important}.cocoParticipationV16083 .cocoDescripcion{margin:0!important}.cocoParticipationV16083 .cocoSuggestionPromise{display:none!important}.cocoParticipationV16083 .cocoBotonJuego{min-width:150px!important}',
+    '@media(max-width:700px){.cocoV16083Document{margin:0;border-radius:0;padding:16px}.cocoV16083DocTop{align-items:flex-start}.cocoV16083DocTop button{display:none}.cocoV16083ReportHeader{display:grid}.cocoV16083Person{text-align:left}.cocoV16083Hero{grid-template-columns:auto 1fr}.cocoV16083HeroGauge{grid-column:1/-1}.cocoV16083Metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.cocoV16083PanelGrid,.cocoV16083GroupGrid{grid-template-columns:1fr}.cocoV16083BarList article{grid-template-columns:1fr 45px}.cocoV16083Track{grid-column:1/-1;grid-row:2}.cocoV16083BarList article>strong{grid-column:2;grid-row:1}.cocoParticipationV16083{grid-template-columns:1fr!important}.cocoParticipationV16083 .cocoBotonJuego{width:100%!important}}',
+    '@media print{body{background:#fff}.cocoV16083Document{box-shadow:none;margin:0;max-width:none;padding:0}.cocoV16083DocTop button,.cocoV16083InlineActions{display:none!important}.cocoV16083ReportCore{break-inside:auto}.cocoV16083Section,.cocoV16083Panel,.cocoV16083Hero{break-inside:avoid}}'
+  ].join("")}
+
+  function injectV16083Styles(){
+    if(document.getElementById("coco-v16083-report-kit-css"))return;
+    var style=document.createElement("style");style.id="coco-v16083-report-kit-css";style.textContent=reportKitCss(false)+"#cocoApp .eternaV159FamilyCard>.eternaV159Buttons{display:none!important}#cocoApp .cocoV16083CanonicalGameSource{display:none!important}#cocoApp .eternaV160ProgressPanel[data-et-premium-report=\"16083\"]{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}#cocoApp .cocoV16083GamesReport{margin-top:18px}";document.head.appendChild(style)
   }
 
-  function reportHtml(title,text){
-    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
-      '<title>'+title.replace(/[<>&]/g,"")+'</title><style>'+
-      'body{margin:0;background:#eef7fb;color:#173f59;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.page{max-width:850px;margin:28px auto;background:#fff;border-radius:24px;padding:34px;box-shadow:0 18px 50px rgba(23,63,89,.12)}'+
-      '.brand{color:#1682ad;font-weight:900;font-size:12px;letter-spacing:.08em}.title{font-size:34px;line-height:1.05;margin:8px 0 18px}.report{white-space:pre-wrap;line-height:1.55;font-size:15px;background:#f8fcfe;border:1px solid #d9ebf3;border-radius:18px;padding:20px}.note{margin-top:18px;color:#607986;font-size:12px}.actions{margin-top:20px}.actions button{border:0;border-radius:12px;background:#173f59;color:#fff;padding:11px 16px;font-weight:800;cursor:pointer}@media print{body{background:#fff}.page{box-shadow:none;margin:0;max-width:none}.actions{display:none}}'+
-      '</style></head><body><main class="page"><div class="brand">COCO EN FORMA · ZONA FAMILIAR</div><h1 class="title">'+title.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</h1><div class="report">'+
-      text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+
-      '</div><div class="note">Este informe resume tendencias observadas. No constituye una evaluación psicológica, médica ni diagnóstica.</div><div class="actions"><button onclick="window.print()">Imprimir o guardar como PDF</button></div></main></body></html>'
+  function reportFile(model){var html=reportDocumentHtml(model),name=(model.theme==="games"?"informe-juegos-coco-":"informe-aprendizaje-eterna-")+new Date().toISOString().slice(0,10)+".html",blob=new Blob([html],{type:"text/html;charset=utf-8"}),file=null;try{file=new File([blob],name,{type:"text/html"})}catch(e){}return{html:html,name:name,blob:blob,file:file}}
+  function triggerReportDownload(bundle){var url=URL.createObjectURL(bundle.blob),a=document.createElement("a");a.href=url;a.download=bundle.name;document.body.appendChild(a);a.click();a.remove();queueMicrotask(function(){try{URL.revokeObjectURL(url)}catch(e){}})}
+  async function exportReportModel(model,button){var original=button&&button.textContent||"Exportar informe",bundle=reportFile(model),touch=/iPad|iPhone|Android/i.test(navigator.userAgent||"")||Number(navigator.maxTouchPoints||0)>1;if(button){button.disabled=true;button.textContent="Preparando…"}try{if(touch&&bundle.file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[bundle.file]}))){await navigator.share({title:model.title,text:"Te comparto el informe de progreso de Coco en Forma.",files:[bundle.file]})}else{var preview=null;try{preview=window.open("","_blank")}catch(e){}if(preview&&!preview.closed){preview.document.open();preview.document.write(bundle.html);preview.document.close()}else triggerReportDownload(bundle)}}catch(e){if(!e||e.name!=="AbortError")alert("No se pudo preparar el informe visual.")}finally{if(button){button.disabled=false;button.textContent=original}}}
+  async function shareReportModel(model,button){var original=button&&button.textContent||"Compartir por WhatsApp",bundle=reportFile(model),message="Te comparto el informe de progreso de Coco en Forma: "+model.title+".";if(button){button.disabled=true;button.textContent="Preparando…"}try{if(bundle.file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[bundle.file]}))){await navigator.share({title:model.title,text:message,files:[bundle.file]})}else{triggerReportDownload(bundle);var url="https://wa.me/?text="+encodeURIComponent(message+" El informe visual se ha descargado para que puedas adjuntarlo en este chat.");try{window.open(url,"_blank","noopener,noreferrer")}catch(e){location.href=url}}}catch(e){if(!e||e.name!=="AbortError")alert("No se pudo compartir el informe.")}finally{if(button){button.disabled=false;button.textContent=original}}}
+
+  root.CocoFamilyReportKitV16083=Object.freeze({version:"160.83",coreHtml:reportCoreHtml,documentHtml:reportDocumentHtml,signature:modelSignature,export:exportReportModel,share:shareReportModel});
+
+  function numberFromText(v){var m=String(v||"").replace(/\./g,"").replace(",",".").match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):0}
+  function buildGamesReportModel(modal,card){
+    if(!modal)return null;var hero=modal.querySelector(".cocoFamilyHero"),stats=modal.querySelector(".cocoFamilyStats"),barRoot=modal.querySelector(".cocoFamilyBars"),coverage=modal.querySelector(".cocoFamilyCoverageGrid"),insight=modal.querySelector(".cocoFamilyInsight"),evidence=modal.querySelector(".cocoFamilyEvidence");if(!hero||!barRoot)return null;
+    var profileText=hero.querySelector("span")?String(hero.querySelector("span").textContent||""):"",profileMatch=profileText.match(/PERFIL DE\s+(.+?)(?:\s+·\s+(\d+)\s+AÑOS)?$/i),name=profileMatch?profileMatch[1].trim():"Jugador Coco",age=profileMatch&&profileMatch[2]?profileMatch[2]+" años":"";
+    var metrics=stats?Array.prototype.slice.call(stats.children).map(function(x){var b=x.querySelector("b,strong"),sp=x.querySelector("span,small");return{value:b?String(b.textContent||"").trim():"0",label:sp?String(sp.textContent||"").trim():"Actividad"}}):[];
+    var bars=Array.prototype.slice.call(barRoot.querySelectorAll(":scope > article,article")).map(function(x){var b=x.querySelector("b"),sp=x.querySelector("span"),strong=x.querySelector("strong");return{label:b?String(b.textContent||"").trim():"Capacidad",sublabel:sp?String(sp.textContent||"").trim():"",value:strong?numberFromText(strong.textContent):0}}).filter(function(x){return x.label});
+    var groups=coverage?Array.prototype.slice.call(coverage.querySelectorAll(":scope > article,article")).map(function(x){var b=x.querySelector("b"),items=Array.prototype.slice.call(x.querySelectorAll("span")).map(function(s){return String(s.textContent||"").trim()}).filter(Boolean);return{title:b?String(b.textContent||"").trim():"Área",items:items}}):[];
+    var best=bars.slice().sort(function(a,b){return b.value-a.value})[0]||null,lowest=bars.slice().filter(function(x){return x.value>0}).sort(function(a,b){return a.value-b.value})[0]||bars.slice().sort(function(a,b){return a.value-b.value})[0]||null;
+    var heroTitle=hero.querySelector("h3")?String(hero.querySelector("h3").textContent||"").trim():(best?"Fortaleza destacada: "+best.label:"El mapa crecerá con las primeras partidas"),heroText=hero.querySelector("p")?String(hero.querySelector("p").textContent||"").trim():"El mapa compara de forma orientativa las capacidades entrenadas en los juegos.";
+    var nextTitle=insight&&insight.querySelector("h3")?String(insight.querySelector("h3").textContent||"").trim():"Equilibrio antes que comparación",nextText=insight&&insight.querySelector("p")?String(insight.querySelector("p").textContent||"").trim():(lowest?"La siguiente capacidad a explorar es "+lowest.label.toLowerCase()+".":"Completa actividades variadas para equilibrar el mapa.");
+    return{theme:"games",eyebrow:"JUEGOS PARA LA MENTE · COCO",title:"Mapa de fortalezas de juegos para la mente",subtitle:"Memoria, atención, cálculo, lógica, lenguaje, velocidad y otras capacidades a partir del entrenamiento cognitivo de Coco.",personName:name,personMeta:age,hero:{eyebrow:"FORTALEZA DESTACADA",title:heroTitle,text:heroText,percent:best?best.value:null},metrics:metrics,bars:bars,barEyebrow:"MAPA DE CAPACIDADES",barTitle:"Capacidades entrenadas",barScale:"Rendimiento normalizado · 0–100",panels:[{tone:"strength",icon:"★",eyebrow:"LECTURA ACTUAL",title:"Fortaleza destacada",items:best?[{label:best.label,detail:best.sublabel,percent:best.value}]:[],text:best?"Es la señal relativa más alta observada hasta ahora en las partidas registradas.":"Todavía faltan partidas para destacar una capacidad."},{tone:"reinforce",icon:"↗",eyebrow:"EQUILIBRIO",title:"Área para explorar",items:lowest?[{label:lowest.label,detail:lowest.sublabel,percent:lowest.value}]:[],text:"El objetivo no es comparar al alumno con otras personas, sino equilibrar la variedad de entrenamiento."}],groups:groups,groupEyebrow:"JUEGOS Y CAPACIDADES",groupTitle:"Qué juegos contribuyen a cada capacidad",nextStep:{eyebrow:"LECTURA ÚTIL",title:nextTitle,text:nextText.replace(/<[^>]+>/g,"")},note:"Este mapa resume el rendimiento observado en los juegos de Coco. Es orientativo: no mide inteligencia general, no es una prueba clínica y puede cambiar con nuevas partidas."}
   }
 
-  async function exportFamilyReport(node,title,button){
-    if(!node)return;
-    var original=button&&button.textContent||"Exportar para padres",text=reportTextFromNode(node,title),html=reportHtml(title,text);
-    var name=("coco-"+title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+"-"+new Date().toISOString().slice(0,10)+".html");
-    if(button){button.disabled=true;button.textContent="Preparando…"}
-    try{
-      var touch=/iPad|iPhone|Android/i.test(navigator.userAgent||"")||Number(navigator.maxTouchPoints||0)>1;
-      var blob=new Blob([html],{type:"text/html;charset=utf-8"}),file=null;
-      try{file=new File([blob],name,{type:"text/html"})}catch(e){}
-      if(touch&&file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
-        try{await navigator.share({title:title,text:"Informe de Coco en Forma para la familia.",files:[file]})}
-        catch(e){if(e&&e.name==="AbortError")return}
-      }else{
-        var preview=null;try{preview=window.open("","_blank")}catch(e){}
-        if(preview&&!preview.closed){preview.document.open();preview.document.write(html);preview.document.close()}
-        else{
-          var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();queueMicrotask(function(){try{URL.revokeObjectURL(url)}catch(_e){}})
-        }
-      }
-      if(button)button.textContent="Informe listo ✓"
-    }catch(e){
-      if(button)button.textContent=original;
-      alert("No se pudo preparar el informe.")
-    }finally{
-      if(button){button.disabled=false;button.textContent=original}
-    }
+  function gameSourceNodes(modal){return Array.prototype.slice.call(modal.querySelectorAll(".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight,.cocoFamilyEvidence"))}
+  function renderGamesPremium(modal,card){
+    if(!modal)return false;var model=buildGamesReportModel(modal,card);if(!model)return false;var body=modal.querySelector(".cocoFamilyV129Body,.cocoFamilyBody,[class*='Family'][class*='Body']")||modal,source=gameSourceNodes(modal),signature=modelSignature(model),existing=body.querySelector(".cocoV16083GamesReport");if(existing&&existing.dataset.signature===signature){source.forEach(function(n){n.classList.add("cocoV16083CanonicalGameSource")});return true}if(existing)existing.remove();var block=document.createElement("section");block.className="cocoV16083GamesReport";block.dataset.signature=signature;block.innerHTML=reportCoreHtml(model)+'<div class="cocoV16083InlineActions"><button type="button" data-report-export>Exportar informe</button><button type="button" data-report-share>Compartir por WhatsApp</button><button type="button" data-report-refresh>Actualizar</button></div>';var first=source[0]||null;if(first)body.insertBefore(block,first);else body.appendChild(block);source.forEach(function(n){n.classList.add("cocoV16083CanonicalGameSource")});var exp=block.querySelector("[data-report-export]"),share=block.querySelector("[data-report-share]"),refresh=block.querySelector("[data-report-refresh]"),nativeRefresh=modal.querySelector(".cocoFamilyInsight [data-family-refresh]");exp.onclick=function(){exportReportModel(model,exp)};share.onclick=function(){shareReportModel(model,share)};if(refresh){if(nativeRefresh)refresh.onclick=function(){nativeRefresh.click()};else refresh.remove()}gameReportRenderRuns++;return true
   }
 
-  function shareFamilyReportWhatsApp(node,title){
-    if(!node)return;
-    var text=reportTextFromNode(node,title);
-    if(text.length>3400)text=text.slice(0,3370)+"…";
-    var url="https://wa.me/?text="+encodeURIComponent(text);
-    try{window.open(url,"_blank","noopener,noreferrer")}catch(e){location.href=url}
-  }
-
-  function ensureMapIdentity(block,type,label,description){
-    if(!block)return;
-    var identity=block.querySelector(".cocoV16082MapIdentity");
-    if(!identity){
-      identity=document.createElement("div");
-      identity.className="cocoV16082MapIdentity "+(type==="games"?"is-games":"is-learning");
-      var anchor=block.querySelector(".eternaV160ProgressHead,h2,h3,h4");
-      if(anchor)block.insertBefore(identity,anchor);else block.insertBefore(identity,block.firstChild)
-    }
-    identity.innerHTML="<span>"+label+"</span><small>"+description+"</small>"
-  }
-
-  function findGamesMapHeading(modal,card){
-    if(!modal)return null;
-    var nodes=Array.prototype.slice.call(modal.querySelectorAll("h2,h3,h4,h5"));
-    return nodes.find(function(node){
-      if(card&&card.contains(node))return false;
-      var t=normalizeText(node.textContent);
-      return t==="mapa de fortalezas"||t==="mapa de fortalezas de juegos para la mente"||t.indexOf("mapa de fortalezas de juegos")===0
-    })||null
-  }
-
-  function gamesReportNode(modal,card,heading){
-    if(!modal)return null;
-    var body=modal.querySelector(".cocoFamilyV129Body,.cocoFamilyBody,[class*='Family'][class*='Body']")||modal;
-    return body
-  }
-
-  function polishLearningReport(card){
-    if(!card)return;
-    var panel=card.querySelector(".eternaV160StrengthMap,.eternaV160ProgressPanel");
-    if(!panel)return;
-    var head=panel.querySelector(".eternaV160ProgressHead");
-    if(head){
-      var title=head.querySelector("b,h2,h3,h4");
-      if(title)title.textContent="Mapa de fortalezas del aprendizaje";
-      ensureMapIdentity(panel,"learning","APRENDIZAJE · ETERNA","Tareas, explicaciones, práctica y exámenes: progreso escolar independiente de los juegos.");
-      var actions=head.querySelector(".cocoV16082ReportActions");
-      if(!actions){
-        actions=document.createElement("div");actions.className="cocoV16082ReportActions";
-        var exportButton=head.querySelector("[data-et-export]");
-        if(exportButton)actions.appendChild(exportButton);
-        var wa=document.createElement("button");wa.type="button";wa.className="cocoV16082WhatsApp";wa.textContent="WhatsApp";
-        wa.setAttribute("aria-label","Compartir el mapa de fortalezas del aprendizaje por WhatsApp");
-        wa.onclick=function(){shareFamilyReportWhatsApp(panel,"Mapa de fortalezas del aprendizaje")};
-        actions.appendChild(wa);
-        head.appendChild(actions)
-      }
-      var exportBtn=actions.querySelector("[data-et-export]");
-      if(exportBtn)exportBtn.textContent="Exportar para padres"
-    }
-  }
-
-  function polishGamesReport(modal,card){
-    var heading=findGamesMapHeading(modal,card);if(!heading)return;
-    heading.textContent="Mapa de fortalezas de juegos para la mente";
-    var intro=heading.closest("section,article,.caja")||heading.parentElement;
-    if(intro)ensureMapIdentity(intro,"games","JUEGOS PARA LA MENTE · COCO","Memoria, atención, cálculo, lógica, lenguaje, velocidad y coordinación según las partidas de Coco.");
-    var source=gamesReportNode(modal,card,heading);
-    if(!intro||!source)return;
-    var bar=intro.querySelector(".cocoV16082GameReportBar");
-    if(!bar){
-      bar=document.createElement("div");bar.className="cocoV16082GameReportBar";
-      var exp=document.createElement("button");exp.type="button";exp.textContent="Exportar para padres";
-      exp.onclick=function(){exportFamilyReport(source,"Mapa de fortalezas de juegos para la mente",exp)};
-      var wa=document.createElement("button");wa.type="button";wa.textContent="Compartir por WhatsApp";
-      wa.onclick=function(){shareFamilyReportWhatsApp(source,"Mapa de fortalezas de juegos para la mente")};
-      bar.appendChild(exp);bar.appendChild(wa);intro.appendChild(bar)
-    }
+  function polishLearningFallback(card){
+    if(!card)return;var panel=card.querySelector(".eternaV160ProgressPanel");if(!panel||panel.dataset.etPremiumReport==="16083")return;var head=panel.querySelector(".eternaV160ProgressHead"),title=head&&head.querySelector("b,h2,h3,h4");if(title)title.textContent="Mapa de fortalezas del aprendizaje"
   }
 
   function polishFamilyRuntime(node){
-    var card=null;
-    if(node&&node.matches&&node.matches(".eternaV159FamilyCard"))card=node;
-    else if(node&&node.closest)card=node.closest(".eternaV159FamilyCard");
-    if(!card&&node&&node.querySelector)card=node.querySelector(".eternaV159FamilyCard");
-    if(!card)card=document.querySelector("#cocoApp .eternaV159FamilyCard");
-    if(!card)return;
-    familyPolishRuns++;
-    injectV16082Styles();
-    Array.prototype.slice.call(card.children||[]).forEach(function(child){
-      if(child.classList&&child.classList.contains("eternaV159Buttons"))child.remove()
-    });
-    var status=card.querySelector(".eternaV159FamilyStatus");
-    if(status&&/^beta\s+de\s+prueba$/i.test(String(status.textContent||"").trim()))status.textContent="Versión beta";
-    polishLearningReport(card);
-    var modal=card.closest(".cocoFamilyV129")||document.querySelector("#cocoApp .cocoFamilyV129");
-    polishGamesReport(modal,card)
+    var card=null;if(node&&node.matches&&node.matches(".eternaV159FamilyCard"))card=node;else if(node&&node.closest)card=node.closest(".eternaV159FamilyCard");if(!card&&node&&node.querySelector)card=node.querySelector(".eternaV159FamilyCard");if(!card)card=document.querySelector("#cocoApp .eternaV159FamilyCard");var modal=(card&&card.closest(".cocoFamilyV129"))||document.querySelector("#cocoApp .cocoFamilyV129");if(!card&&!modal)return;familyPolishRuns++;injectV16083Styles();if(card){Array.prototype.slice.call(card.children||[]).forEach(function(child){if(child.classList&&child.classList.contains("eternaV159Buttons"))child.remove()});var status=card.querySelector(".eternaV159FamilyStatus");if(status&&/^beta\s+de\s+prueba$/i.test(String(status.textContent||"").trim()))status.textContent="Versión beta";polishLearningFallback(card)}if(modal){var header=modal.querySelector(":scope > header p,:scope > header small,.cocoFamilyV129>header p,.cocoFamilyV129>header small");if(header)header.textContent="Dos miradas complementarias al progreso: aprendizaje escolar con Eterna y entrenamiento cognitivo con Coco.";renderGamesPremium(modal,card)}
+  }
+
+  function finalizeSuggestionPlacement(app){
+    app=app||document.getElementById("cocoApp");if(!app)return false;
+    var card=app.querySelector(".cocoSuggestionCard");
+    if(card){
+      var parent=card.parentElement,games=parent?Array.prototype.slice.call(parent.children).filter(function(n){return n.matches&&n.matches(".cocoGameCard[data-coco-juego]")}):[];
+      if(!games.length){games=Array.prototype.slice.call(app.querySelectorAll(".cocoGameCard[data-coco-juego]"));parent=games.length?games[games.length-1].parentElement:null}
+      if(parent&&parent.lastElementChild!==card)parent.appendChild(card);
+      card.classList.add("cocoParticipationV16083");
+      if(!card.querySelector(".cocoParticipationEyebrow")){var eyebrow=document.createElement("span");eyebrow.className="cocoParticipationEyebrow";eyebrow.textContent="PARTICIPA EN COCO";var h=card.querySelector("h3");card.insertBefore(eyebrow,h||card.firstChild)}
+      var h3=card.querySelector("h3"),p=card.querySelector(".cocoDescripcion,p"),btn=card.querySelector(".cocoBotonJuego,.btn,button");if(h3)h3.textContent="¿Tienes una idea para un nuevo juego?";if(p)p.textContent="Cuéntanosla y ayúdanos a seguir mejorando Coco en Forma.";if(btn)btn.textContent="Danos una idea";suggestionPlacementRuns++
+    }
+    var mini=app.querySelector(".cocoMiniSuggestion");if(mini){var miniParent=mini.parentElement;if(miniParent&&miniParent.lastElementChild!==mini)miniParent.appendChild(mini)}return !!card
   }
 
   function truthItemValue(item){
@@ -310,35 +234,24 @@
 
   function mixedTruthFalseOrder(items,key){
     items=Array.isArray(items)?items.slice():[];
-    var yes=[],no=[],other=[];
-    items.forEach(function(item){var v=truthItemValue(item);if(v===true)yes.push(item);else if(v===false)no.push(item);else other.push(item)});
-    if(!yes.length||!no.length)return items;
-    var seed="v16082|"+String(key||"")+"|"+items.map(function(x){return Array.isArray(x)?String(x.cocoId||x[0]||""):String(x)}).join("|");
+    var typed=items.filter(function(item){return truthItemValue(item)!==null}),other=items.filter(function(item){return truthItemValue(item)===null});
+    var hasTrue=typed.some(function(x){return truthItemValue(x)===true}),hasFalse=typed.some(function(x){return truthItemValue(x)===false});
+    if(!hasTrue||!hasFalse)return items;
+    var seed="v16083|"+String(key||"")+"|"+typed.map(function(x){return Array.isArray(x)?String(x.cocoId||x[0]||""):String(x)}).join("|");
     var rng=root.CocoV134&&typeof root.CocoV134.rngFrom==="function"?root.CocoV134.rngFrom(seed):Math.random;
-    function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(rng()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
-    shuffle(yes);shuffle(no);
-    var out=[],last=null,run=0;
-    while(yes.length||no.length){
-      var choose;
-      if(run>=2&&last!==null&&((last&&no.length)||(!last&&yes.length)))choose=!last;
-      else if(yes.length&&no.length){
-        var p=yes.length/(yes.length+no.length);
-        choose=rng()<p;
-        if(run===1&&choose===last&&rng()<.62)choose=!last
-      }else choose=!!yes.length;
-      var queue=choose?yes:no;
-      if(!queue.length){choose=!choose;queue=choose?yes:no}
-      var item=queue.shift();out.push(item);
-      if(last===choose)run++;else{last=choose;run=1}
-    }
+    function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(rng()*(i+1)),tmp=a[i];a[i]=a[j];a[j]=tmp}return a}
+    function valid(a){var last=null,run=0,strict=true;for(var i=0;i<a.length;i++){var v=truthItemValue(a[i]);if(i&&v===truthItemValue(a[i-1]))strict=false;if(v===last)run++;else{last=v;run=1}if(run>2)return false}return !strict}
+    for(var attempt=0;attempt<48;attempt++){var candidate=shuffle(typed);if(valid(candidate))return candidate.concat(other)}
+    var yes=shuffle(typed.filter(function(x){return truthItemValue(x)===true})),no=shuffle(typed.filter(function(x){return truthItemValue(x)===false})),out=[],last=null,run=0;
+    while(yes.length||no.length){var choose;if(run>=2&&last!==null&&((last&&no.length)||(!last&&yes.length)))choose=!last;else if(yes.length&&no.length)choose=rng()<yes.length/(yes.length+no.length);else choose=!!yes.length;var q=choose?yes:no;if(!q.length){choose=!choose;q=choose?yes:no}out.push(q.shift());if(last===choose)run++;else{last=choose;run=1}}
     return out.concat(other)
   }
 
   function installTrueFalseMixGuard(){
     var api=root.CocoV134;
     if(trueFalseMixInstalled||!api||typeof api.selectStatic!=="function")return false;
-    if(api.selectStatic.__cocoV16082TruthMix){trueFalseMixInstalled=true;return true}
-    var nativeSelect=api.selectStatic;
+    if(api.selectStatic.__cocoV16083TruthMix){trueFalseMixInstalled=true;return true}
+    var nativeSelect=api.selectStatic.__cocoNative||api.selectStatic;
     function wrappedSelect(game,mode,difficulty,items,count,options){
       var result=nativeSelect.apply(api,arguments);
       if(normalizeText(game)==="verdadero"&&Array.isArray(result)&&result.some(function(x){return truthItemValue(x)!==null})){
@@ -346,7 +259,7 @@
       }
       return result
     }
-    wrappedSelect.__cocoV16082TruthMix=true;
+    wrappedSelect.__cocoV16083TruthMix=true;
     wrappedSelect.__cocoNative=nativeSelect;
     try{api.selectStatic=wrappedSelect}catch(e){return false}
     trueFalseMixInstalled=api.selectStatic===wrappedSelect;
@@ -388,9 +301,9 @@
   function cleanScoreNoise(card){card.querySelectorAll(".cocoArcadeCardScore,.cocoScoreCopy").forEach(function(n){n.remove()});card.querySelectorAll("p.pequeno").forEach(function(n){var t=normalizeText(n.textContent);if(/\b(puntos?|pts?)\b/.test(t)&&!/partida|reto|dia/.test(t))n.remove()});card.querySelectorAll(".pesas").forEach(function(n){var next=n.nextElementSibling;if(next&&/puntos?|pts?/i.test(next.textContent||""))next.remove();n.remove()})}
   function scoreStatus(card,id){var badge=card.querySelector(".cocoLigaBadge");if(!badge){badge=document.createElement("div");var btn=card.querySelector(".btn,.cocoBotonJuego");card.insertBefore(badge,btn||null)}var general=GENERAL.has(id),html='<span aria-hidden="true">'+(general?"🏆":"•")+'</span><b>'+(general?"Puntúa para la clasificación general":"No puntúa para la clasificación general")+'</b>';stabilizeRankingBadge(badge);badge.className="cocoLigaBadge c153ScoreStatus";badge.dataset.general=general?"yes":"no";badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";if(badge.innerHTML!==html)badge.innerHTML=html}
   function fixPadel(card,id){if(id!=="padel")return;card.classList.remove("cocoConstruccion","proximo");card.querySelectorAll(".cocoEstadoObra,.cintaObras").forEach(function(n){n.remove()});var btn=card.querySelector(".cocoBotonJuego,.btn");if(btn){if(/construcci|pr[oó]xim/i.test(btn.textContent||""))btn.textContent="Abrir Coco Pádel";btn.disabled=false;btn.removeAttribute("aria-disabled")}}
-  function applyCard(card){var id=idOf(card);if(RETIRED.has(id)){card.remove();return}card.dataset.cocoScoringV16082=GENERAL.has(id)?"yes":"no";cleanScoreNoise(card);scoreStatus(card,id);fixPadel(card,id)}
+  function applyCard(card){var id=idOf(card);if(RETIRED.has(id)){card.remove();return}card.dataset.cocoScoringV16083=GENERAL.has(id)?"yes":"no";cleanScoreNoise(card);scoreStatus(card,id);fixPadel(card,id)}
   function processNode(node){if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;if(node.matches&&node.matches("[data-coco-juego]")&&RETIRED.has(idOf(node))){node.remove();return}if(node.matches&&node.matches(".cocoGameCard[data-coco-juego]"))applyCard(node);if(node.querySelectorAll){node.querySelectorAll("[data-coco-juego]").forEach(function(n){if(RETIRED.has(idOf(n)))n.remove()});node.querySelectorAll(".cocoGameCard[data-coco-juego]").forEach(applyCard)}if((node.matches&&node.matches(".cocoFamilyV129,.eternaV159FamilyCard,.eternaV159FamilyStatus,.eternaV159Buttons,.eternaV160ProgressPanel"))||(node.closest&&node.closest(".cocoFamilyV129"))||(node.querySelector&&node.querySelector(".eternaV159FamilyCard")))polishFamilyRuntime(node)}
-  function relevantNode(node){if(!node||node.nodeType!==1)return false;var selector="[data-coco-juego],.cocoGameCard,#retosCard,.retosCard,.cocoFamilyV129,.eternaV159FamilyCard,.eternaV159FamilyStatus,.eternaV159Buttons,.eternaV160ProgressPanel";if(node.matches&&node.matches(selector))return true;if(node.closest&&node.closest(".cocoFamilyV129"))return true;return !!(node.querySelector&&node.querySelector(selector))}
+  function relevantNode(node){if(!node||node.nodeType!==1)return false;var selector="[data-coco-juego],.cocoGameCard,.cocoSuggestionCard,.cocoMiniSuggestion,#retosCard,.retosCard,.cocoFamilyV129,.eternaV159FamilyCard,.eternaV159FamilyStatus,.eternaV159Buttons,.eternaV160ProgressPanel";if(node.matches&&node.matches(selector))return true;if(node.closest&&node.closest(".cocoFamilyV129"))return true;return !!(node.querySelector&&node.querySelector(selector))}
 
   function activateEternaModule(intent){
     root.__COCO_ETERNA_LOAD_INTENT__=intent||"eterna";
@@ -410,9 +323,9 @@
     root.__COCO_ETERNA_LOAD_INTENT__=intent;
     eternaPromise=new Promise(function(resolve,reject){
       var s=document.createElement("script");
-      s.src="./eterna-experience-v160.js?v=16081";
+      s.src="./eterna-experience-v160.js?v=16083";
       s.async=true;
-      s.dataset.cocoModule="eterna-experience-v16081";
+      s.dataset.cocoModule="eterna-experience-v16083";
       s.onload=function(){
         try{performance.mark("eterna_core_ready")}catch(e){}
         activateEternaModule(intent);
@@ -536,8 +449,9 @@
     nodes.forEach(processNode);
     installTrueFalseMixGuard();
     sortAllGameCards(document.getElementById("cocoApp"));
+    finalizeSuggestionPlacement(document.getElementById("cocoApp"));
     if(familyLifecycle.active)polishFamilyRuntime(document.querySelector("#cocoApp .cocoFamilyV129"));
-    root.COCO_VERSION="2026-08-26-v160.82-family-reports-game-order"
+    root.COCO_VERSION="2026-08-26-v160.83-premium-family-reporting"
   }
 
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
@@ -545,7 +459,7 @@
   function initial(){
     var app=document.getElementById("cocoApp");
     try{performance.mark("coco_home_visible");performance.measure("coco_boot_to_home","coco_boot_start","coco_home_visible")}catch(e){}
-    injectV16082Styles();
+    injectV16083Styles();
     installTrueFalseMixGuard();
     installDailyCanPlayGuard();
     if(app){
@@ -556,8 +470,9 @@
       }else processNode(app)
     }
     sortAllGameCards(app);
+    finalizeSuggestionPlacement(app);
     scheduleEternaIdle();
-    root.COCO_VERSION="2026-08-26-v160.82-family-reports-game-order"
+    root.COCO_VERSION="2026-08-26-v160.83-premium-family-reporting"
   }
 
   function observe(){
@@ -635,7 +550,10 @@
         dailyInflight:dailyCanPlayInFlight.size,
         trueFalseMixInstalled:trueFalseMixInstalled,
         gameOrderRuns:gameOrderRuns,
-        familyPolishRuns:familyPolishRuns
+        familyPolishRuns:familyPolishRuns,
+        suggestionPlacementRuns:suggestionPlacementRuns,
+        gameReportRenderRuns:gameReportRenderRuns,
+        reportKit:!!root.CocoFamilyReportKitV16083
       }
     }
   });

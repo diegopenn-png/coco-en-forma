@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.81 · family maps clarity + direct plan switch + final stabilization + contexto UX
+/* ETERNA Experience v160.83 · premium family reporting + direct plan switch + final stabilization + contexto UX
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.81-family-maps";
+  var VERSION="160.83-premium-family-reporting";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
@@ -2259,8 +2259,8 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   if(root.__ETERNA_FAMILY_EMBEDDED_V16068__)return;
   root.__ETERNA_FAMILY_EMBEDDED_V16068__=true;
 
-  var VERSION="160.81-family-maps";
-  var subscriptionUiCache={uid:"",at:0,data:null,promise:null};
+  var VERSION="160.83-family-premium-reporting";
+  var subscriptionUiCache={uid:"",at:0,data:null,promise:null},learningReportCache={uid:"",at:0,model:null,promise:null};
 
 
   function clean(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
@@ -2636,6 +2636,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   function enhanceLearningMapIdentity(card){
     var panel=card&&card.querySelector(".eternaV160StrengthMap,.eternaV160ProgressPanel");
     if(!panel)return false;
+    if(panel.dataset.etPremiumReport==="16083")return true;
     panel.classList.add("eternaV16081LearningMapBlock");
     var head=panel.querySelector(".eternaV160ProgressHead");
     if(head){
@@ -2713,6 +2714,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     var legalReady=placeLegal(card);
     try{if(root.ETERNA_EXPERIENCE_V16049&&typeof root.ETERNA_EXPERIENCE_V16049.enhanceFamilyProgress==="function")root.ETERNA_EXPERIENCE_V16049.enhanceFamilyProgress()}catch(e){}
     enhanceFamilyInformationArchitecture(card);
+    syncLearningPremiumReport(false).catch(function(){});
     if(legalReady){
       try{performance.mark("family_ui_ready")}catch(e){}
       try{root.dispatchEvent(new CustomEvent("coco:family-ui-ready",{detail:{card:card}}))}catch(e){}
@@ -2724,92 +2726,42 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     return applyFamilyLayout()
   }
 
-  function progressSnapshot(exportData,strategies){
-    exportData=exportData||{};
-    var concepts=Array.isArray(exportData.student_concept_memory)?exportData.student_concept_memory.slice():[];
-    var strongest=concepts.slice().sort(function(a,b){return Number(b.mastery_score||0)-Number(a.mastery_score||0)}).slice(0,3);
-    var reinforce=concepts.slice().sort(function(a,b){return Number(a.mastery_score||0)-Number(b.mastery_score||0)}).slice(0,3);
-    var subjects=[],seen={};
-    concepts.forEach(function(x){var s=clean(x.subject);if(s&&!seen[s]){seen[s]=1;subjects.push(s)}});
-    if(Array.isArray(exportData.mastery))exportData.mastery.forEach(function(x){var s=x&&x.eterna_concepts&&x.eterna_concepts.subject;if(s&&!seen[s]){seen[s]=1;subjects.push(s)}});
-    var attempts=Array.isArray(exportData.attempts)?exportData.attempts.length:concepts.reduce(function(sum,x){return sum+Number(x.attempts||0)},0);
-    var useful=(strategies||[]).filter(function(x){return Number(x.evidence_count||0)>=2}).slice(0,3);
-    return{concepts:concepts,strategies:useful,strongest:strongest,reinforce:reinforce,subjects:subjects,attempts:attempts}
+  function clearLearningReportCache(){learningReportCache={uid:"",at:0,model:null,promise:null}}
+  function uniqueStrings(values){var seen=Object.create(null),out=[];(values||[]).forEach(function(v){v=clean(v);if(v&&!seen[v]){seen[v]=1;out.push(v)}});return out}
+  function recentUsageDays(usage){var now=Date.now(),cut=now-6*86400000,seen=Object.create(null);(usage||[]).forEach(function(row){var raw=row&& (row.usage_date||row.created_at||row.updated_at),d=raw?new Date(raw):null;if(d&&!isNaN(d.getTime())&&d.getTime()>=cut){var key=d.toISOString().slice(0,10);seen[key]=1}});return Object.keys(seen).length}
+  function learningSupportName(session,profileRow){if(profileRow&&profileRow.apodo)return capName(profileRow.apodo);if(session&&session.user&&session.user.user_metadata&&session.user.user_metadata.apodo)return capName(session.user.user_metadata.apodo);return"Alumno Coco"}
+
+  function buildLearningReportModel(exportData,name){
+    exportData=exportData||{};var concepts=(Array.isArray(exportData.student_concept_memory)?exportData.student_concept_memory:[]).filter(function(x){return x&&clean(x.concept_label)}),observed=concepts.filter(function(x){return Number(x.attempts||0)>0}),strongest=observed.slice().sort(function(a,b){return Number(b.mastery_score||0)-Number(a.mastery_score||0)}).slice(0,3),reinforce=observed.slice().sort(function(a,b){return Number(a.mastery_score||0)-Number(b.mastery_score||0)}).slice(0,3),strategies=(Array.isArray(exportData.learning_strategy_memory)?exportData.learning_strategy_memory:[]).filter(function(x){return x&&clean(x.strategy_key)&&Number(x.evidence_count||0)>0}).sort(function(a,b){var ds=Number(b.success_score||0)-Number(a.success_score||0);return Math.abs(ds)>.001?ds:Number(b.evidence_count||0)-Number(a.evidence_count||0)}).slice(0,3),profile=exportData.student_profile||{},subjects=uniqueStrings(concepts.map(function(x){return x.subject})),attemptRows=Array.isArray(exportData.attempts)?exportData.attempts:[],attempts=attemptRows.length||concepts.reduce(function(sum,x){return sum+Number(x.attempts||0)},0),errors=concepts.reduce(function(sum,x){return sum+Number(x.errors||0)},0),partials=concepts.reduce(function(sum,x){return sum+Number(x.partials||0)},0),independent=concepts.reduce(function(sum,x){return sum+Number(x.independent_successes||0)},0),assisted=concepts.reduce(function(sum,x){return sum+Number(x.assisted_successes||0)},0),activeDays=recentUsageDays(exportData.usage||[]),lead=strongest[0]||null,next=reinforce[0]||null;
+    var barSource=observed.slice().sort(function(a,b){return Number(b.attempts||0)-Number(a.attempts||0)}).slice(0,6);
+    var bars=barSource.map(function(x){return{label:clean(x.concept_label),sublabel:clean(x.subject)||"Aprendizaje",value:percent(x.mastery_score),detail:Number(x.attempts||0)+" señales observadas"}});
+    var panels=[
+      {tone:"strength",icon:"★",eyebrow:"TUS FORTALEZAS",title:"Lo que parece estar más consolidado",text:"Según las actividades realizadas hasta ahora.",items:strongest.map(function(x){return{label:clean(x.concept_label),detail:clean(x.subject)||"Aprendizaje",percent:percent(x.mastery_score)}})},
+      {tone:"reinforce",icon:"↗",eyebrow:"VAMOS A REFORZAR",title:"Áreas sugeridas para seguir practicando",text:"Son señales de práctica, no etiquetas permanentes.",items:reinforce.map(function(x){return{label:clean(x.concept_label),detail:(clean(x.subject)||"Aprendizaje")+" · "+Number(x.attempts||0)+" intentos",percent:percent(x.mastery_score)}})},
+      {tone:"strategy",icon:"💡",eyebrow:"ASÍ PARECE AYUDARLE MÁS",title:"Estrategias que están funcionando",text:"Eterna seguirá ajustando la forma de explicar según la evidencia acumulada.",items:strategies.map(function(x){var score=Number(x.success_score);return{label:strategyName(x.strategy_key),detail:Number(x.evidence_count||0)+" evidencias",percent:isFinite(score)?percent(score):null}})},
+      {tone:"activity",icon:"◎",eyebrow:"TU RECORRIDO",title:"Actividad observada",items:[{label:"Aciertos con poca ayuda",value:independent},{label:"Aciertos con apoyo",value:assisted},{label:"Errores registrados",value:errors},{label:"Respuestas parciales",value:partials}]}
+    ];
+    return{theme:"learning",eyebrow:"APRENDIZAJE · ETERNA",title:"Mapa de fortalezas del aprendizaje",subtitle:"Tareas, explicaciones, preguntas escolares, práctica y preparación de exámenes: una lectura visual de las señales académicas observadas.",personName:capName(name||"Alumno Coco"),personMeta:[profile.school_year||"Curso no indicado",profile.autonomous_community||""].filter(Boolean).join(" · "),hero:{eyebrow:"FORTALEZA DESTACADA",title:lead?"Fortaleza destacada: "+clean(lead.concept_label):"Tu mapa de aprendizaje está empezando",text:lead?"Según las actividades realizadas, esta es la señal de dominio más alta observada hasta ahora. Puede cambiar con nueva práctica.":"Eterna irá completando este mapa a medida que haya más actividades escolares.",percent:lead?percent(lead.mastery_score):null},metrics:[{value:concepts.length,label:"conceptos con señales"},{value:attempts,label:"intentos o señales"},{value:subjects.length,label:"materias trabajadas"},{value:activeDays+"/7",label:"días activos esta semana"}],bars:bars,barEyebrow:"CONCEPTOS OBSERVADOS",barTitle:"Progreso por conceptos",barScale:"Dominio aproximado · 0–100",panels:panels,groups:subjects.length?[{title:"Materias trabajadas",items:subjects}]:[],groupEyebrow:"CONTEXTO ESCOLAR",groupTitle:"Dónde se están generando señales",nextStep:{eyebrow:"PRÓXIMO PASO",title:next?"Reforzar: "+clean(next.concept_label):"Seguir creando señales variadas",text:next?"Una buena próxima práctica sería trabajar este concepto con pasos cortos y una comprobación al final.":"Realiza actividades variadas para que Eterna pueda distinguir fortalezas y áreas para reforzar con más fundamento."},note:"Informe pedagógico y orientativo. Expresa señales observadas según las actividades realizadas hasta ahora; no clasifica al alumno ni describe de forma permanente su manera de aprender."}
   }
 
-  async function reportSupport(){
-    var s=await getSession(),c=getClient();
-    var out={name:"Alumno Coco",strategies:[]};
-    if(!s||!s.user||!c)return out;
-    try{
-      var results=await Promise.allSettled([
-        c.from("perfiles").select("apodo").eq("id",s.user.id).maybeSingle(),
-        c.from("eterna_learning_strategy_memory").select("strategy_key,evidence_count,success_score").eq("user_id",s.user.id).order("success_score",{ascending:false}).limit(12)
-      ]);
-      if(results[0].status==="fulfilled"&&results[0].value&&results[0].value.data&&results[0].value.data.apodo)out.name=capName(results[0].value.data.apodo);
-      else if(s.user.user_metadata&&s.user.user_metadata.apodo)out.name=capName(s.user.user_metadata.apodo);
-      if(results[1].status==="fulfilled"&&results[1].value&&Array.isArray(results[1].value.data))out.strategies=results[1].value.data
-    }catch(e){
-      if(s.user.user_metadata&&s.user.user_metadata.apodo)out.name=capName(s.user.user_metadata.apodo)
-    }
-    return out
+  async function getLearningReportModel(force){
+    var session=await getSession(),uid=session&&session.user&&session.user.id;if(!uid)return null;var now=Date.now();if(!force&&learningReportCache.uid===uid&&learningReportCache.model&&now-learningReportCache.at<15000)return learningReportCache.model;if(learningReportCache.promise&&learningReportCache.uid===uid)return learningReportCache.promise;learningReportCache.uid=uid;learningReportCache.promise=(async function(){var c=getClient(),both=await Promise.all([api("/v1/export",{method:"GET"}),c?c.from("perfiles").select("apodo").eq("id",uid).maybeSingle():Promise.resolve({data:null})]),r=both[0],profileRow=both[1]&&both[1].data||null,d=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(d.error||"EXPORT");var model=buildLearningReportModel(d,learningSupportName(session,profileRow));learningReportCache.model=model;learningReportCache.at=Date.now();return model})().catch(function(){return null}).finally(function(){learningReportCache.promise=null});return learningReportCache.promise
   }
 
-  function reportHtml(exportData,support){
-    exportData=exportData||{};support=support||{};
-    var s=progressSnapshot(exportData,support.strategies||[]),name=capName(support.name||"Alumno Coco");
-    var profile=exportData.student_profile||{},course=profile.school_year||"Curso no indicado",community=profile.autonomous_community||"";
-    var strongest=s.strongest,reinforce=s.reinforce,strategies=s.strategies;
-    var summary=s.concepts.length?"Según las actividades realizadas, Eterna ya dispone de algunas señales para orientar la práctica. Estas observaciones pueden cambiar a medida que el alumno siga trabajando.":"Todavía hay pocas actividades para elaborar conclusiones sobre el progreso. Este informe irá ganando detalle con la práctica.";
-    var recommendation=reinforce.length?"Una buena próxima práctica sería trabajar "+clean(reinforce[0].concept_label||"el concepto que necesita más refuerzo")+" con pasos cortos y una comprobación al final.":"Una buena próxima práctica sería realizar algunas actividades variadas para que Eterna pueda observar qué conceptos conviene reforzar.";
-    function list(items,formatter,empty){return items.length?"<ul>"+items.map(function(x){return"<li>"+formatter(x)+"</li>"}).join("")+"</ul>":"<p>"+empty+"</p>"}
-    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Progreso de Eterna · '+esc(name)+'</title><style>'+
-      'body{margin:0;background:#eef7fb;color:#173f59;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.page{max-width:850px;margin:28px auto;background:#fff;border-radius:24px;padding:34px;box-shadow:0 18px 50px rgba(23,63,89,.12)}.brand{color:#2a88ad;font-weight:850;font-size:12px;letter-spacing:.08em}.title{font-size:36px;margin:8px 0 2px}.meta{color:#667f8d;margin-bottom:24px}.meta strong{color:#173f59}.summary{padding:16px;border-radius:16px;background:#eef9fd}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.box{border:1px solid #d8ebf3;border-radius:16px;padding:15px}.box h2{font-size:16px;margin:0 0 8px}.box p,.box li{font-size:14px;line-height:1.5}.recommend{margin-top:16px;padding:16px;border-radius:16px;background:#fff6e8;border:1px solid #ffddb0}.foot{margin-top:22px;color:#718793;font-size:11px;line-height:1.45}.actions{margin:18px 0}.actions button{border:0;border-radius:12px;background:#173f59;color:#fff;padding:10px 14px;font-weight:800;cursor:pointer}@media(max-width:650px){.page{margin:0;border-radius:0;padding:22px}.grid{grid-template-columns:1fr}.title{font-size:30px}}@media print{body{background:#fff}.page{box-shadow:none;margin:0;max-width:none}.actions{display:none}}'+
-      '</style></head><body><main class="page"><div class="brand">COCO EN FORMA · ETERNA</div><h1 class="title">Progreso de Eterna</h1><div class="meta"><strong>'+esc(name)+'</strong> · '+esc(course)+(community?" · "+esc(community):"")+'<br>Informe del '+esc(dateES())+'</div>'+
-      '<section class="summary"><strong>Resumen</strong><p>'+esc(summary)+'</p></section><div class="grid">'+
-      '<section class="box"><h2>Lo que está practicando</h2>'+list(s.subjects,function(x){return esc(x)},"Todavía no hay suficiente actividad para resumir las materias practicadas.")+'</section>'+
-      '<section class="box"><h2>Lo que parece dominar mejor</h2>'+list(strongest,function(x){return esc(x.concept_label)+" · "+percent(x.mastery_score)+"% de dominio estimado"},"Todavía no hay suficientes señales para destacarlo.")+'</section>'+
-      '<section class="box"><h2>Lo que conviene seguir practicando</h2>'+list(reinforce,function(x){return esc(x.concept_label)},"Todavía no hay suficientes señales para recomendar un refuerzo concreto.")+'</section>'+
-      '<section class="box"><h2>Formas de ayuda que parecen funcionar mejor</h2>'+list(strategies,function(x){return esc(strategyName(x.strategy_key))+" · "+Number(x.evidence_count||0)+" evidencias"},"Eterna seguirá probando distintas formas de ayuda.")+'</section>'+
-      '<section class="box"><h2>Actividad</h2><p>Conceptos con señales: <strong>'+s.concepts.length+'</strong><br>Intentos o señales registradas: <strong>'+s.attempts+'</strong></p></section>'+
-      '<section class="box"><h2>Cómo interpretar este informe</h2><p>Las observaciones expresan tendencias de las actividades realizadas hasta ahora. No describen de forma permanente al alumno.</p></section>'+
-      '</div><section class="recommend"><strong>Recomendación</strong><p>'+esc(recommendation)+'</p></section><div class="actions"><button onclick="window.print()">Imprimir o guardar como PDF</button></div><div class="foot">Eterna utiliza expresiones como “parece ayudarle”, “hasta ahora” y “según las actividades realizadas”. Este informe es pedagógico y orientativo; no constituye una evaluación psicológica, médica ni diagnóstica.</div></main></body></html>'
+  function renderLearningPremiumPanel(model){
+    var kit=root.CocoFamilyReportKitV16083,panel=document.querySelector("#cocoApp .eternaV159FamilyCard .eternaV160ProgressPanel");if(!kit||!panel||!model)return false;var sig=kit.signature(model);if(panel.dataset.etPremiumReport==="16083"&&panel.dataset.etPremiumSignature===sig)return true;panel.dataset.etPremiumReport="16083";panel.dataset.etPremiumSignature=sig;panel.classList.add("eternaV160StrengthMap");panel.innerHTML=kit.coreHtml(model)+'<div class="cocoV16083InlineActions"><button type="button" data-et-export>Exportar informe</button><button type="button" data-et-learning-whatsapp data-report-share>Compartir por WhatsApp</button></div>';return true
   }
-
-  async function exportReport(button){
-    var original=button.textContent,touch=/iPad|iPhone|Android/i.test(navigator.userAgent||"")||navigator.maxTouchPoints>1,preview=null;
-    if(!touch)try{preview=window.open("","_blank")}catch(e){}
-    button.disabled=true;button.textContent="Preparando informe…";
-    try{
-      var both=await Promise.all([api("/v1/export",{method:"GET"}),reportSupport()]);
-      var r=both[0],support=both[1],d=await r.json().catch(function(){return{}});
-      if(!r.ok)throw new Error(d.error||"EXPORT");
-      var html=reportHtml(d,support),filename="progreso-eterna-"+new Date().toISOString().slice(0,10)+".html";
-      var blob=new Blob([html],{type:"text/html;charset=utf-8"}),file=null;
-      try{file=new File([blob],filename,{type:"text/html"})}catch(e){}
-      if(touch&&file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
-        try{await navigator.share({title:"Progreso de Eterna",text:"Informe de progreso pedagógico de Eterna.",files:[file]});button.textContent="Informe compartido ✓"}
-        catch(shareErr){if(shareErr&&shareErr.name!=="AbortError")throw shareErr;button.textContent="Listo"}
-      }else if(preview&&!preview.closed){
-        preview.document.open();preview.document.write(html);preview.document.close();button.textContent="Informe abierto ✓"
-      }else{
-        var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},60000);button.textContent="Informe descargado ✓"
-      }
-      setTimeout(function(){button.textContent=original;button.disabled=false},1400)
-    }catch(e){
-      if(preview&&!preview.closed)preview.close();
-      button.disabled=false;button.textContent=original;
-      alert("No se pudo preparar el informe de progreso de Eterna.")
-    }
-  }
+  async function syncLearningPremiumReport(force){var model=await getLearningReportModel(!!force);if(model)renderLearningPremiumPanel(model);return model}
+  async function exportReport(button){var kit=root.CocoFamilyReportKitV16083;if(!kit){alert("El generador visual todavía no está listo.");return}var model=await getLearningReportModel(false);if(!model){alert("No se pudo preparar el informe de progreso de Eterna.");return}return kit.export(model,button)}
+  async function shareLearningReport(button){var kit=root.CocoFamilyReportKitV16083;if(!kit){alert("El generador visual todavía no está listo.");return}var model=await getLearningReportModel(false);if(!model){alert("No se pudo preparar el informe de progreso de Eterna.");return}return kit.share(model,button)}
 
   function install(){
     injectStyles();
     document.addEventListener("click",function(event){
-      var target=event.target&&event.target.closest?event.target.closest("[data-et-export]"):null;
+      var target=event.target&&event.target.closest?event.target.closest("[data-et-export],[data-et-learning-whatsapp]"):null;
       if(target){
         event.preventDefault();event.stopImmediatePropagation();
-        exportReport(target)
+        if(target.matches("[data-et-learning-whatsapp]"))shareLearningReport(target);else exportReport(target)
       }
     },true);
     root.addEventListener("coco:family-card-ready",applyFamilyLayout,{passive:true});
@@ -2826,10 +2778,12 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
       trial_hidden_while_legal_checking:true,
       trial_button_hidden_until_authorized:true,
       prominent_trial_cta:true,
+      premium_visual_reports_v16083:true,
+      shared_report_model_v16083:true,
       refresh:applyFamilyLayout,
       schedule:scheduleFamilyLayout,
       extra_mutation_observer:false,
-      worker_required:"160.11-final4"
+      worker_required:"160.13-plan-switch1"
     })
   }
 
