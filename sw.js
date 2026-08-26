@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.84 CONSOLIDATION + PERFORMANCE · v160.78 lifetime fix preservado */
-const CACHE_VERSION="coco-en-forma-v160.84-consolidation-performance";
+/* Coco en Forma · Service Worker v160.72 RELEASE CANDIDATE · navigation preload Safari + v160.84/v160.78 fixes preservados */
+const CACHE_VERSION="coco-en-forma-v160.72-release-candidate";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

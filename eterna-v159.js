@@ -1,5 +1,5 @@
-/* Coco en Forma · ETERNA v160.70 CORE
- * Release consolidada.
+/* Coco en Forma · ETERNA v160.72 RELEASE CANDIDATE
+ * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
  * - Controles familiares claros y persistentes.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.70-core";
+  var VERSION="160.72-release-candidate";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -28,15 +28,16 @@
     client:null,session:null,profile:null,baseProfile:null,subscription:null,parentSettings:null,
     learningMemory:[],strategyMemory:[],history:[],imageData:null,imageName:"",mode:"homework",
     modeState:{question_number:0,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null},
+    conversationState:null,
     busy:false,recorder:null,chunks:[],lastSpeechUrl:null,lastReply:"",lastAudio:null,inputSource:"text",
     dataLoadedAt:0,secondaryLoadedAt:0
   };
 
-  var appObserver=null,observerRaf=0,authWatcherInstalled=false,secondaryDataPromise=null;
+  var appObserver=null,observerRaf=0,authWatcherInstalled=false,secondaryDataPromise=null,familyRenderPromise=null,familyRenderBody=null;
 
   var CCAA=["Andalucía","Aragón","Asturias","Illes Balears","Canarias","Cantabria","Castilla-La Mancha","Castilla y León","Cataluña","Comunitat Valenciana","Extremadura","Galicia","Comunidad de Madrid","Región de Murcia","Navarra","País Vasco","La Rioja","Ceuta","Melilla"];
   var YEARS=[
-    ["infantil","Infantil · 3 años"],["infantil","Infantil · 4 años"],["infantil","Infantil · 5 años"],
+    ["infantil","Infantil · 0–2 años"],["infantil","Infantil · 3 años"],["infantil","Infantil · 4 años"],["infantil","Infantil · 5 años"],
     ["primaria","1º de Primaria"],["primaria","2º de Primaria"],["primaria","3º de Primaria"],["primaria","4º de Primaria"],["primaria","5º de Primaria"],["primaria","6º de Primaria"],
     ["eso","1º de ESO"],["eso","2º de ESO"],["eso","3º de ESO"],["eso","4º de ESO"],
     ["bachillerato","1º de Bachillerato"],["bachillerato","2º de Bachillerato"]
@@ -47,6 +48,74 @@
   function cleanText(v){return String(v==null?"":v).replace(/\*\*(.*?)\*\*/gs,"$1").replace(/__(.*?)__/gs,"$1").replace(/`([^`]+)`/g,"$1").replace(/^\s{0,3}#{1,6}\s+/gm,"").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1").replace(/\b(VERIFIED|NEEDS_CLARIFICATION|VERIFICATION_CONFLICT|BLOCKED_OUT_OF_SCOPE|BLOCKED_SAFETY)\b/g,"").replace(/\n{3,}/g,"\n\n").trim()}
   function endpoint(path){var base=String(cfg().eternaEndpoint||"").replace(/\/+$/,""),p=String(path||"");return base?base+(p.charAt(0)==="/"?p:"/"+p):""}
   function freshModeState(){return{question_number:0,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null}}
+  function freshConversationState(){return{current_topic:null,subject:null,concept:null,student_intent:null,tutor_act:null,expected_student_act:null,explained_points:[],known_points:[],unresolved_question:null,confusion_level:0,help_level:1,last_question_type:null,strategy_used:null,next_teaching_goal:null,last_user_intent:null}}
+  state.conversationState=freshConversationState();
+  function conversationNorm(v){return cleanText(v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
+  function pushUnique(list,value,max){value=cleanText(value);if(!value)return list||[];var out=(list||[]).filter(function(x){return conversationNorm(x)!==conversationNorm(value)});out.push(value);return out.slice(-Math.max(1,Number(max||8)))}
+  function lastAssistantTurn(){for(var i=state.history.length-1;i>=0;i--)if(state.history[i].role==="assistant")return state.history[i];return null}
+  function pendingTopicLabel(cs){cs=cs||state.conversationState||freshConversationState();return cleanText(cs.concept||cs.current_topic||cs.subject||"el tema que estamos viendo")}
+  function resolveContextualTurn(raw){
+    var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question);
+    var result={text:raw,intent:"question_or_new_topic",directive:null};
+    var explicitNewTopic=/^(?:y\s+)?(?:quien\s+(?:fue|era)|que\s+(?:es|era|fue)|define|explicame\s+que\s+es)\s+.{3,}$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes)\b/.test(n);
+    if(explicitNewTopic){
+      state.conversationState=freshConversationState();cs=state.conversationState;result.intent="new_topic";result.directive="EXPLAIN"
+    }else if(n==="si"){
+      if(isCheck){result.text="Mi respuesta a tu última comprobación es sí. Evalúala usando exactamente la pregunta anterior: "+check;result.intent="answer_check"}
+      else{result.text="Sí. Continúa con la explicación que acababas de ofrecer sobre "+topic+" y resuelve lo que quedó pendiente.";result.intent="continue_pending";result.directive="ADVANCE"}
+    }else if(n==="no"){
+      if(isCheck){result.text="Mi respuesta a tu última comprobación es no. Evalúala usando exactamente la pregunta anterior: "+check;result.intent="answer_check"}
+      else{result.text="No. No continúes por la opción que acababas de ofrecer. Mantén el contexto de "+topic+" y espera una nueva pregunta.";result.intent="decline_continuation"}
+    }else if(n==="dime"||n==="cuentame"||n==="continua"||n==="sigue"){
+      result.text="Continúa ahora con lo que quedó pendiente sobre "+topic+". No repitas lo ya explicado; avanza al siguiente punto útil.";result.intent="continue_pending";result.directive="ADVANCE"
+    }else if(n==="por que"||n==="y por que"){
+      result.text="Explica por qué ocurre lo que acabamos de mencionar sobre "+topic+". Responde a la causa de la referencia anterior, sin cambiar de tema.";result.intent="ask_cause";result.directive="EXPLAIN_CAUSE"
+    }else if(n==="como"||n==="y como"){
+      result.text="Explica cómo funciona o cómo ocurre lo que acabamos de mencionar sobre "+topic+". Describe el mecanismo de la referencia anterior, sin cambiar de tema.";result.intent="ask_mechanism";result.directive="EXPLAIN_MECHANISM"
+    }else if(n==="y despues"||n==="despues"){
+      result.text="Continúa con la siguiente etapa causal o temporal de lo que estábamos explicando sobre "+topic+". No vuelvas al principio.";result.intent="advance_sequence";result.directive="ADVANCE"
+    }else if(/^(no entendi|no lo entendi|no entiendo|no lo entiendo|sigo sin entender)$/.test(n)){
+      result.text="No lo entendí. Explícame de nuevo "+topic+" con una estrategia realmente distinta: cambia la representación, analogía o ejemplo y divide la idea en menos pasos. No reformules simplemente la misma explicación.";result.intent="confused";result.directive="CHANGE_STRATEGY";cs.confusion_level=Math.min(5,Number(cs.confusion_level||0)+1)
+    }else if(/^(mas facil|mas sencillo|simplifica)$/.test(n)){
+      result.text="Explícame "+topic+" más fácil: menos palabras, menos abstracción y menos pasos, pero mantén la precisión. No repitas literalmente la respuesta anterior.";result.intent="simplify";result.directive="SIMPLIFY";cs.confusion_level=Math.min(5,Number(cs.confusion_level||0)+1)
+    }else if(/^(mas dificil|mas tecnico|profundiza)$/.test(n)){
+      result.text="Explícame "+topic+" con más profundidad técnica y abstracción, manteniendo el contexto anterior y sin repetir lo ya explicado.";result.intent="deepen";result.directive="ADVANCE"
+    }
+    cs.last_user_intent=result.intent;cs.student_intent=result.intent;state.conversationState=cs;return result
+  }
+  function inferTutorAct(data,reply,turn){
+    var cs=state.conversationState||freshConversationState(),assessment=String(data&&data.student_answer_assessment||"not_applicable"),text=conversationNorm(reply);
+    if(turn&&turn.intent==="confused")return"CHANGE_STRATEGY";
+    if(turn&&turn.intent==="simplify")return"SIMPLIFY";
+    if(assessment==="incorrect"||assessment==="partial")return"CORRECT_ERROR";
+    if(data&&data.check_question)return"ASK_CHECK";
+    if(/quieres que|seguimos|te explico ahora|continuamos/.test(text)&&/\?$/.test(cleanText(reply)))return"OFFER_CONTINUATION";
+    if(state.mode==="homework"&&/pista|intenta|primer paso/.test(text))return"GIVE_HINT";
+    if(turn&&turn.intent==="advance_sequence")return"ADVANCE";
+    return"EXPLAIN"
+  }
+  function updateConversationState(data,reply,turn,meta){
+    var cs=state.conversationState||freshConversationState(),subject=cleanText(data&&data.subject||meta&&meta.subject||""),concept=cleanText(data&&data.concept||meta&&meta.concept||"");
+    if(subject)cs.subject=subject;if(concept){cs.concept=concept;cs.current_topic=concept}else if(subject&&!cs.current_topic)cs.current_topic=subject;
+    cs.student_intent=turn&&turn.intent||cs.student_intent;cs.last_user_intent=turn&&turn.intent||cs.last_user_intent;cs.help_level=data&&data.help_level!=null?data.help_level:cs.help_level;cs.strategy_used=cleanText(data&&data.strategy_used||meta&&meta.strategy_used||"")||cs.strategy_used;
+    cs.tutor_act=inferTutorAct(data,reply,turn);cs.last_question_type=data&&data.check_question?"check":cs.tutor_act==="OFFER_CONTINUATION"?"continuation":null;
+    cs.expected_student_act=data&&data.check_question?"answer_check":cs.tutor_act==="OFFER_CONTINUATION"?"yes_no_continuation":null;
+    cs.unresolved_question=cleanText(data&&data.check_question||"")||((cs.tutor_act==="OFFER_CONTINUATION")?cleanText(reply):null);
+    if(concept)cs.explained_points=pushUnique(cs.explained_points,concept,8);
+    if(String(data&&data.student_answer_assessment||"")==="correct"&&concept)cs.known_points=pushUnique(cs.known_points,concept,8);
+    if(turn&&["confused","simplify"].indexOf(turn.intent)<0&&String(data&&data.verification_status||"")==="verified")cs.confusion_level=Math.max(0,Number(cs.confusion_level||0)-1);
+    cs.next_teaching_goal=cleanText(data&&data.next_teaching_goal||data&&data.practice_target&&data.practice_target.concept||"")||null;
+    state.conversationState=cs;return cs
+  }
+  function responseSimilarity(a,b){
+    var aa=new Set(conversationNorm(a).split(/\s+/).filter(function(x){return x.length>2})),bb=new Set(conversationNorm(b).split(/\s+/).filter(function(x){return x.length>2}));if(!aa.size||!bb.size)return 0;var inter=0;aa.forEach(function(x){if(bb.has(x))inter++});return inter/Math.max(aa.size,bb.size)
+  }
+  function repetitionDirective(turn){
+    if(!turn||["confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen"].indexOf(turn.intent)<0)return null;
+    var last=lastAssistantTurn(),previous=null;if(last){for(var i=state.history.length-2;i>=0;i--)if(state.history[i].role==="assistant"){previous=state.history[i];break}}
+    var repeated=last&&previous?responseSimilarity(last.text,previous.text)>=.72:false;
+    return repeated||turn.intent==="confused"?"Evita repetir la misma formulación. Cambia de representación (analogía, ejemplo, esquema mental o pasos) y avanza desde lo que ya se explicó.":"No repitas lo ya explicado; responde exactamente a la relación contextual pedida por el alumno."
+  }
   function safeJson(response){return response.json().catch(function(){return{}})}
   function clamp01(n){n=Number(n);return isFinite(n)?Math.max(0,Math.min(1,n)):0}
   function percent(n){return Math.round(clamp01(n)*100)}
@@ -276,15 +345,15 @@
     style.textContent=[
       "#cocoApp{max-width:100%;overflow-x:clip}",
       "#cocoApp .cocoHomeBrainSourceHiddenFinal3{display:none!important}",
-      "#cocoApp .cocoHomeFinal3{display:grid;grid-column:1/-1!important;width:100%!important;max-width:none!important;justify-self:stretch!important;box-sizing:border-box!important;gap:22px;margin:20px 0 30px;min-width:0}",
-      "#cocoApp .cocoHomeRowFinal3{display:grid;gap:22px;align-items:stretch;min-width:0;width:100%!important}#cocoApp .cocoHomeAccessRowFinal3{grid-template-columns:minmax(320px,.78fr) minmax(0,1.22fr)!important}#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:minmax(340px,.72fr) minmax(0,1.28fr)!important}",
+      "#cocoApp .cocoHomeFinal3{display:grid;grid-column:1/-1!important;width:min(100%,1480px)!important;max-width:1480px!important;justify-self:center!important;box-sizing:border-box!important;gap:20px;margin:18px auto 28px;min-width:0}",
+      "#cocoApp .cocoHomeRowFinal3{display:grid;gap:18px;align-items:stretch;min-width:0;width:100%!important}#cocoApp .cocoHomeAccessRowFinal3{grid-template-columns:minmax(300px,.82fr) minmax(520px,1.18fr)!important;grid-auto-flow:row!important}#cocoApp .cocoHomeAccessRowFinal3>.cocoFreemiumV16084{grid-column:1/-1!important;grid-row:1!important;margin:0!important}#cocoApp .cocoHomeAccessRowFinal3>.loginCard,#cocoApp .cocoHomeAccessRowFinal3>.carnet{grid-column:1!important;grid-row:2!important}#cocoApp .cocoHomeAccessRowFinal3>.eternaLauncherV159{grid-column:2!important;grid-row:2!important}#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:minmax(280px,.55fr) minmax(620px,1.45fr)!important}",
       "#cocoApp .cocoHomeRowFinal3>.loginCard,#cocoApp .cocoHomeRowFinal3>.carnet,#cocoApp .cocoHomeRowFinal3>.retosCard,#cocoApp .cocoHomeRowFinal3>#retosCard,#cocoApp .cocoHomeRowFinal3>.eternaLauncherV159{margin:0!important;min-width:0;height:100%;align-self:stretch}",
       "#cocoApp .cocoHomeAccessRowFinal3 .loginCard .loginDecor,#cocoApp .cocoHomeAccessRowFinal3 .loginCard .loginDecorMinimal{display:none!important}",
       "#cocoApp .cocoHomeBrainFinal3{min-width:0;overflow:hidden;border:2px solid #c8e7f4;border-radius:25px;background:linear-gradient(145deg,#f1fbff,#e3f6ff 56%,#fff7e5);box-shadow:0 6px 0 #d7eaf3;display:grid;place-items:center;padding:18px}",
       "#cocoApp .cocoHomeBrainFinal3 .loginDecor,#cocoApp .cocoHomeBrainFinal3 .loginDecorMinimal{display:flex!important;width:100%!important;max-width:100%!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important;flex-direction:column!important}",
-      "#cocoApp .cocoHomeBrainFinal3 .loginPoster{display:block!important;width:min(100%,560px)!important;height:auto!important;max-height:none!important;margin:auto!important;object-fit:contain!important;border-radius:21px!important;box-shadow:0 7px 0 rgba(16,69,94,.15),0 16px 32px rgba(16,69,94,.13)!important}",
+      "#cocoApp .cocoHomeBrainFinal3 .loginPoster{display:block!important;width:min(100%,420px)!important;height:auto!important;max-height:360px!important;margin:auto!important;object-fit:contain!important;border-radius:21px!important;box-shadow:0 7px 0 rgba(16,69,94,.15),0 16px 32px rgba(16,69,94,.13)!important}",
       "#cocoApp .cocoHomeBrainFallbackFinal3{width:100%;min-height:270px;display:grid;place-items:center;align-content:center;gap:5px;padding:24px;text-align:center;color:#173f59}#cocoApp .cocoHomeBrainFallbackFinal3>span{font-size:56px}#cocoApp .cocoHomeBrainFallbackFinal3 strong{font-size:clamp(26px,4vw,40px);line-height:1}#cocoApp .cocoHomeBrainFallbackFinal3 small{font-size:14px;font-weight:900;color:#2b8eb7}#cocoApp .cocoHomeBrainFallbackFinal3 p{max-width:430px;color:#617c8b;font-weight:700}",
-      "#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{height:100%;min-height:360px!important;padding:24px!important;grid-template-columns:minmax(0,1.05fr) minmax(230px,.95fr)!important;gap:22px!important}",
+      "#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{height:100%;min-height:320px!important;padding:22px!important;grid-template-columns:minmax(0,1.08fr) minmax(220px,.92fr)!important;gap:18px!important}",
       "#cocoApp .eternaLauncherCopyFinal3{min-width:0}",
       "#cocoApp .eternaLauncherVisualFinal3{min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center;padding:4px 2px}",
       "#cocoApp .eternaTabletV160{position:relative;width:min(100%,500px);aspect-ratio:1.35/1;padding:13px;border:8px solid #142331;border-radius:30px;background:#111f2a;box-shadow:0 18px 38px rgba(15,52,72,.22),inset 0 0 0 1px rgba(255,255,255,.18);transform:perspective(900px) rotateY(-7deg) rotateX(1deg);transform-origin:center}",
@@ -356,10 +425,12 @@
       "#cocoApp .cocoHomeGamesRowFinal3>.retosCard:after,#cocoApp .cocoHomeGamesRowFinal3>#retosCard:after{display:none!important}",
       "#cocoApp button,#cocoApp [role=button],#cocoApp a{touch-action:manipulation}",
       "@supports (content-visibility:auto){#cocoApp .cocoGameCard{content-visibility:auto;contain-intrinsic-size:340px}}",
-      "@media(max-width:900px){#cocoApp .cocoHomeAccessRowFinal3,#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:1fr!important}#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .cocoHomeFinal3 .eternaLauncherVisualFinal3 img{max-width:620px}#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:none!important}#cocoApp .cocoHomeBrainFinal3{min-height:220px}}",
+      "@media(min-width:901px) and (max-width:1180px){#cocoApp .cocoHomeAccessRowFinal3{grid-template-columns:minmax(280px,.9fr) minmax(440px,1.1fr)!important}#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:minmax(250px,.62fr) minmax(520px,1.38fr)!important}#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{grid-template-columns:minmax(0,1.15fr) minmax(190px,.85fr)!important;padding:18px!important}#cocoApp .cocoHomeBrainFinal3 .loginPoster{max-height:320px!important}}",
+      "@media(max-width:900px){#cocoApp .cocoHomeAccessRowFinal3,#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:1fr!important}#cocoApp .cocoHomeAccessRowFinal3>.cocoFreemiumV16084,#cocoApp .cocoHomeAccessRowFinal3>.loginCard,#cocoApp .cocoHomeAccessRowFinal3>.carnet,#cocoApp .cocoHomeAccessRowFinal3>.eternaLauncherV159{grid-column:1!important;grid-row:auto!important}#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .cocoHomeFinal3 .eternaLauncherVisualFinal3 img{max-width:620px}#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:none!important}#cocoApp .cocoHomeBrainFinal3{min-height:220px}#cocoApp .cocoHomeBrainFinal3 .loginPoster{max-height:330px!important}}",
       "@media(max-width:760px){.eternaV159{padding:0!important}.eternaV159Shell{height:100dvh!important;height:100svh!important;border-radius:0!important;border:0!important}.eternaV160ModeBar{margin:8px 10px 0;padding:10px;align-items:center}.eternaV160ModeBar small{font-size:10px}.eternaV160ChangeMode{display:inline-flex;align-items:center;justify-content:center}.eternaV160Start{margin:20px auto 12px;padding:13px}.eternaV160Start h3{font-size:21px}.eternaV160StartActions{grid-template-columns:repeat(2,minmax(0,1fr))}.eternaV160StartAction{min-height:60px;padding:9px}.eternaV160StartAction:last-child:nth-child(odd){grid-column:1/-1}.eternaV159Composer textarea{font-size:16px!important}#cocoApp .eternaV159ParentGrid,#cocoApp .eternaV160ProgressGrid{grid-template-columns:1fr!important}}",
       "@media(min-width:761px) and (max-width:1024px){.eternaV159Body{grid-template-columns:1fr!important}.eternaV159Menu{display:none!important}.eternaV160ChangeMode{display:inline-flex!important;align-items:center;justify-content:center}.eternaV159Shell{position:relative;width:min(940px,96vw)!important;height:min(1000px,96dvh)!important}.eternaV160ModeSheet{align-items:center;justify-content:center;padding:22px}.eternaV160ModePanel{max-width:740px;border-radius:24px}.eternaV159IconBtn,.eternaV159Send{min-width:52px;height:52px}.eternaV159Composer textarea{min-height:52px;font-size:16px!important}}",
       "@media(orientation:landscape) and (max-height:620px){.eternaV159Top{padding-top:8px!important;padding-bottom:8px!important}.eternaV159TopCopy p{display:none}.eternaV160Start{margin:10px auto 6px}.eternaV159Chat{padding-top:10px!important}.eternaV159Composer{padding-bottom:max(8px,env(safe-area-inset-bottom))!important}}",
+      "@media(orientation:landscape) and (max-height:620px) and (max-width:1000px){#cocoApp .cocoHomeFinal3{gap:14px!important;margin-top:12px!important}#cocoApp .cocoHomeAccessRowFinal3,#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:1fr!important}#cocoApp .cocoHomeAccessRowFinal3>*{grid-column:1!important;grid-row:auto!important}#cocoApp .cocoHomeBrainFinal3{min-height:160px!important}#cocoApp .cocoHomeBrainFinal3 .loginPoster{max-height:230px!important}#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{min-height:0!important;padding:16px!important}}",
       "@media(prefers-reduced-motion:reduce){.eternaV159 *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
     ].join("");
     document.head.appendChild(style)
@@ -383,7 +454,7 @@
   }
 
   function syncModeButtons(){var o=overlay();o.querySelectorAll("[data-et-mode]").forEach(function(x){x.classList.toggle("is-active",x.dataset.etMode===state.mode)});o.querySelectorAll("[data-et-modechoice]").forEach(function(x){x.classList.toggle("is-active",x.dataset.etModechoice===state.mode)})}
-  function resetVisibleSession(){state.history=[];state.modeState=freshModeState();state.lastReply="";state.inputSource="text";clearImage();stopAudio();var o=overlay(),i=o.querySelector("[data-et-input]");if(i)i.value="";renderConversation(o.querySelector("[data-et-chat]"))}
+  function resetVisibleSession(){state.history=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.lastReply="";state.inputSource="text";clearImage();stopAudio();var o=overlay(),i=o.querySelector("[data-et-input]");if(i)i.value="";renderConversation(o.querySelector("[data-et-chat]"))}
   function setMode(mode,focusInput){if(!MODE_CONFIG[mode])mode="homework";var changed=mode!==state.mode;state.mode=mode;try{localStorage.setItem("coco_eterna_mode_v160",mode)}catch(e){}if(changed)resetVisibleSession();syncModeButtons();renderModeBar();setPlaceholder();setStatus((changed?"Nueva actividad · ":"")+MODE_CONFIG[state.mode].label,"ok");if(focusInput!==false){var i=overlay().querySelector("[data-et-input]");if(i)i.focus()}}
   function showModePicker(){var o=overlay(),sheet=o.querySelector("[data-et-modesheet]"),choices=o.querySelector("[data-et-modechoices]");if(!sheet||!choices)return;choices.innerHTML='<div class="eternaV160ModeNote">Al cambiar de modo empezamos una actividad nueva. Tu progreso y lo que Eterna ha aprendido sobre ti se conservan.</div>'+Object.keys(MODE_CONFIG).map(function(k){var m=MODE_CONFIG[k];return '<button type="button" class="eternaV160ModeChoice '+(k===state.mode?"is-active":"")+'" data-et-modechoice="'+k+'"><i>'+m.icon+'</i><span><strong>'+esc(m.label)+'</strong><small>'+esc(m.description)+'</small></span></button>'}).join("");choices.querySelectorAll("[data-et-modechoice]").forEach(function(b){b.onclick=function(){setMode(b.dataset.etModechoice,false);hideModePicker();var i=o.querySelector("[data-et-input]");if(i)i.focus()}});sheet.classList.add("is-open");sheet.setAttribute("aria-hidden","false")}
   function hideModePicker(){var sheet=overlay().querySelector("[data-et-modesheet]");if(sheet){sheet.classList.remove("is-open");sheet.setAttribute("aria-hidden","true")}}
@@ -423,7 +494,7 @@
     try{var saved=localStorage.getItem("coco_eterna_mode_v160");if(MODE_CONFIG[saved])state.mode=saved}catch(e){}
     setStatus("Comprobando tu cuenta…","");
     await loadData(false);setIdentity();render();renderModeBar();
-    setTimeout(function(){var i=o.querySelector("[data-et-input]");if(i&&activeSubscription()&&state.profile)i.focus()},50)
+    requestAnimationFrame(function(){var i=o.querySelector("[data-et-input]");if(i&&activeSubscription()&&state.profile)i.focus()})
   }
 
   function close(){var o=document.getElementById("eternaOverlayV159");if(o){hideModePicker();o.classList.remove("is-open")}document.body.style.overflow="";stopAudio()}
@@ -432,7 +503,7 @@
     rememberEternaAfterAuth();
     close();
     var login=document.querySelector("#cocoApp .loginCard,.loginCard");
-    if(login){login.scrollIntoView({behavior:"smooth",block:"center"});var email=login.querySelector("#cEmail,input[type=email],input[autocomplete=email]");if(email)setTimeout(function(){email.focus()},350)}
+    if(login){login.scrollIntoView({behavior:"smooth",block:"center"});var email=login.querySelector("#cEmail,input[type=email],input[autocomplete=email]");if(email)requestAnimationFrame(function(){requestAnimationFrame(function(){email.focus()})})}
   }
 
   function render(){
@@ -508,18 +579,20 @@
     return r
   }
 
-  function historyForApi(){return state.history.slice(-8).map(function(m){return{role:m.role,text:m.text,check_question:m.meta&&m.meta.check_question?m.meta.check_question:null,strategy_used:m.meta&&m.meta.strategy_used?m.meta.strategy_used:null}})}
+  function historyForApi(){return state.history.slice(-8).map(function(m){return{role:m.role,text:m.api_text||m.text,check_question:m.meta&&m.meta.check_question?m.meta.check_question:null,strategy_used:m.meta&&m.meta.strategy_used?m.meta.strategy_used:null,tutor_act:m.meta&&m.meta.tutor_act?m.meta.tutor_act:null,expected_student_act:m.meta&&m.meta.expected_student_act?m.meta.expected_student_act:null}})}
 
   async function send(){
     if(state.busy)return;
-    var o=overlay(),input=o.querySelector("[data-et-input]"),text=String(input.value||"").trim();if(!text&&!state.imageData)return;
+    var o=overlay(),input=o.querySelector("[data-et-input]"),rawText=String(input.value||"").trim();if(!rawText&&!state.imageData)return;
+    var turn=rawText?resolveContextualTurn(rawText):{text:"",intent:"image_homework",directive:null};
     state.busy=true;input.disabled=true;o.querySelector("[data-et-send]").disabled=true;
-    var apiHistory=historyForApi(),shown=text||"He adjuntado una foto de mi tarea.";appendMessage("user",shown,null,true);state.history.push({role:"user",text:shown});input.value="";setStatus("Eterna está pensando y comprobando…","warn");
+    var apiHistory=historyForApi(),shown=rawText||"He adjuntado una foto de mi tarea.";appendMessage("user",shown,null,true);state.history.push({role:"user",text:shown,api_text:turn.text||shown,meta:{student_intent:turn.intent}});input.value="";setStatus("Eterna está pensando y comprobando…","warn");
     try{
-      var source=state.imageData&&!text?"image":state.inputSource||"text",body={text:text||"Analiza esta imagen como tarea escolar. Primero identifica qué está impreso, qué hueco debe completar el alumno y solo después dame una pista.",mode:state.mode,mode_state:state.modeState||freshModeState(),input_source:source,image_data_url:state.imageData||null,history:apiHistory,client_version:VERSION};
+      var source=state.imageData&&!rawText?"image":state.inputSource||"text",directive=repetitionDirective(turn),body={text:(turn.text||rawText)||"Analiza esta imagen como tarea escolar. Primero identifica qué está impreso, qué hueco debe completar el alumno y solo después dame una pista.",mode:state.mode,mode_state:state.modeState||freshModeState(),input_source:source,image_data_url:state.imageData||null,history:apiHistory,conversation_state:state.conversationState||freshConversationState(),student_intent:turn.intent||null,tutor_directive:turn.directive||null,repetition_guard:directive||null,client_version:VERSION};
       var r=await api("/v1/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}),data=await safeJson(r);
       if(!r.ok){if(data&&data.error==="ETERNA_DAILY_LIMIT")throw new Error("ETERNA_DAILY_LIMIT");throw new Error(data&&data.error?data.error:"No se pudo obtener respuesta.")}
       var reply=cleanText(data.reply||"Necesito que me enseñes mejor el enunciado para poder ayudarte sin inventar nada."),meta={verification_status:data.verification_status||"needs_clarification",subject:data.subject||"",concept:data.concept||"",help_level:data.help_level,check_question:data.check_question||null,practice_suggestion:data.practice_suggestion||null,student_answer_assessment:data.student_answer_assessment||"not_applicable",strategy_used:data.strategy_used||null,mode_label:data.mode_label||null};
+      var conv=updateConversationState(data,reply,turn,meta);meta.tutor_act=conv.tutor_act;meta.expected_student_act=conv.expected_student_act;meta.student_intent=turn.intent;
       if(data.mode_state&&typeof data.mode_state==="object")state.modeState=data.mode_state;if(data.practice_target&&data.practice_target.concept&&state.mode==="practice")state.modeState.focus=data.practice_target.concept;
       renderModeBar();appendMessage("assistant",reply,meta,true);state.history.push({role:"assistant",text:reply,meta:meta});state.lastReply=reply;if(data.verification_status==="verified"&&data.auto_speak===true)speak(reply,1);clearImage();state.inputSource="text";state.dataLoadedAt=0;setResultStatus(data)
     }catch(e){
@@ -672,7 +745,7 @@
     try{
       var r=await api("/v1/delete-data",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"DELETE");
       await restoreProtectedData(protectedProfile,protectedSettings);
-      state.history=[];state.learningMemory=[];state.strategyMemory=[];state.modeState=freshModeState();state.dataLoadedAt=0;await loadData(true);
+      state.history=[];state.learningMemory=[];state.strategyMemory=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.dataLoadedAt=0;await loadData(true);
       button.textContent="Memoria borrada ✓";alert("La memoria pedagógica de Eterna se ha borrado. La cuenta, el curso, los controles familiares y la suscripción se conservan.");await injectFamilyCard(true)
     }catch(e){button.disabled=false;button.textContent=original;alert("No se pudo borrar la memoria de Eterna.")}
   }
@@ -724,10 +797,10 @@
     try{sessionStorage.setItem(FAMILY_PIN_AUTO_KEY,String(pin||""))}catch(e){}
     var close=document.querySelector("#cocoApp .cocoFamilyV129 [data-family-close]");
     if(close)close.click();
-    setTimeout(function(){
+    queueMicrotask(function(){
       var btn=document.querySelector("#cocoApp .cocoFamiliaBtn");
       if(btn)btn.click()
-    },80)
+    })
   }
 
   function enhanceFamilyPinChange(){
@@ -835,135 +908,138 @@
     try{autoPin=sessionStorage.getItem(FAMILY_PIN_AUTO_KEY)||"";if(autoPin)sessionStorage.removeItem(FAMILY_PIN_AUTO_KEY)}catch(e){}
     if(/^\d{4}$/.test(autoPin)){
       input.value=autoPin;
-      setTimeout(function(){button.click()},30)
+      queueMicrotask(function(){button.click()})
+    }
+  }
+
+  function familyBodyNode(){return document.querySelector("#cocoApp .cocoFamilyV129Body,#cocoApp .cocoFamilyBody,#cocoApp [class*='Family'][class*='Body']")}
+  function familyBaseReady(body){return body&&body.querySelector(".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight")}
+  function familyIsGate(body){
+    if(!body)return true;var modal=body.closest(".cocoFamilyV129"),title=modal&&modal.querySelector("#cocoFamilyV129Title");
+    return /acceso\s+familiar/i.test(String(title&&title.textContent||""))||!!body.querySelector(".cocoFamilyPin")
+  }
+  function familyMark(name,detail){try{performance.mark(name)}catch(e){}try{window.dispatchEvent(new CustomEvent("coco:"+name.replace(/_/g,"-"),{detail:detail||{}}))}catch(e){}}
+  function canonicalFamilyCard(body){return body&&body.querySelector(".eternaV159FamilyCard[data-et-family-canonical='1'],.eternaV159FamilyCard")}
+  function reserveFamilyCard(body){
+    var card=canonicalFamilyCard(body);
+    if(!card){
+      card=document.createElement("section");card.className="eternaV159FamilyCard";card.dataset.etFamilyCanonical="1";card.dataset.etFamilyState="reserved";card.setAttribute("aria-busy","true");body.insertBefore(card,body.firstChild)
+    }else card.dataset.etFamilyCanonical="1";
+    return card
+  }
+  function preserveLegalAndClearFamilyCard(card){
+    var legal=card&&card.querySelector(".eternaLegalV16058[data-et-legal-canonical='1'],.eternaLegalV16058");
+    if(legal&&legal.parentElement!==card)card.appendChild(legal);
+    Array.prototype.slice.call(card&&card.children||[]).forEach(function(node){if(node!==legal)node.remove()});
+    return legal||null
+  }
+  function insertFamilyMarkup(card,html,legal){
+    var temp=document.createElement("div");temp.innerHTML=html;
+    while(temp.firstChild)card.insertBefore(temp.firstChild,legal||null)
+  }
+  function ensureFamilyDivider(body,card){
+    var divider=body.querySelector(".cocoFamilyMapIntroV160[data-et-family-divider='1'],.cocoFamilyMapIntroV160");
+    if(!divider){divider=document.createElement("section");divider.className="cocoFamilyMapIntroV160";divider.dataset.etFamilyDivider="1"}
+    else divider.dataset.etFamilyDivider="1";
+    divider.innerHTML='<span>JUEGOS PARA LA MENTE</span><h3>Mapa de fortalezas</h3><p>Este apartado se calcula a partir de las partidas y puntuaciones de los juegos mentales de Coco. No utiliza el progreso escolar de Eterna.</p>';
+    if(card.nextSibling!==divider)body.insertBefore(divider,card.nextSibling);
+    return divider
+  }
+  function familyGatePresentation(body){
+    body.querySelectorAll(".eternaV159FamilyCard,.cocoFamilyMapIntroV160").forEach(function(n){n.remove()});
+    var modal=body.closest(".cocoFamilyV129"),headerKicker=modal&&modal.querySelector("header span"),pinScreen=body.querySelector(".cocoFamilyPin");
+    if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · ACCESO PROTEGIDO";
+    if(pinScreen){
+      var pinCopy=pinScreen.querySelector("p");if(pinCopy)pinCopy.textContent="El PIN protege el progreso escolar de Eterna y el mapa de fortalezas de los juegos para la mente.";
+      var pinButton=pinScreen.querySelector("[data-family-enter]");if(pinButton)pinButton.textContent=/crear/i.test(String(pinButton.textContent||""))?"Crear PIN y entrar":"Entrar en Zona Familiar"
     }
   }
 
   async function injectFamilyCard(force){
-    var body=document.querySelector("#cocoApp .cocoFamilyV129Body,#cocoApp .cocoFamilyBody,#cocoApp [class*='Family'][class*='Body']");
-    if(!body)return;
+    var body=familyBodyNode();if(!body)return false;
+    if(familyIsGate(body)){familyGatePresentation(body);return false}
+    if(!familyBaseReady(body))return false;
+    familyMark("family_base_ready",{body:body});
 
-    var familyModal=body.closest(".cocoFamilyV129");
-    var titleNode=familyModal&&familyModal.querySelector("#cocoFamilyV129Title");
-    var titleText=String(titleNode&&titleNode.textContent||"").trim();
-    var pinScreen=body.querySelector(".cocoFamilyPin");
-    var headerKicker=familyModal&&familyModal.querySelector("header span");
+    var existing=canonicalFamilyCard(body);
+    if(existing&&existing.dataset.etFamilyState==="ready"&&!force)return existing;
+    if(familyRenderPromise&&familyRenderBody===body)return familyRenderPromise;
 
-    /*
-     * PIN = PUERTA ÚNICA.
-     * Mientras la pantalla sea "Acceso familiar" o exista el formulario PIN:
-     * - no se muestra Eterna;
-     * - no se muestra progreso;
-     * - no se muestra mapa;
-     * - no se muestran controles familiares.
-     */
-    if(/acceso\s+familiar/i.test(titleText)||pinScreen){
-      body.querySelectorAll(".eternaV159FamilyCard,.cocoFamilyMapIntroV160").forEach(function(n){n.remove()});
-      if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · ACCESO PROTEGIDO";
-      if(pinScreen){
-        var pinCopy=pinScreen.querySelector("p");
-        if(pinCopy)pinCopy.textContent="El PIN protege el progreso escolar de Eterna y el mapa de fortalezas de los juegos para la mente.";
-        var pinButton=pinScreen.querySelector("[data-family-enter]");
-        if(pinButton){
-          pinButton.textContent=/crear/i.test(String(pinButton.textContent||""))?"Crear PIN y entrar":"Entrar en Zona Familiar"
-        }
+    /* Reserva síncrona del único owner de Family ANTES de cualquier await.
+       Todas las llamadas concurrentes reutilizan esta tarjeta y la misma Promise. */
+    var card=reserveFamilyCard(body);
+    familyRenderBody=body;
+    familyRenderPromise=(async function(){
+      await subscriptionStatus();
+
+      /* El modal puede cerrarse o volver al PIN mientras los datos se cargan. */
+      if(!document.body.contains(body)||familyIsGate(body)||!familyBaseReady(body)){
+        if(document.body.contains(card)&&familyIsGate(body))card.remove();
+        return false
       }
-      return
-    }
 
-    /*
-     * Esperamos a que el informe de juegos esté realmente construido.
-     * Esto evita que Eterna se inserte durante el "Coco está organizando..."
-     * y sea borrada por el render posterior del mapa.
-     */
-    var gamesReportReady=body.querySelector(".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight");
-    if(!gamesReportReady)return;
+      var familyModal=body.closest(".cocoFamilyV129");if(!familyModal)return false;
+      var headerTitle=familyModal.querySelector("#cocoFamilyV129Title"),headerCopy=familyModal.querySelector("header p"),headerKicker=familyModal.querySelector("header span");
+      if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · PROGRESO";
+      if(headerTitle)headerTitle.textContent="Progreso y fortalezas";
+      if(headerCopy)headerCopy.textContent="Dos lecturas distintas: Eterna resume la ayuda escolar y el mapa refleja el entrenamiento de los juegos para la mente.";
 
-    if(body.querySelector(".eternaV159FamilyCard")&&!force)return;
+      var active=activeSubscription(),sub=state.subscription||{},ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20};
+      var activeText=trialLabel(sub)||String(sub.status||"activa"),paidActive=String(sub.status||"")==="active"||tester(),trialActive=String(sub.status||"")==="trialing"&&active,plans="";
+      if(paidActive){
+        plans='<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>'
+      }else{
+        var trialBlock=trialActive
+          ?'<div class="eternaV160TrialActive"><b>⭐ '+esc(activeText)+'</b><span>Puedes contratar el plan mensual o anual en cualquier momento, aunque todavía estés dentro de los 7 días de prueba.</span></div>'
+          :'<div class="eternaV160TrialActive"><b>⭐ Prueba gratuita · 7 días</b><span>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</span><button type="button" class="eternaV159Secondary" data-et-trial style="margin-top:9px">Empezar prueba gratis</button></div>';
+        plans=trialBlock+
+          '<div class="eternaV160UpgradeWrap"><div class="eternaV160UpgradeHead"><div><b>Elige tu plan cuando quieras</b><span>Los planes de pago están disponibles desde el primer día de la prueba. La activación se realiza al completar el pago.</span></div></div>'+
+          '<div class="eternaV160PaidGrid">'+
+            '<article class="eternaV160PaidPlan"><b>Plan mensual</b><strong>7,99 € <small>/mes</small></strong><span>Flexibilidad mes a mes.</span><button type="button" data-et-month>Contratar mensual</button></article>'+
+            '<article class="eternaV160PaidPlan is-annual"><span class="badge">Ahorra aprox. 17%</span><b>Plan anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses con el mejor precio.</span><button type="button" data-et-year>Contratar anual</button></article>'+
+          '</div></div>'
+      }
 
-    var old=body.querySelector(".eternaV159FamilyCard");if(old)old.remove();
-    var oldDivider=body.querySelector(".cocoFamilyMapIntroV160");if(oldDivider)oldDivider.remove();
+      var promo='<div class="eternaV160FamilyPromo"><span>Enlace directo para compartir Eterna en redes o con otras familias.</span><button type="button" class="eternaV160ShareBtn" data-et-share>🔗 Compartir Eterna</button></div>';
+      var settings='<details class="eternaV159ParentSettings"><summary>Privacidad y controles de Eterna</summary><div class="eternaV159ParentGrid">'+
+        '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir voz de Eterna</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-voice '+(ps.voice_enabled!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
+        '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir fotos de tareas</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-images '+(ps.allow_image_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
+        '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir preguntas por micrófono</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-audio '+(ps.allow_audio_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
+        '<label>Consultas máximas al día <select data-et-limit>'+[10,20,30,50].map(function(x){return'<option value="'+x+'" '+(Number(ps.max_sessions_per_day||20)===x?"selected":"")+'>'+x+"</option>"}).join("")+'</select></label>'+
+        '</div><p>Estos controles afectan únicamente a Eterna y a la ayuda escolar. Las fotos se procesan temporalmente y no se guardan por defecto.</p><div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-save-settings>Guardar ajustes</button><button type="button" class="eternaV159Danger" data-et-delete>Borrar memoria de Eterna</button></div></details>';
 
-    await subscriptionStatus();
+      var legal=preserveLegalAndClearFamilyCard(card);
+      insertFamilyMarkup(card,
+        '<span class="eternaV160FamilyEyebrow">AYUDA ESCOLAR · ETERNA</span>'+
+        '<span class="eternaV159FamilyStatus '+(active?"active":"")+'">'+(tester()?"beta de prueba":active?esc(activeText):"no activa")+'</span>'+
+        '<h3>✨ Eterna · progreso de ayuda escolar</h3>'+
+        '<p class="eternaV160FamilyScope">Aquí ves lo que Eterna ha observado mientras ayuda con tareas, explicaciones, exámenes y práctica escolar. Es un progreso independiente de las puntuaciones de los juegos para la mente.</p>'+
+        promo+plans+renderProgressPanel()+settings,legal);
+      ensureFamilyDivider(body,card);
+      bindFamilyToggleLabels(card);
 
-    /* Evita carreras si el modal se cerró o se volvió a crear mientras cargábamos. */
-    if(!document.body.contains(body))return;
-    familyModal=body.closest(".cocoFamilyV129");
-    if(!familyModal)return;
-    titleNode=familyModal.querySelector("#cocoFamilyV129Title");
-    titleText=String(titleNode&&titleNode.textContent||"").trim();
-    if(/acceso\s+familiar/i.test(titleText)||body.querySelector(".cocoFamilyPin"))return;
-    if(!body.querySelector(".cocoFamilyHero,.cocoFamilyStats,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight"))return;
+      var b=card.querySelector("[data-et-open]");if(b)b.onclick=function(){var closeFamily=document.querySelector("#cocoApp .cocoFamilyV129>header button");if(closeFamily)closeFamily.click();open()};
+      b=card.querySelector("[data-et-portal]");if(b)b.onclick=function(){portal(b)};
+      b=card.querySelector("[data-et-trial]");if(b)b.onclick=function(){startTrial(b)};
+      b=card.querySelector("[data-et-month]");if(b)b.onclick=function(){checkout("monthly",b)};
+      b=card.querySelector("[data-et-year]");if(b)b.onclick=function(){checkout("annual",b)};
+      b=card.querySelector("[data-et-save-settings]");if(b)b.onclick=function(){saveParentSettings(card,b)};
+      b=card.querySelector("[data-et-export]");if(b)b.onclick=function(){exportEterna(b)};
+      b=card.querySelector("[data-et-delete]");if(b)b.onclick=function(){deleteEternaData(b)};
+      b=card.querySelector("[data-et-share]");if(b)b.onclick=function(){shareEterna(b)};
 
-    var headerTitle=familyModal.querySelector("#cocoFamilyV129Title");
-    var headerCopy=familyModal.querySelector("header p");
-    headerKicker=familyModal.querySelector("header span");
-    if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · PROGRESO";
-    if(headerTitle)headerTitle.textContent="Progreso y fortalezas";
-    if(headerCopy)headerCopy.textContent="Dos lecturas distintas: Eterna resume la ayuda escolar y el mapa refleja el entrenamiento de los juegos para la mente.";
+      card.dataset.etFamilyState="ready";card.removeAttribute("aria-busy");
+      familyMark("family_data_ready",{card:card,body:body});
+      try{window.dispatchEvent(new CustomEvent("coco:family-card-ready",{detail:{card:card,body:body,source:"eterna-v159-v16072"}}))}catch(e){}
 
-    var active=activeSubscription(),
-        sub=state.subscription||{},
-        ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20},
-        card=document.createElement("section");
-    card.className="eternaV159FamilyCard";
-
-    var activeText=trialLabel(sub)||String(sub.status||"activa");
-
-    var paidActive=String(sub.status||"")==="active"||tester();
-    var trialActive=String(sub.status||"")==="trialing"&&active;
-    var plans="";
-    if(paidActive){
-      plans='<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>'
-    }else{
-      var trialBlock=trialActive
-        ?'<div class="eternaV160TrialActive"><b>⭐ '+esc(activeText)+'</b><span>Puedes contratar el plan mensual o anual en cualquier momento, aunque todavía estés dentro de los 7 días de prueba.</span></div>'
-        :'<div class="eternaV160TrialActive"><b>⭐ Prueba gratuita · 7 días</b><span>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</span><button type="button" class="eternaV159Secondary" data-et-trial style="margin-top:9px">Empezar prueba gratis</button></div>';
-      plans=trialBlock+
-        '<div class="eternaV160UpgradeWrap"><div class="eternaV160UpgradeHead"><div><b>Elige tu plan cuando quieras</b><span>Los planes de pago están disponibles desde el primer día de la prueba. La activación se realiza al completar el pago.</span></div></div>'+
-        '<div class="eternaV160PaidGrid">'+
-          '<article class="eternaV160PaidPlan"><b>Plan mensual</b><strong>7,99 € <small>/mes</small></strong><span>Flexibilidad mes a mes.</span><button type="button" data-et-month>Contratar mensual</button></article>'+
-          '<article class="eternaV160PaidPlan is-annual"><span class="badge">Ahorra aprox. 17%</span><b>Plan anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses con el mejor precio.</span><button type="button" data-et-year>Contratar anual</button></article>'+
-        '</div></div>'
-    }
-
-    var promo='<div class="eternaV160FamilyPromo"><span>Enlace directo para compartir Eterna en redes o con otras familias.</span><button type="button" class="eternaV160ShareBtn" data-et-share>🔗 Compartir Eterna</button></div>';
-
-    var settings='<details class="eternaV159ParentSettings"><summary>Privacidad y controles de Eterna</summary><div class="eternaV159ParentGrid">'+
-      '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir voz de Eterna</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-voice '+(ps.voice_enabled!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
-      '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir fotos de tareas</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-images '+(ps.allow_image_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
-      '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir preguntas por micrófono</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-audio '+(ps.allow_audio_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
-      '<label>Consultas máximas al día <select data-et-limit>'+[10,20,30,50].map(function(x){return'<option value="'+x+'" '+(Number(ps.max_sessions_per_day||20)===x?"selected":"")+'>'+x+"</option>"}).join("")+'</select></label>'+
-      '</div><p>Estos controles afectan únicamente a Eterna y a la ayuda escolar. Las fotos se procesan temporalmente y no se guardan por defecto.</p><div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-save-settings>Guardar ajustes</button><button type="button" class="eternaV159Danger" data-et-delete>Borrar memoria de Eterna</button></div></details>';
-
-    card.innerHTML=
-      '<span class="eternaV160FamilyEyebrow">AYUDA ESCOLAR · ETERNA</span>'+
-      '<span class="eternaV159FamilyStatus '+(active?"active":"")+'">'+(tester()?"beta de prueba":active?esc(activeText):"no activa")+'</span>'+
-      '<h3>✨ Eterna · progreso de ayuda escolar</h3>'+
-      '<p class="eternaV160FamilyScope">Aquí ves lo que Eterna ha observado mientras ayuda con tareas, explicaciones, exámenes y práctica escolar. Es un progreso independiente de las puntuaciones de los juegos para la mente.</p>'+
-      promo+plans+renderProgressPanel()+settings;
-
-    /* Eterna: primer bloque después de introducir correctamente el PIN. */
-    body.insertBefore(card,body.firstChild);
-
-    /* Separador explícito antes del mapa que ya genera Coco con las partidas. */
-    var divider=document.createElement("section");
-    divider.className="cocoFamilyMapIntroV160";
-    divider.innerHTML='<span>JUEGOS PARA LA MENTE</span><h3>Mapa de fortalezas</h3><p>Este apartado se calcula a partir de las partidas y puntuaciones de los juegos mentales de Coco. No utiliza el progreso escolar de Eterna.</p>';
-    if(card.nextSibling)body.insertBefore(divider,card.nextSibling);
-    else body.appendChild(divider);
-
-    bindFamilyToggleLabels(card);
-
-    var b=card.querySelector("[data-et-open]");if(b)b.onclick=function(){var closeFamily=document.querySelector("#cocoApp .cocoFamilyV129>header button");if(closeFamily)closeFamily.click();open()};
-    b=card.querySelector("[data-et-portal]");if(b)b.onclick=function(){portal(b)};
-    b=card.querySelector("[data-et-trial]");if(b)b.onclick=function(){startTrial(b)};
-    b=card.querySelector("[data-et-month]");if(b)b.onclick=function(){checkout("monthly",b)};
-    b=card.querySelector("[data-et-year]");if(b)b.onclick=function(){checkout("annual",b)};
-    b=card.querySelector("[data-et-save-settings]");if(b)b.onclick=function(){saveParentSettings(card,b)};
-    b=card.querySelector("[data-et-export]");if(b)b.onclick=function(){exportEterna(b)};
-    b=card.querySelector("[data-et-delete]");if(b)b.onclick=function(){deleteEternaData(b)};
-    b=card.querySelector("[data-et-share]");if(b)b.onclick=function(){shareEterna(b)}
+      /* Legal es estado de CUENTA. La capa legal coalesce su lectura y actualiza
+         siempre el mismo nodo canónico. No hay replay con temporizadores. */
+      if(window.ETERNA_LEGAL_SHIELD_V16058&&typeof window.ETERNA_LEGAL_SHIELD_V16058.render==="function"){
+        await window.ETERNA_LEGAL_SHIELD_V16058.render(false)
+      }
+      return card
+    })().finally(function(){if(familyRenderBody===body){familyRenderPromise=null;familyRenderBody=null}});
+    return familyRenderPromise
   }
 
   function installAuthResume(){
@@ -978,14 +1054,14 @@
         if(pending&&Date.now()-Number(pending.at||0)<30*60*1000){
           if(MODE_CONFIG[pending.mode])state.mode=pending.mode;
           try{localStorage.removeItem(RESUME_KEY)}catch(e){}
-          setTimeout(open,250)
+          queueMicrotask(open)
         }
       })
     }catch(e){}
     window.addEventListener("coco:daily-user",function(e){
       if(!(e&&e.detail&&e.detail.userId))return;
       var pending=null;try{pending=JSON.parse(localStorage.getItem(RESUME_KEY)||"null")}catch(_e){}
-      if(pending){state.dataLoadedAt=0;setTimeout(open,300)}
+      if(pending){state.dataLoadedAt=0;queueMicrotask(open)}
     })
   }
 
@@ -1023,14 +1099,14 @@
     injectFinal3Styles();ensureHomeLayout();startObserver();client();
     var q=new URLSearchParams(location.search),aliases={tarea:"homework",homework:"homework",duda:"ask",ask:"ask",revisar:"review",review:"review",explicar:"explain",explain:"explain",examen:"exam",exam:"exam",practicar:"practice",practice:"practice"},requested=aliases[String(q.get("mode")||"").toLowerCase()]||null;
     if(requested){state.mode=requested;try{localStorage.setItem("coco_eterna_mode_v160",requested)}catch(e){}}
-    if(q.get("eterna")==="1"||q.get("open")==="eterna")setTimeout(open,220)
+    if(q.get("eterna")==="1"||q.get("open")==="eterna")queueMicrotask(open)
   }
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 
   window.CocoEternaV160=Object.freeze({
     open:open,close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,
-    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true,ageAccessGate:false,agePedagogyOnly:true,criticalSecondaryDataSplit:true}}
+    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true,ageAccessGate:false,agePedagogyOnly:true,criticalSecondaryDataSplit:true,familyLifecycleV2:true,sharedFamilyRenderPromise:true,canonicalFamilyBeforeAwait:true,tutorConversationalV3:true,conversationStateEphemeral:true,contextualReferenceResolutionV3:true,noRawConversationPersistence:true,responsiveDesktopV16072:true}}
   });
   window.CocoPerformanceV160=Object.freeze({snapshot:function(){
     var nav=(performance.getEntriesByType&&performance.getEntriesByType("navigation")[0])||null;
