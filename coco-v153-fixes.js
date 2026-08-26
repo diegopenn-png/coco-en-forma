@@ -1,4 +1,4 @@
-/* Coco en Forma · v160.79 SUBSCRIPTION UI · Runtime loop guard + plan actual + Family/Safari preservados */
+/* Coco en Forma · v160.80 DIRECT PLAN SWITCH · Runtime loop guard + plan actual + Family/Safari preservados */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -155,9 +155,9 @@
     root.__COCO_ETERNA_LOAD_INTENT__=intent;
     eternaPromise=new Promise(function(resolve,reject){
       var s=document.createElement("script");
-      s.src="./eterna-experience-v160.js?v=16079";
+      s.src="./eterna-experience-v160.js?v=16080";
       s.async=true;
-      s.dataset.cocoModule="eterna-experience-v16079";
+      s.dataset.cocoModule="eterna-experience-v16080";
       s.onload=function(){
         try{performance.mark("eterna_core_ready")}catch(e){}
         activateEternaModule(intent);
@@ -279,7 +279,7 @@
     raf=0;
     var nodes=Array.from(queued);queued.clear();
     nodes.forEach(processNode);
-    root.COCO_VERSION="2026-08-25-v160.79-subscription-ui"
+    root.COCO_VERSION="2026-08-26-v160.80-direct-plan-switch"
   }
 
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
@@ -296,7 +296,7 @@
       }else processNode(app)
     }
     scheduleEternaIdle();
-    root.COCO_VERSION="2026-08-25-v160.79-subscription-ui"
+    root.COCO_VERSION="2026-08-26-v160.80-direct-plan-switch"
   }
 
   function observe(){
