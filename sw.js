@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.85 FAMILY REPORT CLEANUP · cache refresh + navegación preservada */
-const CACHE_VERSION="coco-en-forma-v160.85-family-report-cleanup";
+/* Coco en Forma · Service Worker v160.86 FAMILY INTEGRAL · cache refresh + navegación preservada */
+const CACHE_VERSION="coco-en-forma-v160.86-family-integral";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

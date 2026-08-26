@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.72 RELEASE CANDIDATE
+/* Coco en Forma · ETERNA v160.86 FAMILY INTEGRAL
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.72-release-candidate";
+  var VERSION="160.86-family-integral";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -676,53 +676,22 @@
   function renderProgressPanel(){
     var s=progressSnapshot();
     if(!s.concepts.length&&!s.strategies.length){
-      return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso escolar con Eterna</b><button type="button" data-et-export>Exportar informe</button></div><p class="eternaV160ProgressIntro">Aquí aparecerá el progreso cuando el alumno empiece a practicar con Eterna.</p></section>'
+      return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso escolar con Eterna</b></div><p class="eternaV160ProgressIntro">Aquí aparecerá el progreso cuando el alumno empiece a practicar con Eterna.</p></section>'
     }
     var strongest=s.strongest.length?s.strongest.map(function(x){return esc(x.concept_label)+" ("+percent(x.mastery_score)+"%)"}).join(" · "):"Todavía estamos reuniendo señales.";
     var reinforce=s.reinforce.length?s.reinforce.map(function(x){return esc(x.concept_label)}).join(" · "):"Todavía no hay suficiente información.";
     var strategies=s.strategies.length?s.strategies.map(function(x){return esc(strategyName(x.strategy_key))}).join(" · "):"Eterna seguirá probando distintas formas de ayuda.";
     var activity=(s.subjects.length?s.subjects.slice(0,5).map(esc).join(" · "):"Actividad escolar")+" · "+s.attempts+" señales o intentos";
-    return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso escolar con Eterna</b><button type="button" data-et-export>Exportar informe</button></div><p class="eternaV160ProgressIntro">Resumen orientativo según las actividades realizadas hasta ahora. No es un diagnóstico ni una etiqueta del alumno.</p><div class="eternaV160ProgressGrid"><div class="eternaV160ProgressBox"><b>Lo que parece ir mejor</b><span>'+strongest+'</span></div><div class="eternaV160ProgressBox"><b>Lo que conviene seguir practicando</b><span>'+reinforce+'</span></div><div class="eternaV160ProgressBox"><b>Formas de ayuda que parecen funcionar</b><span>'+strategies+'</span></div><div class="eternaV160ProgressBox"><b>Actividad registrada</b><span>'+activity+'</span></div></div></section>'
-  }
-
-  function humanReportHtml(exportData){
-    exportData=exportData||{};
-    var s=progressSnapshot(exportData),name=(state.baseProfile&&state.baseProfile.apodo)||(state.session&&state.session.user&&state.session.user.user_metadata&&state.session.user.user_metadata.apodo)||"Alumno Coco";
-    var profile=exportData.student_profile||state.profile||{},course=profile.school_year||"Curso no indicado",community=profile.autonomous_community||"";
-    var strongest=s.strongest,reinforce=s.reinforce,strategies=s.strategies;
-    var summary=s.concepts.length?"Según las actividades realizadas, Eterna ya dispone de algunas señales para orientar la práctica. Estas observaciones pueden cambiar a medida que el alumno siga trabajando.":"Todavía hay pocas actividades para elaborar conclusiones sobre el progreso. Este informe irá ganando detalle con la práctica.";
-    var recommendation=reinforce.length?"Una buena próxima práctica sería trabajar "+cleanText(reinforce[0].concept_label||"el concepto que necesita más refuerzo")+" con pasos cortos y una comprobación al final.":"Una buena próxima práctica sería realizar algunas actividades variadas para que Eterna pueda observar qué conceptos conviene reforzar.";
-    function list(items,formatter,empty){return items.length?"<ul>"+items.map(function(x){return"<li>"+formatter(x)+"</li>"}).join("")+"</ul>":"<p>"+empty+"</p>"}
-    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Progreso de Eterna · '+esc(name)+'</title><style>'+
-      'body{margin:0;background:#eef7fb;color:#173f59;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.page{max-width:850px;margin:28px auto;background:#fff;border-radius:24px;padding:34px;box-shadow:0 18px 50px rgba(23,63,89,.12)}.brand{color:#2a88ad;font-weight:850;font-size:12px;letter-spacing:.08em}.title{font-size:36px;margin:8px 0 2px}.meta{color:#667f8d;margin-bottom:24px}.summary{padding:16px;border-radius:16px;background:#eef9fd}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.box{border:1px solid #d8ebf3;border-radius:16px;padding:15px}.box h2{font-size:16px;margin:0 0 8px}.box p,.box li{font-size:14px;line-height:1.5}.recommend{margin-top:16px;padding:16px;border-radius:16px;background:#fff6e8;border:1px solid #ffddb0}.foot{margin-top:22px;color:#718793;font-size:11px;line-height:1.45}.actions{margin:18px 0}.actions button{border:0;border-radius:12px;background:#173f59;color:#fff;padding:10px 14px;font-weight:800;cursor:pointer}@media(max-width:650px){.page{margin:0;border-radius:0;padding:22px}.grid{grid-template-columns:1fr}.title{font-size:30px}}@media print{body{background:#fff}.page{box-shadow:none;margin:0;max-width:none}.actions{display:none}}'+
-      '</style></head><body><main class="page"><div class="brand">COCO EN FORMA · ETERNA</div><h1 class="title">Progreso de Eterna</h1><div class="meta"><strong>'+esc(name)+'</strong> · '+esc(course)+(community?" · "+esc(community):"")+'<br>Informe del '+esc(dateES())+'</div>'+
-      '<section class="summary"><strong>Resumen</strong><p>'+esc(summary)+'</p></section><div class="grid">'+
-      '<section class="box"><h2>Lo que está practicando</h2>'+list(s.subjects,function(x){return esc(x)},"Todavía no hay suficiente actividad para resumir las materias practicadas.")+'</section>'+
-      '<section class="box"><h2>Lo que parece dominar mejor</h2>'+list(strongest,function(x){return esc(x.concept_label)+" · "+percent(x.mastery_score)+"% de dominio estimado"},"Todavía no hay suficientes señales para destacarlo.")+'</section>'+
-      '<section class="box"><h2>Lo que conviene seguir practicando</h2>'+list(reinforce,function(x){return esc(x.concept_label)},"Todavía no hay suficientes señales para recomendar un refuerzo concreto.")+'</section>'+
-      '<section class="box"><h2>Formas de ayuda que parecen funcionar mejor</h2>'+list(strategies,function(x){return esc(strategyName(x.strategy_key))+" · "+Number(x.evidence_count||0)+" evidencias"},"Eterna seguirá probando distintas formas de ayuda.")+'</section>'+
-      '<section class="box"><h2>Actividad</h2><p>Conceptos con señales: <strong>'+s.concepts.length+'</strong><br>Intentos o señales registradas: <strong>'+s.attempts+'</strong></p></section>'+
-      '<section class="box"><h2>Cómo interpretar este informe</h2><p>Las observaciones expresan tendencias de las actividades realizadas hasta ahora. No describen de forma permanente al alumno.</p></section>'+
-      '</div><section class="recommend"><strong>Recomendación</strong><p>'+esc(recommendation)+'</p></section><div class="actions"><button onclick="window.print()">Imprimir o guardar como PDF</button></div><div class="foot">Eterna utiliza expresiones como “parece ayudarle”, “hasta ahora” y “según las actividades realizadas”. Este informe es pedagógico y orientativo; no constituye una evaluación psicológica, médica ni diagnóstica.</div></main></body></html>'
+    return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso escolar con Eterna</b></div><p class="eternaV160ProgressIntro">Resumen orientativo según las actividades realizadas hasta ahora. No es un diagnóstico ni una etiqueta del alumno.</p><div class="eternaV160ProgressGrid"><div class="eternaV160ProgressBox"><b>Lo que parece ir mejor</b><span>'+strongest+'</span></div><div class="eternaV160ProgressBox"><b>Lo que conviene seguir practicando</b><span>'+reinforce+'</span></div><div class="eternaV160ProgressBox"><b>Formas de ayuda que parecen funcionar</b><span>'+strategies+'</span></div><div class="eternaV160ProgressBox"><b>Actividad registrada</b><span>'+activity+'</span></div></div></section>'
   }
 
   async function exportEterna(button){
-    var original=button.textContent,touch=/iPad|iPhone|Android/i.test(navigator.userAgent||"")||navigator.maxTouchPoints>1,preview=null;
-    if(!touch)try{preview=window.open("","_blank")}catch(e){}
-    button.disabled=true;button.textContent="Preparando informe…";
-    try{
-      var r=await api("/v1/export",{method:"GET"}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"EXPORT");
-      var html=humanReportHtml(d),name="progreso-eterna-"+new Date().toISOString().slice(0,10)+".html",blob=new Blob([html],{type:"text/html;charset=utf-8"}),file=null;
-      try{file=new File([blob],name,{type:"text/html"})}catch(e){}
-      if(touch&&file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
-        try{await navigator.share({title:"Progreso de Eterna",text:"Informe de progreso pedagógico de Eterna.",files:[file]});button.textContent="Informe compartido ✓"}catch(shareErr){if(shareErr&&shareErr.name!=="AbortError")throw shareErr;button.textContent="Listo"}
-      }else if(preview&&!preview.closed){
-        preview.document.open();preview.document.write(html);preview.document.close();button.textContent="Informe abierto ✓"
-      }else{
-        var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},60000);button.textContent="Informe descargado ✓"
-      }
-      setTimeout(function(){button.textContent=original;button.disabled=false},1400)
-    }catch(e){if(preview&&!preview.closed)preview.close();button.disabled=false;button.textContent=original;alert("No se pudo preparar el informe de progreso de Eterna.")}
+    /* v160.86: la exportación legacy deja de generar HTML propio.
+       Cualquier invocación residual se deriva al único informe integral visible. */
+    var integral=document.querySelector("#cocoApp [data-family-integral-report='1'] [data-family-integral-export]");
+    if(integral&&!integral.disabled){try{integral.click();return true}catch(e){}}
+    alert("El informe integral todavía se está preparando. Inténtalo de nuevo en unos segundos.");
+    return false
   }
 
   async function restoreProtectedData(profile,settings){
@@ -938,12 +907,12 @@
     while(temp.firstChild)card.insertBefore(temp.firstChild,legal||null)
   }
   function ensureFamilyDivider(body,card){
-    var divider=body.querySelector(".cocoFamilyMapIntroV160[data-et-family-divider='1'],.cocoFamilyMapIntroV160");
-    if(!divider){divider=document.createElement("section");divider.className="cocoFamilyMapIntroV160";divider.dataset.etFamilyDivider="1"}
-    else divider.dataset.etFamilyDivider="1";
-    divider.innerHTML='<span>JUEGOS PARA LA MENTE</span><h3>Mapa de fortalezas</h3><p>Este apartado se calcula a partir de las partidas y puntuaciones de los juegos mentales de Coco. No utiliza el progreso escolar de Eterna.</p>';
-    if(card.nextSibling!==divider)body.insertBefore(divider,card.nextSibling);
-    return divider
+    /* v160.86: el separador visual legacy de Juegos deja de existir.
+       Los datos de juegos siguen siendo propiedad del mapa base de Family y el
+       renderer integral de coco-v153-fixes.js los consume sin duplicar títulos. */
+    if(!body)return null;
+    Array.prototype.slice.call(body.querySelectorAll(".cocoFamilyMapIntroV160[data-et-family-divider='1'],.cocoFamilyMapIntroV160")).forEach(function(divider){divider.remove()});
+    return null
   }
   function familyGatePresentation(body){
     body.querySelectorAll(".eternaV159FamilyCard,.cocoFamilyMapIntroV160").forEach(function(n){n.remove()});
@@ -980,9 +949,11 @@
 
       var familyModal=body.closest(".cocoFamilyV129");if(!familyModal)return false;
       var headerTitle=familyModal.querySelector("#cocoFamilyV129Title"),headerCopy=familyModal.querySelector("header p"),headerKicker=familyModal.querySelector("header span");
-      if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · PROGRESO";
-      if(headerTitle)headerTitle.textContent="Progreso y fortalezas";
-      if(headerCopy)headerCopy.textContent="Dos lecturas distintas: Eterna resume la ayuda escolar y el mapa refleja el entrenamiento de los juegos para la mente.";
+      /* v160.86 · El chrome del modal es neutral: el único encabezado de progreso
+         pertenece al informe integral renderizado por CocoFamilyReportKit. */
+      if(headerKicker)headerKicker.textContent="";
+      if(headerTitle)headerTitle.textContent="";
+      if(headerCopy)headerCopy.textContent="";
 
       var active=activeSubscription(),sub=state.subscription||{},ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20};
       var activeText=trialLabel(sub)||String(sub.status||"activa"),paidActive=String(sub.status||"")==="active"||tester(),trialActive=String(sub.status||"")==="trialing"&&active,plans="";
@@ -1010,10 +981,7 @@
 
       var legal=preserveLegalAndClearFamilyCard(card);
       insertFamilyMarkup(card,
-        '<span class="eternaV160FamilyEyebrow">AYUDA ESCOLAR · ETERNA</span>'+
         '<span class="eternaV159FamilyStatus '+(active?"active":"")+'">'+(tester()?"beta de prueba":active?esc(activeText):"no activa")+'</span>'+
-        '<h3>✨ Eterna · progreso de ayuda escolar</h3>'+
-        '<p class="eternaV160FamilyScope">Aquí ves lo que Eterna ha observado mientras ayuda con tareas, explicaciones, exámenes y práctica escolar. Es un progreso independiente de las puntuaciones de los juegos para la mente.</p>'+
         promo+plans+renderProgressPanel()+settings,legal);
       ensureFamilyDivider(body,card);
       bindFamilyToggleLabels(card);
