@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.88 LAUNCH CANDIDATE · cache refresh + navegación preservada */
-const CACHE_VERSION="coco-en-forma-v160.88-launch-candidate";
+/* Coco en Forma · Service Worker v160.88.1 HOTFIX CONTEXT · cache refresh + navegación preservada */
+const CACHE_VERSION="coco-en-forma-v160.88.1-hotfix-context";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
