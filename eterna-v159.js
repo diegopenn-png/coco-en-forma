@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.88.1 HOTFIX CONTEXT
+/* Coco en Forma · ETERNA v160.88.2 HOTFIX SCOPE
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.88.1-hotfix-context";
+  var VERSION="160.88.2-hotfix-scope";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -46,6 +46,7 @@
   function cfg(){return window.COCO_CONFIG||{}}
   function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
   function cleanText(v){return String(v==null?"":v).replace(/\*\*(.*?)\*\*/gs,"$1").replace(/__(.*?)__/gs,"$1").replace(/`([^`]+)`/g,"$1").replace(/^\s{0,3}#{1,6}\s+/gm,"").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1").replace(/\b(VERIFIED|NEEDS_CLARIFICATION|VERIFICATION_CONFLICT|BLOCKED_OUT_OF_SCOPE|BLOCKED_SAFETY)\b/g,"").replace(/\n{3,}/g,"\n\n").trim()}
+  function cleanMetaText(v){var s=cleanText(v);return /^(?:null|undefined|none|n\/?a|na)$/i.test(s)?"":s}
   function endpoint(path){var base=String(cfg().eternaEndpoint||"").replace(/\/+$/,""),p=String(path||"");return base?base+(p.charAt(0)==="/"?p:"/"+p):""}
   function freshModeState(){return{question_number:0,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null}}
   function freshConversationState(){return{current_topic:null,subject:null,concept:null,student_intent:null,tutor_act:null,expected_student_act:null,explained_points:[],known_points:[],unresolved_question:null,confusion_level:0,help_level:1,last_question_type:null,strategy_used:null,next_teaching_goal:null,last_user_intent:null}}
@@ -102,7 +103,7 @@
     return"EXPLAIN"
   }
   function updateConversationState(data,reply,turn,meta){
-    var cs=state.conversationState||freshConversationState(),subject=cleanText(data&&data.subject||meta&&meta.subject||""),concept=cleanText(data&&data.concept||meta&&meta.concept||"");
+    var cs=state.conversationState||freshConversationState(),subject=cleanMetaText(data&&data.subject||meta&&meta.subject||""),concept=cleanMetaText(data&&data.concept||meta&&meta.concept||"");
     if(subject)cs.subject=subject;if(concept){cs.concept=concept;cs.current_topic=concept}else if(subject&&!cs.current_topic)cs.current_topic=subject;
     cs.student_intent=turn&&turn.intent||cs.student_intent;cs.last_user_intent=turn&&turn.intent||cs.last_user_intent;cs.help_level=data&&data.help_level!=null?data.help_level:cs.help_level;cs.strategy_used=cleanText(data&&data.strategy_used||meta&&meta.strategy_used||"")||cs.strategy_used;
     cs.tutor_act=inferTutorAct(data,reply,turn);cs.last_question_type=data&&data.check_question?"check":cs.tutor_act==="OFFER_CONTINUATION"?"continuation":null;
@@ -565,7 +566,7 @@
   function appendMessage(role,text,meta,scroll){
     var chat=overlay().querySelector("[data-et-chat]"),welcome=chat.querySelector(".eternaV160Start");if(welcome)welcome.remove();
     var row=document.createElement("div");row.className="eternaV159Msg "+role;
-    var tags="";if(meta&&meta.subject)tags+='<span class="eternaV159Tag">'+esc(meta.subject)+'</span>';if(meta&&meta.help_level!=null)tags+='<span class="eternaV159Tag">Ayuda '+esc(meta.help_level)+'/5</span>';
+    var tags="",safeSubject=cleanMetaText(meta&&meta.subject);if(safeSubject)tags+='<span class="eternaV159Tag">'+esc(safeSubject)+'</span>';if(meta&&meta.help_level!=null)tags+='<span class="eternaV159Tag">Ayuda '+esc(meta.help_level)+'/5</span>';
     var content='<div class="eternaV159Bubble">'+esc(cleanText(text))+(tags?'<div class="eternaV159Meta">'+tags+"</div>":"")+"</div>";
     row.innerHTML=role==="assistant"?'<div class="eternaV159Avatar" aria-hidden="true">✦</div>'+content:content;chat.appendChild(row);
     if(role==="assistant"&&meta&&meta.verification_status==="verified"){
@@ -598,7 +599,7 @@
       var source=state.imageData&&!rawText?"image":state.inputSource||"text",directive=repetitionDirective(turn),body={text:(turn.text||rawText)||"Analiza esta imagen como tarea escolar. Primero identifica qué está impreso, qué hueco debe completar el alumno y solo después dame una pista.",mode:state.mode,mode_state:state.modeState||freshModeState(),input_source:source,image_data_url:state.imageData||null,history:apiHistory,conversation_state:state.conversationState||freshConversationState(),student_intent:turn.intent||null,tutor_directive:turn.directive||null,repetition_guard:directive||null,client_version:VERSION};
       var r=await api("/v1/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}),data=await safeJson(r);
       if(!r.ok){if(data&&data.error==="ETERNA_DAILY_LIMIT")throw new Error("ETERNA_DAILY_LIMIT");throw new Error(data&&data.error?data.error:"No se pudo obtener respuesta.")}
-      var reply=cleanText(data.reply||"Necesito que me enseñes mejor el enunciado para poder ayudarte sin inventar nada."),meta={verification_status:data.verification_status||"needs_clarification",subject:data.subject||"",concept:data.concept||"",help_level:data.help_level,check_question:data.check_question||null,practice_suggestion:data.practice_suggestion||null,student_answer_assessment:data.student_answer_assessment||"not_applicable",strategy_used:data.strategy_used||null,mode_label:data.mode_label||null};
+      var reply=cleanText(data.reply||"Necesito que me enseñes mejor el enunciado para poder ayudarte sin inventar nada."),meta={verification_status:data.verification_status||"needs_clarification",subject:cleanMetaText(data.subject),concept:cleanMetaText(data.concept),help_level:data.help_level,check_question:data.check_question||null,practice_suggestion:data.practice_suggestion||null,student_answer_assessment:data.student_answer_assessment||"not_applicable",strategy_used:data.strategy_used||null,mode_label:data.mode_label||null};
       var conv=updateConversationState(data,reply,turn,meta);meta.tutor_act=conv.tutor_act;meta.expected_student_act=conv.expected_student_act;meta.student_intent=turn.intent;
       if(data.mode_state&&typeof data.mode_state==="object")state.modeState=data.mode_state;if(data.practice_target&&data.practice_target.concept&&state.mode==="practice")state.modeState.focus=data.practice_target.concept;
       renderModeBar();appendMessage("assistant",reply,meta,true);state.history.push({role:"assistant",text:reply,meta:meta});state.lastReply=reply;if(data.verification_status==="verified"&&data.auto_speak===true)speak(reply,1);clearImage();state.inputSource="text";state.dataLoadedAt=0;setResultStatus(data)
