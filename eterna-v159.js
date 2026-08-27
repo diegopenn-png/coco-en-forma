@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.87 FAMILY INTEGRAL LIFECYCLE
+/* Coco en Forma · ETERNA v160.88 LAUNCH CANDIDATE
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.87-family-integral-lifecycle";
+  var VERSION="160.88-launch-candidate";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -76,6 +76,8 @@
       result.text="Continúa con la siguiente etapa causal o temporal de lo que estábamos explicando sobre "+topic+". No vuelvas al principio.";result.intent="advance_sequence";result.directive="ADVANCE"
     }else if(/^(no entendi|no lo entendi|no entiendo|no lo entiendo|sigo sin entender)$/.test(n)){
       result.text="No lo entendí. Explícame de nuevo "+topic+" con una estrategia realmente distinta: cambia la representación, analogía o ejemplo y divide la idea en menos pasos. No reformules simplemente la misma explicación.";result.intent="confused";result.directive="CHANGE_STRATEGY";cs.confusion_level=Math.min(5,Number(cs.confusion_level||0)+1)
+    }else if(/^(otra vez|repitelo|repite|dimelo otra vez|dilo otra vez|explicamelo otra vez)$/.test(n)){
+      result.text="Explícame de nuevo "+topic+" con una estrategia realmente distinta. No repitas la misma formulación: cambia de representación, ejemplo, analogía o pasos y parte de lo que ya estaba explicado.";result.intent="confused";result.directive="CHANGE_STRATEGY";cs.confusion_level=Math.min(5,Number(cs.confusion_level||0)+1)
     }else if(/^(mas facil|mas sencillo|simplifica)$/.test(n)){
       result.text="Explícame "+topic+" más fácil: menos palabras, menos abstracción y menos pasos, pero mantén la precisión. No repitas literalmente la respuesta anterior.";result.intent="simplify";result.directive="SIMPLIFY";cs.confusion_level=Math.min(5,Number(cs.confusion_level||0)+1)
     }else if(/^(mas dificil|mas tecnico|profundiza)$/.test(n)){

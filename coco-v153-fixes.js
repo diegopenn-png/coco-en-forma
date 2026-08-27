@@ -1,4 +1,4 @@
-/* Coco en Forma · v160.87 FAMILY INTEGRAL LIFECYCLE · owner único + carga directa + Safari optimizado */
+/* Coco en Forma · v160.88 LAUNCH CANDIDATE · V/F equilibrado + Family lifecycle + Safari optimizado */
 (function(root){
   "use strict";
   var GENERAL=new Set(root.COCO_GENERAL_RANKING_IDS_V153||["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol"]);
@@ -232,7 +232,7 @@
 
   function placeReportExportAction(scope,button){if(!scope)return false;button=button||scope.querySelector("[data-report-export],[data-et-export]");var header=scope.querySelector(".cocoV16083ReportHeader"),aside=header&&header.querySelector(".cocoV16085HeaderAside");if(!button||!header)return false;if(!aside){aside=document.createElement("div");aside.className="cocoV16085HeaderAside";header.appendChild(aside)}if(button.textContent!=="Exportar PDF")button.textContent="Exportar PDF";if(!button.classList.contains("cocoV16085HeaderExport"))button.classList.add("cocoV16085HeaderExport");var actions=aside.querySelector(".cocoV16085HeaderActions");if(!actions){actions=document.createElement("div");actions.className="cocoV16085HeaderActions";aside.appendChild(actions)}if(button.parentElement!==actions)actions.appendChild(button);var inline=scope.querySelector(".cocoV16083InlineActions");if(inline&&!inline.children.length)inline.remove();return true}
 
-  var reportKitV16084=Object.freeze({version:"160.87-family-integral-lifecycle",coreHtml:reportCoreHtml,documentHtml:reportDocumentHtml,signature:modelSignature,export:exportReportModel,share:shareReportModel,placeExport:placeReportExportAction,captureLearning:captureLearningReportModel,familyDocumentHtml:familyReportDocumentHtml,familyHtml:familyReportHtml});root.CocoFamilyReportKitV16084=reportKitV16084;root.CocoFamilyReportKitV16083=reportKitV16084;
+  var reportKitV16084=Object.freeze({version:"160.88-launch-candidate",coreHtml:reportCoreHtml,documentHtml:reportDocumentHtml,signature:modelSignature,export:exportReportModel,share:shareReportModel,placeExport:placeReportExportAction,captureLearning:captureLearningReportModel,familyDocumentHtml:familyReportDocumentHtml,familyHtml:familyReportHtml});root.CocoFamilyReportKitV16084=reportKitV16084;root.CocoFamilyReportKitV16083=reportKitV16084;
 
   function numberFromText(v){var m=String(v||"").replace(/\./g,"").replace(",",".").match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):0}
   function buildGamesReportModel(modal,card){
@@ -427,38 +427,115 @@
     return Array.isArray(item)&&typeof item[1]==="boolean"?item[1]:null
   }
 
+  function truthItemKey(item,index){
+    if(item&&item.cocoId!=null&&String(item.cocoId).trim())return String(item.cocoId);
+    if(Array.isArray(item)&&item[0]!=null)return String(item[0])+"|"+String(item[1]);
+    return String(index==null?"":index)+"|"+String(item)
+  }
+
+  function truthRng(key){
+    var seed="v16088|"+String(key||"");
+    if(root.CocoV134&&typeof root.CocoV134.rngFrom==="function")return root.CocoV134.rngFrom(seed);
+    var h=2166136261;for(var i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)}h>>>=0;
+    return function(){h+=0x6d2b79f5;var t=h;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}
+  }
+
+  function truthShuffle(list,rng){
+    var a=(list||[]).slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(rng()*(i+1)),tmp=a[i];a[i]=a[j];a[j]=tmp}return a
+  }
+
+  function truthOrderValid(a){
+    if(!Array.isArray(a)||a.length<2)return true;
+    var last=null,run=0,strict=a.length>=4;
+    for(var i=0;i<a.length;i++){
+      var v=truthItemValue(a[i]);
+      if(v===null)continue;
+      if(i&&v===truthItemValue(a[i-1]))strict=false;
+      if(v===last)run++;else{last=v;run=1}
+      if(run>2)return false
+    }
+    return !strict
+  }
+
   function mixedTruthFalseOrder(items,key){
     items=Array.isArray(items)?items.slice():[];
     var typed=items.filter(function(item){return truthItemValue(item)!==null}),other=items.filter(function(item){return truthItemValue(item)===null});
-    var hasTrue=typed.some(function(x){return truthItemValue(x)===true}),hasFalse=typed.some(function(x){return truthItemValue(x)===false});
-    if(!hasTrue||!hasFalse)return items;
-    var seed="v16083|"+String(key||"")+"|"+typed.map(function(x){return Array.isArray(x)?String(x.cocoId||x[0]||""):String(x)}).join("|");
-    var rng=root.CocoV134&&typeof root.CocoV134.rngFrom==="function"?root.CocoV134.rngFrom(seed):Math.random;
-    function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(rng()*(i+1)),tmp=a[i];a[i]=a[j];a[j]=tmp}return a}
-    function valid(a){var last=null,run=0,strict=true;for(var i=0;i<a.length;i++){var v=truthItemValue(a[i]);if(i&&v===truthItemValue(a[i-1]))strict=false;if(v===last)run++;else{last=v;run=1}if(run>2)return false}return !strict}
-    for(var attempt=0;attempt<48;attempt++){var candidate=shuffle(typed);if(valid(candidate))return candidate.concat(other)}
-    var yes=shuffle(typed.filter(function(x){return truthItemValue(x)===true})),no=shuffle(typed.filter(function(x){return truthItemValue(x)===false})),out=[],last=null,run=0;
-    while(yes.length||no.length){var choose;if(run>=2&&last!==null&&((last&&no.length)||(!last&&yes.length)))choose=!last;else if(yes.length&&no.length)choose=rng()<yes.length/(yes.length+no.length);else choose=!!yes.length;var q=choose?yes:no;if(!q.length){choose=!choose;q=choose?yes:no}out.push(q.shift());if(last===choose)run++;else{last=choose;run=1}}
-    return out.concat(other)
+    var yes=typed.filter(function(x){return truthItemValue(x)===true}),no=typed.filter(function(x){return truthItemValue(x)===false});
+    if(!yes.length||!no.length)return items;
+    var rng=truthRng(String(key||"")+"|"+typed.map(function(x,i){return truthItemKey(x,i)}).join("|"));
+    yes=truthShuffle(yes,rng);no=truthShuffle(no,rng);
+    var needRepeat=typed.length>=4,memo=Object.create(null);
+    function build(t,f,last,run,repeated){
+      if(t+f===0)return(!needRepeat||repeated)?[]:null;
+      var mk=t+"|"+f+"|"+String(last)+"|"+run+"|"+(repeated?1:0);if(memo[mk])return null;
+      var choices=[];if(t)choices.push(true);if(f)choices.push(false);
+      choices.sort(function(a,b){var da=a?t:f,db=b?t:f;if(db!==da)return db-da;return rng()<.5?-1:1});
+      for(var i=0;i<choices.length;i++){
+        var c=choices[i],same=c===last;if(same&&run>=2)continue;
+        var next=build(t-(c?1:0),f-(c?0:1),c,same?run+1:1,repeated||same);
+        if(next)return[c].concat(next)
+      }
+      memo[mk]=1;return null
+    }
+    var seq=build(yes.length,no.length,null,0,false),out=[];
+    if(seq){var yi=0,ni=0;seq.forEach(function(v){out.push(v?yes[yi++]:no[ni++])});return out.concat(other)}
+    /* Solo puede ocurrir con una proporción imposible de ordenar sin rachas >2.
+       El caller de V/F puede reconstruir una muestra equilibrada desde el banco fuente. */
+    return typed.concat(other)
+  }
+
+  function balancedTruthFalseSample(selected,source,count,key){
+    selected=Array.isArray(selected)?selected.slice():[];source=Array.isArray(source)?source.slice():[];
+    var n=Math.max(0,Math.min(Number(count)||selected.length||1,source.length||selected.length)),typedSource=source.filter(function(x){return truthItemValue(x)!==null});
+    var sourceTrue=typedSource.filter(function(x){return truthItemValue(x)===true}),sourceFalse=typedSource.filter(function(x){return truthItemValue(x)===false});
+    if(!n||!sourceTrue.length||!sourceFalse.length)return mixedTruthFalseOrder(selected,key);
+    var rng=truthRng(String(key||"")+"|balance|"+source.length+"|"+selected.map(function(x,i){return truthItemKey(x,i)}).join("|")),wantTrue=Math.floor(n/2)+(n%2&&rng()<.5?1:0),wantFalse=n-wantTrue;
+    if(wantTrue>sourceTrue.length){wantFalse+=wantTrue-sourceTrue.length;wantTrue=sourceTrue.length}
+    if(wantFalse>sourceFalse.length){wantTrue+=wantFalse-sourceFalse.length;wantFalse=sourceFalse.length}
+    wantTrue=Math.min(wantTrue,sourceTrue.length);wantFalse=Math.min(wantFalse,sourceFalse.length);
+    var chosen=truthShuffle(sourceTrue,rng).slice(0,wantTrue).concat(truthShuffle(sourceFalse,rng).slice(0,wantFalse)),seen=Object.create(null);
+    chosen.forEach(function(x,i){seen[truthItemKey(x,i)]=true});
+    var filler=selected.concat(source).filter(function(x,i){var k=truthItemKey(x,i);if(seen[k])return false;seen[k]=true;return true});
+    while(chosen.length<n&&filler.length)chosen.push(filler.shift());
+    return mixedTruthFalseOrder(chosen.slice(0,n),key)
   }
 
   function installTrueFalseMixGuard(){
-    var api=root.CocoV134;
-    if(trueFalseMixInstalled||!api||typeof api.selectStatic!=="function")return false;
-    if(api.selectStatic.__cocoV16083TruthMix){trueFalseMixInstalled=true;return true}
-    var nativeSelect=api.selectStatic.__cocoNative||api.selectStatic;
-    function wrappedSelect(game,mode,difficulty,items,count,options){
-      var result=nativeSelect.apply(api,arguments);
-      if(normalizeText(game)==="verdadero"&&Array.isArray(result)&&result.some(function(x){return truthItemValue(x)!==null})){
-        return mixedTruthFalseOrder(result,String(mode||"")+"|"+String(difficulty||""))
+    var staticApi=root.CocoV134,rotationApi=root.CocoRotationV134,staticReady=false,rotationReady=false;
+    if(staticApi&&typeof staticApi.selectStatic==="function"){
+      if(staticApi.selectStatic.__cocoV16088TruthMix)staticReady=true;
+      else{
+        var nativeSelect=staticApi.selectStatic.__cocoNative||staticApi.selectStatic;
+        function wrappedSelect(game,mode,difficulty,items,count,options){
+          var result=nativeSelect.apply(staticApi,arguments);
+          if(normalizeText(game)==="verdadero"&&Array.isArray(result))return balancedTruthFalseSample(result,items,count,String(mode||"")+"|"+String(difficulty||""));
+          return result
+        }
+        wrappedSelect.__cocoV16088TruthMix=true;wrappedSelect.__cocoNative=nativeSelect;
+        try{staticApi.selectStatic=wrappedSelect}catch(e){}
+        staticReady=staticApi.selectStatic===wrappedSelect
       }
-      return result
     }
-    wrappedSelect.__cocoV16083TruthMix=true;
-    wrappedSelect.__cocoNative=nativeSelect;
-    try{api.selectStatic=wrappedSelect}catch(e){return false}
-    trueFalseMixInstalled=api.selectStatic===wrappedSelect;
-    return trueFalseMixInstalled
+    if(rotationApi&&typeof rotationApi.choose==="function"){
+      if(rotationApi.choose.__cocoV16088TruthMix)rotationReady=true;
+      else{
+        var nativeChoose=rotationApi.choose.__cocoNative||rotationApi.choose;
+        function wrappedChoose(config){
+          var cfg=config||{},isTruth=normalizeText(cfg.game)==="verdadero";
+          if(!isTruth)return nativeChoose.apply(rotationApi,arguments);
+          var next=Object.assign({},cfg),oldAnswer=cfg.getAnswer;
+          next.getAnswer=function(item,index){var v=truthItemValue(item);return v===null?(typeof oldAnswer==="function"?oldAnswer(item,index):""):(v?"V":"F")};
+          var result=nativeChoose.call(rotationApi,next),key=String(next.mode||"")+"|"+String(next.level==null?"":next.level),typed=result.filter(function(x){return truthItemValue(x)!==null}),t=typed.filter(function(x){return truthItemValue(x)===true}).length,f=typed.length-t;
+          if(!t||!f||Math.max(t,f)>2*(Math.min(t,f)+1))return balancedTruthFalseSample(result,next.items,next.count,key+"|legacy-bag");
+          return mixedTruthFalseOrder(result,key)
+        }
+        wrappedChoose.__cocoV16088TruthMix=true;wrappedChoose.__cocoNative=nativeChoose;
+        try{rotationApi.choose=wrappedChoose}catch(e){}
+        rotationReady=rotationApi.choose===wrappedChoose
+      }
+    }
+    trueFalseMixInstalled=staticReady&&rotationReady;
+    return staticReady||rotationReady
   }
 
   function directGameCards(parent){
@@ -672,7 +749,7 @@
   }
 
   function flush(){
-    raf=0;var nodes=Array.from(queued);queued.clear();nodes.forEach(processNode);if(!trueFalseMixInstalled)installTrueFalseMixGuard();if(catalogDirty)finalizeCatalog(document.getElementById("cocoApp"));root.COCO_VERSION="2026-08-26-v160.86-family-integral"
+    raf=0;var nodes=Array.from(queued);queued.clear();nodes.forEach(processNode);if(!trueFalseMixInstalled)installTrueFalseMixGuard();if(catalogDirty)finalizeCatalog(document.getElementById("cocoApp"));root.COCO_VERSION="2026-08-27-v160.88-launch-candidate"
   }
 
   function queue(node){if(node)queued.add(node);if(!raf)raf=requestAnimationFrame(flush)}
@@ -681,7 +758,7 @@
     var app=document.getElementById("cocoApp");try{performance.mark("coco_home_visible");performance.measure("coco_boot_to_home","coco_boot_start","coco_home_visible")}catch(e){}
     injectV16084Styles();installTrueFalseMixGuard();installDailyCanPlayGuard();
     if(app){Array.prototype.slice.call(app.querySelectorAll(".cocoGameCard[data-coco-juego]")).forEach(applyCard);ensurePublicFreemiumMessage(app);finalizeCatalog(app);var openFamily=app.querySelector(".cocoFamilyV129");if(openFamily)polishFamilyRuntime(openFamily)}
-    scheduleEternaIdle();root.COCO_VERSION="2026-08-26-v160.86-family-integral"
+    scheduleEternaIdle();root.COCO_VERSION="2026-08-27-v160.88-launch-candidate"
   }
 
   function observe(){
