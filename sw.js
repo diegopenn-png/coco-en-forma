@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.87 FAMILY INTEGRAL LIFECYCLE · cache refresh + navegación preservada */
-const CACHE_VERSION="coco-en-forma-v160.87-family-integral-lifecycle";
+/* Coco en Forma · Service Worker v160.88 LAUNCH CANDIDATE · cache refresh + navegación preservada */
+const CACHE_VERSION="coco-en-forma-v160.88-launch-candidate";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
