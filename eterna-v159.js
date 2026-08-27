@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.88 LAUNCH CANDIDATE
+/* Coco en Forma · ETERNA v160.88.1 HOTFIX CONTEXT
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.88-launch-candidate";
+  var VERSION="160.88.1-hotfix-context";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
@@ -57,7 +57,7 @@
   function resolveContextualTurn(raw){
     var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question);
     var result={text:raw,intent:"question_or_new_topic",directive:null};
-    var explicitNewTopic=/^(?:y\s+)?(?:quien\s+(?:fue|era)|que\s+(?:es|era|fue)|define|explicame\s+que\s+es)\s+.{3,}$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes)\b/.test(n);
+    var explicitNewTopic=/^(?:y\s+)?(?:(?:quien|quienes|que|cual|cuales|cuanto|cuantos|donde|cuando)\s+.{3,}|(?:por que|como)\s+.{4,}|define\s+.{3,}|explicame\s+que\s+es\s+.{3,})$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes)\b/.test(n);
     if(explicitNewTopic){
       state.conversationState=freshConversationState();cs=state.conversationState;result.intent="new_topic";result.directive="EXPLAIN"
     }else if(n==="si"){
@@ -82,6 +82,11 @@
       result.text="Explícame "+topic+" más fácil: menos palabras, menos abstracción y menos pasos, pero mantén la precisión. No repitas literalmente la respuesta anterior.";result.intent="simplify";result.directive="SIMPLIFY";cs.confusion_level=Math.min(5,Number(cs.confusion_level||0)+1)
     }else if(/^(mas dificil|mas tecnico|profundiza)$/.test(n)){
       result.text="Explícame "+topic+" con más profundidad técnica y abstracción, manteniendo el contexto anterior y sin repetir lo ya explicado.";result.intent="deepen";result.directive="ADVANCE"
+    }else if(isCheck){
+      /* v160.88.1: cualquier respuesta académica normal a una comprobación
+         pendiente se conserva literal y se etiqueta como answer_check. Los
+         comandos contextuales y cambios de tema de arriba mantienen prioridad. */
+      result.text=raw;result.intent="answer_check"
     }
     cs.last_user_intent=result.intent;cs.student_intent=result.intent;state.conversationState=cs;return result
   }
