@@ -11,7 +11,7 @@
  */
 const OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a un adulto de confianza que esté cerca de ti y cuéntale lo que ocurre. Si no puedes acudir a tus padres, elige otro adulto responsable que pueda ayudarte en persona.";
-const VERSION="160.88-launch-candidate";
+const VERSION="160.88.1-hotfix-context";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -243,6 +243,7 @@ function turnRelation(text,pedState,history){const s=stripTurnPunctuation(text),
   return"needs_scope"}
 function clientTurnRelationHint(current,intent,directive){
   const i=String(intent||""),d=String(directive||"");
+  if(i==="answer_check")return"answer_to_pending";
   if(i==="confused"||d==="CHANGE_STRATEGY")return"confusion_request";
   if(i==="simplify"||d==="SIMPLIFY")return"simplification_request";
   if(i==="deepen")return"technical_request";
@@ -501,6 +502,14 @@ function stripTrailingOfferQuestion(reply){const text=cleanChildText(reply||"");
 function stripTrailingStudentQuestion(reply,q){const text=cleanChildText(reply||""),question=cleanChildText(q||"");if(!text||!question)return text;const at=text.lastIndexOf(question);if(at<0)return text;const before=text.slice(0,at).replace(/(?:ahora te toca(?: a ti)?[:.]?|resp[oó]ndeme(?: solo con el resultado)?[:.]?)\s*$/i,"").trim();return before}
 function singleStudentAct({mode,reply,tutorData,turnRel,incoming,assessment}){
   let cleanReply=cleanChildText(reply||""),displayCheck=smartMicroCheck({mode,tutorData,turnRel,incoming,assessment}),embedded=embeddedStudentQuestion(cleanReply),pendingQuestion=null;
+  if(turnRel==="answer_to_pending"&&assessment==="correct"&&incoming&&incoming.pending_question){
+    const pendingNorm=normalizeDetectionText(incoming.pending_question);
+    if(displayCheck&&normalizeDetectionText(displayCheck)===pendingNorm)displayCheck=null;
+    if(embedded&&normalizeDetectionText(embedded)===pendingNorm){
+      cleanReply=stripTrailingStudentQuestion(cleanReply,embedded);embedded=null;
+      if(!cleanReply)cleanReply="Correcto. Esa respuesta está bien.";
+    }
+  }
   if(["exam","practice"].includes(mode)&&displayCheck&&embedded){cleanReply=stripTrailingStudentQuestion(cleanReply,embedded);if(!cleanReply)cleanReply=mode==="exam"?"Vamos con una sola pregunta.":"Vamos con una sola práctica.";pendingQuestion=displayCheck}
   else if(["exam","practice"].includes(mode)&&embedded){displayCheck=null;pendingQuestion=embedded}
   else if(displayCheck&&embedded){
@@ -572,7 +581,7 @@ function verificationFallbackForMode(mode){
   return map[mode]||map.ask
 }
 async function handleChat(request,env,auth){
-  const body=await request.json(),text=String(body.text||"").slice(0,6000),image=typeof body.image_data_url==="string"&&body.image_data_url.startsWith("data:image/")?body.image_data_url:null,history=Array.isArray(body.history)?body.history.slice(-8):[],mode=MODE_PROFILES[body.mode]?String(body.mode):"homework",inputSource=["text","voice","image"].includes(body.input_source)?body.input_source:(image?"image":"text"),incomingModeState=sanitizeModeState(body.mode_state),incomingPedState=sanitizePedagogicalState(body.pedagogical_state,mode),clientStudentIntent=["confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen"].includes(String(body.student_intent||""))?String(body.student_intent):null,clientTutorDirective=["CHANGE_STRATEGY","SIMPLIFY","ADVANCE","EXPLAIN_CAUSE","EXPLAIN_MECHANISM"].includes(String(body.tutor_directive||""))?String(body.tutor_directive):null,clientRepetitionGuard=typeof body.repetition_guard==="string"?body.repetition_guard.slice(0,700):null;
+  const body=await request.json(),text=String(body.text||"").slice(0,6000),image=typeof body.image_data_url==="string"&&body.image_data_url.startsWith("data:image/")?body.image_data_url:null,history=Array.isArray(body.history)?body.history.slice(-8):[],mode=MODE_PROFILES[body.mode]?String(body.mode):"homework",inputSource=["text","voice","image"].includes(body.input_source)?body.input_source:(image?"image":"text"),incomingModeState=sanitizeModeState(body.mode_state),incomingPedState=sanitizePedagogicalState(body.pedagogical_state,mode),clientStudentIntent=["answer_check","confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen"].includes(String(body.student_intent||""))?String(body.student_intent):null,clientTutorDirective=["CHANGE_STRATEGY","SIMPLIFY","ADVANCE","EXPLAIN_CAUSE","EXPLAIN_MECHANISM"].includes(String(body.tutor_directive||""))?String(body.tutor_directive):null,clientRepetitionGuard=typeof body.repetition_guard==="string"?body.repetition_guard.slice(0,700):null;
   if(!incomingPedState.pending_question){const q=latestCheckQuestion(history);if(q)incomingPedState.pending_question=q}
   if(!text&&!image)return json({error:"EMPTY_INPUT"},400);if(image&&image.length>7_000_000)return json({error:"IMAGE_TOO_LARGE"},413);
   const uid=auth.user.id,[ctx,sub]=await Promise.all([getStudentContext(env,uid),getSubscription(env,uid,auth.user.email)]);if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);if(!ctx.profile?.school_year)return json({error:"STUDENT_PROFILE_REQUIRED"},409);
@@ -601,7 +610,7 @@ async function handleChat(request,env,auth){
   if(mode==="practice"&&!image&&!isPracticeStart(text)&&scope.concept){practiceTarget={subject:scope.subject||incomingPedState.active_subject||"Aprendizaje",concept:scope.concept,score:null,source:"user_topic"}}
   const effectiveSubject=scope.subject||incomingPedState.active_subject,effectiveConcept=scope.concept||incomingPedState.active_concept;
   const factAnchor=stableFactAnchorForTurn(text,turnRel,incomingPedState,history,{...scope,subject:effectiveSubject,concept:effectiveConcept}),directKnowledge=directKnowledgeQuestion(text,image,scope,turnRel)||(["continuation_request","detail_request","why_request","example_request","confusion_request","simplification_request","technical_request"].includes(turnRel)&&Boolean(factAnchor));
-  const curriculum=await retrieveCurriculum(env,ctx.profile,effectiveSubject,effectiveConcept),mathCheck=/matem/i.test(effectiveSubject||"")?deterministicMath(text):null;let externalEvidence=null;
+  const curriculum=await retrieveCurriculum(env,ctx.profile,effectiveSubject,effectiveConcept),pendingMathCheck=turnRel==="answer_to_pending"&&incomingPedState.pending_question&&/matem/i.test(effectiveSubject||"")?deterministicMath(incomingPedState.pending_question):null,mathCheck=/matem/i.test(effectiveSubject||"")?(pendingMathCheck||deterministicMath(text)):null;let externalEvidence=null;
   const deterministicModeTurn=deterministicAdaptiveDivisionTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject:effectiveSubject,concept:effectiveConcept,focus:practiceTarget?.concept||incomingModeState.focus||incomingPedState.active_concept});
   if(deterministicModeTurn){
     const conceptId=curriculum?.[0]?.id||null,assessment=deterministicModeTurn.student_answer_assessment,help=deterministicModeTurn.help_level,strategy=deterministicModeTurn.strategy_used;
@@ -618,6 +627,10 @@ async function handleChat(request,env,auth){
   const t=await tutor(env,{text,image,mode,history,ctx,scope:{...scope,subject:effectiveSubject,concept:effectiveConcept},curriculum,mathCheck,vision,externalEvidence,modeState:incomingModeState,practiceTarget,pedState:incomingPedState,turnRel,factAnchor,directKnowledge,repetitionGuard:clientRepetitionGuard});
   if(t.data.needs_clarification){const reply=cleanChildText(t.data.reply),subject=t.data.subject||effectiveSubject,concept=t.data.concept||effectiveConcept,pedagogical_state=buildPedagogicalState({incoming:incomingPedState,mode,subject,concept,tutorOutput:t.data,assessment:"not_applicable",finalCheck:null,turnRel});await logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"needs_clarification",subject,concept,help:t.data.help_level,modelRoute:"tutor-clarify",mode,strategy:t.data.strategy_used,visionConfidence:vision?.confidence});return json({reply,verification_status:"needs_clarification",subject,concept,help_level:t.data.help_level,strategy_used:t.data.strategy_used,mode_label:MODE_PROFILES[mode].label,mode_state:sanitizeModeState(t.data.mode_state),pedagogical_state,vision_confidence:vision?.confidence||null})}
   let tutorData=t.data;
+  const pendingStudentNumber=turnRel==="answer_to_pending"?numericStudentAnswer(text):null;
+  if(pendingMathCheck&&pendingMathCheck.type==="arithmetic"&&pendingStudentNumber!=null&&Number.isFinite(Number(pendingMathCheck.result))){
+    tutorData={...tutorData,student_answer_assessment:Math.abs(pendingStudentNumber-Number(pendingMathCheck.result))<1e-9?"correct":"incorrect"};
+  }
   const v=await verify(env,{text,image,mode,scope:{...scope,subject:effectiveSubject,concept:effectiveConcept},curriculum,mathCheck,tutorOutput:tutorData,ctx,vision,externalEvidence,pedState:incomingPedState,history,turnRel,factAnchor,directKnowledge});
   const firstVerifyUsage={input_tokens:Number(v.usage?.input_tokens||0),output_tokens:Number(v.usage?.output_tokens||0)},verifyDecision=normalizeVerifyDecision(v.data,{stableSchool,factAnchor,mathCheck,curriculum,externalEvidence});
   let verificationRepaired=false;
