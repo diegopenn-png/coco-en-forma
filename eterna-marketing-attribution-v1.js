@@ -1,6 +1,7 @@
-/* ETERNA Growth · marketing attribution v1
+/* ETERNA Growth · marketing attribution v1.1
  * First-party only. Persists campaign attribution for an authenticated adult
  * after explicit measurement consent. No academic/minor content is collected.
+ * Auth result hook uses the successful Supabase session token deterministically.
  */
 ;(function(root){
   "use strict";
@@ -11,7 +12,7 @@
   var ATTR_KEY="cef_marketing_trial_attribution_v1";
   var CONSENT_VERSION="2026-08-28-v1";
   var TTL=24*60*60*1000;
-  var bound=false,persisting=false;
+  var bound=false,persisting=false,authHooked=false;
 
   function clean(v,max,fallback){
     v=String(v==null?"":v).trim();
@@ -70,8 +71,8 @@
   }
   async function persist(session){
     if(persisting||!consent())return false;
-    var d=stored(),c=client(),u=session&&session.user;
-    if(!d||!c||!u||!u.id)return false;
+    var d=stored(),u=session&&session.user,token=session&&session.access_token,cfg=root.COCO_CONFIG||{};
+    if(!d||!u||!u.id||!token||!cfg.url||!cfg.clave)return false;
     persisting=true;
     try{
       var row={
@@ -86,13 +87,44 @@
         fbclid:d.fbclid?clean(d.fbclid,500,""):null,
         consent_version:CONSENT_VERSION
       };
-      var r=await c.from("eterna_marketing_attribution").insert(row);
-      if(r&&r.error&&String(r.error.code||"")!=="23505")throw r.error;
-      try{localStorage.removeItem(ATTR_KEY)}catch(e){}
-      return true
+      var endpoint=String(cfg.url).replace(/\/+$/,"")+"/rest/v1/eterna_marketing_attribution";
+      var r=await fetch(endpoint,{
+        method:"POST",
+        headers:{
+          "apikey":String(cfg.clave),
+          "Authorization":"Bearer "+String(token),
+          "Content-Type":"application/json",
+          "Prefer":"return=minimal"
+        },
+        body:JSON.stringify(row),
+        cache:"no-store",
+        credentials:"omit"
+      });
+      if(r&&((r.status>=200&&r.status<300)||r.status===409)){
+        try{localStorage.removeItem(ATTR_KEY)}catch(e){}
+        return true
+      }
+      return false
     }catch(e){
       return false
     }finally{persisting=false}
+  }
+  function hookAuth(c){
+    if(authHooked||!c||!c.auth)return;
+    var auth=c.auth;
+    ["signInWithPassword","signUp"].forEach(function(name){
+      var original=auth[name];
+      if(typeof original!=="function")return;
+      auth[name]=async function(){
+        var result=await original.apply(this,arguments);
+        try{
+          var session=result&&result.data&&result.data.session;
+          if(session)await persist(session)
+        }catch(e){}
+        return result
+      }
+    });
+    authHooked=true
   }
   async function probe(){
     if(!consent())return;
@@ -101,8 +133,9 @@
     if(s)await persist(s)
   }
   function bind(){
-    if(bound)return;
     var c=client();if(!c||!c.auth)return;
+    hookAuth(c);
+    if(bound)return;
     bound=true;
     try{c.auth.onAuthStateChange(function(_event,session){if(session)persist(session)})}catch(e){}
     root.addEventListener("coco:daily-user",function(){probe()})
