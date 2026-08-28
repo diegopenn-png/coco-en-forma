@@ -3,63 +3,407 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Eterna · IA educativa para aprender | Coco en Forma</title>
-<meta name="description" content="Eterna es la IA educativa de Coco en Forma: apoyo escolar protegido, adaptado a edad y curso, con memoria pedagógica y Zona Familiar. Prueba 7 días gratis sin tarjeta.">
-<meta property="og:title" content="No es un chat para todo. Es una IA para aprender.">
-<meta property="og:description" content="Eterna se limita al apoyo escolar, se adapta a la edad y aprende cómo ayudar mejor a cada alumno.">
-<meta property="og:image" content="https://www.cocoenforma.com/share/eterna.png?v=16060">
+<title>Eterna · Ayuda a tu hijo a entender los deberes | Coco en Forma</title>
+<meta name="description" content="Cuando tu hijo se atasca con los deberes, Eterna le ayuda a entenderlos paso a paso con foto, voz o texto. Tutor escolar con IA, límites educativos y Zona Familiar. 7 días gratis sin tarjeta.">
+<link rel="canonical" href="https://www.cocoenforma.com/eterna-captacion.html">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#0d3d5b">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Coco en Forma">
+<meta property="og:title" content="Cuando tu hijo dice «no entiendo», Eterna le ayuda a entenderlo.">
+<meta property="og:description" content="Foto, voz o texto. Eterna guía, explica y comprueba la comprensión dentro de un entorno pensado para el apoyo escolar.">
+<meta property="og:url" content="https://www.cocoenforma.com/eterna-captacion.html">
+<meta property="og:image" content="https://www.cocoenforma.com/share/eterna.png?v=16088">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="La IA que ayuda a tu hijo a entender los deberes, no a hacerlos por él.">
+<meta name="twitter:description" content="Tutor escolar con IA de Coco en Forma. 7 días gratis, sin tarjeta.">
+<meta name="twitter:image" content="https://www.cocoenforma.com/share/eterna.png?v=16088">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"SoftwareApplication",
+  "name":"Eterna",
+  "applicationCategory":"EducationalApplication",
+  "operatingSystem":"Web, iOS, Android, Windows, macOS",
+  "url":"https://www.cocoenforma.com/eterna-captacion.html",
+  "description":"Tutor escolar con IA de Coco en Forma para apoyo académico con texto, voz y fotografías, límites educativos y Zona Familiar.",
+  "offers":[
+    {"@type":"Offer","price":"7.99","priceCurrency":"EUR","category":"monthly subscription"},
+    {"@type":"Offer","price":"79.99","priceCurrency":"EUR","category":"annual subscription"}
+  ],
+  "publisher":{"@type":"Organization","name":"Coco en Forma","url":"https://www.cocoenforma.com/"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"¿Eterna hace los deberes por mi hijo?","acceptedAnswer":{"@type":"Answer","text":"Eterna está diseñada para priorizar la explicación, las pistas y la comprensión antes que limitarse a entregar una respuesta. Según la actividad puede mostrar soluciones como parte del proceso de aprendizaje."}},
+    {"@type":"Question","name":"¿Eterna es como un chat de IA generalista?","acceptedAnswer":{"@type":"Answer","text":"No. Eterna está diseñada específicamente para apoyo escolar e incorpora límites de ámbito educativo, adaptación por edad y curso y controles familiares."}},
+    {"@type":"Question","name":"¿La prueba requiere tarjeta?","acceptedAnswer":{"@type":"Answer","text":"No. La prueba gratuita dura 7 días y comienza sin tarjeta ni datos bancarios."}},
+    {"@type":"Question","name":"¿Tengo que descargar una aplicación?","acceptedAnswer":{"@type":"Answer","text":"No. Coco en Forma y Eterna funcionan desde el navegador. Si la familia quiere, después puede añadir la PWA a la pantalla de inicio."}}
+  ]
+}
+</script>
 <style>
-:root{--navy:#0d3d5b;--navy2:#082f49;--orange:#ef761e;--ink:#173f59;--muted:#627d8d;--sky:#eef9fd;--line:#d9eaf1;--green:#2e8b61;--shadow:0 20px 60px rgba(8,47,73,.12)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;line-height:1.5}a{color:inherit}.container{width:min(1160px,calc(100% - 36px));margin:auto}
-.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid #edf3f6}.topin{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:10px;font-weight:950;text-decoration:none}.mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#eef9fd;color:var(--orange);font-size:22px}.brand small{display:block;font-size:9px;color:#4c91ad;letter-spacing:.08em}.nav{display:flex;gap:18px;align-items:center;font-size:13px;font-weight:850}.nav a{text-decoration:none;color:#4e6c7b}.nav .cta{background:var(--orange);color:#fff;padding:10px 15px;border-radius:12px}
-.hero{padding:68px 0 72px;background:radial-gradient(circle at 85% 18%,rgba(61,169,215,.17),transparent 30%),radial-gradient(circle at 8% 85%,rgba(239,118,30,.11),transparent 22%),linear-gradient(160deg,#fbfeff,#f5fbfd 58%,#fffaf6);border-bottom:1px solid #edf3f6}.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:52px;align-items:center}.eyebrow{display:inline-flex;padding:7px 10px;border-radius:999px;background:#eaf8fd;color:#2f7898;font-size:11px;font-weight:950;letter-spacing:.07em;text-transform:uppercase}.hero h1{font-size:clamp(46px,6vw,78px);line-height:.96;letter-spacing:-.045em;margin:18px 0 18px;color:var(--navy)}.hero h1 span{color:var(--orange)}.lead{font-size:19px;color:#526f80;line-height:1.55;max-width:660px}.points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:24px}.point{padding:12px 13px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.86);font-size:11.5px;color:#507080;font-weight:750}.point b{display:block;color:var(--navy);margin-bottom:2px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.btn{min-height:52px;padding:13px 18px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:950}.primary{background:var(--orange);color:#fff;box-shadow:0 10px 20px rgba(239,118,30,.2)}.secondary{background:#fff;color:var(--navy);border:1px solid var(--line)}.micro{font-size:11px;color:#718692;font-weight:750;margin-top:12px}.badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}.badges span{font-size:9.5px;font-weight:900;padding:5px 8px;border-radius:999px;background:#fff;border:1px solid var(--line);color:#567383}
-.tablet{width:min(100%,610px);margin:auto;padding:14px;border-radius:34px;background:linear-gradient(145deg,#29363f,#101820);box-shadow:0 28px 78px rgba(8,47,73,.28);transform:rotate(1deg)}.screen{overflow:hidden;border-radius:23px;background:#fff;min-height:450px}.ethead{padding:17px 19px;background:linear-gradient(135deg,#103f5e,#0b3651);color:#fff;display:flex;justify-content:space-between;align-items:center}.ethead strong{font-size:21px}.ethead small{display:block;color:#bfe2f0;font-weight:750}.etbody{display:grid;grid-template-columns:154px 1fr;min-height:380px}.side{padding:12px;background:#f6fbfd;border-right:1px solid #e1edf2}.mode{padding:8px 9px;border:1px solid #e1edf2;background:#fff;border-radius:9px;font-size:8.5px;font-weight:850;margin-bottom:6px;color:#416879}.mode.active{background:#0f4567;color:#fff;border-color:#0f4567}.safe{margin-top:8px;padding:8px;border-radius:9px;background:#fff6eb;color:#7a5b3e;font-size:7.5px;font-weight:750}.chat{padding:14px;display:flex;flex-direction:column}.ready{font-size:9px;font-weight:900;color:var(--green);margin-bottom:10px}.msg{max-width:87%;padding:10px 12px;border-radius:13px;font-size:9.5px;line-height:1.45;margin:5px 0}.user{align-self:flex-end;background:#173f59;color:#fff}.ai{background:#fff4e8;color:#365a6c;border:1px solid #f0dcc4}.check{margin-top:7px;padding-top:7px;border-top:1px solid rgba(23,63,89,.1);font-weight:850}.composer{margin-top:auto;border-top:1px solid #e8eff3;padding-top:9px}.listen{padding:7px 8px;border:1px solid #cfe7f0;background:#f1faff;border-radius:9px;font-size:8px;color:#476a7b;font-weight:800;margin-bottom:6px}.input{display:flex;gap:5px;align-items:center;border:1px solid #d9e9ef;border-radius:10px;padding:6px}.input span{font-size:8px;color:#78909b;flex:1}.ib{width:27px;height:27px;border-radius:8px;background:#f2f8fb;display:grid;place-items:center}.send{background:var(--orange);color:#fff}.devnote{text-align:center;margin-top:13px;color:#617c8b;font-size:11px;font-weight:800}
-.section{padding:80px 0}.alt{background:#f7fbfd}.head{max-width:820px;text-align:center;margin:0 auto 36px}.kicker{font-size:11px;font-weight:950;color:#3184a7;letter-spacing:.08em;text-transform:uppercase}.head h2{font-size:clamp(32px,4vw,50px);line-height:1.04;letter-spacing:-.035em;color:var(--navy);margin:8px 0 12px}.head p{font-size:16px;color:#607b8b;margin:0}
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}.box{padding:23px;border:1px solid var(--line);border-radius:21px;background:#fff;box-shadow:0 10px 28px rgba(8,47,73,.06)}.box.eterna{border:2px solid #bfe2ee;background:linear-gradient(145deg,#f7fdff,#fff)}.box h3{font-size:21px;color:var(--navy);margin:0 0 13px}.box ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}.box li{font-size:13px;color:#587585;display:flex;gap:8px}.box li:before{content:"•";color:#9aaeb8;font-weight:950}.box.eterna li:before{content:"✓";color:var(--green)}
-.demo{display:grid;grid-template-columns:.85fr 1.15fr;gap:28px;align-items:center}.democopy h2{font-size:clamp(34px,4vw,52px);line-height:1.03;letter-spacing:-.04em;color:var(--navy);margin:10px 0 14px}.democopy p{color:#607b8b}.conv{padding:20px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:var(--shadow)}.label{font-size:9px;font-weight:950;color:#80939d;letter-spacing:.08em;text-transform:uppercase;margin-top:10px}.cmsg{max-width:86%;padding:13px 15px;border-radius:15px;margin:7px 0;font-size:13px}.cu{margin-left:auto;background:#173f59;color:#fff}.ca{background:#fff4e8;border:1px solid #f0dcc4;color:#365a6c}.good{color:var(--green);font-size:11px;font-weight:900;margin-top:9px}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.card{padding:21px;border:1px solid var(--line);border-radius:19px;background:#fff;box-shadow:0 8px 24px rgba(8,47,73,.05)}.ico{width:42px;height:42px;border-radius:12px;background:#edf8fc;display:grid;place-items:center;font-size:19px;margin-bottom:12px}.card h3{margin:0 0 7px;color:var(--navy);font-size:17px}.card p{margin:0;color:#627d8d;font-size:12.5px}
-.family{display:grid;grid-template-columns:1fr 1fr;gap:18px}.fam h3{color:var(--navy);margin:0 0 10px}.fam div{font-size:13px;color:#587585;margin:8px 0}.fam div:before{content:"✓";color:var(--green);font-weight:950;margin-right:8px}
-.pwa{padding:36px;border-radius:27px;background:linear-gradient(135deg,#0b3956,#0f496c);color:#fff;display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center;box-shadow:var(--shadow)}.pwa h2{font-size:clamp(30px,4vw,47px);line-height:1.04;margin:0 0 11px}.pwa p{color:#c8e1eb;margin:0}.steps{display:grid;gap:8px}.step{padding:11px 13px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:800}
-.pricing{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:850px;margin:auto}.price{position:relative;padding:27px;border:1px solid var(--line);border-radius:22px;background:#fff}.price.featured{border:2px solid #f2a26a;background:#fffaf5}.tag{position:absolute;right:13px;top:13px;padding:5px 8px;border-radius:999px;background:#fff0e3;color:#a95a20;font-size:9px;font-weight:950}.price h3{margin:0;color:var(--navy)}.amount{font-size:42px;font-weight:1000;letter-spacing:-.04em;color:var(--navy);margin:10px 0}.amount small{font-size:13px;color:#718894}.price p,.price li{font-size:12px;color:#637d8c}.price .btn{width:100%}
-.faq{max-width:850px;margin:auto;display:grid;gap:9px}.faq details{padding:15px 17px;border:1px solid var(--line);border-radius:14px;background:#fff}.faq summary{cursor:pointer;font-weight:900;color:var(--navy)}.faq p{font-size:13px;color:#627d8d}
-.final{padding:76px 0;background:linear-gradient(145deg,#0a3652,#0f496c);color:#fff;text-align:center}.final h2{font-size:clamp(34px,5vw,56px);line-height:1.03;letter-spacing:-.04em;max-width:850px;margin:0 auto 13px}.final p{max-width:680px;margin:0 auto 22px;color:#c9e2ec}footer{background:#082f49;color:#bad4df;padding:23px 0;font-size:11px}.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.links{display:flex;gap:11px;flex-wrap:wrap}.links a{text-decoration:none;color:#d0e3eb}
-@media(max-width:920px){.hero-grid,.demo,.pwa{grid-template-columns:1fr}.points{grid-template-columns:1fr 1fr}.nav a:not(.cta){display:none}.tablet{transform:none}.grid3{grid-template-columns:1fr 1fr}}
-@media(max-width:680px){.container{width:min(100% - 24px,1160px)}.hero{padding:36px 0 52px}.hero h1{font-size:46px}.lead{font-size:16px}.points,.compare,.grid3,.family,.pricing{grid-template-columns:1fr}.etbody{grid-template-columns:110px 1fr}.side{padding:8px}.mode{font-size:7px;padding:7px}.safe{font-size:6.5px}.msg{font-size:8px}.section{padding:58px 0}.pwa{padding:25px}}
+:root{
+  --navy:#0d3d5b;--navy2:#082f49;--ink:#173f59;--muted:#607b8b;--orange:#ef761e;--orange2:#d96113;
+  --sky:#f3fbfe;--sky2:#e8f7fc;--line:#d7e8ef;--green:#2e8b61;--white:#fff;--soft:#fff7ef;
+  --shadow:0 24px 70px rgba(8,47,73,.13);--shadow-sm:0 10px 30px rgba(8,47,73,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff;line-height:1.55}
+a{color:inherit}
+img{max-width:100%;display:block}
+button,a{-webkit-tap-highlight-color:transparent}
+.container{width:min(1160px,calc(100% - 36px));margin:auto}
+.top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid #eaf2f5}
+.topin{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:950;color:var(--navy)}
+.mark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--sky2);color:var(--orange);font-size:22px}
+.brand small{display:block;font-size:9px;color:#4c91ad;letter-spacing:.08em}
+.nav{display:flex;gap:18px;align-items:center;font-size:13px;font-weight:850}
+.nav a{text-decoration:none;color:#4e6c7b}
+.nav .cta{background:var(--orange);color:#fff;padding:10px 15px;border-radius:12px;box-shadow:0 8px 18px rgba(239,118,30,.17)}
+
+.hero{padding:62px 0 70px;background:radial-gradient(circle at 88% 14%,rgba(61,169,215,.18),transparent 30%),radial-gradient(circle at 6% 82%,rgba(239,118,30,.12),transparent 24%),linear-gradient(160deg,#fbfeff,#f5fbfd 58%,#fffaf6);border-bottom:1px solid #edf3f6}
+.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:48px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:#e9f7fc;color:#2e7797;font-size:11px;font-weight:950;letter-spacing:.07em;text-transform:uppercase}
+.hero h1{font-size:clamp(45px,6vw,76px);line-height:.97;letter-spacing:-.048em;margin:18px 0 18px;color:var(--navy)}
+.hero h1 span{color:var(--orange)}
+.lead{font-size:19px;line-height:1.52;color:#526f80;max-width:670px;margin:0}
+.hero-proof{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:23px}
+.proof{padding:12px 13px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.88);font-size:11.5px;color:#587585;font-weight:760}
+.proof b{display:block;color:var(--navy);margin-bottom:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.btn{min-height:52px;padding:13px 18px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:950;border:0;cursor:pointer}
+.primary{background:var(--orange);color:#fff;box-shadow:0 12px 24px rgba(239,118,30,.21)}
+.primary:hover{background:var(--orange2)}
+.secondary{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.micro{font-size:11px;color:#718692;font-weight:760;margin-top:11px}
+
+.value-demo{width:min(100%,610px);margin:auto;padding:14px;border-radius:32px;background:linear-gradient(145deg,#29363f,#101820);box-shadow:0 30px 78px rgba(8,47,73,.28);transform:rotate(.7deg)}
+.demo-screen{overflow:hidden;border-radius:22px;background:#fff}
+.demo-top{padding:17px 18px;background:linear-gradient(135deg,#103f5e,#0b3651);color:#fff;display:flex;align-items:center;justify-content:space-between}
+.demo-top strong{font-size:21px}.demo-top small{display:block;color:#bfe2f0;font-weight:750}
+.demo-body{padding:17px;background:linear-gradient(180deg,#fbfeff,#f7fbfd)}
+.photo-card{border:1px solid #dceaf0;border-radius:16px;background:#fff;padding:14px;box-shadow:var(--shadow-sm)}
+.photo-label{display:flex;align-items:center;gap:8px;font-size:10px;color:#728895;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.exercise{padding:15px;border-radius:12px;background:#f8fafb;border:1px dashed #cbdde5;font-size:14px;color:#365a6c}
+.flow{display:grid;grid-template-columns:28px 1fr;gap:10px;margin-top:12px;align-items:start}
+.step-dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#edf8fc;color:#2e7797;font-size:12px;font-weight:950}
+.flow strong{display:block;color:var(--navy);font-size:12px;margin-bottom:2px}.flow p{margin:0;font-size:11px;color:#64808e}
+.checkline{margin-top:13px;padding:11px 12px;border-radius:12px;background:#edf9f3;color:#2e7757;font-size:11px;font-weight:850}
+.demo-caption{text-align:center;margin-top:12px;color:#617c8b;font-size:11px;font-weight:800}
+
+.section{padding:78px 0}.alt{background:#f7fbfd}.soft{background:#fffaf6}
+.head{max-width:830px;text-align:center;margin:0 auto 36px}
+.kicker{font-size:11px;font-weight:950;color:#3184a7;letter-spacing:.08em;text-transform:uppercase}
+.head h2{font-size:clamp(32px,4vw,50px);line-height:1.04;letter-spacing:-.035em;color:var(--navy);margin:8px 0 12px}
+.head p{font-size:16px;color:var(--muted);margin:0}
+
+.moment{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.moment-card{padding:22px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow-sm)}
+.num{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#edf8fc;color:#2e7797;font-weight:1000;margin-bottom:13px}
+.moment-card h3{margin:0 0 7px;color:var(--navy);font-size:18px}.moment-card p{margin:0;color:#617d8c;font-size:13px}
+.arrowline{text-align:center;margin-top:22px;color:#68828f;font-size:13px;font-weight:850}
+
+.use-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.card{padding:21px;border:1px solid var(--line);border-radius:19px;background:#fff;box-shadow:0 8px 24px rgba(8,47,73,.05)}
+.ico{width:42px;height:42px;border-radius:12px;background:#edf8fc;display:grid;place-items:center;font-size:19px;margin-bottom:12px}
+.card h3{margin:0 0 7px;color:var(--navy);font-size:17px}.card p{margin:0;color:#627d8d;font-size:12.5px}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.box{padding:24px;border:1px solid var(--line);border-radius:21px;background:#fff;box-shadow:var(--shadow-sm)}
+.box.eterna{border:2px solid #bfe2ee;background:linear-gradient(145deg,#f7fdff,#fff)}
+.box h3{font-size:21px;color:var(--navy);margin:0 0 13px}
+.box ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.box li{font-size:13px;color:#587585;display:flex;gap:8px}
+.box li:before{content:"•";color:#9aaeb8;font-weight:950}.box.eterna li:before{content:"✓";color:var(--green)}
+
+.parent-message{display:grid;grid-template-columns:.9fr 1.1fr;gap:24px;align-items:center}
+.quote{padding:30px;border-radius:26px;background:linear-gradient(135deg,#0b3956,#0f496c);color:#fff;box-shadow:var(--shadow)}
+.quote .big{font-size:clamp(27px,3.6vw,43px);font-weight:1000;line-height:1.06;letter-spacing:-.035em;margin:0 0 14px}.quote p{color:#c9e2ec;margin:0}
+.family-list{display:grid;gap:10px}
+.family-item{padding:15px 16px;border:1px solid var(--line);border-radius:15px;background:#fff;font-size:13px;color:#587585}.family-item b{color:var(--navy)}
+.family-item:before{content:"✓";color:var(--green);font-weight:1000;margin-right:9px}
+
+.coco-band{padding:34px;border:1px solid #cfe7f0;border-radius:25px;background:linear-gradient(145deg,#effaff,#fff);display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center}
+.coco-band h2{margin:0 0 7px;color:var(--navy);font-size:clamp(26px,3vw,38px);letter-spacing:-.03em}.coco-band p{margin:0;color:#607b8b;max-width:760px}
+
+.pricing{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:860px;margin:auto}
+.price{position:relative;padding:28px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:var(--shadow-sm)}
+.price.featured{border:2px solid #f2a26a;background:#fffaf5}
+.tag{position:absolute;right:13px;top:13px;padding:5px 8px;border-radius:999px;background:#fff0e3;color:#a95a20;font-size:9px;font-weight:950}
+.price h3{margin:0;color:var(--navy)}
+.amount{font-size:42px;font-weight:1000;letter-spacing:-.04em;color:var(--navy);margin:10px 0}.amount small{font-size:13px;color:#718894}
+.price p,.price li{font-size:12px;color:#637d8c}.price .btn{width:100%}
+.price ul{padding-left:18px}
+.trial-note{text-align:center;margin:17px auto 0;color:#6c8390;font-size:12px;font-weight:800}
+
+.trust-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.trust{padding:20px;border-radius:18px;border:1px solid var(--line);background:#fff}.trust b{display:block;color:var(--navy);margin-bottom:5px}.trust p{margin:0;font-size:12.5px;color:#627d8d}
+
+.pwa{padding:34px;border-radius:25px;background:#f7fbfd;border:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+.pwa h2{font-size:clamp(27px,3.5vw,40px);line-height:1.05;margin:0 0 10px;color:var(--navy)}.pwa p{color:#627d8d;margin:0}
+.steps{display:grid;gap:8px}.step{padding:11px 13px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:12px;font-weight:800;color:#526f80}
+
+.faq{max-width:860px;margin:auto;display:grid;gap:9px}.faq details{padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#fff}.faq summary{cursor:pointer;font-weight:900;color:var(--navy)}.faq p{font-size:13px;color:#627d8d;margin-bottom:0}
+
+.final{padding:76px 0;background:linear-gradient(145deg,#0a3652,#0f496c);color:#fff;text-align:center}
+.final h2{font-size:clamp(34px,5vw,56px);line-height:1.03;letter-spacing:-.04em;max-width:880px;margin:0 auto 13px}.final p{max-width:700px;margin:0 auto 22px;color:#c9e2ec}
+.final .secondary{border-color:rgba(255,255,255,.3)}
+footer{background:#082f49;color:#bad4df;padding:24px 0;font-size:11px}.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}.links{display:flex;gap:11px;flex-wrap:wrap}.links a{text-decoration:none;color:#d0e3eb}
+
+@media(max-width:920px){
+  .hero-grid,.parent-message,.pwa{grid-template-columns:1fr}.hero-proof{grid-template-columns:1fr 1fr}.nav a:not(.cta){display:none}.value-demo{transform:none}.use-grid,.moment,.trust-grid{grid-template-columns:1fr 1fr}.coco-band{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .container{width:min(100% - 24px,1160px)}.hero{padding:34px 0 50px}.hero h1{font-size:44px}.lead{font-size:16px}.hero-proof,.compare,.use-grid,.moment,.trust-grid,.pricing{grid-template-columns:1fr}.section{padding:56px 0}.topin{min-height:64px}.nav .cta{padding:9px 11px;font-size:11px}.brand{font-size:13px}.mark{width:38px;height:38px}.value-demo{padding:10px;border-radius:25px}.demo-screen{border-radius:18px}.demo-body{padding:12px}.coco-band,.quote,.pwa{padding:24px}.actions .btn{width:100%}.final{padding:60px 0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="top"><div class="container topin"><a class="brand" href="/"><span class="mark">✦</span><span>COCO EN FORMA<small>APOYO ESCOLAR · ETERNA</small></span></a><nav class="nav"><a href="#diferencia">La diferencia</a><a href="#familias">Zona Familiar</a><a href="#precios">Precios</a><a class="cta trial" href="/?open=eterna&source=landing">Probar 7 días gratis</a></nav></div></header>
+<header class="top">
+  <div class="container topin">
+    <a class="brand" href="/" aria-label="Coco en Forma, inicio"><span class="mark">✦</span><span>COCO EN FORMA<small>ETERNA · APOYO ESCOLAR</small></span></a>
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#familias">Zona Familiar</a>
+      <a href="#precios">Precios</a>
+      <a class="cta trial" data-cta-location="nav" href="/?open=eterna&source=landing_nav">Probar 7 días gratis</a>
+    </nav>
+  </div>
+</header>
 
 <main>
-<section class="hero"><div class="container hero-grid"><div><span class="eyebrow">IA educativa · Web + PWA</span><h1>No es un chat para todo.<br><span>Es una IA para aprender.</span></h1><p class="lead">Eterna es el tutor escolar de Coco en Forma: se mantiene dentro del ámbito educativo, adapta sus explicaciones a la edad y al curso y aprende qué necesita reforzar cada alumno y qué forma de explicárselo le ayuda mejor.</p><div class="points"><div class="point"><b>🛡️ Entorno educativo protegido</b>Fuera del ámbito escolar, pone límites y deriva al adulto.</div><div class="point"><b>🧠 Aprende cómo ayudarle</b>Recuerda progreso, conceptos difíciles y estrategias útiles.</div><div class="point"><b>👨‍👩‍👧 Familia al mando</b>Zona Familiar, autorización adulta, límites y permisos.</div></div><div class="actions"><a class="btn primary trial" href="/?open=eterna&source=landing_hero">Probar Eterna gratis 7 días →</a><a class="btn secondary" href="#demo">Ver cómo funciona</a></div><div class="micro">Sin tarjeta · Empieza desde el navegador · PWA opcional · 7,99 €/mes después de la prueba</div><div class="badges"><span>iPhone</span><span>iPad</span><span>Android</span><span>Ordenador</span><span>Sin App Store</span></div></div>
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">Tutor escolar con IA · de Coco en Forma</span>
+      <h1>Cuando tu hijo dice <span>«no entiendo»</span>, Eterna le ayuda a entenderlo.</h1>
+      <p class="lead"><strong>La IA que ayuda a tu hijo a entender los deberes, no a hacerlos por él.</strong> Puede trabajar con una foto, voz o texto, adaptar la explicación a su curso y mantener la conversación dentro del ámbito educativo.</p>
+      <div class="hero-proof">
+        <div class="proof"><b>📸 Foto, voz o texto</b>Empieza desde la tarea que tiene delante.</div>
+        <div class="proof"><b>🧠 Explica y guía</b>Prioriza comprensión, pistas y pasos.</div>
+        <div class="proof"><b>👨‍👩‍👧 Familia al mando</b>Zona Familiar, permisos y límites.</div>
+      </div>
+      <div class="actions">
+        <a class="btn primary trial" data-cta-location="hero" href="/?open=eterna&source=landing_hero">Probar Eterna gratis 7 días →</a>
+        <a class="btn secondary" href="#como-funciona">Ver cómo funciona</a>
+      </div>
+      <div class="micro">Sin tarjeta · 7,99 €/mes o 79,99 €/año si decides continuar · Puedes cancelar la suscripción según sus condiciones.</div>
+    </div>
 
-<div><div class="tablet"><div class="screen"><div class="ethead"><div><strong>Eterna</strong><small>La IA que aprende cómo ayudarte a aprender.</small></div><span>☰</span></div><div class="etbody"><aside class="side"><div class="mode active">🧠 Explícame un tema</div><div class="mode">📸 Ayúdame con mi tarea</div><div class="mode">✏️ Pregunta del cole</div><div class="mode">✅ Revisa lo que hice</div><div class="mode">📚 Prepárame examen</div><div class="mode">🎯 Practicar lo que me cuesta</div><div class="safe">Eterna está limitada al colegio, estudio y apoyo académico.</div></aside><div class="chat"><div class="ready">● Eterna lista</div><div class="msg user">¿Me explicas de dónde vienen los dinosaurios?</div><div class="msg ai">Claro. Los dinosaurios aparecieron hace más de 230 millones de años. Sus antepasados fueron cambiando poco a poco durante muchísimas generaciones.<div class="check">¿Qué significa que una especie evoluciona?</div></div><div class="composer"><div class="listen">🎙️ Puedes hablar, escribir o hacer una foto.</div><div class="input"><div class="ib">📷</div><span>¿Qué tema quieres entender?</span><div class="ib">🎙</div><div class="ib send">➤</div></div></div></div></div></div></div><div class="devnote">Funciona directamente en web. Después puedes añadir Coco en Forma a la pantalla de inicio como PWA.</div></div></div></section>
+    <div>
+      <div class="value-demo" aria-label="Ejemplo del funcionamiento de Eterna">
+        <div class="demo-screen">
+          <div class="demo-top"><div><strong>Eterna</strong><small>Ayuda escolar paso a paso</small></div><span>📚</span></div>
+          <div class="demo-body">
+            <div class="photo-card">
+              <div class="photo-label">📷 Tarea fotografiada</div>
+              <div class="exercise"><strong>Problema:</strong> Una caja tiene 24 lápices. Si se reparten por igual entre 6 alumnos, ¿cuántos recibe cada uno?</div>
+              <div class="flow"><div class="step-dot">1</div><div><strong>Primero identifica qué pide el ejercicio</strong><p>“Tenemos un total y queremos repartirlo en partes iguales.”</p></div></div>
+              <div class="flow"><div class="step-dot">2</div><div><strong>Después guía el razonamiento</strong><p>“¿Qué operación usamos cuando repartimos una cantidad en grupos iguales?”</p></div></div>
+              <div class="flow"><div class="step-dot">3</div><div><strong>Comprueba si lo entendió</strong><p>El alumno responde y Eterna continúa desde ahí.</p></div></div>
+              <div class="checkline">✓ El objetivo es avanzar con comprensión, no convertir la tarea en copiar y pegar.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-caption">Ejemplo ilustrativo del flujo pedagógico. Eterna es IA y puede equivocarse.</div>
+    </div>
+  </div>
+</section>
 
-<section class="section" id="diferencia"><div class="container"><div class="head"><span class="kicker">La diferencia</span><h2>Una IA generalista puede hablar de casi todo. Eterna tiene una misión.</h2><p>Ayudar con el colegio sin convertirse en una puerta de entrada a una conversación abierta sobre cualquier tema.</p></div><div class="compare"><div class="box"><h3>Una IA generalista</h3><ul><li>Está diseñada para muchísimos tipos de consultas.</li><li>No nace necesariamente alrededor del currículo escolar de tu hijo.</li><li>Puede requerir más configuración y supervisión para uso educativo infantil.</li><li>Su objetivo principal no tiene por qué ser enseñar paso a paso.</li></ul></div><div class="box eterna"><h3>Eterna · Coco en Forma</h3><ul><li>Diseñada específicamente para aprendizaje y apoyo escolar.</li><li>Adapta vocabulario, profundidad y ayuda a edad y curso.</li><li>Incluye límites de ámbito, moderación y controles familiares.</li><li>Busca que el alumno entienda, no simplemente entregar una respuesta.</li></ul></div></div></div></section>
+<section class="section" id="como-funciona">
+  <div class="container">
+    <div class="head"><span class="kicker">El momento de valor</span><h2>De “no sé cómo hacerlo” a “ahora lo entiendo”.</h2><p>Sin aprender a escribir prompts ni convertir al padre en profesor improvisado.</p></div>
+    <div class="moment">
+      <article class="moment-card"><div class="num">1</div><h3>Enséñale la tarea</h3><p>Haz una foto, escribe la duda o utiliza la voz. Eterna parte del contexto académico que el alumno tiene delante.</p></article>
+      <article class="moment-card"><div class="num">2</div><h3>Eterna cambia la explicación</h3><p>Puede dar pistas, dividir el problema, explicar un concepto de otra forma o revisar lo que el alumno ya intentó.</p></article>
+      <article class="moment-card"><div class="num">3</div><h3>El alumno sigue participando</h3><p>Eterna busca comprobar comprensión y continuar desde la respuesta del alumno, en lugar de limitarse a terminar la tarea por él.</p></article>
+    </div>
+    <div class="arrowline">Foto / voz / texto → explicación → participación → comprensión → siguiente paso</div>
+  </div>
+</section>
 
-<section class="section alt" id="demo"><div class="container demo"><div class="democopy"><span class="eyebrow">Demostración pedagógica</span><h2>Intenta entender la confusión, no solo marcar un error.</h2><p>Las respuestas cortas se interpretan dentro del contexto pedagógico para poder cambiar de explicación cuando hace falta.</p><a class="btn primary trial" href="/?open=eterna&mode=explain&source=landing_demo">Probarlo gratis →</a></div><div class="conv"><div class="label">Alumno</div><div class="cmsg cu">Que crecieran.</div><div class="label">Eterna</div><div class="cmsg ca">Entiendo lo que quieres decir. Hay una diferencia importante: <b>crecer</b> es hacerse más grande durante la vida. <b>Evolucionar</b> significa que una población cambia poco a poco durante muchas generaciones.</div><div class="label">Alumno</div><div class="cmsg cu">Muchas generaciones.</div><div class="good">✓ Eterna reconoce la idea comprendida y continúa desde ahí.</div></div></div></section>
+<section class="section alt">
+  <div class="container">
+    <div class="head"><span class="kicker">Para situaciones reales</span><h2>Una ayuda distinta según lo que necesita ese día.</h2><p>Seis modos estructurados para que la experiencia no sea un chat abierto sin dirección.</p></div>
+    <div class="use-grid">
+      <div class="card"><div class="ico">📸</div><h3>Ayúdame con mi tarea</h3><p>Pistas y apoyo progresivo a partir del ejercicio.</p></div>
+      <div class="card"><div class="ico">✏️</div><h3>Pregunta del cole</h3><p>Una duda académica explicada con claridad y contexto.</p></div>
+      <div class="card"><div class="ico">✅</div><h3>Revisa lo que hice</h3><p>Reconoce lo correcto y ayuda a encontrar dónde se torció el razonamiento.</p></div>
+      <div class="card"><div class="ico">🧠</div><h3>Explícame un tema</h3><p>Otra explicación cuando la del libro o la primera explicación no encaja.</p></div>
+      <div class="card"><div class="ico">📚</div><h3>Prepárame examen</h3><p>Preguntas, recuperación activa y práctica para repasar.</p></div>
+      <div class="card"><div class="ico">🎯</div><h3>Practicar lo que me cuesta</h3><p>Refuerzo a partir de señales pedagógicas y conceptos trabajados.</p></div>
+    </div>
+  </div>
+</section>
 
-<section class="section"><div class="container"><div class="head"><span class="kicker">Cómo ayuda</span><h2>Seis modos. Una estrategia distinta según la necesidad.</h2><p>No es un chat sin estructura. El modo cambia la forma de enseñar.</p></div><div class="grid3"><div class="card"><div class="ico">📸</div><h3>Ayúdame con mi tarea</h3><p>Pistas progresivas antes de resolver.</p></div><div class="card"><div class="ico">✏️</div><h3>Pregunta del cole</h3><p>Respuestas académicas claras y contextualizadas.</p></div><div class="card"><div class="ico">✅</div><h3>Revisa lo que hice</h3><p>Reconoce lo correcto y después identifica el primer error.</p></div><div class="card"><div class="ico">🧠</div><h3>Explícame un tema</h3><p>Enseña primero y comprueba solo cuando aporta valor.</p></div><div class="card"><div class="ico">📚</div><h3>Prepárame examen</h3><p>Recuperación activa y preparación real.</p></div><div class="card"><div class="ico">🎯</div><h3>Practicar lo que me cuesta</h3><p>Prioriza conceptos que necesitan refuerzo usando la memoria pedagógica.</p></div></div></div></section>
+<section class="section soft" id="diferencia">
+  <div class="container">
+    <div class="head"><span class="kicker">IA sí. Pero con una misión.</span><h2>No intentamos ser un chat para todo.</h2><p>Eterna ha sido creada alrededor de una necesidad concreta: ayudar con el colegio y el estudio.</p></div>
+    <div class="compare">
+      <div class="box"><h3>Una IA generalista</h3><ul><li>Está diseñada para muchísimos tipos de consultas.</li><li>Puede requerir más configuración y supervisión para convertirla en tutor escolar.</li><li>No nace necesariamente alrededor del curso, el progreso y los límites familiares de ese alumno.</li><li>El usuario tiene que decidir cómo pedirle que enseñe, guíe o revise.</li></ul></div>
+      <div class="box eterna"><h3>Eterna · Coco en Forma</h3><ul><li>Se limita al ámbito educativo y deriva al adulto cuando la conversación sale de ese ámbito.</li><li>Adapta vocabulario, profundidad y ayuda al contexto escolar configurado.</li><li>Incluye modos pedagógicos, memoria de aprendizaje y Zona Familiar.</li><li>Prioriza enseñar y guiar antes que limitarse a entregar una respuesta.</li></ul></div>
+    </div>
+  </div>
+</section>
 
-<section class="section alt" id="familias"><div class="container"><div class="head"><span class="kicker">Zona Familiar</span><h2>El niño aprende. La familia conserva el control.</h2><p>Progreso escolar, privacidad, autorización adulta, permisos y suscripción en un espacio separado.</p></div><div class="family"><div class="box fam"><h3>Progreso y fortalezas</h3><div>Mapa de fortalezas y áreas a reforzar.</div><div>Conceptos trabajados y dominio aproximado.</div><div>Estrategias de explicación que parecen funcionar mejor.</div><div>Información orientativa: no diagnostica ni mide inteligencia.</div></div><div class="box fam"><h3>Privacidad y controles</h3><div>Autorización adulta para usar Eterna.</div><div>PIN de Zona Familiar.</div><div>Permisos de voz y fotografías.</div><div>Límites diarios y semanales.</div><div>Gestión de prueba y suscripción.</div></div></div></div></section>
+<section class="section" id="familias">
+  <div class="container parent-message">
+    <div class="quote"><div class="big">Tú no tienes que recordar cómo se resolvía todo.</div><p>Eterna no sustituye a la familia ni al profesor. Busca ser una ayuda escolar disponible cuando aparece la duda: después de clase, durante los deberes o al preparar un examen.</p></div>
+    <div>
+      <span class="eyebrow">Zona Familiar</span>
+      <h2 style="font-size:clamp(31px,4vw,47px);line-height:1.05;letter-spacing:-.035em;color:var(--navy);margin:12px 0 17px">El alumno aprende. La familia conserva el control.</h2>
+      <div class="family-list">
+        <div class="family-item"><b>Progreso académico:</b> conceptos trabajados, fortalezas y áreas que conviene reforzar.</div>
+        <div class="family-item"><b>Permisos:</b> gestión adulta de voz, fotografías y otros accesos disponibles.</div>
+        <div class="family-item"><b>Límites:</b> controles familiares y límites de uso configurables.</div>
+        <div class="family-item"><b>Privacidad:</b> la información pedagógica no se utiliza para diagnosticar ni etiquetar inteligencia o personalidad.</div>
+        <div class="family-item"><b>Suscripción:</b> prueba y gestión del plan dentro del espacio familiar.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<section class="section"><div class="container"><div class="pwa"><div><span class="eyebrow">Web + PWA</span><h2>No necesitas App Store para empezar.</h2><p>Abres Coco en Forma desde el navegador y Eterna funciona inmediatamente. Si quieres tenerla siempre a mano, después puedes añadir la PWA a la pantalla de inicio.</p><div class="actions"><a class="btn primary trial" href="/?open=eterna&source=landing_pwa">Probar desde el navegador →</a></div></div><div class="steps"><div class="step">1 · Entra desde Safari, Chrome u otro navegador compatible.</div><div class="step">2 · Prueba Eterna sin instalar nada.</div><div class="step">3 · Añade Coco en Forma a la pantalla de inicio si quieres usarla como PWA.</div><div class="step">4 · Funciona en iPhone, iPad, Android y ordenador.</div></div></div></div></section>
+<section class="section alt">
+  <div class="container">
+    <div class="coco-band">
+      <div><span class="kicker">Eterna vive dentro de Coco en Forma</span><h2>Primero confianza. Después, si aporta valor, suscripción.</h2><p>Coco en Forma mantiene su propuesta gratuita y sin publicidad como espacio de juegos y entrenamiento educativo. Eterna es la función premium de apoyo escolar personalizado con IA.</p></div>
+      <a class="btn secondary" href="/">Conocer Coco en Forma</a>
+    </div>
+  </div>
+</section>
 
-<section class="section alt" id="precios"><div class="container"><div class="head"><span class="kicker">Pruébala antes de decidir</span><h2>7 días gratis. Sin tarjeta.</h2><p>Después la familia decide si quiere continuar.</p></div><div class="pricing"><div class="price"><h3>Mensual</h3><div class="amount">7,99 € <small>/ mes</small></div><p>Para empezar sin compromiso anual.</p><ul><li>Eterna completa</li><li>Memoria pedagógica</li><li>Zona Familiar</li><li>Texto, foto y voz</li></ul><a class="btn secondary trial" href="/?open=eterna&source=landing_month">Probar 7 días gratis</a></div><div class="price featured"><span class="tag">AHORRA CASI 2 MESES</span><h3>Anual</h3><div class="amount">79,99 € <small>/ año</small></div><p>Mejor precio para familias que continúan durante el curso.</p><ul><li>Eterna completa</li><li>Memoria pedagógica</li><li>Zona Familiar</li><li>Texto, foto y voz</li></ul><a class="btn primary trial" href="/?open=eterna&source=landing_year">Probar 7 días gratis</a></div></div></div></section>
+<section class="section" id="precios">
+  <div class="container">
+    <div class="head"><span class="kicker">Pruébala antes de decidir</span><h2>7 días gratis. Sin tarjeta.</h2><p>No cambiamos el precio para lanzar: primero queremos comprobar con familias reales cuánto valor aporta y cómo convierten.</p></div>
+    <div class="pricing">
+      <div class="price"><h3>Mensual</h3><div class="amount">7,99 € <small>/ mes</small></div><p>Para empezar sin compromiso anual.</p><ul><li>Eterna completa</li><li>Memoria pedagógica</li><li>Zona Familiar</li><li>Texto, foto y voz</li></ul><a class="btn secondary trial" data-cta-location="pricing_month" href="/?open=eterna&source=landing_month">Probar 7 días gratis</a></div>
+      <div class="price featured"><span class="tag">AHORRA FRENTE AL MENSUAL</span><h3>Anual</h3><div class="amount">79,99 € <small>/ año</small></div><p>Mejor precio para familias que continúan durante el curso.</p><ul><li>Eterna completa</li><li>Memoria pedagógica</li><li>Zona Familiar</li><li>Texto, foto y voz</li></ul><a class="btn primary trial" data-cta-location="pricing_year" href="/?open=eterna&source=landing_year">Probar 7 días gratis</a></div>
+    </div>
+    <div class="trial-note">La prueba empieza sin tarjeta. Si decides continuar, eliges entonces el plan disponible.</div>
+  </div>
+</section>
 
-<section class="section"><div class="container"><div class="head"><span class="kicker">Preguntas frecuentes</span><h2>Antes de probar Eterna</h2></div><div class="faq"><details open><summary>¿Eterna es como un chat de IA generalista?</summary><p>No. Eterna está diseñada específicamente para apoyo escolar y utiliza barreras de ámbito, moderación, adaptación por edad y controles familiares. Ningún sistema es infalible, por eso Eterna también informa de que es IA y puede equivocarse.</p></details><details><summary>¿Tengo que descargar una aplicación?</summary><p>No. Coco en Forma funciona directamente desde el navegador. Después puedes añadirlo a la pantalla de inicio como PWA. No necesitas buscar Eterna en App Store o Google Play.</p></details><details><summary>¿Qué recuerda Eterna?</summary><p>Señales pedagógicas como conceptos que cuestan, dominio aproximado, errores frecuentes, nivel de ayuda y estrategias que parecen funcionar. No utiliza esta información para diagnosticar ni etiquetar.</p></details><details><summary>¿La prueba requiere tarjeta?</summary><p>No. La prueba gratuita dura 7 días y comienza sin tarjeta ni datos bancarios.</p></details></div></div></section>
+<section class="section alt">
+  <div class="container">
+    <div class="head"><span class="kicker">Confianza sin promesas infladas</span><h2>Preferimos enseñarte cómo funciona a prometerte una nota.</h2><p>Eterna es una herramienta de apoyo escolar. No garantiza resultados académicos, no sustituye al profesor y, como cualquier sistema de IA, puede cometer errores.</p></div>
+    <div class="trust-grid">
+      <div class="trust"><b>🛡️ Ámbito educativo</b><p>La conversación está orientada al colegio, estudio y aprendizaje. Fuera de ese ámbito, Eterna pone límites.</p></div>
+      <div class="trust"><b>👨‍👩‍👧 Adulto responsable</b><p>La relación comercial y los controles familiares pertenecen al adulto, no al menor.</p></div>
+      <div class="trust"><b>🔎 Transparencia</b><p>Informamos expresamente de que Eterna utiliza IA y de que sus respuestas pueden equivocarse.</p></div>
+    </div>
+  </div>
+</section>
 
-<section class="final"><div class="container"><h2>Tu hijo puede usar una IA general. Eterna ha sido creada para ayudarle a aprender.</h2><p>Compruébalo durante siete días, desde el navegador y con la familia al mando.</p><div class="actions" style="justify-content:center"><a class="btn primary trial" href="/?open=eterna&source=landing_final">Probar Eterna gratis 7 días →</a><a class="btn secondary" href="/">Conocer Coco en Forma</a></div></div></section>
+<section class="section">
+  <div class="container">
+    <div class="pwa">
+      <div><span class="eyebrow">Web + PWA, cuando ya sabes qué aporta</span><h2>No necesitas descargar nada para probarla.</h2><p>Abres Coco en Forma desde el navegador y puedes empezar. Después, si quieres tenerlo siempre a mano, puedes añadir la PWA a la pantalla de inicio.</p></div>
+      <div class="steps"><div class="step">1 · Entra desde Safari, Chrome u otro navegador compatible.</div><div class="step">2 · Prueba Eterna sin instalar nada.</div><div class="step">3 · Añade Coco en Forma a la pantalla de inicio si te resulta útil.</div><div class="step">4 · Disponible desde iPhone, iPad, Android y ordenador mediante web compatible.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container">
+    <div class="head"><span class="kicker">Preguntas frecuentes</span><h2>Antes de probar Eterna</h2></div>
+    <div class="faq">
+      <details open><summary>¿Eterna hace los deberes por mi hijo?</summary><p>Eterna está diseñada para priorizar explicación, pistas, revisión y comprensión antes que limitarse a entregar una respuesta. Según la actividad puede mostrar una solución como parte del proceso de aprendizaje, pero la experiencia busca que el alumno siga participando.</p></details>
+      <details><summary>¿Eterna es como un chat de IA generalista?</summary><p>No. Eterna está diseñada específicamente para apoyo escolar y utiliza límites de ámbito educativo, adaptación por edad y curso, modos pedagógicos y controles familiares. Ningún sistema es infalible: Eterna también informa de que es IA y puede equivocarse.</p></details>
+      <details><summary>¿Qué puede enviar el alumno?</summary><p>Según los permisos disponibles, puede utilizar texto, voz y fotografías de tareas para pedir explicaciones o revisión académica.</p></details>
+      <details><summary>¿Qué recuerda Eterna?</summary><p>Señales pedagógicas como conceptos que cuestan, dominio aproximado, errores frecuentes, nivel de ayuda y estrategias que parecen funcionar. Esta información no debe interpretarse como un diagnóstico.</p></details>
+      <details><summary>¿La prueba requiere tarjeta?</summary><p>No. La prueba gratuita dura 7 días y comienza sin tarjeta ni datos bancarios.</p></details>
+      <details><summary>¿Tengo que descargar una aplicación?</summary><p>No. Coco en Forma funciona desde el navegador. Después puedes añadirlo a la pantalla de inicio como PWA si quieres utilizarlo como una app.</p></details>
+      <details><summary>¿Eterna sustituye a un profesor particular?</summary><p>No la presentamos así. Puede complementar el estudio, resolver dudas y ayudar entre clases, pero un profesor humano aporta capacidades y contexto que una herramienta de IA no sustituye.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="container">
+    <h2>La próxima vez que diga «no entiendo», no tiene por qué quedarse bloqueado.</h2>
+    <p>Prueba si Eterna consigue explicárselo de una forma que le ayude a seguir pensando por sí mismo.</p>
+    <div class="actions" style="justify-content:center"><a class="btn primary trial" data-cta-location="final" href="/?open=eterna&source=landing_final">Probar Eterna gratis 7 días →</a><a class="btn secondary" href="/centro-de-confianza.html">Ver Centro de confianza</a></div>
+    <div class="micro" style="color:#c9e2ec">7 días gratis · sin tarjeta · después decides si continúas</div>
+  </div>
+</section>
 </main>
 
-<footer><div class="container foot"><div>© Coco en Forma · Eterna es una IA de apoyo escolar y puede equivocarse.</div><div class="links"><a href="/centro-de-confianza.html">Centro de confianza</a><a href="/privacidad-menores.html">Privacidad para menores</a><a href="/politica-de-privacidad.html">Privacidad</a><a href="/terminos-y-condiciones.html">Términos</a><a href="/suscripciones-y-desistimiento.html">Suscripción y desistimiento</a></div></div></footer>
+<footer>
+  <div class="container foot">
+    <div>© Coco en Forma · Eterna es una IA de apoyo escolar y puede equivocarse.</div>
+    <div class="links"><a href="/centro-de-confianza.html">Centro de confianza</a><a href="/privacidad-menores.html">Privacidad para menores</a><a href="/politica-de-privacidad.html">Privacidad</a><a href="/politica-de-cookies.html">Cookies</a><a href="/terminos-y-condiciones.html">Términos</a><a href="/suscripciones-y-desistimiento.html">Suscripción y desistimiento</a></div>
+  </div>
+</footer>
 
 <script>
 (function(){
-  var p=new URL(location.href).searchParams,keys=["utm_source","utm_medium","utm_campaign","utm_content","utm_term","gclid","fbclid"];
+  "use strict";
+  var params=new URL(location.href).searchParams;
+  var keep=["utm_source","utm_medium","utm_campaign","utm_content","utm_term","gclid","fbclid"];
+
+  function deviceType(){
+    var w=Math.max(document.documentElement.clientWidth||0,window.innerWidth||0);
+    if(w<768)return "mobile";
+    if(w<1100)return "tablet";
+    return "desktop";
+  }
+
+  function sessionId(){
+    try{
+      var k="cef_mkt_session",v=sessionStorage.getItem(k);
+      if(!v){v="mkt_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,10);sessionStorage.setItem(k,v)}
+      return v;
+    }catch(e){return "session_unavailable"}
+  }
+
+  window.dataLayer=window.dataLayer||[];
+  function emit(name,extra){
+    var payload=Object.assign({
+      event:name,
+      page:"eterna-captacion",
+      page_path:location.pathname,
+      source:params.get("utm_source")||"direct",
+      medium:params.get("utm_medium")||"none",
+      campaign:params.get("utm_campaign")||"none",
+      content:params.get("utm_content")||"none",
+      term:params.get("utm_term")||"none",
+      device:deviceType(),
+      timestamp:new Date().toISOString(),
+      anonymous_session_id:sessionId()
+    },extra||{});
+    window.dataLayer.push(payload);
+    try{window.dispatchEvent(new CustomEvent("cocoMarketingEvent",{detail:payload}))}catch(e){}
+  }
+
   document.querySelectorAll(".trial").forEach(function(a){
-    try{var u=new URL(a.getAttribute("href"),location.origin);keys.forEach(function(k){var v=p.get(k);if(v)u.searchParams.set(k,v)});a.setAttribute("href",u.pathname+u.search)}catch(e){}
+    try{
+      var u=new URL(a.getAttribute("href"),location.origin);
+      keep.forEach(function(k){var v=params.get(k);if(v)u.searchParams.set(k,v)});
+      if(!u.searchParams.get("mkt_session"))u.searchParams.set("mkt_session",sessionId());
+      a.setAttribute("href",u.pathname+u.search);
+    }catch(e){}
+    a.addEventListener("click",function(){emit("start_trial_click",{cta_location:a.getAttribute("data-cta-location")||"unknown"})});
   });
+
+  emit("landing_view");
+
+  var pricing=document.getElementById("precios"),pricingSeen=false;
+  if(pricing&&"IntersectionObserver" in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){if(entry.isIntersecting&&!pricingSeen){pricingSeen=true;emit("pricing_view");obs.disconnect()}});
+    },{threshold:.35});
+    obs.observe(pricing);
+  }
 })();
 </script>
-</body></html>
+</body>
+</html>
