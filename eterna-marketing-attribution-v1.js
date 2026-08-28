@@ -1,7 +1,8 @@
-/* ETERNA Growth · marketing attribution v1.1
+/* ETERNA Growth · marketing attribution v1.2
  * First-party only. Persists campaign attribution for an authenticated adult
  * after explicit measurement consent. No academic/minor content is collected.
  * Auth result hook uses the successful Supabase session token deterministically.
+ * A marketing session can be consumed only once per browser and only after explicit auth.
  */
 ;(function(root){
   "use strict";
@@ -10,8 +11,10 @@
 
   var CONSENT_KEY="cef_marketing_measurement_consent_v1";
   var ATTR_KEY="cef_marketing_trial_attribution_v1";
+  var USED_KEY="cef_marketing_attributed_sessions_v1";
   var CONSENT_VERSION="2026-08-28-v1";
   var TTL=24*60*60*1000;
+  var USED_TTL=30*24*60*60*1000;
   var bound=false,persisting=false,authHooked=false;
 
   function clean(v,max,fallback){
@@ -25,11 +28,39 @@
   function consent(){
     try{return localStorage.getItem(CONSENT_KEY)==="accepted"}catch(e){return false}
   }
+  function usedSessions(){
+    try{
+      var now=Date.now(),raw=JSON.parse(localStorage.getItem(USED_KEY)||"[]");
+      if(!Array.isArray(raw))raw=[];
+      var cleanList=raw.filter(function(x){return x&&validUuid(x.sid)&&Number(x.at)>0&&now-Number(x.at)<=USED_TTL}).slice(-32);
+      if(cleanList.length!==raw.length)localStorage.setItem(USED_KEY,JSON.stringify(cleanList));
+      return cleanList
+    }catch(e){return []}
+  }
+  function wasUsed(sid){
+    if(!validUuid(sid))return false;
+    return usedSessions().some(function(x){return x.sid===sid})
+  }
+  function markUsed(sid){
+    if(!validUuid(sid))return;
+    try{
+      var list=usedSessions().filter(function(x){return x.sid!==sid});
+      list.push({sid:sid,at:Date.now()});
+      localStorage.setItem(USED_KEY,JSON.stringify(list.slice(-32)))
+    }catch(e){}
+  }
   function capture(){
     if(!consent())return null;
     try{
       var q=new URLSearchParams(location.search),sid=clean(q.get("mkt_session"),80,"");
       if(!validUuid(sid))return null;
+      if(wasUsed(sid)){
+        var old=JSON.parse(localStorage.getItem(ATTR_KEY)||"null");
+        if(old&&old.anonymous_session_id===sid)localStorage.removeItem(ATTR_KEY);
+        return null
+      }
+      var existing=JSON.parse(localStorage.getItem(ATTR_KEY)||"null");
+      if(existing&&existing.anonymous_session_id===sid&&existing.at&&Date.now()-Number(existing.at)<=TTL)return existing;
       var d={
         at:Date.now(),
         anonymous_session_id:sid,
@@ -65,10 +96,6 @@
       })
     }catch(e){return null}
   }
-  async function getSession(){
-    var c=client();if(!c||!c.auth)return null;
-    try{var r=await c.auth.getSession();return r&&r.data?r.data.session:null}catch(e){return null}
-  }
   async function persist(session){
     if(persisting||!consent())return false;
     var d=stored(),u=session&&session.user,token=session&&session.access_token,cfg=root.COCO_CONFIG||{};
@@ -101,6 +128,7 @@
         credentials:"omit"
       });
       if(r&&((r.status>=200&&r.status<300)||r.status===409)){
+        markUsed(d.anonymous_session_id);
         try{localStorage.removeItem(ATTR_KEY)}catch(e){}
         return true
       }
@@ -126,18 +154,16 @@
     });
     authHooked=true
   }
-  async function probe(){
+  function probe(){
     if(!consent())return;
     capture();
-    var s=await getSession();
-    if(s)await persist(s)
+    bind()
   }
   function bind(){
     var c=client();if(!c||!c.auth)return;
     hookAuth(c);
     if(bound)return;
     bound=true;
-    try{c.auth.onAuthStateChange(function(_event,session){if(session)persist(session)})}catch(e){}
     root.addEventListener("coco:daily-user",function(){probe()})
   }
   function install(){
