@@ -1,8 +1,9 @@
-/* ETERNA Growth · marketing attribution v1.2
+/* ETERNA Growth · marketing attribution v1.3
  * First-party only. Persists campaign attribution for an authenticated adult
  * after explicit measurement consent. No academic/minor content is collected.
- * Auth result hook uses the successful Supabase session token deterministically.
- * A marketing session can be consumed only once per browser and only after explicit auth.
+ * Auth-event + bounded session probe survives multiple Supabase client instances.
+ * INITIAL_SESSION never attributes an already-open account. A marketing session
+ * can be consumed only once per browser and is also single-owner in Supabase.
  */
 ;(function(root){
   "use strict";
@@ -15,7 +16,13 @@
   var CONSENT_VERSION="2026-08-28-v1";
   var TTL=24*60*60*1000;
   var USED_TTL=30*24*60*60*1000;
-  var bound=false,persisting=false,authHooked=false;
+  var bound=false,persisting=false;
+  var baselineKnown=false,authEligible=false;
+  var probeClient=null,probeTimer=0,probeIndex=0;
+  var PROBE_DELAYS=[300,700,1500,3000,6000,10000,15000,25000,40000,60000,90000,120000];
+  var hookedAuths=typeof WeakSet==="function"?new WeakSet():null;
+  var watchedAuths=typeof WeakSet==="function"?new WeakSet():null;
+  var lastHookedAuth=null,lastWatchedAuth=null;
 
   function clean(v,max,fallback){
     v=String(v==null?"":v).trim();
@@ -96,6 +103,25 @@
       })
     }catch(e){return null}
   }
+  function tokenIssuedAt(session){
+    try{
+      var token=String(session&&session.access_token||""),part=token.split(".")[1];
+      if(!part)return 0;
+      part=part.replace(/-/g,"+").replace(/_/g,"/");
+      while(part.length%4)part+="=";
+      var payload=JSON.parse(atob(part)),iat=Number(payload&&payload.iat);
+      return iat>0?iat*1000:0
+    }catch(e){return 0}
+  }
+  function sessionMatchesAttribution(session,d){
+    if(!session||!session.user||!session.user.id||!session.access_token||!d)return false;
+    var issued=tokenIssuedAt(session),captured=Number(d.at)||0;
+    return issued>0&&captured>0&&issued>=captured-120000
+  }
+  function stopAuthProbe(){
+    if(probeTimer){clearTimeout(probeTimer);probeTimer=0}
+    probeIndex=0
+  }
   async function persist(session){
     if(persisting||!consent())return false;
     var d=stored(),u=session&&session.user,token=session&&session.access_token,cfg=root.COCO_CONFIG||{};
@@ -137,9 +163,43 @@
       return false
     }finally{persisting=false}
   }
+  async function maybePersist(session){
+    if(!baselineKnown||!authEligible)return false;
+    var d=stored();
+    if(!d||!sessionMatchesAttribution(session,d))return false;
+    var ok=await persist(session);
+    if(ok){authEligible=false;stopAuthProbe()}
+    return ok
+  }
+  function establishBaseline(session){
+    if(baselineKnown)return;
+    baselineKnown=true;
+    authEligible=!(session&&session.user&&session.user.id);
+    if(authEligible)startAuthProbe(probeClient)
+  }
+  function scheduleAuthProbe(){
+    if(probeTimer||!baselineKnown||!authEligible||!probeClient||!stored())return;
+    if(probeIndex>=PROBE_DELAYS.length)return;
+    var delay=PROBE_DELAYS[probeIndex++];
+    probeTimer=setTimeout(async function(){
+      probeTimer=0;
+      try{
+        var read=await probeClient.auth.getSession();
+        var session=read&&read.data&&read.data.session;
+        if(session)await maybePersist(session)
+      }catch(e){}
+      if(authEligible&&stored())scheduleAuthProbe()
+    },delay)
+  }
+  function startAuthProbe(c){
+    if(c&&c.auth&&typeof c.auth.getSession==="function")probeClient=c;
+    if(!baselineKnown||!authEligible||!probeClient||!stored())return;
+    scheduleAuthProbe()
+  }
   function hookAuth(c){
-    if(authHooked||!c||!c.auth)return;
+    if(!c||!c.auth)return;
     var auth=c.auth;
+    if(hookedAuths?hookedAuths.has(auth):lastHookedAuth===auth)return;
     ["signInWithPassword","signUp"].forEach(function(name){
       var original=auth[name];
       if(typeof original!=="function")return;
@@ -147,21 +207,48 @@
         var result=await original.apply(this,arguments);
         try{
           var session=result&&result.data&&result.data.session;
-          if(session)await persist(session)
+          if(session&&baselineKnown&&authEligible)await maybePersist(session)
         }catch(e){}
         return result
       }
     });
-    authHooked=true
+    if(hookedAuths)hookedAuths.add(auth);else lastHookedAuth=auth
+  }
+  function watchAuth(c){
+    if(!c||!c.auth)return;
+    var auth=c.auth;
+    probeClient=c;
+    if(!(watchedAuths?watchedAuths.has(auth):lastWatchedAuth===auth)){
+      if(typeof auth.onAuthStateChange==="function"){
+        try{
+          auth.onAuthStateChange(function(event,session){
+            event=String(event||"");
+            if(event==="INITIAL_SESSION"){establishBaseline(session);return}
+            if(event==="SIGNED_OUT"){
+              baselineKnown=true;authEligible=true;
+              startAuthProbe(c);return
+            }
+            if(event==="SIGNED_IN"&&baselineKnown&&authEligible)void maybePersist(session)
+          })
+        }catch(e){}
+      }
+      if(watchedAuths)watchedAuths.add(auth);else lastWatchedAuth=auth
+    }
+    if(!baselineKnown&&typeof auth.getSession==="function"){
+      Promise.resolve().then(function(){return auth.getSession()}).then(function(read){
+        establishBaseline(read&&read.data&&read.data.session)
+      }).catch(function(){establishBaseline(null)})
+    }else if(authEligible)startAuthProbe(c)
   }
   function probe(){
     if(!consent())return;
     capture();
-    bind()
+    bind();
+    if(authEligible)startAuthProbe(probeClient)
   }
   function bind(){
     var c=client();if(!c||!c.auth)return;
-    hookAuth(c);
+    hookAuth(c);watchAuth(c);
     if(bound)return;
     bound=true;
     root.addEventListener("coco:daily-user",function(){probe()})
