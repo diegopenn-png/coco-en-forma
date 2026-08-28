@@ -347,22 +347,113 @@ footer{background:#082f49;color:#bad4df;padding:24px 0;font-size:11px}.foot{disp
 <script>
 (function(){
   "use strict";
+
   var params=new URL(location.href).searchParams;
   var keep=["utm_source","utm_medium","utm_campaign","utm_content","utm_term","gclid","fbclid"];
+  var CONSENT_KEY="cef_marketing_measurement_consent_v1";
+  var CONSENT_VERSION="2026-08-28-v1";
+  var SUPABASE_URL="https://fcatttsfufjiphgohgwp.supabase.co";
+  var SUPABASE_KEY="sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X";
+  var queue=[],sending=false,analyticsClient=null,loaderPromise=null;
+
+  function safe(v,max,fallback){
+    v=String(v==null?"":v).trim();
+    if(!v)return fallback||"";
+    return v.slice(0,max||200);
+  }
 
   function deviceType(){
     var w=Math.max(document.documentElement.clientWidth||0,window.innerWidth||0);
+    if(!w)return "unknown";
     if(w<768)return "mobile";
     if(w<1100)return "tablet";
     return "desktop";
   }
 
-  function sessionId(){
+  function uuid(){
+    try{if(window.crypto&&typeof window.crypto.randomUUID==="function")return window.crypto.randomUUID()}catch(e){}
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(c){
+      var r=Math.random()*16|0,v=c==="x"?r:(r&3|8);return v.toString(16);
+    });
+  }
+
+  /* Identificador efímero de esta carga de página. No se guarda en cookies/localStorage. */
+  var pageSessionId=uuid();
+
+  function consent(){
+    try{return localStorage.getItem(CONSENT_KEY)||""}catch(e){return ""}
+  }
+
+  function setConsent(value){
+    try{localStorage.setItem(CONSENT_KEY,value)}catch(e){}
+  }
+
+  function eventRow(payload){
+    return {
+      anonymous_session_id:pageSessionId,
+      event_name:payload.event,
+      cta_location:payload.cta_location?safe(payload.cta_location,80,null):null,
+      source:safe(payload.source,120,"direct"),
+      medium:safe(payload.medium,120,"none"),
+      campaign:safe(payload.campaign,200,"none"),
+      content:safe(payload.content,200,"none"),
+      term:safe(payload.term,200,"none"),
+      gclid:params.get("gclid")?safe(params.get("gclid"),500,null):null,
+      fbclid:params.get("fbclid")?safe(params.get("fbclid"),500,null):null,
+      device:payload.device||"unknown",
+      page:"eterna-captacion",
+      page_path:"/eterna-captacion.html",
+      consent_version:CONSENT_VERSION
+    };
+  }
+
+  function loadSupabase(){
+    if(window.supabase&&window.supabase.createClient)return Promise.resolve(window.supabase);
+    if(loaderPromise)return loaderPromise;
+    loaderPromise=new Promise(function(resolve,reject){
+      var s=document.createElement("script");
+      s.src="/supabase-js-2.112.3.min.js?v=15000";
+      s.async=true;
+      s.onload=function(){
+        if(window.supabase&&window.supabase.createClient)resolve(window.supabase);
+        else reject(new Error("SUPABASE_JS_UNAVAILABLE"));
+      };
+      s.onerror=function(){reject(new Error("SUPABASE_JS_LOAD_ERROR"))};
+      document.head.appendChild(s);
+    });
+    return loaderPromise;
+  }
+
+  async function client(){
+    if(analyticsClient)return analyticsClient;
+    var lib=await loadSupabase();
+    analyticsClient=lib.createClient(SUPABASE_URL,SUPABASE_KEY,{
+      auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}
+    });
+    return analyticsClient;
+  }
+
+  async function send(payload){
+    if(consent()!=="accepted")return;
     try{
-      var k="cef_mkt_session",v=sessionStorage.getItem(k);
-      if(!v){v="mkt_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,10);sessionStorage.setItem(k,v)}
-      return v;
-    }catch(e){return "session_unavailable"}
+      var c=await client(),row=eventRow(payload);
+      var r=await c.from("eterna_marketing_events").insert(row);
+      if(r&&r.error)throw r.error;
+    }catch(e){
+      /* La analítica nunca puede bloquear la landing ni el trial. */
+      try{console.warn("Eterna marketing analytics:",e&&e.message?e.message:e)}catch(_){}
+    }
+  }
+
+  async function flush(){
+    if(sending||consent()!=="accepted"||!queue.length)return;
+    sending=true;
+    try{
+      while(queue.length){
+        var p=queue.shift();
+        await send(p);
+      }
+    }finally{sending=false}
   }
 
   window.dataLayer=window.dataLayer||[];
@@ -378,20 +469,70 @@ footer{background:#082f49;color:#bad4df;padding:24px 0;font-size:11px}.foot{disp
       term:params.get("utm_term")||"none",
       device:deviceType(),
       timestamp:new Date().toISOString(),
-      anonymous_session_id:sessionId()
+      anonymous_session_id:pageSessionId
     },extra||{});
     window.dataLayer.push(payload);
     try{window.dispatchEvent(new CustomEvent("cocoMarketingEvent",{detail:payload}))}catch(e){}
+    queue.push(payload);
+    flush();
+  }
+
+  function consentUI(force){
+    var current=consent();
+    if(!force&&(current==="accepted"||current==="rejected"))return;
+
+    var old=document.getElementById("cefMarketingConsent");
+    if(old)old.remove();
+
+    var wrap=document.createElement("div");
+    wrap.id="cefMarketingConsent";
+    wrap.setAttribute("role","dialog");
+    wrap.setAttribute("aria-label","Preferencias de medición");
+    wrap.style.cssText="position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:2147483000;margin:auto;max-width:720px;padding:15px;border:1px solid #cfe3ec;border-radius:18px;background:#fff;color:#173f59;box-shadow:0 18px 60px rgba(8,47,73,.24);font:500 13px/1.45 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
+    wrap.innerHTML=
+      '<div style="font-weight:900;font-size:15px;margin-bottom:5px">Medición opcional de esta landing</div>'+
+      '<div style="color:#607b8b">Podemos guardar de forma first-party visitas, visualización de precios y clics de prueba para saber qué campañas funcionan. No enviamos conversaciones, fotos, audio ni actividad escolar del menor. <a href="/politica-de-cookies.html" style="color:#176d9c;font-weight:800">Ver política de cookies</a>.</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px">'+
+      '<button type="button" data-mkt-reject style="min-height:44px;border:1px solid #cfe3ec;border-radius:12px;background:#fff;color:#173f59;font-weight:900;cursor:pointer">Rechazar</button>'+
+      '<button type="button" data-mkt-accept style="min-height:44px;border:0;border-radius:12px;background:#ef761e;color:#fff;font-weight:900;cursor:pointer">Aceptar medición</button>'+
+      '</div>';
+    document.body.appendChild(wrap);
+
+    wrap.querySelector("[data-mkt-reject]").onclick=function(){
+      setConsent("rejected");queue.length=0;wrap.remove();
+    };
+    wrap.querySelector("[data-mkt-accept]").onclick=function(){
+      setConsent("accepted");wrap.remove();flush();
+    };
+  }
+
+  function addPreferenceLink(){
+    var links=document.querySelector("footer .links");
+    if(!links||links.querySelector("[data-mkt-preferences]"))return;
+    var a=document.createElement("a");
+    a.href="#";a.textContent="Preferencias de medición";
+    a.setAttribute("data-mkt-preferences","");
+    a.onclick=function(e){e.preventDefault();consentUI(true)};
+    links.appendChild(a);
   }
 
   document.querySelectorAll(".trial").forEach(function(a){
     try{
       var u=new URL(a.getAttribute("href"),location.origin);
       keep.forEach(function(k){var v=params.get(k);if(v)u.searchParams.set(k,v)});
-      if(!u.searchParams.get("mkt_session"))u.searchParams.set("mkt_session",sessionId());
+      if(!u.searchParams.get("mkt_session"))u.searchParams.set("mkt_session",pageSessionId);
       a.setAttribute("href",u.pathname+u.search);
     }catch(e){}
-    a.addEventListener("click",function(){emit("start_trial_click",{cta_location:a.getAttribute("data-cta-location")||"unknown"})});
+    a.addEventListener("click",function(event){
+      emit("start_trial_click",{cta_location:a.getAttribute("data-cta-location")||"unknown"});
+      if(consent()==="accepted"){
+        event.preventDefault();
+        var href=a.href,finished=false;
+        function go(){if(finished)return;finished=true;location.href=href}
+        Promise.resolve(flush()).then(go).catch(go);
+        setTimeout(go,450);
+      }
+    });
   });
 
   emit("landing_view");
@@ -399,10 +540,17 @@ footer{background:#082f49;color:#bad4df;padding:24px 0;font-size:11px}.foot{disp
   var pricing=document.getElementById("precios"),pricingSeen=false;
   if(pricing&&"IntersectionObserver" in window){
     var obs=new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){if(entry.isIntersecting&&!pricingSeen){pricingSeen=true;emit("pricing_view");obs.disconnect()}});
+      entries.forEach(function(entry){
+        if(entry.isIntersecting&&!pricingSeen){
+          pricingSeen=true;emit("pricing_view");obs.disconnect();
+        }
+      });
     },{threshold:.35});
     obs.observe(pricing);
   }
+
+  addPreferenceLink();
+  consentUI(false);
 })();
 </script>
 </body>
