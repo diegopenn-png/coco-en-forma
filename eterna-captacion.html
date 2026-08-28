@@ -354,7 +354,7 @@ footer{background:#082f49;color:#bad4df;padding:24px 0;font-size:11px}.foot{disp
   var CONSENT_VERSION="2026-08-28-v1";
   var SUPABASE_URL="https://fcatttsfufjiphgohgwp.supabase.co";
   var SUPABASE_KEY="sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X";
-  var queue=[],sending=false,analyticsClient=null,loaderPromise=null;
+  var queue=[],sending=false,flushPromise=null,analyticsClient=null,loaderPromise=null;
 
   function safe(v,max,fallback){
     v=String(v==null?"":v).trim();
@@ -445,15 +445,23 @@ footer{background:#082f49;color:#bad4df;padding:24px 0;font-size:11px}.foot{disp
     }
   }
 
-  async function flush(){
-    if(sending||consent()!=="accepted"||!queue.length)return;
+  function flush(){
+    if(consent()!=="accepted")return Promise.resolve();
+    if(flushPromise)return flushPromise;
+    if(!queue.length)return Promise.resolve();
     sending=true;
-    try{
-      while(queue.length){
-        var p=queue.shift();
-        await send(p);
+    flushPromise=(async function(){
+      try{
+        while(queue.length){
+          var p=queue.shift();
+          await send(p);
+        }
+      }finally{
+        sending=false;
+        flushPromise=null;
       }
-    }finally{sending=false}
+    })();
+    return flushPromise;
   }
 
   window.dataLayer=window.dataLayer||[];
