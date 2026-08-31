@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.90.1-school-exercise";
+  var VERSION="160.90.2-fraction-flow";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres.";
