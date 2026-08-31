@@ -11,7 +11,7 @@
  */
 const OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tus padres y cuéntales lo que ocurre. Si no puedes acudir a ellos, busca a un responsable del colegio que pueda ayudarte en persona.";
-const VERSION="160.90.0-qa-hardening";
+const VERSION="160.90.1-school-exercise";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -150,7 +150,8 @@ async function moderate(env,text,image){const input=[];if(text)input.push({type:
 
 function courtesyNorm(t){return normalizeDetectionText(t).replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
 function pureCourtesy(t){const x=courtesyNorm(t);return!!x&&x.length<=90&&!clearSafetySignal(t)&&/^(hola|buenos dias|buenas tardes|buenas noches|hey|ey|que tal|como estas|hola como estas|gracias|muchas gracias|de nada|adios|hasta luego|nos vemos|chao|chau)$/.test(x)}
-function courtesyReply(t,name){const x=courtesyNorm(t),n=cleanChildText(name||"").split(/\s+/)[0].slice(0,32),h=n?`¡Hola, ${n}!`:`¡Hola!`;if(/gracias/.test(x))return n?`¡De nada, ${n}! 😊 Cuando quieras, seguimos aprendiendo.`:"¡De nada! 😊 Cuando quieras, seguimos aprendiendo.";if(/adios|hasta luego|nos vemos|chao|chau/.test(x))return n?`¡Hasta luego, ${n}! 👋 Cuando quieras, seguimos con el cole.`:"¡Hasta luego! 👋 Cuando quieras, seguimos con el cole.";if(/buenos dias/.test(x))return`${n?`¡Buenos días, ${n}!`:`¡Buenos días!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/buenas tardes/.test(x))return`${n?`¡Buenas tardes, ${n}!`:`¡Buenas tardes!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/buenas noches/.test(x))return`${n?`¡Buenas noches, ${n}!`:`¡Buenas noches!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/como estas|que tal/.test(x))return`${h} 😊 Todo listo por aquí para ayudarte con el cole.`;return`${h} 😊 ¿Qué quieres aprender hoy?`}
+function displayStudentName(v){const n=cleanChildText(v||"").split(/\s+/)[0].slice(0,32);return n?n.charAt(0).toLocaleUpperCase("es-ES")+n.slice(1):""}
+function courtesyReply(t,name){const x=courtesyNorm(t),n=displayStudentName(name),h=n?`¡Hola, ${n}!`:`¡Hola!`;if(/gracias/.test(x))return n?`¡De nada, ${n}! 😊 Cuando quieras, seguimos aprendiendo.`:"¡De nada! 😊 Cuando quieras, seguimos aprendiendo.";if(/adios|hasta luego|nos vemos|chao|chau/.test(x))return n?`¡Hasta luego, ${n}! 👋 Cuando quieras, seguimos con el cole.`:"¡Hasta luego! 👋 Cuando quieras, seguimos con el cole.";if(/buenos dias/.test(x))return`${n?`¡Buenos días, ${n}!`:`¡Buenos días!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/buenas tardes/.test(x))return`${n?`¡Buenas tardes, ${n}!`:`¡Buenas tardes!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/buenas noches/.test(x))return`${n?`¡Buenas noches, ${n}!`:`¡Buenas noches!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/como estas|que tal/.test(x))return`${h} 😊 Todo listo por aquí para ayudarte con el cole.`;return`${h} 😊 ¿Qué quieres aprender hoy?`}
 function detAmb(t,p,h){const x=normalizeDetectionText(t),c=normalizeDetectionText([p?.active_concept,p?.active_topic,p?.pending_question,latestAssistantText(h),...(h||[]).slice(-4).map(z=>z&&z.text)].filter(Boolean).join(" "));if(!/\bkiwi\b/.test(x+" "+c))return null;if(/\b(ave|pajaro|animal)\b/.test(x))return{resolved_meaning:"ave",concept:"kiwi (ave)"};if(/\b(fruta|fruto)\b/.test(x))return{resolved_meaning:"fruta",concept:"kiwi (fruta)"};if(/kiwi\s*\(ave\)|kiwi como ave|kiwi,? el ave/.test(c))return{resolved_meaning:"ave",concept:"kiwi (ave)"};if(/kiwi\s*\(fruta\)|kiwi como fruta|kiwi,? la fruta/.test(c))return{resolved_meaning:"fruta",concept:"kiwi (fruta)"};if(/\bkiwi\b/.test(x))return{ambiguity:true,ambiguity_term:"kiwi",ambiguity_options:["el kiwi, el ave","el kiwi, la fruta"],concept:"kiwi"};return null}
 function recallReq(t){const x=String(t||"");return x.length<=220&&!clearSafetySignal(x)&&!clearNonAcademicIntent(x)&&/\b(recuerdas|te acuerdas|hablamos|vimos|estudiamos|seguimos con|retomar|retomamos)\b/i.test(normalizeDetectionText(x))}
 function words(v){return new Set(normalizeForSearch(v).split(/\s+/).filter(x=>x.length>2&&!/^(recuerdas|acuerdas|hablamos|vimos|estudiamos|seguir|seguimos|retomar|retomamos|tema|sobre|esto|eso)$/.test(x)))}
@@ -198,8 +199,19 @@ function unsafeOperationalIntent(text){
   return false
 }
 function hardUnsafeIntent(text){return personalDangerSignal(text)||unsafeOperationalIntent(text)}
+function schoolExerciseFormatSignal(text){
+  const raw=String(text||""),s=stripTurnPunctuation(raw);if(!s)return false;
+  const action=/\b(?:completa|completar|rellena|rellenar|corrige|corregir|subraya|subrayar|elige|elegir|escoge|escoger|clasifica|clasificar|ordena|ordenar|relaciona|relacionar)\b/.test(s);
+  const object=/\b(?:frase|oracion|oración|hueco|articulo|artículo|sustantivo|verbo|adjetivo|pronombre|palabra|texto|ficha|ejercicio|operacion|operación|ecuacion|ecuación|fraccion|fracción)\b/.test(s);
+  const grammar=/\b(?:articulo|artículo|sustantivo|verbo|adjetivo|pronombre|singular|plural|masculino|femenino)\b/.test(s);
+  const blank=/(?:_{2,}|…{2,}|\[\s*\]|\(\s*\))/.test(raw);
+  const coaching=/\b(?:dame|da|solo|solamente|pista|sin darme|sin decirme|no me digas|respuesta|intenta|ayuda)\b/.test(s);
+  return Boolean(action&&object&&(grammar||blank||coaching))
+}
+function schoolExerciseSubject(text){const s=stripTurnPunctuation(text);if(/\b(?:frase|oracion|oración|articulo|artículo|sustantivo|verbo|adjetivo|pronombre|singular|plural|masculino|femenino|palabra)\b/.test(s))return"Lengua Castellana y Literatura";if(/\b(?:operacion|operación|ecuacion|ecuación|fraccion|fracción)\b/.test(s))return"Matemáticas";return null}
 function educationalIntentSignal(text){
   const s=stripTurnPunctuation(text);if(!s)return false;
+  if(schoolExerciseFormatSignal(text))return true;
   if(/^(que|qué|como|cómo|por que|por qué|para que|para qué|cuando|cuándo|donde|dónde|quien|quién)\b/.test(s))return true;
   if(/\b(explica(?:me)?|ensena(?:me)?|define|definicion|significa|sirve|funcion(?:a|an|es)?|causas?|consecuencias?|diferencia|compara|analiza|historia de|quiero saber|quiero entender|como funciona|como ocurre|como se produce|para clase|para el colegio|para un examen|para mi examen|tema de|asignatura|concepto|literario|literatura|historico|histórico|biologia|biología|ciencias?|filosofia|filosofía)\b/.test(s))return true;
   return false
@@ -207,6 +219,7 @@ function educationalIntentSignal(text){
 function academicDomainSignal(text,decision,pedState,history){
   const s=stripTurnPunctuation(text),d=decision||{};
   if(!s)return false;
+  if(schoolExerciseFormatSignal(text))return true;
   if(hasAcademicConversationContext(pedState,history)&&isShortContextualContinuation(s))return true;
   const decisionSubject=normalizeNullableModelText(d.subject),decisionDomain=normalizeNullableModelText(d.domain);
   if(decisionSubject&&d.intent!=="non_academic"&&!/^(?:entretenimiento|ocio|vida personal|social|compras|shopping|recomendaciones?)$/i.test(decisionSubject))return true;
@@ -298,6 +311,7 @@ function contextualAcademicScope(text,pedState,history){const relation=turnRelat
 
 async function classifyScope(env,text,profile,history,mode,pedState){
   const fast=clearAcademicFastPath(text);if(fast)return fast;
+  if(["homework","review","exam","practice"].includes(mode)&&schoolExerciseFormatSignal(text)){const subject=schoolExerciseSubject(text);return{scope:"school",subject,concept:subject==="Lengua Castellana y Literatura"?"gramática y uso de palabras":subject==="Matemáticas"?"ejercicio matemático":"ejercicio escolar",domain:subject==="Matemáticas"?"mathematics":"language",intent:"educational_practice",request_type:"practice",sensitive_topic:false,unsafe_action:false,needs_clarification:false,self_contained:true,reason:"formato determinista de ejercicio escolar",ambiguity:false,ambiguity_term:null,ambiguity_options:[],resolved_meaning:null,fast:true}}
   if(clearNonAcademicIntent(text))return{scope:"out_of_scope",subject:null,concept:null,domain:"non_academic",intent:"non_academic",request_type:"other",sensitive_topic:false,unsafe_action:false,needs_clarification:false,self_contained:true,reason:"petición claramente no académica",fast:true};
   const profileMode=MODE_PROFILES[mode]||MODE_PROFILES.homework;
   const content=[{type:"input_text",text:`Devuelve JSON. Clasifica la petición actual para Eterna, un tutor escolar 0–18. Decide en este orden: (1) INTENT/GOAL, (2) DOMAIN/TOPIC, (3) request_type, (4) scope. MODO=${mode} (${profileMode.label}).
