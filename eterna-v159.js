@@ -10,10 +10,10 @@
 (function(){
   "use strict";
 
-  var VERSION="160.89.0-adaptive-memory";
+  var VERSION="160.90.0-qa-hardening";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
-  var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres o con un adulto de confianza.";
+  var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres.";
 
   var MODE_CONFIG={
     homework:{label:"Ayúdame con mi tarea",icon:"📸",description:"Entiendo primero el ejercicio y te doy una pista cada vez.",placeholder:"Escribe qué parte de la tarea no entiendes…"},
@@ -50,6 +50,7 @@
   function endpoint(path){var base=String(cfg().eternaEndpoint||"").replace(/\/+$/,""),p=String(path||"");return base?base+(p.charAt(0)==="/"?p:"/"+p):""}
   function freshModeState(){return{question_number:0,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null}}
   function freshConversationState(){return{current_topic:null,subject:null,concept:null,student_intent:null,tutor_act:null,expected_student_act:null,explained_points:[],known_points:[],unresolved_question:null,confusion_level:0,help_level:1,last_question_type:null,strategy_used:null,next_teaching_goal:null,last_user_intent:null}}
+  function preferredStudentName(){return cleanText((state.baseProfile&&state.baseProfile.apodo)||(state.profile&&state.profile.apodo)||"").split(/\s+/)[0].slice(0,32)}
   state.conversationState=freshConversationState();
   function conversationNorm(v){return cleanText(v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
   function pushUnique(list,value,max){value=cleanText(value);if(!value)return list||[];var out=(list||[]).filter(function(x){return conversationNorm(x)!==conversationNorm(value)});out.push(value);return out.slice(-Math.max(1,Number(max||8)))}
@@ -58,7 +59,7 @@
   function resolveContextualTurn(raw){
     var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question);
     var result={text:raw,intent:"question_or_new_topic",directive:null};
-    var explicitNewTopic=/^(?:y\s+)?(?:(?:quien|quienes|que|cual|cuales|cuanto|cuantos|donde|cuando)\s+.{3,}|(?:por que|como)\s+.{4,}|define\s+.{3,}|explicame\s+que\s+es\s+.{3,})$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes)\b/.test(n);
+    var explicitNewTopic=/^(?:y\s+)?(?:(?:quien|quienes|que|cual|cuales|cuanto|cuantos|donde|cuando)\s+.{3,}|(?:por que|como)\s+.{4,}|define\s+.{3,}|explicame\s+que\s+es\s+.{3,})$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes|cada cosa|los dos|ambos|el primero|el segundo|el otro)\b/.test(n);
     if(explicitNewTopic){
       state.conversationState=freshConversationState();cs=state.conversationState;result.intent="new_topic";result.directive="EXPLAIN"
     }else if(n==="si"){
@@ -83,6 +84,8 @@
       result.text="Explícame "+topic+" más fácil: menos palabras, menos abstracción y menos pasos, pero mantén la precisión. No repitas literalmente la respuesta anterior.";result.intent="simplify";result.directive="SIMPLIFY";cs.confusion_level=Math.min(5,Number(cs.confusion_level||0)+1)
     }else if(/^(mas dificil|mas tecnico|profundiza)$/.test(n)){
       result.text="Explícame "+topic+" con más profundidad técnica y abstracción, manteniendo el contexto anterior y sin repetir lo ya explicado.";result.intent="deepen";result.directive="ADVANCE"
+    }else if(/\b(?:cada cosa|los dos|ambos|el primero|el segundo|el otro|lo anterior|lo de antes)\b/.test(n)&&last){
+      result.text=raw;result.intent="contextual_reference";result.directive="RESOLVE_CONTEXT"
     }else if(isCheck){
       /* v160.88.1: cualquier respuesta académica normal a una comprobación
          pendiente se conserva literal y se etiqueta como answer_check. Los
@@ -555,8 +558,8 @@
 
   function renderConversation(chat){
     if(state.history.length){chat.innerHTML="";state.history.forEach(function(m){appendMessage(m.role,m.text,m.meta,false)});return}
-    var p=startPanelForMode();
-    chat.innerHTML='<div class="eternaV160Start"><div class="eternaV160StartIcon">'+p.icon+'</div><h3>'+esc(p.title)+'</h3><p>'+esc(p.text)+'</p><div class="eternaV160StartActions">'+p.actions.map(function(a){return '<button type="button" class="eternaV160StartAction" data-et-startaction="'+a[0]+'"><strong>'+a[1]+'</strong><small>'+a[2]+'</small></button>'}).join("")+'</div></div>';
+    var p=startPanelForMode(),studentName=preferredStudentName(),startTitle=(studentName?"Hola, "+studentName+". ":"")+p.title;
+    chat.innerHTML='<div class="eternaV160Start"><div class="eternaV160StartIcon">'+p.icon+'</div><h3>'+esc(startTitle)+'</h3><p>'+esc(p.text)+'</p><div class="eternaV160StartActions">'+p.actions.map(function(a){return '<button type="button" class="eternaV160StartAction" data-et-startaction="'+a[0]+'"><strong>'+a[1]+'</strong><small>'+a[2]+'</small></button>'}).join("")+'</div></div>';
     chat.querySelectorAll("[data-et-startaction]").forEach(function(b){b.onclick=function(){var action=b.dataset.etStartaction,o=overlay(),i=o.querySelector("[data-et-input]");if(action==="photo"){o.querySelector("[data-et-camera]").click();return}if(action==="voice"){o.querySelector("[data-et-mic]").click();return}if(action==="auto"){i.value="Empezamos.";state.inputSource="text";send();return}i.focus()}})
   }
 
@@ -567,8 +570,10 @@
     var chat=overlay().querySelector("[data-et-chat]"),welcome=chat.querySelector(".eternaV160Start");if(welcome)welcome.remove();
     var row=document.createElement("div");row.className="eternaV159Msg "+role;
     var tags="",safeSubject=cleanMetaText(meta&&meta.subject);if(safeSubject)tags+='<span class="eternaV159Tag">'+esc(safeSubject)+'</span>';if(meta&&meta.help_level!=null)tags+='<span class="eternaV159Tag">Ayuda '+esc(meta.help_level)+'/5</span>';
+    var copyAction=role==="assistant"?'<button type="button" data-et-copy aria-label="Copiar respuesta" style="margin:5px 0 0 44px;border:0;background:transparent;color:#587587;font:700 12px system-ui;cursor:pointer;padding:5px 7px">⧉ Copiar</button>':"";
     var content='<div class="eternaV159Bubble">'+esc(cleanText(text))+(tags?'<div class="eternaV159Meta">'+tags+"</div>":"")+"</div>";
-    row.innerHTML=role==="assistant"?'<div class="eternaV159Avatar" aria-hidden="true">✦</div>'+content:content;chat.appendChild(row);
+    row.innerHTML=role==="assistant"?'<div class="eternaV159Avatar" aria-hidden="true">✦</div>'+content+copyAction:content;chat.appendChild(row);
+    if(role==="assistant"){var copy=row.querySelector("[data-et-copy]");if(copy)copy.onclick=async function(){var v=cleanText(text);try{if(navigator.clipboard&&navigator.clipboard.writeText)await navigator.clipboard.writeText(v);else{var ta=document.createElement("textarea");ta.value=v;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove()}copy.textContent="Copiado ✓";setTimeout(function(){copy.textContent="⧉ Copiar"},1400)}catch(e){copy.textContent="No se pudo copiar"}}}
     if(role==="assistant"&&meta&&meta.verification_status==="verified"){
       if(meta.check_question){var check=document.createElement("div");check.className="eternaV159Check";check.innerHTML='<b>Comprueba que lo entendiste</b><p>'+esc(cleanText(meta.check_question))+'</p><button type="button" data-et-answer>Responder</button>';check.querySelector("[data-et-answer]").onclick=function(){var i=overlay().querySelector("[data-et-input]");i.placeholder="Escribe tu respuesta…";i.focus()};chat.appendChild(check)}
       if(meta.practice_suggestion){var mission=document.createElement("div");mission.className="eternaV159Mission";mission.innerHTML='<span>🎯 MISIÓN ETERNA</span><p>'+esc(cleanText(meta.practice_suggestion))+'</p><div><button type="button" data-et-practice>Practicar ahora</button><button type="button" data-et-coco>Entrenar en Coco</button></div>';mission.querySelector("[data-et-practice]").onclick=function(){setMode("practice",false);var i=overlay().querySelector("[data-et-input]");i.value="Quiero practicar ahora esta recomendación. Hazme una sola pregunta cada vez y espera mi respuesta.";state.inputSource="text";send()};mission.querySelector("[data-et-coco]").onclick=function(){goCocoTraining(meta)};chat.appendChild(mission)}
@@ -622,13 +627,15 @@
   function recorderMime(){if(typeof MediaRecorder==="undefined")return"";var candidates=["audio/mp4","audio/webm;codecs=opus","audio/webm","audio/ogg;codecs=opus","audio/ogg"];if(typeof MediaRecorder.isTypeSupported!=="function")return"";for(var i=0;i<candidates.length;i++)if(MediaRecorder.isTypeSupported(candidates[i]))return candidates[i];return""}
   function audioFilename(type){var t=String(type||"").toLowerCase();if(t.indexOf("mp4")>=0||t.indexOf("m4a")>=0)return"pregunta.m4a";if(t.indexOf("ogg")>=0)return"pregunta.ogg";if(t.indexOf("wav")>=0)return"pregunta.wav";if(t.indexOf("mpeg")>=0||t.indexOf("mp3")>=0)return"pregunta.mp3";return"pregunta.webm"}
 
+  async function microphonePermissionState(){try{if(navigator.permissions&&navigator.permissions.query){var p=await navigator.permissions.query({name:"microphone"});return p&&p.state||null}}catch(e){}return null}
   async function toggleRecord(){
     var b=overlay().querySelector("[data-et-mic]");
     if(state.parentSettings&&state.parentSettings.allow_audio_input===false){alert("El micrófono está desactivado desde Zona familiar.");return}
     if(state.recorder&&state.recorder.state==="recording"){state.recorder.stop();return}
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==="undefined"){alert("Este navegador no permite grabar audio desde Eterna. Puedes escribir la pregunta.");return}
     try{
-      var stream=await navigator.mediaDevices.getUserMedia({audio:true}),mime=recorderMime(),options=mime?{mimeType:mime}:undefined;state.chunks=[];
+      var permission=await microphonePermissionState();if(permission==="denied"){alert("El micrófono está bloqueado para Coco en Forma. Actívalo en los permisos del navegador o de la app.");return}
+      var stream=await navigator.mediaDevices.getUserMedia({audio:true}),mime=recorderMime(),options=mime?{mimeType:mime}:undefined;try{localStorage.setItem("coco_eterna_mic_granted_v1","1")}catch(_e){}state.chunks=[];
       var rec=options?new MediaRecorder(stream,options):new MediaRecorder(stream);state.recorder=rec;
       rec.ondataavailable=function(e){if(e.data&&e.data.size)state.chunks.push(e.data)};
       rec.onstop=async function(){b.classList.remove("recording");b.textContent="🎙️";stream.getTracks().forEach(function(t){t.stop()});var type=rec.mimeType||mime||(state.chunks[0]&&state.chunks[0].type)||"audio/webm",blob=new Blob(state.chunks,{type:type});state.recorder=null;await transcribe(blob,audioFilename(type))};
