@@ -1,4 +1,4 @@
-/* COCO EN FORMA / ETERNA · v160.90.3 PRODUCT UX RELEASE
+/* COCO EN FORMA / ETERNA · v160.90.3.2 PRODUCT UX RELEASE · MIC UNIFICADO
  * Base auditada: main@e1ec4091597fcd9583d8e474c86f8b5b6934dfe5
  *
  * Alcance:
@@ -16,10 +16,10 @@
   if(root.__COCO_PRODUCT_UX_160903__)return;
   root.__COCO_PRODUCT_UX_160903__=true;
 
-  var VERSION="160.90.3-product-ux";
+  var VERSION="160.90.3.2-product-ux-mic-unificado";
   var subscriptionCache={at:0,value:null,session:null,promise:null};
   var FAMILY_RETRY=[80,260,700,1400];
-  var ETERNA_RETRY=[60,220,650];
+  var ETERNA_RETRY=[0,60,220,650,1200,2200];
 
   function cfg(){return root.COCO_CONFIG||{}}
   function endpoint(path){
@@ -182,8 +182,79 @@
   function scheduleFamilyCheck(){
     FAMILY_RETRY.forEach(function(ms){setTimeout(function(){enforceExpiredFamily(ms>600)},ms)})
   }
+
+  function micIconMarkup1609032(extraClass){
+    return '<svg class="eternaV160MicSvg '+String(extraClass||'')+'" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">'+
+      '<path d="M12 14.75a3.75 3.75 0 0 0 3.75-3.75V7a3.75 3.75 0 1 0-7.5 0v4A3.75 3.75 0 0 0 12 14.75Z"/>'+
+      '<path d="M6.5 11a5.5 5.5 0 0 0 11 0"/>'+
+      '<path d="M12 16.5V20"/>'+
+      '<path d="M9.5 20h5"/>'+
+    '</svg>'
+  }
+
+  function normalizePrimaryMic1609032(){
+    var o=document.getElementById("eternaOverlayV159");
+    if(!o)return false;
+    var mic=o.querySelector("[data-et-mic]");
+    if(!mic)return false;
+    /* Durante grabación manda la propia capa de voz; no interferimos. */
+    if(mic.classList.contains("recording"))return true;
+    if(!mic.querySelector(".eternaV160MicSvg"))mic.innerHTML=micIconMarkup1609032("coco1609032PrimaryMicSvg");
+    mic.setAttribute("aria-label","Usar micrófono");
+    mic.setAttribute("title","Hablar con Eterna");
+    mic.dataset.cocoMicUi="1609032";
+    return true
+  }
+
+  function normalizeVoiceActionCards1609032(){
+    var o=document.getElementById("eternaOverlayV159");
+    if(!o)return false;
+    var found=false;
+    o.querySelectorAll('[data-et-startaction="voice"] strong').forEach(function(strong){
+      found=true;
+      var label=String(strong.textContent||"")
+        .replace(/[\uD83C\uDF99\uFE0F\uD83C\uDFA4]/g,"")
+        .replace(/\s+/g," ")
+        .trim();
+      if(!label)return;
+      var current=strong.querySelector(".coco1609032VoiceActionLabel");
+      if(current&&current.textContent===label&&strong.querySelector(".coco1609032VoiceActionIcon"))return;
+
+      while(strong.firstChild)strong.removeChild(strong.firstChild);
+      var icon=document.createElement("span");
+      icon.className="coco1609032VoiceActionIcon";
+      icon.setAttribute("aria-hidden","true");
+      icon.innerHTML=micIconMarkup1609032("coco1609032VoiceActionSvg");
+
+      var text=document.createElement("span");
+      text.className="coco1609032VoiceActionLabel";
+      text.textContent=label;
+
+      strong.appendChild(icon);
+      strong.appendChild(text);
+      strong.dataset.cocoVoiceActionUi="1609032"
+    });
+    return found
+  }
+
+  function normalizeVoiceUi1609032(){
+    normalizePrimaryMic1609032();
+    normalizeVoiceActionCards1609032()
+  }
+
+  function scheduleVoiceUi1609032(){
+    [0,40,120,300,700].forEach(function(ms){
+      setTimeout(normalizeVoiceUi1609032,ms)
+    })
+  }
+
   function scheduleEternaCheck(){
-    ETERNA_RETRY.forEach(function(ms){setTimeout(function(){enforceExpiredEterna(ms>500)},ms)})
+    ETERNA_RETRY.forEach(function(ms){
+      setTimeout(function(){
+        normalizeVoiceUi1609032();
+        enforceExpiredEterna(ms>500)
+      },ms)
+    })
   }
 
   /* ---------------- V/F: no repetir por re-muestreo ---------------- */
@@ -267,7 +338,12 @@
       "html body #eternaOverlayV159 [data-et-mic]:focus-visible{outline:3px solid rgba(42,167,216,.24)!important;outline-offset:3px!important}",
       "html body #eternaOverlayV159 [data-et-mic].recording{background:#fff8f2!important;border-color:#ef9d5d!important;color:#df6410!important;box-shadow:0 0 0 5px rgba(239,108,5,.09),0 2px 8px rgba(139,72,24,.10)!important}",
       "html body #eternaOverlayV159 [data-et-mic].recording::after{content:''!important;position:absolute!important;inset:-4px!important;border-radius:50%!important;border:1.8px solid rgba(232,111,24,.30)!important;animation:eternaMicPulse16057 1.3s infinite ease-out!important;pointer-events:none!important}",
-      "@media(max-width:760px){html body #eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:50%!important}}",
+      "#eternaOverlayV159 .eternaV160StartAction[data-et-startaction='voice'] strong{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;line-height:1.2!important}",
+      "#eternaOverlayV159 .coco1609032VoiceActionIcon{display:inline-grid!important;place-items:center!important;width:24px!important;height:24px!important;flex:0 0 24px!important;color:#253746!important}",
+      "#eternaOverlayV159 .coco1609032VoiceActionIcon .eternaV160MicSvg{display:block!important;width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;overflow:visible!important}",
+      "#eternaOverlayV159 .coco1609032VoiceActionIcon .eternaV160MicSvg *{fill:none!important;stroke:currentColor!important;vector-effect:non-scaling-stroke!important}",
+      "#eternaOverlayV159 .coco1609032VoiceActionLabel{display:inline!important}",
+      "@media(max-width:760px){html body #eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:50%!important}#eternaOverlayV159 .coco1609032VoiceActionIcon{width:26px!important;height:26px!important;flex-basis:26px!important}#eternaOverlayV159 .coco1609032VoiceActionIcon .eternaV160MicSvg{width:24px!important;height:24px!important}}",
 
       "#eternaOverlayV159 .coco160903TrialEnded{max-width:760px;margin:22px auto;padding:22px;border:1px solid #cfe4ee;border-radius:22px;background:linear-gradient(145deg,#fbfdff,#f2f9fd 64%,#fff8ef);box-shadow:0 8px 26px rgba(23,63,89,.09);color:#173f59}",
       "#eternaOverlayV159 .coco160903TrialEyebrow{display:inline-flex;margin-bottom:9px;padding:5px 9px;border-radius:999px;background:#173f59;color:#fff;font-size:9px;font-weight:950;letter-spacing:.07em}",
@@ -306,12 +382,20 @@
 
     root.addEventListener("coco:family-base-ready",scheduleFamilyCheck,{passive:true});
     root.addEventListener("coco:family-legal-ready",scheduleFamilyCheck,{passive:true});
+
+    document.addEventListener("click",function(event){
+      var target=event.target&&event.target.closest?event.target.closest(
+        "#eternaOverlayV159 [data-et-mode],#eternaOverlayV159 [data-et-modechoice],#eternaOverlayV159 [data-et-changemode]"
+      ):null;
+      if(target)scheduleVoiceUi1609032()
+    },true);
   }
 
   function boot(){
     injectStyles();
     installTruthAntiRepeat();
     installNavigationHooks();
+    normalizeVoiceUi1609032();
 
     /* Reintentos ligeros para módulos que se cargan bajo demanda. */
     setTimeout(installTruthAntiRepeat,900);
