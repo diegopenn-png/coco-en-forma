@@ -11,15 +11,15 @@
  */
 const OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tus padres y cuéntales lo que ocurre. Si no puedes acudir a ellos, busca a un responsable del colegio que pueda ayudarte en persona.";
-const VERSION="160.90.2-fraction-flow";
+const VERSION="160.90.4-final-pedagogy";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
 const MODE_PROFILES={
   homework:{label:"Ayúdame con mi tarea",goal:"Comprender exactamente el enunciado o la ficha y guiar con una sola pista cada vez. No completar por el alumno lo que debe intentar.",preferred:["visual_structure","socratic_question","step_by_step"]},
-  ask:{label:"Pregunta del cole",goal:"Resolver una duda académica concreta con una explicación breve, clara y adaptada al curso; comprobar comprensión solo cuando aporte valor.",preferred:["direct_explanation","analogy","socratic_question"]},
+  ask:{label:"Pregunta del cole",goal:"Resolver una duda académica concreta con una explicación breve, clara y adaptada al curso. En la primera respuesta a una pregunta nueva, cerrar con una única microcomprobación concreta y esperar.",preferred:["direct_explanation","analogy","socratic_question"]},
   review:{label:"Revisa lo que hice",goal:"Partir del trabajo del alumno. Identificar qué está bien, localizar el primer error y pedir que lo corrija antes de resolverlo por completo.",preferred:["error_analysis","socratic_question","step_by_step"]},
-  explain:{label:"Explícame un tema",goal:"Enseñar el concepto desde cero con claridad y suficiente contundencia, usando ejemplo o analogía cuando ayude. Comprobar comprensión de forma breve y natural, no como examen permanente.",preferred:["direct_explanation","analogy","worked_example"]},
+  explain:{label:"Explícame un tema",goal:"Enseñar el concepto desde cero de forma breve: idea clave, un ejemplo o analogía y una única microcomprobación concreta. Esperar antes de ampliar.",preferred:["direct_explanation","analogy","worked_example"]},
   exam:{label:"Prepárame para un examen",goal:"Actuar como examinador adaptativo: una pregunta cada vez, esperar respuesta, corregir, ajustar dificultad y no revelar la respuesta antes del intento.",preferred:["retrieval_practice","socratic_question","error_analysis"]},
   practice:{label:"Practicar lo que me cuesta",goal:"Priorizar conceptos débiles de memoria cuando el alumno no elige tema. Si el alumno propone un tema académico concreto, practicar ese tema. Una pregunta cada vez y dificultad adaptativa.",preferred:["retrieval_practice","worked_example","step_by_step"]}
 };
@@ -405,7 +405,7 @@ function practiceTargetForSession(ctx,focus){const f=String(focus||"").trim();if
 function sanitizeModeState(v){const x=v&&typeof v==="object"?v:{};return{question_number:Math.max(0,Math.min(100,Number(x.question_number||0)|0)),correct_count:Math.max(0,Math.min(100,Number(x.correct_count||0)|0)),partial_count:Math.max(0,Math.min(100,Number(x.partial_count||0)|0)),incorrect_count:Math.max(0,Math.min(100,Number(x.incorrect_count||0)|0)),difficulty:Math.max(1,Math.min(5,Number(x.difficulty==null?2:x.difficulty)|0)),focus:typeof x.focus==="string"?x.focus.slice(0,160):null}}
 function reconcileModeState(mode,incoming,proposed,{assessment="not_applicable",help=1,checkQuestion=null,focus=null}={}){const base=sanitizeModeState(incoming),out=sanitizeModeState(proposed),emits=typeof checkQuestion==="string"&&checkQuestion.trim();if(mode==="exam"||mode==="practice"){let correct=base.correct_count,partial=base.partial_count,incorrect=base.incorrect_count,difficulty=base.difficulty;if(assessment==="correct"){correct++;if(Number(help)<=1&&correct%2===0)difficulty=Math.min(5,difficulty+1)}else if(assessment==="partial")partial++;else if(assessment==="incorrect"){incorrect++;if(incorrect%2===0)difficulty=Math.max(1,difficulty-1)}return{question_number:emits?Math.min(100,base.question_number+1):base.question_number,correct_count:correct,partial_count:partial,incorrect_count:incorrect,difficulty,focus:String(focus||out.focus||base.focus||"").slice(0,160)||null}}return{...base,focus:String(focus||out.focus||base.focus||"").slice(0,160)||null}}
 function containsStandaloneNumber(text,value){const s=String(text||""),v=String(value),e=v.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");return new RegExp(`(^|[^0-9])${e}([^0-9]|$)`).test(s)}
-function safeMathHint(mathCheck,mode){if(!mathCheck||mathCheck.type!=="arithmetic")return null;const a=mathCheck.a,b=mathCheck.b,op=mathCheck.op;if(mode==="review"&&["x","×","*"].includes(op))return{reply:`Ese resultado necesita revisión. Comprueba ${a} grupos de ${b} sin mirar una solución final. Puedes empezar ${b}, ${b*2}, ${b*3}… y continuar tú. ¿Qué resultado obtienes?`,practice:`Continúa contando de ${b} en ${b} hasta tener ${a} grupos y escribe el resultado que obtengas.`};if(mode==="exam")return{reply:"Esa respuesta necesita revisión. Vuelve a intentarlo con una estrategia que conozcas; todavía no te doy el resultado final.",practice:null};if(mode==="homework")return{reply:`Vas a poder sacarlo. Trabaja la operación ${mathCheck.expression} por partes y dime tu siguiente paso; todavía no te doy el resultado final.`,practice:"Haz solo el siguiente paso y escríbemelo para comprobarlo juntos."};return null}
+function safeMathHint(mathCheck,mode){if(!mathCheck||mathCheck.type!=="arithmetic")return null;const a=mathCheck.a,b=mathCheck.b,op=mathCheck.op;if(mode==="review"&&["x","×","*"].includes(op))return{reply:`Ese resultado necesita revisión. Comprueba ${a} grupos de ${b} sin mirar una solución final. Puedes empezar ${b}, ${b*2}, ${b*3}… y continuar tú. ¿Qué resultado obtienes?`,practice:`Continúa contando de ${b} en ${b} hasta tener ${a} grupos y escribe el resultado que obtengas.`};if(mode==="exam")return{reply:"Esa respuesta necesita revisión. Vuelve a intentarlo con una estrategia que conozcas; todavía no te doy el resultado final.",practice:null};if(mode==="practice"&&["x","×","*"].includes(op))return{reply:`No del todo. Revisa ${a} × ${b} sin mirar todavía el resultado final. Puedes pensarlo como ${a} grupos de ${b} o sumar ${b} varias veces.`,practice:null};if(mode==="practice")return{reply:`No del todo. Revisa ${mathCheck.expression} paso a paso; todavía no te doy el resultado final.`,practice:null};if(mode==="homework")return{reply:`Vas a poder sacarlo. Trabaja la operación ${mathCheck.expression} por partes y dime tu siguiente paso; todavía no te doy el resultado final.`,practice:"Haz solo el siguiente paso y escríbemelo para comprobarlo juntos."};return null}
 function numericStudentAnswer(text){const s=stripTurnPunctuation(text).replace(/,/g,".");if(!/^-?\d+(?:\.\d+)?$/.test(s))return null;const n=Number(s);return Number.isFinite(n)?n:null}
 function gcdInt(a,b){a=Math.abs(Math.trunc(a));b=Math.abs(Math.trunc(b));while(b){const t=a%b;a=b;b=t}return a||1}
 function normalizedFraction(n,d){n=Number(n);d=Number(d);if(!Number.isInteger(n)||!Number.isInteger(d)||d===0)return null;if(d<0){n=-n;d=-d}const g=gcdInt(n,d);return{n:n/g,d:d/g}}
@@ -479,12 +479,12 @@ REGLAS PEDAGÓGICAS CRÍTICAS:
 11) tutor_act describe lo que haces AHORA. Si terminas ofreciendo “¿Quieres que siga/te cuente qué pasa después?”, usa tutor_act=offer_continuation y check_question=null. Si haces una comprobación, usa ask_yes_no/ask_open/ask_choice/ask_numeric/ask_short_concept según corresponda.
 12) No conviertas toda respuesta en examen. Debe existir como máximo UNA pregunta activa para el alumno. Si reply ya contiene la pregunta que debe contestar, check_question=null. Si check_question no es null, no termines reply con una segunda pregunta académica distinta.
 REGLAS DE MODO:
-13) homework: si CONSULTA_FACTUAL_DIRECTA=true y no hay ejercicio/ficha que resolver, responde directamente. En tarea real, una sola pista cada vez y no completes por el alumno.
-14) explain: enseña progresivamente. En seguimientos, detalles, ejemplos y simplificaciones normalmente check_question=null. Comprueba solo tras un concepto central, una confusión repetida o cuando necesites decidir si avanzar.
-15) ask: respuesta directa y didáctica; follow-ups normalmente sin examen.
-16) review: parte de lo hecho, señala el PRIMER PASO incorrecto y guía corrección. Si el alumno da procedimiento, recórrelo en orden: reconoce lo correcto antes del error y no llames «primer error» al resultado final si ya hubo un paso anterior equivocado. Si solo da el resultado, no inventes el paso: dile que el resultado no es correcto y pídele sus pasos. Si pide no hacer toda la cuenta, da solo la siguiente acción o pista.
-17) exam: una pregunta cada vez; feedback breve y nueva pregunta; tutor_act=exam_question cuando preguntas; practice_suggestion=null. En cada turno debe existir UNA sola pregunta esperando respuesta. Si escribes la pregunta dentro de reply, check_question=null. Tras un acierto evalúa y avanza; sube dificultad de forma progresiva, no brusca. Tras un error, explica/pista breve y plantea después un ejercicio similar antes de bajar dificultad.
-18) practice: prioriza recuperación activa; tutor_act=practice_question cuando preguntas; practice_suggestion=null. Mantén exactamente el foco elegido o recuperado (por ejemplo «divisor de dos cifras»). Si la respuesta es incorrecta, no reveles de inmediato el resultado cuando puede aprender con una pista: identifica el tipo de error, da una pista y plantea después otro ejercicio del mismo foco. UNA sola pregunta activa por turno: si la pregunta está dentro de reply, check_question=null.
+13) homework: si CONSULTA_FACTUAL_DIRECTA=true y no hay ejercicio/ficha que resolver, responde directamente. En tarea real, una sola pista cada vez y no completes por el alumno. Siempre que sea posible termina la pista con UNA pregunta concreta sobre el siguiente micro-paso y espera.
+14) explain: en el primer turno de un tema nuevo usa estructura IDEA CLAVE → UN EJEMPLO/ANALOGÍA → UNA MICROCOMPROBACIÓN CONCRETA. Para 3–11 años procura no superar unas 110 palabras antes de la comprobación. No termines con «puedo seguir…» si todavía no has comprobado comprensión. En seguimientos, detalles, ejemplos y simplificaciones evita repetir lo ya explicado.
+15) ask: responde directamente y de forma breve. En la primera respuesta a una pregunta académica nueva termina con UNA microcomprobación concreta relacionada con la explicación y espera. Los follow-ups no necesitan convertirse en examen.
+16) review: parte de lo hecho, señala el PRIMER PASO incorrecto y guía corrección. Si el alumno da procedimiento, recórrelo en orden: reconoce lo correcto antes del error. Si solo da un resultado incorrecto, no inventes pasos previos: señala que necesita revisión y pide corregir esa operación. Cuando el alumno corrige correctamente el único error de un ejercicio simple, cierra la revisión; no inventes un «primer paso» nuevo.
+17) exam: una pregunta CONCRETA cada vez; feedback breve y luego una nueva pregunta CONCRETA completa. Nunca pidas «inventa/resuelve un ejemplo» como sustituto de la pregunta. tutor_act=exam_question cuando preguntas; practice_suggestion=null. El contador de pregunta solo puede avanzar cuando ya existe esa nueva pregunta. Tras un error, da una pista breve sin revelar la respuesta antes de un nuevo intento o de un ejercicio similar.
+18) practice: prioriza recuperación activa; tutor_act=practice_question cuando preguntas; practice_suggestion=null. Mantén exactamente el foco elegido o recuperado. Cada turno evaluable debe terminar en UNA pregunta CONCRETA completa. Nunca pidas al alumno que invente el ejercicio. Si la respuesta es incorrecta, no reveles de inmediato el resultado cuando puede aprender con una pista: identifica el tipo de error, da una pista distinta y mantén el mismo ejercicio para un nuevo intento antes de avanzar.
 REGLAS DE CONTENIDO Y EDAD:
 19) Nunca salgas del apoyo escolar. No diagnostiques estilos de aprendizaje. Texto plano, sin Markdown ni códigos técnicos. Los temas académicos sensibles se explican científicamente, con neutralidad y solo el detalle necesario; no los bloquees por el tema en sí.
 20) En 3–5 años: una idea principal, palabras simples y explicación muy corta. En 6–8: 2–3 ideas máximo y ejemplos concretos. En 9–11: explicación clara + ejemplo. En 12–14: causas, consecuencias y relaciones. En 15–16 y Bachillerato: más terminología y rigor según curso.
@@ -555,6 +555,17 @@ function embeddedStudentQuestion(reply){
 function isContinuationOfferQuestion(q){const s=normalizeDetectionText(q);return /\b(si quieres|quieres que|te explico|puedo explicarte|seguimos|quieres seguir)\b/.test(s)}
 function stripTrailingOfferQuestion(reply){const text=cleanChildText(reply||"");return text.replace(/(?:\s*(?:si quieres[, ]*)?¿(?:quieres que|te explico|puedo explicarte|seguimos|quieres seguir)[^?]{0,260}\?\s*)$/i,"").trim()||text}
 function stripTrailingStudentQuestion(reply,q){const text=cleanChildText(reply||""),question=cleanChildText(q||"");if(!text||!question)return text;const at=text.lastIndexOf(question);if(at<0)return text;const before=text.slice(0,at).replace(/(?:ahora te toca(?: a ti)?[:.]?|resp[oó]ndeme(?: solo con el resultado)?[:.]?)\s*$/i,"").trim();return before}
+function normalizeStudentNameCaseWorker(reply,name){
+  const clean=cleanChildText(name||"").split(/\s+/)[0];if(!clean)return cleanChildText(reply||"");
+  const canonical=clean.charAt(0).toLocaleUpperCase("es-ES")+clean.slice(1).toLocaleLowerCase("es-ES");
+  const escaped=canonical.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  return cleanChildText(reply||"").replace(new RegExp(`\\b${escaped}\\b`,"gi"),canonical)
+}
+function simpleArithmeticReviewHistory(history){
+  const users=(history||[]).filter(x=>x&&x.role==="user"&&typeof x.text==="string");if(!users.length)return false;
+  const s=String(users[0].text||"").trim().replace(/\s+/g," ");
+  return /^-?\d+(?:[.,]\d+)?\s*[+x×*÷/-]\s*-?\d+(?:[.,]\d+)?\s*=\s*-?\d+(?:[.,]\d+)?[.!?]?$/.test(s)
+}
 function singleStudentAct({mode,reply,tutorData,turnRel,incoming,assessment}){
   let cleanReply=cleanChildText(reply||""),displayCheck=smartMicroCheck({mode,tutorData,turnRel,incoming,assessment}),embedded=embeddedStudentQuestion(cleanReply),pendingQuestion=null;
   if(turnRel==="answer_to_pending"&&assessment==="correct"&&incoming&&incoming.pending_question){
@@ -575,11 +586,19 @@ function singleStudentAct({mode,reply,tutorData,turnRel,incoming,assessment}){
   return{reply:cleanReply,display_check:displayCheck||null,pending_question:pendingQuestion||null}
 }
 function nextFractionQuestion({difficulty=2,questionNumber=0,previousQuestion=""}={}){const d=Math.max(1,Math.min(5,Number(difficulty||2)|0)),b={1:["2/5 + 1/5 = ?","3/8 + 2/8 = ?","1/4 + 2/4 = ?"],2:["1/2 + 1/4 = ?","2/3 + 1/6 = ?","3/4 - 1/8 = ?"],3:["5/6 - 1/4 = ?","2/5 + 3/10 = ?","7/8 - 1/3 = ?"],4:["3/5 × 10/9 = ?","4/7 ÷ 2/3 = ?","5/6 + 7/12 = ?"],5:["7/9 ÷ 14/15 = ?","5/8 × 12/25 = ?","11/12 - 5/18 = ?"]}[d],prev=normalizeDetectionText(previousQuestion);for(let i=0;i<b.length;i++){const q=b[(Math.abs(Number(questionNumber||0))+i)%b.length];if(normalizeDetectionText(q)!==prev)return q}return b[0]}
+function nextMultiplicationQuestion({difficulty=2,questionNumber=0,previousQuestion=""}={}){
+  const d=Math.max(1,Math.min(5,Number(difficulty||2)|0));
+  const banks={1:[[2,4],[3,5],[4,3],[5,4],[6,3]],2:[[6,4],[7,6],[8,4],[9,5],[7,8]],3:[[12,4],[9,7],[8,12],[11,6],[12,7]],4:[[14,8],[16,7],[18,6],[15,12],[17,9]],5:[[24,13],[18,17],[32,14],[27,16],[35,12]]};
+  const bank=banks[d]||banks[2],prev=normalizeDetectionText(previousQuestion);
+  for(let i=0;i<bank.length;i++){const pair=bank[(Math.abs(Number(questionNumber||0))+i)%bank.length],q=`¿Cuánto es ${pair[0]} × ${pair[1]}?`;if(normalizeDetectionText(q)!==prev)return q}
+  const p=bank[0];return `¿Cuánto es ${p[0]} × ${p[1]}?`
+}
 function fallbackAdaptiveQuestion({mode,subject,concept,difficulty=2,questionNumber=0,previousQuestion="",focus=""}={}){
   const subj=normalizeDetectionText(subject),c=cleanChildText(concept||focus||"el tema actual"),cn=normalizeDetectionText(c);
   if(/matem/.test(subj)&&/divis/.test(cn))return nextDivisionQuestion({difficulty,questionNumber,previousQuestion,focus:focus||c});
   if(/matem/.test(subj)&&/fraccion/.test(cn))return nextFractionQuestion({difficulty,questionNumber,previousQuestion});
-  if(/matem/.test(subj))return `Resuelve un ejemplo concreto de ${c}: escribe la operación o el procedimiento y su resultado.`;
+  if(/matem/.test(subj)&&/multiplic|producto|tablas/.test(cn))return nextMultiplicationQuestion({difficulty,questionNumber,previousQuestion});
+  if(/matem/.test(subj))return `Resuelve esta pregunta concreta sobre ${c}: ¿cuál es el siguiente resultado o paso que corresponde?`;
   if(/hist|social|geograf/.test(subj))return `¿Cuál es una causa, consecuencia o idea clave de ${c} que deberías recordar?`;
   if(/lengua|literatura|ingles|inglés|idioma/.test(subj))return `¿Cómo explicarías con tus palabras una idea clave de ${c} y qué ejemplo breve pondrías?`;
   if(/ciencias|biolog|fisic|físic|quim|quím/.test(subj))return `¿Qué mecanismo o relación principal explica ${c}?`;
@@ -708,12 +727,25 @@ async function handleChat(request,env,auth){
     reply=status==="needs_clarification"?cleanChildText(v.data.corrected_reply||"Necesito un poco más de información para ayudarte bien."):cleanChildText(v.data.corrected_reply||verificationFallbackForMode(mode))
   }
   const concept=tutorData.concept||effectiveConcept,subject=curricularSubject(tutorData.subject||effectiveSubject,concept,text,ctx.profile,scope.domain)||(tutorData.subject||effectiveSubject),conceptId=curriculum?.[0]?.id||null,rawAssessment=status==="verified"?tutorData.student_answer_assessment:"not_applicable",nonEvaluable=["answer_to_offer","invalid_short_answer","confusion_request","simplification_request","technical_request","example_request","detail_request","why_request","continuation_request","acknowledgement"],assessment=nonEvaluable.includes(turnRel)?"not_applicable":rawAssessment;
-  if(status==="verified"&&assessment!=="correct"&&Number(tutorData.help_level)<=2&&["review","homework","exam"].includes(mode)&&mathCheck?.type==="arithmetic"&&(containsStandaloneNumber(reply,mathCheck.result)||containsStandaloneNumber(practiceSuggestion,mathCheck.result))){const safe=safeMathHint(mathCheck,mode);if(safe){reply=safe.reply;practiceSuggestion=safe.practice;status="verified"}}
+  if(status==="verified"&&assessment!=="correct"&&Number(tutorData.help_level)<=2&&["review","homework","exam","practice"].includes(mode)&&mathCheck?.type==="arithmetic"&&(containsStandaloneNumber(reply,mathCheck.result)||containsStandaloneNumber(practiceSuggestion,mathCheck.result))){const safe=safeMathHint(mathCheck,mode);if(safe){reply=safe.reply;practiceSuggestion=safe.practice;status="verified"}}
   if(mode==="exam"||mode==="practice")practiceSuggestion=null;
   if(status==="verified"&&assessment!=="not_applicable"){try{await Promise.all([applyStudentMemory(env,uid,{subject,concept,conceptId,outcome:assessment,help:tutorData.help_level}),applyMasteryOutcome(env,uid,conceptId,{outcome:assessment,help:tutorData.help_level}),learnPrev(env,uid,{history,pedState:incomingPedState,subject,turnRel,assessment})])}catch(e){}}
   const webUsage=externalEvidence?.usage||{};await Promise.all([logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:status,subject,concept,help:tutorData.help_level,modelRoute:`${env.TUTOR_MODEL||"gpt-5.4-mini"}+verify${externalEvidence?"+"+externalEvidence.kind+"-web":""}`,mode,strategy:tutorData.strategy_used,visionConfidence:vision?.confidence}),bumpUsage(env,uid,{input_tokens:Number(t.usage?.input_tokens||0)+Number(firstVerifyUsage.input_tokens||0)+Number(webUsage.input_tokens||0),output_tokens:Number(t.usage?.output_tokens||0)+Number(firstVerifyUsage.output_tokens||0)+Number(webUsage.output_tokens||0)},Boolean(image))]);
-  const turnAct=status==="verified"?singleStudentAct({mode,reply,tutorData,turnRel,incoming:incomingPedState,assessment}):{reply,display_check:null,pending_question:null};reply=turnAct.reply;
+  const turnAct=status==="verified"?singleStudentAct({mode,reply,tutorData,turnRel,incoming:incomingPedState,assessment}):{reply,display_check:null,pending_question:null};reply=normalizeStudentNameCaseWorker(turnAct.reply,ctx.base?.apodo||ctx.profile?.apodo||"");
   let finalCheck=turnAct.display_check,pendingQuestion=turnAct.pending_question,questionCountsAsNew=Boolean(pendingQuestion);
+
+  if(status==="verified"&&mode==="review"&&turnRel==="answer_to_pending"&&assessment==="correct"&&pendingMathCheck?.type==="arithmetic"&&simpleArithmeticReviewHistory(history)){
+    reply=`Bien. ${pendingMathCheck.expression} = ${pendingMathCheck.result}. Ya has corregido el error.`;
+    finalCheck=null;pendingQuestion=null;questionCountsAsNew=false;
+    tutorData={...tutorData,check_question:null,conversation_stage:"complete",tutor_act:"correct"}
+  }
+
+  if(status==="verified"&&["ask","explain"].includes(mode)&&!pendingQuestion&&incomingPedState.turn_index===0&&!["confusion_request","simplification_request","technical_request"].includes(turnRel)){
+    reply=stripTrailingOfferQuestion(reply);
+    const label=cleanChildText(concept||effectiveConcept||"este tema");
+    pendingQuestion=mode==="explain"?`Con tus palabras, ¿qué significa ${label}?`:`Para comprobarlo: ¿cuál es la idea principal que acabas de aprender sobre ${label}?`;
+    finalCheck=pendingQuestion;questionCountsAsNew=false
+  }
   if(status==="verified"&&["exam","practice"].includes(mode)&&turnRel==="answer_to_pending"&&assessment!=="not_applicable"&&!pendingQuestion){
     if(mode==="practice"&&["incorrect","partial"].includes(assessment)&&incomingPedState.pending_question){
       pendingQuestion=incomingPedState.pending_question;questionCountsAsNew=false;finalCheck=null;
