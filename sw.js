@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.90.3.2 MIC UNIFICADO · HF1 preservado */
-const CACHE_VERSION="coco-en-forma-v160.90.3.2-mic-unificado-v1";
+/* Coco en Forma · Service Worker v160.90.4 FINAL REGRESSION · HF1 preservado */
+const CACHE_VERSION="coco-en-forma-v160.90.4-final-regression-v1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
