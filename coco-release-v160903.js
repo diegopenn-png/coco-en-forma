@@ -1,5 +1,5 @@
-/* COCO EN FORMA / ETERNA · v160.90.4.1 HOTFIX · UI CONSOLIDADA
- * Base auditada: main@6572d3c9c79d3a5d5ded777194def171578f5731
+/* COCO EN FORMA / ETERNA · v160.90.4.2 HOTFIX · UI CONSOLIDADA
+ * Base auditada: v160.90.4.1 desplegada en GitHub Pages #319
  *
  * Alcance:
  * 1) Trial ETERNA finalizado -> pantalla directa de planes sin volver al PIN.
@@ -9,6 +9,7 @@
  * 5) Zona Familiar -> respeta implementación activa; no carga ni reactiva scripts históricos.
  * 6) Escuchar -> observador idempotente, sin bucle al mostrar la respuesta.
  * 7) Inicio vertical -> safe area inmediata y cabecera compacta sin giro previo.
+ * 8) Acceso -> el aviso de instalación respeta la zona segura antes de iniciar sesión.
  *
  * NO toca Worker ETERNA, Supabase schema, Stripe backend, Safety, School Scope,
  * atribución, puntuaciones, rankings, límites diarios ni memoria pedagógica.
@@ -18,7 +19,7 @@
   if(root.__COCO_PRODUCT_UX_160903__)return;
   root.__COCO_PRODUCT_UX_160903__=true;
 
-  var VERSION="160.90.4.1-hotfix-observer-layout";
+  var VERSION="160.90.4.2-hotfix-safe-login";
   var subscriptionCache={at:0,value:null,session:null,promise:null};
   var FAMILY_RETRY=[80,260,700,1400];
   var ETERNA_RETRY=[0,60,220,650,1200,2200];
@@ -589,7 +590,7 @@
       ".coco160904FamilySpinner{display:block;width:26px;height:26px;margin:0 auto 13px;border:3px solid #d9edf5;border-top-color:#2fa9dc;border-radius:50%;animation:cocoFamilySpin160904 .8s linear infinite}",
       "@keyframes cocoFamilySpin160904{to{transform:rotate(360deg)}}",
       ".coco160904ExitSafe{min-width:48px!important;min-height:48px!important;touch-action:manipulation!important}",
-      "@media(max-width:820px){html body #cocoApp.cocoVistaJugador{padding-top:max(7px,env(safe-area-inset-top))!important}html body #cocoApp.cocoVistaJugador>#cocoInstallEntryV158{margin:0 auto 12px!important}html body #cocoApp.cocoVistaJugador>.cabecera{height:auto!important;min-height:0!important;margin:0 0 14px!important;padding:0!important;align-items:center!important}html body #cocoApp.cocoVistaJugador>.cabecera>.fin{min-height:0!important;margin-left:auto!important;padding:0!important;align-items:center!important}html body #cocoApp.cocoVistaJugador>.cabecera>.fin>.btn{position:static!important;inset:auto!important;margin:0!important;min-width:48px!important;min-height:48px!important}}",
+      "@media(max-width:820px){html body #cocoApp{padding-top:max(7px,env(safe-area-inset-top))!important}html body #cocoApp>#cocoInstallEntryV158{margin:0 auto 12px!important}html body #cocoApp.cocoVistaJugador>.cabecera{height:auto!important;min-height:0!important;margin:0 0 14px!important;padding:0!important;align-items:center!important}html body #cocoApp.cocoVistaJugador>.cabecera>.fin{min-height:0!important;margin-left:auto!important;padding:0!important;align-items:center!important}html body #cocoApp.cocoVistaJugador>.cabecera>.fin>.btn{position:static!important;inset:auto!important;margin:0!important;min-width:48px!important;min-height:48px!important}}",
       "#eternaOverlayV159[data-coco-exam-mode='1'] [data-et-understood]{display:none!important}",
       "#eternaOverlayV159[data-coco-exam-mode='1'] [data-et-listen]{min-width:118px!important}",
       "@media(prefers-reduced-motion:reduce){.coco160904FamilySpinner{animation:none!important}}",
