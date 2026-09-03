@@ -43,9 +43,13 @@ jobs:
           response="$(curl --fail --silent --show-error \
             --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
             --header "Content-Type: application/json" \
-            https://api.cloudflare.com/client/v4/accounts)"
+            https://api.cloudflare.com/client/v4/memberships)"
           account_id="$(printf '%s' "$response" | jq -er \
-            '.result | select(length == 1) | .[0].id')"
+            '.result
+             | map(select(.status == "accepted") | .account.id)
+             | unique
+             | select(length == 1)
+             | .[0]')"
           echo "CLOUDFLARE_ACCOUNT_ID=${account_id}" >> "$GITHUB_ENV"
 
       - name: Install Worker tooling
@@ -61,7 +65,7 @@ jobs:
         shell: bash
         run: |
           npx wrangler versions upload \
-            --name 0-final-service \
+            --name coco-eterna-v159 \
             --keep-vars | tee preview-upload.log
           {
             echo "## Eterna Worker preview"
