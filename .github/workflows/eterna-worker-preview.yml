@@ -42,12 +42,21 @@ jobs:
             exit 1
           fi
 
+          clean_token="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          if [[ -z "$clean_token" ]]; then
+            echo "CLOUDFLARE_API_TOKEN contains no usable token value" >&2
+            exit 1
+          fi
+          echo "::add-mask::$clean_token"
+          echo "CLOUDFLARE_API_TOKEN=${clean_token}" >> "$GITHUB_ENV"
+
           account_id="${CLOUDFLARE_ACCOUNT_INPUT#https://dash.cloudflare.com/}"
           account_id="${account_id%%/*}"
           if [[ ! "$account_id" =~ ^[0-9a-fA-F]{32}$ ]]; then
             echo "CLOUDFLARE_ACCOUNT_ID must contain a 32-character account ID or a Cloudflare dashboard URL" >&2
             exit 1
           fi
+          echo "::add-mask::$account_id"
           echo "CLOUDFLARE_ACCOUNT_ID=${account_id}" >> "$GITHUB_ENV"
 
       - name: Install Worker tooling
