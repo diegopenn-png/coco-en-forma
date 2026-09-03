@@ -111,15 +111,16 @@
       if(!isChat)return baseFetch(input,init);
       var body=parseChatInit(init);if(!body)return baseFetch(input,init);
       var mode=String(body.mode||'homework');
+      var canonicalState=body.client_state_contract>=2;
 
       /* Defense in depth: a new mode must never inherit a pending question. */
-      if(forceFreshNext||(lastChatMode!==null&&mode!==lastChatMode)){
+      if(!canonicalState&&(forceFreshNext||(lastChatMode!==null&&mode!==lastChatMode))){
         delete body.pedagogical_state;body.history=[];pendingByMode[mode]=null;clearPedagogicalState();forceFreshNext=false
       }
       lastChatMode=mode;
       strengthenSimplify(body);
 
-      var pending=pendingByMode[mode]||null,expected=pending&&mathExpected(pending.question),answerText=answerFromBodyText(body.text),answer=parseRational(answerText);
+      var pending=canonicalState?null:(pendingByMode[mode]||null),expected=pending&&mathExpected(pending.question),answerText=answerFromBodyText(body.text),answer=parseRational(answerText);
 
       /* "Sí"/"No" is not a numeric result. Do not mark it wrong or alter progress. */
       if(pending&&expected&&isBareYesNo(answerText)){
@@ -149,9 +150,9 @@
         }
       }
 
-      if(data.check_question){
+      if(!canonicalState&&data.check_question){
         pendingByMode[mode]={question:clean(data.check_question),pedagogical_state:data.pedagogical_state&&typeof data.pedagogical_state==='object'?data.pedagogical_state:null,subject:data.subject||null,concept:data.concept||null,help_level:data.help_level}
-      }else if(String(data.student_answer_assessment||'')==='correct'||String(data.verification_status||'')==='blocked_out_of_scope'){
+      }else if(!canonicalState&&(String(data.student_answer_assessment||'')==='correct'||String(data.verification_status||'')==='blocked_out_of_scope')){
         pendingByMode[mode]=null
       }
       return responseJson(data,response.status)

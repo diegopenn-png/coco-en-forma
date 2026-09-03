@@ -1,12 +1,15 @@
 {
   "name": "coco-eterna-worker-v159",
   "private": true,
-  "version": "159.0.0",
+  "version": "160.91.0",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "check": "node --check src/index.js"
+    "upload:preview": "wrangler versions upload",
+    "rollback:production": "wrangler rollback",
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/index.js && node --test test/*.test.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
