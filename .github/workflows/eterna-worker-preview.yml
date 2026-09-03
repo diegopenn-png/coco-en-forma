@@ -9,6 +9,7 @@ on:
       - "fix/eterna-homework-wording-160912"
       - "fix/eterna-homework-equivalence-160913"
       - "fix/eterna-review-retry-160914"
+      - "fix/eterna-exam-incorrect-wording-160915"
     paths:
       - "eterna-worker/**"
       - ".github/workflows/eterna-worker-preview.yml"

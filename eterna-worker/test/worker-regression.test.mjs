@@ -168,6 +168,8 @@ test("fraction comparisons are graded mathematically and counters stay coherent"
   const ped = { active_subject: "Matemáticas", active_concept: "comparar fracciones", pending_question: "¿Cuál es mayor: 4/7 o 4/9?", expected_answer_type: "short_concept", turn_index: 2 };
   const wrong = api.deterministicAdaptiveFractionTurn({ mode: "exam", text: "4/9", turnRel: "answer_to_pending", incomingModeState: base, incomingPedState: ped, subject: "Matemáticas", concept: "comparar fracciones" });
   assert.equal(wrong.student_answer_assessment, "incorrect");
+  assert.match(wrong.reply, /^Incorrecto\./);
+  assert.doesNotMatch(wrong.reply, /No del todo/i);
   assert.match(wrong.reply, /4\/7/);
   assert.equal(wrong.mode_state.correct_count, 1);
   assert.equal(wrong.mode_state.incorrect_count, 1);
@@ -178,6 +180,15 @@ test("fraction comparisons are graded mathematically and counters stay coherent"
   assert.equal(right.student_answer_assessment, "correct");
   assert.equal(right.mode_state.correct_count, 2);
   assert.equal(right.mode_state.incorrect_count, 0);
+});
+
+test("Exam labels objectively wrong arithmetic answers as incorrect", () => {
+  const base = { question_number: 1, correct_count: 0, partial_count: 0, incorrect_count: 0, difficulty: 2, focus: "multiplicaciones" };
+  const ped = { active_subject: "Matemáticas", active_concept: "multiplicaciones", pending_question: "¿Cuánto es 7 × 5?", expected_answer_type: "numeric", turn_index: 1 };
+  const result = api.deterministicAdaptiveArithmeticTurn({ mode: "exam", text: "30", turnRel: "answer_to_pending", incomingModeState: base, incomingPedState: ped, subject: "Matemáticas", concept: "multiplicaciones" });
+  assert.equal(result.student_answer_assessment, "incorrect");
+  assert.match(result.reply, /^Incorrecto:/);
+  assert.doesNotMatch(result.reply, /No del todo/i);
 });
 
 test("fraction comparison understands greater and lesser prompts", () => {
