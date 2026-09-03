@@ -186,7 +186,7 @@ test("practice keeps the requested multiplication table as difficulty changes", 
 });
 
 test("homework fraction mistakes keep the scaffold and never reveal the final answer", () => {
-  const pending = "¿Cuál es la fracción equivalente a 3/4 con denominador 8?";
+  const pending = "¿En cuántas octavas partes equivale 3/4?";
   const result = api.deterministicHomeworkFractionRetry({ mode: "homework", text: "5/8", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Matemáticas", active_concept: "suma de fracciones", pending_question: pending, turn_index: 1 }, subject: "Matemáticas", concept: "suma de fracciones" });
   assert.equal(result.student_answer_assessment, "incorrect");
   assert.equal(result.check_question, pending);
