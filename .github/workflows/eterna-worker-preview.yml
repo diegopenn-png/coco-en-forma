@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "fix/eterna-six-modes-state-machine-20260903"
+      - "fix/eterna-pedagogy-audit-160911"
     paths:
       - "eterna-worker/**"
       - ".github/workflows/eterna-worker-preview.yml"
