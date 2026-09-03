@@ -1,0 +1,71 @@
+name: Eterna Worker preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "fix/eterna-six-modes-state-machine-20260903"
+    paths:
+      - "eterna-worker/**"
+      - ".github/workflows/eterna-worker-preview.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eterna-worker-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  upload-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Cloudflare secret
+        shell: bash
+        run: |
+          if [[ -z "${CLOUDFLARE_API_TOKEN:-}" ]]; then
+            echo "CLOUDFLARE_API_TOKEN is not configured" >&2
+            exit 1
+          fi
+
+      - name: Resolve the single authorized Cloudflare account
+        shell: bash
+        run: |
+          response="$(curl --fail --silent --show-error \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            --header "Content-Type: application/json" \
+            https://api.cloudflare.com/client/v4/accounts)"
+          account_id="$(printf '%s' "$response" | jq -er \
+            '.result | select(length == 1) | .[0].id')"
+          echo "CLOUDFLARE_ACCOUNT_ID=${account_id}" >> "$GITHUB_ENV"
+
+      - name: Install Worker tooling
+        working-directory: eterna-worker
+        run: npm install
+
+      - name: Run Worker regression
+        working-directory: eterna-worker
+        run: npm run check
+
+      - name: Upload versioned preview without production traffic
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          npx wrangler versions upload \
+            --name 0-final-service \
+            --keep-vars | tee preview-upload.log
+          {
+            echo "## Eterna Worker preview"
+            echo '```text'
+            cat preview-upload.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
