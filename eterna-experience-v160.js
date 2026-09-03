@@ -1140,7 +1140,7 @@
       var b=JSON.parse(init.body);
       if(b&&typeof b==="object"){
         if(voiceSendPending)b.input_source="voice";
-        if(lastPedagogicalState&&typeof lastPedagogicalState==="object")b.pedagogical_state=lastPedagogicalState;
+        if(!b.pedagogical_state&&lastPedagogicalState&&typeof lastPedagogicalState==="object")b.pedagogical_state=lastPedagogicalState;
         voiceSendPending=false;
         var next=Object.assign({},init,{body:JSON.stringify(b)});
         return{input:input,init:next}

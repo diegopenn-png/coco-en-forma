@@ -10,9 +10,10 @@
 (function(){
   "use strict";
 
-  var VERSION="160.90.2-fraction-flow";
+  var VERSION="160.91.0-six-modes-state-machine";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
+  var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
   var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres.";
 
   var MODE_CONFIG={
@@ -28,7 +29,7 @@
     client:null,session:null,profile:null,baseProfile:null,subscription:null,parentSettings:null,
     learningMemory:[],strategyMemory:[],history:[],imageData:null,imageName:"",mode:"homework",
     modeState:{question_number:0,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null},
-    conversationState:null,
+    conversationState:null,pedagogicalState:null,learningSessionUser:null,
     busy:false,recorder:null,chunks:[],lastSpeechUrl:null,lastReply:"",lastAudio:null,inputSource:"text",
     dataLoadedAt:0,secondaryLoadedAt:0
   };
@@ -51,8 +52,16 @@
   function endpoint(path){var base=String(cfg().eternaEndpoint||"").replace(/\/+$/,""),p=String(path||"");return base?base+(p.charAt(0)==="/"?p:"/"+p):""}
   function freshModeState(){return{question_number:0,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null}}
   function freshConversationState(){return{current_topic:null,subject:null,concept:null,student_intent:null,tutor_act:null,expected_student_act:null,explained_points:[],known_points:[],unresolved_question:null,confusion_level:0,help_level:1,last_question_type:null,strategy_used:null,next_teaching_goal:null,last_user_intent:null}}
+  function freshPedagogicalState(mode){return{active_topic:null,active_subject:null,active_concept:null,current_mode:mode||state.mode||"homework",pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:1,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"starting",turn_index:0,last_tutor_act:"none",explained_points:[],known_points:[],unresolved_question:null,expected_student_act:"none",last_question_type:"none",next_teaching_goal:null,confusion_count:0,simplification_level:0,last_student_intent:"none"}}
+  function sessionUserId(){return state.session&&state.session.user&&state.session.user.id?String(state.session.user.id):""}
+  function boundedObject(value,fallback){if(!value||typeof value!=="object"||Array.isArray(value))return fallback;try{return JSON.parse(JSON.stringify(value))}catch(e){return fallback}}
+  function clearLearningSession(){try{sessionStorage.removeItem(LEARNING_SESSION_KEY)}catch(e){}state.learningSessionUser=null}
+  function resetAccountLearningState(){clearLearningSession();state.history=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.pedagogicalState=freshPedagogicalState(state.mode);state.lastReply="";clearImage();stopAudio()}
+  function persistLearningSession(){var uid=sessionUserId();if(!uid)return;var payload={version:2,user_id:uid,mode:state.mode,modeState:boundedObject(state.modeState,freshModeState()),conversationState:boundedObject(state.conversationState,freshConversationState()),pedagogicalState:boundedObject(state.pedagogicalState,freshPedagogicalState(state.mode)),saved_at:Date.now()};try{sessionStorage.setItem(LEARNING_SESSION_KEY,JSON.stringify(payload));state.learningSessionUser=uid}catch(e){}}
+  function restoreLearningSession(){var uid=sessionUserId();if(!uid)return false;if(state.learningSessionUser===uid)return true;state.learningSessionUser=uid;var saved=null;try{saved=JSON.parse(sessionStorage.getItem(LEARNING_SESSION_KEY)||"null")}catch(e){}if(!saved||saved.version!==2||saved.user_id!==uid||!MODE_CONFIG[saved.mode]||Date.now()-Number(saved.saved_at||0)>12*60*60*1000){clearLearningSession();state.learningSessionUser=uid;return false}state.mode=saved.mode;state.modeState=boundedObject(saved.modeState,freshModeState());state.conversationState=boundedObject(saved.conversationState,freshConversationState());state.pedagogicalState=boundedObject(saved.pedagogicalState,freshPedagogicalState(state.mode));var q=cleanText(state.pedagogicalState.pending_question||"");if(q&&!state.history.length){state.history.push({role:"assistant",text:"Retomamos la actividad donde la dejaste.",meta:{check_question:q,verification_status:"verified",tutor_act:state.pedagogicalState.last_tutor_act||null,expected_student_act:"answer"}})}return true}
   function preferredStudentName(){return displayUserName((state.baseProfile&&state.baseProfile.apodo)||(state.profile&&state.profile.apodo)||"").split(/\s+/)[0].slice(0,32)}
   state.conversationState=freshConversationState();
+  state.pedagogicalState=freshPedagogicalState(state.mode);
   function conversationNorm(v){return cleanText(v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
   function pushUnique(list,value,max){value=cleanText(value);if(!value)return list||[];var out=(list||[]).filter(function(x){return conversationNorm(x)!==conversationNorm(value)});out.push(value);return out.slice(-Math.max(1,Number(max||8)))}
   function lastAssistantTurn(){for(var i=state.history.length-1;i>=0;i--)if(state.history[i].role==="assistant")return state.history[i];return null}
@@ -148,7 +157,7 @@
 
   async function refreshSession(){
     var cli=client();if(!cli)return null;
-    try{var r=await cli.auth.getSession();state.session=r&&r.data?r.data.session:null;return state.session}catch(e){return null}
+    try{var old=sessionUserId(),r=await cli.auth.getSession(),next=r&&r.data?r.data.session:null,nextId=next&&next.user&&next.user.id?String(next.user.id):"";if(old&&old!==nextId)resetAccountLearningState();state.session=next;return state.session}catch(e){return null}
   }
 
   function tester(){
@@ -466,7 +475,7 @@
   }
 
   function syncModeButtons(){var o=overlay();o.querySelectorAll("[data-et-mode]").forEach(function(x){x.classList.toggle("is-active",x.dataset.etMode===state.mode)});o.querySelectorAll("[data-et-modechoice]").forEach(function(x){x.classList.toggle("is-active",x.dataset.etModechoice===state.mode)})}
-  function resetVisibleSession(){state.history=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.lastReply="";state.inputSource="text";clearImage();stopAudio();var o=overlay(),i=o.querySelector("[data-et-input]");if(i)i.value="";renderConversation(o.querySelector("[data-et-chat]"))}
+  function resetVisibleSession(){state.history=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.pedagogicalState=freshPedagogicalState(state.mode);state.lastReply="";state.inputSource="text";clearImage();stopAudio();persistLearningSession();var o=overlay(),i=o.querySelector("[data-et-input]");if(i)i.value="";renderConversation(o.querySelector("[data-et-chat]"))}
   function setMode(mode,focusInput){if(!MODE_CONFIG[mode])mode="homework";var changed=mode!==state.mode;state.mode=mode;try{localStorage.setItem("coco_eterna_mode_v160",mode)}catch(e){}if(changed)resetVisibleSession();syncModeButtons();renderModeBar();setPlaceholder();setStatus((changed?"Nueva actividad · ":"")+MODE_CONFIG[state.mode].label,"ok");if(focusInput!==false){var i=overlay().querySelector("[data-et-input]");if(i)i.focus()}}
   function showModePicker(){var o=overlay(),sheet=o.querySelector("[data-et-modesheet]"),choices=o.querySelector("[data-et-modechoices]");if(!sheet||!choices)return;choices.innerHTML='<div class="eternaV160ModeNote">Al cambiar de modo empezamos una actividad nueva. Tu progreso y lo que Eterna ha aprendido sobre ti se conservan.</div>'+Object.keys(MODE_CONFIG).map(function(k){var m=MODE_CONFIG[k];return '<button type="button" class="eternaV160ModeChoice '+(k===state.mode?"is-active":"")+'" data-et-modechoice="'+k+'"><i>'+m.icon+'</i><span><strong>'+esc(m.label)+'</strong><small>'+esc(m.description)+'</small></span></button>'}).join("");choices.querySelectorAll("[data-et-modechoice]").forEach(function(b){b.onclick=function(){setMode(b.dataset.etModechoice,false);hideModePicker();var i=o.querySelector("[data-et-input]");if(i)i.focus()}});sheet.classList.add("is-open");sheet.setAttribute("aria-hidden","false")}
   function hideModePicker(){var sheet=overlay().querySelector("[data-et-modesheet]");if(sheet){sheet.classList.remove("is-open");sheet.setAttribute("aria-hidden","true")}}
@@ -489,7 +498,7 @@
   function renderModeBar(){
     var o=overlay(),m=MODE_CONFIG[state.mode]||MODE_CONFIG.homework,bar=o.querySelector("[data-et-modebar]"),ms=state.modeState||{},progress="";
     if(state.mode==="exam"&&Number(ms.question_number||0)>0)progress='<span class="eternaV160ModeProgress">Pregunta '+esc(ms.question_number)+' · Aciertos '+esc(ms.correct_count||0)+' · Por revisar '+esc((ms.partial_count||0)+(ms.incorrect_count||0))+' · Nivel '+esc(ms.difficulty||2)+'</span>';
-    else if(state.mode==="practice"&&ms.focus)progress='<span class="eternaV160ModeProgress">Reforzando: '+esc(ms.focus)+'</span>';
+    else if(state.mode==="practice"&&(Number(ms.question_number||0)>0||ms.focus))progress='<span class="eternaV160ModeProgress">Ejercicio '+esc(ms.question_number||0)+' · Aciertos '+esc(ms.correct_count||0)+' · Errores '+esc((ms.partial_count||0)+(ms.incorrect_count||0))+' · Nivel '+esc(ms.difficulty||2)+(ms.focus?' · Reforzando '+esc(ms.focus):'')+'</span>';
     if(bar){bar.innerHTML='<span class="eternaV160ModeIcon">'+m.icon+'</span><span><b>Modo: '+esc(m.label)+'</b><small>'+esc(m.description)+'</small>'+progress+'</span><button type="button" class="eternaV160ChangeMode" data-et-changemode>Cambiar modo</button>';bar.querySelector("[data-et-changemode]").onclick=showModePicker}
     syncModeButtons()
   }
@@ -505,7 +514,7 @@
     perfMeasure("eterna_click_to_overlay","eterna_open_click","eterna_overlay_visible");
     try{var saved=localStorage.getItem("coco_eterna_mode_v160");if(MODE_CONFIG[saved])state.mode=saved}catch(e){}
     setStatus("Comprobando tu cuenta…","");
-    await loadData(false);setIdentity();render();renderModeBar();
+    await loadData(false);restoreLearningSession();setIdentity();render();renderModeBar();
     requestAnimationFrame(function(){var i=o.querySelector("[data-et-input]");if(i&&activeSubscription()&&state.profile)i.focus()})
   }
 
@@ -602,13 +611,13 @@
     state.busy=true;input.disabled=true;o.querySelector("[data-et-send]").disabled=true;
     var apiHistory=historyForApi(),shown=rawText||"He adjuntado una foto de mi tarea.";appendMessage("user",shown,null,true);state.history.push({role:"user",text:shown,api_text:turn.text||shown,meta:{student_intent:turn.intent}});input.value="";setStatus("Eterna está pensando y comprobando…","warn");
     try{
-      var source=state.imageData&&!rawText?"image":state.inputSource||"text",directive=repetitionDirective(turn),body={text:(turn.text||rawText)||"Analiza esta imagen como tarea escolar. Primero identifica qué está impreso, qué hueco debe completar el alumno y solo después dame una pista.",mode:state.mode,mode_state:state.modeState||freshModeState(),input_source:source,image_data_url:state.imageData||null,history:apiHistory,conversation_state:state.conversationState||freshConversationState(),student_intent:turn.intent||null,tutor_directive:turn.directive||null,repetition_guard:directive||null,client_version:VERSION};
+      var source=state.imageData&&!rawText?"image":state.inputSource||"text",directive=repetitionDirective(turn),body={text:(turn.text||rawText)||"Analiza esta imagen como tarea escolar. Primero identifica qué está impreso, qué hueco debe completar el alumno y solo después dame una pista.",mode:state.mode,mode_state:state.modeState||freshModeState(),input_source:source,image_data_url:state.imageData||null,history:apiHistory,conversation_state:state.conversationState||freshConversationState(),pedagogical_state:state.pedagogicalState||freshPedagogicalState(state.mode),client_state_contract:2,student_intent:turn.intent||null,tutor_directive:turn.directive||null,repetition_guard:directive||null,client_version:VERSION};
       var r=await api("/v1/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}),data=await safeJson(r);
       if(!r.ok){if(data&&data.error==="ETERNA_DAILY_LIMIT")throw new Error("ETERNA_DAILY_LIMIT");throw new Error(data&&data.error?data.error:"No se pudo obtener respuesta.")}
       var reply=cleanText(data.reply||"Necesito que me enseñes mejor el enunciado para poder ayudarte sin inventar nada."),meta={verification_status:data.verification_status||"needs_clarification",subject:cleanMetaText(data.subject),concept:cleanMetaText(data.concept),help_level:data.help_level,check_question:data.check_question||null,practice_suggestion:data.practice_suggestion||null,student_answer_assessment:data.student_answer_assessment||"not_applicable",strategy_used:data.strategy_used||null,mode_label:data.mode_label||null};
       var conv=updateConversationState(data,reply,turn,meta);meta.tutor_act=conv.tutor_act;meta.expected_student_act=conv.expected_student_act;meta.student_intent=turn.intent;
-      if(data.mode_state&&typeof data.mode_state==="object")state.modeState=data.mode_state;if(data.practice_target&&data.practice_target.concept&&state.mode==="practice")state.modeState.focus=data.practice_target.concept;
-      renderModeBar();appendMessage("assistant",reply,meta,true);state.history.push({role:"assistant",text:reply,meta:meta});state.lastReply=reply;if(data.verification_status==="verified"&&data.auto_speak===true)speak(reply,1);clearImage();state.inputSource="text";state.dataLoadedAt=0;setResultStatus(data)
+      if(data.mode_state&&typeof data.mode_state==="object")state.modeState=data.mode_state;if(data.pedagogical_state&&typeof data.pedagogical_state==="object")state.pedagogicalState=data.pedagogical_state;if(data.practice_target&&data.practice_target.concept&&state.mode==="practice")state.modeState.focus=data.practice_target.concept;
+      persistLearningSession();renderModeBar();appendMessage("assistant",reply,meta,true);state.history.push({role:"assistant",text:reply,meta:meta});state.lastReply=reply;if(data.verification_status==="verified"&&data.auto_speak===true)speak(reply,1);clearImage();state.inputSource="text";state.dataLoadedAt=0;setResultStatus(data)
     }catch(e){
       var msg=e&&e.message==="ETERNA_ENDPOINT_NOT_CONFIGURED"?"Eterna todavía necesita que configures su Worker.":e&&e.message==="ETERNA_DAILY_LIMIT"?"Has alcanzado el límite familiar de consultas de Eterna por hoy. Un adulto puede revisarlo en Zona familiar.":"Ahora no puedo comprobar esta tarea con suficiente seguridad. Prueba de nuevo dentro de un momento.";
       appendMessage("assistant",msg,{verification_status:"needs_clarification"},true);setStatus(e&&e.message==="ETERNA_DAILY_LIMIT"?"Límite diario alcanzado":"No se pudo verificar","warn")
@@ -752,7 +761,7 @@
     try{
       var r=await api("/v1/delete-data",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"DELETE");
       await restoreProtectedData(protectedProfile,protectedSettings);
-      state.history=[];state.learningMemory=[];state.strategyMemory=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.dataLoadedAt=0;invalidateFamilyLearningReport();await loadData(true);
+      state.history=[];state.learningMemory=[];state.strategyMemory=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.pedagogicalState=freshPedagogicalState(state.mode);clearLearningSession();state.dataLoadedAt=0;invalidateFamilyLearningReport();await loadData(true);
       button.textContent="Memoria borrada ✓";alert("La memoria pedagógica y los temas recordados por Eterna se han borrado. La cuenta, el curso, los controles familiares y la suscripción se conservan.");await injectFamilyCard(true)
     }catch(e){button.disabled=false;button.textContent=original;alert("No se pudo borrar la memoria de Eterna.")}
   }
@@ -1055,7 +1064,8 @@
     authWatcherInstalled=true;
     try{
       cli.auth.onAuthStateChange(function(event,session){
-        if(!session)return;
+        var old=sessionUserId(),nextId=session&&session.user&&session.user.id?String(session.user.id):"";if(old&&old!==nextId)resetAccountLearningState();
+        if(!session){state.session=null;return}
         state.session=session;state.dataLoadedAt=0;
         var pending=null;try{pending=JSON.parse(localStorage.getItem(RESUME_KEY)||"null")}catch(e){}
         if(pending&&Date.now()-Number(pending.at||0)<30*60*1000){

@@ -1,0 +1,82 @@
+name: Eterna Worker preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "fix/eterna-six-modes-state-machine-20260903"
+    paths:
+      - "eterna-worker/**"
+      - ".github/workflows/eterna-worker-preview.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eterna-worker-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  upload-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Cloudflare secrets
+        shell: bash
+        run: |
+          if [[ -z "${CLOUDFLARE_API_TOKEN:-}" ]]; then
+            echo "CLOUDFLARE_API_TOKEN is not configured" >&2
+            exit 1
+          fi
+          if [[ -z "${CLOUDFLARE_ACCOUNT_INPUT:-}" ]]; then
+            echo "CLOUDFLARE_ACCOUNT_ID is not configured" >&2
+            exit 1
+          fi
+
+          clean_token="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          if [[ -z "$clean_token" ]]; then
+            echo "CLOUDFLARE_API_TOKEN contains no usable token value" >&2
+            exit 1
+          fi
+          echo "::add-mask::$clean_token"
+          echo "CLOUDFLARE_API_TOKEN=${clean_token}" >> "$GITHUB_ENV"
+
+          account_id="${CLOUDFLARE_ACCOUNT_INPUT#https://dash.cloudflare.com/}"
+          account_id="${account_id%%/*}"
+          if [[ ! "$account_id" =~ ^[0-9a-fA-F]{32}$ ]]; then
+            echo "CLOUDFLARE_ACCOUNT_ID must contain a 32-character account ID or a Cloudflare dashboard URL" >&2
+            exit 1
+          fi
+          echo "::add-mask::$account_id"
+          echo "CLOUDFLARE_ACCOUNT_ID=${account_id}" >> "$GITHUB_ENV"
+
+      - name: Install Worker tooling
+        working-directory: eterna-worker
+        run: npm install
+
+      - name: Run Worker regression
+        working-directory: eterna-worker
+        run: npm run check
+
+      - name: Upload versioned preview without production traffic
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          npx wrangler versions upload \
+            --name coco-eterna-v159 \
+            --keep-vars | tee preview-upload.log
+          {
+            echo "## Eterna Worker preview"
+            echo '```text'
+            cat preview-upload.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
