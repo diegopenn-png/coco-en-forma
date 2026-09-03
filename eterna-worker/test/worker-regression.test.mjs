@@ -242,6 +242,19 @@ test("homework advances after a correct denominator factor instead of repeating 
   assert.doesNotMatch(wrong.reply, /6\/8|7\/8/);
 });
 
+test("homework returns to the original operation after a correct equivalent fraction", () => {
+  const history = [{ role: "user", text: "Tengo que resolver 3/4 + 1/8. No sé cómo empezar." }];
+  const equivalent = api.deterministicHomeworkFractionRetry({ mode: "homework", text: "6/8", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Matemáticas", active_concept: "suma de fracciones", pending_question: "¿Cuánto vale 3/4 en octavos?", turn_index: 2 }, subject: "Matemáticas", concept: "suma de fracciones", history });
+  assert.equal(equivalent.student_answer_assessment, "correct");
+  assert.equal(equivalent.check_question, "¿Cuánto es 6/8 + 1/8?");
+  assert.doesNotMatch(equivalent.reply, /simplific/i);
+
+  const completed = api.deterministicHomeworkFractionRetry({ mode: "homework", text: "7/8", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { ...equivalent.pedagogical_state, pending_question: equivalent.check_question }, subject: "Matemáticas", concept: "suma de fracciones", history: [...history, { role: "assistant", text: equivalent.reply }, { role: "user", text: "6/8" }] });
+  assert.equal(completed.student_answer_assessment, "correct");
+  assert.equal(completed.check_question, null);
+  assert.match(completed.reply, /Has resuelto el ejercicio/);
+});
+
 test("Ask and Explain promote embedded checks into explicit pending questions", () => {
   const initial = api.singleStudentAct({ mode: "ask", reply: "Los hemisferios reciben luz distinta. Microcomprobación: ¿qué hemisferio recibe más luz?", tutorData: { check_question: null }, turnRel: "continuation_request", incoming: { turn_index: 2 }, assessment: "not_applicable", studentText: "¿Por qué?" });
   assert.equal(initial.display_check, "¿qué hemisferio recibe más luz?");

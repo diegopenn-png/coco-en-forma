@@ -11,6 +11,7 @@ on:
       - "fix/eterna-review-retry-160914"
       - "fix/eterna-exam-incorrect-wording-160915"
       - "fix/eterna-physical-audit-160916"
+      - "fix/eterna-homework-thread-160917"
     paths:
       - "eterna-worker/**"
       - ".github/workflows/eterna-worker-preview.yml"
