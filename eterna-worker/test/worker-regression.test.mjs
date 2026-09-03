@@ -112,6 +112,21 @@ test("review verifies a corrected step instead of dragging the obsolete error", 
   assert.equal(recovered?.assessment, "correct");
 });
 
+test("review accepts a short corrected result for the pending arithmetic step", () => {
+  const history = [
+    { role: "user", text: "He escrito: 346 + 278 = 514. ¿Está bien?" },
+    { role: "user", text: "614" },
+  ];
+  const stillWrong = api.deterministicReviewGuard("614", history.slice(0, 1));
+  assert.equal(stillWrong?.assessment, "incorrect");
+  assert.match(stillWrong?.check_question || "", /resultado correcto/i);
+
+  const recovered = api.deterministicReviewGuard("624", history);
+  assert.equal(recovered?.assessment, "correct");
+  assert.equal(recovered?.check_question, null);
+  assert.match(recovered?.reply || "", /corregido el error/i);
+});
+
 test("micro-checks must be complete, distinct and answerable", () => {
   assert.equal(typeof api.validMicroCheck, "function");
   assert.equal(api.validMicroCheck("¿Cuánto es 7 × 8?", "7 × 8"), true);

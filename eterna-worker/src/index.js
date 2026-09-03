@@ -11,7 +11,7 @@
  */
 const OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tus padres y cuéntales lo que ocurre. Si no puedes acudir a ellos, busca a un responsable del colegio que pueda ayudarte en persona.";
-const VERSION="160.91.3-pedagogy-audit-fixes";
+const VERSION="160.91.4-pedagogy-audit-fixes";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -599,7 +599,8 @@ function deterministicReviewGuard(text,history=[]){
   if(/^\s*e\s+escrito\b/i.test(current))return{assessment:"incorrect",reply:"El primer error está al principio: «e» debe ser «he», porque es una forma del verbo haber: «He escrito…». Corrige solo eso primero.",check_question:"¿Cómo queda el comienzo con «he»?"};
   if(/edad\s+media/i.test(current)&&/empez(?:o|ó)\s+en\s+476/i.test(current)&&/(?:termin(?:o|ó)|acab(?:o|ó)|finaliz(?:o|ó))\s+en\s+1492/i.test(current))return{assessment:"correct",reply:"Correcto: según la convención escolar habitual en España, la Edad Media empezó en 476 y terminó en 1492.",check_question:null};
   if(/edad\s+media/i.test(joined)&&/empez(?:o|ó)\s+en\s+1492/i.test(joined))return{assessment:"incorrect",reply:"El primer error es la fecha de inicio: en la cronología escolar habitual de España, la Edad Media empezó en 476. Corrige primero ese dato; su final se sitúa en 1492.",check_question:"¿En qué año empezó la Edad Media según esta convención escolar?"};
-  const latestEquations=new Map();for(const eq of all.flatMap(reviewEquations))latestEquations.set(eq.key,eq);const equations=[...latestEquations.values()],firstBad=equations.find(x=>!x.correct);
+  const latestEquations=new Map();for(const eq of all.flatMap(reviewEquations))latestEquations.set(eq.key,eq);const equations=[...latestEquations.values()],firstBad=equations.find(x=>!x.correct),currentValue=reviewRational(current);
+  if(firstBad&&currentValue!=null&&Number.isFinite(firstBad.expected)&&Math.abs(currentValue-firstBad.expected)<1e-9&&!reviewEquations(current).length)return{assessment:"correct",reply:`Correcto: ${current.trim()} es el resultado de esa operación. Ya has corregido el error.`,check_question:null};
   if(firstBad){const fraction=/\//.test(firstBad.raw);return{assessment:"incorrect",reply:fraction?"El primer error está en la operación con fracciones: necesitas un denominador común; no se suman los denominadores. Corrige únicamente ese paso y vuelve a enseñármelo.":`El primer error está en «${firstBad.raw}»: ese resultado no conserva la operación. Revisa solo ese paso y vuelve a intentarlo.`,check_question:fraction?"¿Qué denominador común puedes usar primero?":"¿Cuál es el resultado correcto de ese paso?"}}
   if(equations.length&&/\b(?:todo correcto|veredicto final|esta todo correcto|está todo correcto|ahora esta bien|ahora está bien|comprueb\w*|revis\w*|corrijo|corregido)\b/.test(s))return{assessment:"correct",reply:"Sí, está todo correcto: las operaciones y la comprobación son equivalentes y llegan al mismo resultado.",check_question:null};
   return null
