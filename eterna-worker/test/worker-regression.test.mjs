@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 
 const source = readFileSync(new URL("../src/index.js", import.meta.url), "utf8");
+const executableSource = source.replace(/\nexport default\s*\{[\s\S]*?\};\s*$/, "");
 const sandbox = {
   console,
   URL,
@@ -20,7 +21,7 @@ const sandbox = {
   addEventListener() {},
 };
 vm.createContext(sandbox);
-vm.runInContext(`${source}\n;globalThis.__eternaTest = {
+vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   clearNonAcademicIntent,
   turnRelation,
   isDontKnow: typeof isDontKnow === "function" ? isDontKnow : null,
@@ -33,6 +34,11 @@ vm.runInContext(`${source}\n;globalThis.__eternaTest = {
 };`, sandbox);
 
 const api = sandbox.__eternaTest;
+
+test("Worker uses the ES Modules entry point required for versioned previews", () => {
+  assert.match(source, /export default\s*\{/);
+  assert.doesNotMatch(source, /addEventListener\s*\(\s*["']fetch["']/);
+});
 
 test("School Scope blocks explicit entertainment while preserving school context", () => {
   assert.equal(api.clearNonAcademicIntent("Ahora cuéntame un chiste de videojuegos."), true);

@@ -5,9 +5,10 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 
 const source = readFileSync(new URL("../src/index.js", import.meta.url), "utf8");
+const executableSource = source.replace(/\nexport default\s*\{[\s\S]*?\};\s*$/, "");
 const sandbox = { console, URL, Request, Response, Headers, TextEncoder, TextDecoder, crypto: webcrypto, fetch, setTimeout, clearTimeout, addEventListener() {} };
 vm.createContext(sandbox);
-vm.runInContext(`${source}\n;globalThis.__matrix={deterministicMath,safeMathHint,turnRelation,deterministicReviewGuard,deterministicAdaptiveArithmeticTurn};`, sandbox);
+vm.runInContext(`${executableSource}\n;globalThis.__matrix={deterministicMath,safeMathHint,turnRelation,deterministicReviewGuard,deterministicAdaptiveArithmeticTurn};`, sandbox);
 const api = sandbox.__matrix;
 
 const homeworkExpressions = ["2 + 3", "9 - 4", "7 × 8", "12 ÷ 3", "18 + 27", "100 - 36", "6 × 9", "144 ÷ 12"];
