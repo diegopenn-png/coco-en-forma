@@ -186,12 +186,13 @@ test("practice keeps the requested multiplication table as difficulty changes", 
 });
 
 test("homework fraction mistakes keep the scaffold and never reveal the final answer", () => {
-  const pending = "¿En cuántas octavas partes equivale 3/4?";
-  const result = api.deterministicHomeworkFractionRetry({ mode: "homework", text: "5/8", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Matemáticas", active_concept: "suma de fracciones", pending_question: pending, turn_index: 1 }, subject: "Matemáticas", concept: "suma de fracciones" });
-  assert.equal(result.student_answer_assessment, "incorrect");
-  assert.equal(result.check_question, pending);
-  assert.doesNotMatch(result.reply, /6\/8|7\/8/);
-  assert.match(result.reply, /mismo número.*numerador/i);
+  for (const pending of ["¿En cuántas octavas partes equivale 3/4?", "¿Cuánto vale 3/4 en octavos?", "Expresa 3/4 con denominador 8."]) {
+    const result = api.deterministicHomeworkFractionRetry({ mode: "homework", text: "5/8", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Matemáticas", active_concept: "suma de fracciones", pending_question: pending, turn_index: 1 }, subject: "Matemáticas", concept: "suma de fracciones" });
+    assert.equal(result.student_answer_assessment, "incorrect");
+    assert.equal(result.check_question, pending);
+    assert.doesNotMatch(result.reply, /6\/8|7\/8/);
+    assert.match(result.reply, /mismo número.*numerador/i);
+  }
 });
 
 test("removing a duplicated check also removes dangling micro-check labels", () => {
