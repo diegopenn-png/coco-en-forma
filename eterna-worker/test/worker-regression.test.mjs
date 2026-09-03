@@ -30,8 +30,12 @@ vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   initialAdaptiveQuestion: typeof initialAdaptiveQuestion === "function" ? initialAdaptiveQuestion : null,
   deterministicAdaptiveArithmeticTurn: typeof deterministicAdaptiveArithmeticTurn === "function" ? deterministicAdaptiveArithmeticTurn : null,
   deterministicAdaptiveFractionTurn: typeof deterministicAdaptiveFractionTurn === "function" ? deterministicAdaptiveFractionTurn : null,
+  deterministicHomeworkFractionFactorTurn: typeof deterministicHomeworkFractionFactorTurn === "function" ? deterministicHomeworkFractionFactorTurn : null,
   deterministicHomeworkFractionRetry: typeof deterministicHomeworkFractionRetry === "function" ? deterministicHomeworkFractionRetry : null,
+  deterministicConceptCheckTurn: typeof deterministicConceptCheckTurn === "function" ? deterministicConceptCheckTurn : null,
   expectedFractionForQuestion: typeof expectedFractionForQuestion === "function" ? expectedFractionForQuestion : null,
+  singleStudentAct: typeof singleStudentAct === "function" ? singleStudentAct : null,
+  enforceIncorrectOpening: typeof enforceIncorrectOpening === "function" ? enforceIncorrectOpening : null,
   nextMultiplicationQuestion: typeof nextMultiplicationQuestion === "function" ? nextMultiplicationQuestion : null,
   stripTrailingStudentQuestion: typeof stripTrailingStudentQuestion === "function" ? stripTrailingStudentQuestion : null,
   isAdaptiveCloseRequest: typeof isAdaptiveCloseRequest === "function" ? isAdaptiveCloseRequest : null,
@@ -212,12 +216,86 @@ test("practice keeps the requested multiplication table as difficulty changes", 
 });
 
 test("homework fraction mistakes keep the scaffold and never reveal the final answer", () => {
-  for (const pending of ["¿En cuántas octavas partes equivale 3/4?", "¿Cuánto vale 3/4 en octavos?", "Expresa 3/4 con denominador 8."]) {
+  for (const pending of ["¿En cuántas octavas partes equivale 3/4?", "¿Cuánto vale 3/4 en octavos?", "¿Cuántos octavos son 3/4?", "Expresa 3/4 con denominador 8."]) {
     const result = api.deterministicHomeworkFractionRetry({ mode: "homework", text: "5/8", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Matemáticas", active_concept: "suma de fracciones", pending_question: pending, turn_index: 1 }, subject: "Matemáticas", concept: "suma de fracciones" });
     assert.equal(result.student_answer_assessment, "incorrect");
     assert.equal(result.check_question, pending);
     assert.doesNotMatch(result.reply, /6\/8|7\/8/);
     assert.match(result.reply, /mismo número.*numerador/i);
+    assert.match(result.reply, /^Incorrecto\./);
+  }
+});
+
+test("homework advances after a correct denominator factor instead of repeating the question", () => {
+  const pending = "¿Qué número multiplica a 4 para obtener 8?";
+  const common = { mode: "homework", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Matemáticas", active_concept: "suma de fracciones", pending_question: pending, turn_index: 1 }, subject: "Matemáticas", concept: "suma de fracciones", history: [{ role: "user", text: "Tengo que resolver 3/4 + 1/8. No sé cómo empezar." }] };
+  const right = api.deterministicHomeworkFractionFactorTurn({ ...common, text: "2" });
+  assert.equal(right.student_answer_assessment, "correct");
+  assert.equal(right.check_question, "¿Cuánto vale 3/4 en octavos?");
+  assert.notEqual(right.check_question, pending);
+  assert.match(right.reply, /Correcto: 4 × 2 = 8/);
+  assert.doesNotMatch(right.reply, /6\/8|7\/8/);
+
+  const wrong = api.deterministicHomeworkFractionFactorTurn({ ...common, text: "3" });
+  assert.equal(wrong.student_answer_assessment, "incorrect");
+  assert.equal(wrong.check_question, pending);
+  assert.doesNotMatch(wrong.reply, /6\/8|7\/8/);
+});
+
+test("Ask and Explain promote embedded checks into explicit pending questions", () => {
+  const initial = api.singleStudentAct({ mode: "ask", reply: "Los hemisferios reciben luz distinta. Microcomprobación: ¿qué hemisferio recibe más luz?", tutorData: { check_question: null }, turnRel: "continuation_request", incoming: { turn_index: 2 }, assessment: "not_applicable", studentText: "¿Por qué?" });
+  assert.equal(initial.display_check, "¿qué hemisferio recibe más luz?");
+  assert.equal(initial.pending_question, initial.display_check);
+  assert.doesNotMatch(initial.reply, /Microcomprobación|¿qué hemisferio/i);
+
+  const yesNo = api.singleStudentAct({ mode: "explain", reply: "1/2 y 2/4 son equivalentes. Ahora dime solo esto: ¿sí o no?", tutorData: { check_question: null }, turnRel: "confusion_request", incoming: { turn_index: 2 }, assessment: "not_applicable", studentText: "No lo entendí" });
+  assert.equal(yesNo.display_check, "¿1/2 y 2/4 representan la misma cantidad?");
+  assert.equal(yesNo.pending_question, yesNo.display_check);
+});
+
+test("Ask and Explain close after a correct comprehension check", () => {
+  const result = api.singleStudentAct({ mode: "ask", reply: "Correcto. Esa es la idea clave. ¿Y qué ocurre después?", tutorData: { check_question: "¿Y qué ocurre después?" }, turnRel: "answer_to_pending", incoming: { turn_index: 3, pending_question: "¿Cuál es la idea clave?" }, assessment: "correct", studentText: "La respuesta correcta" });
+  assert.equal(result.display_check, null);
+  assert.equal(result.pending_question, null);
+  assert.doesNotMatch(result.reply, /¿Y qué ocurre después\?/);
+});
+
+test("known conceptual checks reject contradictions instead of validating them", () => {
+  const seasons = api.deterministicConceptCheckTurn({ mode: "ask", text: "También es verano.", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Ciencias Naturales", active_concept: "estaciones del año", pending_question: "¿Y qué ocurre en el hemisferio contrario?", turn_index: 3 }, subject: "Ciencias Naturales", concept: "estaciones del año", history: [{ role: "assistant", text: "Si en España es verano, en Argentina es invierno." }] });
+  assert.equal(seasons.student_answer_assessment, "incorrect");
+  assert.match(seasons.reply, /^Incorrecto\./);
+  assert.doesNotMatch(seasons.reply, /^Sí\b/);
+  assert.match(seasons.check_question, /verano o invierno/i);
+
+  const equivalence = api.deterministicConceptCheckTurn({ mode: "explain", text: "No", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Matemáticas", active_concept: "fracciones equivalentes", pending_question: "¿1/2 y 2/4 representan la misma cantidad?", turn_index: 2 }, subject: "Matemáticas", concept: "fracciones equivalentes", history: [] });
+  assert.equal(equivalence.student_answer_assessment, "incorrect");
+  assert.match(equivalence.reply, /^Incorrecto\./);
+  assert.equal(equivalence.check_question, "¿1/2 y 2/4 representan la misma cantidad?");
+});
+
+test("Review evaluates each numeric retry and gives a new concrete hint", () => {
+  const history = [{ role: "user", text: "He hecho 48 ÷ 6 = 7. Revísalo." }, { role: "assistant", text: "El primer error está en 48 ÷ 6 = 7." }];
+  const wrong = api.deterministicReviewGuard("9", history);
+  assert.equal(wrong.assessment, "incorrect");
+  assert.match(wrong.reply, /^Incorrecto\./);
+  assert.match(wrong.reply, /6 × 9 = 54/);
+  assert.match(wrong.check_question, /resultado correcto/i);
+  const right = api.deterministicReviewGuard("8", history);
+  assert.equal(right.assessment, "correct");
+  assert.equal(right.check_question, null);
+});
+
+test("Practice labels wrong arithmetic explicitly and provides a usable strategy", () => {
+  const result = api.deterministicAdaptiveArithmeticTurn({ mode: "practice", text: "30", turnRel: "answer_to_pending", incomingModeState: { question_number: 1, correct_count: 0, incorrect_count: 0, difficulty: 2, focus: "tabla del 7" }, incomingPedState: { active_subject: "Matemáticas", active_concept: "tabla del 7", pending_question: "¿Cuánto es 7 × 4?", turn_index: 1 }, subject: "Matemáticas", concept: "tabla del 7", focus: "tabla del 7" });
+  assert.equal(result.student_answer_assessment, "incorrect");
+  assert.match(result.reply, /^Incorrecto\./);
+  assert.match(result.reply, /7 \+ 7 \+ 7 \+ 7/);
+  assert.equal(result.check_question, "¿Cuánto es 7 × 4?");
+});
+
+test("incorrect feedback can never begin with a positive or partial validation", () => {
+  for (const value of ["Sí. En realidad es invierno.", "Casi: revisa el cálculo.", "No del todo. Revisa el cálculo.", "La respuesta necesita revisión."]) {
+    assert.match(api.enforceIncorrectOpening(value), /^Incorrecto\./);
   }
 });
 

@@ -10,6 +10,7 @@ on:
       - "fix/eterna-homework-equivalence-160913"
       - "fix/eterna-review-retry-160914"
       - "fix/eterna-exam-incorrect-wording-160915"
+      - "fix/eterna-physical-audit-160916"
     paths:
       - "eterna-worker/**"
       - ".github/workflows/eterna-worker-preview.yml"
