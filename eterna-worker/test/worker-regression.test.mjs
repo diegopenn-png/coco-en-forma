@@ -166,9 +166,25 @@ test("review accepts a short corrected result for the pending arithmetic step", 
 test("micro-checks must be complete, distinct and answerable", () => {
   assert.equal(typeof api.validMicroCheck, "function");
   assert.equal(api.validMicroCheck("¿Cuánto es 7 × 8?", "7 × 8"), true);
+  assert.equal(api.validMicroCheck("¿Cuál de estas fracciones es equivalente a 1/2?", "fracciones equivalentes"), false);
+  assert.equal(api.validMicroCheck("¿Cuál de estas fracciones es equivalente a 1/2: 2/4 o 3/4?", "fracciones equivalentes"), true);
   assert.equal(api.validMicroCheck("Vamos con una sola pregunta.", "6"), false);
   assert.equal(api.validMicroCheck("¿Qué parte debería repetir según mis errores?", "¿Qué parte debería repetir según mis errores?"), false);
   assert.equal(api.validMicroCheck("si ves lejía en una etiqueta,", "No sé"), false);
+});
+
+test("Exam removes a choice question when its options are missing", () => {
+  const result = api.singleStudentAct({
+    mode: "exam",
+    reply: "Perfecto. Vamos con fracciones equivalentes. ¿Cuál de estas fracciones es equivalente a 1/2?",
+    tutorData: { check_question: "¿Cuál de estas fracciones es equivalente a 1/2?", expected_answer_type: "choice" },
+    turnRel: "new_topic",
+    incoming: { turn_index: 0 },
+    assessment: "not_applicable",
+    studentText: "Matemáticas, fracciones equivalentes de 5º de Primaria.",
+  });
+  assert.equal(result.pending_question, null);
+  assert.doesNotMatch(result.reply, /Cuál de estas fracciones/i);
 });
 
 test("Exam and Practice always receive a concrete initial question", () => {
@@ -230,6 +246,27 @@ test("fraction comparisons are graded mathematically and counters stay coherent"
   assert.equal(right.student_answer_assessment, "correct");
   assert.equal(right.mode_state.correct_count, 2);
   assert.equal(right.mode_state.incorrect_count, 0);
+});
+
+test("Practice accepts a fraction multiplied by the same factor above and below", () => {
+  const pending = "Si 1/3 se multiplica por 2 arriba y 2 abajo, ¿qué fracción equivalente sale?";
+  const expected = api.expectedFractionForQuestion(pending);
+  assert.equal(expected.type, "equivalent_denominator");
+  assert.equal(`${expected.rawN}/${expected.rawD}`, "2/6");
+
+  const result = api.deterministicAdaptiveFractionTurn({
+    mode: "practice",
+    text: "2/6",
+    turnRel: "answer_to_pending",
+    incomingModeState: { question_number: 1, correct_count: 0, partial_count: 0, incorrect_count: 0, difficulty: 2, focus: "fracciones equivalentes" },
+    incomingPedState: { active_subject: "Matemáticas", active_concept: "fracciones equivalentes", pending_question: pending, expected_answer_type: "short_concept", turn_index: 1 },
+    subject: "Matemáticas",
+    concept: "fracciones equivalentes",
+  });
+  assert.equal(result.student_answer_assessment, "correct");
+  assert.equal(result.mode_state.correct_count, 1);
+  assert.equal(result.mode_state.incorrect_count, 0);
+  assert.match(result.reply, /^Correcto: 2\/6/);
 });
 
 test("Exam labels objectively wrong arithmetic answers as incorrect", () => {
