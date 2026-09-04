@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.93.3 · explicit microphone request state */
-const CACHE_VERSION="coco-en-forma-v160.93.3-mic-request-state";
+/* Coco en Forma · Service Worker v160.93.4 · excellence pass */
+const CACHE_VERSION="coco-en-forma-v160.93.4-excellence-pass-r2";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -14,7 +14,7 @@ const DESKTOP_SAFARI=/Safari\//.test(SW_UA)&&!/(Chrome|Chromium|CriOS|FxiOS|Edgi
 const CORE=[
   "./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
-  "./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,
+  "./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,"./coco-excellence-v160934.js",
   "./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,"./eterna-marketing-attribution-v1.js",
   "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
   "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"

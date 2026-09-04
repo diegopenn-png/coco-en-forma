@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.93.3 MIC REQUEST STATE
+/* Coco en Forma · ETERNA v160.93.4 EXCELLENCE PASS
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.93.3-mic-request-state";
+  var VERSION="160.93.4-excellence-pass";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -685,7 +685,7 @@
       if(e&&e.name==="AbortError"||context.epoch!==state.activityEpoch)return;
       renderConversation(o.querySelector("[data-et-chat]"));
       var msg=e&&e.message==="ETERNA_ENDPOINT_NOT_CONFIGURED"?"Eterna todavía necesita que configures su Worker.":e&&e.message==="ETERNA_DAILY_LIMIT"?"Has alcanzado el límite familiar de consultas de Eterna por hoy. Un adulto puede revisarlo en Zona familiar.":"Ahora no puedo comprobar esta tarea con suficiente seguridad. Prueba de nuevo dentro de un momento.";
-      appendMessage("assistant",msg,{verification_status:"needs_clarification"},true,false);setStatus(e&&e.message==="ETERNA_DAILY_LIMIT"?"Límite diario alcanzado":"No se pudo verificar","warn")
+      appendMessage("assistant",msg,{verification_status:"needs_clarification"},true,false);if(rawText){input.value=rawText;state.inputSource=source==="voice"?"voice":"text"}setStatus(e&&e.message==="ETERNA_DAILY_LIMIT"?"Límite diario alcanzado":"No se pudo verificar · tu pregunta sigue preparada","warn")
     }finally{if(state.activeRequest===context){state.activeRequest=null;state.busy=false;input.disabled=false;syncSendAvailability();input.focus()}}
   }
 
@@ -694,10 +694,10 @@
   function sendStudentAction(action,meta,quick){var activity=currentActivity();if(state.busy||!activity||activity.phase!=="WAIT"||!meta||meta.question_id!==activity.question_id)return;var eventId=opaqueId("event"),buttons=quick&&quick.querySelectorAll("button");if(buttons)buttons.forEach(function(button){button.disabled=true});feedback(action,meta,eventId);if(action==="understood"){completeActivity(meta,quick);return}send({studentAction:"hint_request",questionId:activity.question_id,text:"Necesito otra pista distinta y concreta. No me des todavía la respuesta final.",displayText:"Otra pista"})}
 
   async function prepareImage(file){
-    if(state.parentSettings&&state.parentSettings.allow_image_input===false){alert("Las fotos están desactivadas desde Zona familiar.");return}
-    if(!/^image\//i.test(file.type||"")){alert("Selecciona una imagen.");return}
-    if(file.size>15*1024*1024){alert("La imagen es demasiado grande. Usa una foto de menos de 15 MB.");return}
-    try{var data=await compressImage(file);state.imageData=data;state.imageName=file.name||"tarea.jpg";state.inputSource="image";var p=overlay().querySelector("[data-et-preview]");p.querySelector("img").src=data;p.querySelector("span").textContent="Imagen lista. Eterna distinguirá lo impreso de los huecos antes de ayudarte.";p.classList.add("show");syncSendAvailability();setStatus("Imagen lista para analizar","ok")}catch(e){alert("No se pudo preparar la imagen.")}
+    if(state.parentSettings&&state.parentSettings.allow_image_input===false){setStatus("Las fotos están desactivadas desde Zona Familiar","warn");alert("Las fotos están desactivadas desde Zona familiar.");return}
+    if(!/^image\//i.test(file.type||"")){setStatus("El archivo no es una imagen · elige una foto","warn");alert("Selecciona una imagen.");return}
+    if(file.size>15*1024*1024){setStatus("La foto supera 15 MB · elige una más pequeña","warn");alert("La imagen es demasiado grande. Usa una foto de menos de 15 MB.");return}
+    try{setStatus("Preparando la foto…","warn");var data=await compressImage(file);state.imageData=data;state.imageName=file.name||"tarea.jpg";state.inputSource="image";var p=overlay().querySelector("[data-et-preview]");p.querySelector("img").src=data;p.querySelector("span").textContent="Imagen lista. Eterna distinguirá lo impreso de los huecos antes de ayudarte.";p.classList.add("show");syncSendAvailability();setStatus("Imagen lista para analizar","ok")}catch(e){setStatus("No pude preparar la foto · prueba con otra imagen","warn");alert("No se pudo preparar la imagen.")}
   }
   function compressImage(file){return new Promise(function(resolve,reject){var reader=new FileReader();reader.onerror=reject;reader.onload=function(){var img=new Image();img.onerror=reject;img.onload=function(){var max=2200,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale)),canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;var ctx=canvas.getContext("2d",{alpha:false});ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);resolve(canvas.toDataURL("image/jpeg",.90))};img.src=reader.result};reader.readAsDataURL(file)})}
   function clearImage(){state.imageData=null;state.imageName="";var p=document.querySelector("#eternaOverlayV159 [data-et-preview]");if(p){p.classList.remove("show");p.querySelector("img").removeAttribute("src")}syncSendAvailability()}

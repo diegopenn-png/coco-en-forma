@@ -114,7 +114,7 @@ jobs:
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
-          grep -F '160.93.3-mic-request-state' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.93.4-excellence-pass' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.1-master-game-replay' eterna-worker/src/index.js >/dev/null
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
@@ -138,7 +138,9 @@ jobs:
         run: |
           ready=0
           for attempt in {1..12}; do
-            if curl --max-time 20 -fsS "${PREVIEW_ORIGIN}/eterna-v159.js" -o /tmp/eterna-preview.js; then
+            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160934&verify=${GITHUB_SHA}-${attempt}"
+            if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
+              && grep -F '160.93.4-excellence-pass' /tmp/eterna-preview.js >/dev/null; then
               ready=1
               break
             fi
@@ -149,7 +151,9 @@ jobs:
             exit 1
           fi
 
-          grep -F '160.93.3-mic-request-state' /tmp/eterna-preview.js >/dev/null
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=1609342&verify=${GITHUB_SHA}" \
+            | grep -F '160.93.4-excellence-pass' >/dev/null
           curl --max-time 20 -fsS "${API_PREVIEW_URL}/health" | tee authenticated-preview-health.json
           grep -F '160.93.1-master-game-replay' authenticated-preview-health.json >/dev/null
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
@@ -159,7 +163,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.93.3-mic-request-state · API 160.93.1-master-game-replay"
+            echo "- Expected versions: frontend 160.93.4-excellence-pass · API 160.93.1-master-game-replay"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preserve preview evidence

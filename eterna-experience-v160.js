@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.93.3 · explicit microphone request state
+/* ETERNA Experience v160.93.4 · excellence pass
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.93.3-mic-request-state";
+  var VERSION="160.93.4-excellence-pass";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
