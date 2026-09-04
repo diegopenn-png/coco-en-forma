@@ -14,6 +14,7 @@ test("all 13 experiences receive a concise goal and first-use guide",()=>{
   ids.forEach(id=>assert.match(layer,new RegExp(`\\b${id}:\\{name:`),id));
   assert.match(layer,/games:Object\.keys\(GAME\)\.length/);
   assert.match(layer,/\.cocoGameCard,#cocoApp \.cocoMiniJuego/);
+  assert.match(layer,/observer\.observe\(document\.body/);
   assert.match(layer,/className="cocoExGuide"/);
   assert.match(layer,/Misión terminada\. Tu progreso ya está guardado/);
 });
