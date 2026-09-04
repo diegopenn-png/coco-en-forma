@@ -38,6 +38,7 @@ vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   expectedFractionForQuestion: typeof expectedFractionForQuestion === "function" ? expectedFractionForQuestion : null,
   singleStudentAct: typeof singleStudentAct === "function" ? singleStudentAct : null,
   enforceIncorrectOpening: typeof enforceIncorrectOpening === "function" ? enforceIncorrectOpening : null,
+  repairIncompleteReply: typeof repairIncompleteReply === "function" ? repairIncompleteReply : null,
   nextMultiplicationQuestion: typeof nextMultiplicationQuestion === "function" ? nextMultiplicationQuestion : null,
   stripTrailingStudentQuestion: typeof stripTrailingStudentQuestion === "function" ? stripTrailingStudentQuestion : null,
   isAdaptiveCloseRequest: typeof isAdaptiveCloseRequest === "function" ? isAdaptiveCloseRequest : null,
@@ -223,6 +224,25 @@ test("practice keeps the requested multiplication table as difficulty changes", 
   const ped = { active_subject: "Matemáticas", active_concept: "Tabla de multiplicar del 7", pending_question: "¿Cuánto es 7 × 4?", expected_answer_type: "numeric", turn_index: 1 };
   const result = api.deterministicAdaptiveArithmeticTurn({ mode: "practice", text: "28", turnRel: "answer_to_pending", incomingModeState: base, incomingPedState: ped, subject: "Matemáticas", concept: "Tabla de multiplicar del 7", focus: "Tabla de multiplicar del 7" });
   assert.match(result.check_question, /¿Cuánto es 7 × \d+\?/);
+});
+
+test("exam keeps every requested multiplication table instead of drifting topics", () => {
+  for (let difficulty = 1; difficulty <= 5; difficulty++) {
+    for (let questionNumber = 0; questionNumber < 10; questionNumber++) {
+      const question = api.nextMultiplicationQuestion({ difficulty, questionNumber, focus: "tablas del 6 y del 7" });
+      assert.match(question, /¿Cuánto es [67] × \d+\?/);
+    }
+  }
+  const base = { question_number: 2, correct_count: 1, partial_count: 0, incorrect_count: 1, difficulty: 2, focus: "tablas del 6 y del 7" };
+  const ped = { active_subject: "Matemáticas", active_concept: "tablas del 6 y del 7", pending_question: "¿Cuánto es 7 × 6?", expected_answer_type: "numeric", turn_index: 2 };
+  const result = api.deterministicAdaptiveArithmeticTurn({ mode: "exam", text: "42", turnRel: "answer_to_pending", incomingModeState: base, incomingPedState: ped, subject: "Matemáticas", concept: "tablas del 6 y del 7", focus: "tablas del 6 y del 7" });
+  assert.match(result.check_question, /¿Cuánto es [67] × \d+\?/);
+});
+
+test("incomplete model fragments are removed before reaching a child", () => {
+  const raw = "Correcto: el hielo es menos denso. Por eso flota. Si algo es menos denso que el agua,";
+  assert.equal(api.repairIncompleteReply(raw), "Correcto: el hielo es menos denso. Por eso flota.");
+  assert.equal(api.repairIncompleteReply("Una explicación completa."), "Una explicación completa.");
 });
 
 test("homework fraction mistakes keep the scaffold and never reveal the final answer", () => {
@@ -412,6 +432,10 @@ test("canonical hint_request is non-evaluable and preserves counters and questio
   assert.equal(hint.student_answer_assessment, "not_applicable");
   assert.equal(hint.pedagogical_state.pending_question_id, qid);
   assert.deepEqual(JSON.parse(JSON.stringify(hint.mode_state)), modeState);
+  const comparison = api.hintRequestResponse(api.sanitizePedagogicalState({ active_subject: "Matemáticas", active_concept: "comparar fracciones", pending_question: "¿Cuál es mayor, 1/4 o 1/3?", pending_question_id: qid, expected_answer_type: "short_concept", conversation_stage: "awaiting_student_answer", current_help_level: 1 }, "practice"), "practice", modeState);
+  assert.match(comparison.reply, /productos cruzados/i);
+  assert.match(comparison.reply, /1 × 3.*1 × 4/);
+  assert.doesNotMatch(comparison.reply, /busca primero la idea/i);
 });
 
 test("expired or malformed trials fail closed in the Worker", () => {
