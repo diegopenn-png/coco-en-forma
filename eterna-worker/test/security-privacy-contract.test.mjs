@@ -265,6 +265,10 @@ test("tester entitlement is server-authoritative and cannot rely on an email all
   const testerLookup = sourceBetween("async function serverTesterEntitlement(", "async function getSubscription(");
   assert.match(testerLookup, /eterna_test_entitlements\?user_id=eq\.\$\{encodeURIComponent\(uid\)\}&active=eq\.true/);
   assert.doesNotMatch(testerLookup, /email/i);
+  const accessStatus = sourceBetween("async function handleAccessStatus(", "async function markChatRequest(");
+  assert.match(accessStatus, /serverTesterEntitlement\(env,uid\)/);
+  assert.match(accessStatus, /unlimited_testing/);
+  assert.match(workerSource, /url\.pathname==="\/v1\/access-status"&&request\.method==="GET"/);
 });
 
 test("logs never include raw OpenAI response or model output text", () => {

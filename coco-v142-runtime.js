@@ -13,6 +13,7 @@
   var remoteUserId = "";
   var remoteUserEmail = "";
   var remoteUserRole = "";
+  var remoteUnlimitedTesting = false;
   var remoteReady = false;
   var remoteUnavailable = false;
   var authWatcherInstalled = false;
@@ -46,7 +47,7 @@
   function isUnlimitedUser(userId) {
     var requested = String(userId || remoteUserId || "");
     if (!requested || !remoteUserId || requested !== String(remoteUserId)) return false;
-    if (String(remoteUserRole || "").toLowerCase() === "propietario") return true;
+    if (remoteUnlimitedTesting || String(remoteUserRole || "").toLowerCase() === "propietario") return true;
     return Boolean(window.CocoEternaV160 && typeof window.CocoEternaV160.isMaster === "function" && window.CocoEternaV160.isMaster());
   }
 
@@ -275,6 +276,7 @@
     if (userChanged) {
       remoteReady = false;
       remoteUserRole = "";
+      remoteUnlimitedTesting = false;
       dailyCallCounters = Object.create(null);
       generatedCallCounters = Object.create(null);
     }
@@ -292,6 +294,23 @@
       remoteClient = window.__COCO_SUPABASE_CLIENT || (window.__COCO_SUPABASE_CLIENT = window.supabase.createClient(config.url, config.clave, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } }));
     } catch { remoteClient = null; }
     return remoteClient;
+  }
+
+  async function loadUnlimitedTesting(session) {
+    var config = window.COCO_CONFIG || {};
+    var base = String(config.eternaEndpoint || "").replace(/\/+$/, "");
+    var token = session && session.access_token ? String(session.access_token) : "";
+    if (!base || !token) return false;
+    try {
+      var response = await fetch(base + "/v1/access-status", {
+        method: "GET",
+        headers: { Authorization: "Bearer " + token },
+        cache: "no-store"
+      });
+      if (!response.ok) return false;
+      var data = await response.json();
+      return data && data.unlimited_testing === true;
+    } catch { return false; }
   }
 
   function installAuthWatcher(api) {
@@ -351,8 +370,12 @@
         return false;
       }
       var syncUserId = session.user.id; setActiveUser(syncUserId, session.user.email || ""); remoteReady = true;
-      var profileRole = await api.from("perfiles").select("rol").eq("id", syncUserId).maybeSingle();
+      var accessResults = await Promise.all([
+        api.from("perfiles").select("rol").eq("id", syncUserId).maybeSingle(),
+        loadUnlimitedTesting(session)
+      ]), profileRole = accessResults[0];
       remoteUserRole = profileRole && !profileRole.error && profileRole.data ? String(profileRole.data.rol || "") : "";
+      remoteUnlimitedTesting = accessResults[1] === true;
       var remote = await api.from("coco_content_rotation").select("scope_key,state,content_version,updated_at").eq("user_id", syncUserId), remoteTimes = Object.create(null);
       if (!remote.error && Array.isArray(remote.data)) {
         remote.data.forEach(function (row) {

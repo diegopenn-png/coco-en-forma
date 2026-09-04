@@ -113,6 +113,9 @@ test("master accounts can replay every game without adding a second daily score"
   assert.match(runtime, /remoteUserRole/);
   assert.match(runtime, /from\("perfiles"\)\.select\("rol"\)/);
   assert.match(runtime, /remoteUserRole[^\n]*propietario/);
+  assert.match(runtime, /\/v1\/access-status/);
+  assert.match(runtime, /data\.unlimited_testing === true/);
+  assert.match(runtime, /remoteUnlimitedTesting/);
   assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
   assert.match(unified, /daily\.isUnlimited\(userId\)/);
   assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
