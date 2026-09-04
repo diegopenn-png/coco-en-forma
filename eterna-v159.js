@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.93.0 UX COMPLETION
+/* Coco en Forma · ETERNA v160.93.3 MIC REQUEST STATE
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.93.0-ux-completion-and-accessibility";
+  var VERSION="160.93.3-mic-request-state";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -1193,6 +1193,7 @@
     open:open,close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,
     applyChatResponse:applyChatResponse,
     getActivityContext:function(){var activity=ensureActivity(state.mode,false);return activity?{uid:sessionUserId(),mode:state.mode,session_id:activity.session_id,question_id:activity.question_id,phase:activity.phase,epoch:state.activityEpoch}:null},
+    isRequestPending:function(){return Boolean(state.busy)},
     isMaster:function(){return masterAccess()},
     invalidateActivity:function(reason){invalidateInFlight(reason||"external-boundary")},
     audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true,ageAccessGate:false,agePedagogyOnly:true,criticalSecondaryDataSplit:true,familyLifecycleV2:true,sharedFamilyRenderPromise:true,canonicalFamilyBeforeAwait:true,tutorConversationalV3:true,conversationStateEphemeral:true,contextualReferenceResolutionV3:true,noRawConversationPersistence:true,responsiveDesktopV16072:true}}

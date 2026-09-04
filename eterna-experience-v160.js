@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.93 · UX completion, progressive wait states and age adaptation
+/* ETERNA Experience v160.93.3 · explicit microphone request state
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.93-ux-completion";
+  var VERSION="160.93.3-mic-request-state";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
@@ -308,6 +308,12 @@
   function releaseVoiceStartLock(){
     voiceStarting=false;
     if(!voice&&!voiceTranscribing)setMicDisabled(false)
+  }
+
+  function chatRequestIsPending(){
+    var core=root.CocoEternaV160;
+    var foreground=Boolean(core&&typeof core.isRequestPending==="function"&&core.isRequestPending());
+    return foreground||Boolean(activeBackgroundJobId||pendingJobResumePromise||pendingJobRead())
   }
 
   function updateVoicePanelCopy(title,detail,stateClass){
@@ -999,8 +1005,8 @@
       return
     }
 
-    var o=overlay(),send=o&&o.querySelector("[data-et-send]");
-    if(send&&send.disabled){
+    var o=overlay();
+    if(chatRequestIsPending()){
       setLive("info","Espera a que Eterna termine la respuesta anterior antes de volver a hablar.");
       return
     }
@@ -1047,8 +1053,7 @@
       catch(firstRecorderError){rec=new MediaRecorder(stream);mime=rec.mimeType||""}
 
       o=overlay();
-      var mic=o&&o.querySelector("[data-et-mic]");
-      send=o&&o.querySelector("[data-et-send]");
+      var mic=o&&o.querySelector("[data-et-mic]"),send=o&&o.querySelector("[data-et-send]");
       var vadCfg=vadConfigForStudent(typeof studentVoiceProfile!=="undefined"?studentVoiceProfile:{});
       var v={
         stream:stream,recorder:rec,chunks:[],mime:mime||rec.mimeType||"audio/webm",

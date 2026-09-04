@@ -1,9 +1,10 @@
-/* Coco en Forma · Service Worker v160.93.2 · master replay availability */
-const CACHE_VERSION="coco-en-forma-v160.93.2-master-replay-availability";
+/* Coco en Forma · Service Worker v160.93.3 · explicit microphone request state */
+const CACHE_VERSION="coco-en-forma-v160.93.3-mic-request-state";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
 const ETERNA_CORE_PATH="./eterna-v159.js";
+const ETERNA_EXPERIENCE_PATH="./eterna-experience-v160.js";
 const ETERNA_HOTFIX_PATH="./eterna-hotfix-v160902.js";
 const PRODUCT_UX_PATH="./coco-release-v160903.js";
 const COCO_BOOTSTRAP_PATH="./coco-v153-fixes.js";
@@ -14,7 +15,7 @@ const CORE=[
   "./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
   "./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,
-  "./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css","./eterna-experience-v160.js",ETERNA_HOTFIX_PATH,"./eterna-marketing-attribution-v1.js",
+  "./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,"./eterna-marketing-attribution-v1.js",
   "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
   "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"
 ];
@@ -182,12 +183,14 @@ self.addEventListener("fetch",e=>{
   const doc=e.request.mode==="navigate"||e.request.destination==="document";
   const shellDoc=doc&&(u.pathname===SCOPE_URL.pathname||u.pathname===new URL("index.html",SCOPE_URL).pathname);
   const eternaCore=u.pathname===new URL(ETERNA_CORE_PATH,SCOPE_URL).pathname;
+  const eternaExperience=u.pathname===new URL(ETERNA_EXPERIENCE_PATH,SCOPE_URL).pathname;
   const cocoBootstrap=u.pathname===new URL(COCO_BOOTSTRAP_PATH,SCOPE_URL).pathname;
   const identity=u.pathname===new URL("./coco-v155-identity.js",SCOPE_URL).pathname;
 
   if(shellDoc){e.respondWith(DESKTOP_SAFARI?networkFirst(e):shellFast(e));return}
   if(doc){e.respondWith(networkFirst(e));return}
   if(eternaCore){e.respondWith(eternaCoreWithHotfix(e));return}
+  if(eternaExperience){e.respondWith(cachedPatch(ETERNA_EXPERIENCE_PATH).then(r=>r||offlineFallback(e.request)));return}
   if(cocoBootstrap){e.respondWith(cocoBootstrapWithProductUx(e));return}
   if(identity){e.respondWith(stale(e));return}
   e.respondWith(stale(e));

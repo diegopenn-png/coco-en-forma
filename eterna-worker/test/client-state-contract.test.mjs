@@ -40,9 +40,10 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
   assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
   assert.match(index, /eterna-v159\.js\?v=160920/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160930/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.93\.2-master-replay-availability"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.93\.3-mic-request-state"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
-  assert.match(serviceWorker, /"\.\/eterna-experience-v160\.js"/);
+  assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
+  assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(cachedPatch\(ETERNA_EXPERIENCE_PATH\)/);
   assert.match(serviceWorker, /ETERNA_HOTFIX_PATH="\.\/eterna-hotfix-v160902\.js"/);
   assert.match(serviceWorker, /basePromise=cachedPatch\(ETERNA_CORE_PATH\)/);
 });
