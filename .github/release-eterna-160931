@@ -1,0 +1,2 @@
+Deploy the tested Cloudflare Worker version 4afe57d3-593b-46a4-829a-74356bcb7377 to production.
+Release approval: merge PR #20 and deploy the exact preview-tested version with automatic rollback.
