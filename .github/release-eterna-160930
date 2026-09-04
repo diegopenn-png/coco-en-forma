@@ -1,1 +1,2 @@
 Deploy the tested Cloudflare Worker version 78e38e04-152b-4ca8-bbbb-dfc7610c56bb to production.
+Trigger the protected deployment after registering its workflow on main.
