@@ -314,6 +314,12 @@ test("known conceptual checks reject contradictions instead of validating them",
   assert.equal(equivalence.student_answer_assessment, "incorrect");
   assert.match(equivalence.reply, /^Incorrecto\./);
   assert.equal(equivalence.check_question, "¿1/2 y 2/4 representan la misma cantidad?");
+
+  const ice = api.deterministicConceptCheckTurn({ mode: "ask", text: "Es menos denso porque tiene aire dentro.", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Ciencias Naturales", active_concept: "densidad del hielo", pending_question: "¿Qué pasa con la densidad del agua cuando se convierte en hielo?", turn_index: 2 }, subject: "Ciencias Naturales", concept: "densidad del hielo", history: [{ role: "assistant", text: "El hielo flota porque es menos denso que el agua líquida." }] });
+  assert.equal(ice.student_answer_assessment, "partial");
+  assert.match(ice.reply, /^Parcialmente correcto:/);
+  assert.match(ice.reply, /no porque tenga aire dentro/i);
+  assert.match(ice.check_question, /ocupa más espacio/i);
 });
 
 test("Review evaluates each numeric retry and gives a new concrete hint", () => {
