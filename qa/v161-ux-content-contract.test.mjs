@@ -108,6 +108,7 @@ test("Zona Familiar masks the legacy report before Safari can paint it", () => {
 });
 
 test("master accounts can replay every game without adding a second daily score", () => {
+  const html = read("index.html");
   const runtime = read("coco-v142-runtime.js");
   const unified = read("coco-v142-unified.js");
   assert.match(runtime, /remoteUserRole/);
@@ -117,6 +118,8 @@ test("master accounts can replay every game without adding a second daily score"
   assert.match(runtime, /data\.unlimited_testing === true/);
   assert.match(runtime, /remoteUnlimitedTesting/);
   assert.match(runtime, /source: "access-status"/);
+  assert.match(html, /coco-v142-runtime\.js\?v=160931/);
+  assert.match(html, /coco-v142-unified\.js\?v=160931/);
   assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
   assert.match(unified, /daily\.isUnlimited\(userId\)/);
   assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
