@@ -104,6 +104,13 @@ test("review finds the first real error in fractions and language", () => {
   const language = api.deterministicReviewGuard("e escrito: «Los kiwis vuelan por Nueva Zelanda». Revísalo.", []);
   assert.equal(language?.assessment, "incorrect");
   assert.match(language?.reply || "", /«e».*«he»/i);
+
+  const conjugation = api.deterministicReviewGuard("He escrito: Los pájaros volan hacia el sur. ¿Está bien?", []);
+  assert.equal(conjugation?.assessment, "incorrect");
+  assert.match(conjugation?.check_question || "", /vuelan/i);
+  const corrected = api.deterministicReviewGuard("Los pájaros vuelan hacia el sur.", [{ role: "user", text: "He escrito: Los pájaros volan hacia el sur. ¿Está bien?" }]);
+  assert.equal(corrected?.assessment, "correct");
+  assert.equal(corrected?.check_question, null);
 });
 
 test("review uses the standard Spanish school chronology for the Middle Ages", () => {
