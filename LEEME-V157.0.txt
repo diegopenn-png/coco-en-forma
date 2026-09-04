@@ -1,7 +1,0 @@
-COCO EN FORMA v157.0
-
-1. Sube el contenido de esta carpeta a GitHub sustituyendo la v156.
-2. No ejecutes SQL nuevo: Supabase no cambia.
-3. En Safari/Chrome móvil debe verse “Instala Coco en tu dispositivo”.
-4. Si abres Coco desde el icono instalado de la pantalla de inicio, debe verse “✓ Coco ya está instalada en este dispositivo”.
-5. Cierra y vuelve a abrir la PWA si la caché anterior tarda unos segundos en actualizarse.

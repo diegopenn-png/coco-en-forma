@@ -1,1 +1,0 @@
-Deploy the exact tested Cloudflare Worker version cd2f3b23-4301-4beb-8fcc-2bb9fb8f8ebb at 100% after preview health verification. Roll back automatically if production does not report Eterna 160.91.6-pedagogy-audit-fixes.

@@ -1,4 +1,0 @@
-Release marker for Eterna Worker 160.91.0.
-
-This immutable marker triggers the one-time production workflow after the
-validated correction pull request is merged into main.

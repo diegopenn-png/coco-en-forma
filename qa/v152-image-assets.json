@@ -1,9 +1,0 @@
-{
-  "valid": 100,
-  "expected": 100,
-  "size": "768x512",
-  "levelTriplesDistinct": 30,
-  "brightnessLiftVsV151": "~5.5% average luminance",
-  "errors": [],
-  "duplicateLevelSets": []
-}
