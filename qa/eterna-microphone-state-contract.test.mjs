@@ -41,8 +41,8 @@ test("the fixed microphone assets invalidate browser and PWA caches together", (
   const serviceWorker = read("sw.js");
   const previewWorkflow = read(".github/workflows/eterna-authenticated-preview.yml");
 
-  assert.match(serviceWorker, /coco-en-forma-v160\.93\.3-mic-request-state/);
+  assert.match(serviceWorker, /coco-en-forma-v160\.93\.4-excellence-pass/);
   assert.match(serviceWorker, /const ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(cachedPatch\(ETERNA_EXPERIENCE_PATH\)/);
-  assert.match(previewWorkflow, /frontend 160\.93\.3-mic-request-state/);
+  assert.match(previewWorkflow, /frontend 160\.93\.4-excellence-pass/);
 });
