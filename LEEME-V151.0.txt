@@ -1,0 +1,9 @@
+COCO EN FORMA v151.0 — LISTO PARA GITHUB
+
+1) Esta entrega parte exclusivamente del ZIP v150.0 estable indicado en CAMBIOS-V151.0.md.
+2) Sube el contenido del ZIP a GitHub sustituyendo los archivos de la versión desplegada.
+3) No hay SQL nuevo para ejecutar en Supabase.
+4) La PWA usa un caché nuevo v151; tras desplegar, cierra completamente la PWA y vuelve a abrirla para forzar la actualización del service worker.
+5) Conserva este ZIP como respaldo completo antes de seguir con v152.
+
+Cambios principales: Diferencias precompuestas y más luminosas, Coco Pádel por jornadas/resultados con búsqueda y sin Excel, Coco Corre Street Skate y eliminación de micro-puntajes de las tarjetas.

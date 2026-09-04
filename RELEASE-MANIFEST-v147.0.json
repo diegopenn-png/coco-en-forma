@@ -1,0 +1,34 @@
+{
+  "product": "Coco en Forma",
+  "version": "147.0.0",
+  "release_date": "2026-08-15",
+  "base_version": "146.0.0",
+  "deployment_status": "not_deployed",
+  "database_migration_required": false,
+  "service_worker_cache": "coco-en-forma-v147.0.0-r1",
+  "focus": [
+    "differences_without_pre_answer_markers",
+    "runner_large_readable_targets",
+    "runner_safari_pwa_audio_unlock",
+    "runner_neutral_approach_sound"
+  ],
+  "verification": {
+    "functional_tests": "20/20",
+    "browser_tests": "14/14",
+    "completed_difference_browser_games": 30,
+    "difference_combinations": 90,
+    "pixel_verified_differences": 450,
+    "responsive_widths": [320, 360, 390, 430, 1440],
+    "javascript_errors": 0,
+    "local_404_responses": 0
+  },
+  "confirmations": {
+    "public_app_untouched": true,
+    "backup_v146_intact": true,
+    "pre_answer_markers_removed": true,
+    "runner_general_ranking_enabled": true,
+    "runner_single_score_write": true,
+    "padel_unlimited": true,
+    "mixing_affects_points": false
+  }
+}

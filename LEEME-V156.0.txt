@@ -1,0 +1,13 @@
+COCO EN FORMA v156.0
+
+Base: v155.0.
+Objetivo: recuperar y mejorar la instalación PWA visible en iPhone, iPad, Android y tablets.
+
+PUBLICACIÓN
+1. Sube todo el contenido de este paquete a GitHub sustituyendo la distribución anterior.
+2. No hace falta ejecutar ningún SQL en Supabase.
+3. El service worker usa una nueva caché v156, por lo que la PWA instalada recibirá la actualización.
+4. En navegador móvil/tablet aparecerá el acceso “Instala Coco en tu dispositivo”.
+5. En modo PWA/standalone el aviso se oculta automáticamente.
+
+No se han modificado juegos, puntos, clasificaciones, Zona Familiar, Supabase ni social sharing.

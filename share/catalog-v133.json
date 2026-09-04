@@ -1,0 +1,72 @@
+[
+  {
+    "id": "numeros",
+    "title": "Une los números",
+    "description": "Conecta la secuencia sin repetir casillas"
+  },
+  {
+    "id": "calculo",
+    "title": "Cálculo veloz",
+    "description": "Operaciones, precisión y rapidez"
+  },
+  {
+    "id": "palabras",
+    "title": "Descifra la palabra",
+    "description": "Ordena letras y amplía vocabulario"
+  },
+  {
+    "id": "series",
+    "title": "Series lógicas",
+    "description": "Descubre el patrón que continúa"
+  },
+  {
+    "id": "memoria",
+    "title": "Memoria",
+    "description": "Encuentra parejas y entrena el recuerdo"
+  },
+  {
+    "id": "sudoku",
+    "title": "Sudoku",
+    "description": "Lógica sin repetir números"
+  },
+  {
+    "id": "sopa",
+    "title": "Sopa de letras",
+    "description": "Encuentra las palabras escondidas"
+  },
+  {
+    "id": "crucigrama",
+    "title": "Crucigrama",
+    "description": "Cruza pistas y descubre palabras"
+  },
+  {
+    "id": "tiempo",
+    "title": "Reto Tiempo",
+    "description": "Atención y velocidad a contrarreloj"
+  },
+  {
+    "id": "verdadero",
+    "title": "Verdadero o falso",
+    "description": "Piensa, decide y comprende la explicación"
+  },
+  {
+    "id": "cocomed",
+    "title": "Coco Med",
+    "description": "Aprende con explicaciones a tu ritmo"
+  },
+  {
+    "id": "futbol",
+    "title": "Coco Fútbol",
+    "description": "Memoria visual y un balón lleno de color"
+  },
+  {
+    "id": "padel",
+    "title": "Coco Pádel Club",
+    "description": "Mixings, pistas, rankings e historial"
+  },
+  {
+    "id": "ingles",
+    "title": "Coco Inglés",
+    "description": "Inglés real para situaciones cotidianas"
+  }
+]

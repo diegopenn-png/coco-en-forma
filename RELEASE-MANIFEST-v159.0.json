@@ -1,0 +1,409 @@
+{
+  "release": "159.0-ETERNA-Beta-Worker-Conectado",
+  "base": "Coco-en-Forma-v158.0-listo-para-GitHub.zip",
+  "generated_at": "2026-08-21",
+  "worker_url": "https://coco-eterna-v159.chatinmobiliario.workers.dev",
+  "file_count": 80,
+  "files": [
+    {
+      "path": "ACTUALIZACION-SUPABASE-KEYS-V159.md",
+      "bytes": 452,
+      "sha256": "be3f808c07c2300080666edabfc0c18a66ba7c93d644d99c5ec92df4320f86de"
+    },
+    {
+      "path": "ARCHIVOS-SEGUROS-PARA-BORRAR.txt",
+      "bytes": 6875,
+      "sha256": "b92d74dea9c023e723e24fffa56eb66b92771942104988910c41033d89065f03"
+    },
+    {
+      "path": "AUDITORIA-NO-REGRESION-V159.md",
+      "bytes": 863,
+      "sha256": "13ff388e49d45bea0547bab07a122d6f119eb0e876686111c5904b25c8bf92ca"
+    },
+    {
+      "path": "CAMBIOS-V158.0.md",
+      "bytes": 787,
+      "sha256": "e4b5b9c90a0527722341e824e5a020d4e7422528c8999918ab35ed002207f77b"
+    },
+    {
+      "path": "CAMBIOS-V159.0.md",
+      "bytes": 2994,
+      "sha256": "aa0f4258f3ac9b0c93c7188c44dd09a6660543d509f9380664dc6a0ab284c427"
+    },
+    {
+      "path": "CURRICULO-ETERNA-V159.md",
+      "bytes": 1931,
+      "sha256": "852fe519c2484843ca6b0bfc0d65818bf50183c44f568f08aa43cf041df002b3"
+    },
+    {
+      "path": "LEEME-V158.0.txt",
+      "bytes": 405,
+      "sha256": "18a27b78b9600882e7b56f0b428fd16b8a668b95d5b0736a6763ad7ee2f80afa"
+    },
+    {
+      "path": "LEEME-V159.0.txt",
+      "bytes": 2706,
+      "sha256": "04f9a1b844499198115cb9b4943afe2cc7ac1326219590341b7ae9aa50334872"
+    },
+    {
+      "path": "MARKETING-ETERNA-VUELTA-AL-COLE-V159.md",
+      "bytes": 9228,
+      "sha256": "fef5dcb81f3f2b5975bb478108de4a40d4ffaadde8815f6eea3356fb242105ad"
+    },
+    {
+      "path": "PRUEBAS-V158.0.md",
+      "bytes": 632,
+      "sha256": "434156cd538e02c7dbbc9a264558e84699175f045fa6b4f69f8ae4ef5f8556c4"
+    },
+    {
+      "path": "PRUEBAS-V159.0.md",
+      "bytes": 1435,
+      "sha256": "ffb5ae58a2e5d1d01ced11e84c0a5c93801bd08efe15976c7d64a9a55d139668"
+    },
+    {
+      "path": "QA-MANUAL-ETERNA-V159.md",
+      "bytes": 2800,
+      "sha256": "c7ca63754f438523037db9c51664b82ccb2ddca8cec5b060e6e147df8a46f082"
+    },
+    {
+      "path": "RELEASE-MANIFEST-v158.0.json",
+      "bytes": 9243,
+      "sha256": "e253b57cd9ea20b66d5e3a2e2a4017a29caa76c77545eb1b2ff114b06acf2362"
+    },
+    {
+      "path": "SUPABASE-JS-LICENSE.txt",
+      "bytes": 1065,
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+    },
+    {
+      "path": "_headers",
+      "bytes": 337,
+      "sha256": "efb3d2aef5194f5df1787e9dee9527dfc5ad8bc10bacc98f3748d4e3d2a163de"
+    },
+    {
+      "path": "apple-touch-icon.png",
+      "bytes": 63735,
+      "sha256": "ca763350efb4f5b2e48a9944216f7053451884b24226c9465981ee0fd4a03663"
+    },
+    {
+      "path": "coco-v142-content-extension.js",
+      "bytes": 32922,
+      "sha256": "154e95df1e225f2191ba7d31c2ed8a917b9ebe1d384f3c84c093578cc501e81a"
+    },
+    {
+      "path": "coco-v142-runtime.js",
+      "bytes": 30032,
+      "sha256": "3f17edde7c98da6e50ef700e17c3e7ceb3cf8a19554284f29f23966882ced876"
+    },
+    {
+      "path": "coco-v142-unified.js",
+      "bytes": 25245,
+      "sha256": "7f24111d1936c418c411f80978cf713ec8d01f776cc4e9c796af1afc9d608886"
+    },
+    {
+      "path": "coco-v144-content.js",
+      "bytes": 13467,
+      "sha256": "952539f2c5e9b50e7740823a4c311fecc6346e55fb756f14d85342cc1ac6a3da"
+    },
+    {
+      "path": "coco-v144-core.js",
+      "bytes": 14438,
+      "sha256": "0cdedc41f92db4b6aead20de16c040c3dbaf4175f56848798acc6b1e53a9b4a5"
+    },
+    {
+      "path": "coco-v144-professional.css",
+      "bytes": 27547,
+      "sha256": "b020f51f3c637b79153cf1d67029dc598af88dc98d4776fc41b3f594b29c53cd"
+    },
+    {
+      "path": "coco-v147-refinements.css",
+      "bytes": 19309,
+      "sha256": "082718d7a1572b3b4b491bef357ddb4e717e568cebc40c1fc4a2733e673eaf7c"
+    },
+    {
+      "path": "coco-v149-refinements.css",
+      "bytes": 6719,
+      "sha256": "1b6c38f41354bdcf928bcf9594e28a61a9b0f360880c8498a937b8f8cae60e9b"
+    },
+    {
+      "path": "coco-v152-padel.js",
+      "bytes": 95559,
+      "sha256": "3c04e8209ac5a13590710cb2366df9119fac78e10ef4447ad1b488cf905b3393"
+    },
+    {
+      "path": "coco-v152-refinements.css",
+      "bytes": 24903,
+      "sha256": "7ef0ed05c2421d04258e185b01fbc830a83cef4c6e642efc9e72b0e64e54bea6"
+    },
+    {
+      "path": "coco-v153-fixes.js",
+      "bytes": 2794,
+      "sha256": "45d18ce1ce53761900d207988fb985c59af149ea0d7aa955d70ed1200eb0d580"
+    },
+    {
+      "path": "coco-v153-release.css",
+      "bytes": 2650,
+      "sha256": "e2204af8212553e27109517749b8ba494deec6e1129b05ccfdf4302faf6e5c0e"
+    },
+    {
+      "path": "coco-v155-identity.js",
+      "bytes": 5239,
+      "sha256": "f7ebb95a0e80e8293bbfbcef5a7b127b1d590619745a84b5a25352a9a96640ba"
+    },
+    {
+      "path": "eterna-curriculum-seed-v159.sql",
+      "bytes": 5002,
+      "sha256": "f4932dabf8b000a4855b81c3bb96a30942fe268fce1ace3f0cbf79854c5d7202"
+    },
+    {
+      "path": "eterna-v159.css",
+      "bytes": 14663,
+      "sha256": "5bb1baa5d96eab205df8e9b8e841a4246fd67d2a91bcdb9be1512dc1d626bbad"
+    },
+    {
+      "path": "eterna-v159.js",
+      "bytes": 36397,
+      "sha256": "0663eb0acc18ccae956adddd55c1de7c66891a1aa91658f748cb33ed27a90f6e"
+    },
+    {
+      "path": "eterna-worker/README.md",
+      "bytes": 2125,
+      "sha256": "bc38f3cb4699884aebc3212994009ed778980c6d34109ab642842009d16d0da3"
+    },
+    {
+      "path": "eterna-worker/package.json",
+      "bytes": 276,
+      "sha256": "3c165d88d96e045e274500bc7898f7a04665a871b2cbf9e4c64450f03766ea57"
+    },
+    {
+      "path": "eterna-worker/src/index.js",
+      "bytes": 39352,
+      "sha256": "e27fc9e4dc8125df2cf119d4136c250982919bb6473effe03702f044c3d2f775"
+    },
+    {
+      "path": "eterna-worker/wrangler.jsonc",
+      "bytes": 561,
+      "sha256": "fea7278153c08aca9d3b6e3b7f83da21a36519c38e3bb0efa44fce53e3929656"
+    },
+    {
+      "path": "favicon.png",
+      "bytes": 5912,
+      "sha256": "243fd8d68d9ab9b27335f545420489992a1e94757134818d84e89f845151a5fc"
+    },
+    {
+      "path": "icon-192.png",
+      "bytes": 71035,
+      "sha256": "3d62b95d88c5365eda541d069bbd6c31496a78c5dea1393c56727764880fc21b"
+    },
+    {
+      "path": "icon-512.png",
+      "bytes": 335366,
+      "sha256": "2333e57a869cea8888ded68394e28a268280565ea15bbdf1cbcf24fd00d2c36f"
+    },
+    {
+      "path": "icon-maskable-192.png",
+      "bytes": 41301,
+      "sha256": "612e98c937d2a77d1b232d592aca690edf101a0c27fbd2392fa4786ee1c8b505"
+    },
+    {
+      "path": "icon-maskable-512.png",
+      "bytes": 210051,
+      "sha256": "4501fa429b6663476a2c7790d5d5e57088adde41aa60da98339b0be6d99ffb4d"
+    },
+    {
+      "path": "index.html",
+      "bytes": 4999567,
+      "sha256": "c98deb4f7abbf0c6d210283518497cc5d44212a45f82d67a8745a75705adf902"
+    },
+    {
+      "path": "juego/calculo/index.html",
+      "bytes": 1907,
+      "sha256": "9d9fbdf2cbd24f33eb06388e7c2f175b1d052e607eadabaef39b398e1d983bc5"
+    },
+    {
+      "path": "juego/cocomed/index.html",
+      "bytes": 2066,
+      "sha256": "cd518954d76c01d471d68f9626a491f025108ef06fb37c339ee29edf7e5fcbfb"
+    },
+    {
+      "path": "juego/crucigrama/index.html",
+      "bytes": 1916,
+      "sha256": "8af541fbe7ad5dad6694fa06aeec56e381d39ba55526fb8ea8459b916503efee"
+    },
+    {
+      "path": "juego/futbol/index.html",
+      "bytes": 1963,
+      "sha256": "47e23b30740081b2310a4c9a728b010d760d18a09a058b73f95a6efc9fbcd959"
+    },
+    {
+      "path": "juego/memoria/index.html",
+      "bytes": 1841,
+      "sha256": "d05aa4f47cf580e01195e544aad7a97f9fb949b8ff8d51b2a37f6d29eac26e62"
+    },
+    {
+      "path": "juego/numeros/index.html",
+      "bytes": 2111,
+      "sha256": "f74c956f0c7facab3f5faf8e896f60064005326a06500944ad6210281eac2c3b"
+    },
+    {
+      "path": "juego/padel/index.html",
+      "bytes": 2022,
+      "sha256": "c3acef06bc8269f0fab3a5a26f264947576b84102ed8cf74c061854910341c4f"
+    },
+    {
+      "path": "juego/palabras/index.html",
+      "bytes": 1959,
+      "sha256": "3b9b6c27181a36b13367d5155513fa04934c2cf5cbd59cdd9f6966502e9137ff"
+    },
+    {
+      "path": "juego/series/index.html",
+      "bytes": 1909,
+      "sha256": "6a43f5388461dfdda58d0dc17da8a9e0c344acbfc9f0df5bbde11cd0e68f7aa6"
+    },
+    {
+      "path": "juego/sopa/index.html",
+      "bytes": 1880,
+      "sha256": "4cfadb3100b21f71616873f63c2b4ec77a4f772128ee8a11ffaf3f49e93d61bb"
+    },
+    {
+      "path": "juego/sudoku/index.html",
+      "bytes": 1867,
+      "sha256": "345e9c80709e6afa5dff62504babaff08ddacfcdaa5cafd139798c418f859460"
+    },
+    {
+      "path": "juego/tiempo/index.html",
+      "bytes": 1897,
+      "sha256": "128cd8cd1174765fe9079213050993632624a5511ccf1d1fe48ff321e2f0c9dd"
+    },
+    {
+      "path": "juego/verdadero/index.html",
+      "bytes": 1948,
+      "sha256": "11ffe47e39c0b4efc351a1cb4dff3420893925945b4376a88b2961544612be84"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 1607,
+      "sha256": "3055e58e18a479226102c466ce4cf5b8a58d3ab97f6f6d5cd4343e159df33f3e"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "bytes": 1607,
+      "sha256": "3055e58e18a479226102c466ce4cf5b8a58d3ab97f6f6d5cd4343e159df33f3e"
+    },
+    {
+      "path": "share/calculo.jpg",
+      "bytes": 33435,
+      "sha256": "42661002145cb1f8f678d7d7ae1b4e604a342012b98066fd45c91d79123229ac"
+    },
+    {
+      "path": "share/cocomed.jpg",
+      "bytes": 35239,
+      "sha256": "2da8cc588f2228b557acf6e69996a5f0aebf940121cecc9f41053c232e6a2dbc"
+    },
+    {
+      "path": "share/crucigrama.jpg",
+      "bytes": 32016,
+      "sha256": "45b6b3b30c6e83804014519fe8108833693236a0ed0b75d5527b200f104fe293"
+    },
+    {
+      "path": "share/eterna.png",
+      "bytes": 318244,
+      "sha256": "b4c549eb71f4463aa0ac2ae5d555d933777cabfd0dadcaced03b5281cf18d446"
+    },
+    {
+      "path": "share/futbol.jpg",
+      "bytes": 34052,
+      "sha256": "6f3ed718f7329a5aaa68fcae99ff518bfa8c5503177df6b1d6bd6c44c1a12ad7"
+    },
+    {
+      "path": "share/memoria.jpg",
+      "bytes": 30901,
+      "sha256": "b973a193b4705455edcada8d7fa4d87872d39fc64793e29700652bc621285f96"
+    },
+    {
+      "path": "share/numeros.jpg",
+      "bytes": 34711,
+      "sha256": "9f7a586659d76487b2c1f56176c4ed5720d2f892356734cbc9ebaa7042842774"
+    },
+    {
+      "path": "share/padel.jpg",
+      "bytes": 31144,
+      "sha256": "94484c242e3448a35c983a2a1f9435d7d6c081b14c5c9650d32949503a9f678a"
+    },
+    {
+      "path": "share/palabras.jpg",
+      "bytes": 33554,
+      "sha256": "c2e29b399c7aa6c88456da7091ea5b39bc2b63d5a279300969e4e4abec5cc4af"
+    },
+    {
+      "path": "share/series.jpg",
+      "bytes": 27805,
+      "sha256": "8accf3f4fd32a101668f686872193b07f885c28250a707583d988177be22726d"
+    },
+    {
+      "path": "share/sopa.jpg",
+      "bytes": 35973,
+      "sha256": "690edc1ff98988e01660961debd9fe6a12d4c49c8d1b38d08a475cd510056aac"
+    },
+    {
+      "path": "share/sudoku.jpg",
+      "bytes": 37330,
+      "sha256": "0553111c2adb21884f02b9653c63ecac5e7d5cfb16d731471bb06541d1074df0"
+    },
+    {
+      "path": "share/tiempo.jpg",
+      "bytes": 34899,
+      "sha256": "084cb30509c14b8d6b031538a0c2dd4f9168552261888c8533718dfb91ee4c46"
+    },
+    {
+      "path": "share/verdadero.jpg",
+      "bytes": 28217,
+      "sha256": "e5362085979816a51150db2f63a54d916172f326a8983afc50f2380a0a55363b"
+    },
+    {
+      "path": "shortcut-icon.png",
+      "bytes": 21054,
+      "sha256": "f697a19883dbb9f2d2489e9da85783214aba604316cf27ca700dbcf8227437a9"
+    },
+    {
+      "path": "supabase-coco-v153-rollback.sql",
+      "bytes": 3218,
+      "sha256": "057998bc07af83dd90977ddfc767e8eb4509af63b6282b166bdf6af035dcb4be"
+    },
+    {
+      "path": "supabase-coco-v153.sql",
+      "bytes": 8206,
+      "sha256": "66b7d3a06e4934356942c9efff559a56d53797c0594f966a63d3acb00371a278"
+    },
+    {
+      "path": "supabase-eterna-v159-rollback.sql",
+      "bytes": 844,
+      "sha256": "5517529a5718511ca08b0769c7b6923d0e16f9201c3bcbc89a9f46f24e8ecd25"
+    },
+    {
+      "path": "supabase-eterna-v159.sql",
+      "bytes": 13984,
+      "sha256": "559d9b4129fe2f6d2638a96d95cc09dea40bb13ec5f2418642b5f18345de7ce5"
+    },
+    {
+      "path": "supabase-js-2.112.3.min.js",
+      "bytes": 212199,
+      "sha256": "cf529fe8980cbe6f2dd3e3930ecf96352ed3d3d71233b6760e4f927f89b94b9f"
+    },
+    {
+      "path": "sw.js",
+      "bytes": 3458,
+      "sha256": "1da96a4d47ffd54e28a608c40fc38160dbd48243c76396bc32fc5f4740f72125"
+    },
+    {
+      "path": "tools/qa-v159.mjs",
+      "bytes": 3719,
+      "sha256": "d1e99352d1a004ab479bb9d71111d9dcbc4fee23754b71a26c4a1cf659a86c7e"
+    },
+    {
+      "path": "tools/worker-smoke-v159.mjs",
+      "bytes": 6452,
+      "sha256": "4b7e524ad91bc7ce1f101590aa32a90ed0f2d2e64256611d78f6d791ebf6ad5e"
+    }
+  ]
+}

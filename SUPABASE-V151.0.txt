@@ -1,0 +1,13 @@
+COCO EN FORMA v151.0 — SUPABASE
+
+NO HAY UNA MIGRACIÓN NUEVA DE SUPABASE PARA v151.0.
+
+Esta versión conserva:
+- las funciones de clasificación instaladas con v150.0;
+- la tabla de partidas y sus políticas;
+- la persistencia existente de Coco Pádel en coco_padel_club_state;
+- la estructura de perfiles/usuarios.
+
+Coco Pádel guarda la nueva información de sets y estadísticas dentro del JSON de estado ya existente, por lo que no requiere nuevas columnas ni tablas.
+
+El archivo supabase-coco-v150.sql se conserva como referencia de la versión base. Si ya fue ejecutado correctamente en tu proyecto, NO es necesario volver a ejecutarlo para v151.0.

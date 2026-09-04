@@ -1,0 +1,99 @@
+/* Coco en Forma v146.0 — estabilidad visual, flujo mobile-first y QA */
+html.cocoV144Open,body.cocoV144Open{width:100%!important;max-width:100vw!important;overflow-x:clip!important}
+.cocoV144Modal,.cocoV144Shell{max-width:100vw}
+
+/* Runner: depth, continuous forward motion and readable targets */
+.c144RunnerStage{isolation:isolate;transition:background .7s ease}
+.c144RunnerStage[data-segment="2"]{background:linear-gradient(#75cdf8 0 38%,#d6ecdf 38% 42%,#183a58 42% 100%)}
+.c144RunnerStage[data-segment="3"]{background:linear-gradient(#8498e8 0 38%,#dddbf4 38% 42%,#182f4c 42% 100%)}
+.c144RunnerSky{animation:c145SkyBreath 7s ease-in-out infinite alternate}
+.c145Parallax{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.c145Parallax i{position:absolute;display:block;left:var(--x);bottom:var(--bottom);width:var(--size);height:calc(var(--size)*1.65);border-radius:46% 46% 18% 18%;background:linear-gradient(90deg,#1d5c71,#3f8997 52%,#184a61);box-shadow:0 0 0 5px rgba(231,250,255,.24);opacity:.78;animation:c145SceneryApproach var(--speed) linear infinite;animation-delay:var(--delay)}
+.c145Parallax i:before{content:"";position:absolute;left:50%;top:-35%;width:145%;height:55%;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle at 50% 70%,#5eb69b 0 32%,#1c746d 34% 68%,transparent 70%)}
+.c145ParallaxFar i:nth-child(1){--x:7%;--bottom:43%;--size:30px;--speed:8.6s;--delay:-7s}.c145ParallaxFar i:nth-child(2){--x:88%;--bottom:42%;--size:34px;--speed:9.4s;--delay:-3s}.c145ParallaxFar i:nth-child(3){--x:16%;--bottom:39%;--size:26px;--speed:8s;--delay:-1s}.c145ParallaxFar i:nth-child(4){--x:78%;--bottom:40%;--size:29px;--speed:9s;--delay:-5s}
+.c145ParallaxNear{z-index:2}.c145ParallaxNear i{filter:saturate(1.12);opacity:.92}
+.c145ParallaxNear i:nth-child(1){--x:2%;--bottom:18%;--size:58px;--speed:4.2s;--delay:-3.5s}.c145ParallaxNear i:nth-child(2){--x:91%;--bottom:15%;--size:62px;--speed:4.8s;--delay:-1s}.c145ParallaxNear i:nth-child(3){--x:9%;--bottom:27%;--size:48px;--speed:5.3s;--delay:-4.2s}.c145ParallaxNear i:nth-child(4){--x:84%;--bottom:25%;--size:52px;--speed:4.5s;--delay:-2.1s}
+.c144Road{z-index:2;background:linear-gradient(90deg,#18384a 0 32.8%,#eaf7f7 33% 33.5%,#18384a 33.7% 66.1%,#eaf7f7 66.3% 66.8%,#18384a 67% 100%);overflow:hidden}
+.c144Road:before,.c144Road:after{animation:c145RoadEdge .56s linear infinite}
+.c145RoadFlow{position:absolute;inset:-70% 0 0;background:repeating-linear-gradient(0deg,transparent 0 68px,rgba(255,255,255,.12) 70px 76px,transparent 78px 138px);animation:c145RoadFlow .52s linear infinite}
+.c145RoadFlow i{position:absolute;top:0;bottom:0;width:4px;background:repeating-linear-gradient(0deg,rgba(255,255,255,.12) 0 30px,rgba(255,255,255,.86) 30px 62px,rgba(255,255,255,.12) 62px 95px);animation:c145LaneDash .44s linear infinite}
+.c145RoadFlow i:nth-child(1){left:16.5%}.c145RoadFlow i:nth-child(2){left:50%}.c145RoadFlow i:nth-child(3){left:83.5%}
+.c145SideSignals{position:absolute;inset:0;z-index:3;pointer-events:none}.c145SideSignals i{position:absolute;top:-14%;width:5px;height:28px;border-radius:4px;background:#fff0a0;box-shadow:0 0 16px 5px rgba(255,225,108,.55);animation:c145SignalRush 2.1s linear infinite}.c145SideSignals i:nth-child(1){left:12%;animation-delay:-.2s}.c145SideSignals i:nth-child(2){right:11%;animation-delay:-1.2s}.c145SideSignals i:nth-child(3){left:22%;animation-delay:-1.7s}.c145SideSignals i:nth-child(4){right:22%;animation-delay:-.7s}
+.c144RunnerCocoPlay{transform-origin:50% 100%;will-change:transform,bottom}
+.c144RunnerCocoPlay img{position:relative;z-index:2;transform-origin:50% 82%}
+.c145CocoShadow{position:absolute;z-index:1;left:15%;right:15%;bottom:1%;height:9%;border-radius:50%;background:rgba(1,15,25,.48);filter:blur(5px)}
+.c144RunnerCocoPlay.jump .c145CocoShadow{transform:scale(.55);opacity:.45}.c144RunnerCocoPlay.duck .c145CocoShadow{transform:scaleX(1.2)}
+.c144RunnerObject{z-index:4;animation:c145TargetArrive .22s ease-out}.c144RunnerObject.correct,.c144RunnerObject.distractor{box-shadow:0 10px 24px rgba(3,27,44,.28)}
+.c144RunnerObject.c145Gate{width:118px;height:82px;border-width:5px 5px 12px;border-radius:22px 22px 8px 8px;font-size:21px;background:linear-gradient(145deg,#fff,#dff6ff 75%,#2d7ea2 76%)}
+.c144RunnerMessage[data-tone="good"]{background:#efffdc;color:#285515}.c144RunnerMessage[data-tone="bad"]{background:#fff2e9;color:#8b3c11}
+
+@keyframes c145SkyBreath{to{filter:saturate(1.08) brightness(1.04)}}
+@keyframes c145SceneryApproach{0%{transform:translateY(-16vh) scale(.45);opacity:0}12%{opacity:.72}100%{transform:translateY(72vh) scale(1.65);opacity:0}}
+@keyframes c145RoadFlow{to{transform:translateY(138px)}}
+@keyframes c145LaneDash{to{background-position-y:95px}}
+@keyframes c145RoadEdge{to{background-position-y:70px}}
+@keyframes c145SignalRush{0%{transform:translateY(-10vh) scale(.35);opacity:0}15%{opacity:.8}100%{transform:translateY(108vh) scale(1.8);opacity:0}}
+@keyframes c145TargetArrive{from{opacity:0;filter:blur(5px)}}
+
+/* Padel v145 shared mobile foundations; module-specific layout follows in JS classes. */
+.c145Padel{width:min(1180px,100%);margin:auto;padding:18px}.c145Padel *{box-sizing:border-box}.c145Padel button,.c145Padel input,.c145Padel select{font:inherit}.c145Padel button{min-height:44px}.c145PadelTabs{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:7px;margin:0 0 14px;border:1px solid #dbe8ee;border-radius:17px;background:rgba(255,255,255,.96);box-shadow:0 8px 24px rgba(15,55,78,.08);backdrop-filter:blur(10px)}.c145PadelTabs button{min-width:0;padding:8px 5px;border:0;border-radius:12px;background:transparent;color:#436173;font-weight:900;cursor:pointer}.c145PadelTabs button.active{background:#155f84;color:#fff;box-shadow:0 5px 14px rgba(21,95,132,.24)}
+.c145FlowSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 12px}.c145FlowSteps span{min-width:0;padding:9px 7px;border-radius:12px;background:#edf4f7;color:#617887;font-size:12px;font-weight:900;text-align:center}.c145FlowSteps span.active{background:#e2f5ff;color:#125b7f;box-shadow:inset 0 -3px #2da8dc}.c145MixingSetup{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.c145MixingEmpty{min-height:230px;display:grid;place-items:center}.c145AddPlayer{margin:12px 0 16px;padding:15px;border:2px solid #b9deed;border-radius:16px;background:#f2fbff}.c145AddPlayer h4{margin:0 0 10px;color:#164f6e}.c145PlayerFilters{grid-template-columns:minmax(180px,1fr) minmax(120px,.45fr) minmax(120px,.45fr)!important}.c145DirectorySummary{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:13px 0 8px;padding:9px 12px;border-radius:12px;background:#eff6f8;color:#4f6a7a}.c145DirectorySummary span{font-size:12px}.c145PlayerDirectory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.c145PlayerAdmin{min-width:0;padding:14px;border:1px solid #d8e6ec;border-radius:17px;background:#fff;box-shadow:0 6px 18px rgba(18,62,86,.06)}.c145PlayerAdmin.inactive{background:#f3f5f6;opacity:.78}.c145PlayerIdentity{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px}.c145PlayerIdentity>button{min-width:0;padding:5px;border:0;background:transparent;color:#183f57;text-align:left;cursor:pointer}.c145PlayerIdentity>button b,.c145PlayerIdentity>button span,.c145PlayerIdentity>div b,.c145PlayerIdentity>div span{display:block}.c145PlayerIdentity>button b{overflow:hidden;text-overflow:ellipsis;font-size:17px}.c145PlayerIdentity>button span{margin-top:3px;color:#647b89;font-size:12px}.c145PlayerIdentity>div{min-width:68px;padding:8px 10px;border-radius:12px;background:#eaf7ff;color:#155f84;text-align:center}.c145PlayerIdentity>div b{font-size:20px}.c145PlayerIdentity>div span{font-size:10px;font-weight:800;text-transform:uppercase}.c145PlayerAdminActions{display:grid;grid-template-columns:minmax(112px,.8fr) repeat(2,minmax(108px,1fr));align-items:end;gap:7px;margin-top:11px}.c145PlayerAdminActions .c144Field{min-width:0}.c145PlayerAdminActions button{min-width:0;padding:7px;font-size:12px}.c145PlayerAdminActions select{width:100%}
+
+@media(max-width:820px){.c145PlayerDirectory{grid-template-columns:1fr}.c145PlayerAdminActions{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){.c145Padel{padding:10px}.c145PadelTabs{top:0;margin-bottom:10px}.c145PlayerFilters{grid-template-columns:1fr!important}.c145DirectorySummary{align-items:flex-start;flex-direction:column}.c145PlayerAdminActions{grid-template-columns:1fr 1fr}.c145PlayerAdminActions .c144Field{grid-column:1/-1}.c144RunnerCocoPlay{width:clamp(96px,29vw,145px);height:clamp(145px,43vw,220px)}.c145ParallaxNear i:nth-child(n+3){display:none}.c144RunnerObject.c145Gate{width:92px;height:68px;font-size:17px}.c145SideSignals i:nth-child(n+3){display:none}}
+@media(max-width:430px){.c145FlowSteps{gap:3px}.c145FlowSteps span{padding:8px 3px;font-size:10px}.c145MixingSetup{grid-template-columns:1fr}.c145PlayerIdentity{grid-template-columns:minmax(0,1fr) 64px}.c145PlayerAdminActions{grid-template-columns:1fr}.c145PlayerAdminActions .c144Field{grid-column:auto}.c145PlayerAdminActions button{width:100%}.c145PadelTabs button{padding-inline:3px;font-size:14px}}
+@media(max-width:360px){.c145Padel{padding:7px}.c145PadelTabs{gap:3px;padding:5px}.c145PadelTabs button{font-size:11px;padding:6px 2px}.c144RunnerCocoPlay{width:94px;height:144px}}
+@media(prefers-reduced-motion:reduce){.c145Parallax i,.c145RoadFlow,.c145RoadFlow i,.c144Road:before,.c144Road:after,.c145SideSignals i,.c144RunnerSky{animation:none!important}}
+
+/* Runner v146: Coco queda estable; el avance vive en el escenario. */
+.c144RunnerStage{background:linear-gradient(#72d9ff 0 36%,#d7f5ee 36% 42%,#153f55 42% 100%)}
+.c144RunnerSky{filter:brightness(1.08) saturate(1.05)}
+.c144Road{box-shadow:0 0 90px rgba(2,15,26,.38),inset 0 0 46px rgba(100,220,255,.08)}
+.c144RunnerCocoPlay{transform-origin:50% 100%;will-change:transform,bottom;transition:transform .16s cubic-bezier(.2,.85,.3,1),bottom .16s ease!important}
+.c144RunnerCocoPlay img{animation:none!important;transform:none!important;transition:transform .16s ease,filter .16s ease;will-change:auto}
+.c145CocoShadow{animation:none!important;opacity:.72;transform:none!important}
+.c144RunnerCocoPlay.lean-left img,.c144RunnerCocoPlay.lean-right img{animation:none!important;transform:none!important}
+.c144RunnerCocoPlay.jump{bottom:15%!important}
+.c144RunnerCocoPlay.jump img{animation:none!important;transform:none!important}
+.c144RunnerCocoPlay.duck{height:clamp(155px,24vw,310px)!important;bottom:3%!important}
+.c144RunnerCocoPlay.duck img{animation:none!important;transform:translateY(15px) scale(.84)!important}
+.c144RunnerCocoPlay.hit{animation:c146HitFlash .34s ease!important}
+.c144RunnerObject.runner-token{box-shadow:0 10px 24px rgba(3,27,44,.28)}
+.c144RunnerObject.correct{box-shadow:0 10px 24px rgba(3,27,44,.28)!important}
+.c144Rule{font-size:clamp(13px,2vw,18px);line-height:1.2;border:2px solid rgba(255,255,255,.8)}
+.c146RunnerScore{display:inline-grid;place-items:center;margin:13px auto;padding:14px 26px;border-radius:18px;background:linear-gradient(135deg,#173f59,#2c88b4);color:#fff;box-shadow:0 12px 28px rgba(15,63,91,.22)}
+.c146RunnerScore b,.c146RunnerScore span{display:block}.c146RunnerScore b{font-size:clamp(34px,7vw,54px);line-height:1}.c146RunnerScore span{margin-top:5px;font-size:11px;font-weight:900;letter-spacing:.08em}
+.c146RunnerSave{padding:11px 14px;border-radius:13px;background:#eaf8ee;color:#246542;font-weight:800}.c146RunnerSave.error{background:#fff0f1;color:#9d2834}
+@keyframes c146HitFlash{0%,100%{filter:none}50%{filter:sepia(.5) saturate(1.35)}}
+
+/* Diferencias v146: tres familias naturales y paneles luminosos. */
+.c144DiffTypes{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.c144DiffPanel{box-shadow:0 10px 28px rgba(22,77,105,.1)}
+.c144DiffScene canvas{filter:none!important}
+.c144DiffHit{min-width:44px;min-height:44px;pointer-events:none}
+
+@media(max-width:430px){.c144RunnerHud{inset:8px 7px auto;grid-template-columns:auto minmax(0,1fr) auto}.c144Rule{max-width:none;padding:9px 8px}.c144RunnerHud>div:first-child{gap:3px}.c144HudPill{padding:7px 8px}.c144RunnerCocoPlay.duck{height:clamp(145px,43vw,220px)!important}.c144DiffTypes{grid-template-columns:1fr!important}}
+@media(max-width:390px){.c146RunnerScore{width:min(220px,90%)}.c144RunnerMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:360px){.c144RunnerCocoPlay.duck{height:144px!important}}
+@media(max-width:320px){.c144RunnerHud{gap:4px}.c144Rule{font-size:12px}.c144HudPill{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.c144RunnerCocoPlay,.c144RunnerCocoPlay img{transition:none!important}.c144RunnerCocoPlay.hit{animation:none!important}}
+
+/* Coco Pádel v146: pantallas de entrada limpias y detalles independientes. */
+.c146PadelLanding,.c146FlowPage,.c146ChampDetail{width:min(1120px,100%);margin:0 auto}
+.c146LandingHero{padding:clamp(18px,4vw,32px);display:grid;justify-items:start;gap:8px;background:linear-gradient(135deg,#fff,#edfaff)}
+.c146LandingHero h3{margin:0;font:900 clamp(25px,4vw,38px)/1.05 var(--display,"Arial Black",sans-serif);color:#153f59}.c146LandingHero p{max-width:720px;margin:0 0 8px;color:#587284;line-height:1.5}
+.c146ContinueCard{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;margin-top:14px;padding:20px}.c146ContinueCard h3{margin:4px 0}.c146ContinueCard p{margin:0;color:#60798a}
+.c146LandingNote{margin-top:14px}.c146DetailBack{margin:0 0 12px}.c146DetailBack button{min-height:44px}
+.c146FiveSteps{grid-template-columns:repeat(5,minmax(0,1fr))!important}.c145FlowSteps span.done{background:#e9f7ee;border-color:#8bcfa9;color:#216443}
+.c146FlowActions{margin:12px 0 4px;justify-content:flex-end}.c146ReviewGrid,.c146PlayerMetrics,.c146SessionState{display:grid;gap:8px}
+.c146ReviewGrid{grid-template-columns:repeat(3,minmax(0,1fr));margin:16px 0}.c146ReviewGrid div,.c146PlayerMetrics div{padding:11px;border-radius:12px;background:#edf7fb;text-align:center}.c146ReviewGrid b,.c146ReviewGrid span,.c146PlayerMetrics b,.c146PlayerMetrics span{display:block}.c146ReviewGrid b{font-size:25px}.c146ReviewGrid span,.c146PlayerMetrics span{font-size:10px;color:#60798a;font-weight:900}
+.c146ChampList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.c146ChampCard{display:grid!important;justify-items:start;gap:5px;min-height:132px;padding:15px!important;text-align:left!important}.c146ChampCard>b{font-size:17px}.c146ChampCard small{color:#60798a}.c146ArchivedAccess{margin-top:13px}.c146ArchivedAccess>.c146ChampList{margin-top:10px}
+.c146SecondaryPanel{border:2px solid #cae4ef!important;background:#fbfeff!important}.c146SessionState{grid-template-columns:repeat(2,minmax(0,1fr));margin:10px 0}.c146SessionState span{padding:10px;border-radius:11px;background:#edf7fb;color:#315c73;font-weight:800;text-align:center}
+.c146PlayerDirectory{grid-template-columns:1fr!important}.c146PlayerSummary{display:grid;gap:13px}.c146PlayerMetrics{grid-template-columns:repeat(6,minmax(0,1fr))}.c146PlayerMetrics b{font-size:18px}.c146LevelControl span{font-size:12px;font-weight:900;color:#31566d}.c146PlayerSummary.inactive{opacity:.72}
+.c144Padel button,.c144Padel input,.c144Padel select{min-height:44px}.c144Padel *{min-width:0}.c144PadelPage{overflow-x:hidden}.c144Padel [hidden]{display:none!important}
+.c144PadelMark svg{display:block;width:38px;height:38px}
+
+@media(max-width:820px){.c146ContinueCard{grid-template-columns:1fr}.c146ChampList{grid-template-columns:1fr}.c146PlayerMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.c146FiveSteps{gap:3px!important}.c146FiveSteps span{padding:8px 2px!important;font-size:9px!important}.c146ContinueCard .c144Actions,.c146FlowActions{display:grid;grid-template-columns:1fr;width:100%}.c146ContinueCard .c144Actions button,.c146FlowActions button{width:100%}.c146SessionState{grid-template-columns:1fr}.c146ChampDetail .c144ChampHeader,.c146ChampDetail .c144PadelPanelHead{display:grid}.c146ChampDetail .c144PadelPanelHead>.c144Field,.c146ChampDetail .c144Actions{width:100%}.c146ChampDetail .c144Actions button{flex:1 1 100%}}
+@media(max-width:390px){.c146ReviewGrid{grid-template-columns:1fr 1fr}.c146PlayerMetrics{grid-template-columns:repeat(3,minmax(0,1fr))}.c146LandingHero,.c146ContinueCard{padding:15px}.c146ChampCard{min-height:116px}}
+@media(max-width:320px){.c146FiveSteps span{font-size:8px!important}.c146PlayerMetrics{gap:5px}.c146PlayerMetrics div{padding:8px 4px}}

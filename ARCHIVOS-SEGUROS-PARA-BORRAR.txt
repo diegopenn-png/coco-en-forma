@@ -1,0 +1,212 @@
+COCO EN FORMA v155.0 — ACTUALIZACIÓN DE LIMPIEZA
+Fecha: 20/08/2026
+Base actual: v154.0
+
+NOVEDAD v155
+La identidad de cada juego usa ahora un único archivo físico estable: share/<id>.jpg.
+Después de publicar v155 y comprobar que funciona, si todavía existen en GitHub se pueden borrar estos 13 archivos antiguos:
+- share/numeros-v154.jpg
+- share/calculo-v154.jpg
+- share/palabras-v154.jpg
+- share/series-v154.jpg
+- share/memoria-v154.jpg
+- share/sudoku-v154.jpg
+- share/sopa-v154.jpg
+- share/crucigrama-v154.jpg
+- share/tiempo-v154.jpg
+- share/verdadero-v154.jpg
+- share/futbol-v154.jpg
+- share/cocomed-v154.jpg
+- share/padel-v154.jpg
+
+NO BORRAR EN v155:
+- share/numeros.jpg ... share/padel.jpg (13 miniaturas oficiales activas)
+- coco-v155-identity.js (capa activa que unifica catálogo/inicio/compartir)
+
+--- HISTÓRICO DE LIMPIEZA v153 ---
+COCO EN FORMA v153.0 — AUDITORÍA DE LIMPIEZA
+Fecha: 20/08/2026
+Base auditada: Coco-en-Forma-v152.0-listo-para-GitHub(1).zip
+
+RESUMEN
+- Archivos en la v152 adjunta: 337
+- Archivos en la v153 final (incluyendo documentación): 59
+- Rutas de la v152 que ya no forman parte de v153: 300
+- Rutas nuevas propias de v153: 22
+- Reducción neta de número de archivos: 278
+- Tamaño sin comprimir v152: 49.789.045 bytes (47,48 MiB)
+- Tamaño sin comprimir v153: aproximadamente 8,10 MiB
+- Reducción neta: aproximadamente 39,38 MiB (≈83 %)
+
+CRITERIO UTILIZADO
+No se borró por nombre o antigüedad. Se comprobaron referencias desde index.html, JavaScript activo, CSS activo,
+manifest, service worker, páginas sociales y rutas directas. Los CSS/JS con nombres antiguos que todavía están
+referenciados se conservan porque contienen código activo de la aplicación actual.
+
+A. SE PUEDEN BORRAR
+Estos elementos estaban en el ZIP v152 y ya no son necesarios en la distribución v153:
+
+1) Juegos retirados y recursos exclusivos
+- juego/coco-corre/ (carpeta completa)
+- juego/diferencias/ (carpeta completa)
+- scenes/ (carpeta completa)
+- coco-v144-runner.js
+- coco-v151-runner.js
+- coco-v152-runner.js
+- coco-v144-differences.js
+- coco-v151-differences.js
+- coco-v152-differences.js
+- coco-v2-runner-v144.png
+- share/cococorre-v149.png
+- share/diferencias-v149.png
+- share/diferencias.png
+
+2) Miniaturas sociales antiguas sustituidas por v153 optimizadas
+- share/numeros-v149.png
+- share/calculo-v149.png
+- share/palabras-v149.png
+- share/series-v149.png
+- share/memoria-v149.png
+- share/sudoku-v149.png
+- share/sopa-v149.png
+- share/crucigrama-v149.png
+- share/tiempo-v149.png
+- share/verdadero-v149.png
+- share/futbol-v149.png
+- share/cocomed-v149.png
+- share/padel-v149.png
+- share/coco-en-forma-v149.png
+- share/social-backdrop-v149.png
+
+3) Módulos sustituidos por versiones activas
+- coco-v144-padel.js
+- coco-v151-padel.js
+- coco-v152-fixes.js
+- coco-v146-refinements.css
+- coco-v151-refinements.css
+
+4) Recursos duplicados/no utilizados
+- app-icon-192.png
+- app-icon-512.png
+- coco-v2-official-icon-source.png
+
+5) QA/evidencias de desarrollo que no necesitan publicarse
+- qa/ (carpeta completa)
+
+6) SQL históricos sustituidos por la migración v153 y su rollback autocontenido
+- supabase-coco-v144.sql
+- supabase-coco-v144-rollback.sql
+- supabase-coco-v149.sql
+- supabase-coco-v149-rollback.sql
+- supabase-coco-v150.sql
+- supabase-coco-v150-rollback.sql
+- SUPABASE-V151.0.txt
+- SUPABASE-V152.0.txt
+
+7) Documentación, manifiestos y checksums de entregas antiguas
+- ARCHIVOS-V145.0.md a ARCHIVOS-V149.0.md
+- CAMBIOS-V144.0.md, CAMBIOS-V150.0.md, CAMBIOS-V151.0.md, CAMBIOS-V152.0.md
+- ENTREGA-V145.0.md a ENTREGA-V149.0.md
+- INFORME-ENTREGA-V144.0.md
+- INVENTARIO-CONTENIDO-V144.0.md
+- LEEME-RESPALDO-Y-PRUEBA-V144.0.txt a LEEME-RESPALDO-Y-PRUEBA-V149.0.txt
+- LEEME-V150.0.txt, LEEME-V151.0.txt, LEEME-V152.0.txt
+- PRUEBAS-V144.0.md a PRUEBAS-V152.0.md
+- RELEASE-MANIFEST-v144.0.json a RELEASE-MANIFEST-v152.0.json
+- SHA256SUMS-v144.0.txt y SHA256SUMS-v146.0.txt a SHA256SUMS-v152.0.txt
+
+IMPORTANTE PARA GITHUB
+Si cualquiera de los elementos del apartado A sigue en el repositorio después de subir v153, se puede borrar.
+No hace falta conservar scenes/. La nueva distribución completa tiene 59 archivos.
+
+B. NO BORRAR
+Aunque algunos nombres incluyan números de versiones anteriores, estos archivos siguen activos y están
+referenciados por v153:
+
+Núcleo/PWA
+- index.html
+- sw.js
+- manifest.webmanifest
+- manifest.json
+- _headers
+- supabase-js-2.112.3.min.js
+- SUPABASE-JS-LICENSE.txt
+
+JavaScript activo
+- coco-v142-content-extension.js
+- coco-v142-runtime.js
+- coco-v142-unified.js
+- coco-v144-content.js
+- coco-v144-core.js
+- coco-v152-padel.js
+- coco-v153-fixes.js
+
+CSS activo
+- coco-v144-professional.css
+- coco-v147-refinements.css
+- coco-v149-refinements.css
+- coco-v152-refinements.css
+- coco-v153-release.css
+
+Iconos PWA/web
+- favicon.png
+- icon-192.png
+- icon-512.png
+- icon-maskable-192.png
+- icon-maskable-512.png
+- apple-touch-icon.png
+- shortcut-icon.png
+
+Páginas sociales directas — conservar las 13
+- juego/numeros/index.html
+- juego/calculo/index.html
+- juego/palabras/index.html
+- juego/series/index.html
+- juego/memoria/index.html
+- juego/sudoku/index.html
+- juego/sopa/index.html
+- juego/crucigrama/index.html
+- juego/tiempo/index.html
+- juego/verdadero/index.html
+- juego/futbol/index.html
+- juego/cocomed/index.html
+- juego/padel/index.html
+
+Miniaturas sociales v153 — conservar las 13
+- share/numeros-v153.jpg
+- share/calculo-v153.jpg
+- share/palabras-v153.jpg
+- share/series-v153.jpg
+- share/memoria-v153.jpg
+- share/sudoku-v153.jpg
+- share/sopa-v153.jpg
+- share/crucigrama-v153.jpg
+- share/tiempo-v153.jpg
+- share/verdadero-v153.jpg
+- share/futbol-v153.jpg
+- share/cocomed-v153.jpg
+- share/padel-v153.jpg
+
+Supabase v153
+- supabase-coco-v153.sql
+- supabase-coco-v153-rollback.sql
+
+Documentación v153
+- ARCHIVOS-SEGUROS-PARA-BORRAR.txt
+- CAMBIOS-V153.0.md
+- PRUEBAS-V153.0.md
+- LEEME-V153.0.txt
+- RELEASE-MANIFEST-v153.0.json
+
+C. REVISAR MANUALMENTE
+- Cualquier archivo que exista actualmente en GitHub pero que NO estuviera dentro del ZIP v152 adjunto.
+- Configuración externa al ZIP: `.github/`, workflows, CNAME/DNS, archivos legales u otros recursos añadidos
+  directamente en GitHub. No borrarlos sin comprobar primero su función.
+- Los enlaces legales absolutos existentes en `index.html` (`/aviso-legal.html`, `/politica-de-privacidad.html`,
+  `/politica-de-cookies.html`, `/proteccion-de-datos.html`, `/terminos-y-condiciones.html`) ya estaban en la base
+  pero esos archivos no venían dentro del ZIP v152. Si existen en GitHub, conservarlos; no se clasifican como
+  borrables porque su contenido remoto no formó parte del ZIP auditado.
+
+REGLA PRÁCTICA
+Después de subir v153, la aplicación publicada necesita los archivos de la v153 y no necesita `scenes/`, `qa/`,
+los módulos de Coco Corre/Diferencias, las miniaturas sociales v149 ni la documentación de entregas antiguas.

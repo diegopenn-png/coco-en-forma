@@ -1,0 +1,85 @@
+{
+  "files": 40,
+  "sizes": {
+    "(768, 512)": 40
+  },
+  "luminance": {
+    "mean": 89.19063428243001,
+    "min": 61.75012969970703,
+    "max": 108.65777333577473
+  },
+  "pairs": 30,
+  "changed_fraction": {
+    "min": 0.023854573567708332,
+    "mean": 0.03800125122070312,
+    "max": 0.0503387451171875
+  },
+  "issues": [],
+  "brightness_vs_v141": {
+    "old_mean": 64.29013646443686,
+    "new_mean": 89.18932139078775,
+    "increase_percent": 38.72940126690241,
+    "scenes": [
+      {
+        "scene": "scene-botanical-greenhouse",
+        "old": 89.82250213623047,
+        "new": 108.55411275227864,
+        "increase_percent": 20.854028968864213
+      },
+      {
+        "scene": "scene-electric-garage",
+        "old": 74.60408782958984,
+        "new": 99.22023264567058,
+        "increase_percent": 32.99570510440228
+      },
+      {
+        "scene": "scene-invention-lab",
+        "old": 72.46004486083984,
+        "new": 95.03233083089192,
+        "increase_percent": 31.151355223975298
+      },
+      {
+        "scene": "scene-music-studio",
+        "old": 54.645423889160156,
+        "new": 83.18651580810547,
+        "increase_percent": 52.22961025398307
+      },
+      {
+        "scene": "scene-observatory",
+        "old": 36.878560384114586,
+        "new": 62.09129333496094,
+        "increase_percent": 68.36691207096773
+      },
+      {
+        "scene": "scene-ocean-lab",
+        "old": 66.13996124267578,
+        "new": 91.67205810546875,
+        "increase_percent": 38.60313248311791
+      },
+      {
+        "scene": "scene-robotics-studio",
+        "old": 71.90047709147136,
+        "new": 98.40702819824219,
+        "increase_percent": 36.86561227271046
+      },
+      {
+        "scene": "scene-space-station",
+        "old": 53.65939076741537,
+        "new": 80.2040786743164,
+        "increase_percent": 49.46885815748077
+      },
+      {
+        "scene": "scene-tech-library",
+        "old": 52.18832143147787,
+        "new": 79.06409962972005,
+        "increase_percent": 51.497686572520806
+      },
+      {
+        "scene": "scene-workshop",
+        "old": 70.60259501139323,
+        "new": 94.46146392822266,
+        "increase_percent": 33.7931897729528
+      }
+    ]
+  }
+}

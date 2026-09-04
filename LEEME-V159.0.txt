@@ -1,0 +1,64 @@
+COCO EN FORMA v159.0 — ETERNA BETA
+
+BASE ÚNICA: v158.0 adjunta. Se ha trabajado de forma aditiva.
+
+IMPORTANTE: v159 está programada y empaquetada, pero NO puede conectarse a OpenAI ni cobrar hasta configurar credenciales externas. No hay secretos reales dentro del ZIP.
+
+ORDEN DE DESPLIEGUE
+
+1. BACKUP
+   Conserva el ZIP v158.0 intacto.
+
+2. SUPABASE
+   Ejecuta `supabase-eterna-v159.sql`.
+   Para probar el pipeline curricular, ejecuta después `eterna-curriculum-seed-v159.sql`.
+   Si necesitas revertir SOLO Eterna: `supabase-eterna-v159-rollback.sql`.
+
+3. CLOUDFLARE WORKER
+   Carpeta: `eterna-worker/`.
+   Configura los secrets enumerados en `eterna-worker/README.md` y despliega.
+   El Worker de Coco Med NO se toca.
+
+4. CONFIGURAR ENDPOINT
+   En `index.html` busca exactamente:
+
+      eternaEndpoint:'https://coco-eterna-v159.chatinmobiliario.workers.dev'
+
+   y pega la URL pública del Worker, por ejemplo:
+
+      eternaEndpoint:'https://coco-eterna-v159.chatinmobiliario.workers.dev'
+
+   La URL no es un secret. No cambies `tutorEndpoint` de Coco Med.
+
+5. STRIPE / BANCO SABADELL (si vas a cobrar ya)
+   Crea producto + Price mensual y Price anual.
+   Configura sus IDs y secretos en el Worker.
+   Añade el webhook `/v1/stripe/webhook`.
+   En Stripe Dashboard configura como cuenta de payouts tu IBAN de Banco Sabadell.
+   La cuenta bancaria NO se guarda en Coco ni en el repositorio.
+
+6. SUBIR A GITHUB
+   Sube el contenido completo de `Coco-en-Forma-v159.0-ETERNA-Beta` sustituyendo la publicación anterior.
+   No borres archivos existentes salvo que estén explícitamente fuera del paquete.
+
+7. PWA
+   El Service Worker pasa a `coco-en-forma-v159.0.0-r1` y precachea los dos módulos de Eterna y su miniatura.
+   Tras publicar, haz recarga completa y prueba instalación/actualización en los dispositivos reales.
+
+8. PRUEBA DE NO REGRESIÓN
+   Ejecuta:
+
+      node tools/qa-v159.mjs
+
+LIMITACIÓN CURRICULAR DECLARADA
+
+La arquitectura para currículo estatal + CCAA está terminada. v159 incluye fuentes estatales y una semilla verificable para probar retrieval. NO se afirma falsamente que los currículos autonómicos 0–18 completos estén ya convertidos concepto por concepto. Mientras falte evidencia curricular suficiente, el Worker está diseñado para pedir material/enunciado en vez de improvisar.
+
+PAGOS
+
+Stripe Checkout + webhook + portal están implementados. PAYCOMET queda preparado a nivel de modelo de datos, pero no se ha simulado una integración sin credenciales/contrato reales.
+
+
+Worker Eterna conectado:
+https://coco-eterna-v159.chatinmobiliario.workers.dev
+Health verificado por el usuario el 21/08/2026: {\"ok\":true,\"service\":\"eterna\",\"version\":\"159.0\"}

@@ -1,0 +1,108 @@
+COCO EN FORMA v149.0 — RESPALDO, PRUEBA Y RESTAURACIÓN
+=======================================================
+
+IMPORTANTE
+----------
+Esta entrega no ha sido publicada ni desplegada. No sustituya la aplicación pública
+hasta haber probado y aprobado expresamente la v149.0.
+
+NO SUBA EL ZIP COMO ÚNICO ARCHIVO A GITHUB
+------------------------------------------
+Para servir la aplicación desde GitHub, descomprima el ZIP y suba el CONTENIDO de la
+carpeta Coco-en-Forma-v149.0 conservando exactamente todas las carpetas y nombres.
+El archivo index.html debe quedar en la raíz publicada junto a sw.js, los módulos,
+manifest.json, share/, juego/, scenes/ y el resto de recursos.
+
+No es necesario conservar dentro de la web la carpeta de copia base-v1480; esa copia
+se entrega por separado en el espacio de trabajo y no forma parte del ZIP público.
+
+RESPALDO ANTES DE PROBAR
+------------------------
+1. Descargue o clone la versión pública actual completa.
+2. Guarde una copia fuera de la carpeta que vaya a modificar.
+3. Exporte la base de datos de Supabase o cree un backup desde el panel.
+4. Si es posible, restaure ese backup en un proyecto Supabase de pruebas.
+5. Anote las variables y políticas RLS actuales antes de realizar cambios.
+
+PRUEBA LOCAL SIN SUSTITUIR LA WEB
+---------------------------------
+1. Descomprima Coco-en-Forma-v149.0.zip en una carpeta nueva.
+2. Abra una terminal en la carpeta que contiene Coco-en-Forma-v149.0.
+3. Ejecute:
+
+   python3 -m http.server 4173 --directory Coco-en-Forma-v149.0
+
+4. Abra http://localhost:4173/ en una ventana privada.
+5. En DevTools > Application, desregistre cualquier service worker anterior asociado
+   a localhost si fuera necesario y recargue.
+6. No copie estos archivos sobre la carpeta pública durante la prueba.
+
+BASE DE DATOS DE PRUEBAS
+------------------------
+Para verificar que Coco Corre puntúa realmente, aplique primero
+supabase-coco-v149.sql en una COPIA de Supabase. La migración:
+
+- no borra datos;
+- respalda las restricciones anteriores;
+- acepta cococorre como juego válido;
+- crea registrar_coco_corre_v149(integer);
+- limita esa función a usuarios autenticados y una escritura diaria.
+
+Si necesita revertir la estructura, ejecute supabase-coco-v149-rollback.sql. La
+reversión restaura las restricciones guardadas y no borra partidas ya registradas.
+
+PRUEBA MANUAL MÍNIMA
+--------------------
+1. Coco Corre:
+   - probar los tres niveles;
+   - confirmar triángulos, estrellas y herramientas moradas;
+   - comprobar distractores intercalados;
+   - cambiar de carril junto a obstáculos;
+   - probar sonido, salto, agachado y pausa;
+   - terminar una partida y confirmar una sola puntuación;
+   - abandonar otra y confirmar que no puntúa.
+
+2. Cuenta de pruebas:
+   - iniciar sesión con diegopenn@icloud.com;
+   - repetir cada juego y comprobar que sigue disponible;
+   - confirmar que solo la primera partida del día suma;
+   - iniciar sesión con otra cuenta y comprobar el límite diario normal.
+
+3. Coco Pádel:
+   - crear jugadores, incluidos dos con el mismo nombre;
+   - cambiar nivel y estado;
+   - generar y descartar un Mixing;
+   - crear un campeonato con varias jornadas;
+   - corregir y eliminar resultados;
+   - abrir Ranking actualizado por torneos;
+   - copiar para WhatsApp, imprimir y abrir el Excel exportado.
+
+4. Encuentra las diferencias:
+   - comprobar que no aparecen círculos o estrellas de ayuda;
+   - marcar diferencias desde ambas imágenes;
+   - probar clics falsos y los tres niveles.
+
+5. Dispositivos:
+   - comprobar 320, 360, 390 y 430 píxeles;
+   - instalar como PWA en iOS y Android;
+   - cerrar, reabrir, recargar y probar sin conexión;
+   - revisar que no haya desplazamiento horizontal.
+
+6. Compartir:
+   - compartir cada juego desde una URL HTTPS accesible;
+   - comprobar la miniatura en WhatsApp u otra red;
+   - recordar que localhost no puede generar vista previa en WhatsApp.
+
+RESTAURACIÓN DE ARCHIVOS
+------------------------
+Si decide no aprobar la v149.0, retire únicamente la carpeta de prueba. La copia
+intacta de la versión anterior está en coco-v149/base-v1480 dentro del espacio de
+trabajo de esta entrega. No use comandos destructivos sobre el repositorio público.
+
+VERIFICACIÓN DEL ZIP
+--------------------
+Use SHA256SUMS-v149.0.txt para verificar los archivos críticos y pruebe el ZIP con:
+
+   unzip -t Coco-en-Forma-v149.0.zip
+
+No se realizó ningún despliegue al preparar esta entrega.

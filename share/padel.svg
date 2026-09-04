@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Coco Pádel Club · Coco en Forma</title>
+  <desc id="desc">Mixings, pistas, rankings e historial</desc>
+  <defs>
+    <linearGradient id="bg-padel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#54c9e7"/><stop offset="1" stop-color="#136e92"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#061f2c" flood-opacity=".24"/></filter>
+  </defs>
+  <rect width="1200" height="630" rx="42" fill="url(#bg-padel)"/>
+  <circle cx="1090" cy="-10" r="260" fill="#fff" opacity=".09"/><circle cx="1035" cy="45" r="175" fill="none" stroke="#fff" stroke-width="3" opacity=".16"/>
+  <path d="M0 520C230 440 400 610 650 520s362-12 550-115v225H0Z" fill="#fff" opacity=".1"/>
+  <g filter="url(#shadow)"><rect x="76" y="92" width="360" height="360" rx="92" fill="#fff"/></g><svg x="112" y="128" width="288" height="288" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="cocoIcon-padel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#54c9e7"/><stop offset="1" stop-color="#136e92"/></linearGradient></defs><rect x="4" y="4" width="112" height="112" rx="30" fill="url(#cocoIcon-padel)"/><circle cx="35" cy="27" r="20" fill="#fff" opacity=".13"/><g transform="translate(25 9) scale(.66)"><defs><linearGradient id="cocoPadelFrame" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".38" stop-color="#44c5ed"/><stop offset=".66" stop-color="#ef6c05"/><stop offset="1" stop-color="#fff"/></linearGradient><pattern id="cocoPadelHoles" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="6" cy="6" r="2.7" fill="#a9ecff"/></pattern></defs><path d="M44 5C20 5 7 22 8 48c1 23 15 39 36 39s35-16 36-39C81 22 68 5 44 5Z" fill="#142f45" stroke="url(#cocoPadelFrame)" stroke-width="8"/><path d="M44 13C25 13 16 27 16 48c1 18 11 31 28 31s27-13 28-31C72 27 63 13 44 13Z" fill="url(#cocoPadelHoles)"/><path d="M36 84h16l5 39c-8 5-18 5-26 0l5-39Z" fill="#17364c" stroke="#fff" stroke-width="4"/><path d="M33 101h22M32 110h24M31 119h26" stroke="#ef6c05" stroke-width="4"/></g><circle cx="91" cy="37" r="13" fill="#d8ef30" stroke="#fff" stroke-width="4"/><path d="M81 31c8 1 13 6 19 13" fill="none" stroke="#fff" stroke-width="2"/></svg>
+  <text x="500" y="145" fill="#dff7ff" font-family="DejaVu Sans,Arial,sans-serif" font-size="28" font-weight="900" letter-spacing="5">COCO EN FORMA</text>
+  <text x="500" y="245" fill="#fff" font-family="DejaVu Sans,Arial,sans-serif" font-size="62" font-weight="900">Coco Pádel Club</text>
+  <text x="500" y="330" fill="#eefaff" font-family="DejaVu Sans,Arial,sans-serif" font-size="28" font-weight="700">Mixings, pistas, rankings e historial</text>
+  <rect x="500" y="470" width="350" height="72" rx="36" fill="#fff"/><text x="675" y="516" text-anchor="middle" fill="#136e92" font-family="DejaVu Sans,Arial,sans-serif" font-size="25" font-weight="900">JUEGA Y COMPARTE</text>
+</svg>

@@ -1,0 +1,147 @@
+/* Coco en Forma v150.0 — runner justo, Coco Pádel exportable y responsive. */
+
+/* Coco Corre: los objetivos siguen siendo legibles, pero los obstáculos dejan
+   un espacio visual inequívoco entre carriles. Coco permanece estable. */
+.c144RunnerGame,.c144RunnerStage{min-width:0;overflow:hidden}
+.c144RunnerStage{
+  background:
+    radial-gradient(circle at 76% 14%,rgba(255,247,164,.92) 0 4%,rgba(255,255,255,.16) 5% 16%,transparent 17%),
+    linear-gradient(#54c9f7 0 38%,#bce9e5 38% 42%,#153b50 42% 100%)
+}
+.c144RunnerStage:after{
+  content:"";position:absolute;z-index:1;inset:42% 0 0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(37,190,133,.06),transparent 33% 66%,rgba(47,169,220,.07));
+  mix-blend-mode:screen
+}
+.c144RunnerCocoPlay{
+  width:clamp(102px,11vw,132px)!important;
+  height:clamp(151px,16.5vw,198px)!important;
+  bottom:4%!important
+}
+.c144RunnerCocoPlay img{animation:none!important;transform:none!important}
+.c144RunnerCocoPlay.jump{bottom:17%!important}
+.c144RunnerCocoPlay.duck{height:clamp(151px,16.5vw,198px)!important;bottom:3%!important}
+.c144RunnerCocoPlay.duck img{transform:translateY(12px) scale(.86)!important}
+.c145CocoShadow{width:72%!important;left:14%!important}
+.c144RunnerObject{
+  width:106px;height:106px;padding:8px;border-radius:24px;
+  contain:layout paint style
+}
+.c147RunnerTokenGlyph{font-size:clamp(47px,4.8vw,60px)}
+.c144RunnerObject.obstacle{
+  width:78px!important;height:72px!important;padding:7px!important;border-radius:18px!important;
+  border-width:4px!important
+}
+.c144RunnerObject.obstacle .c147RunnerTokenGlyph{font-size:38px!important}
+.c144RunnerObject.obstacle .c147RunnerTokenLabel{font-size:10px!important}
+.c144RunnerObject.c145Gate{width:124px!important;height:92px!important}
+.c144RunnerObject.c145Gate .c147RunnerTokenGlyph{font-size:42px!important}
+.c144Rule{line-height:1.25;text-wrap:balance}
+
+/* Coco Pádel: compartir, Excel e impresión con una sola jerarquía visual. */
+.c149ExportBar{
+  display:grid;grid-template-columns:minmax(190px,.72fr) minmax(0,1.28fr);gap:14px;
+  align-items:center;margin:14px 0;padding:14px;border:1px solid #c9e3ed;border-radius:16px;
+  background:linear-gradient(135deg,#f7fcff,#edf8fc)
+}
+.c149ExportBar>div:first-child{display:grid;gap:3px}
+.c149ExportBar>div:first-child b{color:#173f59;font-size:14px}
+.c149ExportBar>div:first-child span{color:#5d7787;font-size:12px;line-height:1.35}
+.c149ExportBar>div:last-child{display:flex;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.c149ExportBar button{min-height:44px;flex:1 1 145px;white-space:normal}
+.c149ExportBar.compact{margin:11px 0}
+.c149TournamentRanking{width:min(1120px,100%);margin:0 auto}
+.c149TournamentSummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
+.c149TournamentSummary span{padding:12px;border-radius:13px;background:#edf7fb;color:#557282;text-align:center;font-size:11px;font-weight:900;text-transform:uppercase}
+.c149TournamentSummary b{display:block;margin-bottom:2px;color:#173f59;font-size:24px}
+.c149RankingCards{display:none}
+.c149RankIdentity{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.c149RankIdentity>strong{display:grid;width:39px;height:39px;place-items:center;border-radius:12px;background:#176b89;color:#fff}
+.c149RankIdentity div{display:grid;gap:2px;min-width:0}
+.c149RankIdentity div b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#173f59}
+.c149RankIdentity div span{color:#647d8d;font-size:11px;font-weight:800}
+.c149RankIdentity em{color:#176b89;font-size:15px;font-style:normal;font-weight:1000;white-space:nowrap}
+.c149RankMetrics{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:10px}
+.c149RankMetrics span{padding:7px 3px;border-radius:9px;background:#edf7fb;color:#657e8e;text-align:center;font-size:9px;font-weight:900}
+.c149RankMetrics b{display:block;color:#173f59;font-size:15px}
+.c144Padel .c144Actions{align-items:stretch}
+
+@media(max-width:720px){
+  .c149ExportBar{grid-template-columns:1fr}
+  .c149ExportBar>div:last-child{display:grid;grid-template-columns:1fr 1fr 1fr}
+  .c149ExportBar button{width:100%;padding:9px 7px;font-size:11px}
+  .c149RankingTableDesktop{display:none!important}
+  .c149RankingCards{display:grid;gap:9px}
+  .c149RankingCards article{padding:12px;border:1px solid #cfe4ed;border-radius:14px;background:#fff;box-shadow:0 4px 14px rgba(20,67,91,.07)}
+}
+
+@media(max-width:430px){
+  .c144RunnerCocoPlay{width:clamp(74px,20vw,86px)!important;height:clamp(111px,30vw,129px)!important}
+  .c144RunnerCocoPlay.duck{height:clamp(111px,30vw,129px)!important}
+  .c144RunnerObject{width:82px;height:82px;padding:6px;border-width:3px;border-radius:19px}
+  .c147RunnerTokenGlyph{font-size:41px}.c147RunnerTokenLabel{font-size:10px}
+  .c144RunnerObject.obstacle{width:58px!important;height:56px!important;padding:4px!important;border-radius:14px!important}
+  .c144RunnerObject.obstacle .c147RunnerTokenGlyph{font-size:27px!important}
+  .c144RunnerObject.obstacle .c147RunnerTokenLabel{font-size:8px!important}
+  .c144RunnerObject.c145Gate{width:96px!important;height:72px!important}
+  .c144RunnerObject.c145Gate .c147RunnerTokenGlyph{font-size:32px!important}
+  .c144RunnerControls{grid-template-columns:repeat(3,44px)!important;gap:5px!important}
+  .c144RunnerControls button{width:44px!important;height:44px!important}
+  .c149TournamentSummary{grid-template-columns:1fr 1fr}
+  .c149TournamentSummary span:last-child{grid-column:1/-1}
+  .c149ExportBar>div:last-child{grid-template-columns:1fr}
+  .c149ExportBar button{font-size:12px}
+  .c149RankMetrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .c149RankIdentity{grid-template-columns:auto minmax(0,1fr)}
+  .c149RankIdentity em{grid-column:2;justify-self:start}
+  .c144Padel .c144Actions{display:grid;grid-template-columns:1fr;width:100%}
+  .c144Padel .c144Actions button{width:100%}
+}
+
+@media(max-width:320px){
+  .c144RunnerCocoPlay{width:74px!important;height:111px!important}
+  .c144RunnerCocoPlay.duck{height:111px!important}
+  .c144RunnerObject{width:76px;height:76px}
+  .c147RunnerTokenGlyph{font-size:37px}
+  .c144RunnerObject.obstacle{width:54px!important;height:52px!important}
+  .c144RunnerObject.c145Gate{width:88px!important;height:68px!important}
+  .c149RankMetrics{gap:3px}.c149RankMetrics span{padding:6px 2px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .c144RunnerCocoPlay,.c144RunnerCocoPlay img,.c144RunnerObject{animation:none!important;transition:none!important}
+}
+
+/* v150 · escenas más luminosas y etiquetas de clasificación informativas */
+#cocoApp .c144DiffPanel{background:linear-gradient(180deg,#ffffff,#f4fbff)!important;box-shadow:0 18px 42px rgba(21,63,88,.12)!important}
+#cocoApp .c144DiffScene{background:#edf8ff!important}
+#cocoApp .c144DiffScene canvas{filter:none!important}
+#cocoApp .c144DiffTypes{gap:8px!important;flex-wrap:wrap!important}
+#cocoApp .c144DiffTypes span{background:#fff!important;border:1px solid #cfe8f4!important;box-shadow:0 3px 9px rgba(26,76,101,.07)!important}
+#cocoApp .cocoLigaBadge{pointer-events:auto!important;cursor:default!important}
+
+/* v150 · Coco Corre: frutas, herramientas y objetos muestran físicamente el color de la regla. */
+#cocoApp .c144RunnerObject[data-runner-display="category"]{
+  overflow:visible!important;
+  isolation:isolate;
+}
+#cocoApp .c150RunnerTintedGlyph{
+  position:relative;display:grid;place-items:center;width:66px;height:60px;margin:auto;
+  border-radius:20px;background:rgba(255,255,255,.62);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 5px 13px rgba(22,58,78,.09)
+}
+#cocoApp .c150RunnerTintedCanvas{display:block;width:62px;height:62px;max-width:none;filter:saturate(1.08) contrast(1.03);transform:translateY(-1px)}
+#cocoApp .c150RunnerColorDot{
+  position:absolute;right:-2px;bottom:-2px;width:17px;height:17px;border:3px solid #fff;border-radius:50%;
+  box-shadow:0 2px 6px rgba(3,27,44,.28)
+}
+#cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{
+  white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  min-height:20px;font-size:9px;line-height:1.08;letter-spacing:.015em;text-wrap:balance
+}
+@media(max-width:430px){
+  #cocoApp .c150RunnerTintedGlyph{width:52px;height:47px;border-radius:15px}
+  #cocoApp .c150RunnerTintedCanvas{width:50px;height:50px}
+  #cocoApp .c150RunnerColorDot{width:14px;height:14px;border-width:2px}
+  #cocoApp .c144RunnerObject[data-runner-display="category"] .c147RunnerTokenLabel{font-size:8px;min-height:17px}
+}

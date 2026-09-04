@@ -1,0 +1,34 @@
+{
+  "product": "Coco en Forma",
+  "version": "151.0",
+  "release_line": "nueva línea estable desde v149 → v150",
+  "source_zip": "Coco-en-Forma-v150.0-listo-para-GitHub.zip",
+  "source_sha256": "72092926d45e78a8a05a37c19a1ac47068c434d1ae7e60b3a86e69dbd2895530",
+  "database_migration_required": false,
+  "supabase_note": "No hay SQL nuevo; se conservan las funciones v150 ya instaladas.",
+  "pwa_cache": "coco-en-forma-v151.0.0-r1",
+  "new_modules": [
+    "coco-v151-differences.js",
+    "coco-v151-padel.js",
+    "coco-v151-runner.js",
+    "coco-v151-refinements.css"
+  ],
+  "qa": {
+    "functional": "12/12",
+    "padel_core": "8/8",
+    "padel_mobile": "8/8",
+    "runner_mobile_dom": "9/9",
+    "differences_mobile_dom": "6/6",
+    "http_assets": "69/69",
+    "inline_js": "20/20",
+    "external_js": "4/4",
+    "difference_assets": "40/40",
+    "social_thumbnails": "15/15"
+  },
+  "delta_counts": {
+    "added": 59,
+    "changed": 4,
+    "removed": 0
+  },
+  "removed_files": []
+}

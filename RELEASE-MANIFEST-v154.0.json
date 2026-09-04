@@ -1,0 +1,301 @@
+{
+  "release": "v154.0",
+  "date": "2026-08-20",
+  "base": "v153.0",
+  "scope": "Open Graph / social thumbnails only",
+  "total_files_in_release": 59,
+  "manifest_lists_files_excluding_itself": 58,
+  "bytes_excluding_manifest": 6734463,
+  "entries": [
+    {
+      "path": "ARCHIVOS-SEGUROS-PARA-BORRAR.txt",
+      "bytes": 6026,
+      "sha256": "f59d1b8fca1d30537856c1f446622ef44b7d291ad426fcbf4b201f7cf436e598"
+    },
+    {
+      "path": "CAMBIOS-V154.0.md",
+      "bytes": 811,
+      "sha256": "d68596975055082820c5ac1c56b0a1d838a9d07dcd2a7ffb167ca9b2c712b686"
+    },
+    {
+      "path": "LEEME-V154.0.txt",
+      "bytes": 568,
+      "sha256": "7050b34bb567323ded6e29f6ec393152eac1187322d6706e42a06442ef4a9b8d"
+    },
+    {
+      "path": "PRUEBAS-V154.0.md",
+      "bytes": 1057,
+      "sha256": "105cf31502ee5bd99d540b829645244a8f078a27fb9a1a1041496849481f29c2"
+    },
+    {
+      "path": "SUPABASE-JS-LICENSE.txt",
+      "bytes": 1065,
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+    },
+    {
+      "path": "_headers",
+      "bytes": 337,
+      "sha256": "efb3d2aef5194f5df1787e9dee9527dfc5ad8bc10bacc98f3748d4e3d2a163de"
+    },
+    {
+      "path": "apple-touch-icon.png",
+      "bytes": 63735,
+      "sha256": "ca763350efb4f5b2e48a9944216f7053451884b24226c9465981ee0fd4a03663"
+    },
+    {
+      "path": "coco-v142-content-extension.js",
+      "bytes": 32922,
+      "sha256": "154e95df1e225f2191ba7d31c2ed8a917b9ebe1d384f3c84c093578cc501e81a"
+    },
+    {
+      "path": "coco-v142-runtime.js",
+      "bytes": 30032,
+      "sha256": "3f17edde7c98da6e50ef700e17c3e7ceb3cf8a19554284f29f23966882ced876"
+    },
+    {
+      "path": "coco-v142-unified.js",
+      "bytes": 25245,
+      "sha256": "7f24111d1936c418c411f80978cf713ec8d01f776cc4e9c796af1afc9d608886"
+    },
+    {
+      "path": "coco-v144-content.js",
+      "bytes": 13467,
+      "sha256": "952539f2c5e9b50e7740823a4c311fecc6346e55fb756f14d85342cc1ac6a3da"
+    },
+    {
+      "path": "coco-v144-core.js",
+      "bytes": 14438,
+      "sha256": "0cdedc41f92db4b6aead20de16c040c3dbaf4175f56848798acc6b1e53a9b4a5"
+    },
+    {
+      "path": "coco-v144-professional.css",
+      "bytes": 27547,
+      "sha256": "b020f51f3c637b79153cf1d67029dc598af88dc98d4776fc41b3f594b29c53cd"
+    },
+    {
+      "path": "coco-v147-refinements.css",
+      "bytes": 19309,
+      "sha256": "082718d7a1572b3b4b491bef357ddb4e717e568cebc40c1fc4a2733e673eaf7c"
+    },
+    {
+      "path": "coco-v149-refinements.css",
+      "bytes": 6719,
+      "sha256": "1b6c38f41354bdcf928bcf9594e28a61a9b0f360880c8498a937b8f8cae60e9b"
+    },
+    {
+      "path": "coco-v152-padel.js",
+      "bytes": 95559,
+      "sha256": "3c04e8209ac5a13590710cb2366df9119fac78e10ef4447ad1b488cf905b3393"
+    },
+    {
+      "path": "coco-v152-refinements.css",
+      "bytes": 24903,
+      "sha256": "7ef0ed05c2421d04258e185b01fbc830a83cef4c6e642efc9e72b0e64e54bea6"
+    },
+    {
+      "path": "coco-v153-fixes.js",
+      "bytes": 2804,
+      "sha256": "7a596650081164d22e5d3812bc25d99d26b09b1117632638e451125115a815d9"
+    },
+    {
+      "path": "coco-v153-release.css",
+      "bytes": 2650,
+      "sha256": "e2204af8212553e27109517749b8ba494deec6e1129b05ccfdf4302faf6e5c0e"
+    },
+    {
+      "path": "favicon.png",
+      "bytes": 5912,
+      "sha256": "243fd8d68d9ab9b27335f545420489992a1e94757134818d84e89f845151a5fc"
+    },
+    {
+      "path": "icon-192.png",
+      "bytes": 71035,
+      "sha256": "3d62b95d88c5365eda541d069bbd6c31496a78c5dea1393c56727764880fc21b"
+    },
+    {
+      "path": "icon-512.png",
+      "bytes": 335366,
+      "sha256": "2333e57a869cea8888ded68394e28a268280565ea15bbdf1cbcf24fd00d2c36f"
+    },
+    {
+      "path": "icon-maskable-192.png",
+      "bytes": 41301,
+      "sha256": "612e98c937d2a77d1b232d592aca690edf101a0c27fbd2392fa4786ee1c8b505"
+    },
+    {
+      "path": "icon-maskable-512.png",
+      "bytes": 210051,
+      "sha256": "4501fa429b6663476a2c7790d5d5e57088adde41aa60da98339b0be6d99ffb4d"
+    },
+    {
+      "path": "index.html",
+      "bytes": 4991937,
+      "sha256": "0cb23c1c152fc7653f636e951eaea3a3606fd1931a2f167d5eef536aa87f03aa"
+    },
+    {
+      "path": "juego/calculo/index.html",
+      "bytes": 2028,
+      "sha256": "9fa19121d3d39f6ba9a1f1a7634687a3c6b13502aba6ff779810fb591e6fe8b3"
+    },
+    {
+      "path": "juego/cocomed/index.html",
+      "bytes": 2004,
+      "sha256": "cc7c817a24e19a08056be453bfdeda017d588dc89995fe15feac2ced54d7422d"
+    },
+    {
+      "path": "juego/crucigrama/index.html",
+      "bytes": 2034,
+      "sha256": "17b42f75575aa69f879ad64ee6e68e14975ae57b2bd7c64a649ef872ef50d539"
+    },
+    {
+      "path": "juego/futbol/index.html",
+      "bytes": 2090,
+      "sha256": "e104ee702043d4c56ab8b279689e9109b82d513221a9c414d80783de6a0fcba0"
+    },
+    {
+      "path": "juego/memoria/index.html",
+      "bytes": 2001,
+      "sha256": "1025b70ddd390967939f19536287c9dc74dc6dae3b410c07761896731f9db836"
+    },
+    {
+      "path": "juego/numeros/index.html",
+      "bytes": 2112,
+      "sha256": "0c7a86f1e2e10e9e87f0822c65255af124190a3a7e6809dc62d4920715005231"
+    },
+    {
+      "path": "juego/padel/index.html",
+      "bytes": 2014,
+      "sha256": "aa7d69d456726fa743f9ece55d4d45de97480fbf1b0f07f7e9553a460f10c107"
+    },
+    {
+      "path": "juego/palabras/index.html",
+      "bytes": 2080,
+      "sha256": "38d5795dcf88427eefe7ce40da4af1bf93679ba4ab37c46ebaa9895d0fcf57af"
+    },
+    {
+      "path": "juego/series/index.html",
+      "bytes": 2066,
+      "sha256": "8a5a16500161cfaf0d2de08d9b46b33371189e6087b8e1e3c251cdcfd439399d"
+    },
+    {
+      "path": "juego/sopa/index.html",
+      "bytes": 2025,
+      "sha256": "01dbc62b8c0c611b8bbd91e81d94f88435a0f39adeb56dc92634a742ffd5c269"
+    },
+    {
+      "path": "juego/sudoku/index.html",
+      "bytes": 1997,
+      "sha256": "88bb42cda1a0f5fdeebf72aedd61baaa76e3592e8b30ea621bfd54004e242e9b"
+    },
+    {
+      "path": "juego/tiempo/index.html",
+      "bytes": 2027,
+      "sha256": "7f0d55d6c9d6a0f88f1fdcab783d7020ceedce9ba8b6bf79e16f08ddc9a9ff6e"
+    },
+    {
+      "path": "juego/verdadero/index.html",
+      "bytes": 2081,
+      "sha256": "74b0fc0b4fdc8afe3b9a6eb0b8a9d8b910046a50e752d809b2caa08cf61a73c1"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 1283,
+      "sha256": "692cec0cb89747d13be6d6328274d66a20c062b321e38362bb93705b603ac675"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "bytes": 1283,
+      "sha256": "692cec0cb89747d13be6d6328274d66a20c062b321e38362bb93705b603ac675"
+    },
+    {
+      "path": "share/calculo-v154.jpg",
+      "bytes": 33435,
+      "sha256": "42661002145cb1f8f678d7d7ae1b4e604a342012b98066fd45c91d79123229ac"
+    },
+    {
+      "path": "share/cocomed-v154.jpg",
+      "bytes": 35239,
+      "sha256": "2da8cc588f2228b557acf6e69996a5f0aebf940121cecc9f41053c232e6a2dbc"
+    },
+    {
+      "path": "share/crucigrama-v154.jpg",
+      "bytes": 32016,
+      "sha256": "45b6b3b30c6e83804014519fe8108833693236a0ed0b75d5527b200f104fe293"
+    },
+    {
+      "path": "share/futbol-v154.jpg",
+      "bytes": 37216,
+      "sha256": "957bc29b38cbf92c1a05bd4741bf585a575d62d7d046246ff2e038c3eeadbf46"
+    },
+    {
+      "path": "share/memoria-v154.jpg",
+      "bytes": 30901,
+      "sha256": "b973a193b4705455edcada8d7fa4d87872d39fc64793e29700652bc621285f96"
+    },
+    {
+      "path": "share/numeros-v154.jpg",
+      "bytes": 34711,
+      "sha256": "9f7a586659d76487b2c1f56176c4ed5720d2f892356734cbc9ebaa7042842774"
+    },
+    {
+      "path": "share/padel-v154.jpg",
+      "bytes": 31144,
+      "sha256": "94484c242e3448a35c983a2a1f9435d7d6c081b14c5c9650d32949503a9f678a"
+    },
+    {
+      "path": "share/palabras-v154.jpg",
+      "bytes": 33554,
+      "sha256": "c2e29b399c7aa6c88456da7091ea5b39bc2b63d5a279300969e4e4abec5cc4af"
+    },
+    {
+      "path": "share/series-v154.jpg",
+      "bytes": 27805,
+      "sha256": "8accf3f4fd32a101668f686872193b07f885c28250a707583d988177be22726d"
+    },
+    {
+      "path": "share/sopa-v154.jpg",
+      "bytes": 35973,
+      "sha256": "690edc1ff98988e01660961debd9fe6a12d4c49c8d1b38d08a475cd510056aac"
+    },
+    {
+      "path": "share/sudoku-v154.jpg",
+      "bytes": 37330,
+      "sha256": "0553111c2adb21884f02b9653c63ecac5e7d5cfb16d731471bb06541d1074df0"
+    },
+    {
+      "path": "share/tiempo-v154.jpg",
+      "bytes": 34899,
+      "sha256": "084cb30509c14b8d6b031538a0c2dd4f9168552261888c8533718dfb91ee4c46"
+    },
+    {
+      "path": "share/verdadero-v154.jpg",
+      "bytes": 28217,
+      "sha256": "e5362085979816a51150db2f63a54d916172f326a8983afc50f2380a0a55363b"
+    },
+    {
+      "path": "shortcut-icon.png",
+      "bytes": 21054,
+      "sha256": "f697a19883dbb9f2d2489e9da85783214aba604316cf27ca700dbcf8227437a9"
+    },
+    {
+      "path": "supabase-coco-v153-rollback.sql",
+      "bytes": 3218,
+      "sha256": "057998bc07af83dd90977ddfc767e8eb4509af63b6282b166bdf6af035dcb4be"
+    },
+    {
+      "path": "supabase-coco-v153.sql",
+      "bytes": 8206,
+      "sha256": "66b7d3a06e4934356942c9efff559a56d53797c0594f966a63d3acb00371a278"
+    },
+    {
+      "path": "supabase-js-2.112.3.min.js",
+      "bytes": 212199,
+      "sha256": "cf529fe8980cbe6f2dd3e3930ecf96352ed3d3d71233b6760e4f927f89b94b9f"
+    },
+    {
+      "path": "sw.js",
+      "bytes": 3425,
+      "sha256": "e6dae3d52db3ed599040bc1f29abf84f66df321d8e70c3502b655648898c0028"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+Coco en Forma v152.0 — Supabase
+
+NO requiere migración SQL nueva.
+
+La versión mantiene las funciones instaladas con v150.0:
+- public.clasificacion_general_coco(integer)
+- public.clasificacion_juego_coco(text, integer)
+
+Los cambios v152 son de interfaz, lógica local de los módulos y recursos visuales. Coco Pádel continúa usando la estructura de persistencia ya existente.

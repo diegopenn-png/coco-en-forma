@@ -1,0 +1,46 @@
+COCO EN FORMA v145.0 — PRUEBA SIN SUSTITUIR LA WEB PÚBLICA
+
+ESTADO
+- Candidata de prueba.
+- No publicada.
+- No desplegada.
+- Base v144.0 conservada intacta.
+
+PRUEBA LOCAL RECOMENDADA
+1. Descomprime el ZIP v145.0 en una carpeta nueva. No lo mezcles todavía con la carpeta pública.
+2. Abre una terminal dentro de la carpeta descomprimida.
+3. Ejecuta: python3 -m http.server 8080
+4. Abre: http://127.0.0.1:8080/?qa=1
+5. Para Coco Corre: http://127.0.0.1:8080/?qa=1&juego=cococorre
+6. Para Coco Pádel: http://127.0.0.1:8080/?qa=1&juego=padel
+7. Prueba también la instalación PWA desde localhost, que es un contexto seguro admitido por los navegadores.
+
+PRUEBAS AUTOMÁTICAS
+- Lógica e integridad: node qa/v145-functional-tests.mjs
+- Navegador: instala Chromium para Playwright y ejecuta node qa/v145-browser-tests.mjs
+
+GITHUB
+- No subas únicamente el ZIP como si fuera la aplicación.
+- Para una futura actualización del repositorio se deben copiar/confirmar los archivos extraídos respetando sus carpetas.
+- Hazlo primero en una rama privada de prueba, por ejemplo: git switch -c prueba-v145
+- No fusiones con main ni actives GitHub Pages/Vercel/Cloudflare hasta aprobar expresamente esta versión.
+- El ZIP puede conservarse aparte como respaldo o adjuntarse a una Release no publicada.
+
+RESTAURACIÓN
+1. Conserva el ZIP original v144.0 fuera de la carpeta v145.0.
+2. Si descartas v145.0, detén el servidor de prueba y elimina solo su carpeta separada.
+3. Si alguna vez hubiera que revertir una instalación, restaura todos los archivos del ZIP v144.0 como conjunto; no mezcles versiones.
+4. En el navegador, elimina el service worker/caché del sitio de prueba y recarga.
+5. No ejecutes el rollback SQL: v145.0 no requiere una migración nueva y los datos son compatibles.
+
+CRITERIOS DE ACEPTACIÓN MANUAL
+- La leyenda del runner no muestra ningún número largo.
+- El primer objetivo correcto aparece enseguida y “Recoge estrellas” muestra estrellas.
+- Coco se percibe corriendo, inclinándose, saltando y agachándose.
+- Coco Pádel muestra solo Mixing, Campeonato y Jugadores.
+- Jugadores es el único lugar de alta y administración.
+- Mixing no muestra resultados, historial ni puntos.
+- Campeonato acumula y recalcula sus jornadas.
+- No hay desplazamiento horizontal a 320, 360, 390 y 430 px.
+- La consola no presenta errores y las peticiones locales no devuelven 404.
+
