@@ -50,11 +50,11 @@ test("failed Eterna requests keep the student's input ready to retry",()=>{
 
 test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   const html=read("index.html"),sw=read("sw.js"),workflow=read(".github/workflows/eterna-authenticated-preview.yml");
-  assert.match(html,/coco-excellence-v160934\.js\?v=160934/);
+  assert.match(html,/coco-excellence-v160934\.js\?v=1609341/);
   assert.match(html,/eterna-v159\.js\?v=160934/);
-  assert.match(sw,/coco-en-forma-v160\.93\.4-excellence-pass/);
+  assert.match(sw,/coco-en-forma-v160\.93\.4-excellence-pass-r1/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(workflow,/frontend 160\.93\.4-excellence-pass/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
-  assert.match(workflow,/coco-excellence-v160934\.js\?v=160934&verify=\$\{GITHUB_SHA\}/);
+  assert.match(workflow,/coco-excellence-v160934\.js\?v=1609341&verify=\$\{GITHUB_SHA\}/);
 });
