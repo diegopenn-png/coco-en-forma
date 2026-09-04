@@ -5,7 +5,8 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 
 const source = readFileSync(new URL("../src/index.js", import.meta.url), "utf8");
-const executableSource = source.replace(/\nexport default\s*\{[\s\S]*?\};\s*$/, "");
+const stateContractSource = readFileSync(new URL("../../eterna-state-contract-v3.js", import.meta.url), "utf8");
+const executableSource = source.replace(/^import\s+[^;]+;\s*/gm, "").replace(/\nexport default\s*\{[\s\S]*?\};\s*$/, "");
 const sandbox = {
   console,
   URL,
@@ -21,6 +22,7 @@ const sandbox = {
   addEventListener() {},
 };
 vm.createContext(sandbox);
+vm.runInContext(stateContractSource, sandbox);
 vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   clearNonAcademicIntent,
   turnRelation,
@@ -39,7 +41,15 @@ vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   nextMultiplicationQuestion: typeof nextMultiplicationQuestion === "function" ? nextMultiplicationQuestion : null,
   stripTrailingStudentQuestion: typeof stripTrailingStudentQuestion === "function" ? stripTrailingStudentQuestion : null,
   isAdaptiveCloseRequest: typeof isAdaptiveCloseRequest === "function" ? isAdaptiveCloseRequest : null,
-  adaptiveCloseResponse: typeof adaptiveCloseResponse === "function" ? adaptiveCloseResponse : null
+  adaptiveCloseResponse: typeof adaptiveCloseResponse === "function" ? adaptiveCloseResponse : null,
+  sanitizePedagogicalState: typeof sanitizePedagogicalState === "function" ? sanitizePedagogicalState : null,
+  buildPedagogicalState: typeof buildPedagogicalState === "function" ? buildPedagogicalState : null,
+  parseContractV3Input: typeof parseContractV3Input === "function" ? parseContractV3Input : null,
+  staleQuestionProblem: typeof staleQuestionProblem === "function" ? staleQuestionProblem : null,
+  hintRequestResponse: typeof hintRequestResponse === "function" ? hintRequestResponse : null,
+  normalizeSubscriptionRecord: typeof normalizeSubscriptionRecord === "function" ? normalizeSubscriptionRecord : null,
+  subscriptionActive: typeof subscriptionActive === "function" ? subscriptionActive : null,
+  addContractEnvelope: typeof addContractEnvelope === "function" ? addContractEnvelope : null
 };`, sandbox);
 
 const api = sandbox.__eternaTest;
@@ -346,4 +356,79 @@ test("Exam and Practice close without grading a non-answer or inventing a new qu
   assert.equal(result.mode_state.correct_count, 4);
   assert.equal(result.pedagogical_state.conversation_stage, "complete");
   assert.match(result.reply, /4 correctos.*1 parcial.*1 incorrecto/i);
+});
+
+test("Worker v3 forces request mode and rejects a stale answered_question_id", () => {
+  const qid = "question:11111111-1111-4111-8111-111111111111";
+  const ped = api.sanitizePedagogicalState({
+    current_mode: "exam",
+    pending_question: "¿Cuánto es 7 × 4?",
+    pending_question_id: qid,
+    conversation_stage: "awaiting_student_answer",
+  }, "practice");
+  assert.equal(ped.current_mode, "practice");
+  const body = {
+    client_state_contract: 3,
+    request_id: "turn:11111111-1111-4111-8111-111111111111",
+    client_turn_id: "turn:11111111-1111-4111-8111-111111111111",
+    answered_question_id: "question:22222222-2222-4222-8222-222222222222",
+    student_action: "answer",
+    activity_state: {
+      contract_version: 3,
+      session_id: "session:11111111-1111-4111-8111-111111111111",
+      mode: "exam",
+      phase: "WAIT",
+      question_id: qid,
+      question_number: 1,
+      difficulty: 2,
+    },
+  };
+  const meta = api.parseContractV3Input(body, { mode: "practice", modeState: {}, pedState: ped });
+  assert.equal(meta.activityState.mode, "practice");
+  assert.equal(api.staleQuestionProblem(meta, ped)?.error, "ETERNA_STALE_QUESTION");
+  meta.answeredQuestionId = qid;
+  assert.equal(api.staleQuestionProblem(meta, ped), null);
+});
+
+test("Worker v3 preserves the question id for the same retry and rotates it for a new question", () => {
+  const qid = "question:33333333-3333-4333-8333-333333333333";
+  const incoming = api.sanitizePedagogicalState({
+    pending_question: "¿Cuánto es 3/4 en octavos?",
+    pending_question_id: qid,
+    conversation_stage: "awaiting_student_answer",
+  }, "practice");
+  const tutorOutput = { help_level: 2, expected_answer_type: "short_concept", expected_key_ideas: [], likely_misconceptions: [], conversation_stage: "awaiting_student_answer", strategy_used: "socratic_question", tutor_act: "practice_question", new_explained_points: [], needs_clarification: false };
+  const retry = api.buildPedagogicalState({ incoming, mode: "practice", subject: "Matemáticas", concept: "fracciones", tutorOutput, assessment: "incorrect", finalCheck: incoming.pending_question, turnRel: "answer_to_pending" });
+  assert.equal(retry.pending_question_id, qid);
+  const next = api.buildPedagogicalState({ incoming, mode: "practice", subject: "Matemáticas", concept: "fracciones", tutorOutput, assessment: "correct", finalCheck: "¿Cuánto es 1/2 en octavos?", turnRel: "answer_to_pending" });
+  assert.notEqual(next.pending_question_id, qid);
+});
+
+test("canonical hint_request is non-evaluable and preserves counters and question id", () => {
+  const qid = "question:44444444-4444-4444-8444-444444444444";
+  const ped = api.sanitizePedagogicalState({ active_subject: "Matemáticas", active_concept: "fracciones", pending_question: "¿Cuánto es 3/4 en octavos?", pending_question_id: qid, expected_answer_type: "short_concept", conversation_stage: "awaiting_student_answer", current_help_level: 1 }, "practice");
+  const modeState = { question_number: 1, correct_count: 2, partial_count: 1, incorrect_count: 3, difficulty: 2, focus: "fracciones" };
+  const hint = api.hintRequestResponse(ped, "practice", modeState);
+  assert.equal(hint.student_answer_assessment, "not_applicable");
+  assert.equal(hint.pedagogical_state.pending_question_id, qid);
+  assert.deepEqual(JSON.parse(JSON.stringify(hint.mode_state)), modeState);
+});
+
+test("expired or malformed trials fail closed in the Worker", () => {
+  const past = new Date(Date.now() - 60_000).toISOString();
+  assert.equal(api.normalizeSubscriptionRecord({ status: "trialing", trial_end: null }).status, "expired");
+  assert.equal(api.normalizeSubscriptionRecord({ status: "trialing", trial_end: "bad" }).status, "expired");
+  assert.equal(api.subscriptionActive({ status: "trialing", trial_end: past }), false);
+  assert.equal(api.subscriptionActive({ status: "active" }), true);
+});
+
+test("v3 JSON responses echo canonical request identity and activity state", async () => {
+  const requestId = "turn:55555555-5555-4555-8555-555555555555";
+  const meta = api.parseContractV3Input({ client_state_contract: 3, request_id: requestId, client_turn_id: requestId, student_action: "new_topic", activity_state: { contract_version: 3, session_id: "session:55555555-5555-4555-8555-555555555555", mode: "exam", phase: "ASK", question_number: 1, difficulty: 2 } }, { mode: "exam", modeState: {}, pedState: {} });
+  const response = await api.addContractEnvelope(new Response(JSON.stringify({ mode_state: { question_number: 1, difficulty: 2 }, pedagogical_state: { current_mode: "exam", pending_question: "¿Cuánto es 2 × 3?", pending_question_id: "question:55555555-5555-4555-8555-555555555555", conversation_stage: "awaiting_student_answer" }, student_answer_assessment: "not_applicable" }), { headers: { "Content-Type": "application/json" } }), meta, "exam");
+  const data = await response.json();
+  assert.equal(data.request_id, requestId);
+  assert.equal(data.activity_state.mode, "exam");
+  assert.equal(data.activity_state.phase, "WAIT");
+  assert.equal(data.activity_state.question_id, "question:55555555-5555-4555-8555-555555555555");
 });
