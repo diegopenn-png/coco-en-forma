@@ -131,3 +131,165 @@
   });
   root.CocoV144ContentAudit = Object.freeze(audit());
 })(window);
+/* v161: diversidad editorial y ejes reales para los 13 juegos. */
+(function (root) {
+  "use strict";
+
+  if (root.CocoContentV161) return;
+
+  var base = root.CocoV134Content;
+  var extraWords = [
+    ["ACENTO", "Mayor intensidad con la que se pronuncia una sílaba"],
+    ["BRÚJULA", "Instrumento con una aguja que ayuda a orientarse"],
+    ["CAUCE", "Terreno por el que corre el agua de un río"],
+    ["CICLO", "Serie de etapas que vuelve a comenzar"],
+    ["ECUACIÓN", "Igualdad matemática que contiene una incógnita"],
+    ["ESTROFA", "Conjunto de versos dentro de un poema"],
+    ["FRONTERA", "Límite que separa dos territorios"],
+    ["HUMEDAD", "Cantidad de vapor de agua presente en el aire"],
+    ["ISÓTOPO", "Átomo del mismo elemento con distinto número de neutrones"],
+    ["LITORAL", "Franja de tierra situada junto al mar"],
+    ["MIGRACIÓN", "Desplazamiento de seres vivos de un lugar a otro"],
+    ["NUTRIENTE", "Sustancia que un organismo utiliza para vivir y crecer"],
+    ["PARÁBOLA", "Curva cuyos puntos cumplen una relación geométrica determinada"],
+    ["PREDICADO", "Parte de la oración que expresa algo sobre el sujeto"],
+    ["RELIEVE", "Conjunto de formas que presenta la superficie terrestre"],
+    ["SEDIMENTO", "Material que se deposita después de ser transportado"],
+    ["TEOREMA", "Proposición demostrada mediante razonamiento lógico"],
+    ["TRADICIÓN", "Costumbre transmitida entre generaciones"],
+    ["VELOCIDAD", "Relación entre el desplazamiento y el tiempo empleado"],
+    ["XILEMA", "Tejido vegetal que transporta agua y sales minerales"],
+    ["ADJETIVO", "Palabra que expresa una cualidad o característica de un nombre"],
+    ["ECOSISTEMA", "Seres vivos y medio físico que se relacionan en un lugar"],
+    ["LONGITUD", "Distancia angular al este u oeste de un meridiano de referencia"],
+    ["MÚLTIPLO", "Número obtenido al multiplicar otro por un entero"],
+    ["PRONOMBRE", "Palabra que puede sustituir a un nombre"],
+    ["REACCIÓN", "Proceso en el que unas sustancias se transforman en otras"],
+    ["SOBERANÍA", "Autoridad de un Estado para decidir dentro de su territorio"],
+    ["TRAPECIO", "Cuadrilátero que tiene al menos un par de lados paralelos"],
+    ["URBANIZACIÓN", "Proceso por el que aumenta la población y superficie de las ciudades"],
+    ["VECTOR", "Magnitud que tiene módulo, dirección y sentido"]
+  ];
+
+  var extraFacts = [
+    ["El número 24 es múltiplo de seis.", true, "24 = 6 × 4.", 1],
+    ["Un adjetivo puede expresar una cualidad de un sustantivo.", true, "Por ejemplo, «azul» puede describir a «cielo».", 1],
+    ["Todos los ríos desembocan directamente en el mar.", false, "También pueden desembocar en otro río, un lago o una zona interior.", 1],
+    ["Las plantas necesitan luz en algún momento para realizar la fotosíntesis.", true, "La energía luminosa impulsa ese proceso.", 1],
+    ["Un rombo tiene necesariamente cuatro ángulos rectos.", false, "Tiene cuatro lados iguales, pero sus ángulos no tienen que ser rectos.", 1],
+    ["La sílaba tónica siempre lleva tilde escrita.", false, "Todas las palabras tienen sílaba tónica, pero no todas llevan tilde.", 1],
+    ["La longitud geográfica se mide respecto al meridiano de Greenwich.", true, "Indica la posición hacia el este o el oeste.", 2],
+    ["La evaporación y la condensación son el mismo cambio de estado.", false, "La evaporación pasa de líquido a gas; la condensación, de gas a líquido.", 2],
+    ["La suma de dos múltiplos de cinco vuelve a ser múltiplo de cinco.", true, "Ambos terminan en 0 o 5 y su suma también.", 2],
+    ["Un texto argumentativo solo enumera hechos sin defender una idea.", false, "Presenta una tesis apoyada con razones o evidencias.", 2],
+    ["Los glaciares pueden modificar el relieve al erosionar y transportar materiales.", true, "El hielo en movimiento desgasta y desplaza rocas.", 2],
+    ["La rapidez media se calcula dividiendo la distancia recorrida entre el tiempo.", true, "Rapidez media = distancia/tiempo.", 2],
+    ["Si una escala es 1:100, un centímetro del plano representa cien centímetros reales.", true, "La segunda cantidad indica la medida real correspondiente.", 2],
+    ["Los pronombres siempre acompañan a un sustantivo sin sustituirlo.", false, "A menudo lo sustituyen para evitar repeticiones.", 2],
+    ["Una reacción química conserva el número de átomos de cada elemento.", true, "Los átomos se reorganizan, por eso se ajustan las ecuaciones químicas.", 3],
+    ["Todo cuadrilátero con lados opuestos paralelos es un cuadrado.", false, "También puede ser rectángulo, rombo o romboide.", 3],
+    ["Una función lineal de pendiente negativa disminuye cuando aumenta la variable independiente.", true, "Una pendiente negativa relaciona aumento de x con descenso de y.", 3],
+    ["La selección natural actúa porque todos los individuos de una población son idénticos.", false, "Necesita variación heredable entre individuos.", 3],
+    ["Una fuente secundaria interpreta o analiza información procedente de otras fuentes.", true, "No es simplemente peor: cumple una función distinta de una fuente primaria.", 3],
+    ["En una disolución, aumentar el volumen de disolvente sin añadir soluto suele reducir la concentración.", true, "La misma cantidad de soluto queda repartida en más volumen.", 3],
+    ["Dos vectores con el mismo módulo son siempre el mismo vector.", false, "También deben coincidir su dirección y su sentido.", 3],
+    ["La derivada en un punto puede interpretarse como la pendiente instantánea.", true, "Describe la tasa de cambio local de una función.", 3],
+    ["El narrador de una obra es necesariamente la misma persona que su autor.", false, "El narrador es una voz construida dentro del texto.", 3],
+    ["Una correlación negativa indica que las dos variables siempre son independientes.", false, "Indica una asociación inversa, no independencia ni causalidad.", 3]
+  ];
+
+  var memoryThemes = [
+    { nombre: "Viaje por la península", iconos: ["ave_mapa", "ave_brujula", "nat_montana", "nat_ola", "ave_isla", "ave_canoa", "esp_sol", "tec_camara", "esc_globo", "coco_diana", "ave_tienda", "dep_bici"] },
+    { nombre: "Lengua en imágenes", iconos: ["esc_libros", "esc_lapiz", "esc_cuaderno", "tec_auriculares", "tec_portatil", "ave_llave", "coco_idea", "coco_puzzle", "esc_bombilla", "tec_camara", "ave_castillo", "coco_cerebro"] },
+    { nombre: "Física cotidiana", iconos: ["tec_engranaje", "tec_bateria", "tec_reloj", "dep_bici", "dep_diana", "nat_sol", "nat_ola", "esc_numeros", "esc_abaco", "coco_grafico", "esp_planeta", "tec_chip"] },
+    { nombre: "Biodiversidad", iconos: ["ani_abeja", "ani_ballena", "ani_buho", "ani_delfin", "ani_leon", "ani_mariposa", "ani_panda", "ani_pulpo", "ani_rana", "ani_tortuga", "ani_zorro", "nat_arbol"] },
+    { nombre: "Diseño y tecnología", iconos: ["tec_robot", "tec_chip", "tec_engranaje", "tec_portatil", "tec_movil", "tec_camara", "tec_bateria", "tec_monitor", "esc_bombilla", "esc_lapiz", "coco_idea", "coco_puzzle"] },
+    { nombre: "Deporte y estrategia", iconos: ["dep_futbol", "dep_basket", "dep_tenis", "dep_badminton", "dep_bici", "dep_diana", "dep_medalla", "dep_natacion", "dep_pingpong", "dep_trofeo", "coco_fuerza", "coco_grafico"] }
+  ];
+
+  var soupAdds = {
+    "Fácil": {
+      "Colegio": ["TEXTO", "CURSO", "MAPA", "VERSO", "RIMA", "DATO"],
+      "Naturaleza": ["CAUCE", "CLIMA", "COSTA", "FAUNA", "MONTE", "ISLA"]
+    },
+    "Medio": {
+      "Tecnología": ["VECTOR", "ENLACE", "DISEÑO", "DATOS", "SISTEMA", "PROCESO"],
+      "Naturaleza": ["RELIEVE", "LITORAL", "HUMEDAD", "MIGRACION", "SEDIMENTO", "ECOSISTEMA"]
+    },
+    "Difícil": {
+      "Lenguaje": ["PRONOMBRE", "PREDICADO", "ARGUMENTO", "SEMANTICA", "ESTROFA", "NARRADOR"],
+      "Matemáticas": ["PARABOLA", "TEOREMA", "COORDENADA", "INTERSECCION", "PROPORCION", "ESTADISTICA"]
+    }
+  };
+
+  function appendUnique(target, additions, key) {
+    if (!Array.isArray(target)) return 0;
+    var seen = Object.create(null), added = 0;
+    target.forEach(function (item) { seen[key(item)] = true; });
+    additions.forEach(function (item) { var id = key(item); if (!seen[id]) { seen[id] = true; target.push(item); added++; } });
+    return added;
+  }
+
+  var additions = { words: 0, crosswords: 0, trueFalse: 0, memoryThemes: 0, soupWords: 0, cocoMed: 0 };
+  if (base) {
+    additions.words = appendUnique(base.words, extraWords, function (item) { return item[0]; });
+    additions.crosswords = appendUnique(base.crosswords, extraWords, function (item) { return item[0]; });
+    additions.trueFalse = appendUnique(base.trueFalse, extraFacts, function (item) { return item[0]; });
+    additions.memoryThemes = appendUnique(base.mixedMemoryThemes, memoryThemes, function (item) { return item.nombre; });
+    Object.keys(soupAdds).forEach(function (level) {
+      Object.keys(soupAdds[level]).forEach(function (theme) {
+        var target = base.soupExtensions[level] && base.soupExtensions[level][theme];
+        additions.soupWords += appendUnique(target, soupAdds[level][theme], function (item) { return item; });
+      });
+    });
+  }
+
+  var healthConcepts = [
+    ["Sueño", "Regularidad", "mantener una hora de descanso razonablemente estable", "favorece que el cuerpo anticipe el descanso", "cambiar el horario varias horas cada noche"],
+    ["Nutrición", "Alérgenos", "leer el etiquetado y preguntar a una persona adulta responsable", "ayuda a evitar una exposición conocida", "probar un alimento dudoso para comprobar la reacción"],
+    ["Actividad física", "Carga progresiva", "aumentar la dificultad poco a poco y con técnica controlada", "permite adaptarse al esfuerzo", "duplicar la carga sin preparación"],
+    ["Salud digital", "Pausas posturales", "cambiar de postura y levantarse periódicamente", "reduce el tiempo mantenido en una misma posición", "permanecer inmóvil hasta terminar todas las tareas"],
+    ["Prevención", "Señales de alarma", "avisar a una persona adulta y buscar ayuda profesional cuando corresponde", "permite valorar el problema con seguridad", "ocultar un síntoma intenso o persistente"],
+    ["Primeros auxilios", "Quemadura", "apartarse de la fuente, enfriar con agua corriente y pedir ayuda adulta", "limita el calor residual y permite valorar la lesión", "aplicar hielo directamente o remedios desconocidos"]
+  ];
+  var medExtra = [];
+  healthConcepts.forEach(function (item, index) {
+    var area=item[0], concept=item[1], action=item[2], benefit=item[3], unsafe=item[4], id="v161-med-"+String(index+1).padStart(2,"0");
+    medExtra.push({id:id+"a",stage:"Preuniversitario",subject:area,topic:concept,difficulty:"Básica",type:"conocimiento",stem:"¿Qué práctica es más adecuada en relación con "+concept.toLowerCase()+"?",options:[action,unsafe,"ignorar la situación"],answer:0,explanation:"La práctica adecuada es "+action+"; "+benefit+".",reference:"Contenido educativo preventivo; no sustituye atención profesional."});
+    medExtra.push({id:id+"b",stage:"Preuniversitario",subject:area,topic:concept,difficulty:"Media",type:"comprensión",stem:"¿Por qué puede ser útil "+action+"?",options:[benefit,"porque elimina todos los riesgos","porque sustituye cualquier consulta"],answer:0,explanation:"Puede ser útil porque "+benefit+".",reference:"Contenido educativo preventivo; no sustituye atención profesional."});
+    medExtra.push({id:id+"c",stage:"Preuniversitario",subject:area,topic:concept,difficulty:"Media",type:"aplicación",stem:"¿Qué decisión sería más segura en una situación relacionada con "+concept.toLowerCase()+"?",options:[unsafe,action,"no pedir ayuda en ningún caso"],answer:1,explanation:"La decisión más segura es "+action+".",reference:"Contenido educativo preventivo; no sustituye atención profesional."});
+    medExtra.push({id:id+"d",stage:"Preuniversitario",subject:area,topic:concept,difficulty:"Avanzada",type:"razonamiento",stem:"Una persona propone "+unsafe+". ¿Qué corrección está mejor fundamentada?",options:["La propuesta elimina cualquier riesgo.","Conviene "+action+", porque "+benefit+".","Las dos opciones son equivalentes."],answer:1,explanation:"Conviene corregir la propuesta: "+action+".",reference:"Contenido educativo preventivo; no sustituye atención profesional."});
+  });
+  var priorMed = Array.isArray(root.CocoV142MedExtra) ? root.CocoV142MedExtra : [];
+  var combinedMed = Object.freeze(priorMed.concat(medExtra));
+  root.CocoV142MedExtra = combinedMed;
+  root.CocoV141MedExtra = combinedMed;
+  additions.cocoMed = medExtra.length;
+
+  var variety = Object.freeze({
+    numeros:["tableros 5×5, 6×6 y 7×7","caminos generados sin repetición","pista, retroceso y reinicio"],
+    calculo:["operaciones básicas","porcentajes, fracciones y medias","operaciones encadenadas y potencias"],
+    palabras:["vocabulario cotidiano","vocabulario escolar","conceptos abstractos y científicos"],
+    series:["patrones aditivos y alternos","Fibonacci, primos y figuras","potencias, factoriales y polinomios"],
+    memoria:["temas visuales rotatorios","tres tamaños de tablero","mezcla de ciencia, arte, deporte y naturaleza"],
+    sudoku:["4×4 inicial","4×4 intermedio","6×6 avanzado con solución única"],
+    sopa:["seis temas por nivel","ocho direcciones","vocabulario graduado por longitud"],
+    crucigrama:["cuadrículas variables","pistas de cinco áreas escolares","rotación sin repetición inmediata"],
+    tiempo:["cálculo","lenguaje y lógica","ciencia y atención"],
+    verdadero:["matemáticas y lengua","ciencias y geografía","ciudadanía y tecnología"],
+    cocomed:["prevención y hábitos","anatomía y fisiología","aplicación y razonamiento seguro"],
+    futbol:["seis zonas posibles","tres ritmos de exposición","tres niveles y reacción variable"],
+    padel:["mixing por niveles","rondas, pistas y duración configurables","games, sets, ranking e historial"]
+  });
+
+  function audit() {
+    var ids=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","cocomed","futbol","padel"], failures=[];
+    ids.forEach(function (id) { if (!variety[id] || variety[id].length < 3) failures.push(id+" no documenta al menos tres ejes de variedad"); });
+    extraFacts.forEach(function (item) { if (typeof item[1] !== "boolean" || !item[2] || ![1,2,3].includes(item[3])) failures.push("Afirmación inválida: "+item[0]); });
+    medExtra.forEach(function (item) { if (!item.id || item.options.length !== 3 || item.answer < 0 || item.answer > 2 || !item.explanation) failures.push("Pregunta Coco Med inválida: "+item.id); });
+    return {version:"161.0.0",games:ids.length,additions:additions,variety:variety,failures:failures,passed:failures.length===0};
+  }
+
+  root.CocoContentV161 = Object.freeze({version:"161.0.0",variety:variety,additions:Object.freeze(additions),audit:audit});
+  root.CocoV161ContentAudit = Object.freeze(audit());
+})(window);

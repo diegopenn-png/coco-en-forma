@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.83 · premium family reporting + direct plan switch + final stabilization + contexto UX
+/* ETERNA Experience v160.93 · UX completion, progressive wait states and age adaptation
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.83-premium-family-reporting";
+  var VERSION="160.93-ux-completion";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
@@ -24,7 +24,7 @@
   var overlayObserver=null;
   var observedChat=null;
   var normalizeRaf=0;
-  var thinkingAssistantCount=0;
+  var thinkingAssistantCount=0,thinkingStageTimers=[];
   var audioSettingsCache={at:0,allowed:null};
   var browserMicCache={at:0,state:""};
   var hiddenTopStateNodes=[];
@@ -76,7 +76,11 @@
       "#eternaOverlayV159 .eternaV160VoiceActions button{min-height:34px;padding:6px 9px;border-radius:10px;font:900 9.5px inherit;cursor:pointer;touch-action:manipulation}",
       "#eternaOverlayV159 .eternaV160VoiceFinish{border:0;background:#173f59;color:#fff}#eternaOverlayV159 .eternaV160VoiceCancel{border:1px solid #d3e7ef;background:#fff;color:#526f7f}",
       "#eternaOverlayV159 .eternaV160RetryVerification{display:inline-flex;margin-top:10px;min-height:38px;padding:8px 12px;border:0;border-radius:11px;background:#173f59;color:#fff;font:900 10px inherit;cursor:pointer}",
-      "#eternaOverlayV159 .eternaV159Quick{opacity:.88}#eternaOverlayV159 .eternaV159Quick button{min-height:32px!important}",
+      "#eternaOverlayV159 .eternaV159Quick{opacity:1;display:flex;gap:8px;flex-wrap:wrap}#eternaOverlayV159 .eternaV159Quick button{min-height:44px!important;padding:9px 12px!important}#eternaOverlayV159 .eternaV159Quick button.is-playing{background:#173f59!important;color:#fff!important;border-color:#173f59!important}",
+      "#eternaOverlayV159 .eternaV159Copy{grid-column:2;justify-self:start;margin:3px 0 0!important;border:0;background:transparent;color:#587587;font:700 12px system-ui;cursor:pointer;padding:6px 7px;min-height:36px}",
+      "#eternaOverlayV159 .eternaV160ModeActions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}#eternaOverlayV159 .eternaV160NewActivity{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 12px;border:1px solid #b9dfea;border-radius:12px;background:#fff;color:#315d73;font:900 10px inherit;cursor:pointer}",
+      "#eternaOverlayV159 .eternaV160Completion{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;margin:16px auto 26px;max-width:720px;padding:18px;border:1px solid #a9e3c7;border-radius:20px;background:linear-gradient(180deg,#f3fff8,#eafaf2);color:#315d73;box-shadow:0 8px 24px rgba(35,128,86,.08)}#eternaOverlayV159 .eternaV160CompletionIcon{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#29aa72;color:#fff;font:900 24px system-ui}#eternaOverlayV159 .eternaV160Completion small{color:#168555;font:900 9px inherit;letter-spacing:.08em}#eternaOverlayV159 .eternaV160Completion h3{margin:3px 0 5px;color:#173f59;font-size:18px;line-height:1.2}#eternaOverlayV159 .eternaV160Completion p{margin:0 0 11px;font-size:11px;line-height:1.45}#eternaOverlayV159 .eternaV160Completion div>div{display:flex;gap:7px;flex-wrap:wrap}#eternaOverlayV159 .eternaV160Completion button{min-height:44px;padding:9px 12px;border:1px solid #b9ddcb;border-radius:12px;background:#fff;color:#315d73;font:900 10px inherit;cursor:pointer}#eternaOverlayV159 .eternaV160Completion button:first-child{border-color:#173f59;background:#173f59;color:#fff}#eternaOverlayV159 [data-et-composer].is-complete{display:none!important}",
+      "#eternaOverlayV159[data-et-age-band=teen] .eternaV159TopCopy p{font-family:system-ui,sans-serif;font-weight:650}#eternaOverlayV159[data-et-age-band=teen] .eternaV160StartIcon,#eternaOverlayV159[data-et-age-band=teen] .eternaV160ModeIcon{filter:grayscale(.55);transform:scale(.9)}#eternaOverlayV159[data-et-age-band=teen] .eternaV160Start h3{font-family:system-ui,sans-serif;font-weight:850;letter-spacing:-.02em}#eternaOverlayV159[data-et-age-band=teen] .eternaV159Bubble{font-family:system-ui,sans-serif;font-weight:650}",
       "#eternaOverlayV159 [data-et-name],#cocoApp .carnet .quien strong{text-transform:capitalize!important}",
       "#eternaOverlayV159 textarea[data-et-input]{white-space:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;resize:none!important}",
       "#eternaOverlayV159 textarea[data-et-input]::placeholder{white-space:nowrap!important}",
@@ -87,7 +91,7 @@
       "#eternaOverlayV159 [data-et-mic].recording{background:linear-gradient(180deg,#fff9f4,#fff0e3)!important;border-color:#efb07d!important;color:#e86f18!important;box-shadow:0 0 0 5px rgba(239,108,5,.10),0 2px 0 rgba(224,132,64,.16)!important}",
       "#eternaOverlayV159 [data-et-mic].recording::after{content:\"\";position:absolute;inset:-4px;border-radius:19px;border:1.8px solid rgba(232,111,24,.30);animation:eternaMicPulse16057 1.3s infinite ease-out;pointer-events:none}",
       "@keyframes eternaMicPulse16057{0%{transform:scale(.94);opacity:.65}72%{transform:scale(1.10);opacity:.04}100%{transform:scale(1.13);opacity:0}}",
-      "#eternaOverlayV159 .eternaV160MemoryNote{margin:10px 0 0;padding:9px 11px;border:1px solid #dcebf2;border-radius:12px;background:#f8fcfe;color:#657d8a;font-size:9.5px;font-weight:700;line-height:1.45;text-align:left}",
+      "#eternaOverlayV159 .eternaV160MemoryNote{margin:10px 0 0;padding:9px 11px;border:1px solid #dcebf2;border-radius:12px;background:#f8fcfe;color:#657d8a;font-size:9.5px;font-weight:700;line-height:1.45;text-align:left}#eternaOverlayV159 .eternaV160MemoryNote summary{cursor:pointer;color:#315d73;font-weight:900;min-height:24px;display:flex;align-items:center}#eternaOverlayV159 .eternaV160MemoryNote p{margin:6px 0 0}",
       "#eternaOverlayV159 .eternaV160NeedCourse{margin:8px 0 12px;padding:16px;border:1px solid #cfe4ed;border-radius:16px;background:#f7fbfd;color:#315d73;text-align:center}",
       "#eternaOverlayV159 .eternaV160NeedCourse h3{margin:0 0 6px;color:#173f59;font-size:18px}.eternaV160NeedCourse p{margin:0 auto 12px;max-width:560px;font-size:11px;font-weight:750;line-height:1.5}",
       "#eternaOverlayV159 .eternaV160NeedCourse button{min-height:42px;padding:9px 14px;border:0;border-radius:11px;background:#173f59;color:#fff;font:900 10.5px inherit;cursor:pointer}",
@@ -116,7 +120,7 @@
       "#cocoApp .eternaV160ChipList{display:flex!important;flex-wrap:wrap;gap:6px!important}#cocoApp .eternaV160StrengthChip{display:inline-flex!important;max-width:100%;align-items:center;padding:5px 8px;border:1px solid rgba(89,126,145,.14);border-radius:999px;background:rgba(255,255,255,.78);color:#486978!important;font-size:9px!important;font-weight:800!important;line-height:1.22!important;overflow-wrap:anywhere}",
       "#cocoApp .eternaV160StrengthMap.eternaV160StrengthEmpty .eternaV160ProgressIntro{margin-bottom:0!important}#cocoApp .eternaV160StrengthMap.eternaV160StrengthEmpty .eternaV160StrengthHero{grid-template-columns:auto minmax(0,1fr)}",
       "@media(max-width:700px){#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead{align-items:flex-start!important;flex-direction:column!important}#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead button{width:100%!important}#cocoApp .eternaV160StrengthHero{grid-template-columns:auto minmax(0,1fr);align-items:start}#cocoApp .eternaV160NextStep{grid-column:1/-1}#cocoApp .eternaV160StrengthMap .eternaV160ProgressGrid{grid-template-columns:1fr!important}#cocoApp .eternaV159FamilyCard .eternaV160ProgressPanel.eternaV160StrengthMap{padding:14px!important;border-radius:19px!important}}",
-      "@media(max-width:760px){#eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:17px!important}#eternaOverlayV159 .eternaV160MicSvg{width:24px!important;height:24px!important}}",
+      "@media(max-width:760px){#eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:17px!important}#eternaOverlayV159 .eternaV160MicSvg{width:24px!important;height:24px!important}#eternaOverlayV159 .eternaV159Top{padding-top:max(10px,env(safe-area-inset-top))!important;padding-bottom:10px!important}#eternaOverlayV159 .eternaV159TopCopy p{display:none!important}#eternaOverlayV159 .eternaV160ModeBar{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;gap:8px!important}#eternaOverlayV159 .eternaV160ModeActions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr}#eternaOverlayV159 .eternaV160ModeActions button{width:100%;min-height:44px!important}#eternaOverlayV159 .eternaV160Completion{grid-template-columns:40px minmax(0,1fr);margin:10px 0 18px;padding:14px}#eternaOverlayV159 .eternaV160CompletionIcon{width:40px;height:40px}#eternaOverlayV159 .eternaV160Completion div>div{display:grid;grid-template-columns:1fr}#eternaOverlayV159 .eternaV160Completion button{width:100%}}",
       "@media(max-width:640px){#eternaOverlayV159 .eternaV160LiveState{margin-bottom:7px;padding:8px 10px}#eternaOverlayV159 .eternaV160VoicePanel{align-items:flex-start;flex-wrap:wrap}#eternaOverlayV159 .eternaV160VoiceCopy{min-width:160px}#eternaOverlayV159 .eternaV160VoiceActions{width:100%;justify-content:flex-end}}",
       "@media(max-width:760px){#eternaOverlayV159 .eternaV159Main{min-height:0!important;overflow:hidden!important}#eternaOverlayV159 .eternaV159Chat{scroll-padding-top:12px!important;scroll-padding-bottom:calc(118px + env(safe-area-inset-bottom))!important;padding-bottom:calc(22px + env(safe-area-inset-bottom))!important}#eternaOverlayV159 .eternaV159Msg{scroll-margin-top:12px!important;scroll-margin-bottom:18px!important}#eternaOverlayV159 .eternaV160ModeBar{position:relative!important;z-index:2!important;flex:0 0 auto!important}#eternaOverlayV159 .eternaV159Composer{position:relative!important;z-index:3!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important}#eternaOverlayV159 .eternaV159InputRow{align-items:center!important}}",
       "@media(prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160ThinkingDots i,#eternaOverlayV159 .eternaV160VoiceWave i,#eternaOverlayV159 [data-et-mic].recording::after,#cocoApp .eternaV160StrengthMap .eternaV160MasteryFill{animation:none!important;transition:none!important}}"
@@ -147,6 +151,8 @@
     live.innerHTML='<span class="eternaV160LiveIcon" aria-hidden="true">'+(kind==="thinking"?"✦":kind==="processing"?"🎙️":"i")+'</span><span>'+esc(text)+dots+'</span>';
     syncTopLiveDuplicate(kind,text)
   }
+
+  function clearThinkingStages(){thinkingStageTimers.forEach(function(timer){clearTimeout(timer)});thinkingStageTimers=[]}
 
   function normalizeHeaderStatus(){
     var o=overlay();if(!o)return;
@@ -373,10 +379,10 @@
     if(!c)return;
     var start=c.querySelector('.eternaV160Start');
     if(!start||start.querySelector('[data-et-memory-note]'))return;
-    var note=document.createElement('div');
+    var note=document.createElement('details');
     note.className='eternaV160MemoryNote';
     note.setAttribute('data-et-memory-note','');
-    note.innerHTML='<b>Privacidad y memoria · </b><span>Eterna no guarda tus conversaciones como un historial. Recuerda únicamente señales pedagógicas —conceptos, nivel aproximado, errores, ayuda y estrategias que funcionan— para ayudarte a aprender mejor. No diagnostica ni etiqueta.</span>';
+    note.innerHTML='<summary>Privacidad y memoria</summary><p>Eterna no guarda tus conversaciones como un historial. Recuerda únicamente señales pedagógicas —conceptos, nivel aproximado, errores, ayuda y estrategias que funcionan— para ayudarte a aprender mejor. No diagnostica ni etiqueta.</p>';
     start.appendChild(note)
   }
 
@@ -693,6 +699,7 @@
         if(assistantAdded)break
       }
       if(assistantAdded){
+        clearThinkingStages();
         setLive("","");
         scrollTurnToStart(assistantAdded);
         scheduleHeaderStatus()
@@ -752,7 +759,10 @@
     ensureOverlay();
     var c=chat();thinkingAssistantCount=c?c.querySelectorAll(".eternaV159Msg.assistant").length:0;
     setVoicePanel(false);
-    setLive("thinking","Eterna está pensando")
+    clearThinkingStages();
+    setLive("thinking","Leyendo tu pregunta…");
+    thinkingStageTimers.push(setTimeout(function(){setLive("thinking","Comprobando el contenido…")},2500));
+    thinkingStageTimers.push(setTimeout(function(){setLive("thinking","Preparando una explicación clara…")},6000))
   }
 
   function fileNameForMime(type){
@@ -1005,7 +1015,7 @@
       if(browserState==="denied"){
         closeAudioContext(warmContext);
         releaseVoiceStartLock();
-        setLive("info","El navegador tiene bloqueado el micrófono. Revísalo en los permisos de Safari o de la PWA.");
+        setLive("info","El navegador tiene bloqueado el micrófono. Revísalo en los permisos del navegador o de la app.");
         return
       }
       if(!allowed){
@@ -1297,7 +1307,7 @@
 
   function handleChatResponse(response){
     if(!response||response.status===401)return;
-    if(!response.ok){setLive("","");activeBackgroundJobId="";pendingJobClear()}
+    if(!response.ok){clearThinkingStages();setLive("","");activeBackgroundJobId="";pendingJobClear()}
     response.clone().json().then(function(data){
       if(data&&data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
       rememberSourceDisclosure(data);
@@ -1320,7 +1330,7 @@
         if(isChat)handleChatResponse(response);
         return response
       }catch(e){
-        if(isChat)setLive("","");
+        if(isChat){clearThinkingStages();setLive("","")}
         throw e
       }
     };
@@ -1370,8 +1380,9 @@
       if(o&&o.classList.contains("is-open"))requestAnimationFrame(function(){ensureOverlay();normalizeHeaderStatus()});
       resumePendingChatJob()
     },{passive:true});
-    root.addEventListener("coco:eterna-response-applied",function(event){var pending=pendingJobRead(),detail=event&&event.detail||{};if(pending&&detail.request_id===pending.request_id&&detail.client_turn_id===pending.client_turn_id&&detail.session_id===pending.session_id&&detail.mode===pending.mode){activeBackgroundJobId="";pendingJobClear(pending.id)}});
-    root.addEventListener("coco:eterna-context-invalidated",function(){pendingJobClear();activeBackgroundJobId=""});
+    root.addEventListener("coco:eterna-response-applied",function(event){clearThinkingStages();var pending=pendingJobRead(),detail=event&&event.detail||{};if(pending&&detail.request_id===pending.request_id&&detail.client_turn_id===pending.client_turn_id&&detail.session_id===pending.session_id&&detail.mode===pending.mode){activeBackgroundJobId="";pendingJobClear(pending.id)}});
+    root.addEventListener("coco:eterna-context-invalidated",function(){clearThinkingStages();pendingJobClear();activeBackgroundJobId=""});
+    root.addEventListener("coco:eterna-ui-reset",function(){clearThinkingStages();setLive("","");setVoicePanel(false)});
     root.addEventListener("resize",function(){
       if(resizeRaf)return;
       resizeRaf=requestAnimationFrame(function(){resizeRaf=0;if(overlay())enforceSingleLineComposer()})

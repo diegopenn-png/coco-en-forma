@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.92.0 · six modes state contract v3 */
-const CACHE_VERSION="coco-en-forma-v160.92.0-six-modes-state-contract-v3";
+/* Coco en Forma · Service Worker v160.93.0 · UX completion and game variety */
+const CACHE_VERSION="coco-en-forma-v160.93.0-ux-and-game-variety";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -137,7 +137,9 @@ async function cachedPatch(path){
 
 /* HF1 ya validado: se mantiene exactamente su función de aislamiento pedagógico. */
 async function eternaCoreWithHotfix(e){
-  const basePromise=stale(e);
+  /* El núcleo se toma del precache versionado: invalida también cuando el HTML
+     conserva una query anterior durante una actualización escalonada. */
+  const basePromise=cachedPatch(ETERNA_CORE_PATH);
   const patchPromise=cachedPatch(ETERNA_HOTFIX_PATH);
   const [base,patch]=await Promise.all([basePromise,patchPromise]);
   if(!base||!patch||!patch.ok)return base||offlineFallback(e.request);

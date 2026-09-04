@@ -479,6 +479,21 @@ test("canonical hint_request is non-evaluable and preserves counters and questio
   assert.doesNotMatch(comparison.reply, /busca primero la idea/i);
 });
 
+test("generic hint requests progress through distinct concrete scaffolds", () => {
+  const qid = "question:55555555-5555-4555-8555-555555555555";
+  const base = { active_subject: "Lengua Castellana y Literatura", active_concept: "argumentación", pending_question: "¿Qué razón apoya la tesis del texto?", pending_question_id: qid, expected_answer_type: "short_concept", conversation_stage: "awaiting_student_answer" };
+  const second = api.hintRequestResponse(api.sanitizePedagogicalState({ ...base, current_help_level: 1 }, "homework"), "homework", {});
+  const third = api.hintRequestResponse(api.sanitizePedagogicalState({ ...base, current_help_level: 2 }, "homework"), "homework", {});
+  const fourth = api.hintRequestResponse(api.sanitizePedagogicalState({ ...base, current_help_level: 3 }, "homework"), "homework", {});
+  assert.match(second.reply, /Pista 2 de 5/i);
+  assert.match(second.reply, /subraya/i);
+  assert.match(third.reply, /plantilla/i);
+  assert.match(fourth.reply, /Sé que .* la pregunta pide/i);
+  assert.equal(new Set([second.reply, third.reply, fourth.reply]).size, 3);
+  assert.ok([second, third, fourth].every(item => item.student_answer_assessment === "not_applicable"));
+  assert.ok([second, third, fourth].every(item => item.pedagogical_state.pending_question_id === qid));
+});
+
 test("expired or malformed trials fail closed in the Worker", () => {
   const past = new Date(Date.now() - 60_000).toISOString();
   assert.equal(api.normalizeSubscriptionRecord({ status: "trialing", trial_end: null }).status, "expired");

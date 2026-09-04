@@ -70,11 +70,12 @@ test("client trials fail closed when the end timestamp is absent or invalid", ()
   assert.match(expired, /status==="trialing"&&\(!Number\.isFinite\(end\)\|\|end<=Date\.now\(\)\)/);
 });
 
-test("hint and understood are canonical actions tied to the current question", () => {
+test("hint stays canonical while understood closes the UX activity without grading", () => {
   const actions = functionBody(client, "sendStudentAction", "prepareImage");
   assert.match(actions, /activity\.phase!=="WAIT"/);
   assert.match(actions, /meta\.question_id!==activity\.question_id/);
-  assert.match(actions, /studentAction:action/);
+  assert.match(actions, /studentAction:"hint_request"/);
+  assert.match(actions, /if\(action==="understood"\)\{completeActivity/);
   assert.match(client, /sendStudentAction\("understood"/);
   assert.match(client, /sendStudentAction\("hint_request"/);
   const feedback = functionBody(client, "feedback", "sendStudentAction");
@@ -82,6 +83,9 @@ test("hint and understood are canonical actions tied to the current question", (
   assert.match(feedback, /session_id:/);
   assert.match(feedback, /question_id:/);
   assert.match(feedback, /submittedFeedback\.has/);
+  const completion = functionBody(client, "completeActivity", "sendStudentAction");
+  assert.match(completion, /closeActivity\(state\.mode\)/);
+  assert.match(completion, /ACTIVIDAD TERMINADA/);
 });
 
 test("only the current WAIT question can render actionable quick controls", () => {

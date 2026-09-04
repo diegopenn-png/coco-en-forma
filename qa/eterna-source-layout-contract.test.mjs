@@ -7,6 +7,6 @@ test("Eterna has one canonical Worker entrypoint", () => {
   const worker = readFileSync("eterna-worker/src/index.js", "utf8");
 
   assert.match(wrangler, /"main"\s*:\s*"src\/index\.js"/);
-  assert.match(worker, /160\.92\.0-six-modes-state-contract-v3/);
+  assert.match(worker, /160\.93\.0-ux-completion-and-progressive-hints/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });

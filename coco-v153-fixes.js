@@ -625,9 +625,9 @@
     root.__COCO_ETERNA_LOAD_INTENT__=intent;
     eternaPromise=new Promise(function(resolve,reject){
       var s=document.createElement("script");
-      s.src="./eterna-experience-v160.js?v=160920";
+      s.src="./eterna-experience-v160.js?v=160930";
       s.async=true;
-      s.dataset.cocoModule="eterna-experience-v160920";
+      s.dataset.cocoModule="eterna-experience-v160930";
       s.onload=function(){
         try{performance.mark("eterna_core_ready")}catch(e){}
         activateEternaModule(intent);
