@@ -114,7 +114,7 @@ jobs:
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
-          grep -F '160.93.3-mic-request-state' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.93.4-excellence-pass' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.1-master-game-replay' eterna-worker/src/index.js >/dev/null
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
@@ -149,7 +149,7 @@ jobs:
             exit 1
           fi
 
-          grep -F '160.93.3-mic-request-state' /tmp/eterna-preview.js >/dev/null
+          grep -F '160.93.4-excellence-pass' /tmp/eterna-preview.js >/dev/null
           curl --max-time 20 -fsS "${API_PREVIEW_URL}/health" | tee authenticated-preview-health.json
           grep -F '160.93.1-master-game-replay' authenticated-preview-health.json >/dev/null
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
@@ -159,7 +159,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.93.3-mic-request-state · API 160.93.1-master-game-replay"
+            echo "- Expected versions: frontend 160.93.4-excellence-pass · API 160.93.1-master-game-replay"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preserve preview evidence
