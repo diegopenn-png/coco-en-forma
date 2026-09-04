@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.91.8 · trial expired conversion */
-const CACHE_VERSION="coco-en-forma-v160.91.8-trial-expired-conversion";
+/* Coco en Forma · Service Worker v160.92.0 · six modes state contract v3 */
+const CACHE_VERSION="coco-en-forma-v160.92.0-six-modes-state-contract-v3";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -14,7 +14,7 @@ const CORE=[
   "./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
   "./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,
-  ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_HOTFIX_PATH,"./eterna-marketing-attribution-v1.js",
+  "./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css","./eterna-experience-v160.js",ETERNA_HOTFIX_PATH,"./eterna-marketing-attribution-v1.js",
   "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
   "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"
 ];
