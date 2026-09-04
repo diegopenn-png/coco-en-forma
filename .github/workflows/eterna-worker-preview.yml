@@ -44,6 +44,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: eterna-worker/package-lock.json
 
       - name: Validate Cloudflare secrets
         shell: bash
@@ -76,7 +78,7 @@ jobs:
 
       - name: Install Worker tooling
         working-directory: eterna-worker
-        run: npm install
+        run: npm ci --no-audit --no-fund
 
       - name: Run Worker regression
         working-directory: eterna-worker
