@@ -1,13 +1,16 @@
 name: Apply excellence 160.93.4 patch
 on:
-  push:
+  pull_request:
     branches:
-      - feat/coco-eterna-excellence-160934
+      - main
+    types:
+      - opened
+      - synchronize
 permissions:
   contents: write
 jobs:
   apply:
-    if: github.event.head_commit.message == 'Bootstrap excellence 160.93.4 patch'
+    if: github.head_ref == 'feat/coco-eterna-excellence-160934'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
