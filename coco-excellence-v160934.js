@@ -126,7 +126,7 @@
 
   function run(){scheduled=0;injectStyles();decorateCards(document);decorateArcade();decorateModes();decorateFamily()}
   function schedule(){if(scheduled)return;scheduled=requestAnimationFrame(run)}
-  function boot(){run();if(typeof MutationObserver==="function"){observer=new MutationObserver(schedule);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["class","data-et-age-band"]})}document.addEventListener("click",schedule,true)}
+  function boot(){run();[250,700,1600,3200].forEach(function(delay){setTimeout(run,delay)});if(typeof MutationObserver==="function"){observer=new MutationObserver(schedule);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["class","data-et-age-band"]})}document.addEventListener("click",schedule,true)}
 
   root.CocoExcellenceV160934=Object.freeze({version:VERSION,audit:function(){return{version:VERSION,games:Object.keys(GAME).length,gameGuides:true,healthyEnd:true,timePace:["calm","normal","challenge"],teenPresentation:true,familySummary:true,familyValue:true,noAuthMutation:true,noPaymentMutation:true,noScoreMutation:true}}});
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot()
