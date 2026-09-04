@@ -1,0 +1,528 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-04T00:40:21.063Z",
+  "evidence_scope": "offline_contract",
+  "model_behavior_evaluated": false,
+  "model_response_contract_observed": false,
+  "disclaimer": "This report validates fixture execution and deterministic state-contract invariants only. It does not replay or score model answers, pedagogy, OCR, speech, browser rendering, or production behavior.",
+  "totals": {
+    "conversations": 48,
+    "steps": 432,
+    "personas": 10,
+    "subscription_access_paths": 32
+  },
+  "per_mode": {
+    "homework": {
+      "conversations": 8,
+      "steps": 72,
+      "accepted": 72,
+      "replayed": 0,
+      "stale": 0
+    },
+    "ask": {
+      "conversations": 8,
+      "steps": 72,
+      "accepted": 72,
+      "replayed": 0,
+      "stale": 0
+    },
+    "review": {
+      "conversations": 8,
+      "steps": 72,
+      "accepted": 72,
+      "replayed": 0,
+      "stale": 0
+    },
+    "explain": {
+      "conversations": 8,
+      "steps": 72,
+      "accepted": 72,
+      "replayed": 0,
+      "stale": 0
+    },
+    "exam": {
+      "conversations": 8,
+      "steps": 72,
+      "accepted": 70,
+      "replayed": 1,
+      "stale": 1
+    },
+    "practice": {
+      "conversations": 8,
+      "steps": 72,
+      "accepted": 70,
+      "replayed": 1,
+      "stale": 1
+    }
+  },
+  "checks": {
+    "counter_integrity": {
+      "checked": 432,
+      "passed": 432
+    },
+    "idempotency": {
+      "checked": 2,
+      "passed": 2
+    },
+    "stale_answers": {
+      "checked": 2,
+      "passed": 2
+    },
+    "refresh": {
+      "checked": 7,
+      "passed": 7
+    },
+    "mode_switch_isolation": {
+      "checked": 10,
+      "passed": 10
+    },
+    "privacy": {
+      "checked": 432,
+      "passed": 432
+    }
+  },
+  "privacy": {
+    "raw_inputs_written": false,
+    "assistant_response_text_written": false,
+    "image_or_audio_payloads_written": false,
+    "secrets_written": false
+  },
+  "conversations": [
+    {
+      "id": "HW01",
+      "mode": "homework",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "HW02",
+      "mode": "homework",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "HW03",
+      "mode": "homework",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "HW04",
+      "mode": "homework",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "HW05",
+      "mode": "homework",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "HW06",
+      "mode": "homework",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "HW07",
+      "mode": "homework",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "HW08",
+      "mode": "homework",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "AS01",
+      "mode": "ask",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "AS02",
+      "mode": "ask",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "AS03",
+      "mode": "ask",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "AS04",
+      "mode": "ask",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "AS05",
+      "mode": "ask",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "AS06",
+      "mode": "ask",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "AS07",
+      "mode": "ask",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "AS08",
+      "mode": "ask",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "RV01",
+      "mode": "review",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "RV02",
+      "mode": "review",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "RV03",
+      "mode": "review",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "RV04",
+      "mode": "review",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "RV05",
+      "mode": "review",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "RV06",
+      "mode": "review",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "RV07",
+      "mode": "review",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "RV08",
+      "mode": "review",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EX01",
+      "mode": "explain",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EX02",
+      "mode": "explain",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EX03",
+      "mode": "explain",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EX04",
+      "mode": "explain",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EX05",
+      "mode": "explain",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EX06",
+      "mode": "explain",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EX07",
+      "mode": "explain",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EX08",
+      "mode": "explain",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EM01",
+      "mode": "exam",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EM02",
+      "mode": "exam",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EM03",
+      "mode": "exam",
+      "steps": 9,
+      "statuses": {
+        "accepted": 8,
+        "replayed": 1
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EM04",
+      "mode": "exam",
+      "steps": 9,
+      "statuses": {
+        "accepted": 8,
+        "stale": 1
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EM05",
+      "mode": "exam",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EM06",
+      "mode": "exam",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EM07",
+      "mode": "exam",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "EM08",
+      "mode": "exam",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "PR01",
+      "mode": "practice",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "PR02",
+      "mode": "practice",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "PR03",
+      "mode": "practice",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "PR04",
+      "mode": "practice",
+      "steps": 9,
+      "statuses": {
+        "accepted": 8,
+        "replayed": 1
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "PR05",
+      "mode": "practice",
+      "steps": 9,
+      "statuses": {
+        "accepted": 8,
+        "stale": 1
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "PR06",
+      "mode": "practice",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "PR07",
+      "mode": "practice",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    },
+    {
+      "id": "PR08",
+      "mode": "practice",
+      "steps": 9,
+      "statuses": {
+        "accepted": 9
+      },
+      "response_text_retained": false
+    }
+  ]
+}
