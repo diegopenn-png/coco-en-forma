@@ -262,7 +262,7 @@ function clearNonAcademicIntent(text){
   if(/^(?:un|otro|otra)\s+(?:chiste|broma|meme)\b/.test(s))return true;
   if(/\b(?:recomiendame|recomiéndame|recomienda|que me recomiendas|qué me recomiendas|quiero ver|que veo|qué veo)\b.{0,80}\b(?:serie|pelicula|película|peli|anime|programa|video|vídeo|canal|streaming)\b/.test(s))return true;
   if(/\b(?:serie|pelicula|película|peli|anime|programa|video|vídeo|videojuego|juego)\b.{0,80}\b(?:esta noche|hoy|fin de semana|para entretenerme|por diversion|por diversión|me recomiendas|para pasar el rato)\b/.test(s))return true;
-  if(/\b(?:restaurante|cenar|comer|comprar|regalo|ropa|moda|viaje|vacaciones|donde salir|dónde salir|cita|novia|novio)\b/.test(s)&&/\b(?:recomiend|quiero|puedo|mejor|esta noche|hoy|fin de semana|compr(?:ar|o|as|a|amos|an)|ir|salir|comer)\b/.test(s))return true;
+  if(/\b(?:restaurante|cenar|comer|comprar|regalo|ropa|moda|movil|móvil|telefono|teléfono|tablet|ordenador|consola|viaje|vacaciones|donde salir|dónde salir|cita|novia|novio)\b/.test(s)&&/\b(?:recomiend|quiero|puedo|mejor|esta noche|hoy|fin de semana|compr(?:ar|o|as|a|amos|an)|ir|salir|comer)\b/.test(s))return true;
   if(/\b(?:que hago|qué hago|que puedo hacer|qué puedo hacer)\b.{0,45}\b(?:esta noche|hoy|este fin de semana|para divertirme|para entretenerme)\b/.test(s))return true;
   return false
 }
@@ -281,6 +281,7 @@ function stripTurnPunctuation(text){return normalizeDetectionText(text).trim().r
 function isYesNoToken(text){return /^(si|sí|no)$/.test(stripTurnPunctuation(text))}
 function isDontKnow(text){return /^(?:no\s+(?:lo\s+)?s[eé]|ni idea|no tengo ni idea|no me acuerdo|no recuerdo)$/.test(stripTurnPunctuation(text))}
 function isShortContextualContinuation(text){const s=stripTurnPunctuation(text);if(!s||s.length>90)return false;if(clearSafetySignal(s)||clearTopicSwitchSignal(s)||clearNonAcademicIntent(s))return false;if(/^(dime|si|sí|no|vale|ok|aja|ajá|continua|continúa|sigue|adelante|otra vez|mas facil|más fácil|no entendi|no entendí|no entiendo|explicame|explícame|explicamelo|explícamelo|ponme un ejemplo|otro ejemplo|por que|por qué|como|cómo|y despues|y después|que paso|qué pasó|no lo se|no lo sé)$/.test(s))return true;if(/^[a-d]$/.test(s)||/^-?\d+(?:[.,]\d+)?$/.test(s))return true;if(/^(creo que|pienso que|la respuesta es)\b/.test(s)&&s.length<=90)return true;return s.split(/\s+/).length<=7&&!/^(?:ahora|cambiando de tema|quiero saber|quiero que me cuentes|cuentame|cuéntame|como puedo|cómo puedo)\b/.test(s)}
+function explicitNewTopicRequest(text){const s=stripTurnPunctuation(text);return /^(?:(?:vale|ok)\s*[,;:]?\s+)?(?:ahora|otra pregunta|cambiando de tema|cambio de tema)\b/.test(s)||/^(?:quiero saber|quiero que me cuentes|cuentame|cuéntame|dime\s+\S+|como puedo|cómo puedo)\b/.test(s)}
 function studentIntentFromRelation(relation){const map={new_topic:"new_topic",answer_to_pending:"answer",answer_to_offer:"continue",continuation_request:"continue",confusion_request:"confused",simplification_request:"simplify",detail_request:"detail",technical_request:"technical",why_request:"why",example_request:"example",invalid_short_answer:"invalid_short_answer",acknowledgement:"acknowledgement"};return map[relation]||"other"}
 function turnRelation(text,pedState,history){const s=stripTurnPunctuation(text),pending=pedState.pending_question||latestCheckQuestion(history),academicContext=hasAcademicConversationContext(pedState,history),expected=pedState.expected_answer_type||"none",lastAct=pedState.last_tutor_act||"none";if(clearSafetySignal(s)||clearTopicSwitchSignal(s))return"needs_scope";if(!academicContext)return"new_topic";
   if(isAdaptiveCloseRequest(s))return"acknowledgement";
@@ -302,7 +303,7 @@ function turnRelation(text,pedState,history){const s=stripTurnPunctuation(text),
     return"acknowledgement"
   }
   if(/^(vale|ok|aja|ajá)$/.test(s))return lastAct==="offer_continuation"?"answer_to_offer":"acknowledgement";
-  if(/^(ahora|otra pregunta|cambiando de tema|quiero saber|quiero que me cuentes|cuentame|cuéntame|dime\s+\S+|como puedo|cómo puedo)\b/.test(s))return"new_topic";
+  if(explicitNewTopicRequest(s))return"new_topic";
   if(!pending)return isShortContextualContinuation(s)?"continuation_request":"new_topic";
   if(expected==="numeric"&&/^-?\d+(?:[.,]\d+)?$/.test(s))return"answer_to_pending";
   if(expected==="choice"&&/^[a-d]$/.test(s))return"answer_to_pending";
@@ -608,6 +609,11 @@ function embeddedStudentQuestion(reply){
   const qs=[];for(const m of text.matchAll(/¿[^?]{2,360}\?|(?:^|[.!]\s+)[^.!?\n]{2,300}\?/g)){const raw=cleanChildText(m[0].replace(/^[.!]\s*/,"")),pos=raw.lastIndexOf("¿"),q=pos>=0?raw.slice(pos):raw;if(q)qs.push(q)}
   return qs.length?qs[qs.length-1]:null
 }
+function embeddedStudentPrompt(reply){
+  const text=cleanChildText(reply||"");if(!text)return null;
+  const match=text.match(/(?:^|[.!]\s+)((?:escribe|calcula|resuelve|indica|compara|elige|ordena|completa|dime)\b[^.!?\n]{2,300}[.!]?)\s*$/i);
+  return match?cleanChildText(match[1]):null
+}
 function explicitEmbeddedCheck(reply,question){const q=cleanChildText(question||"");if(!/^(?:¿\s*)?si o no\??$/i.test(normalizeDetectionText(q)))return q;const fractions=[...String(reply||"").matchAll(/(-?\d+)\s*\/\s*(-?\d+)/g)].map(m=>`${m[1]}/${m[2]}`);if(fractions.length>=2)return`¿${fractions[fractions.length-2]} y ${fractions[fractions.length-1]} representan la misma cantidad?`;return q}
 function isContinuationOfferQuestion(q){const s=normalizeDetectionText(q);return /\b(si quieres|quieres que|te explico|puedo explicarte|seguimos|quieres seguir)\b/.test(s)}
 function stripTrailingOfferQuestion(reply){const text=cleanChildText(reply||"");return text.replace(/(?:\s*(?:si quieres[, ]*)?¿(?:quieres que|te explico|puedo explicarte|seguimos|quieres seguir)[^?]{0,260}\?\s*)$/i,"").trim()||text}
@@ -642,6 +648,7 @@ function deterministicReviewGuard(text,history=[]){
 function singleStudentAct({mode,reply,tutorData,turnRel,incoming,assessment,studentText=""}){
   let cleanReply=cleanChildText(reply||""),displayCheck=smartMicroCheck({mode,tutorData,turnRel,incoming,assessment,studentText}),embedded=embeddedStudentQuestion(cleanReply),pendingQuestion=null;
   if(embedded)embedded=explicitEmbeddedCheck(cleanReply,embedded);
+  if(!embedded&&displayCheck&&["exam","practice"].includes(mode))embedded=embeddedStudentPrompt(cleanReply);
   if(["ask","explain"].includes(mode)&&turnRel==="answer_to_pending"&&assessment==="correct"){
     if(embedded&&!isContinuationOfferQuestion(embedded))cleanReply=stripTrailingStudentQuestion(cleanReply,embedded);
     return{reply:cleanReply||"Correcto. Esa respuesta está bien.",display_check:null,pending_question:null}
@@ -749,13 +756,15 @@ function verificationFallbackForMode(mode){
 async function handleChat(request,env,auth){
   const body=await request.json(),text=String(body.text||"").slice(0,6000),rawImage=typeof body.image_data_url==="string"?body.image_data_url:null,imageValidation=validateImageDataUrl(rawImage),image=imageValidation.ok?rawImage:null,history=Array.isArray(body.history)?body.history.slice(-8):[],mode=MODE_PROFILES[body.mode]?String(body.mode):"homework",inputSource=["text","voice","image"].includes(body.input_source)?body.input_source:(image?"image":"text"),incomingModeState=sanitizeModeState(body.mode_state),incomingPedState=sanitizePedagogicalState(body.pedagogical_state,mode),clientStudentIntent=["answer_check","confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen"].includes(String(body.student_intent||""))?String(body.student_intent):null,clientTutorDirective=["CHANGE_STRATEGY","SIMPLIFY","ADVANCE","EXPLAIN_CAUSE","EXPLAIN_MECHANISM"].includes(String(body.tutor_directive||""))?String(body.tutor_directive):null,clientRepetitionGuard=typeof body.repetition_guard==="string"?body.repetition_guard.slice(0,700):null;
   const contractMeta=parseContractV3Input(body,{mode,modeState:incomingModeState,pedState:incomingPedState});
+  const startsNewTopic=contractMeta.enabled&&contractMeta.studentAction==="new_topic";
   if(contractMeta.enabled){
     incomingPedState.current_mode=mode;
     if(!incomingPedState.pending_question_id&&contractMeta.activityState.question_id)incomingPedState.pending_question_id=contractMeta.activityState.question_id;
     Object.assign(incomingModeState,{question_number:Math.max(0,contractMeta.activityState.question_number-1),correct_count:contractMeta.activityState.correct_count,partial_count:contractMeta.activityState.partial_count,incorrect_count:contractMeta.activityState.incorrect_count,difficulty:contractMeta.activityState.difficulty});
     const stale=staleQuestionProblem(contractMeta,incomingPedState);if(stale)return json({...stale,verification_status:"verification_conflict",student_answer_assessment:"not_applicable",mode_state:incomingModeState,pedagogical_state:incomingPedState,activity_state:contractMeta.activityState},409)
   }
-  if(!incomingPedState.pending_question){const q=latestCheckQuestion(history);if(q)incomingPedState.pending_question=q}
+  if(startsNewTopic){incomingPedState.pending_question=null;incomingPedState.pending_question_id=null;incomingPedState.expected_answer_type="none";incomingPedState.expected_key_ideas=[];incomingPedState.likely_misconceptions=[];incomingPedState.conversation_stage="new_topic";incomingPedState.last_tutor_act="none";incomingPedState.expected_student_act="none";incomingPedState.unresolved_question=null}
+  if(!startsNewTopic&&!incomingPedState.pending_question){const q=latestCheckQuestion(history);if(q)incomingPedState.pending_question=q}
   if(rawImage&&!image)return json({error:imageValidation.reason==="invalid_size"?"IMAGE_TOO_LARGE":"IMAGE_TYPE_NOT_ALLOWED"},imageValidation.reason==="invalid_size"?413:415);if(!text&&!image)return json({error:"EMPTY_INPUT"},400);
   const uid=auth.user.id,[ctx,sub]=await Promise.all([getStudentContext(env,uid),getSubscription(env,uid,auth.user.email)]);if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);if(!ctx.profile?.school_year)return json({error:"STUDENT_PROFILE_REQUIRED"},409);
   const legal=await requireLegalState(env,auth,ctx);if(!legal.ok)return legal.response;
