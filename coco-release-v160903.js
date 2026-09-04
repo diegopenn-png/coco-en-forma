@@ -596,7 +596,7 @@
 
   /* ---------------- v160.90.4 · pulido final multidispositivo ---------------- */
 
-  var familyMask160904=null,familyMaskTimer160904=0,familyMaskObserver160904=null;
+  var familyMask160904=null,familyMaskTimer160904=0,familyMaskObserver160904=null,familyShellObserver160905=null;
   var finalChatObserver160904=null,finalObservedChat160904=null;
 
   function normalizedUiText160904(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
@@ -682,6 +682,27 @@
 
   function scheduleFamilyMask160904(){[0,30,80,160,320,700,1300,2200].forEach(function(ms){setTimeout(ensureFamilyMask160904,ms)})}
 
+  /* Safari/iOS puede pintar el informe legacy antes de ejecutar un setTimeout(0).
+     Observamos la sustitución del modal y levantamos la máscara en la microtarea
+     de MutationObserver, que ocurre antes del siguiente fotograma. El DOM base
+     permanece intacto para que los renderers modernos puedan consumir sus datos. */
+  function installFamilyShellObserver160905(){
+    if(familyShellObserver160905||typeof MutationObserver!=="function")return;
+    var app=document.getElementById("cocoApp");if(!app)return;
+    familyShellObserver160905=new MutationObserver(function(records){
+      for(var i=0;i<records.length;i++){
+        var nodes=records[i].addedNodes||[];
+        for(var j=0;j<nodes.length;j++){
+          var node=nodes[j];if(!node||node.nodeType!==1)continue;
+          if(node.matches&&node.matches(".cocoFamilyV129,.cocoFamilyV129Backdrop")||node.querySelector&&node.querySelector(".cocoFamilyV129")){
+            ensureFamilyMask160904();return
+          }
+        }
+      }
+    });
+    familyShellObserver160905.observe(app,{childList:true,subtree:true})
+  }
+
   function configuredStudentName160904(){
     var el=document.querySelector("#eternaOverlayV159 [data-et-name],#cocoApp .carnet .quien strong");
     var raw=normalizedUiText160904(el&&el.textContent).split(/\s+/)[0]||"";
@@ -763,7 +784,7 @@
     root.addEventListener("orientationchange",scheduleTopExit160904,{passive:true});
     root.addEventListener("coco:family-base-ready",scheduleFamilyMask160904,{passive:true});
     root.addEventListener("coco:family-legal-ready",scheduleFamilyMask160904,{passive:true});
-    scheduleTopExit160904();scheduleFinalEternaPolish160904()
+    installFamilyShellObserver160905();scheduleTopExit160904();scheduleFinalEternaPolish160904()
   }
 
   function installNavigationHooks(){

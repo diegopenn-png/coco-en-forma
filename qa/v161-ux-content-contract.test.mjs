@@ -97,3 +97,12 @@ test("Eterna UX has an explicit end, restart, accessible audio and empty-send gu
   assert.doesNotMatch(experience, /permisos de Safari o de la PWA/);
   assert.match(experience, /data-et-age-band=teen/);
 });
+
+test("Zona Familiar masks the legacy report before Safari can paint it", () => {
+  const release = read("coco-release-v160903.js");
+  assert.match(release, /installFamilyShellObserver160905/);
+  assert.match(release, /MutationObserver/);
+  assert.match(release, /node\.matches\("\.cocoFamilyV129,\.cocoFamilyV129Backdrop"\)/);
+  assert.match(release, /ensureFamilyMask160904\(\);return/);
+  assert.match(release, /Preparando Zona Familiar/);
+});
