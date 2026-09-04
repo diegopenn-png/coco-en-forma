@@ -32,8 +32,11 @@ test("Practice exposes counters and difficulty, not only focus", () => {
 });
 
 test("web entrypoint and Service Worker invalidate the corrected assets together", () => {
-  assert.match(index, /eterna-v159\.js\?v=160918/);
-  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160910/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.91\.8-trial-expired-conversion"/);
+  assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
+  assert.match(index, /eterna-v159\.js\?v=160920/);
+  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160920/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.92\.0-six-modes-state-contract-v3"/);
+  assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
+  assert.match(serviceWorker, /"\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /ETERNA_HOTFIX_PATH="\.\/eterna-hotfix-v160902\.js"/);
 });

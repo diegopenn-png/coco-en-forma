@@ -52,15 +52,10 @@
     try{var r=await cli.auth.getSession();return r&&r.data?r.data.session:null}catch(e){return null}
   }
 
-  function tester(session){
-    if(!session||!session.user)return false;
-    var email=String(session.user.email||"").toLowerCase();
-    var list=Array.isArray(cfg().cuentasPruebaIlimitadas)?cfg().cuentasPruebaIlimitadas:[];
-    return list.some(function(x){return String(x||"").toLowerCase()===email})
-  }
+  function masterAccess(){return Boolean(root.CocoEternaV160&&typeof root.CocoEternaV160.isMaster==="function"&&root.CocoEternaV160.isMaster())}
 
   function trialExpired(sub,session){
-    if(tester(session))return false;
+    if(masterAccess())return false;
     var s=sub||{},status=String(s.status||"").toLowerCase(),plan=String(s.plan||"").toLowerCase();
     var end=s.trial_end?new Date(s.trial_end).getTime():NaN;
     if(status==="active")return false;
