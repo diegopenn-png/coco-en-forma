@@ -38,6 +38,8 @@ jobs:
         run: node qa/eterna-trial-expired-ui-contract.test.mjs
       - name: Check family report and PDF export contract
         run: node --test qa/eterna-report-export-contract.test.mjs
+      - name: Check canonical Worker source layout
+        run: node --test qa/eterna-source-layout-contract.test.mjs
       - name: Check 48-conversation Eterna matrix
         run: |
           node --test qa/eterna/offline/*.test.mjs
