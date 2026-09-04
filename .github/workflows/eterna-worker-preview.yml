@@ -86,9 +86,11 @@ jobs:
         working-directory: eterna-worker
         shell: bash
         run: |
+          allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,https://raw.githack.com"
           npx wrangler versions upload \
             --name coco-eterna-v159 \
-            --keep-vars | tee preview-upload.log
+            --keep-vars \
+            --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
           {
             echo "## Eterna Worker preview"
             echo '```text'
