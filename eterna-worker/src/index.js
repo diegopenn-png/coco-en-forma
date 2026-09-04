@@ -13,7 +13,7 @@ import "../../eterna-state-contract-v3.js";
  */
 const OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tus padres y cuéntales lo que ocurre. Si no puedes acudir a ellos, busca a un responsable del colegio que pueda ayudarte en persona.";
-const VERSION="160.93.0-ux-completion-and-progressive-hints";
+const VERSION="160.93.1-master-game-replay";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -160,6 +160,14 @@ async function quota(env,uid,email,subscription=null){
   if(dailyUsed>=dailyLimit)return{ok:false,period:"daily",limit:dailyLimit,used:dailyUsed,daily_limit:dailyLimit,daily_used:dailyUsed,weekly_limit:weeklyLimit,weekly_used:weeklyUsed,settings,usage,week,tester:false};
   if(weeklyUsed>=weeklyLimit)return{ok:false,period:"weekly",limit:weeklyLimit,used:weeklyUsed,daily_limit:dailyLimit,daily_used:dailyUsed,weekly_limit:weeklyLimit,weekly_used:weeklyUsed,settings,usage,week,tester:false};
   return{ok:true,period:null,limit:dailyLimit,used:dailyUsed,daily_limit:dailyLimit,daily_used:dailyUsed,weekly_limit:weeklyLimit,weekly_used:weeklyUsed,settings,usage,week,tester:false}
+}
+async function handleAccessStatus(env,auth){
+  const uid=auth.user.id,[role,explicitTester,subscription]=await Promise.all([
+    serverRole(env,uid),
+    serverTesterEntitlement(env,uid),
+    getSubscription(env,uid,auth.user.email)
+  ]);
+  return json({unlimited_testing:role==="propietario"||explicitTester||subscriptionUnlimited(subscription)});
 }
 async function markChatRequest(env,uid,q,image){try{const body={...q.usage,user_id:uid,usage_date:usageDate(env),chat_requests:Number(q.usage?.chat_requests||0)+1,image_requests:Number(q.usage?.image_requests||0)+(image?1:0),updated_at:new Date().toISOString()};await supabase(env,"eterna_usage?on_conflict=user_id,usage_date",{method:"POST",body,headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}catch(e){}}
 async function resendEmail(env,{to,subject,html}){const key=String(env.RESEND_API_KEY||"").trim(),from=String(env.ETERNA_ALERT_FROM_EMAIL||"").trim();if(!key||!from||!to)return{ok:false,configured:false};try{const r=await fetch("https://api.resend.com/emails",{method:"POST",headers:{Authorization:"Bearer "+key,"Content-Type":"application/json"},body:JSON.stringify({from,to:[to],subject,html})});if(!r.ok){console.error("ETERNA WEEKLY EMAIL",r.status,(await r.text()).slice(0,400));return{ok:false,configured:true}}return{ok:true,configured:true}}catch(e){console.error("ETERNA WEEKLY EMAIL NETWORK",String(e?.message||e));return{ok:false,configured:true}}}
@@ -1011,7 +1019,8 @@ async function handleFetch(request,env,event){
       const replay=await getReplay(auth.user.id,replayKind,replayId);if(replay)return withCors(replay,c)
     }
     let response;
-    if(url.pathname==="/v1/legal-consent"&&["GET","POST"].includes(request.method))response=await handleLegalConsent(request,env,auth);
+    if(url.pathname==="/v1/access-status"&&request.method==="GET")response=await handleAccessStatus(env,auth);
+    else if(url.pathname==="/v1/legal-consent"&&["GET","POST"].includes(request.method))response=await handleLegalConsent(request,env,auth);
     else if(url.pathname==="/v1/chat-job"&&request.method==="POST")response=await handleChatJob(request,env,auth,event);
     else if(url.pathname==="/v1/chat-result"&&request.method==="GET")response=await handleChatJobResult(request,env,auth);
     else if(url.pathname==="/v1/chat"&&request.method==="POST")response=await handleChat(request,env,auth);

@@ -2,7 +2,7 @@
   "use strict";
   if (window.CocoResponseV142) return;
 
-  var VERSION = "142.0.0";
+  var VERSION = "142.0.1";
   var feedbackTimer = 0;
   var confettiTimer = 0;
   var victoryTimer = 0;
@@ -271,6 +271,12 @@
   function markCardComplete(gameId) {
     gameId = safeGameId(gameId);
     if (!gameId || gameId === "padel") return;
+    var daily = window.CocoDailyV134;
+    var userId = daily && typeof daily.userId === "function" ? daily.userId() : null;
+    if (userId && typeof daily.isUnlimited === "function" && daily.isUnlimited(userId)) {
+      clearCardComplete(gameId);
+      return;
+    }
     document.querySelectorAll('#cocoApp [data-coco-juego="' + gameId + '"]').forEach(function (card) {
       card.classList.add("cocoDailyComplete");
       card.dataset.cocoDailyState = "done";
@@ -294,9 +300,10 @@
   function restoreCompletedCards() {
     if (!window.CocoDailyV134 || typeof window.CocoDailyV134.localUsed !== "function") return;
     var userId = typeof window.CocoDailyV134.userId === "function" ? window.CocoDailyV134.userId() : null;
+    var unlimited = Boolean(userId && typeof window.CocoDailyV134.isUnlimited === "function" && window.CocoDailyV134.isUnlimited(userId));
     document.querySelectorAll("#cocoApp [data-coco-juego]").forEach(function (card) {
       var gameId=safeGameId(card.dataset.cocoJuego);if(!gameId||gameId==="padel")return;
-      if(userId&&window.CocoDailyV134.localUsed(gameId,userId))markCardComplete(gameId);else clearCardComplete(gameId);
+      if(!unlimited&&userId&&window.CocoDailyV134.localUsed(gameId,userId))markCardComplete(gameId);else clearCardComplete(gameId);
     });
   }
 

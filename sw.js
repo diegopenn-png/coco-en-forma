@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.93.0 · UX completion and game variety */
-const CACHE_VERSION="coco-en-forma-v160.93.0-ux-and-game-variety";
+/* Coco en Forma · Service Worker v160.93.2 · master replay availability */
+const CACHE_VERSION="coco-en-forma-v160.93.2-master-replay-availability";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

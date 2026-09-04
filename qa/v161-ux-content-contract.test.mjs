@@ -106,3 +106,36 @@ test("Zona Familiar masks the legacy report before Safari can paint it", () => {
   assert.match(release, /ensureFamilyMask160904\(\);return/);
   assert.match(release, /Preparando Zona Familiar/);
 });
+
+test("master accounts can replay every game without adding a second daily score", () => {
+  const html = read("index.html");
+  const runtime = read("coco-v142-runtime.js");
+  const unified = read("coco-v142-unified.js");
+  assert.match(runtime, /remoteUserRole/);
+  assert.match(runtime, /from\("perfiles"\)\.select\("rol"\)/);
+  assert.match(runtime, /remoteUserRole[^\n]*propietario/);
+  assert.match(runtime, /\/v1\/access-status/);
+  assert.match(runtime, /data\.unlimited_testing === true/);
+  assert.match(runtime, /remoteUnlimitedTesting/);
+  assert.match(runtime, /sessionStorage\.getItem\(UNLIMITED_SESSION_PREFIX/);
+  assert.match(runtime, /remoteUnlimitedTesting = readCachedUnlimitedTesting\(next\)/);
+  assert.match(runtime, /cacheUnlimitedTesting\(syncUserId/);
+  assert.match(runtime, /source: "access-status"/);
+  assert.match(html, /coco-v142-runtime\.js\?v=160932/);
+  assert.match(html, /coco-v142-unified\.js\?v=160932/);
+  assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
+  assert.match(unified, /daily\.isUnlimited\(userId\)/);
+  assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.93\.2-master-replay-availability/);
+});
+
+test("production promotes the exact preview-tested Worker with automatic rollback", () => {
+  const workflow = read(".github/workflows/eterna-worker-production-160931.yml");
+  const release = read(".github/release-eterna-160931");
+  assert.match(workflow, /TARGET_VERSION_ID: 4afe57d3-593b-46a4-829a-74356bcb7377/);
+  assert.match(workflow, /EXPECTED_VERSION: 160\.93\.1-master-game-replay/);
+  assert.match(workflow, /PREVIEW_HEALTH_URL: https:\/\/4afe57d3-coco-eterna-v159\.chatinmobiliario\.workers\.dev\/health/);
+  assert.match(workflow, /wrangler versions deploy/);
+  assert.match(workflow, /wrangler rollback/);
+  assert.match(release, /4afe57d3-593b-46a4-829a-74356bcb7377/);
+});
