@@ -45,6 +45,7 @@ function loadWorkerApi({ fetchImpl = fetch, consoleImpl = console } = {}) {
   vm.runInContext(`${executableSource}\n;globalThis.__securityApi = {
     scopeV3Guard,
     subscriptionActive,
+    subscriptionUnlimited,
     moderate,
     validateImageDataUrl: typeof validateImageDataUrl === "function" ? validateImageDataUrl : null,
     toPersistentActivityState: globalThis.EternaStateContractV3?.toPersistentActivityState || null
@@ -250,10 +251,17 @@ test("image ingestion accepts only bounded raster base64 data URLs", () => {
 });
 
 test("tester entitlement is server-authoritative and cannot rely on an email allowlist", () => {
+  const { subscriptionUnlimited } = loadWorkerApi();
+  assert.equal(subscriptionUnlimited({ status: "active", plan: "tester" }), true);
+  assert.equal(subscriptionUnlimited({ status: "active", plan: "owner" }), true);
+  assert.equal(subscriptionUnlimited({ status: "trialing", plan: "tester" }), false);
+  assert.equal(subscriptionUnlimited({ status: "active", plan: "monthly" }), false);
   assert.doesNotMatch(workerSource, /TESTER_EMAILS/);
   assert.doesNotMatch(workerSource, /isTesterEmail\s*\([^)]*email/);
   assert.doesNotMatch(clientSource, /cuentasPruebaIlimitadas/i);
   assert.doesNotMatch(indexSource, /cuentasPruebaIlimitadas/i);
+  assert.match(sourceBetween("async function handleChat(", "const CHAT_JOB_TTL_SECONDS"), /quota\(env,uid,auth\.user\.email,sub\)/);
+  assert.match(sourceBetween("async function quota(", "async function markChatRequest("), /subscriptionUnlimited\(subscription\)/);
 });
 
 test("logs never include raw OpenAI response or model output text", () => {
