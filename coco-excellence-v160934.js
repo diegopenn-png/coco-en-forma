@@ -53,7 +53,7 @@
     s.textContent=[
       "#cocoApp .cocoExcellenceMeta{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:10px 0 2px}",
       "#cocoApp .cocoExcellenceMeta span{display:inline-flex;align-items:center;min-height:27px;padding:4px 8px;border:1px solid #d9e9f0;border-radius:999px;background:#f8fcfe;color:#527080;font-size:10px;font-weight:850;line-height:1.2}",
-      "#cocoApp .cocoGameCard[data-coco-kind='tool']{border-color:#b9dce9!important;background:linear-gradient(180deg,#f7fcff,#eef8fc)!important}",
+      "#cocoApp .cocoGameCard[data-coco-kind='tool'],#cocoApp .cocoMiniJuego[data-coco-kind='tool']{border-color:#b9dce9!important;background:linear-gradient(180deg,#f7fcff,#eef8fc)!important}",
       "#cocoApp .cocoExToolLabel{display:inline-flex;align-items:center;justify-content:center;align-self:center;margin:0 auto 7px;padding:5px 9px;border-radius:999px;background:#173f59;color:#fff;font-size:9px;font-weight:900;letter-spacing:.05em;text-transform:uppercase}",
       "#cocoApp .cocoExGuide{margin:13px 0;padding:0;border:1px solid #d8e9f1;border-radius:15px;background:#f8fcfe;color:#315d73;overflow:hidden}",
       "#cocoApp .cocoExGuide summary{display:flex;align-items:center;min-height:44px;padding:9px 12px;cursor:pointer;color:#214d65;font-size:11px;font-weight:900;list-style:none}",
@@ -74,7 +74,7 @@
 
   function decorateCards(scope){
     var rootNode=scope&&scope.querySelectorAll?scope:document;
-    rootNode.querySelectorAll("#cocoApp .cocoGameCard").forEach(function(card){
+    rootNode.querySelectorAll("#cocoApp .cocoGameCard,#cocoApp .cocoMiniJuego").forEach(function(card){
       var id=gameIdFromCard(card),meta=GAME[id];if(!meta)return;
       if(meta.tool){card.dataset.cocoKind="tool";if(!card.querySelector(".cocoExToolLabel")){var tool=document.createElement("span");tool.className="cocoExToolLabel";tool.textContent="Herramienta para familias y clubes";var h=card.querySelector("h3");if(h)h.parentNode.insertBefore(tool,h)}}
       if(card.querySelector(".cocoExcellenceMeta"))return;
