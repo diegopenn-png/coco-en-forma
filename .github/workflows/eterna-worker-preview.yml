@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - "fix/eterna-six-modes-state-machine"
       - "fix/eterna-six-modes-state-machine-20260903"
       - "fix/eterna-pedagogy-audit-160911"
       - "fix/eterna-homework-wording-160912"

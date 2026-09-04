@@ -28,8 +28,15 @@ jobs:
         run: npm run check
       - name: Check client and Service Worker syntax
         run: |
+          node --check eterna-state-contract-v3.js
           node --check eterna-v159.js
           node --check eterna-experience-v160.js
           node --check eterna-hotfix-v160902.js
           node --check coco-v153-fixes.js
           node --check sw.js
+      - name: Check trial-expired conversion contract
+        run: node qa/eterna-trial-expired-ui-contract.test.mjs
+      - name: Check 48-conversation Eterna matrix
+        run: |
+          node --test qa/eterna/offline/*.test.mjs
+          node qa/eterna/run-matrix.mjs --offline
