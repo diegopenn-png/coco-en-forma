@@ -78,6 +78,7 @@ test("game cards explain their increased variety instead of using generic copy",
   assert.match(identity, /Fibonacci, potencias/i);
   assert.match(identity, /ciudadanía y tecnología/i);
   assert.match(identity, /puntuación.*clasificaciones e historial/i);
+  assert.match(identity, /closest\("\.cocoGameCard"\)/);
 });
 
 test("Eterna UX has an explicit end, restart, accessible audio and empty-send guard", () => {
