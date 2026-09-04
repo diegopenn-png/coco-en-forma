@@ -15,6 +15,11 @@ test("the canonical client sends and receives pedagogical_state", () => {
   assert.match(client, /state\.pedagogicalState\s*=\s*data\.pedagogical_state/);
 });
 
+test("an explicit topic change wins over a pending answer phase", () => {
+  assert.match(client, /explicitSwitch=.*vale\|ok[\s\S]{0,180}ahora[\s\S]{0,180}cambio de tema/);
+  assert.match(client, /turn\.intent==="new_topic"\?"new_topic":activity\.phase==="WAIT"\?"answer"/);
+});
+
 test("abstract learning state is rehydrated without storing child chat", () => {
   assert.match(client, /sessionStorage\.setItem\(LEARNING_SESSION_KEY/);
   assert.match(client, /sessionStorage\.getItem\(LEARNING_SESSION_KEY/);
