@@ -94,9 +94,18 @@ test("a moderation outage fails closed before scope or pedagogical routing", asy
 
   const chatSource = sourceBetween("async function handleChat(", "const CHAT_JOB_TTL_SECONDS");
   const moderationFailure = chatSource.indexOf("mod.moderation_error");
+  const moderationAwait = chatSource.indexOf("const modPromise=moderate(");
+  const postModerationUsage = chatSource.indexOf("await markChatRequest", moderationFailure);
   const scopeGuard = chatSource.indexOf("scopeV3Guard(");
   const safetyRoute = chatSource.indexOf('scope.scope==="safety"');
   assert.ok(moderationFailure >= 0, "Chat must explicitly handle moderation failure");
+  assert.ok(moderationAwait >= 0, "Chat must await moderation before normal usage is recorded");
+  assert.equal(
+    chatSource.slice(moderationAwait, moderationFailure).includes("await markChatRequest"),
+    false,
+    "A moderation outage must not consume the student's usage quota",
+  );
+  assert.ok(postModerationUsage > moderationFailure, "A moderated request must still consume usage quota");
   assert.ok(scopeGuard > moderationFailure, "Moderation failure must be handled before scope is trusted");
   assert.ok(safetyRoute > moderationFailure, "Moderation failure must be handled before response routing");
 });
