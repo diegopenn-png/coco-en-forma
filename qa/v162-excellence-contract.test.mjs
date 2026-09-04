@@ -52,4 +52,6 @@ test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   assert.match(sw,/coco-en-forma-v160\.93\.4-excellence-pass/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(workflow,/frontend 160\.93\.4-excellence-pass/);
+  assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
+  assert.match(workflow,/coco-excellence-v160934\.js\?v=160934&verify=\$\{GITHUB_SHA\}/);
 });
