@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/coco-eterna-excellence-160934
-          fetch-depth: 4
+          fetch-depth: 10
       - name: Verify exact safe ancestry
         shell: bash
         run: |
