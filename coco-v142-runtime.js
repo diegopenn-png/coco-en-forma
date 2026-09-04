@@ -2,7 +2,7 @@
   "use strict";
 
   var CONTENT_VERSION = "142.0.0";
-  var DAILY_POLICY_VERSION = "149.0.0";
+  var DAILY_POLICY_VERSION = "149.0.1";
   /* Conserva las claves v141 para no reiniciar el historial de rotación ni
      cambiar una misión ya elegida al actualizar la PWA durante el mismo día. */
   var STORAGE_PREFIX = "coco_v141_rotation_";
@@ -12,6 +12,7 @@
   var remoteClient = null;
   var remoteUserId = "";
   var remoteUserEmail = "";
+  var remoteUserRole = "";
   var remoteReady = false;
   var remoteUnavailable = false;
   var authWatcherInstalled = false;
@@ -44,8 +45,9 @@
 
   function isUnlimitedUser(userId) {
     var requested = String(userId || remoteUserId || "");
-    return Boolean(requested && remoteUserId && requested === String(remoteUserId) &&
-      window.CocoEternaV160 && typeof window.CocoEternaV160.isMaster === "function" && window.CocoEternaV160.isMaster());
+    if (!requested || !remoteUserId || requested !== String(remoteUserId)) return false;
+    if (String(remoteUserRole || "").toLowerCase() === "propietario") return true;
+    return Boolean(window.CocoEternaV160 && typeof window.CocoEternaV160.isMaster === "function" && window.CocoEternaV160.isMaster());
   }
 
   function stableStringify(value) {
@@ -272,6 +274,7 @@
     remoteUserEmail = nextEmail;
     if (userChanged) {
       remoteReady = false;
+      remoteUserRole = "";
       dailyCallCounters = Object.create(null);
       generatedCallCounters = Object.create(null);
     }
@@ -348,6 +351,8 @@
         return false;
       }
       var syncUserId = session.user.id; setActiveUser(syncUserId, session.user.email || ""); remoteReady = true;
+      var profileRole = await api.from("perfiles").select("rol").eq("id", syncUserId).maybeSingle();
+      remoteUserRole = profileRole && !profileRole.error && profileRole.data ? String(profileRole.data.rol || "") : "";
       var remote = await api.from("coco_content_rotation").select("scope_key,state,content_version,updated_at").eq("user_id", syncUserId), remoteTimes = Object.create(null);
       if (!remote.error && Array.isArray(remote.data)) {
         remote.data.forEach(function (row) {

@@ -106,3 +106,15 @@ test("Zona Familiar masks the legacy report before Safari can paint it", () => {
   assert.match(release, /ensureFamilyMask160904\(\);return/);
   assert.match(release, /Preparando Zona Familiar/);
 });
+
+test("master accounts can replay every game without adding a second daily score", () => {
+  const runtime = read("coco-v142-runtime.js");
+  const unified = read("coco-v142-unified.js");
+  assert.match(runtime, /remoteUserRole/);
+  assert.match(runtime, /from\("perfiles"\)\.select\("rol"\)/);
+  assert.match(runtime, /remoteUserRole[^\n]*propietario/);
+  assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
+  assert.match(unified, /daily\.isUnlimited\(userId\)/);
+  assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.93\.1-master-replay-availability/);
+});
