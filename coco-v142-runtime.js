@@ -8,6 +8,7 @@
   var STORAGE_PREFIX = "coco_v141_rotation_";
   var DAILY_PREFIX = "coco_v135_complete_";
   var MISSION_PREFIX = "coco_v141_mission_";
+  var UNLIMITED_SESSION_PREFIX = "coco_v160_unlimited_testing_";
   var FALLBACK_USER = "visitante";
   var remoteClient = null;
   var remoteUserId = "";
@@ -42,6 +43,21 @@
 
   function cleanEmail(value) {
     return String(value || "").trim().toLocaleLowerCase("en-US");
+  }
+
+  function readCachedUnlimitedTesting(userId) {
+    if (!userId) return false;
+    try { return sessionStorage.getItem(UNLIMITED_SESSION_PREFIX + cleanUser(userId)) === "1"; }
+    catch { return false; }
+  }
+
+  function cacheUnlimitedTesting(userId, enabled) {
+    if (!userId) return;
+    try {
+      var key = UNLIMITED_SESSION_PREFIX + cleanUser(userId);
+      if (enabled) sessionStorage.setItem(key, "1");
+      else sessionStorage.removeItem(key);
+    } catch {}
   }
 
   function isUnlimitedUser(userId) {
@@ -276,7 +292,11 @@
     if (userChanged) {
       remoteReady = false;
       remoteUserRole = "";
-      remoteUnlimitedTesting = false;
+      /* Conserva durante esta sesion el permiso ya confirmado para que, al
+         volver de un juego, las tarjetas no parpadeen como completadas mientras
+         se revalida el acceso con el servidor. La respuesta remota lo corrige
+         inmediatamente si el permiso fue revocado. */
+      remoteUnlimitedTesting = readCachedUnlimitedTesting(next);
       dailyCallCounters = Object.create(null);
       generatedCallCounters = Object.create(null);
     }
@@ -300,17 +320,17 @@
     var config = window.COCO_CONFIG || {};
     var base = String(config.eternaEndpoint || "").replace(/\/+$/, "");
     var token = session && session.access_token ? String(session.access_token) : "";
-    if (!base || !token) return false;
+    if (!base || !token) return null;
     try {
       var response = await fetch(base + "/v1/access-status", {
         method: "GET",
         headers: { Authorization: "Bearer " + token },
         cache: "no-store"
       });
-      if (!response.ok) return false;
+      if (!response.ok) return null;
       var data = await response.json();
       return data && data.unlimited_testing === true;
-    } catch { return false; }
+    } catch { return null; }
   }
 
   function installAuthWatcher(api) {
@@ -375,7 +395,8 @@
         loadUnlimitedTesting(session)
       ]), profileRole = accessResults[0];
       remoteUserRole = profileRole && !profileRole.error && profileRole.data ? String(profileRole.data.rol || "") : "";
-      remoteUnlimitedTesting = accessResults[1] === true;
+      if (accessResults[1] !== null) remoteUnlimitedTesting = accessResults[1] === true;
+      cacheUnlimitedTesting(syncUserId, remoteUnlimitedTesting || String(remoteUserRole || "").toLowerCase() === "propietario");
       try {
         window.dispatchEvent(new CustomEvent("coco:daily-sync", { detail: {
           source: "access-status",

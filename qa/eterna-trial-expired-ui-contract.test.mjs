@@ -33,6 +33,6 @@ assert.match(css, /@media\(max-width:760px\).*\.eternaV160ExpiredPlans\{grid-tem
 assert.match(index, /eterna-v159\.css\?v=160920/);
 assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
 assert.match(index, /eterna-v159\.js\?v=160920/);
-assert.match(sw, /coco-en-forma-v160\.93\.1-master-replay-availability/);
+assert.match(sw, /coco-en-forma-v160\.93\.2-master-replay-availability/);
 
 console.log("Eterna trial-expired conversion contract: OK");

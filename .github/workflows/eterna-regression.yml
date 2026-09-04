@@ -6,8 +6,11 @@ on:
       - "eterna-*.js"
       - "eterna-worker/**"
       - "coco-v153-fixes.js"
+      - "coco-v142-runtime.js"
+      - "coco-v142-unified.js"
       - "index.html"
       - "sw.js"
+      - "qa/v161-*.test.mjs"
       - ".github/workflows/eterna-regression.yml"
   workflow_dispatch:
 
@@ -32,8 +35,12 @@ jobs:
           node --check eterna-v159.js
           node --check eterna-experience-v160.js
           node --check eterna-hotfix-v160902.js
+          node --check coco-v142-runtime.js
+          node --check coco-v142-unified.js
           node --check coco-v153-fixes.js
           node --check sw.js
+      - name: Check game variety and unlimited tester contracts
+        run: node --test qa/v161-*.test.mjs
       - name: Check trial-expired conversion contract
         run: node qa/eterna-trial-expired-ui-contract.test.mjs
       - name: Check family report and PDF export contract

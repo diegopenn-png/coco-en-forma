@@ -117,11 +117,14 @@ test("master accounts can replay every game without adding a second daily score"
   assert.match(runtime, /\/v1\/access-status/);
   assert.match(runtime, /data\.unlimited_testing === true/);
   assert.match(runtime, /remoteUnlimitedTesting/);
+  assert.match(runtime, /sessionStorage\.getItem\(UNLIMITED_SESSION_PREFIX/);
+  assert.match(runtime, /remoteUnlimitedTesting = readCachedUnlimitedTesting\(next\)/);
+  assert.match(runtime, /cacheUnlimitedTesting\(syncUserId/);
   assert.match(runtime, /source: "access-status"/);
-  assert.match(html, /coco-v142-runtime\.js\?v=160931/);
-  assert.match(html, /coco-v142-unified\.js\?v=160931/);
+  assert.match(html, /coco-v142-runtime\.js\?v=160932/);
+  assert.match(html, /coco-v142-unified\.js\?v=160932/);
   assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
   assert.match(unified, /daily\.isUnlimited\(userId\)/);
   assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.93\.1-master-replay-availability/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.93\.2-master-replay-availability/);
 });
