@@ -73,7 +73,7 @@ jobs:
         working-directory: eterna-worker
         shell: bash
         run: |
-          allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,${PREVIEW_ORIGIN}"
+          allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,${PREVIEW_ORIGIN},http://terminal.local:4173"
           npx wrangler versions upload \
             --name coco-eterna-v159 \
             --keep-vars \
