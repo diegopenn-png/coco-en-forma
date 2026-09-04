@@ -135,6 +135,7 @@ async function handleLegalConsent(request,env,auth){
 
 function normalizeSubscriptionRecord(value,now=Date.now()){const s=value&&typeof value==="object"?value:null;if(!s)return{status:"inactive"};if(s.status==="trialing"){const end=Date.parse(String(s.trial_end||""));if(!Number.isFinite(end)||end<=now)return{...s,status:"expired"}}return s}
 async function serverRole(env,uid){try{const rows=await supabase(env,`perfiles?id=eq.${encodeURIComponent(uid)}&select=rol`);return String(rows?.[0]?.rol||"").toLowerCase()}catch(_e){return""}}
+async function serverTesterEntitlement(env,uid){try{const rows=await supabase(env,`eterna_test_entitlements?user_id=eq.${encodeURIComponent(uid)}&active=eq.true&select=active&limit=1`);return rows?.[0]?.active===true}catch(_e){return false}}
 async function getSubscription(env,uid,_email){try{const [rows,role]=await Promise.all([supabase(env,`eterna_subscriptions?user_id=eq.${encodeURIComponent(uid)}&select=*`),serverRole(env,uid)]);if(role==="propietario")return{status:"active",plan:"owner"};return normalizeSubscriptionRecord(rows?.[0])}catch(e){return{status:"inactive"}}}
 function subscriptionActive(s){return["active","trialing"].includes(normalizeSubscriptionRecord(s).status)}
 function subscriptionUnlimited(s){const normalized=normalizeSubscriptionRecord(s);return normalized.status==="active"&&["owner","tester"].includes(String(normalized.plan||"").toLowerCase())}
@@ -145,7 +146,7 @@ function usageWeekWindow(env,date=new Date()){const today=usageDate(env,date),d=
 async function getTodayUsage(env,uid){const date=usageDate(env);try{const rows=await supabase(env,`eterna_usage?user_id=eq.${encodeURIComponent(uid)}&usage_date=eq.${date}&select=*`);return rows?.[0]||{user_id:uid,usage_date:date,chat_requests:0}}catch(e){return{user_id:uid,usage_date:date,chat_requests:0}}}
 async function getWeekUsage(env,uid){const w=usageWeekWindow(env);try{const rows=await supabase(env,`eterna_usage?user_id=eq.${encodeURIComponent(uid)}&usage_date=gte.${w.start}&usage_date=lte.${w.end}&select=usage_date,chat_requests`),used=(rows||[]).reduce((sum,r)=>sum+Number(r.chat_requests||0),0);return{...w,used,rows:rows||[]}}catch(e){return{...w,used:0,rows:[]}}}
 async function quota(env,uid,email,subscription=null){
-  const [settings,usage,week]=await Promise.all([getParentSettings(env,uid),getTodayUsage(env,uid),getWeekUsage(env,uid)]);
+  const [settings,usage,week,role,explicitTester]=await Promise.all([getParentSettings(env,uid),getTodayUsage(env,uid),getWeekUsage(env,uid),serverRole(env,uid),serverTesterEntitlement(env,uid)]);
   const parentDaily=Math.max(1,Math.min(100,Number(settings.max_sessions_per_day||20))),
         hardDaily=Math.max(1,Math.min(100,Number(env.MAX_CHAT_REQUESTS_PER_DAY||60))),
         dailyLimit=Math.min(parentDaily,hardDaily),
@@ -154,7 +155,7 @@ async function quota(env,uid,email,subscription=null){
         derivedWeekly=Math.max(7,dailyLimit*7),
         weeklyLimit=configuredWeekly>0?Math.max(7,Math.min(1000,configuredWeekly)):derivedWeekly,
         weeklyUsed=Number(week.used||0);
-  const role=await serverRole(env,uid),tester=subscriptionUnlimited(subscription);
+  const tester=explicitTester||subscriptionUnlimited(subscription);
   if(role==="propietario"||tester)return{ok:true,period:null,limit:dailyLimit,used:dailyUsed,daily_limit:dailyLimit,daily_used:dailyUsed,weekly_limit:weeklyLimit,weekly_used:weeklyUsed,settings,usage,week,owner:role==="propietario",tester};
   if(dailyUsed>=dailyLimit)return{ok:false,period:"daily",limit:dailyLimit,used:dailyUsed,daily_limit:dailyLimit,daily_used:dailyUsed,weekly_limit:weeklyLimit,weekly_used:weeklyUsed,settings,usage,week,tester:false};
   if(weeklyUsed>=weeklyLimit)return{ok:false,period:"weekly",limit:weeklyLimit,used:weeklyUsed,daily_limit:dailyLimit,daily_used:dailyUsed,weekly_limit:weeklyLimit,weekly_used:weeklyUsed,settings,usage,week,tester:false};
