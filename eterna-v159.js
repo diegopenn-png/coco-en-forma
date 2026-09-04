@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.91.0-six-modes-state-machine";
+  var VERSION="160.91.8-trial-expired-conversion";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -174,6 +174,33 @@
       return new Date(s.trial_end).getTime()>Date.now()
     }
     return false
+  }
+
+  function trialExpired(){
+    var s=state.subscription||{},status=String(s.status||"").toLowerCase(),end=s.trial_end?new Date(s.trial_end).getTime():0;
+    return status==="expired"||(status==="trialing"&&end&&end<=Date.now())||(String(s.plan||"").toLowerCase()==="trial"&&Boolean(s.trial_end)&&!activeSubscription())
+  }
+
+  function paidPlanCards(){
+    return '<div class="eternaV160PaidGrid eternaV160ExpiredPlans">'+
+      '<article class="eternaV160PaidPlan"><span class="eternaV160PlanLabel">PLAN MENSUAL</span><b>Mensual</b><strong>7,99 € <small>/mes</small></strong><span>Continúa con Eterna mes a mes.</span><button type="button" data-et-month>Contratar plan mensual</button></article>'+
+      '<article class="eternaV160PaidPlan is-annual"><span class="badge">MEJOR PRECIO · AHORRA APROX. 17%</span><span class="eternaV160PlanLabel">PLAN ANUAL</span><b>Anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses de Eterna con el mejor precio.</span><button type="button" data-et-year>Contratar plan anual</button></article>'+
+    '</div>'
+  }
+
+  function expiredConversionMarkup(showClose){
+    return '<section class="eternaV160ExpiredGate" role="region" aria-label="La prueba gratuita de Eterna ha terminado">'+
+      '<div class="eternaV160ExpiredHero"><span class="eternaV160ExpiredIcon" aria-hidden="true">⏳</span><div><small>ETERNA · FIN DE LA PRUEBA GRATUITA</small><h3>TUS 7 DÍAS DE PRUEBA DE ETERNA HAN TERMINADO</h3><p>Para seguir utilizando la ayuda escolar personalizada, elige uno de los planes.</p></div></div>'+
+      '<div class="eternaV160NoCharge"><b>✓ No se ha realizado ningún cobro automático</b><span>La prueba comenzó sin tarjeta. Solo pagarás si eliges contratar ahora.</span></div>'+
+      paidPlanCards()+
+      '<p class="eternaV160FreeCoco">🧠 <b>Coco en Forma sigue siendo gratis y sin publicidad.</b></p>'+
+      (showClose?'<button type="button" class="eternaV159Secondary eternaV160ExpiredLater" data-et-close>Ahora no</button>':"")+
+    '</section>'
+  }
+
+  function bindCheckoutPlans(root){
+    if(!root)return;var b=root.querySelector("[data-et-month]");if(b)b.onclick=function(){checkout("monthly",b)};
+    b=root.querySelector("[data-et-year]");if(b)b.onclick=function(){checkout("annual",b)}
   }
 
   function perfMark(name){try{performance.mark(name)}catch(e){}}
@@ -536,6 +563,10 @@
     }
     if(!activeSubscription()){
       composer.style.display="none";
+      if(trialExpired()){
+        chat.innerHTML=expiredConversionMarkup(true);
+        bindCheckoutPlans(chat);chat.querySelector("[data-et-close]").onclick=close;setStatus("La prueba gratuita ha terminado","warn");return
+      }
       chat.innerHTML='<div class="eternaV159Gate"><h3>Prueba Eterna gratis durante 7 días</h3><p>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</p><div class="eternaV159GateList"><div>📸 Ayuda con tareas por foto</div><div>🎙️ Preguntas por voz</div><div>🧠 Memoria pedagógica</div><div>🔒 Solo apoyo escolar</div></div><div class="eternaV159Buttons"><button type="button" class="eternaV159Primary" data-et-family>Pedir a un adulto que la active</button><button type="button" class="eternaV159Secondary" data-et-close>Ahora no</button></div></div>';
       chat.querySelector("[data-et-family]").onclick=function(){close();var b=document.querySelector("#cocoApp .cocoFamiliaBtn");if(b)b.click()};chat.querySelector("[data-et-close]").onclick=close;setStatus("Activación familiar necesaria","warn");return
     }
@@ -613,7 +644,10 @@
     try{
       var source=state.imageData&&!rawText?"image":state.inputSource||"text",directive=repetitionDirective(turn),body={text:(turn.text||rawText)||"Analiza esta imagen como tarea escolar. Primero identifica qué está impreso, qué hueco debe completar el alumno y solo después dame una pista.",mode:state.mode,mode_state:state.modeState||freshModeState(),input_source:source,image_data_url:state.imageData||null,history:apiHistory,conversation_state:state.conversationState||freshConversationState(),pedagogical_state:state.pedagogicalState||freshPedagogicalState(state.mode),client_state_contract:2,student_intent:turn.intent||null,tutor_directive:turn.directive||null,repetition_guard:directive||null,client_version:VERSION};
       var r=await api("/v1/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}),data=await safeJson(r);
-      if(!r.ok){if(data&&data.error==="ETERNA_DAILY_LIMIT")throw new Error("ETERNA_DAILY_LIMIT");throw new Error(data&&data.error?data.error:"No se pudo obtener respuesta.")}
+      if(!r.ok){
+        if(r.status===402||data&&data.error==="ETERNA_SUBSCRIPTION_REQUIRED"){state.dataLoadedAt=0;await loadData(true);render();return}
+        if(data&&data.error==="ETERNA_DAILY_LIMIT")throw new Error("ETERNA_DAILY_LIMIT");throw new Error(data&&data.error?data.error:"No se pudo obtener respuesta.")
+      }
       var reply=cleanText(data.reply||"Necesito que me enseñes mejor el enunciado para poder ayudarte sin inventar nada."),meta={verification_status:data.verification_status||"needs_clarification",subject:cleanMetaText(data.subject),concept:cleanMetaText(data.concept),help_level:data.help_level,check_question:data.check_question||null,practice_suggestion:data.practice_suggestion||null,student_answer_assessment:data.student_answer_assessment||"not_applicable",strategy_used:data.strategy_used||null,mode_label:data.mode_label||null};
       var conv=updateConversationState(data,reply,turn,meta);meta.tutor_act=conv.tutor_act;meta.expected_student_act=conv.expected_student_act;meta.student_intent=turn.intent;
       if(data.mode_state&&typeof data.mode_state==="object")state.modeState=data.mode_state;if(data.pedagogical_state&&typeof data.pedagogical_state==="object")state.pedagogicalState=data.pedagogical_state;if(data.practice_target&&data.practice_target.concept&&state.mode==="practice")state.modeState.focus=data.practice_target.concept;
@@ -1003,23 +1037,22 @@
       if(headerTitle)headerTitle.textContent="";
       if(headerCopy)headerCopy.textContent="";
 
-      var active=activeSubscription(),sub=state.subscription||{},ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20};
+      var active=activeSubscription(),sub=state.subscription||{},expired=trialExpired(),ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20};
       var activeText=trialLabel(sub)||String(sub.status||"activa"),paidActive=String(sub.status||"")==="active"||tester(),trialActive=String(sub.status||"")==="trialing"&&active,plans="";
       if(paidActive){
         plans='<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>'
+      }else if(expired){
+        plans=expiredConversionMarkup(false)
       }else{
         var trialBlock=trialActive
           ?'<div class="eternaV160TrialActive"><b>⭐ '+esc(activeText)+'</b><span>Puedes contratar el plan mensual o anual en cualquier momento, aunque todavía estés dentro de los 7 días de prueba.</span></div>'
           :'<div class="eternaV160TrialActive"><b>⭐ Prueba gratuita · 7 días</b><span>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</span><button type="button" class="eternaV159Secondary" data-et-trial style="margin-top:9px">Empezar prueba gratis</button></div>';
         plans=trialBlock+
           '<div class="eternaV160UpgradeWrap"><div class="eternaV160UpgradeHead"><div><b>Elige tu plan cuando quieras</b><span>Los planes de pago están disponibles desde el primer día de la prueba. La activación se realiza al completar el pago.</span></div></div>'+
-          '<div class="eternaV160PaidGrid">'+
-            '<article class="eternaV160PaidPlan"><b>Plan mensual</b><strong>7,99 € <small>/mes</small></strong><span>Flexibilidad mes a mes.</span><button type="button" data-et-month>Contratar mensual</button></article>'+
-            '<article class="eternaV160PaidPlan is-annual"><span class="badge">Ahorra aprox. 17%</span><b>Plan anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses con el mejor precio.</span><button type="button" data-et-year>Contratar anual</button></article>'+
-          '</div></div>'
+          paidPlanCards()+'</div>'
       }
 
-      var promo='<div class="eternaV160FamilyPromo"><span>Enlace directo para compartir Eterna en redes o con otras familias.</span><button type="button" class="eternaV160ShareBtn" data-et-share>🔗 Compartir Eterna</button></div>';
+      var promo='<div class="eternaV160FamilyPromo"><span>Enlace directo para compartir Eterna en redes o con otras familias.</span><button type="button" class="eternaV160ShareBtn" data-et-share>🔗 Compartir Eterna</button></div>',commercial=expired?plans+promo:promo+plans;
       var settings='<details class="eternaV159ParentSettings"><summary>Privacidad y controles de Eterna</summary><div class="eternaV159ParentGrid">'+
         '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir voz de Eterna</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-voice '+(ps.voice_enabled!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
         '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir fotos de tareas</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-images '+(ps.allow_image_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
@@ -1029,16 +1062,15 @@
 
       var legal=preserveLegalAndClearFamilyCard(card);
       insertFamilyMarkup(card,
-        '<span class="eternaV159FamilyStatus '+(active?"active":"")+'">'+(tester()?"beta de prueba":active?esc(activeText):"no activa")+'</span>'+
-        promo+plans+renderAcademicMemoryPanel(memoryModel)+renderProgressPanel()+settings,legal);
+        '<span class="eternaV159FamilyStatus '+(active?"active":expired?"expired":"")+'">'+(tester()?"beta de prueba":active?esc(activeText):expired?"prueba finalizada":"no activa")+'</span>'+
+        commercial+renderAcademicMemoryPanel(memoryModel)+renderProgressPanel()+settings,legal);
       ensureFamilyDivider(body,card);
       bindFamilyToggleLabels(card);
 
       var b=card.querySelector("[data-et-open]");if(b)b.onclick=function(){var closeFamily=document.querySelector("#cocoApp .cocoFamilyV129>header button");if(closeFamily)closeFamily.click();open()};
       b=card.querySelector("[data-et-portal]");if(b)b.onclick=function(){portal(b)};
       b=card.querySelector("[data-et-trial]");if(b)b.onclick=function(){startTrial(b)};
-      b=card.querySelector("[data-et-month]");if(b)b.onclick=function(){checkout("monthly",b)};
-      b=card.querySelector("[data-et-year]");if(b)b.onclick=function(){checkout("annual",b)};
+      bindCheckoutPlans(card);
       b=card.querySelector("[data-et-save-settings]");if(b)b.onclick=function(){saveParentSettings(card,b)};
       b=card.querySelector("[data-et-export]");if(b)b.onclick=function(){exportEterna(b)};
       b=card.querySelector("[data-et-delete]");if(b)b.onclick=function(){deleteEternaData(b)};

@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.91.0 · six modes state contract */
-const CACHE_VERSION="coco-en-forma-v160.91.0-six-modes-state-machine";
+/* Coco en Forma · Service Worker v160.91.8 · trial expired conversion */
+const CACHE_VERSION="coco-en-forma-v160.91.8-trial-expired-conversion";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
