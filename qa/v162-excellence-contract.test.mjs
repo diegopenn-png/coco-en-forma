@@ -14,6 +14,8 @@ test("all 13 experiences receive a concise goal and first-use guide",()=>{
   ids.forEach(id=>assert.match(layer,new RegExp(`\\b${id}:\\{name:`),id));
   assert.match(layer,/games:Object\.keys\(GAME\)\.length/);
   assert.match(layer,/\.cocoGameCard,#cocoApp \.cocoMiniJuego/);
+  assert.match(layer,/card\.dataset\.cocoExcellence="1"/);
+  assert.match(layer,/else card\.appendChild\(box\)/);
   assert.match(layer,/observer\.observe\(document\.body/);
   assert.match(layer,/\[250,700,1600,3200\]\.forEach/);
   assert.match(layer,/className="cocoExGuide"/);
@@ -50,11 +52,11 @@ test("failed Eterna requests keep the student's input ready to retry",()=>{
 
 test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   const html=read("index.html"),sw=read("sw.js"),workflow=read(".github/workflows/eterna-authenticated-preview.yml");
-  assert.match(html,/coco-excellence-v160934\.js\?v=1609341/);
+  assert.match(html,/coco-excellence-v160934\.js\?v=1609342/);
   assert.match(html,/eterna-v159\.js\?v=160934/);
-  assert.match(sw,/coco-en-forma-v160\.93\.4-excellence-pass-r1/);
+  assert.match(sw,/coco-en-forma-v160\.93\.4-excellence-pass-r2/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(workflow,/frontend 160\.93\.4-excellence-pass/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
-  assert.match(workflow,/coco-excellence-v160934\.js\?v=1609341&verify=\$\{GITHUB_SHA\}/);
+  assert.match(workflow,/coco-excellence-v160934\.js\?v=1609342&verify=\$\{GITHUB_SHA\}/);
 });

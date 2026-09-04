@@ -76,10 +76,11 @@
     var rootNode=scope&&scope.querySelectorAll?scope:document;
     rootNode.querySelectorAll("#cocoApp .cocoGameCard,#cocoApp .cocoMiniJuego").forEach(function(card){
       var id=gameIdFromCard(card),meta=GAME[id];if(!meta)return;
-      if(meta.tool){card.dataset.cocoKind="tool";if(!card.querySelector(".cocoExToolLabel")){var tool=document.createElement("span");tool.className="cocoExToolLabel";tool.textContent="Herramienta para familias y clubes";var h=card.querySelector("h3");if(h)h.parentNode.insertBefore(tool,h)}}
+      card.dataset.cocoExcellence="1";
+      if(meta.tool){card.dataset.cocoKind="tool";if(!card.querySelector(".cocoExToolLabel")){var tool=document.createElement("span");tool.className="cocoExToolLabel";tool.textContent="Herramienta para familias y clubes";var h=card.querySelector("h3,b");if(h)h.parentNode.insertBefore(tool,h)}}
       if(card.querySelector(".cocoExcellenceMeta"))return;
       var box=document.createElement("div");box.className="cocoExcellenceMeta";box.setAttribute("aria-label","Duracion y objetivo");box.innerHTML='<span>⏱ '+esc(meta.time)+'</span><span>🎯 '+esc(meta.goal)+'</span>';
-      var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&desc.parentNode)desc.parentNode.insertBefore(box,desc.nextSibling)
+      var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&desc.parentNode)desc.parentNode.insertBefore(box,desc.nextSibling);else card.appendChild(box)
     })
   }
 
