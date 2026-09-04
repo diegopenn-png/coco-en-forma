@@ -2,6 +2,13 @@ name: Eterna Worker preview
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "eterna-worker/**"
+      - "eterna-state-contract-v3.js"
+      - ".github/workflows/eterna-worker-preview.yml"
   push:
     branches:
       - "fix/eterna-six-modes-state-machine"
