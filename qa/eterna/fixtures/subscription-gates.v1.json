@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "states": {
+    "active":{"status":"active","expected_surface":"eterna_ready"},
+    "trialing":{"status":"trialing","trial_end":"future","expected_surface":"eterna_ready"},
+    "expired":{"status":"expired","trial_end":"past","expected_surface":"expired_conversion","required_copy":["TUS 7 DÍAS DE PRUEBA DE ETERNA HAN TERMINADO","No se ha realizado ningún cobro automático","7,99 €/mes","79,99 €/año","Coco en Forma sigue siendo gratis y sin publicidad"]},
+    "inactive":{"status":"inactive","trial_end":null,"expected_surface":"trial_offer"}
+  },
+  "paths": [
+    {"id":"SG-active-chat-iphone","state":"active","entry":"chat","viewport":"iphone","expect":"eterna_ready"},
+    {"id":"SG-active-chat-android","state":"active","entry":"chat","viewport":"android","expect":"eterna_ready"},
+    {"id":"SG-active-chat-ipad","state":"active","entry":"chat","viewport":"ipad","expect":"eterna_ready"},
+    {"id":"SG-active-chat-desktop","state":"active","entry":"chat","viewport":"desktop","expect":"eterna_ready"},
+    {"id":"SG-active-family-iphone","state":"active","entry":"family","viewport":"iphone","expect":"eterna_ready"},
+    {"id":"SG-active-family-android","state":"active","entry":"family","viewport":"android","expect":"eterna_ready"},
+    {"id":"SG-active-family-ipad","state":"active","entry":"family","viewport":"ipad","expect":"eterna_ready"},
+    {"id":"SG-active-family-desktop","state":"active","entry":"family","viewport":"desktop","expect":"eterna_ready"},
+
+    {"id":"SG-trialing-chat-iphone","state":"trialing","entry":"chat","viewport":"iphone","expect":"eterna_ready"},
+    {"id":"SG-trialing-chat-android","state":"trialing","entry":"chat","viewport":"android","expect":"eterna_ready"},
+    {"id":"SG-trialing-chat-ipad","state":"trialing","entry":"chat","viewport":"ipad","expect":"eterna_ready"},
+    {"id":"SG-trialing-chat-desktop","state":"trialing","entry":"chat","viewport":"desktop","expect":"eterna_ready"},
+    {"id":"SG-trialing-family-iphone","state":"trialing","entry":"family","viewport":"iphone","expect":"eterna_ready"},
+    {"id":"SG-trialing-family-android","state":"trialing","entry":"family","viewport":"android","expect":"eterna_ready"},
+    {"id":"SG-trialing-family-ipad","state":"trialing","entry":"family","viewport":"ipad","expect":"eterna_ready"},
+    {"id":"SG-trialing-family-desktop","state":"trialing","entry":"family","viewport":"desktop","expect":"eterna_ready"},
+
+    {"id":"SG-expired-chat-iphone","state":"expired","entry":"chat","viewport":"iphone","expect":"expired_conversion"},
+    {"id":"SG-expired-chat-android","state":"expired","entry":"chat","viewport":"android","expect":"expired_conversion"},
+    {"id":"SG-expired-chat-ipad","state":"expired","entry":"chat","viewport":"ipad","expect":"expired_conversion"},
+    {"id":"SG-expired-chat-desktop","state":"expired","entry":"chat","viewport":"desktop","expect":"expired_conversion"},
+    {"id":"SG-expired-family-iphone","state":"expired","entry":"family","viewport":"iphone","expect":"expired_conversion"},
+    {"id":"SG-expired-family-android","state":"expired","entry":"family","viewport":"android","expect":"expired_conversion"},
+    {"id":"SG-expired-family-ipad","state":"expired","entry":"family","viewport":"ipad","expect":"expired_conversion"},
+    {"id":"SG-expired-family-desktop","state":"expired","entry":"family","viewport":"desktop","expect":"expired_conversion"},
+
+    {"id":"SG-inactive-chat-iphone","state":"inactive","entry":"chat","viewport":"iphone","expect":"trial_offer"},
+    {"id":"SG-inactive-chat-android","state":"inactive","entry":"chat","viewport":"android","expect":"trial_offer"},
+    {"id":"SG-inactive-chat-ipad","state":"inactive","entry":"chat","viewport":"ipad","expect":"trial_offer"},
+    {"id":"SG-inactive-chat-desktop","state":"inactive","entry":"chat","viewport":"desktop","expect":"trial_offer"},
+    {"id":"SG-inactive-family-iphone","state":"inactive","entry":"family","viewport":"iphone","expect":"trial_offer"},
+    {"id":"SG-inactive-family-android","state":"inactive","entry":"family","viewport":"android","expect":"trial_offer"},
+    {"id":"SG-inactive-family-ipad","state":"inactive","entry":"family","viewport":"ipad","expect":"trial_offer"},
+    {"id":"SG-inactive-family-desktop","state":"inactive","entry":"family","viewport":"desktop","expect":"trial_offer"}
+  ]
+}

@@ -15,6 +15,11 @@ test("the canonical client sends and receives pedagogical_state", () => {
   assert.match(client, /state\.pedagogicalState\s*=\s*data\.pedagogical_state/);
 });
 
+test("an explicit topic change wins over a pending answer phase", () => {
+  assert.match(client, /explicitSwitch=.*vale\|ok[\s\S]{0,180}ahora[\s\S]{0,180}cambio de tema/);
+  assert.match(client, /turn\.intent==="new_topic"\?"new_topic":activity\.phase==="WAIT"\?"answer"/);
+});
+
 test("abstract learning state is rehydrated without storing child chat", () => {
   assert.match(client, /sessionStorage\.setItem\(LEARNING_SESSION_KEY/);
   assert.match(client, /sessionStorage\.getItem\(LEARNING_SESSION_KEY/);
@@ -32,8 +37,12 @@ test("Practice exposes counters and difficulty, not only focus", () => {
 });
 
 test("web entrypoint and Service Worker invalidate the corrected assets together", () => {
-  assert.match(index, /eterna-v159\.js\?v=160910/);
-  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160910/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.91\.0-six-modes-state-machine"/);
+  assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
+  assert.match(index, /eterna-v159\.js\?v=160920/);
+  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160930/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.93\.0-ux-and-game-variety"/);
+  assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
+  assert.match(serviceWorker, /"\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /ETERNA_HOTFIX_PATH="\.\/eterna-hotfix-v160902\.js"/);
+  assert.match(serviceWorker, /basePromise=cachedPatch\(ETERNA_CORE_PATH\)/);
 });

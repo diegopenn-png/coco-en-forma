@@ -5,7 +5,8 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 
 const source = readFileSync(new URL("../src/index.js", import.meta.url), "utf8");
-const executableSource = source.replace(/\nexport default\s*\{[\s\S]*?\};\s*$/, "");
+const stateContractSource = readFileSync(new URL("../../eterna-state-contract-v3.js", import.meta.url), "utf8");
+const executableSource = source.replace(/^import\s+[^;]+;\s*/gm, "").replace(/\nexport default\s*\{[\s\S]*?\};\s*$/, "");
 const sandbox = {
   console,
   URL,
@@ -21,6 +22,7 @@ const sandbox = {
   addEventListener() {},
 };
 vm.createContext(sandbox);
+vm.runInContext(stateContractSource, sandbox);
 vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   clearNonAcademicIntent,
   turnRelation,
@@ -36,10 +38,19 @@ vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   expectedFractionForQuestion: typeof expectedFractionForQuestion === "function" ? expectedFractionForQuestion : null,
   singleStudentAct: typeof singleStudentAct === "function" ? singleStudentAct : null,
   enforceIncorrectOpening: typeof enforceIncorrectOpening === "function" ? enforceIncorrectOpening : null,
+  repairIncompleteReply: typeof repairIncompleteReply === "function" ? repairIncompleteReply : null,
   nextMultiplicationQuestion: typeof nextMultiplicationQuestion === "function" ? nextMultiplicationQuestion : null,
   stripTrailingStudentQuestion: typeof stripTrailingStudentQuestion === "function" ? stripTrailingStudentQuestion : null,
   isAdaptiveCloseRequest: typeof isAdaptiveCloseRequest === "function" ? isAdaptiveCloseRequest : null,
-  adaptiveCloseResponse: typeof adaptiveCloseResponse === "function" ? adaptiveCloseResponse : null
+  adaptiveCloseResponse: typeof adaptiveCloseResponse === "function" ? adaptiveCloseResponse : null,
+  sanitizePedagogicalState: typeof sanitizePedagogicalState === "function" ? sanitizePedagogicalState : null,
+  buildPedagogicalState: typeof buildPedagogicalState === "function" ? buildPedagogicalState : null,
+  parseContractV3Input: typeof parseContractV3Input === "function" ? parseContractV3Input : null,
+  staleQuestionProblem: typeof staleQuestionProblem === "function" ? staleQuestionProblem : null,
+  hintRequestResponse: typeof hintRequestResponse === "function" ? hintRequestResponse : null,
+  normalizeSubscriptionRecord: typeof normalizeSubscriptionRecord === "function" ? normalizeSubscriptionRecord : null,
+  subscriptionActive: typeof subscriptionActive === "function" ? subscriptionActive : null,
+  addContractEnvelope: typeof addContractEnvelope === "function" ? addContractEnvelope : null
 };`, sandbox);
 
 const api = sandbox.__eternaTest;
@@ -51,7 +62,21 @@ test("Worker uses the ES Modules entry point required for versioned previews", (
 
 test("School Scope blocks explicit entertainment while preserving school context", () => {
   assert.equal(api.clearNonAcademicIntent("Ahora cuéntame un chiste de videojuegos."), true);
+  assert.equal(api.clearNonAcademicIntent("¿Qué móvil me compro para mi cumple?"), true);
   assert.equal(api.clearNonAcademicIntent("Explícame la historia de los videojuegos para clase."), false);
+});
+
+test("natural topic changes override a pending comprehension check", () => {
+  const state = {
+    active_topic: "fotosíntesis",
+    active_subject: "Ciencias Naturales",
+    active_concept: "fotosíntesis",
+    pending_question: "¿La fotosíntesis necesita luz del Sol?",
+    expected_answer_type: "yes_no",
+    last_tutor_act: "ask_yes_no",
+  };
+  assert.equal(api.turnRelation("Vale, ahora dime qué fue la Edad Media.", state, []), "new_topic");
+  assert.equal(api.turnRelation("Cambio de tema: explícame qué fue la Edad Media.", state, []), "new_topic");
 });
 
 test("a short academic answer remains a continuation when the active topic exists", () => {
@@ -93,6 +118,13 @@ test("review finds the first real error in fractions and language", () => {
   const language = api.deterministicReviewGuard("e escrito: «Los kiwis vuelan por Nueva Zelanda». Revísalo.", []);
   assert.equal(language?.assessment, "incorrect");
   assert.match(language?.reply || "", /«e».*«he»/i);
+
+  const conjugation = api.deterministicReviewGuard("He escrito: Los pájaros volan hacia el sur. ¿Está bien?", []);
+  assert.equal(conjugation?.assessment, "incorrect");
+  assert.match(conjugation?.check_question || "", /vuelan/i);
+  const corrected = api.deterministicReviewGuard("Los pájaros vuelan hacia el sur.", [{ role: "user", text: "He escrito: Los pájaros volan hacia el sur. ¿Está bien?" }]);
+  assert.equal(corrected?.assessment, "correct");
+  assert.equal(corrected?.check_question, null);
 });
 
 test("review uses the standard Spanish school chronology for the Middle Ages", () => {
@@ -149,6 +181,20 @@ test("Exam and Practice always receive a concrete initial question", () => {
     api.initialAdaptiveQuestion({ mode: "practice", text: "Quiero practicar divisiones", subject: "Matemáticas", concept: "divisiones", difficulty: 1, questionNumber: 0 }),
     /÷.*\?/,
   );
+});
+
+test("Exam removes an imperative model question when a different canonical check is active", () => {
+  const result = api.singleStudentAct({
+    mode: "exam",
+    reply: "Perfecto. Empezamos con fracciones equivalentes. Escribe una fracción equivalente a 1/2.",
+    tutorData: { check_question: "1/2 + 1/4 = ?" },
+    turnRel: "new_topic",
+    incoming: { turn_index: 0 },
+    assessment: "not_applicable",
+    studentText: "Tengo examen de fracciones",
+  });
+  assert.equal(result.pending_question, "1/2 + 1/4 = ?");
+  assert.doesNotMatch(result.reply, /Escribe una fracción equivalente/i);
 });
 
 test("deterministic arithmetic rounds advance once and preserve practice retries", () => {
@@ -213,6 +259,25 @@ test("practice keeps the requested multiplication table as difficulty changes", 
   const ped = { active_subject: "Matemáticas", active_concept: "Tabla de multiplicar del 7", pending_question: "¿Cuánto es 7 × 4?", expected_answer_type: "numeric", turn_index: 1 };
   const result = api.deterministicAdaptiveArithmeticTurn({ mode: "practice", text: "28", turnRel: "answer_to_pending", incomingModeState: base, incomingPedState: ped, subject: "Matemáticas", concept: "Tabla de multiplicar del 7", focus: "Tabla de multiplicar del 7" });
   assert.match(result.check_question, /¿Cuánto es 7 × \d+\?/);
+});
+
+test("exam keeps every requested multiplication table instead of drifting topics", () => {
+  for (let difficulty = 1; difficulty <= 5; difficulty++) {
+    for (let questionNumber = 0; questionNumber < 10; questionNumber++) {
+      const question = api.nextMultiplicationQuestion({ difficulty, questionNumber, focus: "tablas del 6 y del 7" });
+      assert.match(question, /¿Cuánto es [67] × \d+\?/);
+    }
+  }
+  const base = { question_number: 2, correct_count: 1, partial_count: 0, incorrect_count: 1, difficulty: 2, focus: "tablas del 6 y del 7" };
+  const ped = { active_subject: "Matemáticas", active_concept: "tablas del 6 y del 7", pending_question: "¿Cuánto es 7 × 6?", expected_answer_type: "numeric", turn_index: 2 };
+  const result = api.deterministicAdaptiveArithmeticTurn({ mode: "exam", text: "42", turnRel: "answer_to_pending", incomingModeState: base, incomingPedState: ped, subject: "Matemáticas", concept: "tablas del 6 y del 7", focus: "tablas del 6 y del 7" });
+  assert.match(result.check_question, /¿Cuánto es [67] × \d+\?/);
+});
+
+test("incomplete model fragments are removed before reaching a child", () => {
+  const raw = "Correcto: el hielo es menos denso. Por eso flota. Si algo es menos denso que el agua,";
+  assert.equal(api.repairIncompleteReply(raw), "Correcto: el hielo es menos denso. Por eso flota.");
+  assert.equal(api.repairIncompleteReply("Una explicación completa."), "Una explicación completa.");
 });
 
 test("homework fraction mistakes keep the scaffold and never reveal the final answer", () => {
@@ -284,6 +349,12 @@ test("known conceptual checks reject contradictions instead of validating them",
   assert.equal(equivalence.student_answer_assessment, "incorrect");
   assert.match(equivalence.reply, /^Incorrecto\./);
   assert.equal(equivalence.check_question, "¿1/2 y 2/4 representan la misma cantidad?");
+
+  const ice = api.deterministicConceptCheckTurn({ mode: "ask", text: "Es menos denso porque tiene aire dentro.", turnRel: "answer_to_pending", incomingModeState: {}, incomingPedState: { active_subject: "Ciencias Naturales", active_concept: "densidad del hielo", pending_question: "¿Qué pasa con la densidad del agua cuando se convierte en hielo?", turn_index: 2 }, subject: "Ciencias Naturales", concept: "densidad del hielo", history: [{ role: "assistant", text: "El hielo flota porque es menos denso que el agua líquida." }] });
+  assert.equal(ice.student_answer_assessment, "partial");
+  assert.match(ice.reply, /^Parcialmente correcto:/);
+  assert.match(ice.reply, /no porque tenga aire dentro/i);
+  assert.match(ice.check_question, /ocupa más espacio/i);
 });
 
 test("Review evaluates each numeric retry and gives a new concrete hint", () => {
@@ -346,4 +417,98 @@ test("Exam and Practice close without grading a non-answer or inventing a new qu
   assert.equal(result.mode_state.correct_count, 4);
   assert.equal(result.pedagogical_state.conversation_stage, "complete");
   assert.match(result.reply, /4 correctos.*1 parcial.*1 incorrecto/i);
+});
+
+test("Worker v3 forces request mode and rejects a stale answered_question_id", () => {
+  const qid = "question:11111111-1111-4111-8111-111111111111";
+  const ped = api.sanitizePedagogicalState({
+    current_mode: "exam",
+    pending_question: "¿Cuánto es 7 × 4?",
+    pending_question_id: qid,
+    conversation_stage: "awaiting_student_answer",
+  }, "practice");
+  assert.equal(ped.current_mode, "practice");
+  const body = {
+    client_state_contract: 3,
+    request_id: "turn:11111111-1111-4111-8111-111111111111",
+    client_turn_id: "turn:11111111-1111-4111-8111-111111111111",
+    answered_question_id: "question:22222222-2222-4222-8222-222222222222",
+    student_action: "answer",
+    activity_state: {
+      contract_version: 3,
+      session_id: "session:11111111-1111-4111-8111-111111111111",
+      mode: "exam",
+      phase: "WAIT",
+      question_id: qid,
+      question_number: 1,
+      difficulty: 2,
+    },
+  };
+  const meta = api.parseContractV3Input(body, { mode: "practice", modeState: {}, pedState: ped });
+  assert.equal(meta.activityState.mode, "practice");
+  assert.equal(api.staleQuestionProblem(meta, ped)?.error, "ETERNA_STALE_QUESTION");
+  meta.answeredQuestionId = qid;
+  assert.equal(api.staleQuestionProblem(meta, ped), null);
+});
+
+test("Worker v3 preserves the question id for the same retry and rotates it for a new question", () => {
+  const qid = "question:33333333-3333-4333-8333-333333333333";
+  const incoming = api.sanitizePedagogicalState({
+    pending_question: "¿Cuánto es 3/4 en octavos?",
+    pending_question_id: qid,
+    conversation_stage: "awaiting_student_answer",
+  }, "practice");
+  const tutorOutput = { help_level: 2, expected_answer_type: "short_concept", expected_key_ideas: [], likely_misconceptions: [], conversation_stage: "awaiting_student_answer", strategy_used: "socratic_question", tutor_act: "practice_question", new_explained_points: [], needs_clarification: false };
+  const retry = api.buildPedagogicalState({ incoming, mode: "practice", subject: "Matemáticas", concept: "fracciones", tutorOutput, assessment: "incorrect", finalCheck: incoming.pending_question, turnRel: "answer_to_pending" });
+  assert.equal(retry.pending_question_id, qid);
+  const next = api.buildPedagogicalState({ incoming, mode: "practice", subject: "Matemáticas", concept: "fracciones", tutorOutput, assessment: "correct", finalCheck: "¿Cuánto es 1/2 en octavos?", turnRel: "answer_to_pending" });
+  assert.notEqual(next.pending_question_id, qid);
+});
+
+test("canonical hint_request is non-evaluable and preserves counters and question id", () => {
+  const qid = "question:44444444-4444-4444-8444-444444444444";
+  const ped = api.sanitizePedagogicalState({ active_subject: "Matemáticas", active_concept: "fracciones", pending_question: "¿Cuánto es 3/4 en octavos?", pending_question_id: qid, expected_answer_type: "short_concept", conversation_stage: "awaiting_student_answer", current_help_level: 1 }, "practice");
+  const modeState = { question_number: 1, correct_count: 2, partial_count: 1, incorrect_count: 3, difficulty: 2, focus: "fracciones" };
+  const hint = api.hintRequestResponse(ped, "practice", modeState);
+  assert.equal(hint.student_answer_assessment, "not_applicable");
+  assert.equal(hint.pedagogical_state.pending_question_id, qid);
+  assert.deepEqual(JSON.parse(JSON.stringify(hint.mode_state)), modeState);
+  const comparison = api.hintRequestResponse(api.sanitizePedagogicalState({ active_subject: "Matemáticas", active_concept: "comparar fracciones", pending_question: "¿Cuál es mayor, 1/4 o 1/3?", pending_question_id: qid, expected_answer_type: "short_concept", conversation_stage: "awaiting_student_answer", current_help_level: 1 }, "practice"), "practice", modeState);
+  assert.match(comparison.reply, /productos cruzados/i);
+  assert.match(comparison.reply, /1 × 3.*1 × 4/);
+  assert.doesNotMatch(comparison.reply, /busca primero la idea/i);
+});
+
+test("generic hint requests progress through distinct concrete scaffolds", () => {
+  const qid = "question:55555555-5555-4555-8555-555555555555";
+  const base = { active_subject: "Lengua Castellana y Literatura", active_concept: "argumentación", pending_question: "¿Qué razón apoya la tesis del texto?", pending_question_id: qid, expected_answer_type: "short_concept", conversation_stage: "awaiting_student_answer" };
+  const second = api.hintRequestResponse(api.sanitizePedagogicalState({ ...base, current_help_level: 1 }, "homework"), "homework", {});
+  const third = api.hintRequestResponse(api.sanitizePedagogicalState({ ...base, current_help_level: 2 }, "homework"), "homework", {});
+  const fourth = api.hintRequestResponse(api.sanitizePedagogicalState({ ...base, current_help_level: 3 }, "homework"), "homework", {});
+  assert.match(second.reply, /Pista 2 de 5/i);
+  assert.match(second.reply, /subraya/i);
+  assert.match(third.reply, /plantilla/i);
+  assert.match(fourth.reply, /Sé que .* la pregunta pide/i);
+  assert.equal(new Set([second.reply, third.reply, fourth.reply]).size, 3);
+  assert.ok([second, third, fourth].every(item => item.student_answer_assessment === "not_applicable"));
+  assert.ok([second, third, fourth].every(item => item.pedagogical_state.pending_question_id === qid));
+});
+
+test("expired or malformed trials fail closed in the Worker", () => {
+  const past = new Date(Date.now() - 60_000).toISOString();
+  assert.equal(api.normalizeSubscriptionRecord({ status: "trialing", trial_end: null }).status, "expired");
+  assert.equal(api.normalizeSubscriptionRecord({ status: "trialing", trial_end: "bad" }).status, "expired");
+  assert.equal(api.subscriptionActive({ status: "trialing", trial_end: past }), false);
+  assert.equal(api.subscriptionActive({ status: "active" }), true);
+});
+
+test("v3 JSON responses echo canonical request identity and activity state", async () => {
+  const requestId = "turn:55555555-5555-4555-8555-555555555555";
+  const meta = api.parseContractV3Input({ client_state_contract: 3, request_id: requestId, client_turn_id: requestId, student_action: "new_topic", activity_state: { contract_version: 3, session_id: "session:55555555-5555-4555-8555-555555555555", mode: "exam", phase: "ASK", question_number: 1, difficulty: 2 } }, { mode: "exam", modeState: {}, pedState: {} });
+  const response = await api.addContractEnvelope(new Response(JSON.stringify({ mode_state: { question_number: 1, difficulty: 2 }, pedagogical_state: { current_mode: "exam", pending_question: "¿Cuánto es 2 × 3?", pending_question_id: "question:55555555-5555-4555-8555-555555555555", conversation_stage: "awaiting_student_answer" }, student_answer_assessment: "not_applicable" }), { headers: { "Content-Type": "application/json" } }), meta, "exam");
+  const data = await response.json();
+  assert.equal(data.request_id, requestId);
+  assert.equal(data.activity_state.mode, "exam");
+  assert.equal(data.activity_state.phase, "WAIT");
+  assert.equal(data.activity_state.question_id, "question:55555555-5555-4555-8555-555555555555");
 });

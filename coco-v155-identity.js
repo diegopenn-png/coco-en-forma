@@ -3,19 +3,19 @@
   "use strict";
   var VERSION="2026-08-23-v160-final4.7";
   var DATA={
-    numeros:{name:"Une los números",description:"Conecta la secuencia sin repetir casillas. Entrena planificación, atención visual y coordinación."},
-    calculo:{name:"Cálculo veloz",description:"Resuelve operaciones a contrarreloj."},
-    sopa:{name:"Sopa de letras",description:"Encuentra las palabras escondidas."},
-    sudoku:{name:"Sudoku",description:"Completa el tablero sin repetir números."},
-    memoria:{name:"Memoria",description:"Encuentra todas las parejas."},
-    series:{name:"Series lógicas",description:"Descubre el patrón y sigue la serie."},
-    palabras:{name:"Descifra la palabra",description:"Ordena las letras con ayuda de una pista."},
-    crucigrama:{name:"Crucigrama",description:"Completa las palabras usando las pistas."},
-    tiempo:{name:"Reto tiempo",description:"Responde antes de que se acabe el tiempo."},
-    verdadero:{name:"Verdadero o falso",description:"Decide si cada afirmación es correcta."},
-    cocomed:{name:"Coco Med",description:"Pon a prueba tus conocimientos sobre salud y aprende con una explicación después de cada respuesta."},
-    futbol:{name:"Fútbol",description:"Memoriza las zonas que se iluminan y chuta al espacio que quedó libre."},
-    padel:{name:"Pádel",description:"Organiza mixings y campeonatos, registra resultados y sigue la clasificación de tus jugadores."}
+    numeros:{name:"Une los números",description:"Recorre tableros distintos sin repetir casillas: planifica, corrige el camino y entrena la atención visual."},
+    calculo:{name:"Cálculo veloz",description:"Combina sumas, restas, tablas, divisiones, porcentajes, medias y operaciones encadenadas según tu nivel."},
+    sopa:{name:"Sopa de letras",description:"Busca vocabulario de ciencia, naturaleza, deportes, tecnología y lengua en tableros que cambian cada partida."},
+    sudoku:{name:"Sudoku",description:"Completa tableros únicos de 4×4 y 6×6, con tres niveles y pistas limitadas."},
+    memoria:{name:"Memoria",description:"Encuentra parejas en colecciones rotatorias de ciencia, naturaleza, arte, deportes, tecnología y aventura."},
+    series:{name:"Series lógicas",description:"Descubre patrones aditivos, alternos, geométricos, Fibonacci, potencias y otras familias sin repetir reto."},
+    palabras:{name:"Descifra la palabra",description:"Ordena vocabulario cotidiano y académico con pistas graduadas y dificultad adaptada."},
+    crucigrama:{name:"Crucigrama",description:"Resuelve cuadrículas variables con conceptos de lengua, ciencia, geografía, matemáticas y cultura escolar."},
+    tiempo:{name:"Reto tiempo",description:"Alterna microdesafíos de cálculo, lenguaje, lógica, ciencia y atención con dificultad adaptada."},
+    verdadero:{name:"Verdadero o falso",description:"Contrasta afirmaciones de matemáticas, lengua, ciencia, ciudadanía y tecnología, siempre con explicación."},
+    cocomed:{name:"Coco Med",description:"Practica anatomía, prevención, nutrición, salud digital y razonamiento clínico con explicación y límites seguros."},
+    futbol:{name:"Fútbol",description:"Memoriza secuencias con ritmos variables y chuta a la única zona libre en tres niveles."},
+    padel:{name:"Pádel",description:"Crea mixings equilibrados, cambia rondas, pistas, tiempo y puntuación, y consulta clasificaciones e historial."}
   };
   Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16007"});
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
@@ -190,7 +190,7 @@
       }
     })
   }
-  function process(node){if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;enhanceFamilyPinRecovery(node);warmAchievementCardsFinal47(node);if(node.matches&&node.matches(".cocoGameCard"))applyCard(node);if(node.matches&&node.matches(".cocoMiniJuego"))applyMini(node);if(node.matches&&node.matches(".cocoShareModal"))applyShare(node);if(node.querySelectorAll){node.querySelectorAll(".cocoGameCard").forEach(applyCard);node.querySelectorAll(".cocoMiniJuego").forEach(applyMini);node.querySelectorAll(".cocoShareModal").forEach(applyShare)}}
+  function process(node){if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;enhanceFamilyPinRecovery(node);warmAchievementCardsFinal47(node);var parentCard=node.closest&&node.closest(".cocoGameCard"),parentMini=node.closest&&node.closest(".cocoMiniJuego");if(parentCard)applyCard(parentCard);if(parentMini)applyMini(parentMini);if(node.matches&&node.matches(".cocoGameCard"))applyCard(node);if(node.matches&&node.matches(".cocoMiniJuego"))applyMini(node);if(node.matches&&node.matches(".cocoShareModal"))applyShare(node);if(node.querySelectorAll){node.querySelectorAll(".cocoGameCard").forEach(applyCard);node.querySelectorAll(".cocoMiniJuego").forEach(applyMini);node.querySelectorAll(".cocoShareModal").forEach(applyShare)}}
   var style=document.getElementById("coco-v155-identity-css")||document.createElement("style");style.id="coco-v155-identity-css";style.textContent=[
     "#cocoApp .cocoOfficialThumbBox{padding:0!important;overflow:hidden!important;background:#fff!important;aspect-ratio:1200/630!important;min-height:0!important}",
     "#cocoApp .cocoOfficialThumb{display:block!important;width:100%!important;height:100%!important;min-height:inherit!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:inherit!important}",

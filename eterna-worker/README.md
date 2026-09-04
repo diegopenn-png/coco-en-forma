@@ -1,4 +1,4 @@
-# Eterna Worker v159
+# Eterna Worker v160.92
 
 Worker independiente. **No sustituye ni modifica el Worker de Coco Med.**
 
@@ -20,8 +20,11 @@ Para pagos Stripe:
 
 Opcional:
 
-- `TESTER_EMAILS` (emails separados por coma)
 - `EXPOSE_ERRORS=false`
+
+El acceso de usuario máster no depende de correos publicados ni de variables de
+entorno: el Worker lo concede únicamente cuando el perfil autenticado tiene el
+rol `propietario`, leído en servidor.
 
 Después de desplegar, copia la URL pública del Worker en `window.COCO_CONFIG.eternaEndpoint` dentro de `index.html`.
 

@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.83 · premium family reporting + direct plan switch + final stabilization + contexto UX
+/* ETERNA Experience v160.93 · UX completion, progressive wait states and age adaptation
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.83-premium-family-reporting";
+  var VERSION="160.93-ux-completion";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
@@ -24,7 +24,7 @@
   var overlayObserver=null;
   var observedChat=null;
   var normalizeRaf=0;
-  var thinkingAssistantCount=0;
+  var thinkingAssistantCount=0,thinkingStageTimers=[];
   var audioSettingsCache={at:0,allowed:null};
   var browserMicCache={at:0,state:""};
   var hiddenTopStateNodes=[];
@@ -76,7 +76,11 @@
       "#eternaOverlayV159 .eternaV160VoiceActions button{min-height:34px;padding:6px 9px;border-radius:10px;font:900 9.5px inherit;cursor:pointer;touch-action:manipulation}",
       "#eternaOverlayV159 .eternaV160VoiceFinish{border:0;background:#173f59;color:#fff}#eternaOverlayV159 .eternaV160VoiceCancel{border:1px solid #d3e7ef;background:#fff;color:#526f7f}",
       "#eternaOverlayV159 .eternaV160RetryVerification{display:inline-flex;margin-top:10px;min-height:38px;padding:8px 12px;border:0;border-radius:11px;background:#173f59;color:#fff;font:900 10px inherit;cursor:pointer}",
-      "#eternaOverlayV159 .eternaV159Quick{opacity:.88}#eternaOverlayV159 .eternaV159Quick button{min-height:32px!important}",
+      "#eternaOverlayV159 .eternaV159Quick{opacity:1;display:flex;gap:8px;flex-wrap:wrap}#eternaOverlayV159 .eternaV159Quick button{min-height:44px!important;padding:9px 12px!important}#eternaOverlayV159 .eternaV159Quick button.is-playing{background:#173f59!important;color:#fff!important;border-color:#173f59!important}",
+      "#eternaOverlayV159 .eternaV159Copy{grid-column:2;justify-self:start;margin:3px 0 0!important;border:0;background:transparent;color:#587587;font:700 12px system-ui;cursor:pointer;padding:6px 7px;min-height:36px}",
+      "#eternaOverlayV159 .eternaV160ModeActions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}#eternaOverlayV159 .eternaV160NewActivity{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 12px;border:1px solid #b9dfea;border-radius:12px;background:#fff;color:#315d73;font:900 10px inherit;cursor:pointer}",
+      "#eternaOverlayV159 .eternaV160Completion{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;margin:16px auto 26px;max-width:720px;padding:18px;border:1px solid #a9e3c7;border-radius:20px;background:linear-gradient(180deg,#f3fff8,#eafaf2);color:#315d73;box-shadow:0 8px 24px rgba(35,128,86,.08)}#eternaOverlayV159 .eternaV160CompletionIcon{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#29aa72;color:#fff;font:900 24px system-ui}#eternaOverlayV159 .eternaV160Completion small{color:#168555;font:900 9px inherit;letter-spacing:.08em}#eternaOverlayV159 .eternaV160Completion h3{margin:3px 0 5px;color:#173f59;font-size:18px;line-height:1.2}#eternaOverlayV159 .eternaV160Completion p{margin:0 0 11px;font-size:11px;line-height:1.45}#eternaOverlayV159 .eternaV160Completion div>div{display:flex;gap:7px;flex-wrap:wrap}#eternaOverlayV159 .eternaV160Completion button{min-height:44px;padding:9px 12px;border:1px solid #b9ddcb;border-radius:12px;background:#fff;color:#315d73;font:900 10px inherit;cursor:pointer}#eternaOverlayV159 .eternaV160Completion button:first-child{border-color:#173f59;background:#173f59;color:#fff}#eternaOverlayV159 [data-et-composer].is-complete{display:none!important}",
+      "#eternaOverlayV159[data-et-age-band=teen] .eternaV159TopCopy p{font-family:system-ui,sans-serif;font-weight:650}#eternaOverlayV159[data-et-age-band=teen] .eternaV160StartIcon,#eternaOverlayV159[data-et-age-band=teen] .eternaV160ModeIcon{filter:grayscale(.55);transform:scale(.9)}#eternaOverlayV159[data-et-age-band=teen] .eternaV160Start h3{font-family:system-ui,sans-serif;font-weight:850;letter-spacing:-.02em}#eternaOverlayV159[data-et-age-band=teen] .eternaV159Bubble{font-family:system-ui,sans-serif;font-weight:650}",
       "#eternaOverlayV159 [data-et-name],#cocoApp .carnet .quien strong{text-transform:capitalize!important}",
       "#eternaOverlayV159 textarea[data-et-input]{white-space:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;resize:none!important}",
       "#eternaOverlayV159 textarea[data-et-input]::placeholder{white-space:nowrap!important}",
@@ -87,7 +91,7 @@
       "#eternaOverlayV159 [data-et-mic].recording{background:linear-gradient(180deg,#fff9f4,#fff0e3)!important;border-color:#efb07d!important;color:#e86f18!important;box-shadow:0 0 0 5px rgba(239,108,5,.10),0 2px 0 rgba(224,132,64,.16)!important}",
       "#eternaOverlayV159 [data-et-mic].recording::after{content:\"\";position:absolute;inset:-4px;border-radius:19px;border:1.8px solid rgba(232,111,24,.30);animation:eternaMicPulse16057 1.3s infinite ease-out;pointer-events:none}",
       "@keyframes eternaMicPulse16057{0%{transform:scale(.94);opacity:.65}72%{transform:scale(1.10);opacity:.04}100%{transform:scale(1.13);opacity:0}}",
-      "#eternaOverlayV159 .eternaV160MemoryNote{margin:10px 0 0;padding:9px 11px;border:1px solid #dcebf2;border-radius:12px;background:#f8fcfe;color:#657d8a;font-size:9.5px;font-weight:700;line-height:1.45;text-align:left}",
+      "#eternaOverlayV159 .eternaV160MemoryNote{margin:10px 0 0;padding:9px 11px;border:1px solid #dcebf2;border-radius:12px;background:#f8fcfe;color:#657d8a;font-size:9.5px;font-weight:700;line-height:1.45;text-align:left}#eternaOverlayV159 .eternaV160MemoryNote summary{cursor:pointer;color:#315d73;font-weight:900;min-height:24px;display:flex;align-items:center}#eternaOverlayV159 .eternaV160MemoryNote p{margin:6px 0 0}",
       "#eternaOverlayV159 .eternaV160NeedCourse{margin:8px 0 12px;padding:16px;border:1px solid #cfe4ed;border-radius:16px;background:#f7fbfd;color:#315d73;text-align:center}",
       "#eternaOverlayV159 .eternaV160NeedCourse h3{margin:0 0 6px;color:#173f59;font-size:18px}.eternaV160NeedCourse p{margin:0 auto 12px;max-width:560px;font-size:11px;font-weight:750;line-height:1.5}",
       "#eternaOverlayV159 .eternaV160NeedCourse button{min-height:42px;padding:9px 14px;border:0;border-radius:11px;background:#173f59;color:#fff;font:900 10.5px inherit;cursor:pointer}",
@@ -116,7 +120,7 @@
       "#cocoApp .eternaV160ChipList{display:flex!important;flex-wrap:wrap;gap:6px!important}#cocoApp .eternaV160StrengthChip{display:inline-flex!important;max-width:100%;align-items:center;padding:5px 8px;border:1px solid rgba(89,126,145,.14);border-radius:999px;background:rgba(255,255,255,.78);color:#486978!important;font-size:9px!important;font-weight:800!important;line-height:1.22!important;overflow-wrap:anywhere}",
       "#cocoApp .eternaV160StrengthMap.eternaV160StrengthEmpty .eternaV160ProgressIntro{margin-bottom:0!important}#cocoApp .eternaV160StrengthMap.eternaV160StrengthEmpty .eternaV160StrengthHero{grid-template-columns:auto minmax(0,1fr)}",
       "@media(max-width:700px){#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead{align-items:flex-start!important;flex-direction:column!important}#cocoApp .eternaV160StrengthMap .eternaV160ProgressHead button{width:100%!important}#cocoApp .eternaV160StrengthHero{grid-template-columns:auto minmax(0,1fr);align-items:start}#cocoApp .eternaV160NextStep{grid-column:1/-1}#cocoApp .eternaV160StrengthMap .eternaV160ProgressGrid{grid-template-columns:1fr!important}#cocoApp .eternaV159FamilyCard .eternaV160ProgressPanel.eternaV160StrengthMap{padding:14px!important;border-radius:19px!important}}",
-      "@media(max-width:760px){#eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:17px!important}#eternaOverlayV159 .eternaV160MicSvg{width:24px!important;height:24px!important}}",
+      "@media(max-width:760px){#eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:17px!important}#eternaOverlayV159 .eternaV160MicSvg{width:24px!important;height:24px!important}#eternaOverlayV159 .eternaV159Top{padding-top:max(10px,env(safe-area-inset-top))!important;padding-bottom:10px!important}#eternaOverlayV159 .eternaV159TopCopy p{display:none!important}#eternaOverlayV159 .eternaV160ModeBar{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;gap:8px!important}#eternaOverlayV159 .eternaV160ModeActions{grid-column:1/-1;width:100%;display:grid;grid-template-columns:1fr 1fr}#eternaOverlayV159 .eternaV160ModeActions button{width:100%;min-height:44px!important}#eternaOverlayV159 .eternaV160Completion{grid-template-columns:40px minmax(0,1fr);margin:10px 0 18px;padding:14px}#eternaOverlayV159 .eternaV160CompletionIcon{width:40px;height:40px}#eternaOverlayV159 .eternaV160Completion div>div{display:grid;grid-template-columns:1fr}#eternaOverlayV159 .eternaV160Completion button{width:100%}}",
       "@media(max-width:640px){#eternaOverlayV159 .eternaV160LiveState{margin-bottom:7px;padding:8px 10px}#eternaOverlayV159 .eternaV160VoicePanel{align-items:flex-start;flex-wrap:wrap}#eternaOverlayV159 .eternaV160VoiceCopy{min-width:160px}#eternaOverlayV159 .eternaV160VoiceActions{width:100%;justify-content:flex-end}}",
       "@media(max-width:760px){#eternaOverlayV159 .eternaV159Main{min-height:0!important;overflow:hidden!important}#eternaOverlayV159 .eternaV159Chat{scroll-padding-top:12px!important;scroll-padding-bottom:calc(118px + env(safe-area-inset-bottom))!important;padding-bottom:calc(22px + env(safe-area-inset-bottom))!important}#eternaOverlayV159 .eternaV159Msg{scroll-margin-top:12px!important;scroll-margin-bottom:18px!important}#eternaOverlayV159 .eternaV160ModeBar{position:relative!important;z-index:2!important;flex:0 0 auto!important}#eternaOverlayV159 .eternaV159Composer{position:relative!important;z-index:3!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important}#eternaOverlayV159 .eternaV159InputRow{align-items:center!important}}",
       "@media(prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160ThinkingDots i,#eternaOverlayV159 .eternaV160VoiceWave i,#eternaOverlayV159 [data-et-mic].recording::after,#cocoApp .eternaV160StrengthMap .eternaV160MasteryFill{animation:none!important;transition:none!important}}"
@@ -147,6 +151,8 @@
     live.innerHTML='<span class="eternaV160LiveIcon" aria-hidden="true">'+(kind==="thinking"?"✦":kind==="processing"?"🎙️":"i")+'</span><span>'+esc(text)+dots+'</span>';
     syncTopLiveDuplicate(kind,text)
   }
+
+  function clearThinkingStages(){thinkingStageTimers.forEach(function(timer){clearTimeout(timer)});thinkingStageTimers=[]}
 
   function normalizeHeaderStatus(){
     var o=overlay();if(!o)return;
@@ -373,10 +379,10 @@
     if(!c)return;
     var start=c.querySelector('.eternaV160Start');
     if(!start||start.querySelector('[data-et-memory-note]'))return;
-    var note=document.createElement('div');
+    var note=document.createElement('details');
     note.className='eternaV160MemoryNote';
     note.setAttribute('data-et-memory-note','');
-    note.innerHTML='<b>Privacidad y memoria · </b><span>Eterna no guarda tus conversaciones como un historial. Recuerda únicamente señales pedagógicas —conceptos, nivel aproximado, errores, ayuda y estrategias que funcionan— para ayudarte a aprender mejor. No diagnostica ni etiqueta.</span>';
+    note.innerHTML='<summary>Privacidad y memoria</summary><p>Eterna no guarda tus conversaciones como un historial. Recuerda únicamente señales pedagógicas —conceptos, nivel aproximado, errores, ayuda y estrategias que funcionan— para ayudarte a aprender mejor. No diagnostica ni etiqueta.</p>';
     start.appendChild(note)
   }
 
@@ -693,6 +699,7 @@
         if(assistantAdded)break
       }
       if(assistantAdded){
+        clearThinkingStages();
         setLive("","");
         scrollTurnToStart(assistantAdded);
         scheduleHeaderStatus()
@@ -752,7 +759,10 @@
     ensureOverlay();
     var c=chat();thinkingAssistantCount=c?c.querySelectorAll(".eternaV159Msg.assistant").length:0;
     setVoicePanel(false);
-    setLive("thinking","Eterna está pensando")
+    clearThinkingStages();
+    setLive("thinking","Leyendo tu pregunta…");
+    thinkingStageTimers.push(setTimeout(function(){setLive("thinking","Comprobando el contenido…")},2500));
+    thinkingStageTimers.push(setTimeout(function(){setLive("thinking","Preparando una explicación clara…")},6000))
   }
 
   function fileNameForMime(type){
@@ -1005,7 +1015,7 @@
       if(browserState==="denied"){
         closeAudioContext(warmContext);
         releaseVoiceStartLock();
-        setLive("info","El navegador tiene bloqueado el micrófono. Revísalo en los permisos de Safari o de la PWA.");
+        setLive("info","El navegador tiene bloqueado el micrófono. Revísalo en los permisos del navegador o de la app.");
         return
       }
       if(!allowed){
@@ -1152,14 +1162,16 @@
 
   function pendingJobRead(){
     try{
-      var d=JSON.parse(localStorage.getItem(PENDING_JOB_KEY)||"null");
-      if(!d||!d.id||!d.at||Date.now()-Number(d.at)>BACKGROUND_JOB_TTL_MS){localStorage.removeItem(PENDING_JOB_KEY);return null}
+      var d=JSON.parse(sessionStorage.getItem(PENDING_JOB_KEY)||"null"),contract=root.EternaStateContractV3;
+      if(!d||d.version!==3||!d.id||!d.at||Date.now()-Number(d.at)>BACKGROUND_JOB_TTL_MS||!contract||!contract.validOpaqueId(d.uid)||!contract.MODES.includes(d.mode)||!contract.validOpaqueId(d.session_id)||!contract.validOpaqueId(d.request_id)||!contract.validOpaqueId(d.client_turn_id)||d.question_id!=null&&!contract.validOpaqueId(d.question_id)||d.answered_question_id!=null&&!contract.validOpaqueId(d.answered_question_id)){sessionStorage.removeItem(PENDING_JOB_KEY);return null}
       return d
     }catch(e){return null}
   }
 
-  function pendingJobWrite(id){
-    try{localStorage.setItem(PENDING_JOB_KEY,JSON.stringify({id:String(id||""),at:Date.now()}))}catch(e){}
+  function pendingJobMetadata(body){var core=root.CocoEternaV160,ctx=core&&typeof core.getActivityContext==="function"?core.getActivityContext():null,b=body&&typeof body==="object"?body:{};return{version:3,uid:ctx&&ctx.uid||null,mode:b.mode||ctx&&ctx.mode||null,session_id:b.session_id||b.activity_state&&b.activity_state.session_id||ctx&&ctx.session_id||null,question_id:b.activity_state&&b.activity_state.question_id||ctx&&ctx.question_id||null,answered_question_id:b.answered_question_id||null,request_id:b.request_id||null,client_turn_id:b.client_turn_id||null}}
+
+  function pendingJobWrite(id,metadata){
+    var m=metadata&&typeof metadata==="object"?metadata:{};try{sessionStorage.setItem(PENDING_JOB_KEY,JSON.stringify({version:3,id:String(id||""),at:Date.now(),uid:m.uid||null,mode:m.mode||null,session_id:m.session_id||null,question_id:m.question_id||null,answered_question_id:m.answered_question_id||null,request_id:m.request_id||null,client_turn_id:m.client_turn_id||null}))}catch(e){}
   }
 
   function responseIdentity(response){
@@ -1197,7 +1209,7 @@
   function pendingJobClear(id){
     try{
       var d=pendingJobRead();
-      if(!id||!d||String(d.id)===String(id))localStorage.removeItem(PENDING_JOB_KEY)
+      if(!id||!d||String(d.id)===String(id))sessionStorage.removeItem(PENDING_JOB_KEY)
     }catch(e){}
   }
 
@@ -1224,8 +1236,6 @@
       var response=await originalFetch(resultUrl,{method:"GET",headers:headers,cache:"no-store"});
       if(response.status===202){await delay(550);continue}
       if(response.status===404){pendingJobClear(jobId);throw new Error("ETERNA_BACKGROUND_RESULT_EXPIRED")}
-      var rid=responseIdentity(response);if(rid)markResponseConsumed(rid);
-      pendingJobClear(jobId);
       return response
     }
     pendingJobClear(jobId);
@@ -1235,7 +1245,7 @@
   async function backgroundChatFetch(input,init){
     var jobUrl=endpoint("/v1/chat-job");
     if(!jobUrl||!init||typeof init.body!=="string")return originalFetch(input,init);
-    var headers=new Headers(init.headers||{});
+    var headers=new Headers(init.headers||{}),requestBody=null;try{requestBody=JSON.parse(init.body)}catch(e){}
     try{
       var startResponse=await originalFetch(jobUrl,{method:"POST",headers:headers,body:init.body,cache:"no-store"});
       if(startResponse.status!==202){
@@ -1244,10 +1254,9 @@
       }
       var job=await startResponse.json().catch(function(){return{}});
       if(!job.job_id)throw new Error("ETERNA_BACKGROUND_JOB_INVALID");
-      pendingJobWrite(job.job_id);
+      pendingJobWrite(job.job_id,pendingJobMetadata(requestBody));
       activeBackgroundJobId=String(job.job_id);
-      try{return await pollChatJob(job.job_id,headers,Date.now())}
-      finally{if(activeBackgroundJobId===String(job.job_id))activeBackgroundJobId=""}
+      return await pollChatJob(job.job_id,headers,Date.now())
     }catch(e){
       /* No repetir /v1/chat tras un error de red ambiguo: el POST del job puede
          haber llegado al Worker aunque Safari/iOS haya perdido la respuesta. */
@@ -1256,33 +1265,14 @@
     }
   }
 
-  function recoveredReplyRow(data,jobId,responseId){
-    var c=chat();if(!c||!data||!data.reply)return false;
-    responseId=clean(responseId);
-    if(responseWasConsumed(responseId)||replyAlreadyVisible(data.reply)){
-      if(responseId)markResponseConsumed(responseId);
-      return false
-    }
-    if(c.querySelector('[data-et-recovered-job="'+String(jobId).replace(/"/g,"")+'"]'))return false;
-    var start=c.querySelector(".eternaV160Start");if(start)start.remove();
-    var note=document.createElement("div");note.className="eternaV160MemoryNote";note.setAttribute("data-et-recovered-job",String(jobId));
-    note.textContent="He recuperado la respuesta que Eterna estaba procesando mientras estabas fuera de la app.";
-    c.appendChild(note);
-    var row=document.createElement("div");row.className="eternaV159Msg assistant";
-    var bubble=document.createElement("div");bubble.className="eternaV159Bubble";bubble.textContent=clean(data.reply);
-    row.innerHTML='<div class="eternaV159Avatar" aria-hidden="true">✦</div>';
-    row.appendChild(bubble);c.appendChild(row);
-    if(data.check_question){
-      var check=document.createElement("div");check.className="eternaV160ConversationCheck";check.textContent=clean(data.check_question);bubble.appendChild(check)
-    }
+  function recoveredReplyRow(data,pending,responseId){
+    var core=root.CocoEternaV160,c=chat();if(!core||typeof core.applyChatResponse!=="function"||!c||!data||!data.reply||!pending)return false;
+    responseId=clean(responseId);if(replyAlreadyVisible(data.reply)){if(responseId)markResponseConsumed(responseId);return false}
+    var context={uid:pending.uid,mode:pending.mode,session_id:pending.session_id,request_id:pending.request_id,client_turn_id:pending.client_turn_id,answered_question_id:pending.answered_question_id,recovered:true},result=core.applyChatResponse(data,context);
+    if(!result||!result.applied)return false;
+    var rows=c.querySelectorAll(".eternaV159Msg.assistant"),latest=rows.length?rows[rows.length-1]:null,note=document.createElement("div");note.className="eternaV160MemoryNote";note.setAttribute("data-et-recovered-job",String(pending.id));note.textContent="He recuperado la respuesta que Eterna estaba procesando mientras estabas fuera de la app.";if(latest)c.insertBefore(note,latest);else c.appendChild(note);
     if(data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
-    rememberSourceDisclosure(data);restoreRememberedSources(c);normalizeHeaderStatus();
-    var status=overlay()&&overlay().querySelector("[data-et-status]"),dot=overlay()&&overlay().querySelector("[data-et-dot]");
-    if(status)status.textContent=data.verification_status==="verified"?"Eterna lista":"Eterna está revisando la respuesta";
-    if(dot)dot.className="eternaV159Dot "+(data.verification_status==="verified"?"ok":"warn");
-    if(responseId)markResponseConsumed(responseId);
-    c.scrollTop=c.scrollHeight;
-    return true
+    rememberSourceDisclosure(data);restoreRememberedSources(c);normalizeHeaderStatus();if(responseId)markResponseConsumed(responseId);c.scrollTop=c.scrollHeight;return true
   }
 
   async function resumePendingChatJob(){
@@ -1293,7 +1283,7 @@
     if(activeBackgroundJobId&&String(activeBackgroundJobId)===String(pending.id))return false;
     pendingJobResumePromise=(async function(){
       try{
-        var t=await authToken();if(!t)return false;
+        var cli=getSupabaseClient(),sr=cli&&cli.auth?await cli.auth.getSession():null,session=sr&&sr.data&&sr.data.session,t=session&&session.access_token||"",uid=session&&session.user&&session.user.id?String(session.user.id):"";if(!t||!uid||uid!==pending.uid){pendingJobClear(pending.id);return false}
         var response=await originalFetch(endpoint("/v1/chat-result")+"?id="+encodeURIComponent(pending.id),{method:"GET",headers:{Authorization:"Bearer "+t},cache:"no-store"});
         if(response.status===202){
           if(!document.hidden)setTimeout(function(){pendingJobResumePromise=null;resumePendingChatJob()},700);
@@ -1301,17 +1291,14 @@
         }
         if(response.status===404){pendingJobClear(pending.id);return false}
         var responseId=responseIdentity(response),data=await response.clone().json().catch(function(){return{}});
-        if(responseWasConsumed(responseId)||replyAlreadyVisible(data&&data.reply)){
-          if(responseId)markResponseConsumed(responseId);
-          pendingJobClear(pending.id);
-          return false
-        }
-        pendingJobClear(pending.id);
+        if(responseWasConsumed(responseId)||replyAlreadyVisible(data&&data.reply)){if(responseId)markResponseConsumed(responseId);pendingJobClear(pending.id);return false}
         if(root.CocoEternaV160&&typeof root.CocoEternaV160.open==="function"){
           try{await root.CocoEternaV160.open()}catch(e){}
         }
         ensureOverlay();
-        return recoveredReplyRow(data,pending.id,responseId)
+        var current=root.CocoEternaV160&&typeof root.CocoEternaV160.getActivityContext==="function"?root.CocoEternaV160.getActivityContext():null;
+        if(!current||current.uid!==pending.uid||current.mode!==pending.mode||current.session_id!==pending.session_id||pending.answered_question_id&&current.question_id!==pending.answered_question_id){pendingJobClear(pending.id);return false}
+        var applied=recoveredReplyRow(data,pending,responseId);pendingJobClear(pending.id);return applied
       }catch(e){return false}
       finally{pendingJobResumePromise=null}
     })();
@@ -1320,7 +1307,7 @@
 
   function handleChatResponse(response){
     if(!response||response.status===401)return;
-    if(!response.ok)setLive("","");
+    if(!response.ok){clearThinkingStages();setLive("","");activeBackgroundJobId="";pendingJobClear()}
     response.clone().json().then(function(data){
       if(data&&data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
       rememberSourceDisclosure(data);
@@ -1343,7 +1330,7 @@
         if(isChat)handleChatResponse(response);
         return response
       }catch(e){
-        if(isChat)setLive("","");
+        if(isChat){clearThinkingStages();setLive("","")}
         throw e
       }
     };
@@ -1393,6 +1380,9 @@
       if(o&&o.classList.contains("is-open"))requestAnimationFrame(function(){ensureOverlay();normalizeHeaderStatus()});
       resumePendingChatJob()
     },{passive:true});
+    root.addEventListener("coco:eterna-response-applied",function(event){clearThinkingStages();var pending=pendingJobRead(),detail=event&&event.detail||{};if(pending&&detail.request_id===pending.request_id&&detail.client_turn_id===pending.client_turn_id&&detail.session_id===pending.session_id&&detail.mode===pending.mode){activeBackgroundJobId="";pendingJobClear(pending.id)}});
+    root.addEventListener("coco:eterna-context-invalidated",function(){clearThinkingStages();pendingJobClear();activeBackgroundJobId=""});
+    root.addEventListener("coco:eterna-ui-reset",function(){clearThinkingStages();setLive("","");setVoicePanel(false)});
     root.addEventListener("resize",function(){
       if(resizeRaf)return;
       resizeRaf=requestAnimationFrame(function(){resizeRaf=0;if(overlay())enforceSingleLineComposer()})
@@ -2822,7 +2812,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   async function pinHash(pin){var bytes=new TextEncoder().encode("coco-familia-"+String(pin||"")),d=await crypto.subtle.digest("SHA-256",bytes);return Array.from(new Uint8Array(d)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
   function preconnect(){[cfg().url,cfg().eternaEndpoint].forEach(function(raw){if(!raw)return;try{var origin=new URL(raw,location.href).origin;if(document.head.querySelector('link[rel="preconnect"][href="'+origin+'"]'))return;var l=document.createElement("link");l.rel="preconnect";l.href=origin;l.crossOrigin="anonymous";document.head.appendChild(l)}catch(e){}})}
   function inject(){preconnect();if(document.getElementById("eterna-launch-v16068-css"))return;var s=document.createElement("style");s.id="eterna-launch-v16068-css";s.textContent=[
-    "#cocoApp #eternaLauncherV159 .eternaLauncherCardV159{cursor:default!important}#cocoApp #eternaLauncherV159 .eternaLauncherTrialFinal3{pointer-events:none!important;cursor:default!important}#cocoApp #eternaLauncherV159 .eternaLauncherCtaFinal3{pointer-events:auto!important;cursor:pointer!important;touch-action:manipulation!important;user-select:none!important}.eternaLaunchV16068{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;padding:18px;background:rgba(4,25,39,.68);backdrop-filter:blur(5px)}.eternaLaunchV16068Card{width:min(680px,100%);max-height:min(820px,calc(100vh - 36px));overflow:auto;border-radius:24px;background:#fff;padding:24px;color:#294858;box-shadow:0 28px 80px rgba(0,0,0,.3)}",
+    "#cocoApp #eternaLauncherV159 .eternaLauncherCardV159{cursor:pointer!important;touch-action:manipulation!important}#cocoApp #eternaLauncherV159 .eternaLauncherTrialFinal3{pointer-events:none!important;cursor:default!important}#cocoApp #eternaLauncherV159 .eternaLauncherCtaFinal3{pointer-events:auto!important;cursor:pointer!important;touch-action:manipulation!important;user-select:none!important}.eternaLaunchV16068{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;padding:18px;background:rgba(4,25,39,.68);backdrop-filter:blur(5px)}.eternaLaunchV16068Card{width:min(680px,100%);max-height:min(820px,calc(100vh - 36px));overflow:auto;border-radius:24px;background:#fff;padding:24px;color:#294858;box-shadow:0 28px 80px rgba(0,0,0,.3)}",
     ".eternaLaunchV16068Head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:17px}.eternaLaunchV16068Head small{display:block;color:#3184a7;font-size:9px;font-weight:950;letter-spacing:.09em}.eternaLaunchV16068Head h2{margin:4px 0 4px;color:#123e5b;font-size:25px;line-height:1.05}.eternaLaunchV16068Head p{margin:0;color:#647d8b;font-size:12px;line-height:1.5}.eternaLaunchV16068Close{border:1px solid #d6e7ee;background:#fff;color:#547080;border-radius:12px;width:38px;height:38px;font-size:21px;cursor:pointer}",
     ".eternaLaunchV16068Info{padding:14px 15px;border:1px solid #cce7d8;border-radius:15px;background:#f0faf4;color:#315c49;font-size:12px;line-height:1.55}.eternaLaunchV16068Info strong{display:block;color:#174f39;font-size:14px;margin-bottom:3px}",
     ".eternaLaunchV16068Grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.eternaLaunchV16068 label{display:grid;gap:5px;color:#496878;font-size:10px;font-weight:900}.eternaLaunchV16068 input,.eternaLaunchV16068 select{width:100%;min-height:46px;border:1px solid #cfe2eb;border-radius:11px;background:#fff;padding:9px 11px;color:#294858;font:750 13px inherit;box-sizing:border-box}.eternaLaunchV16068Checks{display:grid;gap:8px;margin-top:12px}.eternaLaunchV16068Check{display:flex!important;grid-template-columns:none!important;flex-direction:row!important;align-items:flex-start;gap:10px!important;padding:11px;border:1px solid #dfeaf0;border-radius:12px;background:#fbfdfe;font-size:10px!important;line-height:1.4}.eternaLaunchV16068Check input{width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;padding:0;margin:0}",
@@ -2842,7 +2832,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   function showExistingPin(s,hash){var m=modal("Zona Familiar","Introduce tu PIN familiar.",'<label>PIN familiar<input data-pin type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"></label><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-enter>Entrar en Zona Familiar</button></div><button class="eternaLaunchV16068Link" data-forgot>¿Has olvidado tu PIN?</button><div class="eternaLaunchV16068Msg"></div>',true);m.querySelector("[data-enter]").onclick=async function(){var p=clean(m.querySelector("[data-pin]").value).replace(/\D/g,"");if(!/^\d{4}$/.test(p))return msg(m,"Escribe las 4 cifras de tu PIN.");if(await pinHash(p)!==hash)return msg(m,"El PIN no es correcto. Inténtalo de nuevo.");try{sessionStorage.setItem(pinPassKey(s.user.id),"1")}catch(e){}closeModal();await runState()};m.querySelector("[data-forgot]").onclick=function(){showRecoverPin(s)}}
   function showRecoverPin(s){var m=modal("Recuperar PIN familiar","Confirma la contraseña de la cuenta y crea un PIN nuevo.",'<label>Contraseña de la cuenta<input data-pass type="password" autocomplete="current-password" placeholder="Tu contraseña"></label><div class="eternaLaunchV16068Grid" style="margin-top:12px"><label>Nuevo PIN<input data-new type="password" inputmode="numeric" maxlength="4" placeholder="4 cifras"></label><label>Repite el PIN<input data-repeat type="password" inputmode="numeric" maxlength="4" placeholder="Repite"></label></div><div class="eternaLaunchV16068Actions"><button class="eternaLaunchV16068Primary" data-save>Cambiar PIN</button></div><button class="eternaLaunchV16068Link" data-forgotpass>También olvidé mi contraseña</button><div class="eternaLaunchV16068Msg"></div>',true);m.querySelector("[data-save]").onclick=async function(){var pass=m.querySelector("[data-pass]").value,a=m.querySelector("[data-new]").value.replace(/\D/g,""),b=m.querySelector("[data-repeat]").value.replace(/\D/g,"");if(!pass)return msg(m,"Escribe la contraseña de la cuenta.");if(!/^\d{4}$/.test(a)||a!==b)return msg(m,"Comprueba que los dos PIN de 4 cifras coinciden.");this.disabled=true;try{var c=client(),auth=await c.auth.signInWithPassword({email:s.user.email,password:pass});if(auth&&auth.error)throw auth.error;await savePin(s,a);msg(m,"PIN actualizado. Continuando…",true);closeModal();await runState()}catch(e){this.disabled=false;msg(m,"No se pudo verificar la contraseña. Compruébala e inténtalo de nuevo.")}};m.querySelector("[data-forgotpass]").onclick=async function(){var b=this;b.disabled=true;try{var c=client(),r=await c.auth.resetPasswordForEmail(s.user.email,{redirectTo:location.origin+"/"});if(r&&r.error)throw r.error;msg(m,"Te hemos enviado un correo para crear una nueva contraseña. Después vuelve a Coco en Forma y recupera tu PIN.",true)}catch(e){msg(m,"No se pudo enviar el correo de recuperación.")}finally{b.disabled=false}}}
   async function legalState(s){try{var r=await api("/v1/legal-consent",{method:"GET",headers:{"Cache-Control":"no-store"}},s),d=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(d.error||"LEGAL");return d}catch(e){return{required:true,accepted:false,temporary_error:true}}}
-  async function subscription(s){var c=client(),test=(cfg().cuentasPruebaIlimitadas||[]).some(function(x){return String(x).toLowerCase()===String(s.user.email||"").toLowerCase()});if(test)return{status:"active",tester:true};try{var r=await c.from("eterna_subscriptions").select("*").eq("user_id",s.user.id).maybeSingle();if(r&&r.error)throw r.error;return r&&r.data||{status:"inactive"}}catch(e){return{status:"unknown",temporary_error:true}}}
+  async function subscription(s){var c=client();try{var rows=await Promise.all([c.from("perfiles").select("rol").eq("id",s.user.id).maybeSingle(),c.from("eterna_subscriptions").select("*").eq("user_id",s.user.id).maybeSingle()]),profile=rows[0],sub=rows[1];if(profile&&profile.error)throw profile.error;if(sub&&sub.error)throw sub.error;if(profile&&profile.data&&String(profile.data.rol||"").toLowerCase()==="propietario")return{status:"active",master:true};return sub&&sub.data||{status:"inactive"}}catch(e){return{status:"unknown",temporary_error:true}}}
   function activeSub(x){if(!x)return false;if(x.status==="active")return true;if(x.status==="trialing")return !x.trial_end||new Date(x.trial_end).getTime()>Date.now();return false}
   function trialUsed(x){return !!(x&&x.trial_end)}
   function planCards(){return '<div class="eternaLaunchV16068Plans"><div class="eternaLaunchV16068Plan"><b>Plan mensual</b><strong>7,99 € <small>/mes</small></strong><span>Flexibilidad mes a mes.</span><button type="button" data-paid-plan="monthly">Contratar mensual</button></div><div class="eternaLaunchV16068Plan"><b>Plan anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses con el mejor precio.</span><button type="button" data-paid-plan="annual">Contratar anual</button></div></div>'}
@@ -2864,7 +2854,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   function loginVisible(){var el=document.querySelector("#cocoApp .loginCard");if(!el)return false;try{var st=getComputedStyle(el);return st.display!=="none"&&st.visibility!=="hidden"}catch(e){return true}}
   function normalizeLauncher(){var l=document.getElementById("eternaLauncherV159"),cta=l&&l.querySelector(".eternaLauncherCtaFinal3"),trial=l&&l.querySelector(".eternaLauncherTrialFinal3");if(cta)cta.textContent=loginVisible()?"Probar Eterna gratis 7 días":"Abrir Eterna";if(trial){var b=trial.querySelector("strong"),sp=trial.querySelector("span");if(b)b.textContent="⭐ 7 días gratis";if(sp)sp.textContent="Sin tarjeta ni datos bancarios para empezar."}}
   function patchAuth(){if(authPatched)return;var c=client();if(!c||!c.auth)return;authPatched=true;var original=c.auth.signUp&&c.auth.signUp.bind(c.auth);if(original&&!c.auth.signUp.__eterna16068){var wrapped=function(payload){setIntent("signup");var p=original(payload);return Promise.resolve(p).then(function(r){var u=r&&r.data&&r.data.user,s=r&&r.data&&r.data.session;if(u&&!s)showEmailGate(u.email||payload&&payload.email);else if(s)setTimeout(runState,0);return r})};wrapped.__eterna16068=true;c.auth.signUp=wrapped}try{c.auth.onAuthStateChange(function(event,s){normalizeLauncher();if(s)syncUserBoundary(s);if(s&&intent())setTimeout(runState,0)})}catch(e){}}
-  function intercept(){document.addEventListener("click",function(e){var launcher=e.target&&e.target.closest?e.target.closest("#eternaLauncherV159 .eternaLauncherCardV159"):null,cta=e.target&&e.target.closest?e.target.closest("#eternaLauncherV159 .eternaLauncherCtaFinal3"):null;if(launcher&&!cta){e.preventDefault();e.stopImmediatePropagation();return}if(cta){e.preventDefault();e.stopImmediatePropagation();setIntent("home");mark("eterna-cta-click");patchAuth();if(loginVisible())goCreateAccount();else runState();return}var trialLink=e.target&&e.target.closest?e.target.closest("a[href*='open=eterna'],a[href*='eterna=1']"):null;if(trialLink)setIntent("landing")},true);var originalAlert=root.alert&&root.alert.bind(root);if(originalAlert)root.alert=function(v){if(intent()&&/^muy\s+bien[!.]?$/i.test(clean(v)))return;return originalAlert(v)}}
+  function intercept(){document.addEventListener("click",function(e){var launcher=e.target&&e.target.closest?e.target.closest("#eternaLauncherV159 .eternaLauncherCardV159"):null,cta=e.target&&e.target.closest?e.target.closest("#eternaLauncherV159 .eternaLauncherCtaFinal3"):null;if(launcher){e.preventDefault();e.stopImmediatePropagation();setIntent("home");mark("eterna-cta-click");patchAuth();if(loginVisible()&&cta)goCreateAccount();else runState();return}var trialLink=e.target&&e.target.closest?e.target.closest("a[href*='open=eterna'],a[href*='eterna=1']"):null;if(trialLink)setIntent("landing")},true);var originalAlert=root.alert&&root.alert.bind(root);if(originalAlert)root.alert=function(v){if(intent()&&/^muy\s+bien[!.]?$/i.test(clean(v)))return;return originalAlert(v)}}
   inject();patchAuth();intercept();normalizeLauncher();requestAnimationFrame(normalizeLauncher);var deepLink=false;try{var q=new URLSearchParams(location.search);if(q.get("open")==="eterna"||q.get("eterna")==="1"){deepLink=true;setIntent(q.get("source")||"direct")}}catch(e){}if(intent())session().then(function(s){if(s)runState();else if(deepLink){goCreateAccount();setTimeout(goCreateAccount,260)}});
   root.ETERNA_LAUNCH_STATE_V16070=root.ETERNA_LAUNCH_STATE_V16069=root.ETERNA_LAUNCH_STATE_V16068=Object.freeze({version:"160.70",run:runState,setIntent:setIntent,states:["SIN_CUENTA","EMAIL_PENDIENTE","EMAIL_CONFIRMADO","PIN_SIN_CREAR","PIN_NECESARIO","PIN_OK","AUTORIZACION_PENDIENTE","TRIAL_PENDIENTE","TRIAL_ACTIVO","CURSO_PENDIENTE","ETERNA_LISTA"],global_observer:false});
 })(window);

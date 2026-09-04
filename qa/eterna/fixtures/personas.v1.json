@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "personas": [
+    {"id":"child_6","role":"student","age":6,"school_year":"1º Primaria","style":"frases muy cortas"},
+    {"id":"child_8","role":"student","age":8,"school_year":"3º Primaria","style":"curioso y literal"},
+    {"id":"child_10","role":"student","age":10,"school_year":"5º Primaria","style":"respuestas escolares normales"},
+    {"id":"student_12","role":"student","age":12,"school_year":"1º ESO","style":"razona por pasos"},
+    {"id":"teen_15","role":"student","age":15,"school_year":"4º ESO","style":"pide explicaciones técnicas"},
+    {"id":"teen_17","role":"student","age":17,"school_year":"2º Bachillerato","style":"síntesis y precisión"},
+    {"id":"parent","role":"parent","age":39,"school_year":null,"style":"consulta y verifica como adulto"},
+    {"id":"master","role":"master","age":40,"school_year":null,"style":"auditor funcional"},
+    {"id":"typo_writer","role":"student","age":10,"school_year":"5º Primaria","style":"faltas ortográficas y mensajes mínimos"},
+    {"id":"contradictory","role":"student","age":12,"school_year":"1º ESO","style":"respuestas ambiguas y contradictorias"}
+  ]
+}

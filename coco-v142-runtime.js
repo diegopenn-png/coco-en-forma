@@ -42,16 +42,10 @@
     return String(value || "").trim().toLocaleLowerCase("en-US");
   }
 
-  function unlimitedTestEmails() {
-    var config = window.COCO_CONFIG || {};
-    return (Array.isArray(config.cuentasPruebaIlimitadas) ? config.cuentasPruebaIlimitadas : [])
-      .map(cleanEmail).filter(Boolean);
-  }
-
   function isUnlimitedUser(userId) {
     var requested = String(userId || remoteUserId || "");
     return Boolean(requested && remoteUserId && requested === String(remoteUserId) &&
-      remoteUserEmail && unlimitedTestEmails().indexOf(remoteUserEmail) >= 0);
+      window.CocoEternaV160 && typeof window.CocoEternaV160.isMaster === "function" && window.CocoEternaV160.isMaster());
   }
 
   function stableStringify(value) {
