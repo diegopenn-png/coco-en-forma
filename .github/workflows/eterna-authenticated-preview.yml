@@ -4,17 +4,9 @@ on:
   push:
     branches:
       - "fix/eterna-six-modes-state-machine"
-    paths:
-      - ".github/workflows/eterna-authenticated-preview.yml"
-      - "eterna-auth-preview-wrangler.jsonc"
-      - "qa-preview-headers.txt"
   pull_request:
     branches:
       - main
-    paths:
-      - ".github/workflows/eterna-authenticated-preview.yml"
-      - "eterna-auth-preview-wrangler.jsonc"
-      - "qa-preview-headers.txt"
 
 permissions:
   contents: read
@@ -111,8 +103,18 @@ jobs:
             "s#https://coco-eterna-v159.chatinmobiliario.workers.dev#${API_PREVIEW_URL}#g" \
             preview-dist/index.html
 
+          # The QA origin must always serve the current PR head. Disable the
+          # production PWA cache in the isolated preview and replace any
+          # previously installed preview worker with a one-shot cleanup worker.
+          sed -i \
+            's#<head>#<head><script>window.__cocoPwaV135Registered=true;window.__cocoPwaV16043Booted=true;</script>#' \
+            preview-dist/index.html
+          cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
+
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
           grep -F '160.92.0-six-modes-state-contract-v3' preview-dist/eterna-v159.js >/dev/null
+          grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
+          grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
 
       - name: Validate frontend preview deployment
         shell: bash
