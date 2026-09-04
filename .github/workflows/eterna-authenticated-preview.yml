@@ -8,6 +8,13 @@ on:
       - ".github/workflows/eterna-authenticated-preview.yml"
       - "eterna-auth-preview-wrangler.jsonc"
       - "qa-preview-headers.txt"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/eterna-authenticated-preview.yml"
+      - "eterna-auth-preview-wrangler.jsonc"
+      - "qa-preview-headers.txt"
 
 permissions:
   contents: read
