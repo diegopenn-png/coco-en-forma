@@ -95,3 +95,11 @@ jobs:
             cat preview-upload.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preserve preview coordinates
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-worker-preview-${{ github.sha }}
+          path: eterna-worker/preview-upload.log
+          if-no-files-found: error
+          retention-days: 7
