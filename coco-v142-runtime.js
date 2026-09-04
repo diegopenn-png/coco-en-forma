@@ -376,6 +376,14 @@
       ]), profileRole = accessResults[0];
       remoteUserRole = profileRole && !profileRole.error && profileRole.data ? String(profileRole.data.rol || "") : "";
       remoteUnlimitedTesting = accessResults[1] === true;
+      try {
+        window.dispatchEvent(new CustomEvent("coco:daily-sync", { detail: {
+          source: "access-status",
+          day: localToday(),
+          userId: syncUserId,
+          unlimitedTesting: isUnlimitedUser(syncUserId)
+        } }));
+      } catch {}
       var remote = await api.from("coco_content_rotation").select("scope_key,state,content_version,updated_at").eq("user_id", syncUserId), remoteTimes = Object.create(null);
       if (!remote.error && Array.isArray(remote.data)) {
         remote.data.forEach(function (row) {
