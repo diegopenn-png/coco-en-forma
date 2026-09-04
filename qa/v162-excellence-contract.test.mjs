@@ -15,6 +15,7 @@ test("all 13 experiences receive a concise goal and first-use guide",()=>{
   assert.match(layer,/games:Object\.keys\(GAME\)\.length/);
   assert.match(layer,/\.cocoGameCard,#cocoApp \.cocoMiniJuego/);
   assert.match(layer,/observer\.observe\(document\.body/);
+  assert.match(layer,/\[250,700,1600,3200\]\.forEach/);
   assert.match(layer,/className="cocoExGuide"/);
   assert.match(layer,/Misión terminada\. Tu progreso ya está guardado/);
 });
