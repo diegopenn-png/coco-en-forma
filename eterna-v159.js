@@ -76,7 +76,8 @@
   function resolveContextualTurn(raw){
     var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question);
     var result={text:raw,intent:"question_or_new_topic",directive:null};
-    var explicitNewTopic=/^(?:y\s+)?(?:(?:quien|quienes|que|cual|cuales|cuanto|cuantos|donde|cuando)\s+.{3,}|(?:por que|como)\s+.{4,}|define\s+.{3,}|explicame\s+que\s+es\s+.{3,})$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes|cada cosa|los dos|ambos|el primero|el segundo|el otro)\b/.test(n);
+    var explicitSwitch=/^(?:(?:vale|ok)\s+)?(?:ahora|otra pregunta|cambiando de tema|cambio de tema)\b/.test(n);
+    var explicitNewTopic=explicitSwitch||/^(?:y\s+)?(?:(?:quien|quienes|que|cual|cuales|cuanto|cuantos|donde|cuando)\s+.{3,}|(?:por que|como)\s+.{4,}|define\s+.{3,}|explicame\s+que\s+es\s+.{3,})$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes|cada cosa|los dos|ambos|el primero|el segundo|el otro)\b/.test(n);
     if(explicitNewTopic){
       state.conversationState=freshConversationState();cs=state.conversationState;result.intent="new_topic";result.directive="EXPLAIN"
     }else if(n==="si"){
@@ -664,7 +665,7 @@
     var o=overlay(),input=o.querySelector("[data-et-input]"),rawText=String(options.text==null?input.value||"":options.text).trim();if(!rawText&&!state.imageData)return;
     var turn=rawText?resolveContextualTurn(rawText):{text:"",intent:"image_homework",directive:null};
     var activity=ensureActivity(state.mode,false);if(!activity){setStatus("Falta cargar el contrato de actividad","warn");return}
-    var inferredAction=options.studentAction||(activity.phase==="WAIT"?"answer":activity.phase==="NEXT"?"continue":turn.intent==="new_topic"?"new_topic":"continue"),answeredQuestionId=activity.phase==="WAIT"&&inferredAction==="answer"?activity.question_id:(options.questionId||null),requestId=opaqueId("request"),clientTurnId=opaqueId("turn"),controller=typeof AbortController!=="undefined"?new AbortController():null,epoch=state.activityEpoch;
+    var inferredAction=options.studentAction||(turn.intent==="new_topic"?"new_topic":activity.phase==="WAIT"?"answer":activity.phase==="NEXT"?"continue":"continue"),answeredQuestionId=activity.phase==="WAIT"&&inferredAction==="answer"?activity.question_id:(options.questionId||null),requestId=opaqueId("request"),clientTurnId=opaqueId("turn"),controller=typeof AbortController!=="undefined"?new AbortController():null,epoch=state.activityEpoch;
     state.busy=true;input.disabled=true;o.querySelector("[data-et-send]").disabled=true;
     var apiHistory=historyForApi(),shown=options.displayText||rawText||"He adjuntado una foto de mi tarea.",userEntry={role:"user",text:shown,api_text:turn.text||shown,meta:{student_intent:turn.intent,student_action:inferredAction,answered_question_id:answeredQuestionId}};appendMessage("user",shown,null,true,false);input.value="";setStatus("Eterna está pensando y comprobando…","warn");
     var context={uid:sessionUserId(),mode:state.mode,session_id:activity.session_id,activity:activity,epoch:epoch,request_id:requestId,client_turn_id:clientTurnId,answered_question_id:answeredQuestionId,student_action:inferredAction,turn:turn,userEntry:userEntry,controller:controller};state.activeRequest=context;
