@@ -62,7 +62,21 @@ test("Worker uses the ES Modules entry point required for versioned previews", (
 
 test("School Scope blocks explicit entertainment while preserving school context", () => {
   assert.equal(api.clearNonAcademicIntent("Ahora cuéntame un chiste de videojuegos."), true);
+  assert.equal(api.clearNonAcademicIntent("¿Qué móvil me compro para mi cumple?"), true);
   assert.equal(api.clearNonAcademicIntent("Explícame la historia de los videojuegos para clase."), false);
+});
+
+test("natural topic changes override a pending comprehension check", () => {
+  const state = {
+    active_topic: "fotosíntesis",
+    active_subject: "Ciencias Naturales",
+    active_concept: "fotosíntesis",
+    pending_question: "¿La fotosíntesis necesita luz del Sol?",
+    expected_answer_type: "yes_no",
+    last_tutor_act: "ask_yes_no",
+  };
+  assert.equal(api.turnRelation("Vale, ahora dime qué fue la Edad Media.", state, []), "new_topic");
+  assert.equal(api.turnRelation("Cambio de tema: explícame qué fue la Edad Media.", state, []), "new_topic");
 });
 
 test("a short academic answer remains a continuation when the active topic exists", () => {
@@ -167,6 +181,20 @@ test("Exam and Practice always receive a concrete initial question", () => {
     api.initialAdaptiveQuestion({ mode: "practice", text: "Quiero practicar divisiones", subject: "Matemáticas", concept: "divisiones", difficulty: 1, questionNumber: 0 }),
     /÷.*\?/,
   );
+});
+
+test("Exam removes an imperative model question when a different canonical check is active", () => {
+  const result = api.singleStudentAct({
+    mode: "exam",
+    reply: "Perfecto. Empezamos con fracciones equivalentes. Escribe una fracción equivalente a 1/2.",
+    tutorData: { check_question: "1/2 + 1/4 = ?" },
+    turnRel: "new_topic",
+    incoming: { turn_index: 0 },
+    assessment: "not_applicable",
+    studentText: "Tengo examen de fracciones",
+  });
+  assert.equal(result.pending_question, "1/2 + 1/4 = ?");
+  assert.doesNotMatch(result.reply, /Escribe una fracción equivalente/i);
 });
 
 test("deterministic arithmetic rounds advance once and preserve practice retries", () => {
