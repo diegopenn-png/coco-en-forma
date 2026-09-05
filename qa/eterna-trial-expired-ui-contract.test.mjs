@@ -7,7 +7,7 @@ const css = readFileSync(new URL("../eterna-v159.css", import.meta.url), "utf8")
 const index = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const sw = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
 
-assert.match(client, /160\.93\.7-family-plans-unlimited/);
+assert.match(client, /160\.93\.8-family-cleanup/);
 assert.match(client, /function trialExpired\(\)/);
 assert.match(client, /status==="expired"/);
 assert.match(client, /status==="trialing"&&\(!Number\.isFinite\(end\)\|\|end<=Date\.now\(\)\)/);
@@ -41,7 +41,7 @@ assert.match(css, /@media\(max-width:760px\).*\.eternaV160ExpiredPlans\{grid-tem
 
 assert.match(index, /eterna-v159\.css\?v=160920/);
 assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
-assert.match(index, /eterna-v159\.js\?v=160937/);
-assert.match(sw, /coco-en-forma-v160\.93\.7-family-plans-unlimited/);
+assert.match(index, /eterna-v159\.js\?v=160938/);
+assert.match(sw, /coco-en-forma-v160\.93\.8-family-cleanup/);
 
 console.log("Eterna trial-expired conversion contract: OK");

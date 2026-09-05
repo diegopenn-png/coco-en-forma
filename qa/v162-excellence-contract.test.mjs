@@ -36,11 +36,16 @@ test("Reto tiempo offers healthy pacing with score normalization",()=>{
   assert.match(html,/active\.roundDuration\/1000/);
 });
 
-test("the excellence layer improves teen and parent hierarchy without privileged writes",()=>{
-  const layer=read("coco-excellence-v160934.js");
+test("the excellence layer removes redundant family presentation without privileged writes",()=>{
+  const layer=read("coco-excellence-v160934.js"),eterna=read("eterna-v159.js");
   assert.match(layer,/data-et-age-band='teen'/);
-  assert.match(layer,/cocoExFamilySummary/);
-  assert.match(layer,/Qué obtiene la familia con Eterna/);
+  assert.match(layer,/querySelectorAll\("\.cocoExFamilySummary,\.cocoExFamilyValue"\)/);
+  assert.match(layer,/familyRedundancyRemoved:true/);
+  assert.doesNotMatch(layer,/Acceso protegido/);
+  assert.doesNotMatch(layer,/Qué obtiene la familia con Eterna/);
+  assert.doesNotMatch(eterna,/Progreso escolar con Eterna/);
+  assert.doesNotMatch(eterna,/renderProgressPanel/);
+  assert.match(eterna,/renderAcademicMemoryPanel\(memoryModel\)\+settings/);
   assert.match(layer,/Herramienta para familias y clubes/);
   assert.doesNotMatch(layer,/\.from\(|fetch\(|checkout\(|portal\(|signIn|signUp/);
 });
@@ -55,16 +60,16 @@ test("failed Eterna requests keep the student's input ready to retry",()=>{
 
 test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   const html=read("index.html"),sw=read("sw.js"),workflow=read(".github/workflows/eterna-authenticated-preview.yml"),core=read("coco-v144-core.js");
-  assert.match(html,/coco-excellence-v160934\.js\?v=1609343/);
-  assert.match(html,/eterna-v159\.js\?v=160937/);
+  assert.match(html,/coco-excellence-v160934\.js\?v=160938/);
+  assert.match(html,/eterna-v159\.js\?v=160938/);
   assert.match(html,/coco-v144-core\.js\?v=15001/);
-  assert.match(sw,/coco-en-forma-v160\.93\.7-family-plans-unlimited-r1/);
+  assert.match(sw,/coco-en-forma-v160\.93\.8-family-cleanup-r1/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión para abrir /);
   assert.match(core,/#cocoApp input\[type='email'\]/);
-  assert.match(workflow,/frontend 160\.93\.7-family-plans-unlimited/);
+  assert.match(workflow,/frontend 160\.93\.8-family-cleanup/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
-  assert.match(workflow,/coco-excellence-v160934\.js\?v=1609343&verify=\$\{GITHUB_SHA\}/);
+  assert.match(workflow,/coco-excellence-v160934\.js\?v=160938&verify=\$\{GITHUB_SHA\}/);
   assert.match(workflow,/coco-v144-core\.js\?v=15001&verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
 });
