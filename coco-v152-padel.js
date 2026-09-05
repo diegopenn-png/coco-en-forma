@@ -718,12 +718,26 @@
     if (event.key === "Enter" && event.target && event.target.hasAttribute("data-padel144-directory-search")) { event.preventDefault(); findDirectoryPlayer(); }
   }
 
+  function requestLogin() {
+    C.toast("Inicia sesión para abrir Pádel.", "info");
+    var email = document.querySelector("#cocoApp input[type='email']");
+    if (!email) return;
+    var login = email.closest(".loginCard,.caja,form") || email;
+    if (login.scrollIntoView) login.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(function () { try { email.focus({ preventScroll: true }); } catch (_) { email.focus(); } }, 280);
+  }
+
   async function open() {
+    if (!root.CocoArcadeDemo) {
+      var userSession = await C.session();
+      if (!userSession || !userSession.user) { requestLogin(); return false; }
+    }
     C.openModal({ module: "padel", title: "Coco Pádel", kicker: "HERRAMIENTA ILIMITADA · v154.0", html: '<div class="c144Empty"><b>Coco está cargando el club…</b></div>', dispose: dispose });
     state = await loadState(); if (!C.body()) return;
     currentChampionshipId = state.championships.find(function (item) { return item.status === "active"; }) && state.championships.find(function (item) { return item.status === "active"; }).id || state.championships[0] && state.championships[0].id || null;
     controller = new AbortController(); C.body().addEventListener("click", handleClick, { signal: controller.signal }); C.body().addEventListener("change", handleChange, { signal: controller.signal }); C.body().addEventListener("input", handleInput, { signal: controller.signal }); C.body().addEventListener("keydown", handleKeydown, { signal: controller.signal });
     view = "mixing"; currentSessionId = null; selectedPlayerId = null; mixingDraft = null; mixingSession = null; mixingScreen = "home"; mixingStep = 1; championshipScreen = "home"; championshipCreateStep = 1; championshipDraft = null; rankingChampionshipId = currentChampionshipId; archivedVisible = false; dateFormOpen = false; participantsOpen = false; draft = null; render();
+    return true;
   }
 
   function dispose() { if (controller) controller.abort(); controller = null; draft = null; mixingDraft = null; mixingSession = null; currentSessionId = null; championshipDraft = null; rankingChampionshipId = null; dateFormOpen = false; participantsOpen = false; busy = false; }
