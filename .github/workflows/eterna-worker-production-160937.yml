@@ -79,7 +79,7 @@ jobs:
             --name "$WORKER_NAME" \
             --keep-vars | tee production-candidate.log
 
-          version_id="$(sed -n 's/^Version ID: //p' production-candidate.log | tail -1)"
+          version_id="$(sed -n -E 's/^(Worker )?Version ID: //p' production-candidate.log | tail -1)"
           preview_url="$(sed -n 's/^Version Preview URL: //p' production-candidate.log | tail -1)"
           if [[ ! "$version_id" =~ ^[0-9a-f-]{36}$ ]]; then
             echo "Could not determine the candidate version ID" >&2
