@@ -1,1 +1,2 @@
 Release Eterna Worker 160.93.7 after the pull request validation succeeds.
+Retry production promotion with Wrangler 4.129 version output compatibility.

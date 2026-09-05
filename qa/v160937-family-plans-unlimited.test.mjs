@@ -112,6 +112,7 @@ test("the release invalidates both frontend assets and has verified rollback", (
   assert.match(sw, /coco-en-forma-v160\.93\.7-family-plans-unlimited-r1/);
   assert.match(workflow, /EXPECTED_VERSION: 160\.93\.7-family-plans-unlimited/);
   assert.match(workflow, /wrangler versions upload/);
+  assert.match(workflow, /\^\(Worker \)\?Version ID:/);
   assert.match(workflow, /wrangler versions deploy/);
   assert.match(workflow, /wrangler rollback/);
 });
