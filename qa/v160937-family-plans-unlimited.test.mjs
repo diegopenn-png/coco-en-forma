@@ -85,7 +85,8 @@ test("the expired checkout block is moved intact ahead of the report", () => {
 
 test("the paid family selector exposes and persists the unlimited choice", () => {
   const client = read("eterna-v159.js");
-  assert.match(client, /\["monthly","annual"\]\.indexOf/);
+  assert.match(client, /function paidFamilySubscription\(subscription\)/);
+  assert.match(client, /max_sessions_per_day:paidFamilySubscription\(state\.subscription\)\?100:20/);
   assert.match(client, /<option value="unlimited"/);
   assert.match(client, />Ilimitadas<\/option>/);
   assert.match(client, /selectedLimit==="unlimited"\?100/);
@@ -98,6 +99,7 @@ test("the Worker authorizes unlimited only for active monthly or annual plans", 
   assert.match(worker, /normalized\.status==="active"&&\["monthly","annual"\]\.includes\(plan\)/);
   assert.match(worker, /ETERNA_PAID_SUBSCRIPTION_REQUIRED_FOR_UNLIMITED/);
   assert.match(worker, /parentUnlimitedEnabled\(settings,subscription\)/);
+  assert.match(worker, /defaultParentDailyLimit\(subscription\).*paidSubscriptionCanChooseUnlimited\(subscription\)\?PARENT_UNLIMITED_SENTINEL:20/);
   assert.match(worker, /daily_limit:parentUnlimited\?null:dailyLimit/);
   assert.match(worker, /weekly_limit:parentUnlimited\?null:weeklyLimit/);
 });
@@ -108,8 +110,8 @@ test("the release invalidates both frontend assets and has verified rollback", (
   const sw = read("sw.js");
   const workflow = read(".github/workflows/eterna-worker-production-160937.yml");
   assert.match(index, /eterna-v159\.js\?v=160941/);
-  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160940/);
-  assert.match(sw, /coco-en-forma-v160\.94\.1-eterna-mobile-fixed-viewport-r1/);
+  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160944/);
+  assert.match(sw, /coco-en-forma-v160\.94\.4-preview-blockers-r1/);
   assert.match(workflow, /EXPECTED_VERSION: 160\.93\.7-family-plans-unlimited/);
   assert.match(workflow, /wrangler versions upload/);
   assert.match(workflow, /\^\(Worker \)\?Version ID:/);

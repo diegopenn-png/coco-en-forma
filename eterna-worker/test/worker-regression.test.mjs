@@ -35,6 +35,8 @@ vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   deterministicHomeworkFractionFactorTurn: typeof deterministicHomeworkFractionFactorTurn === "function" ? deterministicHomeworkFractionFactorTurn : null,
   deterministicHomeworkFractionRetry: typeof deterministicHomeworkFractionRetry === "function" ? deterministicHomeworkFractionRetry : null,
   deterministicConceptCheckTurn: typeof deterministicConceptCheckTurn === "function" ? deterministicConceptCheckTurn : null,
+  deterministicSpanishRiverTurn: typeof deterministicSpanishRiverTurn === "function" ? deterministicSpanishRiverTurn : null,
+  stableFactAnchor: typeof stableFactAnchor === "function" ? stableFactAnchor : null,
   expectedFractionForQuestion: typeof expectedFractionForQuestion === "function" ? expectedFractionForQuestion : null,
   singleStudentAct: typeof singleStudentAct === "function" ? singleStudentAct : null,
   enforceIncorrectOpening: typeof enforceIncorrectOpening === "function" ? enforceIncorrectOpening : null,
@@ -227,6 +229,23 @@ test("deterministic arithmetic rounds advance once and preserve practice retries
   assert.equal(retry.mode_state.incorrect_count, 1);
   assert.equal(retry.mode_state.question_number, 1);
   assert.equal(retry.check_question, ped.pending_question);
+});
+
+test("ambiguous longest-river question accepts Tajo or Ebro without penalising the learner", () => {
+  const base = { question_number: 3, correct_count: 1, partial_count: 0, incorrect_count: 0, difficulty: 2, focus: "ríos de España" };
+  const ped = { active_subject: "Ciencias Sociales", active_concept: "ríos de España", pending_question: "¿Cuál es el río más largo de España?", expected_answer_type: "short_concept", turn_index: 3 };
+  for (const answer of ["el Tajo creo", "El Ebro", "Pero el Tajo es más largo, ¿no?"]) {
+    const result = api.deterministicSpanishRiverTurn({ mode: "exam", text: answer, turnRel: "answer_to_pending", incomingModeState: base, incomingPedState: ped, subject: "Ciencias Sociales", concept: "ríos de España" });
+    assert.equal(result.student_answer_assessment, "correct");
+    assert.equal(result.mode_state.correct_count, 2);
+    assert.equal(result.mode_state.incorrect_count, 0);
+    assert.equal(result.mode_state.difficulty, 3);
+    assert.match(result.reply, /Tajo/);
+    assert.match(result.reply, /Ebro/);
+    assert.match(result.reply, /ambigua/i);
+    assert.match(result.reply, /no se penaliza/i);
+  }
+  assert.match(api.stableFactAnchor("¿Cuál es el río más largo de España?"), /Acepta Tajo o Ebro/);
 });
 
 test("fraction comparisons are graded mathematically and counters stay coherent", () => {

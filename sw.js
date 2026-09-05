@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.1 · Eterna mobile fixed viewport */
-const CACHE_VERSION="coco-en-forma-v160.94.1-eterna-mobile-fixed-viewport-r1";
+/* Coco en Forma · Service Worker v160.94.4 · bloqueos de preview corregidos */
+const CACHE_VERSION="coco-en-forma-v160.94.4-preview-blockers-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

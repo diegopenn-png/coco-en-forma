@@ -1,7 +1,7 @@
 {
   "name": "coco-eterna-worker-v159",
   "private": true,
-  "version": "160.93.7",
+  "version": "160.94.3",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
