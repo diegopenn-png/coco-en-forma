@@ -38,10 +38,10 @@ test("Practice exposes counters and difficulty, not only focus", () => {
 
 test("web entrypoint and Service Worker invalidate the corrected assets together", () => {
   assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
-  assert.match(index, /eterna-v159\.js\?v=160939/);
+  assert.match(index, /eterna-v159\.js\?v=160941/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160940/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.93\.10-canonical-expired-checkout-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.94\.1-eterna-mobile-fixed-viewport-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(cachedPatch\(ETERNA_EXPERIENCE_PATH\)/);

@@ -114,7 +114,7 @@ jobs:
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
-          grep -F '160.93.9-expired-direct-plans' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.94.1-mobile-fixed-viewport' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
           grep -F '160.93.7-family-plans-unlimited' eterna-worker/src/index.js >/dev/null
@@ -140,9 +140,9 @@ jobs:
         run: |
           ready=0
           for attempt in {1..12}; do
-            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160939&verify=${GITHUB_SHA}-${attempt}"
+            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160941&verify=${GITHUB_SHA}-${attempt}"
             if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
-              && grep -F '160.93.9-expired-direct-plans' /tmp/eterna-preview.js >/dev/null; then
+              && grep -F '160.94.1-mobile-fixed-viewport' /tmp/eterna-preview.js >/dev/null; then
               ready=1
               break
             fi
@@ -187,7 +187,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.93.10-canonical-expired-checkout · API 160.93.7-family-plans-unlimited"
+            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · API 160.93.7-family-plans-unlimited"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preserve preview evidence
