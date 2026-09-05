@@ -2,11 +2,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const client = readFileSync(new URL("../eterna-v159.js", import.meta.url), "utf8");
+const experience = readFileSync(new URL("../eterna-experience-v160.js", import.meta.url), "utf8");
 const css = readFileSync(new URL("../eterna-v159.css", import.meta.url), "utf8");
 const index = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const sw = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
 
-assert.match(client, /160\.93\.4-excellence-pass/);
+assert.match(client, /160\.93\.7-family-plans-unlimited/);
 assert.match(client, /function trialExpired\(\)/);
 assert.match(client, /status==="expired"/);
 assert.match(client, /status==="trialing"&&\(!Number\.isFinite\(end\)\|\|end<=Date\.now\(\)\)/);
@@ -24,6 +25,14 @@ assert.match(client, /79,99 € <small>\/año<\/small>/);
 assert.match(client, /checkout\("monthly",b\)/);
 assert.match(client, /checkout\("annual",b\)/);
 assert.match(client, /r\.status===402\|\|data&&data\.error==="ETERNA_SUBSCRIPTION_REQUIRED"/);
+assert.match(experience, /var expired=directChildren\(card,"eternaV160ExpiredGate"\)\[0\]\|\|null/);
+assert.match(experience, /expiredWrap\.className="eternaV16061SubscriptionTop is-expired"/);
+assert.match(experience, /expiredWrap\.appendChild\(expired\)/);
+assert.match(experience, /eternaV16061SubscriptionTop\.is-expired/);
+
+assert.match(client, /paidFamilyPlan\?'<option value="unlimited"/);
+assert.match(client, />Ilimitadas<\/option>/);
+assert.match(client, /selectedLimit==="unlimited"\?100/);
 
 assert.match(css, /\.eternaV160ExpiredGate\{/);
 assert.match(css, /\.eternaV160ExpiredHero\{/);
@@ -32,7 +41,7 @@ assert.match(css, /@media\(max-width:760px\).*\.eternaV160ExpiredPlans\{grid-tem
 
 assert.match(index, /eterna-v159\.css\?v=160920/);
 assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
-assert.match(index, /eterna-v159\.js\?v=160934/);
-assert.match(sw, /coco-en-forma-v160\.93\.4-excellence-pass/);
+assert.match(index, /eterna-v159\.js\?v=160937/);
+assert.match(sw, /coco-en-forma-v160\.93\.7-family-plans-unlimited/);
 
 console.log("Eterna trial-expired conversion contract: OK");
