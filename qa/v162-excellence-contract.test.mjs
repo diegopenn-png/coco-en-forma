@@ -57,7 +57,7 @@ test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   const html=read("index.html"),sw=read("sw.js"),workflow=read(".github/workflows/eterna-authenticated-preview.yml");
   assert.match(html,/coco-excellence-v160934\.js\?v=1609343/);
   assert.match(html,/eterna-v159\.js\?v=160934/);
-  assert.match(sw,/coco-en-forma-v160\.93\.4-excellence-pass-r3/);
+  assert.match(sw,/coco-en-forma-v160\.93\.4-excellence-pass-r4/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(workflow,/frontend 160\.93\.4-excellence-pass/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
