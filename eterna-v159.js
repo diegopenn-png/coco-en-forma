@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.93.8 FAMILY CLEANUP
+/* Coco en Forma · ETERNA v160.93.9 EXPIRED DIRECT PLANS
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.93.8-family-cleanup";
+  var VERSION="160.93.9-expired-direct-plans";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -541,13 +541,13 @@
   function setIdentity(){var o=overlay(),name=displayUserName((state.baseProfile&&state.baseProfile.apodo)||(state.session&&state.session.user&&state.session.user.user_metadata&&state.session.user.user_metadata.apodo)||"Alumno Coco")||"Alumno Coco",course=state.profile&&state.profile.school_year?state.profile.school_year:"Configura tu curso",stage=String(state.profile&&state.profile.stage||"").toLowerCase(),teen=/eso|bachillerato/.test(stage+" "+course.toLowerCase());o.querySelector("[data-et-name]").textContent=name;o.querySelector("[data-et-course]").textContent=course;o.dataset.etAgeBand=teen?"teen":"child"}
   function setPlaceholder(){var i=overlay().querySelector("[data-et-input]"),m=MODE_CONFIG[state.mode]||MODE_CONFIG.homework;if(i)i.placeholder=m.placeholder}
 
-  async function open(){
+  async function open(options){
     var o=overlay();o.classList.add("is-open");document.body.style.overflow="hidden";
     perfMark("eterna_overlay_visible");
     perfMeasure("eterna_click_to_overlay","eterna_open_click","eterna_overlay_visible");
     try{var saved=localStorage.getItem("coco_eterna_mode_v160");if(MODE_CONFIG[saved])state.mode=saved}catch(e){}
     setStatus("Comprobando tu cuenta…","");
-    await loadData(false);restoreLearningSession();setIdentity();render();renderModeBar();syncSendAvailability();
+    await loadData(Boolean(options&&options.force));restoreLearningSession();setIdentity();render();renderModeBar();syncSendAvailability();
     requestAnimationFrame(function(){var i=o.querySelector("[data-et-input]");if(i&&activeSubscription()&&state.profile)i.focus()})
   }
 
@@ -1167,7 +1167,7 @@
   window.CocoEternaFamilyReportDataV16087=Object.freeze({version:"160.87",getLearningModel:getFamilyLearningReportModel,invalidate:invalidateFamilyLearningReport,readOnly:true});
 
   window.CocoEternaV160=Object.freeze({
-    open:open,close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,
+    open:open,openExpiredPlans:function(){return open({force:true})},close:close,version:VERSION,directUrl:directEternaUrl,share:shareEterna,outOfScopeMessage:OUT_SCOPE,
     applyChatResponse:applyChatResponse,
     getActivityContext:function(){var activity=ensureActivity(state.mode,false);return activity?{uid:sessionUserId(),mode:state.mode,session_id:activity.session_id,question_id:activity.question_id,phase:activity.phase,epoch:state.activityEpoch}:null},
     isRequestPending:function(){return Boolean(state.busy)},
