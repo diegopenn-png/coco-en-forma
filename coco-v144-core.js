@@ -236,8 +236,22 @@
     return "";
   }
 
+  function requestGameLogin(card, email) {
+    var name = titleOf(card) || "este juego";
+    toast("Inicia sesión para abrir " + name + ".", "info");
+    var login = email.closest(".loginCard,.caja,form") || email;
+    if (login.scrollIntoView) login.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(function () { try { email.focus({ preventScroll: true }); } catch (_) { email.focus(); } }, 280);
+  }
+
   document.addEventListener("click", function (event) {
     if (event.target && event.target.closest && event.target.closest(".cocoCardShare")) return;
+    var publicCard = event.target && event.target.closest && event.target.closest(".cocoMiniJuego[data-coco-juego]");
+    var loginEmail = publicCard && document.querySelector("#cocoApp input[type='email']");
+    if (publicCard && loginEmail) {
+      event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
+      requestGameLogin(publicCard, loginEmail); return;
+    }
     var action = event.target && event.target.closest && event.target.closest("[data-coco-v144-open]");
     var feature = action ? action.dataset.cocoV144Open : identifiedFeature(event.target);
     if (feature !== "padel") return;

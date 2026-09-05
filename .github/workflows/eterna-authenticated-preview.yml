@@ -154,6 +154,20 @@ jobs:
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=1609343&verify=${GITHUB_SHA}" \
             | grep -F '160.93.4-excellence-pass' >/dev/null
+          core_ready=0
+          for attempt in {1..6}; do
+            core_url="${PREVIEW_ORIGIN}/coco-v144-core.js?v=15001&verify=${GITHUB_SHA}-${attempt}"
+            if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$core_url" -o /tmp/coco-preview-core.js \
+              && grep -F 'Inicia sesión para abrir ' /tmp/coco-preview-core.js >/dev/null; then
+              core_ready=1
+              break
+            fi
+            sleep 5
+          done
+          if [[ "$core_ready" -ne 1 ]]; then
+            echo "The public game login gate did not become ready" >&2
+            exit 1
+          fi
           curl --max-time 20 -fsS "${API_PREVIEW_URL}/health" | tee authenticated-preview-health.json
           grep -F '160.93.1-master-game-replay' authenticated-preview-health.json >/dev/null
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
