@@ -43,6 +43,27 @@ await check("La capa conserva el contenido dentro de móvil y escritorio",async(
   }
 });
 
+await check("El catálogo público móvil mantiene tarjetas compactas y legibles",async()=>{
+  for(const viewport of [{width:320,height:720},{width:390,height:844}]){
+    await page.setViewportSize(viewport);
+    await page.goto(base,{waitUntil:"domcontentloaded"});
+    await page.locator(".cocoMiniJuego[data-coco-excellence='1']").first().waitFor({timeout:10000});
+    const cards=await page.locator(".cocoMiniJuego[data-coco-excellence='1']").evaluateAll(nodes=>nodes.map(card=>{
+      const icon=card.querySelector(".cocoMiniIcono"),title=card.querySelector("b"),meta=card.querySelector(".cocoExcellenceMeta"),goal=meta&&meta.lastElementChild;
+      const box=card.getBoundingClientRect(),ib=icon&&icon.getBoundingClientRect(),tb=title&&title.getBoundingClientRect(),mb=meta&&meta.getBoundingClientRect(),gb=goal&&goal.getBoundingClientRect();
+      return {height:box.height,width:box.width,titleLeft:tb&&tb.left,iconRight:ib&&ib.right,metaWidth:mb&&mb.width,goalWidth:gb&&gb.width,metaRight:mb&&mb.right,cardRight:box.right}
+    }));
+    assert.ok(cards.length>=13,`${viewport.width}px: catálogo incompleto`);
+    cards.forEach((card,index)=>{
+      assert.ok(card.height<190,`${viewport.width}px tarjeta ${index}: altura ${card.height}`);
+      assert.ok(card.titleLeft>=card.iconRight+4,`${viewport.width}px tarjeta ${index}: título solapado`);
+      assert.ok(card.metaWidth>=card.width-24,`${viewport.width}px tarjeta ${index}: metadatos estrechos`);
+      assert.ok(card.goalWidth>=140,`${viewport.width}px tarjeta ${index}: objetivo ilegible`);
+      assert.ok(card.metaRight<=card.cardRight+1,`${viewport.width}px tarjeta ${index}: metadatos fuera de tarjeta`)
+    })
+  }
+});
+
 await check("Zona Familiar recibe resumen y valor sin duplicados",async()=>{
   await page.evaluate(()=>{
     const app=document.getElementById("cocoApp");
