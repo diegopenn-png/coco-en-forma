@@ -1,4 +1,4 @@
-/* Coco en Forma / ETERNA · v160.93.4 · excellence pass
+/* Coco en Forma / ETERNA · v160.93.8 · family cleanup
  * Capa exclusivamente visual y de experiencia. No cambia autenticacion, pagos,
  * puntuaciones, limites diarios, memoria pedagogica ni contratos del Worker.
  */
@@ -7,7 +7,7 @@
   if(root.__COCO_EXCELLENCE_V160934__)return;
   root.__COCO_EXCELLENCE_V160934__=true;
 
-  var VERSION="160.93.4-excellence-pass";
+  var VERSION="160.93.8-family-cleanup";
   var scheduled=0,observer=null;
   var GAME={
     numeros:{name:"Une los números",time:"3-5 min",goal:"Une la secuencia completa sin repetir casillas.",steps:["Empieza en el 1","Arrastra sin levantar el dedo","Usa Pista solo si te bloqueas"]},
@@ -75,12 +75,9 @@
       "#cocoApp .cocoExPace{margin:11px 0;padding:11px;border:1px solid #f0d7b5;border-radius:14px;background:#fff9f1}#cocoApp .cocoExPace>b{display:block;color:#70451e;font-size:11px}#cocoApp .cocoExPace>small{display:block;margin-top:2px;color:#98734f;font-size:9.5px;line-height:1.4}",
       "#cocoApp .cocoExPaceButtons{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}#cocoApp .cocoExPace button{min-height:42px;padding:7px;border:1px solid #dfc5a4;border-radius:10px;background:#fff;color:#70451e;font:850 9.5px inherit;cursor:pointer}#cocoApp .cocoExPace button.is-active{border-color:#ef6c05;background:#ef6c05;color:#fff}",
       "#cocoApp .cocoExHealthyEnd{margin:10px 0 0;padding:10px 12px;border:1px solid #bfe4d1;border-radius:13px;background:#f1fbf6;color:#28704f;font-size:10.5px;font-weight:800;line-height:1.45}",
-      "#cocoApp .cocoExFamilySummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 15px;padding:12px;border:1px solid #d7e9f0;border-radius:17px;background:linear-gradient(145deg,#f7fcff,#fffaf3)}",
-      "#cocoApp .cocoExFamilySummary>div{min-width:0;padding:9px;border-radius:12px;background:#fff}#cocoApp .cocoExFamilySummary b{display:block;color:#173f59;font-size:10.5px}#cocoApp .cocoExFamilySummary span{display:block;margin-top:3px;color:#617b89;font-size:9.5px;font-weight:700;line-height:1.4}",
-      "#cocoApp .cocoExFamilyValue{margin:0 0 14px;padding:12px 13px;border:1px solid #efd7b6;border-radius:15px;background:#fff9ef}#cocoApp .cocoExFamilyValue>b{display:block;color:#70451e;font-size:12px}#cocoApp .cocoExFamilyValue ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 16px;margin:8px 0 0;padding:0;list-style:none;color:#7d6248;font-size:9.5px;font-weight:750;line-height:1.4}#cocoApp .cocoExFamilyValue li:before{content:'✓';margin-right:6px;color:#22905f;font-weight:900}",
       "#eternaOverlayV159 .cocoExModeExample{display:block;margin-top:5px;color:#3d7188;font-size:9.5px;font-weight:750;line-height:1.35}",
       "#eternaOverlayV159[data-et-age-band='teen'] .eternaV159Shell{background:#f6f8fa!important}#eternaOverlayV159[data-et-age-band='teen'] .eternaV159Top{background:linear-gradient(135deg,#132f40,#205c76)!important}#eternaOverlayV159[data-et-age-band='teen'] .eternaV160ModeBar,#eternaOverlayV159[data-et-age-band='teen'] .eternaV160Start,#eternaOverlayV159[data-et-age-band='teen'] .eternaV159Bubble{border-radius:14px!important}#eternaOverlayV159[data-et-age-band='teen'] .eternaV160StartIcon,#eternaOverlayV159[data-et-age-band='teen'] .eternaV160ModeIcon{filter:grayscale(1);opacity:.75}#eternaOverlayV159[data-et-age-band='teen'] .eternaV160StartAction{border-radius:12px!important;box-shadow:none!important}",
-      "@media(max-width:700px){#cocoApp .cocoExFamilySummary{grid-template-columns:1fr}#cocoApp .cocoExFamilyValue ul{grid-template-columns:1fr}#cocoApp .cocoExPaceButtons{grid-template-columns:1fr}#cocoApp .cocoExPace button{min-height:46px}}",
+      "@media(max-width:700px){#cocoApp .cocoExPaceButtons{grid-template-columns:1fr}#cocoApp .cocoExPace button{min-height:46px}}",
       "@media(prefers-reduced-motion:reduce){#cocoApp .cocoExGuide,#cocoApp .cocoExPace button{transition:none!important}}"
     ].join("");document.head.appendChild(s)
   }
@@ -127,14 +124,7 @@
 
   function decorateFamily(){
     document.querySelectorAll("#cocoApp .eternaV159FamilyCard").forEach(function(card){
-      if(!card.querySelector(".cocoExFamilySummary")){
-        var summary=document.createElement("section");summary.className="cocoExFamilySummary";summary.setAttribute("aria-label","Eterna en un vistazo");summary.innerHTML='<div><b>Acceso protegido</b><span>La activación, los controles y el pago pertenecen al adulto.</span></div><div><b>Aprendizaje visible</b><span>Fortalezas, temas practicados y siguiente paso en lenguaje sencillo.</span></div><div><b>Privacidad clara</b><span>Las fotos y el audio se procesan temporalmente y no se guardan por defecto.</span></div>';
-        var status=card.querySelector(".eternaV159FamilyStatus");if(status&&status.parentNode)status.parentNode.insertBefore(summary,status.nextSibling);else card.insertBefore(summary,card.firstChild)
-      }
-      if(!card.querySelector(".cocoExFamilyValue")){
-        var value=document.createElement("section");value.className="cocoExFamilyValue";value.innerHTML='<b>Qué obtiene la familia con Eterna</b><ul><li>Seis formas de ayuda escolar</li><li>Preguntas por texto, foto o voz</li><li>Pistas antes de la respuesta final</li><li>Memoria solo de señales académicas</li></ul>';
-        var commercial=card.querySelector(".eternaV160FamilyPromo,.eternaV160TrialActive,.eternaV160UpgradeWrap");if(commercial&&commercial.parentNode)commercial.parentNode.insertBefore(value,commercial);else card.appendChild(value)
-      }
+      card.querySelectorAll(".cocoExFamilySummary,.cocoExFamilyValue").forEach(function(node){node.remove()})
     })
   }
 
@@ -142,6 +132,6 @@
   function schedule(){if(scheduled)return;scheduled=requestAnimationFrame(run)}
   function boot(){run();[250,700,1600,3200].forEach(function(delay){setTimeout(run,delay)});if(typeof MutationObserver==="function"){observer=new MutationObserver(schedule);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["class","data-et-age-band"]})}document.addEventListener("click",schedule,true)}
 
-  root.CocoExcellenceV160934=Object.freeze({version:VERSION,audit:function(){return{version:VERSION,games:Object.keys(GAME).length,gameGuides:true,healthyEnd:true,timePace:["calm","normal","challenge"],teenPresentation:true,familySummary:true,familyValue:true,noAuthMutation:true,noPaymentMutation:true,noScoreMutation:true}}});
+  root.CocoExcellenceV160934=Object.freeze({version:VERSION,audit:function(){return{version:VERSION,games:Object.keys(GAME).length,gameGuides:true,healthyEnd:true,timePace:["calm","normal","challenge"],teenPresentation:true,familyRedundancyRemoved:true,noAuthMutation:true,noPaymentMutation:true,noScoreMutation:true}}});
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot()
 })(window);

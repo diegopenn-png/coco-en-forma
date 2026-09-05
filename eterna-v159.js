@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.93.7 FAMILY PLANS + UNLIMITED
+/* Coco en Forma · ETERNA v160.93.8 FAMILY CLEANUP
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.93.7-family-plans-unlimited";
+  var VERSION="160.93.8-family-cleanup";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -769,37 +769,11 @@
   }
   function invalidateFamilyLearningReport(){familyLearningReportCache.at=0;familyLearningReportCache.model=null;familyLearningReportCache.promise=null}
 
-  function progressSnapshot(exportData){
-    var concepts=(state.learningMemory||[]).slice();
-    if(exportData&&Array.isArray(exportData.student_concept_memory)&&exportData.student_concept_memory.length)concepts=exportData.student_concept_memory.slice();
-    var strategies=(state.strategyMemory||[]).slice();
-    var strongest=concepts.slice().sort(function(a,b){return Number(b.mastery_score||0)-Number(a.mastery_score||0)}).slice(0,3);
-    var reinforce=concepts.slice().sort(function(a,b){return Number(a.mastery_score||0)-Number(b.mastery_score||0)}).slice(0,3);
-    var subjects=[],seen={};
-    concepts.forEach(function(x){var s=String(x.subject||"").trim();if(s&&!seen[s]){seen[s]=1;subjects.push(s)}});
-    if(exportData&&Array.isArray(exportData.mastery))exportData.mastery.forEach(function(x){var s=x&&x.eterna_concepts&&x.eterna_concepts.subject;if(s&&!seen[s]){seen[s]=1;subjects.push(s)}});
-    var attempts=exportData&&Array.isArray(exportData.attempts)?exportData.attempts.length:concepts.reduce(function(sum,x){return sum+Number(x.attempts||0)},0);
-    var useful=strategies.filter(function(x){return Number(x.evidence_count||0)>=2}).slice(0,3);
-    return{concepts:concepts,strategies:useful,strongest:strongest,reinforce:reinforce,subjects:subjects,attempts:attempts}
-  }
-
   function renderAcademicMemoryPanel(model){
     var rows=model&&Array.isArray(model.academicMemory)?model.academicMemory:[];
     if(!rows.length)return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Memoria de aprendizaje</b></div><p class="eternaV160ProgressIntro">Aquí aparecerán los temas que Eterna vaya recordando para poder retomarlos en futuras sesiones.</p></section>';
     var items=rows.slice(0,8).map(function(x){var topic=esc(x.topic_label||"Tema"),meaning=x.resolved_meaning?' · '+esc(x.resolved_meaning):'',subject=x.subject?' · '+esc(x.subject):'',summary=cleanText(x.summary_text||'');return '<div class="eternaV160ProgressBox"><b>'+topic+meaning+subject+'</b><span>'+esc(summary||'Tema trabajado y disponible para retomarlo.')+'</span></div>'}).join('');
     return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Temas que Eterna recuerda</b></div><p class="eternaV160ProgressIntro">Eterna conserva resúmenes académicos de lo que ella explicó para continuar el aprendizaje entre días. No guarda el audio, las fotos, los documentos ni el texto bruto del chat del menor en esta memoria.</p><div class="eternaV160ProgressGrid">'+items+'</div></section>'
-  }
-
-  function renderProgressPanel(){
-    var s=progressSnapshot();
-    if(!s.concepts.length&&!s.strategies.length){
-      return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso escolar con Eterna</b></div><p class="eternaV160ProgressIntro">Aquí aparecerá el progreso cuando el alumno empiece a practicar con Eterna.</p></section>'
-    }
-    var strongest=s.strongest.length?s.strongest.map(function(x){return esc(x.concept_label)+" ("+percent(x.mastery_score)+"%)"}).join(" · "):"Todavía estamos reuniendo señales.";
-    var reinforce=s.reinforce.length?s.reinforce.map(function(x){return esc(x.concept_label)}).join(" · "):"Todavía no hay suficiente información.";
-    var strategies=s.strategies.length?s.strategies.map(function(x){return esc(strategyName(x.strategy_key))}).join(" · "):"Eterna seguirá probando distintas formas de ayuda.";
-    var activity=(s.subjects.length?s.subjects.slice(0,5).map(esc).join(" · "):"Actividad escolar")+" · "+s.attempts+" señales o intentos";
-    return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Progreso escolar con Eterna</b></div><p class="eternaV160ProgressIntro">Resumen orientativo según las actividades realizadas hasta ahora. No es un diagnóstico ni una etiqueta del alumno.</p><div class="eternaV160ProgressGrid"><div class="eternaV160ProgressBox"><b>Lo que parece ir mejor</b><span>'+strongest+'</span></div><div class="eternaV160ProgressBox"><b>Lo que conviene seguir practicando</b><span>'+reinforce+'</span></div><div class="eternaV160ProgressBox"><b>Formas de ayuda que parecen funcionar</b><span>'+strategies+'</span></div><div class="eternaV160ProgressBox"><b>Actividad registrada</b><span>'+activity+'</span></div></div></section>'
   }
 
   async function exportEterna(button){
@@ -1100,7 +1074,7 @@
       var legal=preserveLegalAndClearFamilyCard(card);
       insertFamilyMarkup(card,
         '<span class="eternaV159FamilyStatus '+(active?"active":expired?"expired":"")+'">'+(masterAccess()?"acceso máster":active?esc(activeText):expired?"prueba finalizada":"no activa")+'</span>'+
-        commercial+renderAcademicMemoryPanel(memoryModel)+renderProgressPanel()+settings,legal);
+        commercial+renderAcademicMemoryPanel(memoryModel)+settings,legal);
       ensureFamilyDivider(body,card);
       bindFamilyToggleLabels(card);
 

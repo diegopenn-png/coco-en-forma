@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.93.7 · family plans + unlimited */
-const CACHE_VERSION="coco-en-forma-v160.93.7-family-plans-unlimited-r1";
+/* Coco en Forma · Service Worker v160.93.8 · family cleanup */
+const CACHE_VERSION="coco-en-forma-v160.93.8-family-cleanup-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

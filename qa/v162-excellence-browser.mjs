@@ -78,16 +78,14 @@ await check("El catálogo público móvil mantiene tarjetas compactas y legibles
   }
 });
 
-await check("Zona Familiar recibe resumen y valor sin duplicados",async()=>{
+await check("Zona Familiar elimina el resumen y valor redundantes",async()=>{
   await page.evaluate(()=>{
     const app=document.getElementById("cocoApp");
-    app.insertAdjacentHTML("beforeend",'<section class="eternaV159FamilyCard"><span class="eternaV159FamilyStatus active">activa</span><div class="eternaV160FamilyPromo">Compartir</div><details class="eternaV159ParentSettings"><summary>Privacidad</summary></details></section>');
+    app.insertAdjacentHTML("beforeend",'<section class="eternaV159FamilyCard"><span class="eternaV159FamilyStatus active">activa</span><section class="cocoExFamilySummary">Resumen anterior</section><section class="cocoExFamilyValue">Valor anterior</section><div class="eternaV160FamilyPromo">Compartir</div><details class="eternaV159ParentSettings"><summary>Privacidad</summary></details></section>');
   });
-  await page.locator(".cocoExFamilySummary").waitFor();
-  assert.equal(await page.locator(".cocoExFamilySummary").count(),1);
-  assert.equal(await page.locator(".cocoExFamilyValue").count(),1);
   await page.waitForTimeout(80);
-  assert.equal(await page.locator(".cocoExFamilySummary").count(),1);
+  assert.equal(await page.locator(".cocoExFamilySummary").count(),0);
+  assert.equal(await page.locator(".cocoExFamilyValue").count(),0);
 });
 
 await check("El selector de ETERNA muestra ejemplos y estética adolescente",async()=>{
