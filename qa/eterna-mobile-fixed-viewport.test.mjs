@@ -42,5 +42,5 @@ test("dynamic viewport wins over the small-viewport fallback", () => {
 
 test("the release invalidates both document and service-worker caches", () => {
   assert.match(read("index.html"), /eterna-v159\.js\?v=160941/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.94\.2-audit-1-3-r1/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.94\.3-paid-unlimited-default-r1/);
 });

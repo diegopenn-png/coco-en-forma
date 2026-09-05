@@ -58,5 +58,5 @@ test("el fingerprint y el service worker publican el control de acceso",()=>{
   const html=fs.readFileSync(path.join(rootDir,"index.html"),"utf8");
   const sw=fs.readFileSync(path.join(rootDir,"sw.js"),"utf8");
   assert.match(html,/coco-v152-padel\.js\?v=15201/);
-  assert.match(sw,/coco-en-forma-v160\.94\.2-audit-1-3-r1/);
+  assert.match(sw,/coco-en-forma-v160\.94\.3-paid-unlimited-default-r1/);
 });

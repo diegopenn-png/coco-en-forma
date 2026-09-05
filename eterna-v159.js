@@ -170,6 +170,7 @@
   }
 
   function masterAccess(){return Boolean(state.baseProfile&&String(state.baseProfile.rol||"").toLowerCase()==="propietario")}
+  function paidFamilySubscription(subscription){var s=subscription||{};return String(s.status||"").toLowerCase()==="active"&&["monthly","annual"].indexOf(String(s.plan||"").toLowerCase())>=0}
 
   function activeSubscription(){
     if(masterAccess())return true;
@@ -253,7 +254,7 @@
     state.baseProfile=dataAt(0)||null;
     state.profile=dataAt(1)||null;
     state.subscription=dataAt(2)||null;
-    state.parentSettings=dataAt(3)||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20};
+    state.parentSettings=dataAt(3)||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:paidFamilySubscription(state.subscription)?100:20};
     state.dataLoadedAt=Date.now();
     perfMark("eterna_critical_data_ready");
     perfMeasure("eterna_open_to_critical","eterna_open_click","eterna_critical_data_ready");
@@ -1126,9 +1127,9 @@
       if(headerTitle)headerTitle.textContent="";
       if(headerCopy)headerCopy.textContent="";
 
-      var active=activeSubscription(),sub=state.subscription||{},expired=trialExpired(),ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20};
+      var active=activeSubscription(),sub=state.subscription||{},expired=trialExpired(),paidFamilyPlan=paidFamilySubscription(sub),ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:paidFamilyPlan?100:20};
       var activeText=trialLabel(sub)||(String(sub.status||"").toLowerCase()==="active"?"suscripción activa":String(sub.status||"activa")),paidActive=String(sub.status||"")==="active"||masterAccess(),trialActive=String(sub.status||"")==="trialing"&&active,plans="";
-      var paidFamilyPlan=String(sub.status||"").toLowerCase()==="active"&&["monthly","annual"].indexOf(String(sub.plan||"").toLowerCase())>=0,currentParentLimit=Number(ps.max_sessions_per_day||20);
+      var currentParentLimit=Number(ps.max_sessions_per_day||20);
       if(paidActive){
         plans='<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>'
       }else if(expired){

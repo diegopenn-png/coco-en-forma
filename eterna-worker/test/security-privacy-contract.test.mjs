@@ -48,6 +48,7 @@ function loadWorkerApi({ fetchImpl = fetch, consoleImpl = console } = {}) {
     subscriptionUnlimited,
     paidSubscriptionCanChooseUnlimited,
     parentUnlimitedEnabled,
+    defaultParentDailyLimit,
     normalizeParentLimitRequest,
     moderate,
     validateImageDataUrl: typeof validateImageDataUrl === "function" ? validateImageDataUrl : null,
@@ -275,7 +276,7 @@ test("tester entitlement is server-authoritative and cannot rely on an email all
 });
 
 test("only an active paid family plan can enable unlimited Eterna consultations", () => {
-  const { paidSubscriptionCanChooseUnlimited, parentUnlimitedEnabled, normalizeParentLimitRequest } = loadWorkerApi();
+  const { paidSubscriptionCanChooseUnlimited, parentUnlimitedEnabled, defaultParentDailyLimit, normalizeParentLimitRequest } = loadWorkerApi();
   assert.equal(paidSubscriptionCanChooseUnlimited({ status: "active", plan: "monthly" }), true);
   assert.equal(paidSubscriptionCanChooseUnlimited({ status: "active", plan: "annual" }), true);
   assert.equal(paidSubscriptionCanChooseUnlimited({ status: "trialing", plan: "monthly", trial_end: new Date(Date.now() + 60_000).toISOString() }), false);
@@ -283,6 +284,10 @@ test("only an active paid family plan can enable unlimited Eterna consultations"
   assert.equal(parentUnlimitedEnabled({ max_sessions_per_day: 100 }, { status: "active", plan: "monthly" }), true);
   assert.equal(parentUnlimitedEnabled({ max_sessions_per_day: 50 }, { status: "active", plan: "monthly" }), false);
   assert.equal(parentUnlimitedEnabled({ max_sessions_per_day: 100 }, { status: "trialing", plan: "trial", trial_end: new Date(Date.now() + 60_000).toISOString() }), false);
+  assert.equal(defaultParentDailyLimit({ status: "active", plan: "monthly" }), 100);
+  assert.equal(defaultParentDailyLimit({ status: "active", plan: "annual" }), 100);
+  assert.equal(defaultParentDailyLimit({ status: "trialing", plan: "trial", trial_end: new Date(Date.now() + 60_000).toISOString() }), 20);
+  assert.equal(defaultParentDailyLimit({ status: "inactive", plan: "monthly" }), 20);
   assert.equal(JSON.stringify(normalizeParentLimitRequest("unlimited")), JSON.stringify({ requestedUnlimited: true, value: 100 }));
   assert.equal(JSON.stringify(normalizeParentLimitRequest(100)), JSON.stringify({ requestedUnlimited: true, value: 100 }));
   assert.equal(JSON.stringify(normalizeParentLimitRequest(50)), JSON.stringify({ requestedUnlimited: false, value: 50 }));

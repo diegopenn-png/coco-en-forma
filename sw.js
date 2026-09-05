@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.2 · auditorías 1–3 */
-const CACHE_VERSION="coco-en-forma-v160.94.2-audit-1-3-r1";
+/* Coco en Forma · Service Worker v160.94.3 · ilimitado de pago por defecto */
+const CACHE_VERSION="coco-en-forma-v160.94.3-paid-unlimited-default-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
