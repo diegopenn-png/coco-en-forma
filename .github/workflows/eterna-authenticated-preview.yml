@@ -154,6 +154,9 @@ jobs:
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=1609343&verify=${GITHUB_SHA}" \
             | grep -F '160.93.4-excellence-pass' >/dev/null
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/coco-v144-core.js?v=15001&verify=${GITHUB_SHA}" \
+            | grep -F 'Inicia sesión para abrir ' >/dev/null
           curl --max-time 20 -fsS "${API_PREVIEW_URL}/health" | tee authenticated-preview-health.json
           grep -F '160.93.1-master-game-replay' authenticated-preview-health.json >/dev/null
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"

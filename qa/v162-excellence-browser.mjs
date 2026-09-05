@@ -24,6 +24,20 @@ await context.route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//,route=>route
 const page=await context.newPage();
 const pageErrors=[];page.on("pageerror",error=>pageErrors.push(error.message));
 
+await check("Todas las tarjetas públicas dirigen al login con su nombre",async()=>{
+  await page.goto(`${base}/?qa-public-login=1`,{waitUntil:"domcontentloaded"});
+  await page.locator(".cocoMiniJuego[data-coco-excellence='1']").first().waitFor({timeout:10000});
+  const cards=page.locator(".cocoMiniJuego[data-coco-excellence='1']");
+  assert.equal(await cards.count(),13);
+  for(let index=0;index<13;index+=1){
+    const card=cards.nth(index),name=(await card.locator(":scope > b").innerText()).trim();
+    await card.click();
+    assert.equal((await page.locator(".cocoV144Toast").last().innerText()).trim(),`Inicia sesión para abrir ${name}.`);
+    assert.equal(await page.locator(".cocoV144Modal.visible").count(),0);
+    assert.equal(await page.evaluate(()=>document.activeElement===document.querySelector("#cocoApp input[type='email']")),true);
+  }
+});
+
 await check("Reto tiempo muestra guía y tres ritmos saludables",async()=>{
   await page.goto(`${base}/?qa=1&juego=tiempo`,{waitUntil:"domcontentloaded"});
   await page.locator(".cocoExPace").waitFor({timeout:10000});
