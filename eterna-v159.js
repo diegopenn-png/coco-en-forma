@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.93.4 EXCELLENCE PASS
+/* Coco en Forma · ETERNA v160.93.7 FAMILY PLANS + UNLIMITED
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.93.4-excellence-pass";
+  var VERSION="160.93.7-family-plans-unlimited";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -740,9 +740,11 @@
 
   async function saveParentSettings(card,button){
     button.disabled=true;
-    var expected={voice_enabled:card.querySelector("[data-et-voice]").checked,allow_image_input:card.querySelector("[data-et-images]").checked,allow_audio_input:card.querySelector("[data-et-audio]").checked,max_sessions_per_day:Number(card.querySelector("[data-et-limit]").value||20)};
+    var selectedLimit=String(card.querySelector("[data-et-limit]").value||"20"),expectedLimit=selectedLimit==="unlimited"?100:Number(selectedLimit||20);
+    var expected={voice_enabled:card.querySelector("[data-et-voice]").checked,allow_image_input:card.querySelector("[data-et-images]").checked,allow_audio_input:card.querySelector("[data-et-audio]").checked,max_sessions_per_day:expectedLimit};
+    var payload=Object.assign({},expected,{max_sessions_per_day:selectedLimit==="unlimited"?"unlimited":expectedLimit});
     try{
-      var r=await api("/v1/parent-settings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(expected)}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"SETTINGS");
+      var r=await api("/v1/parent-settings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"SETTINGS");
       state.parentSettings=d;state.dataLoadedAt=0;await loadData(true);
       var p=state.parentSettings||{},ok=(p.voice_enabled!==false)===expected.voice_enabled&&(p.allow_image_input!==false)===expected.allow_image_input&&(p.allow_audio_input!==false)===expected.allow_audio_input&&Number(p.max_sessions_per_day||20)===expected.max_sessions_per_day;
       if(!ok)throw new Error("PERSISTENCE");
@@ -1073,6 +1075,7 @@
 
       var active=activeSubscription(),sub=state.subscription||{},expired=trialExpired(),ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:20};
       var activeText=trialLabel(sub)||String(sub.status||"activa"),paidActive=String(sub.status||"")==="active"||masterAccess(),trialActive=String(sub.status||"")==="trialing"&&active,plans="";
+      var paidFamilyPlan=String(sub.status||"").toLowerCase()==="active"&&["monthly","annual"].indexOf(String(sub.plan||"").toLowerCase())>=0,currentParentLimit=Number(ps.max_sessions_per_day||20);
       if(paidActive){
         plans='<div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-open>Abrir Eterna</button>'+(sub.provider_customer_id?'<button type="button" class="eternaV159Secondary" data-et-portal>Gestionar suscripción</button>':"")+'</div>'
       }else if(expired){
@@ -1091,7 +1094,7 @@
         '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir voz de Eterna</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-voice '+(ps.voice_enabled!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
         '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir fotos de tareas</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-images '+(ps.allow_image_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
         '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir preguntas por micrófono</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-audio '+(ps.allow_audio_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
-        '<label>Consultas máximas al día <select data-et-limit>'+[10,20,30,50].map(function(x){return'<option value="'+x+'" '+(Number(ps.max_sessions_per_day||20)===x?"selected":"")+'>'+x+"</option>"}).join("")+'</select></label>'+
+        '<label>Consultas máximas al día <select data-et-limit>'+[10,20,30,50].map(function(x){return'<option value="'+x+'" '+(currentParentLimit===x?"selected":"")+'>'+x+"</option>"}).join("")+(paidFamilyPlan?'<option value="unlimited" '+(currentParentLimit===100?"selected":"")+'>Ilimitadas</option>':"")+'</select></label>'+
         '</div><p>Estos controles afectan únicamente a Eterna y a la ayuda escolar. Las fotos se procesan temporalmente y no se guardan por defecto.</p><div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-save-settings>Guardar ajustes</button><button type="button" class="eternaV159Danger" data-et-delete>Borrar memoria de Eterna</button></div></details>';
 
       var legal=preserveLegalAndClearFamilyCard(card);

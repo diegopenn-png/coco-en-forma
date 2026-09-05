@@ -46,6 +46,9 @@ function loadWorkerApi({ fetchImpl = fetch, consoleImpl = console } = {}) {
     scopeV3Guard,
     subscriptionActive,
     subscriptionUnlimited,
+    paidSubscriptionCanChooseUnlimited,
+    parentUnlimitedEnabled,
+    normalizeParentLimitRequest,
     moderate,
     validateImageDataUrl: typeof validateImageDataUrl === "function" ? validateImageDataUrl : null,
     toPersistentActivityState: globalThis.EternaStateContractV3?.toPersistentActivityState || null
@@ -269,6 +272,30 @@ test("tester entitlement is server-authoritative and cannot rely on an email all
   assert.match(accessStatus, /serverTesterEntitlement\(env,uid\)/);
   assert.match(accessStatus, /unlimited_testing/);
   assert.match(workerSource, /url\.pathname==="\/v1\/access-status"&&request\.method==="GET"/);
+});
+
+test("only an active paid family plan can enable unlimited Eterna consultations", () => {
+  const { paidSubscriptionCanChooseUnlimited, parentUnlimitedEnabled, normalizeParentLimitRequest } = loadWorkerApi();
+  assert.equal(paidSubscriptionCanChooseUnlimited({ status: "active", plan: "monthly" }), true);
+  assert.equal(paidSubscriptionCanChooseUnlimited({ status: "active", plan: "annual" }), true);
+  assert.equal(paidSubscriptionCanChooseUnlimited({ status: "trialing", plan: "monthly", trial_end: new Date(Date.now() + 60_000).toISOString() }), false);
+  assert.equal(paidSubscriptionCanChooseUnlimited({ status: "expired", plan: "annual" }), false);
+  assert.equal(parentUnlimitedEnabled({ max_sessions_per_day: 100 }, { status: "active", plan: "monthly" }), true);
+  assert.equal(parentUnlimitedEnabled({ max_sessions_per_day: 50 }, { status: "active", plan: "monthly" }), false);
+  assert.equal(parentUnlimitedEnabled({ max_sessions_per_day: 100 }, { status: "trialing", plan: "trial", trial_end: new Date(Date.now() + 60_000).toISOString() }), false);
+  assert.equal(JSON.stringify(normalizeParentLimitRequest("unlimited")), JSON.stringify({ requestedUnlimited: true, value: 100 }));
+  assert.equal(JSON.stringify(normalizeParentLimitRequest(100)), JSON.stringify({ requestedUnlimited: true, value: 100 }));
+  assert.equal(JSON.stringify(normalizeParentLimitRequest(50)), JSON.stringify({ requestedUnlimited: false, value: 50 }));
+  assert.equal(JSON.stringify(normalizeParentLimitRequest("invalid")), JSON.stringify({ requestedUnlimited: false, value: 20 }));
+
+  const quotaSource = sourceBetween("async function quota(", "async function handleAccessStatus(");
+  assert.match(quotaSource, /parentUnlimitedEnabled\(settings,subscription\)/);
+  assert.match(quotaSource, /daily_limit:parentUnlimited\?null:dailyLimit/);
+  assert.match(quotaSource, /weekly_limit:parentUnlimited\?null:weeklyLimit/);
+
+  const settingsSource = sourceBetween("async function handleParentSettings(", "async function handleExport(");
+  assert.match(settingsSource, /ETERNA_PAID_SUBSCRIPTION_REQUIRED_FOR_UNLIMITED/);
+  assert.match(settingsSource, /paidSubscriptionCanChooseUnlimited\(sub\)/);
 });
 
 test("logs never include raw OpenAI response or model output text", () => {

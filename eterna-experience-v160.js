@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.93.4 · excellence pass
+/* ETERNA Experience v160.93.7 · family plans + unlimited
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.93.4-excellence-pass";
+  var VERSION="160.93.7-family-plans-unlimited";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
@@ -2387,6 +2387,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     var s=document.createElement("style");s.id="eterna-family-v16066-css";
     s.textContent=[
       "#cocoApp .eternaV16061SubscriptionTop{position:relative;margin:0 0 16px;padding:16px;border:2px solid #f0d09f;border-radius:20px;background:linear-gradient(180deg,#fffaf0,#fff5e5);box-shadow:0 4px 0 rgba(235,201,145,.38)}",
+      "#cocoApp .eternaV16061SubscriptionTop.is-expired{padding:0;border:0;background:transparent;box-shadow:none}#cocoApp .eternaV16061SubscriptionTop.is-expired>.eternaV160ExpiredGate{margin:0 auto}",
       "#cocoApp .eternaV16061SubscriptionHead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}",
       "#cocoApp .eternaV16061SubscriptionHead span{display:inline-flex;padding:5px 9px;border-radius:999px;background:#ef6c05;color:#fff;font-size:9px;font-weight:900;letter-spacing:.07em}",
       "#cocoApp .eternaV16061SubscriptionHead h4{width:100%;margin:0;color:#173f59;font-size:20px;line-height:1.08}",
@@ -2481,6 +2482,17 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   function moveSubscriptionFirst(card){
     if(!card)return false;
     var existing=directChildren(card,"eternaV16061SubscriptionTop")[0];
+    var expired=directChildren(card,"eternaV160ExpiredGate")[0]||null;
+    if(expired){
+      if(existing)existing.remove();
+      var expiredWrap=document.createElement("section");
+      expiredWrap.className="eternaV16061SubscriptionTop is-expired";
+      expiredWrap.setAttribute("aria-label","Planes de Eterna");
+      expiredWrap.dataset.etPlanState="expired";
+      card.insertBefore(expiredWrap,card.firstChild);
+      expiredWrap.appendChild(expired);
+      return true
+    }
     if(existing){bindCreatedPlanButtons(existing);syncSubscriptionUi(existing,false);return true}
 
     var status=card.querySelector(".eternaV159FamilyStatus"),statusText=clean(status&&status.textContent).toLowerCase();
