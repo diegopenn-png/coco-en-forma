@@ -114,7 +114,8 @@ jobs:
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
-          grep -F '160.93.8-family-cleanup' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.93.9-expired-direct-plans' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.93.9-expired-direct-plans' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F '160.93.7-family-plans-unlimited' eterna-worker/src/index.js >/dev/null
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
@@ -138,9 +139,9 @@ jobs:
         run: |
           ready=0
           for attempt in {1..12}; do
-            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160938&verify=${GITHUB_SHA}-${attempt}"
+            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160939&verify=${GITHUB_SHA}-${attempt}"
             if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
-              && grep -F '160.93.8-family-cleanup' /tmp/eterna-preview.js >/dev/null; then
+              && grep -F '160.93.9-expired-direct-plans' /tmp/eterna-preview.js >/dev/null; then
               ready=1
               break
             fi
@@ -150,6 +151,10 @@ jobs:
             echo "The isolated preview subdomain did not become ready" >&2
             exit 1
           fi
+
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/eterna-experience-v160.js?v=160939&verify=${GITHUB_SHA}" \
+            | grep -F '160.93.9-expired-direct-plans' >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=160938&verify=${GITHUB_SHA}" \
@@ -177,7 +182,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.93.8-family-cleanup · API 160.93.7-family-plans-unlimited"
+            echo "- Expected versions: frontend 160.93.9-expired-direct-plans · API 160.93.7-family-plans-unlimited"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preserve preview evidence
