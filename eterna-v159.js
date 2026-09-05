@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.93.9 EXPIRED DIRECT PLANS
+/* Coco en Forma · ETERNA v160.94.1 MOBILE FIXED VIEWPORT
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.93.9-expired-direct-plans";
+  var VERSION="160.94.1-mobile-fixed-viewport";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -36,6 +36,7 @@
   };
 
   var appObserver=null,observerRaf=0,authWatcherInstalled=false,secondaryDataPromise=null,familyRenderPromise=null,familyRenderBody=null,familyLearningReportCache={at:0,model:null,promise:null};
+  var eternaPageLock=null,eternaDesktopOverflow=null,eternaViewportRaf=0;
 
   var CCAA=["Andalucía","Aragón","Asturias","Illes Balears","Canarias","Cantabria","Castilla-La Mancha","Castilla y León","Cataluña","Comunitat Valenciana","Extremadura","Galicia","Comunidad de Madrid","Región de Murcia","Navarra","País Vasco","La Rioja","Ceuta","Melilla"];
   var YEARS=[
@@ -479,13 +480,82 @@
       "@supports (content-visibility:auto){#cocoApp .cocoGameCard{content-visibility:auto;contain-intrinsic-size:340px}}",
       "@media(min-width:901px) and (max-width:1180px){#cocoApp .cocoHomeAccessRowFinal3{grid-template-columns:minmax(280px,.9fr) minmax(440px,1.1fr)!important}#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:minmax(250px,.62fr) minmax(520px,1.38fr)!important}#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{grid-template-columns:minmax(0,1.15fr) minmax(190px,.85fr)!important;padding:18px!important}#cocoApp .cocoHomeBrainFinal3 .loginPoster{max-height:320px!important}}",
       "@media(max-width:900px){#cocoApp .cocoHomeAccessRowFinal3,#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:1fr!important}#cocoApp .cocoHomeAccessRowFinal3>.cocoFreemiumV16084,#cocoApp .cocoHomeAccessRowFinal3>.loginCard,#cocoApp .cocoHomeAccessRowFinal3>.carnet,#cocoApp .cocoHomeAccessRowFinal3>.eternaLauncherV159{grid-column:1!important;grid-row:auto!important}#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .cocoHomeFinal3 .eternaLauncherVisualFinal3 img{max-width:620px}#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherCardV159{grid-template-columns:1fr!important;min-height:0!important}#cocoApp .eternaLauncherLoggedInFinal3 .eternaLauncherVisualFinal3{display:none!important}#cocoApp .cocoHomeBrainFinal3{min-height:220px}#cocoApp .cocoHomeBrainFinal3 .loginPoster{max-height:330px!important}}",
-      "@media(max-width:760px){.eternaV159{padding:0!important}.eternaV159Shell{height:100dvh!important;height:100svh!important;border-radius:0!important;border:0!important}.eternaV160ModeBar{margin:8px 10px 0;padding:10px;align-items:center}.eternaV160ModeBar small{font-size:10px}.eternaV160ChangeMode{display:inline-flex;align-items:center;justify-content:center}.eternaV160Start{margin:20px auto 12px;padding:13px}.eternaV160Start h3{font-size:21px}.eternaV160StartActions{grid-template-columns:repeat(2,minmax(0,1fr))}.eternaV160StartAction{min-height:60px;padding:9px}.eternaV160StartAction:last-child:nth-child(odd){grid-column:1/-1}.eternaV159Composer textarea{font-size:16px!important}#cocoApp .eternaV159ParentGrid,#cocoApp .eternaV160ProgressGrid{grid-template-columns:1fr!important}}",
+      "@media(max-width:760px){.eternaV159{padding:0!important}.eternaV159Shell{height:100svh!important;height:100dvh!important;border-radius:0!important;border:0!important}.eternaV160ModeBar{margin:8px 10px 0;padding:10px;align-items:center}.eternaV160ModeBar small{font-size:10px}.eternaV160ChangeMode{display:inline-flex;align-items:center;justify-content:center}.eternaV160Start{margin:20px auto 12px;padding:13px}.eternaV160Start h3{font-size:21px}.eternaV160StartActions{grid-template-columns:repeat(2,minmax(0,1fr))}.eternaV160StartAction{min-height:60px;padding:9px}.eternaV160StartAction:last-child:nth-child(odd){grid-column:1/-1}.eternaV159Composer textarea{font-size:16px!important}#cocoApp .eternaV159ParentGrid,#cocoApp .eternaV160ProgressGrid{grid-template-columns:1fr!important}}",
+      "@media(max-width:760px){html.eternaV160ViewportLocked,html.eternaV160ViewportLocked body{overflow:hidden!important;overscroll-behavior:none!important}#eternaOverlayV159.eternaV159.is-open{position:fixed!important;inset:auto!important;top:var(--eterna-vv-top,0px)!important;left:var(--eterna-vv-left,0px)!important;width:var(--eterna-vv-width,100vw)!important;height:var(--eterna-vv-height,100dvh)!important;min-height:0!important;max-height:none!important;padding:0!important;overflow:hidden!important;overscroll-behavior:none!important;background:#f7fcff!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;place-items:stretch!important}#eternaOverlayV159 .eternaV159Shell{width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;display:grid!important;grid-template-rows:auto minmax(0,1fr)!important;overflow:hidden!important;border:0!important;border-radius:0!important;background:#f7fcff!important;box-shadow:none!important}#eternaOverlayV159 .eternaV159Top{position:relative!important;z-index:3!important;flex:0 0 auto!important;padding-top:max(12px,env(safe-area-inset-top))!important}#eternaOverlayV159 .eternaV159Body,#eternaOverlayV159 .eternaV159Main{min-height:0!important;height:100%!important;overflow:hidden!important}#eternaOverlayV159 .eternaV159Main{grid-template-rows:auto auto minmax(0,1fr) auto!important}#eternaOverlayV159 .eternaV159Chat{min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}#eternaOverlayV159 .eternaV159Composer{position:relative!important;z-index:3!important;flex:0 0 auto!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important;background:#f9fdff!important}}",
       "@media(min-width:761px) and (max-width:1024px){.eternaV159Body{grid-template-columns:1fr!important}.eternaV159Menu{display:none!important}.eternaV160ChangeMode{display:inline-flex!important;align-items:center;justify-content:center}.eternaV159Shell{position:relative;width:min(940px,96vw)!important;height:min(1000px,96dvh)!important}.eternaV160ModeSheet{align-items:center;justify-content:center;padding:22px}.eternaV160ModePanel{max-width:740px;border-radius:24px}.eternaV159IconBtn,.eternaV159Send{min-width:52px;height:52px}.eternaV159Composer textarea{min-height:52px;font-size:16px!important}}",
       "@media(orientation:landscape) and (max-height:620px){.eternaV159Top{padding-top:8px!important;padding-bottom:8px!important}.eternaV159TopCopy p{display:none}.eternaV160Start{margin:10px auto 6px}.eternaV159Chat{padding-top:10px!important}.eternaV159Composer{padding-bottom:max(8px,env(safe-area-inset-bottom))!important}}",
       "@media(orientation:landscape) and (max-height:620px) and (max-width:1000px){#cocoApp .cocoHomeFinal3{gap:14px!important;margin-top:12px!important}#cocoApp .cocoHomeAccessRowFinal3,#cocoApp .cocoHomeGamesRowFinal3{grid-template-columns:1fr!important}#cocoApp .cocoHomeAccessRowFinal3>*{grid-column:1!important;grid-row:auto!important}#cocoApp .cocoHomeBrainFinal3{min-height:160px!important}#cocoApp .cocoHomeBrainFinal3 .loginPoster{max-height:230px!important}#cocoApp .cocoHomeFinal3 .eternaLauncherFinal3{min-height:0!important;padding:16px!important}}",
       "@media(prefers-reduced-motion:reduce){.eternaV159 *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
     ].join("");
     document.head.appendChild(style)
+  }
+
+  function isEternaMobileViewport(){
+    try{return window.matchMedia("(max-width: 760px)").matches}catch(e){return window.innerWidth<=760}
+  }
+
+  function syncEternaVisualViewport(){
+    if(eternaViewportRaf)cancelAnimationFrame(eternaViewportRaf);
+    eternaViewportRaf=requestAnimationFrame(function(){
+      eternaViewportRaf=0;
+      var o=document.getElementById("eternaOverlayV159");
+      if(!o||!o.classList.contains("is-open")||!isEternaMobileViewport())return;
+      var vv=window.visualViewport;
+      var height=Math.max(1,Math.round(vv&&vv.height||window.innerHeight||document.documentElement.clientHeight||1));
+      var width=Math.max(1,Math.round(vv&&vv.width||window.innerWidth||document.documentElement.clientWidth||1));
+      var top=Math.max(0,Math.round(vv&&vv.offsetTop||0));
+      var left=Math.max(0,Math.round(vv&&vv.offsetLeft||0));
+      o.style.setProperty("--eterna-vv-height",height+"px");
+      o.style.setProperty("--eterna-vv-width",width+"px");
+      o.style.setProperty("--eterna-vv-top",top+"px");
+      o.style.setProperty("--eterna-vv-left",left+"px")
+    })
+  }
+
+  function lockEternaViewport(o){
+    if(!isEternaMobileViewport()){if(eternaDesktopOverflow===null)eternaDesktopOverflow=document.body.style.overflow;document.body.style.overflow="hidden";return}
+    if(!eternaPageLock){
+      var html=document.documentElement,body=document.body;
+      eternaPageLock={
+        x:window.scrollX||0,y:window.scrollY||0,
+        htmlOverflow:html.style.overflow,htmlOverscroll:html.style.overscrollBehavior,
+        bodyOverflow:body.style.overflow,bodyOverscroll:body.style.overscrollBehavior,
+        bodyPosition:body.style.position,bodyTop:body.style.top,bodyLeft:body.style.left,
+        bodyRight:body.style.right,bodyWidth:body.style.width
+      };
+      html.classList.add("eternaV160ViewportLocked");
+      body.classList.add("eternaV160ViewportLocked");
+      html.style.overflow="hidden";html.style.overscrollBehavior="none";
+      body.style.overflow="hidden";body.style.overscrollBehavior="none";
+      body.style.position="fixed";body.style.top=(-eternaPageLock.y)+"px";body.style.left=(-eternaPageLock.x)+"px";body.style.right="0";body.style.width="100%";
+      if(window.visualViewport){window.visualViewport.addEventListener("resize",syncEternaVisualViewport);window.visualViewport.addEventListener("scroll",syncEternaVisualViewport)}
+      window.addEventListener("resize",syncEternaVisualViewport)
+    }
+    syncEternaVisualViewport()
+  }
+
+  function unlockEternaViewport(){
+    var o=document.getElementById("eternaOverlayV159");
+    if(o){["--eterna-vv-height","--eterna-vv-width","--eterna-vv-top","--eterna-vv-left"].forEach(function(name){o.style.removeProperty(name)})}
+    if(!eternaPageLock){if(eternaDesktopOverflow!==null){document.body.style.overflow=eternaDesktopOverflow;eternaDesktopOverflow=null}return}
+    var lock=eternaPageLock,html=document.documentElement,body=document.body;
+    eternaPageLock=null;
+    if(eternaViewportRaf){cancelAnimationFrame(eternaViewportRaf);eternaViewportRaf=0}
+    if(window.visualViewport){window.visualViewport.removeEventListener("resize",syncEternaVisualViewport);window.visualViewport.removeEventListener("scroll",syncEternaVisualViewport)}
+    window.removeEventListener("resize",syncEternaVisualViewport);
+    html.classList.remove("eternaV160ViewportLocked");body.classList.remove("eternaV160ViewportLocked");
+    html.style.overflow=lock.htmlOverflow;html.style.overscrollBehavior=lock.htmlOverscroll;
+    body.style.overflow=lock.bodyOverflow;body.style.overscrollBehavior=lock.bodyOverscroll;
+    body.style.position=lock.bodyPosition;body.style.top=lock.bodyTop;body.style.left=lock.bodyLeft;body.style.right=lock.bodyRight;body.style.width=lock.bodyWidth;
+    requestAnimationFrame(function(){window.scrollTo(lock.x,lock.y)})
+  }
+
+  function watchEternaViewport(o){
+    if(o.__eternaViewportObserver)return;
+    o.__eternaViewportObserver=new MutationObserver(function(){
+      if(o.classList.contains("is-open"))lockEternaViewport(o);else unlockEternaViewport()
+    });
+    o.__eternaViewportObserver.observe(o,{attributes:true,attributeFilter:["class"]})
   }
 
   function overlay(){
@@ -502,7 +572,7 @@
       '</div>'+
       '<div class="eternaV160ModeSheet" data-et-modesheet aria-hidden="true"><div class="eternaV160ModePanel" role="dialog" aria-modal="true" aria-label="Elegir modo de Eterna"><div class="eternaV160ModePanelHead"><b>¿Cómo quieres que te ayude?</b><button type="button" class="eternaV160ModePanelClose" data-et-modeclose aria-label="Cerrar selector">×</button></div><div class="eternaV160ModeChoices" data-et-modechoices></div></div></div>'+
     '</div>';
-    document.body.appendChild(o);bindOverlay(o);renderModeBar();setPlaceholder();return o
+    document.body.appendChild(o);watchEternaViewport(o);bindOverlay(o);renderModeBar();setPlaceholder();return o
   }
 
   function syncModeButtons(){var o=overlay();o.querySelectorAll("[data-et-mode]").forEach(function(x){x.classList.toggle("is-active",x.dataset.etMode===state.mode)});o.querySelectorAll("[data-et-modechoice]").forEach(function(x){x.classList.toggle("is-active",x.dataset.etModechoice===state.mode)})}
@@ -542,7 +612,7 @@
   function setPlaceholder(){var i=overlay().querySelector("[data-et-input]"),m=MODE_CONFIG[state.mode]||MODE_CONFIG.homework;if(i)i.placeholder=m.placeholder}
 
   async function open(options){
-    var o=overlay();o.classList.add("is-open");document.body.style.overflow="hidden";
+    var o=overlay();o.classList.add("is-open");lockEternaViewport(o);
     perfMark("eterna_overlay_visible");
     perfMeasure("eterna_click_to_overlay","eterna_open_click","eterna_overlay_visible");
     try{var saved=localStorage.getItem("coco_eterna_mode_v160");if(MODE_CONFIG[saved])state.mode=saved}catch(e){}
@@ -551,7 +621,7 @@
     requestAnimationFrame(function(){var i=o.querySelector("[data-et-input]");if(i&&activeSubscription()&&state.profile)i.focus()})
   }
 
-  function close(){invalidateInFlight("overlay-close");closeActivity(state.mode);persistLearningSession();state.history=[];state.conversationState=freshConversationState();state.pedagogicalState=freshPedagogicalState(state.mode);state.lastReply="";clearImage();var o=document.getElementById("eternaOverlayV159");if(o){hideModePicker();o.classList.remove("is-open")}document.body.style.overflow="";stopAudio();announceUiReset("overlay-close")}
+  function close(){invalidateInFlight("overlay-close");closeActivity(state.mode);persistLearningSession();state.history=[];state.conversationState=freshConversationState();state.pedagogicalState=freshPedagogicalState(state.mode);state.lastReply="";clearImage();var o=document.getElementById("eternaOverlayV159");if(o){hideModePicker();o.classList.remove("is-open")}unlockEternaViewport();stopAudio();announceUiReset("overlay-close")}
 
   function goToLogin(){
     rememberEternaAfterAuth();
@@ -1173,7 +1243,7 @@
     isRequestPending:function(){return Boolean(state.busy)},
     isMaster:function(){return masterAccess()},
     invalidateActivity:function(reason){invalidateInFlight(reason||"external-boundary")},
-    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true,ageAccessGate:false,agePedagogyOnly:true,criticalSecondaryDataSplit:true,familyLifecycleV2:true,sharedFamilyRenderPromise:true,canonicalFamilyBeforeAwait:true,tutorConversationalV3:true,conversationStateEphemeral:true,contextualReferenceResolutionV3:true,noRawConversationPersistence:true,responsiveDesktopV16072:true}}
+    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true,ageAccessGate:false,agePedagogyOnly:true,criticalSecondaryDataSplit:true,familyLifecycleV2:true,sharedFamilyRenderPromise:true,canonicalFamilyBeforeAwait:true,tutorConversationalV3:true,conversationStateEphemeral:true,contextualReferenceResolutionV3:true,noRawConversationPersistence:true,responsiveDesktopV16072:true,mobileFixedViewportV160941:true}}
   });
   window.CocoPerformanceV160=Object.freeze({snapshot:function(){
     var nav=(performance.getEntriesByType&&performance.getEntriesByType("navigation")[0])||null;
