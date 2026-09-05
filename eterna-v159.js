@@ -287,7 +287,7 @@
   }
 
   function announceEternaLogin(){
-    var api=root.CocoV144||root.CocoV148;
+    var api=window.CocoV144||window.CocoV148;
     if(api&&typeof api.toast==="function")api.toast("Inicia sesión o crea una cuenta para abrir Eterna.","info")
   }
 
