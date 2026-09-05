@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.93.9 · expired direct plans */
-const CACHE_VERSION="coco-en-forma-v160.93.9-expired-direct-plans-r1";
+/* Coco en Forma · Service Worker v160.93.10 · canonical expired checkout */
+const CACHE_VERSION="coco-en-forma-v160.93.10-canonical-expired-checkout-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

@@ -1,4 +1,4 @@
-/* ETERNA Experience v160.93.9 · expired direct plans
+/* ETERNA Experience v160.93.10 · canonical expired checkout
  * La edad adapta la pedagogía, nunca el acceso.
  * Conserva micrófono premium, legal shield, onboarding consolidado y un único MutationObserver limitado al chat de Eterna.
  * Corrige placeholders por modo y reduce trabajo de arranque fuera de Eterna.
@@ -8,7 +8,7 @@
   if(root.__ETERNA_EXPERIENCE_V16049__)return;
   root.__ETERNA_EXPERIENCE_V16049__=true;
 
-  var VERSION="160.93.9-expired-direct-plans";
+  var VERSION="160.93.10-canonical-expired-checkout";
   var LOAD_INTENT=String(root.__COCO_ETERNA_LOAD_INTENT__||"idle");
   var PENDING_JOB_KEY="coco_eterna_pending_job_v16074";
   var BACKGROUND_JOB_TTL_MS=5*60*1000;
@@ -2178,7 +2178,7 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
     if(document.documentElement.dataset.eternaLegalV16073==="1")return;document.documentElement.dataset.eternaLegalV16073="1";
     document.addEventListener("click",function(event){
       try{
-        var el=event.target&&event.target.closest?event.target.closest("#eternaOverlayV159 [data-et-send],#eternaOverlayV159 [data-et-mic],#cocoApp [data-et-trial],#cocoApp [data-et-month],#cocoApp [data-et-year]"):null;
+        var el=event.target&&event.target.closest?event.target.closest("#eternaOverlayV159 [data-et-send],#eternaOverlayV159 [data-et-mic],#eternaOverlayV159 [data-et-month],#eternaOverlayV159 [data-et-year],#cocoApp [data-et-trial],#cocoApp [data-et-month],#cocoApp [data-et-year]"):null;
         if(!el)return;if(bypass.has(el)){bypass.delete(el);return}
         ensureChildLinks();
         event.preventDefault();event.stopImmediatePropagation();

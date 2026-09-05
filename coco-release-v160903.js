@@ -1,8 +1,8 @@
-/* COCO EN FORMA / ETERNA · v160.90.4.2 HOTFIX · UI CONSOLIDADA
+/* COCO EN FORMA / ETERNA · v160.93.10 · CHECKOUT VENCIDO CANÓNICO
  * Base auditada: v160.90.4.1 desplegada en GitHub Pages #319
  *
  * Alcance:
- * 1) Trial ETERNA finalizado -> pantalla directa de planes sin volver al PIN.
+ * 1) Trial ETERNA finalizado -> delega en la pantalla y checkout canónicos, sin volver al PIN.
  * 2) Verdadero/Falso -> conserva la bolsa antirrepetición y solo reordena la muestra.
  * 3) Safe areas -> Volver/Salir/Cerrar siempre pulsables en vertical.
  * 4) Micrófono -> presentación moderna, circular y consistente.
@@ -19,7 +19,7 @@
   if(root.__COCO_PRODUCT_UX_160903__)return;
   root.__COCO_PRODUCT_UX_160903__=true;
 
-  var VERSION="160.90.4.2-hotfix-safe-login";
+  var VERSION="160.93.10-canonical-expired-checkout";
   var subscriptionCache={at:0,value:null,session:null,promise:null};
   var FAMILY_RETRY=[80,260,700,1400];
   var ETERNA_RETRY=[0,60,220,650,1200,2200];
@@ -85,72 +85,17 @@
     return subscriptionCache.promise
   }
 
-  async function checkout(plan,button){
-    var original=button&&button.textContent||"Continuar";
-    if(button){button.disabled=true;button.textContent="Abriendo pago…"}
-    try{
-      var session=await currentSession(),url=endpoint("/v1/checkout");
-      if(!session||!session.access_token||!url)throw new Error("checkout_unavailable");
-      var r=await fetch(url,{
-        method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token},
-        body:JSON.stringify({plan:plan})
-      });
-      if(r.status===401){
-        session=await currentSession();
-        if(!session||!session.access_token)throw new Error("session");
-        r=await fetch(url,{
-          method:"POST",
-          headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token},
-          body:JSON.stringify({plan:plan})
-        })
-      }
-      var data={};try{data=await r.json()}catch(e){}
-      if(!r.ok||!data.url)throw new Error(data.error||"checkout");
-      root.location.href=data.url
-    }catch(e){
-      alert("No se pudo abrir la pasarela de pago. Inténtalo de nuevo.");
-      if(button){button.disabled=false;button.textContent=original}
-    }
-  }
-
-  function closeEterna(){
-    try{
-      if(root.CocoEternaV160&&typeof root.CocoEternaV160.close==="function"){root.CocoEternaV160.close();return}
-      var b=document.querySelector("#eternaOverlayV159 .eternaV159Close");if(b)b.click()
-    }catch(e){}
-  }
-
-  function expiredGateHtml(){
-    return '<section class="coco160903TrialEnded" data-coco-trial-ended="1" aria-labelledby="coco160903TrialTitle">'+
-      '<span class="coco160903TrialEyebrow">ETERNA · PRUEBA FINALIZADA</span>'+
-      '<h3 id="coco160903TrialTitle">Tus 7 días de prueba de ETERNA han terminado.</h3>'+
-      '<p class="coco160903TrialLead"><b>No se te ha cobrado nada.</b> La prueba empezó sin tarjeta y no se ha activado ninguna suscripción automáticamente. Si quieres continuar con ETERNA, elige un plan.</p>'+
-      '<div class="coco160903TrialGrid">'+
-        '<article class="coco160903TrialPlan"><b>Plan mensual</b><strong>7,99 € <small>/mes</small></strong><span>Continúa mes a mes.</span><button type="button" data-coco-expired-month>Continuar con mensual</button></article>'+
-        '<article class="coco160903TrialPlan annual"><small>MEJOR PRECIO</small><b>Plan anual</b><strong>79,99 € <small>/año</small></strong><span>12 meses de acceso a ETERNA.</span><button type="button" data-coco-expired-year>Continuar con anual</button></article>'+
-      '</div>'+
-      '<p class="coco160903TrialFree">Coco en Forma sigue siendo gratis y sin publicidad.</p>'+
-      '<div class="coco160903TrialActions"><button type="button" data-coco-expired-close>Seguir usando Coco en Forma</button></div>'+
-    '</section>'
-  }
-
   async function enforceExpiredEterna(force){
     var overlay=document.getElementById("eternaOverlayV159");
-    if(!overlay)return false;
+    if(!overlay||!overlay.classList.contains("is-open"))return false;
     var info=await readSubscription(Boolean(force));
     if(!trialExpired(info.value,info.session))return false;
-    var chat=overlay.querySelector("[data-et-chat]"),composer=overlay.querySelector("[data-et-composer]");
-    if(!chat)return false;
-    if(composer)composer.style.display="none";
-    if(!chat.querySelector("[data-coco-trial-ended]"))chat.innerHTML=expiredGateHtml();
-    var month=chat.querySelector("[data-coco-expired-month]"),year=chat.querySelector("[data-coco-expired-year]"),close=chat.querySelector("[data-coco-expired-close]");
-    if(month&&!month.dataset.bound160903){month.dataset.bound160903="1";month.onclick=function(){checkout("monthly",month)}}
-    if(year&&!year.dataset.bound160903){year.dataset.bound160903="1";year.onclick=function(){checkout("annual",year)}}
-    if(close&&!close.dataset.bound160903){close.dataset.bound160903="1";close.onclick=closeEterna}
-    var status=overlay.querySelector("[data-et-status]");
-    if(status){status.textContent="Prueba gratuita finalizada";status.classList.remove("ok");status.classList.add("warn")}
-    return true
+    if(overlay.querySelector(".eternaV160ExpiredGate"))return true;
+    if(root.CocoEternaV160&&typeof root.CocoEternaV160.openExpiredPlans==="function"){
+      await root.CocoEternaV160.openExpiredPlans();
+      return Boolean(overlay.querySelector(".eternaV160ExpiredGate"))
+    }
+    return false
   }
 
   function patchExpiredFamilyCard(){
@@ -565,20 +510,6 @@
       "@keyframes cocoTtsSpin1609033{to{transform:rotate(360deg)}}",
       "@media(max-width:760px){html body #eternaOverlayV159 [data-et-mic]{min-width:52px!important;width:52px!important;height:52px!important;flex-basis:52px!important;border-radius:50%!important}#eternaOverlayV159 .coco1609032VoiceActionIcon{width:26px!important;height:26px!important;flex-basis:26px!important}#eternaOverlayV159 .coco1609032VoiceActionIcon .eternaV160MicSvg{width:24px!important;height:24px!important}#eternaOverlayV159 [data-et-listen]{min-width:118px!important;min-height:44px!important}}",
 
-      "#eternaOverlayV159 .coco160903TrialEnded{max-width:760px;margin:22px auto;padding:22px;border:1px solid #cfe4ee;border-radius:22px;background:linear-gradient(145deg,#fbfdff,#f2f9fd 64%,#fff8ef);box-shadow:0 8px 26px rgba(23,63,89,.09);color:#173f59}",
-      "#eternaOverlayV159 .coco160903TrialEyebrow{display:inline-flex;margin-bottom:9px;padding:5px 9px;border-radius:999px;background:#173f59;color:#fff;font-size:9px;font-weight:950;letter-spacing:.07em}",
-      "#eternaOverlayV159 .coco160903TrialEnded h3{margin:0;color:#173f59;font-size:clamp(24px,4vw,34px);line-height:1.05}",
-      "#eternaOverlayV159 .coco160903TrialLead{margin:10px 0 0;color:#607987;font-size:12px;font-weight:750;line-height:1.5}",
-      "#eternaOverlayV159 .coco160903TrialGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:17px 0 12px}",
-      "#eternaOverlayV159 .coco160903TrialPlan{padding:15px;border:1px solid #cfe3ec;border-radius:16px;background:#fff;box-shadow:0 2px 0 #e0edf3}",
-      "#eternaOverlayV159 .coco160903TrialPlan.annual{border:2px solid #64cdb7;background:linear-gradient(180deg,#fff,#f4fffb)}",
-      "#eternaOverlayV159 .coco160903TrialPlan>b{display:block;margin-top:5px;color:#173f59;font-size:14px}",
-      "#eternaOverlayV159 .coco160903TrialPlan>strong{display:block;margin:5px 0;color:#173f59;font-size:24px}",
-      "#eternaOverlayV159 .coco160903TrialPlan>span{display:block;min-height:28px;color:#6c818d;font-size:9.5px;font-weight:750;line-height:1.4}",
-      "#eternaOverlayV159 .coco160903TrialPlan button{width:100%;min-height:48px;margin-top:11px;padding:9px 12px;border:0;border-radius:12px;background:#ef6c05;color:#fff;font:950 11px inherit;cursor:pointer;box-shadow:0 3px 0 #bd5205;touch-action:manipulation}",
-      "#eternaOverlayV159 .coco160903TrialFree{margin:11px 0 0;padding:10px 12px;border-radius:13px;background:#eef9fd;color:#315f74;font-size:10px;font-weight:850;line-height:1.4}",
-      "#eternaOverlayV159 .coco160903TrialActions{display:flex;justify-content:center;margin-top:13px}",
-      "#eternaOverlayV159 .coco160903TrialActions button{min-height:44px;padding:8px 13px;border:1px solid #c7e2ed;border-radius:12px;background:#fff;color:#315f74;font:900 10.5px inherit;cursor:pointer;touch-action:manipulation}",
       ".coco160904FamilyLoading{position:fixed;inset:0;z-index:2147483200;display:grid;place-items:start center;padding:max(96px,calc(var(--coco-safe-top) + 58px)) 18px max(26px,calc(var(--coco-safe-bottom) + 18px));background:linear-gradient(180deg,#f8fcfe,#fff);color:#315d73;text-align:center;box-sizing:border-box;pointer-events:none}",
       ".coco160904FamilyLoadingCard{width:min(520px,calc(100vw - 32px));margin-top:18px;padding:22px 18px;border:1px solid #cfe4ed;border-radius:20px;background:#fff;box-shadow:0 10px 28px rgba(23,63,89,.10)}",
       ".coco160904FamilyLoadingCard b{display:block;color:#173f59;font-size:18px;line-height:1.15}.coco160904FamilyLoadingCard span{display:block;margin-top:7px;color:#6b818e;font-size:11px;font-weight:750}",
@@ -589,7 +520,7 @@
       "#eternaOverlayV159[data-coco-exam-mode='1'] [data-et-understood]{display:none!important}",
       "#eternaOverlayV159[data-coco-exam-mode='1'] [data-et-listen]{min-width:118px!important}",
       "@media(prefers-reduced-motion:reduce){.coco160904FamilySpinner{animation:none!important}}",
-      "@media(max-width:640px){#eternaOverlayV159 .coco160903TrialEnded{margin:12px 10px;padding:16px}#eternaOverlayV159 .coco160903TrialGrid{grid-template-columns:1fr}#eternaOverlayV159 .coco160903TrialPlan>span{min-height:0}}"
+      "@media(max-width:640px){#eternaOverlayV159 .coco1609032VoiceActionIcon{width:26px!important;height:26px!important}}"
     ].join("");
     document.head.appendChild(style)
   }
@@ -841,8 +772,8 @@
       var oldFamily=Array.prototype.slice.call(document.scripts||[]).filter(function(s){return /eterna-family-v160(?:61|63|65|66)\.js/i.test(s.src||"")}).map(function(s){return s.src});
       return{
         version:VERSION,
-        expiredTrialDirectGate:true,
-        checkoutUsesExistingEndpoint:true,
+        canonicalExpiredTrialGate:true,
+        checkoutDelegatesToCanonical:true,
         truthFalsePreservesSelectedIds:true,
         safeAreas:true,
         verticalNavigation:true,

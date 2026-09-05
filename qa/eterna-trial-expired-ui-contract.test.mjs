@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 
 const client = readFileSync(new URL("../eterna-v159.js", import.meta.url), "utf8");
 const experience = readFileSync(new URL("../eterna-experience-v160.js", import.meta.url), "utf8");
+const productUx = readFileSync(new URL("../coco-release-v160903.js", import.meta.url), "utf8");
 const css = readFileSync(new URL("../eterna-v159.css", import.meta.url), "utf8");
 const index = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const sw = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
@@ -26,6 +27,17 @@ assert.match(experience, /await root\.CocoEternaV160\.openExpiredPlans\(\)/);
 assert.ok(runState.indexOf("if(expiredSubscription(sub))") < runState.indexOf("pinRecord(s)"), "la suscripción vencida debe resolverse antes de consultar el PIN");
 assert.doesNotMatch(experience, /function showPlansOnly\(/);
 assert.doesNotMatch(experience, /Ir a Zona Familiar/);
+assert.match(productUx, /160\.93\.10-canonical-expired-checkout/);
+assert.match(productUx, /await root\.CocoEternaV160\.openExpiredPlans\(\)/);
+assert.match(productUx, /overlay\.querySelector\("\.eternaV160ExpiredGate"\)/);
+assert.doesNotMatch(productUx, /function expiredGateHtml\(/);
+assert.doesNotMatch(productUx, /data-coco-expired-(?:month|year)/);
+assert.doesNotMatch(productUx, /chat\.innerHTML=expiredGateHtml\(\)/);
+assert.doesNotMatch(productUx, /root\.location\.href=data\.url/);
+assert.match(experience, /#eternaOverlayV159 \[data-et-month\],#eternaOverlayV159 \[data-et-year\]/);
+assert.match(experience, /if\(kind==="monthly"\|\|kind==="annual"\)\{purchaseModal\(kind,el\);return\}/);
+assert.match(experience, /action:"purchase_ack",plan:plan/);
+assert.match(experience, /modal\.remove\(\);replay\(sourceButton\)/);
 
 assert.match(client, /No se ha realizado ningún cobro automático/);
 assert.match(client, /Coco en Forma sigue siendo gratis y sin publicidad/);
@@ -52,6 +64,6 @@ assert.match(index, /eterna-v159\.css\?v=160920/);
 assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
 assert.match(index, /eterna-v159\.js\?v=160939/);
 assert.match(index, /coco-v153-fixes\.js\?v=15301/);
-assert.match(sw, /coco-en-forma-v160\.93\.9-expired-direct-plans/);
+assert.match(sw, /coco-en-forma-v160\.93\.10-canonical-expired-checkout/);
 
 console.log("Eterna trial-expired conversion contract: OK");
