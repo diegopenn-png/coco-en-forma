@@ -311,7 +311,7 @@ function childSafeguardingCategory(text){
   const privateTarget=/\b(?:fotos?|imagenes?|im[aá]genes|videos?|v[ií]deos|direcci[oó]n|ubicaci[oó]n|tel[eé]fono|contrase[nñ]a|pin|datos?\s+personales?|quedar|vernos|encontrarnos|secreto)\b/;
   if((requester.test(s)&&asks.test(s)&&privateTarget.test(s))||/\bme\s+pide\b.{0,55}\b(?:direcci[oó]n|ubicaci[oó]n|tel[eé]fono|contrase[nñ]a|pin|datos?\s+personales?)\b/.test(s)||/\bme\s+pide\b.{0,55}\b(?:una\s+)?(?:foto|imagen|video|v[ií]deo)\b.{0,35}\b(?:m[ií]a|privada|secreta|desnud[oa]|sin\s+ropa|partes?\s+[ií]ntimas?)\b/.test(s))return"unsafe_contact";
   if(/\b(?:no\s+se\s+lo\s+digas|no\s+se\s+lo\s+cuentes|que\s+sea\s+nuestro\s+secreto|guarda(?:r)?\s+el\s+secreto)\b/.test(s)&&/\b(?:me\s+dice|me\s+pide|adult[oa]|desconocid[oa]|persona)\b/.test(s))return"unsafe_contact";
-  if(/\b(?:me\s+acosa|me\s+hace\s+bullying|me\s+insultan\s+(?:siempre|cada\s+d[ií]a|todos\s+los\s+d[ií]as)|se\s+r[ií]en\s+de\s+m[ií]\s+(?:siempre|cada\s+d[ií]a|todos\s+los\s+d[ií]as|a\s+menudo)|difunden\s+(?:una\s+)?foto\s+m[ií]a|publicaron\s+(?:una\s+)?foto\s+m[ií]a)\b/.test(s))return"bullying";
+  if(/\b(?:me\s+acosa|me\s+hace(?:n)?\s+bullying|me\s+insultan\s+(?:siempre|cada\s+d[ií]a|todos\s+los\s+d[ií]as)|se\s+r[ií]en\s+de\s+m[ií]\s+(?:siempre|cada\s+d[ií]a|todos\s+los\s+d[ií]as|a\s+menudo)|difunden\s+(?:una\s+)?foto\s+m[ií]a|publicaron\s+(?:una\s+)?foto\s+m[ií]a)\b/.test(s))return"bullying";
   if(personalDangerSignal(s)){if(/\b(?:suicid|morir|no\s+quiero\s+vivir|matarme|hacerme\s+dano|cortes|autolesion)\b/.test(s))return"self_harm";return"personal_danger"}
   if(unsafeOperationalIntent(s))return"harmful_request";
   return null
