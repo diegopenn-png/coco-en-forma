@@ -20,6 +20,7 @@ on:
       - "fix/eterna-exam-incorrect-wording-160915"
       - "fix/eterna-physical-audit-160916"
       - "fix/eterna-homework-thread-160917"
+      - "feat/eterna-teacher-core-160945"
     paths:
       - "eterna-worker/**"
       - ".github/workflows/eterna-worker-preview.yml"
