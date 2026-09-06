@@ -162,7 +162,7 @@ jobs:
             | grep -F '160.93.10-canonical-expired-checkout' >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=160938&verify=${GITHUB_SHA}" \
+            "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=160945&verify=${GITHUB_SHA}" \
             | grep -F '160.93.8-family-cleanup' >/dev/null
           core_ready=0
           for attempt in {1..6}; do

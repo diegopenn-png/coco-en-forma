@@ -38,15 +38,26 @@ await check("Todas las tarjetas públicas dirigen al login con su nombre",async(
   }
 });
 
-await check("Reto tiempo muestra guía y tres ritmos saludables",async()=>{
+await check("Reto tiempo muestra una sola selección de dificultad",async()=>{
   await page.goto(`${base}/?qa=1&juego=tiempo`,{waitUntil:"domcontentloaded"});
-  await page.locator(".cocoExPace").waitFor({timeout:10000});
-  assert.equal(await page.locator(".cocoExPace button").count(),3);
+  await page.locator(".cocoDifficulty").waitFor({timeout:10000});
+  assert.equal(await page.locator(".cocoExPace").count(),0);
+  assert.equal(await page.locator(".cocoDifficulty button").count(),3);
   assert.equal(await page.locator(".cocoExGuide").count(),1);
-  await page.locator('[data-coco-pace="calm"]').click();
-  assert.equal(await page.locator('[data-coco-pace="calm"]').getAttribute("aria-pressed"),"true");
+  await page.locator('[data-level="2"]').click();
+  assert.equal(await page.locator('[data-level="2"]').getAttribute("aria-pressed"),"true");
   await page.locator("[data-arcade-start]").click();
-  await page.getByText("RITMO TRANQUILO").waitFor({timeout:5000});
+  await page.getByText(/INTERMEDIO/).first().waitFor({timeout:5000});
+});
+
+await check("Fútbol ofrece Rayo como cuarta velocidad opcional",async()=>{
+  await page.goto(`${base}/?qa=1&juego=futbol`,{waitUntil:"domcontentloaded"});
+  await page.locator(".cocoDifficulty").waitFor({timeout:10000});
+  assert.equal(await page.locator(".cocoDifficulty button").count(),4);
+  assert.equal((await page.locator('[data-level="4"]').innerText()).trim(),"⚡Rayo");
+  assert.equal(await page.locator('[data-level="4"]').getAttribute("aria-pressed"),"false");
+  await page.locator('[data-level="4"]').click();
+  assert.equal(await page.locator('[data-level="4"]').getAttribute("aria-pressed"),"true");
 });
 
 await check("La capa conserva el contenido dentro de móvil y escritorio",async()=>{
