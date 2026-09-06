@@ -25,15 +25,26 @@ test("all 13 experiences receive a concise goal and first-use guide",()=>{
   assert.match(layer,/Misión terminada\. Tu progreso ya está guardado/);
 });
 
-test("Reto tiempo offers healthy pacing with score normalization",()=>{
+test("Reto tiempo uses one clear difficulty control",()=>{
   const html=read("index.html"),layer=read("coco-excellence-v160934.js");
-  assert.match(layer,/data-coco-pace="calm"/);
-  assert.match(layer,/data-coco-pace="normal"/);
-  assert.match(layer,/data-coco-pace="challenge"/);
-  assert.match(html,/coco_time_pace_v160934/);
-  assert.match(html,/storedPace==="calm"\?\.85:storedPace==="challenge"\?1\.08:1/);
-  assert.match(html,/active\.timeScoreFactor\|\|1/);
+  assert.doesNotMatch(layer,/data-coco-pace/);
+  assert.doesNotMatch(layer,/cocoExPace/);
+  assert.doesNotMatch(html,/coco_time_pace_v160934/);
+  assert.doesNotMatch(html,/timeScoreFactor/);
+  assert.match(html,/active\.roundDuration=active\.level===1\?10000:active\.level===2\?8500:7000/);
   assert.match(html,/active\.roundDuration\/1000/);
+});
+
+test("Fútbol adds an optional Rayo level without changing automatic age selection",()=>{
+  const html=read("index.html"),layer=read("coco-excellence-v160934.js");
+  assert.match(html,/\["4 velocidades","Básico, intermedio, avanzado y Rayo"\]/);
+  assert.match(html,/active\.game\.type==="football"\?\[1,2,3,4\]:\[1,2,3\]/);
+  assert.match(html,/level===3\?"Avanzado":"Rayo"/);
+  assert.match(html,/active\.level===3\?420:260/);
+  assert.match(html,/active\.level===3\?70:35/);
+  assert.match(html,/active\.level===3\?320:220/);
+  assert.match(html,/return age<=9\?1:age<=12\?2:3/);
+  assert.match(layer,/footballLevels:\["basic","intermediate","advanced","lightning"\]/);
 });
 
 test("the excellence layer removes redundant family presentation without privileged writes",()=>{
@@ -60,16 +71,17 @@ test("failed Eterna requests keep the student's input ready to retry",()=>{
 
 test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   const html=read("index.html"),sw=read("sw.js"),workflow=read(".github/workflows/eterna-authenticated-preview.yml"),core=read("coco-v144-core.js");
-  assert.match(html,/coco-excellence-v160934\.js\?v=160938/);
+  assert.match(html,/coco-excellence-v160934\.js\?v=160945/);
   assert.match(html,/eterna-v159\.js\?v=160941/);
   assert.match(html,/coco-v144-core\.js\?v=15001/);
-  assert.match(sw,/coco-en-forma-v160\.94\.4-preview-blockers-r1/);
+  assert.match(sw,/coco-en-forma-v160\.94\.5-game-difficulty-r1/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión para abrir /);
   assert.match(core,/#cocoApp input\[type='email'\]/);
   assert.match(workflow,/frontend 160\.94\.1-mobile-fixed-viewport/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
-  assert.match(workflow,/coco-excellence-v160934\.js\?v=160938&verify=\$\{GITHUB_SHA\}/);
+  assert.match(workflow,/coco-excellence-v160934\.js\?v=160945&verify=\$\{GITHUB_SHA\}/);
+  assert.match(workflow,/grep -F '160\.94\.5-game-difficulty'/);
   assert.match(workflow,/coco-v144-core\.js\?v=15001&verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
 });

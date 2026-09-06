@@ -39,6 +39,6 @@ test("the family reporting module defines normalization in the same closure as i
 test("the browser cache invalidates both repaired frontend modules", () => {
   assert.match(read("index.html"), /eterna-v159\.js\?v=160941/);
   assert.match(read("coco-v153-fixes.js"), /eterna-experience-v160\.js\?v=160944/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.94\.4-preview-blockers-r1/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.94\.5-game-difficulty-r1/);
   assert.match(read("sw.js"), /basePromise=cachedPatch\(ETERNA_CORE_PATH\)/);
 });
