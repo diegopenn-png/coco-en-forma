@@ -1,6 +1,37 @@
-# Eterna Worker v160.92
+# Eterna Worker v160.94.5
 
 Worker independiente. **No sustituye ni modifica el Worker de Coco Med.**
+
+## Teacher Core y Situational Core
+
+La decisión de cada turno sigue esta prioridad:
+
+1. Riesgo o protección infantil en el mensaje actual.
+2. Situación natural de aula: saludo, estado para aprender, malestar o tiempo de hoy.
+3. Cambio explícito de tema o pregunta nueva.
+4. Respuesta compatible con la pregunta académica pendiente.
+5. Historial y memoria académica como contexto auxiliar.
+
+El mensaje actual nunca se interpreta automáticamente como respuesta a una
+pregunta anterior. Una interrupción de seguridad o de conversación natural no
+se califica, no altera los contadores y conserva la actividad para poder
+retomarla.
+
+El núcleo docente se aplica a los seis modos y adapta vocabulario, profundidad,
+autonomía y tipo de ayuda a Infantil, Primaria, ESO y Bachillerato. Exige trato
+digno, inclusivo y no adoctrinador; distingue hechos, interpretaciones y
+opiniones; admite incertidumbre; protege la privacidad; y evita fingir que
+Eterna es una persona o que tiene experiencias humanas.
+
+Las consultas del tiempo requieren una ciudad y usan una fuente oficial de
+AEMET. Eterna pregunta qué ciudad se quiere consultar, no la ubicación del
+menor. Si no hay datos verificables, lo dice y no inventa.
+
+Referencias de diseño: [currículo estatal publicado en BOE](https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296),
+[Ley Orgánica 8/2021 de protección integral a la infancia](https://www.boe.es/buscar/act.php?id=BOE-A-2021-9347),
+[código deontológico de la profesión docente](https://consejogeneralcdl.es/Codigos-deontologicos/Profesion-docente/),
+[guía de UNICEF sobre IA y niñez](https://www.unicef.org/innocenti/reports/policy-guidance-ai-children)
+y [guía de UNESCO sobre IA generativa en educación](https://www.unesco.org/en/articles/guidance-generative-ai-education-and-research).
 
 ## Secrets obligatorios
 
