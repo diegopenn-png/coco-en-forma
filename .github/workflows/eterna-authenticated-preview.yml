@@ -163,7 +163,7 @@ jobs:
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=160945&verify=${GITHUB_SHA}" \
-            | grep -F '160.93.8-family-cleanup' >/dev/null
+            | grep -F '160.94.5-game-difficulty' >/dev/null
           core_ready=0
           for attempt in {1..6}; do
             core_url="${PREVIEW_ORIGIN}/coco-v144-core.js?v=15001&verify=${GITHUB_SHA}-${attempt}"
@@ -187,7 +187,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · API 160.94.3-paid-unlimited-default"
+            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · UX 160.94.5-game-difficulty · API 160.94.3-paid-unlimited-default"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preserve preview evidence

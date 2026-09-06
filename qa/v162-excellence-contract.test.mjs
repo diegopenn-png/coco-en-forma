@@ -82,5 +82,6 @@ test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   assert.match(workflow,/frontend 160\.94\.1-mobile-fixed-viewport/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
   assert.match(workflow,/coco-excellence-v160934\.js\?v=160945&verify=\$\{GITHUB_SHA\}/);
+  assert.match(workflow,/grep -F '160\.94\.5-game-difficulty'/);
   assert.match(workflow,/coco-v144-core\.js\?v=15001&verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
 });
