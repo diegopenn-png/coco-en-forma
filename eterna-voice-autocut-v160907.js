@@ -1,13 +1,13 @@
-/* ETERNA voice reliability hotfix · 160.93.15
+/* ETERNA voice reliability hotfix · 160.93.16
  * Scope: reliable automatic end-of-speech cutoff for ETERNA conversation mic,
  * age-adaptive silence windows, bounded watchdogs, continuous visible progress,
- * and a persistent desktop mode dropdown aligned with mobile behavior.
+ * and a polished persistent desktop mode dropdown aligned with mobile behavior.
  * Does not change auth, subscriptions, payments, games, scoring, Safety or School Scope.
  */
 (function(root){
   'use strict';
-  if(root.__ETERNA_VOICE_AUTOCUT_1609315__)return;
-  root.__ETERNA_VOICE_AUTOCUT_1609315__=true;
+  if(root.__ETERNA_VOICE_AUTOCUT_1609316__)return;
+  root.__ETERNA_VOICE_AUTOCUT_1609316__=true;
 
   var MODE_OPTIONS=[
     ['homework','Ayúdame con mi tarea'],
@@ -19,6 +19,7 @@
   ];
 
   function overlay(){return document.getElementById('eternaOverlayV159')}
+  function modeLabel(value){for(var i=0;i<MODE_OPTIONS.length;i++)if(MODE_OPTIONS[i][0]===value)return MODE_OPTIONS[i][1];return'Modo de Eterna'}
 
   function currentMode(){
     var o=overlay();if(!o)return'';
@@ -27,42 +28,89 @@
     return''
   }
 
+  function closeDesktopModeMenus(except){
+    var o=overlay();if(!o)return;
+    var menus=o.querySelectorAll('.eternaV160DesktopModeSelector.is-open');
+    for(var i=0;i<menus.length;i++)if(menus[i]!==except){menus[i].classList.remove('is-open');var b=menus[i].querySelector('.eternaV160ModeDropdownButton');if(b)b.setAttribute('aria-expanded','false')}
+  }
+
   function ensureDesktopModeSelector(){
     var o=overlay();if(!o)return;
     var actions=o.querySelector('.eternaV160ModeActions');if(!actions)return;
     var wrap=actions.querySelector('.eternaV160DesktopModeSelector');
     if(!wrap){
-      wrap=document.createElement('label');
+      wrap=document.createElement('div');
       wrap.className='eternaV160DesktopModeSelector';
-      wrap.innerHTML='<span>Modo</span><select aria-label="Cambiar modo de Eterna">'+MODE_OPTIONS.map(function(x){return'<option value="'+x[0]+'">'+x[1]+'</option>'}).join('')+'</select>';
+      wrap.innerHTML='<span class="eternaV160ModeDropdownEyebrow">Cambiar modo</span><button type="button" class="eternaV160ModeDropdownButton" aria-haspopup="listbox" aria-expanded="false"><span class="eternaV160ModeDropdownValue"></span><span class="eternaV160ModeDropdownChevron" aria-hidden="true">⌄</span></button><div class="eternaV160ModeDropdownMenu" role="listbox" aria-label="Modos de Eterna"></div>';
       actions.insertBefore(wrap,actions.firstChild);
-      var select=wrap.querySelector('select');
-      select.addEventListener('change',function(){
-        var value=select.value;
-        var target=o.querySelector('[data-et-mode="'+value+'"],[data-et-modechoice="'+value+'"]');
-        if(target&&!target.classList.contains('is-active'))target.click();
-        setTimeout(ensureDesktopModeSelector,0)
+      var menu=wrap.querySelector('.eternaV160ModeDropdownMenu');
+      MODE_OPTIONS.forEach(function(x){
+        var item=document.createElement('button');
+        item.type='button';
+        item.className='eternaV160ModeDropdownOption';
+        item.setAttribute('role','option');
+        item.setAttribute('data-value',x[0]);
+        item.textContent=x[1];
+        item.addEventListener('click',function(){
+          var value=item.getAttribute('data-value');
+          var target=o.querySelector('[data-et-mode="'+value+'"],[data-et-modechoice="'+value+'"]');
+          wrap.classList.remove('is-open');
+          wrap.querySelector('.eternaV160ModeDropdownButton').setAttribute('aria-expanded','false');
+          if(target&&!target.classList.contains('is-active'))target.click();
+          setTimeout(ensureDesktopModeSelector,0)
+        });
+        menu.appendChild(item)
+      });
+      var trigger=wrap.querySelector('.eternaV160ModeDropdownButton');
+      trigger.addEventListener('click',function(){
+        var opening=!wrap.classList.contains('is-open');
+        closeDesktopModeMenus(wrap);
+        wrap.classList.toggle('is-open',opening);
+        trigger.setAttribute('aria-expanded',opening?'true':'false')
+      });
+      trigger.addEventListener('keydown',function(ev){
+        if(ev.key==='Escape'){wrap.classList.remove('is-open');trigger.setAttribute('aria-expanded','false')}
       })
     }
-    var select=wrap.querySelector('select'),mode=currentMode();
-    if(select&&mode&&select.value!==mode)select.value=mode
+    var mode=currentMode()||'homework';
+    var valueNode=wrap.querySelector('.eternaV160ModeDropdownValue');
+    if(valueNode)valueNode.textContent=modeLabel(mode);
+    var items=wrap.querySelectorAll('.eternaV160ModeDropdownOption');
+    for(var j=0;j<items.length;j++){
+      var selected=items[j].getAttribute('data-value')===mode;
+      items[j].classList.toggle('is-selected',selected);
+      items[j].setAttribute('aria-selected',selected?'true':'false')
+    }
   }
 
   function installDesktopModeActionsLayout(){
-    if(document.getElementById('eterna-desktop-mode-actions-v1609315'))return;
+    if(document.getElementById('eterna-desktop-mode-actions-v1609316'))return;
     var style=document.createElement('style');
-    style.id='eterna-desktop-mode-actions-v1609315';
+    style.id='eterna-desktop-mode-actions-v1609316';
     style.textContent='@media (min-width:761px){'+
-      '#eternaOverlayV159 .eternaV160ModeActions{display:grid!important;grid-template-columns:220px minmax(320px,1fr)!important;grid-template-rows:46px 46px!important;gap:8px 12px!important;align-items:stretch!important;justify-content:stretch!important;flex:0 1 66%!important;width:auto!important;max-width:760px!important;min-width:552px!important;margin-left:auto!important;}'+
-      '#eternaOverlayV159 .eternaV160DesktopModeSelector{grid-column:1!important;grid-row:1!important;display:grid!important;grid-template-columns:42px minmax(0,1fr)!important;align-items:center!important;gap:6px!important;width:100%!important;height:46px!important;margin:0!important;padding:0 8px!important;border:1px solid #b9dfea!important;border-radius:12px!important;background:#fff!important;box-sizing:border-box!important;color:#315d73!important;}'+
-      '#eternaOverlayV159 .eternaV160DesktopModeSelector>span{font:900 9px/1 inherit!important;color:#68808e!important;text-transform:uppercase!important;letter-spacing:.03em!important;}'+
-      '#eternaOverlayV159 .eternaV160DesktopModeSelector>select{display:block!important;width:100%!important;min-width:0!important;height:36px!important;border:0!important;outline:0!important;background:#fff!important;color:#315d73!important;font:900 10px inherit!important;cursor:pointer!important;appearance:auto!important;-webkit-appearance:menulist!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions{display:grid!important;grid-template-columns:270px minmax(320px,1fr)!important;grid-template-rows:54px 46px!important;gap:8px 14px!important;align-items:stretch!important;justify-content:stretch!important;flex:0 1 70%!important;width:auto!important;max-width:820px!important;min-width:604px!important;margin-left:auto!important;}'+
+      '#eternaOverlayV159 .eternaV160DesktopModeSelector{position:relative!important;grid-column:1!important;grid-row:1!important;display:block!important;width:100%!important;height:54px!important;margin:0!important;padding:5px 10px 6px!important;border:1px solid #b9dfea!important;border-radius:13px!important;background:#fff!important;box-sizing:border-box!important;color:#315d73!important;z-index:20!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeDropdownEyebrow{display:block!important;margin:0 0 2px!important;color:#6f8794!important;font:800 9px/1.1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;letter-spacing:.01em!important;text-transform:none!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeDropdownButton{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;width:100%!important;height:32px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;color:#173f59!important;cursor:pointer!important;text-align:left!important;font:800 12px/1.2 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeDropdownValue{display:block!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeDropdownChevron{flex:0 0 auto!important;color:#587587!important;font-size:17px!important;line-height:1!important;transform:translateY(-1px)!important;}'+
+      '#eternaOverlayV159 .eternaV160DesktopModeSelector.is-open .eternaV160ModeDropdownChevron{transform:rotate(180deg) translateY(1px)!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeDropdownMenu{display:none!important;position:absolute!important;left:0!important;top:calc(100% + 6px)!important;width:100%!important;padding:6px!important;border:1px solid #c7e1eb!important;border-radius:14px!important;background:#fff!important;box-shadow:0 12px 30px rgba(23,63,89,.16)!important;z-index:100!important;}'+
+      '#eternaOverlayV159 .eternaV160DesktopModeSelector.is-open .eternaV160ModeDropdownMenu{display:grid!important;gap:3px!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeDropdownOption{display:block!important;width:100%!important;min-height:38px!important;padding:8px 10px!important;border:0!important;border-radius:10px!important;background:#fff!important;color:#315d73!important;text-align:left!important;cursor:pointer!important;font:750 11px/1.25 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeDropdownOption:hover,#eternaOverlayV159 .eternaV160ModeDropdownOption:focus{background:#f0f9fc!important;outline:none!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeDropdownOption.is-selected{background:#e8f6fb!important;color:#173f59!important;font-weight:850!important;}'+
       '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160NewActivity{grid-column:1!important;grid-row:2!important;width:100%!important;max-width:none!important;min-width:0!important;height:46px!important;min-height:46px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
-      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{grid-column:2!important;grid-row:1 / 3!important;align-self:stretch!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:100px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{grid-column:2!important;grid-row:1 / 3!important;align-self:stretch!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:108px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
       '#eternaOverlayV159 .eternaV160ModeActions>[data-et-changemode]{display:none!important;}'+
     '}@media (max-width:760px){#eternaOverlayV159 .eternaV160DesktopModeSelector{display:none!important;}}';
     document.head.appendChild(style)
   }
+
+  document.addEventListener('click',function(ev){
+    var wrap=ev.target&&ev.target.closest?ev.target.closest('.eternaV160DesktopModeSelector'):null;
+    if(!wrap)closeDesktopModeMenus(null)
+  },true);
 
   var selectorRaf=0;
   function scheduleSelector(){
