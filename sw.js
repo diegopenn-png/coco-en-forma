@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.8 · conversación disponible desde el inicio */
-const CACHE_VERSION="coco-en-forma-v160.94.8-conversation-from-start-r1";
+/* Coco en Forma · Service Worker v160.94.9 · diálogo hablado de Eterna */
+const CACHE_VERSION="coco-en-forma-v160.94.9-spoken-dialogue-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

@@ -78,7 +78,7 @@
       "#eternaOverlayV159 .eternaV160RetryVerification{display:inline-flex;margin-top:10px;min-height:38px;padding:8px 12px;border:0;border-radius:11px;background:#173f59;color:#fff;font:900 10px inherit;cursor:pointer}",
       "#eternaOverlayV159 .eternaV159Quick{opacity:1;display:flex;gap:8px;flex-wrap:wrap}#eternaOverlayV159 .eternaV159Quick button{min-height:44px!important;padding:9px 12px!important}#eternaOverlayV159 .eternaV159Quick button.is-playing{background:#173f59!important;color:#fff!important;border-color:#173f59!important}",
       "#eternaOverlayV159 .eternaV159Copy{grid-column:2;justify-self:start;margin:3px 0 0!important;border:0;background:transparent;color:#587587;font:700 12px system-ui;cursor:pointer;padding:6px 7px;min-height:36px}",
-      "#eternaOverlayV159 .eternaV160ModeActions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}#eternaOverlayV159 .eternaV160Conversation{display:inline-flex;align-items:center;justify-content:center;flex:1 0 100%;min-height:44px;padding:9px 12px;border:1px solid #173f59;border-radius:12px;background:#173f59;color:#fff;font:900 10px inherit;cursor:pointer}#eternaOverlayV159 .eternaV160NewActivity{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 12px;border:1px solid #b9dfea;border-radius:12px;background:#fff;color:#315d73;font:900 10px inherit;cursor:pointer}",
+      "#eternaOverlayV159 .eternaV160ModeActions{display:flex;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}#eternaOverlayV159 .eternaV160Conversation{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:10px;flex:1 0 100%;min-height:58px;padding:8px 13px;border:1px solid #f06a00;border-radius:15px;background:linear-gradient(180deg,#ff941f,#ff7900);color:#fff;text-align:left;box-shadow:0 5px 0 #c95300,0 10px 22px rgba(239,103,0,.22);cursor:pointer;transition:transform .14s ease,box-shadow .14s ease,background .2s ease}#eternaOverlayV159 .eternaV160Conversation:active{transform:translateY(3px);box-shadow:0 2px 0 #c95300,0 6px 14px rgba(239,103,0,.18)}#eternaOverlayV159 .eternaV160Conversation:disabled{cursor:wait;opacity:.88}#eternaOverlayV159 .eternaV160ConversationIcon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.2)}#eternaOverlayV159 .eternaV160ConversationIcon svg{width:31px;height:27px;overflow:visible;fill:#fff;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}#eternaOverlayV159 .eternaV160ConversationIcon svg path{fill:none}#eternaOverlayV159 .eternaV160ConversationIcon svg circle{stroke:none}#eternaOverlayV159 .eternaV160ConversationCopy{min-width:0;display:block}#eternaOverlayV159 .eternaV160ConversationCopy b{display:block;color:#fff;font:900 12px/1.15 inherit}#eternaOverlayV159 .eternaV160ConversationCopy small{display:block;margin-top:3px;color:#fff4e9;font:800 9px/1.2 inherit}#eternaOverlayV159 .eternaV160Conversation.is-listening{background:linear-gradient(180deg,#ff6658,#e94738);border-color:#d83b2f;box-shadow:0 5px 0 #a92d24,0 10px 22px rgba(218,59,47,.2)}#eternaOverlayV159 .eternaV160Conversation.is-speaking{background:linear-gradient(180deg,#2ab77d,#159965);border-color:#13885b;box-shadow:0 5px 0 #0b6c47,0 10px 22px rgba(18,137,90,.2)}#eternaOverlayV159 .eternaV160NewActivity{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:8px 12px;border:1px solid #b9dfea;border-radius:12px;background:#fff;color:#315d73;font:900 10px inherit;cursor:pointer}",
       "#eternaOverlayV159 .eternaV160Completion{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;margin:16px auto 26px;max-width:720px;padding:18px;border:1px solid #a9e3c7;border-radius:20px;background:linear-gradient(180deg,#f3fff8,#eafaf2);color:#315d73;box-shadow:0 8px 24px rgba(35,128,86,.08)}#eternaOverlayV159 .eternaV160CompletionIcon{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#29aa72;color:#fff;font:900 24px system-ui}#eternaOverlayV159 .eternaV160Completion small{color:#168555;font:900 9px inherit;letter-spacing:.08em}#eternaOverlayV159 .eternaV160Completion h3{margin:3px 0 5px;color:#173f59;font-size:18px;line-height:1.2}#eternaOverlayV159 .eternaV160Completion p{margin:0 0 11px;font-size:11px;line-height:1.45}#eternaOverlayV159 .eternaV160Completion div>div{display:flex;gap:7px;flex-wrap:wrap}#eternaOverlayV159 .eternaV160Completion button{min-height:44px;padding:9px 12px;border:1px solid #b9ddcb;border-radius:12px;background:#fff;color:#315d73;font:900 10px inherit;cursor:pointer}#eternaOverlayV159 .eternaV160Completion button:first-child{border-color:#173f59;background:#173f59;color:#fff}#eternaOverlayV159 [data-et-composer].is-complete{display:none!important}",
       "#eternaOverlayV159[data-et-age-band=teen] .eternaV159TopCopy p{font-family:system-ui,sans-serif;font-weight:650}#eternaOverlayV159[data-et-age-band=teen] .eternaV160StartIcon,#eternaOverlayV159[data-et-age-band=teen] .eternaV160ModeIcon{filter:grayscale(.55);transform:scale(.9)}#eternaOverlayV159[data-et-age-band=teen] .eternaV160Start h3{font-family:system-ui,sans-serif;font-weight:850;letter-spacing:-.02em}#eternaOverlayV159[data-et-age-band=teen] .eternaV159Bubble{font-family:system-ui,sans-serif;font-weight:650}",
       "#eternaOverlayV159 [data-et-name],#cocoApp .carnet .quien strong{text-transform:capitalize!important}",
@@ -2881,32 +2881,58 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
 })(window);
 
 
-/* ETERNA Conversation Voice v160.94.7 */
+/* ETERNA Spoken Dialogue v160.94.9 */
 (function(root){
   "use strict";
-  if(root.__ETERNA_CONVERSATION_VOICE_160947__)return;
-  root.__ETERNA_CONVERSATION_VOICE_160947__=true;
-  var pending=false,expires=0;
-  function reset(){pending=false;expires=0}
-  function latestListenButton(){
-    var buttons=document.querySelectorAll("#eternaOverlayV159 [data-et-listen]");
-    return buttons.length?buttons[buttons.length-1]:null
+  if(root.__ETERNA_SPOKEN_DIALOGUE_160949__)return;
+  root.__ETERNA_SPOKEN_DIALOGUE_160949__=true;
+
+  function conversationButton(){return document.querySelector("#eternaOverlayV159 [data-et-converse]")}
+  function setState(value){
+    var button=conversationButton();if(!button)return;
+    var title=button.querySelector("[data-et-converse-title]"),copy=button.querySelector("[data-et-converse-copy]");
+    var labels={
+      idle:["Conversar con Eterna","Habla y Eterna te responde con su voz"],
+      starting:["Activando el micrófono…","Acepta el permiso si aparece"],
+      listening:["Te escucho…","Toca aquí cuando termines"],
+      transcribing:["Entendiendo tu voz…","Un momento"],
+      thinking:["Eterna está pensando…","Preparando la respuesta"],
+      preparing:["Preparando su voz…","También verás la respuesta escrita"],
+      speaking:["Eterna está hablando","Toca aquí para detenerla"]
+    },label=labels[value]||labels.idle;
+    if(title)title.textContent=label[0];if(copy)copy.textContent=label[1];
+    button.classList.toggle("is-listening",value==="listening");
+    button.classList.toggle("is-speaking",value==="speaking");
+    button.disabled=value==="starting"||value==="transcribing"||value==="thinking"||value==="preparing";
+    button.setAttribute("aria-pressed",value==="listening"||value==="speaking"?"true":"false");
+    button.setAttribute("aria-label",label[0]+". "+label[1])
   }
+  function write(view,offset,text){for(var i=0;i<text.length;i++)view.setUint8(offset+i,text.charCodeAt(i))}
+  function unlockAudio(){
+    if(root.__ETERNA_VOICE_AUDIO_UNLOCKED__)return;
+    try{
+      var player=root.__ETERNA_VOICE_AUDIO__||(root.__ETERNA_VOICE_AUDIO__=new Audio()),buffer=new ArrayBuffer(46),view=new DataView(buffer),rate=8000;
+      write(view,0,"RIFF");view.setUint32(4,38,true);write(view,8,"WAVE");write(view,12,"fmt ");view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,rate,true);view.setUint32(28,rate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);write(view,36,"data");view.setUint32(40,2,true);view.setInt16(44,0,true);
+      var url=URL.createObjectURL(new Blob([buffer],{type:"audio/wav"}));player.setAttribute("playsinline","");player.src=url;player.volume=.01;
+      var promise=player.play();if(promise&&promise.then)promise.then(function(){player.pause();player.currentTime=0;player.volume=1;root.__ETERNA_VOICE_AUDIO_UNLOCKED__=true;URL.revokeObjectURL(url)}).catch(function(){player.volume=1;URL.revokeObjectURL(url)})
+    }catch(e){}
+  }
+  function reset(){root.__ETERNA_VOICE_DIALOG_ACTIVE__=false;setState("idle")}
   document.addEventListener("click",function(event){
     var button=event.target&&event.target.closest?event.target.closest("#eternaOverlayV159 [data-et-converse]"):null;
     if(!button)return;
-    event.preventDefault();
-    event.stopPropagation();
-    var mic=document.querySelector("#eternaOverlayV159 [data-et-mic]");
-    if(!mic||mic.disabled)return;
-    pending=true;expires=Date.now()+90000;
+    event.preventDefault();event.stopPropagation();
+    if(button.classList.contains("is-speaking")){
+      var player=root.__ETERNA_VOICE_AUDIO__;if(player){player.pause();try{player.currentTime=0}catch(e){}}
+      setState("idle");return
+    }
+    if(button.disabled)return;
+    var mic=document.querySelector("#eternaOverlayV159 [data-et-mic]");if(!mic||mic.disabled)return;
+    unlockAudio();root.__ETERNA_VOICE_DIALOG_ACTIVE__=true;
+    if(!button.classList.contains("is-listening"))setState("starting");
     mic.click()
   },true);
-  root.addEventListener("coco:eterna-response-applied",function(){
-    if(!pending||Date.now()>expires){reset();return}
-    reset();
-    setTimeout(function(){var listen=latestListenButton();if(listen&&!listen.disabled)listen.click()},120)
-  });
+  root.addEventListener("coco:eterna-voice-state",function(event){setState(event&&event.detail&&event.detail.state||"idle")});
   root.addEventListener("coco:eterna-context-invalidated",reset);
   root.addEventListener("coco:eterna-ui-reset",reset)
 })(window);

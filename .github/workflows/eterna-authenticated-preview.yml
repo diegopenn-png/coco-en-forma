@@ -117,7 +117,7 @@ jobs:
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
           grep -F '160.94.1-mobile-fixed-viewport' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/eterna-experience-v160.js >/dev/null
-          grep -F 'ETERNA Conversation Voice v160.94.7' preview-dist/eterna-experience-v160.js >/dev/null
+          grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
           grep -F '160.94.7-coherence-engine' eterna-worker/src/index.js >/dev/null
@@ -158,7 +158,7 @@ jobs:
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/eterna-experience-v160.js?v=160940&verify=${GITHUB_SHA}" \
-            | grep -F 'ETERNA Conversation Voice v160.94.7' >/dev/null
+            | grep -F 'ETERNA Spoken Dialogue v160.94.9' >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/coco-release-v160903.js?verify=${GITHUB_SHA}" \
