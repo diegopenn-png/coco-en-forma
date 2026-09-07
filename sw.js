@@ -1,11 +1,12 @@
-/* Coco en Forma · Service Worker v160.94.11 · icono de voz uniforme y premio Rayo */
-const CACHE_VERSION="coco-en-forma-v160.94.11-uniform-mic-football-rayo-r1";
+/* Coco en Forma · Service Worker v160.94.12 · Eterna voice autocut reliability */
+const CACHE_VERSION="coco-en-forma-v160.94.12-eterna-voice-autocut-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
 const ETERNA_CORE_PATH="./eterna-v159.js";
 const ETERNA_EXPERIENCE_PATH="./eterna-experience-v160.js";
 const ETERNA_HOTFIX_PATH="./eterna-hotfix-v160902.js";
+const ETERNA_VOICE_AUTOCUT_PATH="./eterna-voice-autocut-v160907.js";
 const PRODUCT_UX_PATH="./coco-release-v160903.js";
 const COCO_BOOTSTRAP_PATH="./coco-v153-fixes.js";
 const SW_UA=String((self.navigator&&self.navigator.userAgent)||"");
@@ -15,7 +16,7 @@ const CORE=[
   "./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
   "./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,"./coco-excellence-v160934.js",
-  "./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,"./eterna-marketing-attribution-v1.js",
+  "./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,ETERNA_VOICE_AUTOCUT_PATH,"./eterna-marketing-attribution-v1.js",
   "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
   "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"
 ];
@@ -61,7 +62,6 @@ async function offlineFallback(request){
          new Response("Sin conexión",{status:503,headers:{"Content-Type":"text/plain; charset=utf-8"}});
 }
 
-/* Cached shell for Chrome/iOS/PWA. Cache refresh is performed at SW install. */
 async function shellFast(e){
   const c=await caches.open(CACHE_VERSION);
   const cached=await c.match(INDEX_URL);
@@ -78,7 +78,6 @@ async function shellFast(e){
   }
 }
 
-/* Navigation network-first. */
 async function networkFirst(e){
   try{
     const preload=await e.preloadResponse;
@@ -102,7 +101,6 @@ async function networkFirst(e){
   }
 }
 
-/* Stale-while-revalidate for same-origin static assets. */
 function stale(e){
   const cachePromise=caches.open(CACHE_VERSION);
   const cachedPromise=cachePromise.then(c=>c.match(e.request,{ignoreSearch:false}));
@@ -137,10 +135,7 @@ async function cachedPatch(path){
   }catch(_e){return null}
 }
 
-/* HF1 ya validado: se mantiene exactamente su función de aislamiento pedagógico. */
 async function eternaCoreWithHotfix(e){
-  /* El núcleo se toma del precache versionado: invalida también cuando el HTML
-     conserva una query anterior durante una actualización escalonada. */
   const basePromise=cachedPatch(ETERNA_CORE_PATH);
   const patchPromise=cachedPatch(ETERNA_HOTFIX_PATH);
   const [base,patch]=await Promise.all([basePromise,patchPromise]);
@@ -151,15 +146,11 @@ async function eternaCoreWithHotfix(e){
   headers.set("Cache-Control","no-cache");
   ["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));
   return new Response(
-    coreText+"\n\n/* --- ETERNA HF1 injected by SW --- */\n"+patchText+"\n",
+    coreText+"\n\n/* --- ETERNA HF injected by SW --- */\n"+patchText+"\n",
     {status:base.status,statusText:base.statusText,headers}
   );
 }
 
-/* v160.90.3
-   Adjunta una única capa de producto después de coco-v153-fixes.js.
-   Evita reescribir index.html o cuatro módulos grandes y hace rollback sencillo:
-   restaurar el SW anterior elimina toda esta capa. */
 async function cocoBootstrapWithProductUx(e){
   const basePromise=stale(e);
   const patchPromise=cachedPatch(PRODUCT_UX_PATH);
@@ -171,7 +162,7 @@ async function cocoBootstrapWithProductUx(e){
   headers.set("Cache-Control","no-cache");
   ["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));
   return new Response(
-    baseText+"\n\n/* --- COCO PRODUCT UX v160.90.3 injected by SW --- */\n"+patchText+"\n",
+    baseText+"\n\n/* --- COCO PRODUCT UX injected by SW --- */\n"+patchText+"\n",
     {status:base.status,statusText:base.statusText,headers}
   );
 }
