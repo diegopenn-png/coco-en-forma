@@ -157,7 +157,7 @@ jobs:
           fi
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/eterna-experience-v160.js?v=160940&verify=${GITHUB_SHA}" \
+            "${PREVIEW_ORIGIN}/eterna-experience-v160.js?v=1609410&verify=${GITHUB_SHA}" \
             | grep -F 'ETERNA Spoken Dialogue v160.94.9' >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \

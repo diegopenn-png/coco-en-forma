@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.9 · diálogo hablado de Eterna */
-const CACHE_VERSION="coco-en-forma-v160.94.9-spoken-dialogue-r1";
+/* Coco en Forma · Service Worker v160.94.10 · audio hablado y actualización atómica */
+const CACHE_VERSION="coco-en-forma-v160.94.10-spoken-audio-atomic-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -21,12 +21,13 @@ const CORE=[
 ];
 
 function absolute(p){return new URL(p,SCOPE_URL).href}
+function releaseRequest(url){const fresh=new URL(url);fresh.searchParams.set("__coco_release",CACHE_VERSION);return new Request(fresh.href,{cache:"reload"})}
 
 async function cacheCore(){
   const c=await caches.open(CACHE_VERSION);
   await Promise.allSettled(CORE.map(async p=>{
     const u=absolute(p);
-    const r=await fetch(new Request(u,{cache:"reload"}));
+    const r=await fetch(releaseRequest(u));
     if(r&&r.ok)await c.put(u,r.clone());
   }));
 }
@@ -130,7 +131,7 @@ async function cachedPatch(path){
   let r=await c.match(url);
   if(r)return r;
   try{
-    r=await fetch(new Request(url,{cache:"reload"}));
+    r=await fetch(releaseRequest(url));
     if(r&&r.ok)await c.put(url,r.clone());
     return r
   }catch(_e){return null}
