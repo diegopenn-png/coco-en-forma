@@ -118,7 +118,7 @@ jobs:
           grep -F '160.94.1-mobile-fixed-viewport' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.94.5-teacher-core' eterna-worker/src/index.js >/dev/null
+          grep -F '160.94.6-benchmark-tutor' eterna-worker/src/index.js >/dev/null
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
 
@@ -180,7 +180,7 @@ jobs:
             exit 1
           fi
           curl --max-time 20 -fsS "${API_PREVIEW_URL}/health" | tee authenticated-preview-health.json
-          grep -F '160.94.5-teacher-core' authenticated-preview-health.json >/dev/null
+          grep -F '160.94.6-benchmark-tutor' authenticated-preview-health.json >/dev/null
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
           grep -Fi 'x-robots-tag: noindex' authenticated-preview-headers.log >/dev/null
 
@@ -188,7 +188,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · UX 160.94.5-game-difficulty · API 160.94.5-teacher-core"
+            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · UX 160.94.5-game-difficulty · API 160.94.6-benchmark-tutor"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preserve preview evidence

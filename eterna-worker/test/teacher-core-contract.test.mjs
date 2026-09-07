@@ -40,6 +40,9 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   situationalReply,
   ageTeachingProfile,
   teacherCoreInstruction,
+  publicTutorBenchmarkInstruction,
+  expectedIdeaMatch,
+  deterministicAnchoredCheckTurn,
   handleChat
 };`, sandbox);
 
@@ -238,4 +241,79 @@ test("full chat routing handles the audit message even when the client labels it
   assert.equal(payload.student_answer_assessment, "not_applicable");
   assert.equal(payload.pedagogical_state.pending_question, pendingState.pending_question);
   assert.equal(payload.mode_state.question_number, modeState.question_number);
+});
+
+
+test("public tutor benchmark locks context, feedback, progression and calibrated safety", () => {
+  const instruction = api.publicTutorBenchmarkInstruction();
+  assert.match(instruction, /Evaluación antes de explicación/i);
+  assert.match(instruction, /nunca vuelvas a preguntarla/i);
+  assert.match(instruction, /peligro inmediato real/i);
+  assert.match(instruction, /Integridad académica/i);
+});
+
+test("manual PWA audit: short answers match the pending idea and close ask mode", () => {
+  const fractions = {
+    ...pendingState,
+    current_mode: "homework",
+    pending_question: "¿Qué deben tener iguales dos fracciones para poder sumarlas directamente?",
+    expected_answer_type: "short_concept",
+    expected_key_ideas: ["mismo denominador"],
+  };
+  assert.equal(api.expectedIdeaMatch("El denominador.", fractions)?.assessment, "correct");
+
+  const grammar = {
+    ...pendingState,
+    current_mode: "ask",
+    active_subject: "Lengua Castellana y Literatura",
+    active_concept: "sujeto de la oración",
+    pending_question: "¿Qué palabra o grupo de palabras responde a «quienes construyen»?",
+    expected_answer_type: "short_concept",
+    expected_key_ideas: ["Los pájaros pequeños"],
+  };
+  assert.equal(api.expectedIdeaMatch("Los pájaros pequeños.", grammar)?.assessment, "correct");
+  assert.equal(api.expectedIdeaMatch("Los nidos.", grammar), null);
+  const result = api.deterministicAnchoredCheckTurn({
+    mode: "ask",
+    text: "Los pájaros pequeños.",
+    turnRel: "answer_to_pending",
+    incomingModeState: modeState,
+    incomingPedState: grammar,
+    subject: grammar.active_subject,
+    concept: grammar.active_concept,
+  });
+  assert.equal(result.student_answer_assessment, "correct");
+  assert.equal(result.check_question, null);
+  assert.match(result.reply, /^Correcto\./);
+});
+
+test("manual PWA audit: one-off embarrassment is support, never an emergency", () => {
+  const first = "Hoy me equivoqué leyendo en voz alta y varios compañeros se rieron. Me dio mucha vergüenza y mañana no quiero volver al colegio.";
+  const clarification = "No hay peligro. Solo se rieron una vez y mi profesora lo vio. Me da vergüenza hablar con ella.";
+  for (const message of [first, clarification]) {
+    assert.equal(api.childSafeguardingCategory(message), null);
+    const situation = api.classroomSituation(message, []);
+    assert.equal(situation?.kind, "classroom_embarrassment");
+    const reply = api.situationalReply(situation, message, "");
+    assert.doesNotMatch(reply, /112|emergencia/i);
+    assert.match(reply, /vergüenza|equivocarse/i);
+  }
+});
+
+test("repeated bullying remains protected and imminent danger remains urgent", () => {
+  assert.equal(api.childSafeguardingCategory("Se ríen de mí todos los días y me hacen bullying."), "bullying");
+  assert.equal(api.childSafeguardingCategory("Me están pegando y estoy en peligro."), "personal_danger");
+  assert.match(api.safetyReplyFor("personal_danger"), /112/);
+});
+
+test("ordinary classroom peer pressure receives integrity guidance", () => {
+  const message = "Un compañero me pide que le deje copiar mis deberes. Dice que, si no le dejo, ya no será mi amigo.";
+  assert.equal(api.childSafeguardingCategory(message), null);
+  const situation = api.classroomSituation(message, []);
+  assert.equal(situation?.kind, "academic_integrity");
+  const reply = api.situationalReply(situation, message, "");
+  assert.match(reply, /No le dejes copiar/i);
+  assert.match(reply, /ayudo a entender/i);
+  assert.match(reply, /amistad sana/i);
+  assert.doesNotMatch(reply, /112|peligro inmediato/i);
 });
