@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.95.1 · Reto Coco 2026 visual */
-const CACHE_VERSION="coco-en-forma-v160.95.1-reto-coco-2026-visual-r1";
+/* Coco en Forma · Service Worker v160.95.3 · Reto Coco direct app-shell load */
+const CACHE_VERSION="coco-en-forma-v160.95.3-reto-coco-direct-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -21,8 +21,25 @@ self.addEventListener("install",e=>{e.waitUntil((async()=>{await cacheCore();sel
 self.addEventListener("activate",e=>{e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(CACHE_PREFIX)&&k!==CACHE_VERSION).map(k=>caches.delete(k)));if(self.registration.navigationPreload){try{if(DESKTOP_SAFARI)await self.registration.navigationPreload.enable();else await self.registration.navigationPreload.disable()}catch(_e){}}await self.clients.claim()})())});
 self.addEventListener("message",e=>{if(e.data&&e.data.type==="SKIP_WAITING")self.skipWaiting()});
 async function offlineFallback(request){return(await caches.match(request,{ignoreSearch:false}))||(await caches.match(request,{ignoreSearch:true}))||(await caches.match(INDEX_URL))||new Response("Sin conexión",{status:503,headers:{"Content-Type":"text/plain; charset=utf-8"}})}
-async function shellFast(e){const c=await caches.open(CACHE_VERSION);const cached=await c.match(INDEX_URL);if(cached)return cached;try{const r=await fetch(e.request);if(r&&r.ok)await c.put(INDEX_URL,r.clone());return r}catch(_e){return offlineFallback(e.request)}}
-async function networkFirst(e){try{const preload=await e.preloadResponse;if(preload){if(preload.ok){const c=await caches.open(CACHE_VERSION);await c.put(e.request,preload.clone())}return preload}const r=await fetch(e.request);if(r&&r.ok){const c=await caches.open(CACHE_VERSION);await c.put(e.request,r.clone())}return r}catch(_e){return offlineFallback(e.request)}}
+async function withRetoScript(response){
+  if(!response||!response.ok)return response;
+  const type=String(response.headers.get("Content-Type")||"");
+  if(type&&type.indexOf("text/html")===-1)return response;
+  try{
+    let html=await response.text();
+    if(html.indexOf('id="coco-reto-2026-direct"')===-1){
+      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160953"></script>';
+      html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag;
+    }
+    const headers=new Headers(response.headers);
+    headers.set("Content-Type","text/html; charset=utf-8");
+    headers.set("Cache-Control","no-cache");
+    ["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));
+    return new Response(html,{status:response.status,statusText:response.statusText,headers});
+  }catch(_e){return response}
+}
+async function shellFast(e){const c=await caches.open(CACHE_VERSION);const cached=await c.match(INDEX_URL);if(cached)return withRetoScript(cached);try{const r=await fetch(e.request);if(r&&r.ok)await c.put(INDEX_URL,r.clone());return withRetoScript(r)}catch(_e){return withRetoScript(await offlineFallback(e.request))}}
+async function networkFirst(e){try{const preload=await e.preloadResponse;if(preload){if(preload.ok){const c=await caches.open(CACHE_VERSION);await c.put(e.request,preload.clone())}return withRetoScript(preload)}const r=await fetch(e.request);if(r&&r.ok){const c=await caches.open(CACHE_VERSION);await c.put(e.request,r.clone())}return withRetoScript(r)}catch(_e){return withRetoScript(await offlineFallback(e.request))}}
 function stale(e){const cachePromise=caches.open(CACHE_VERSION);const cachedPromise=cachePromise.then(c=>c.match(e.request,{ignoreSearch:false}));const networkPromise=fetch(e.request).then(async r=>{if(r&&r.ok){const c=await cachePromise;await c.put(e.request,r.clone())}return r}).catch(()=>null);e.waitUntil(networkPromise.then(()=>undefined).catch(()=>undefined));return cachedPromise.then(async cached=>{if(cached)return cached;const r=await networkPromise;if(r)return r;return offlineFallback(e.request)})}
 async function cachedPatch(path){const url=absolute(path);const c=await caches.open(CACHE_VERSION);let r=await c.match(url);if(r)return r;try{r=await fetch(releaseRequest(url));if(r&&r.ok)await c.put(url,r.clone());return r}catch(_e){return null}}
 async function eternaCoreWithHotfix(e){const basePromise=cachedPatch(ETERNA_CORE_PATH);const patchPromise=cachedPatch(ETERNA_HOTFIX_PATH);const compactPromise=cachedPatch(ETERNA_DESKTOP_COMPACT_PATH);const[base,patch,compact]=await Promise.all([basePromise,patchPromise,compactPromise]);if(!base||!patch||!patch.ok)return base||offlineFallback(e.request);const[coreText,patchText,compactText]=await Promise.all([base.text(),patch.text(),compact&&compact.ok?compact.text():Promise.resolve("")]);const headers=new Headers(base.headers);headers.set("Content-Type","application/javascript; charset=utf-8");headers.set("Cache-Control","no-cache");["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));return new Response(coreText+"\n\n/* --- ETERNA HF injected by SW --- */\n"+patchText+"\n\n/* --- ETERNA desktop compact injected by SW --- */\n"+compactText+"\n",{status:base.status,statusText:base.statusText,headers})}
