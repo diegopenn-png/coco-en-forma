@@ -1,11 +1,11 @@
-/* ETERNA desktop compact header · 160.93.23
- * Scope: desktop-only compact mode/action bar + same Coco image already used in the player profile card.
+/* ETERNA desktop compact header · 160.93.25
+ * Scope: desktop-only compact mode/action bar + same Coco image used in player profile, with matching white frame.
  * Keeps mobile/tablet unchanged.
  */
 (function(){
   'use strict';
-  if(window.__ETERNA_DESKTOP_COMPACT_1609323__)return;
-  window.__ETERNA_DESKTOP_COMPACT_1609323__=true;
+  if(window.__ETERNA_DESKTOP_COMPACT_1609325__)return;
+  window.__ETERNA_DESKTOP_COMPACT_1609325__=true;
 
   function findProfileCoco(){
     var imgs=document.querySelectorAll('img');
@@ -33,10 +33,13 @@
       mascot=document.createElement('div');
       mascot.className='eternaV160CocoFlex';
       mascot.setAttribute('aria-hidden','true');
+      var frame=document.createElement('div');
+      frame.className='eternaV160CocoProfileFrame';
       var img=document.createElement('img');
       img.alt='';
-      img.src=source&&source.currentSrc?source.currentSrc:(source&&source.src?source.src:'./coco-flex-eterna.jpg?v=1609426');
-      mascot.appendChild(img);
+      img.src=source&&source.currentSrc?source.currentSrc:(source&&source.src?source.src:'./coco-flex-eterna.jpg?v=1609429');
+      frame.appendChild(img);
+      mascot.appendChild(frame);
       bar.insertBefore(mascot,bar.firstChild);
     }else if(source){
       var current=mascot.querySelector('img');
@@ -46,20 +49,21 @@
   }
 
   var style=document.createElement('style');
-  style.id='eterna-desktop-compact-v1609323';
+  style.id='eterna-desktop-compact-v1609325';
   style.textContent='@media (min-width:761px){'+
     '#eternaOverlayV159 .eternaV160ModeBar{display:grid!important;grid-template-columns:110px minmax(0,1fr)!important;align-items:center!important;gap:8px!important;min-height:0!important;padding:8px 10px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeBar>:not(.eternaV160ModeActions):not(.eternaV160CocoFlex){display:none!important;}'+
     '#eternaOverlayV159 .eternaV160CocoFlex{grid-column:1!important;display:grid!important;place-items:center!important;width:104px!important;height:86px!important;overflow:visible!important;pointer-events:none!important;}'+
-    '#eternaOverlayV159 .eternaV160CocoFlex img{display:block!important;width:78px!important;height:78px!important;object-fit:contain!important;object-position:center!important;border-radius:18px!important;filter:drop-shadow(0 4px 7px rgba(23,63,89,.12));animation:eternaCocoFlex1609323 5s ease-in-out infinite!important;transform-origin:50% 82%!important;}'+
+    '#eternaOverlayV159 .eternaV160CocoProfileFrame{display:grid!important;place-items:center!important;width:76px!important;height:76px!important;padding:4px!important;box-sizing:border-box!important;background:#fff!important;border:2px solid rgba(255,255,255,.96)!important;border-radius:17px!important;box-shadow:0 2px 5px rgba(17,52,73,.18)!important;animation:eternaCocoProfile1609325 5s ease-in-out infinite!important;transform-origin:50% 82%!important;}'+
+    '#eternaOverlayV159 .eternaV160CocoProfileFrame img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;border-radius:12px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeActions{grid-column:2!important;display:grid!important;grid-template-columns:240px minmax(300px,1fr)!important;grid-template-rows:40px 40px!important;gap:6px 10px!important;align-items:stretch!important;justify-content:stretch!important;flex:0 1 690px!important;width:min(690px,100%)!important;max-width:690px!important;min-width:540px!important;margin-left:auto!important;}'+
     '#eternaOverlayV159 .eternaV160DesktopModeSelector{height:40px!important;padding:0 9px!important;border-radius:11px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeDropdownButton{height:38px!important;font-size:11.5px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160NewActivity{height:40px!important;min-height:40px!important;border-radius:11px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{min-height:86px!important;border-radius:13px!important;}'+
   '}'+
-  '@keyframes eternaCocoFlex1609323{0%,20%,100%{transform:translateY(0) rotate(0) scale(1)}5%{transform:translateY(-2px) rotate(-1deg) scale(1.02)}10%{transform:translateY(1px) rotate(1deg) scale(1.025)}15%{transform:translateY(-1px) rotate(-.5deg) scale(1.015)}}'+
-  '@media (prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160CocoFlex img{animation:none!important;}}';
+  '@keyframes eternaCocoProfile1609325{0%,20%,100%{transform:translateY(0) rotate(0) scale(1)}5%{transform:translateY(-2px) rotate(-1deg) scale(1.02)}10%{transform:translateY(1px) rotate(1deg) scale(1.025)}15%{transform:translateY(-1px) rotate(-.5deg) scale(1.015)}}'+
+  '@media (prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160CocoProfileFrame{animation:none!important;}}';
   document.head.appendChild(style);
 
   var observer=new MutationObserver(ensureMascot);
