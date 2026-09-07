@@ -1,11 +1,12 @@
-/* Coco en Forma · Service Worker v160.94.18 · polished Eterna desktop dropdown */
-const CACHE_VERSION="coco-en-forma-v160.94.18-eterna-desktop-dropdown-polish-r1";
+/* Coco en Forma · Service Worker v160.94.19 · compact Eterna desktop mode bar */
+const CACHE_VERSION="coco-en-forma-v160.94.19-eterna-desktop-compact-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
 const ETERNA_CORE_PATH="./eterna-v159.js";
 const ETERNA_EXPERIENCE_PATH="./eterna-experience-v160.js";
 const ETERNA_HOTFIX_PATH="./eterna-hotfix-v160902.js";
+const ETERNA_DESKTOP_COMPACT_PATH="./eterna-desktop-compact-v160907.js";
 const ETERNA_VOICE_AUTOCUT_PATH="./eterna-voice-autocut-v160907.js";
 const PRODUCT_UX_PATH="./coco-release-v160903.js";
 const COCO_BOOTSTRAP_PATH="./coco-v153-fixes.js";
@@ -16,7 +17,7 @@ const CORE=[
   "./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js",
   "./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js",
   "./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,"./coco-excellence-v160934.js",
-  "./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,ETERNA_VOICE_AUTOCUT_PATH,"./eterna-marketing-attribution-v1.js",
+  "./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,ETERNA_DESKTOP_COMPACT_PATH,ETERNA_VOICE_AUTOCUT_PATH,"./eterna-marketing-attribution-v1.js",
   "./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css",
   "./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"
 ];
@@ -138,15 +139,16 @@ async function cachedPatch(path){
 async function eternaCoreWithHotfix(e){
   const basePromise=cachedPatch(ETERNA_CORE_PATH);
   const patchPromise=cachedPatch(ETERNA_HOTFIX_PATH);
-  const [base,patch]=await Promise.all([basePromise,patchPromise]);
+  const compactPromise=cachedPatch(ETERNA_DESKTOP_COMPACT_PATH);
+  const [base,patch,compact]=await Promise.all([basePromise,patchPromise,compactPromise]);
   if(!base||!patch||!patch.ok)return base||offlineFallback(e.request);
-  const [coreText,patchText]=await Promise.all([base.text(),patch.text()]);
+  const [coreText,patchText,compactText]=await Promise.all([base.text(),patch.text(),compact&&compact.ok?compact.text():Promise.resolve("")]);
   const headers=new Headers(base.headers);
   headers.set("Content-Type","application/javascript; charset=utf-8");
   headers.set("Cache-Control","no-cache");
   ["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));
   return new Response(
-    coreText+"\n\n/* --- ETERNA HF injected by SW --- */\n"+patchText+"\n",
+    coreText+"\n\n/* --- ETERNA HF injected by SW --- */\n"+patchText+"\n\n/* --- ETERNA desktop compact injected by SW --- */\n"+compactText+"\n",
     {status:base.status,statusText:base.statusText,headers}
   );
 }
