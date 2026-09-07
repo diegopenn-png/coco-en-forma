@@ -17,6 +17,7 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   const core = readFileSync("eterna-v159.js", "utf8");
   const experience = readFileSync("eterna-experience-v160.js", "utf8");
   const serviceWorker = readFileSync("sw.js", "utf8");
+  const bootstrap = readFileSync("coco-v153-fixes.js", "utf8");
 
   assert.match(worker, /answer_contract_engine_v1:true/);
   assert.match(worker, /coherence_progression_v1:true/);
@@ -32,8 +33,13 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(core, /await send\(\)/);
   assert.match(core, /speak\(reply,1,null,voiceDialog\)/);
   assert.match(core, /__ETERNA_VOICE_AUDIO__/);
+  assert.match(core, /__ETERNA_SUPPRESS_SYNTHETIC_LISTEN_UNTIL__/);
+  assert.match(core, /e\.isTrusted===false/);
+  assert.match(core, /for\(var attempt=0;attempt<2;attempt\+\+\)/);
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.94\.9-spoken-dialogue-r1/);
+  assert.match(serviceWorker, /160\.94\.10-spoken-audio-atomic-r1/);
+  assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
+  assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
 });
