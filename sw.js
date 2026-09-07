@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.10 · audio hablado y actualización atómica */
-const CACHE_VERSION="coco-en-forma-v160.94.10-spoken-audio-atomic-r1";
+/* Coco en Forma · Service Worker v160.94.11 · icono de voz uniforme y premio Rayo */
+const CACHE_VERSION="coco-en-forma-v160.94.11-uniform-mic-football-rayo-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
