@@ -1,6 +1,7 @@
-/* ETERNA client hotfix · 160.90.2-hf1
+/* ETERNA client hotfix · 160.90.2-hf2
  * Scope: mode isolation + pending-math input guard + review arithmetic guard
- *        + homework scaffolding guard + stronger SIMPLIFY instruction.
+ *        + homework scaffolding guard + stronger SIMPLIFY instruction
+ *        + desktop microphone-status layout guard.
  * Does not change auth, subscription, Safety, School Scope, Supabase or attribution.
  */
 (function(root){
@@ -8,7 +9,7 @@
   if(root.__ETERNA_HOTFIX_160902_HF1__)return;
   root.__ETERNA_HOTFIX_160902_HF1__=true;
 
-  var VERSION='160.90.2-hf1';
+  var VERSION='160.90.2-hf2';
   var baseFetch=typeof root.fetch==='function'?root.fetch.bind(root):null;
   var lastChatMode=null;
   var forceFreshNext=false;
@@ -167,6 +168,21 @@
     if(!target||target.classList.contains('is-active'))return;
     clearActivityState()
   },true);
+
+  /* Desktop UX guard: the transient conversation/microphone state stays in flow,
+     anchored to the left, and can never cover the right-side activity control. */
+  function installMicLayoutFix(){
+    if(document.getElementById('eterna-mic-layout-160902-hf2'))return;
+    var style=document.createElement('style');
+    style.id='eterna-mic-layout-160902-hf2';
+    style.textContent='@media (min-width:761px){'+
+      '#eternaOverlayV159 .eternaV160ModeActions{justify-content:space-between!important;column-gap:12px!important;}'+
+      '#eternaOverlayV159 .eternaV160Conversation{order:-1!important;flex:0 1 440px!important;width:min(440px,100%)!important;max-width:440px!important;margin-right:auto!important;}'+
+      '#eternaOverlayV159 .eternaV160NewActivity{order:1!important;flex:0 0 auto!important;margin-left:auto!important;}'+
+    '}';
+    document.head.appendChild(style)
+  }
+  installMicLayoutFix();
 
   root.ETERNA_HOTFIX_160902_HF1=Object.freeze({version:VERSION,reset:clearActivityState});
 })(window);
