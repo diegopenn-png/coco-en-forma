@@ -1,36 +1,77 @@
-/* ETERNA voice reliability hotfix · 160.93.13
+/* ETERNA voice reliability hotfix · 160.93.14
  * Scope: reliable automatic end-of-speech cutoff for ETERNA conversation mic,
  * age-adaptive silence windows, bounded watchdogs, continuous visible progress,
- * and conservative desktop-only action layout.
+ * and desktop mode selector/action layout aligned with mobile behavior.
  * Does not change auth, subscriptions, payments, games, scoring, Safety or School Scope.
  */
 (function(root){
   'use strict';
-  if(root.__ETERNA_VOICE_AUTOCUT_1609313__)return;
-  root.__ETERNA_VOICE_AUTOCUT_1609313__=true;
+  if(root.__ETERNA_VOICE_AUTOCUT_1609314__)return;
+  root.__ETERNA_VOICE_AUTOCUT_1609314__=true;
 
   var media=navigator.mediaDevices;
   if(!media||typeof media.getUserMedia!=='function')return;
 
+  var MODE_OPTIONS=[
+    ['homework','Ayúdame con mi tarea'],
+    ['ask','Pregunta del cole'],
+    ['review','Revisa lo que hice'],
+    ['explain','Explícame un tema'],
+    ['exam','Prepárame para un examen'],
+    ['practice','Practicar lo que me cuesta']
+  ];
+
+  function overlay(){return document.getElementById('eternaOverlayV159')}
+
+  function currentMode(){
+    var o=overlay();if(!o)return'';
+    var active=o.querySelector('[data-et-mode].is-active,[data-et-modechoice].is-active');
+    if(active&&active.dataset)return active.dataset.etMode||active.dataset.etModechoice||'';
+    return''
+  }
+
+  function ensureDesktopModeSelector(){
+    var o=overlay();if(!o)return;
+    var actions=o.querySelector('.eternaV160ModeActions');if(!actions)return;
+    var wrap=actions.querySelector('.eternaV160DesktopModeSelector');
+    if(!wrap){
+      wrap=document.createElement('label');
+      wrap.className='eternaV160DesktopModeSelector';
+      wrap.innerHTML='<span>Modo</span><select aria-label="Cambiar modo de Eterna">'+MODE_OPTIONS.map(function(x){return'<option value="'+x[0]+'">'+x[1]+'</option>'}).join('')+'</select>';
+      actions.insertBefore(wrap,actions.firstChild);
+      var select=wrap.querySelector('select');
+      select.addEventListener('change',function(){
+        var value=select.value;
+        var target=o.querySelector('[data-et-mode="'+value+'"],[data-et-modechoice="'+value+'"]');
+        if(target&&!target.classList.contains('is-active'))target.click()
+      })
+    }
+    var select=wrap.querySelector('select'),mode=currentMode();
+    if(select&&mode&&select.value!==mode)select.value=mode
+  }
+
   function installDesktopModeActionsLayout(){
-    if(document.getElementById('eterna-desktop-mode-actions-v1609313'))return;
+    if(document.getElementById('eterna-desktop-mode-actions-v1609314'))return;
     var style=document.createElement('style');
-    style.id='eterna-desktop-mode-actions-v1609313';
+    style.id='eterna-desktop-mode-actions-v1609314';
     style.textContent='@media (min-width:761px){'+
-      '#eternaOverlayV159 .eternaV160ModeActions{display:grid!important;grid-template-columns:minmax(260px,1fr) 124px!important;grid-template-rows:42px 42px!important;gap:8px 10px!important;align-items:stretch!important;justify-content:stretch!important;flex:0 1 58%!important;width:auto!important;max-width:620px!important;min-width:390px!important;margin-left:auto!important;}'+
-      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{grid-column:1!important;grid-row:1 / 3!important;align-self:stretch!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:92px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
-      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160NewActivity{grid-column:2!important;grid-row:1!important;width:100%!important;max-width:none!important;min-width:0!important;height:42px!important;min-height:42px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
-      '#eternaOverlayV159 .eternaV160ModeActions>[data-et-changemode]{grid-column:2!important;grid-row:2!important;width:100%!important;max-width:none!important;min-width:0!important;height:42px!important;min-height:42px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
-    '}';
+      '#eternaOverlayV159 .eternaV160ModeActions{display:grid!important;grid-template-columns:180px minmax(280px,1fr)!important;grid-template-rows:42px 42px!important;gap:8px 12px!important;align-items:stretch!important;justify-content:stretch!important;flex:0 1 62%!important;width:auto!important;max-width:680px!important;min-width:470px!important;margin-left:auto!important;}'+
+      '#eternaOverlayV159 .eternaV160DesktopModeSelector{grid-column:1!important;grid-row:1!important;display:grid!important;grid-template-columns:42px minmax(0,1fr)!important;align-items:center!important;gap:6px!important;width:100%!important;height:42px!important;margin:0!important;padding:0 8px!important;border:1px solid #b9dfea!important;border-radius:12px!important;background:#fff!important;box-sizing:border-box!important;color:#315d73!important;}'+
+      '#eternaOverlayV159 .eternaV160DesktopModeSelector>span{font:900 9px/1 inherit!important;color:#68808e!important;text-transform:uppercase!important;letter-spacing:.03em!important;}'+
+      '#eternaOverlayV159 .eternaV160DesktopModeSelector>select{width:100%!important;min-width:0!important;height:34px!important;border:0!important;outline:0!important;background:transparent!important;color:#315d73!important;font:900 10px inherit!important;cursor:pointer!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160NewActivity{grid-column:1!important;grid-row:2!important;width:100%!important;max-width:none!important;min-width:0!important;height:42px!important;min-height:42px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{grid-column:2!important;grid-row:1 / 3!important;align-self:stretch!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:92px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>[data-et-changemode]{display:none!important;}'+
+    '}@media (max-width:760px){#eternaOverlayV159 .eternaV160DesktopModeSelector{display:none!important;}}';
     document.head.appendChild(style)
   }
   installDesktopModeActionsLayout();
+  ensureDesktopModeSelector();
 
   var originalGetUserMedia=media.getUserMedia.bind(media);
   var recentEternaMicIntentAt=0;
   var monitor=null;
 
-  function overlay(){return document.getElementById('eternaOverlayV159')}
   function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim()}
 
   function ageFromUi(){
@@ -157,7 +198,11 @@
     if(send&&!send.disabled)showProgress('Enviando tu pregunta…')
   },true);
 
+  document.addEventListener('click',function(ev){
+    var mode=ev.target&&ev.target.closest?ev.target.closest('#eternaOverlayV159 [data-et-mode],#eternaOverlayV159 [data-et-modechoice]'):null;
+    if(mode)setTimeout(ensureDesktopModeSelector,0)
+  },true);
+  root.addEventListener('coco:eterna-ui-reset',function(){cleanup();setTimeout(ensureDesktopModeSelector,0)});
   root.addEventListener('coco:eterna-response-applied',cleanup);
-  root.addEventListener('coco:eterna-ui-reset',cleanup);
   document.addEventListener('visibilitychange',function(){if(document.hidden)cleanup()},{passive:true});
 })(window);
