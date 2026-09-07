@@ -41,8 +41,11 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   ageTeachingProfile,
   teacherCoreInstruction,
   publicTutorBenchmarkInstruction,
+  inferExpectedAnswerContract,
   expectedIdeaMatch,
   deterministicAnchoredCheckTurn,
+  deterministicConceptCheckTurn,
+  buildPedagogicalState,
   handleChat
 };`, sandbox);
 
@@ -316,4 +319,67 @@ test("ordinary classroom peer pressure receives integrity guidance", () => {
   assert.match(reply, /ayudo a entender/i);
   assert.match(reply, /amistad sana/i);
   assert.doesNotMatch(reply, /112|peligro inmediato/i);
+});
+
+
+test("coherence engine infers a numeric answer contract from the tutor turn", () => {
+  const contract = api.inferExpectedAnswerContract("¿Qué número es el denominador?", {
+    reply: "Por ejemplo, en 1/3, el 3 indica tres partes iguales.",
+    expected_answer_type: "open",
+    expected_key_ideas: [],
+  });
+  assert.equal(contract.type, "numeric");
+  assert.deepEqual(Array.from(contract.ideas), ["3"]);
+
+  const built = api.buildPedagogicalState({
+    incoming: pendingState,
+    mode: "ask",
+    subject: "Matemáticas",
+    concept: "denominador",
+    tutorOutput: {
+      reply: "Por ejemplo, en 1/3, el 3 indica tres partes iguales.",
+      expected_answer_type: "open",
+      expected_key_ideas: [],
+      help_level: 1,
+      strategy_used: "worked_example",
+      conversation_stage: "awaiting_student_answer",
+      tutor_act: "ask_numeric",
+    },
+    assessment: "not_applicable",
+    finalCheck: "¿Qué número es el denominador?",
+    turnRel: "new_topic",
+  });
+  assert.equal(built.expected_answer_type, "numeric");
+  assert.deepEqual(Array.from(built.expected_key_ideas), ["3"]);
+  assert.equal(api.expectedIdeaMatch("3", built)?.assessment, "correct");
+});
+
+test("manual fraction journey: 3 is acknowledged and advances without repeating", () => {
+  const fractionState = {
+    ...pendingState,
+    current_mode: "ask",
+    active_subject: "Matemáticas",
+    active_concept: "suma de fracciones",
+    pending_question: "¿Qué número es el denominador?",
+    expected_answer_type: "numeric",
+    expected_key_ideas: ["3"],
+  };
+  const result = api.deterministicConceptCheckTurn({
+    mode: "ask",
+    text: "3",
+    turnRel: "answer_to_pending",
+    incomingModeState: modeState,
+    incomingPedState: fractionState,
+    subject: "Matemáticas",
+    concept: "suma de fracciones",
+    history: [
+      { role: "assistant", text: "Para sumar 1/2 y 1/3 necesitamos partes del mismo tamaño." },
+      { role: "assistant", text: "En 1/3, ¿qué número es el denominador?" },
+    ],
+  });
+  assert.equal(result.student_answer_assessment, "correct");
+  assert.match(result.reply, /^Correcto: en 1\/3, el denominador es 3\./);
+  assert.notEqual(result.check_question, fractionState.pending_question);
+  assert.match(result.check_question, /múltiplo de 2 y de 3/i);
+  assert.deepEqual(Array.from(result.pedagogical_state.expected_key_ideas), ["6"]);
 });
