@@ -1,15 +1,30 @@
-/* ETERNA voice reliability hotfix · 160.93.11
+/* ETERNA voice reliability hotfix · 160.93.12
  * Scope: reliable automatic end-of-speech cutoff for ETERNA conversation mic,
- * age-adaptive silence windows, bounded watchdogs and continuous visible progress.
+ * age-adaptive silence windows, bounded watchdogs, continuous visible progress,
+ * and desktop-only mode-action layout so conversation never covers controls.
  * Does not change auth, subscriptions, payments, games, scoring, Safety or School Scope.
  */
 (function(root){
   'use strict';
-  if(root.__ETERNA_VOICE_AUTOCUT_1609311__)return;
-  root.__ETERNA_VOICE_AUTOCUT_1609311__=true;
+  if(root.__ETERNA_VOICE_AUTOCUT_1609312__)return;
+  root.__ETERNA_VOICE_AUTOCUT_1609312__=true;
 
   var media=navigator.mediaDevices;
   if(!media||typeof media.getUserMedia!=='function')return;
+
+  function installDesktopModeActionsLayout(){
+    if(document.getElementById('eterna-desktop-mode-actions-v1609312'))return;
+    var style=document.createElement('style');
+    style.id='eterna-desktop-mode-actions-v1609312';
+    style.textContent='@media (min-width:761px){'+
+      '#eternaOverlayV159 .eternaV160ModeActions{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-rows:auto auto!important;gap:10px 12px!important;align-items:stretch!important;width:100%!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160NewActivity{grid-column:1!important;grid-row:1!important;width:100%!important;max-width:none!important;margin:0!important;order:initial!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>[data-et-changemode]{grid-column:2!important;grid-row:1!important;width:100%!important;max-width:none!important;margin:0!important;order:initial!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{grid-column:1 / -1!important;grid-row:2!important;width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
+    '}';
+    document.head.appendChild(style)
+  }
+  installDesktopModeActionsLayout();
 
   var originalGetUserMedia=media.getUserMedia.bind(media);
   var recentEternaMicIntentAt=0;
