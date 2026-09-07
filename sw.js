@@ -1,4 +1,4 @@
-/* Coco en Forma · Service Worker v160.94.5 · dificultad de juegos simplificada */
+/* Coco en Forma · Service Worker v160.94.7 · coherencia y voz Eterna estable */
 const CACHE_VERSION="coco-en-forma-v160.94.7-coherence-voice-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
