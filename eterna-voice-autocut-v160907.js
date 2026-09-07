@@ -1,15 +1,30 @@
-/* ETERNA voice reliability hotfix · 160.93.11
+/* ETERNA voice reliability hotfix · 160.93.13
  * Scope: reliable automatic end-of-speech cutoff for ETERNA conversation mic,
- * age-adaptive silence windows, bounded watchdogs and continuous visible progress.
+ * age-adaptive silence windows, bounded watchdogs, continuous visible progress,
+ * and conservative desktop-only action layout.
  * Does not change auth, subscriptions, payments, games, scoring, Safety or School Scope.
  */
 (function(root){
   'use strict';
-  if(root.__ETERNA_VOICE_AUTOCUT_1609311__)return;
-  root.__ETERNA_VOICE_AUTOCUT_1609311__=true;
+  if(root.__ETERNA_VOICE_AUTOCUT_1609313__)return;
+  root.__ETERNA_VOICE_AUTOCUT_1609313__=true;
 
   var media=navigator.mediaDevices;
   if(!media||typeof media.getUserMedia!=='function')return;
+
+  function installDesktopModeActionsLayout(){
+    if(document.getElementById('eterna-desktop-mode-actions-v1609313'))return;
+    var style=document.createElement('style');
+    style.id='eterna-desktop-mode-actions-v1609313';
+    style.textContent='@media (min-width:761px){'+
+      '#eternaOverlayV159 .eternaV160ModeActions{display:grid!important;grid-template-columns:minmax(260px,1fr) 124px!important;grid-template-rows:42px 42px!important;gap:8px 10px!important;align-items:stretch!important;justify-content:stretch!important;flex:0 1 58%!important;width:auto!important;max-width:620px!important;min-width:390px!important;margin-left:auto!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{grid-column:1!important;grid-row:1 / 3!important;align-self:stretch!important;width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;min-height:92px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160NewActivity{grid-column:2!important;grid-row:1!important;width:100%!important;max-width:none!important;min-width:0!important;height:42px!important;min-height:42px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
+      '#eternaOverlayV159 .eternaV160ModeActions>[data-et-changemode]{grid-column:2!important;grid-row:2!important;width:100%!important;max-width:none!important;min-width:0!important;height:42px!important;min-height:42px!important;margin:0!important;order:initial!important;box-sizing:border-box!important;}'+
+    '}';
+    document.head.appendChild(style)
+  }
+  installDesktopModeActionsLayout();
 
   var originalGetUserMedia=media.getUserMedia.bind(media);
   var recentEternaMicIntentAt=0;
