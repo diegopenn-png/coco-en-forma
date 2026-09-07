@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.13 · Eterna desktop mode layout */
-const CACHE_VERSION="coco-en-forma-v160.94.13-eterna-desktop-mode-layout-r1";
+/* Coco en Forma · Service Worker v160.94.14 · rollback broken desktop Eterna layout */
+const CACHE_VERSION="coco-en-forma-v160.94.14-eterna-desktop-layout-rollback-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
