@@ -1,7 +1,8 @@
-/* ETERNA client hotfix · 160.90.2-hf2
+/* ETERNA client hotfix · 160.90.2-hf3
  * Scope: mode isolation + pending-math input guard + review arithmetic guard
  *        + homework scaffolding guard + stronger SIMPLIFY instruction
- *        + desktop microphone-status layout guard.
+ *        + desktop microphone-status layout guard
+ *        + loader for age-adaptive conversation microphone autocut/progress.
  * Does not change auth, subscription, Safety, School Scope, Supabase or attribution.
  */
 (function(root){
@@ -9,7 +10,7 @@
   if(root.__ETERNA_HOTFIX_160902_HF1__)return;
   root.__ETERNA_HOTFIX_160902_HF1__=true;
 
-  var VERSION='160.90.2-hf2';
+  var VERSION='160.90.2-hf3';
   var baseFetch=typeof root.fetch==='function'?root.fetch.bind(root):null;
   var lastChatMode=null;
   var forceFreshNext=false;
@@ -114,7 +115,6 @@
       var mode=String(body.mode||'homework');
       var canonicalState=body.client_state_contract>=2;
 
-      /* Defense in depth: a new mode must never inherit a pending question. */
       if(!canonicalState&&(forceFreshNext||(lastChatMode!==null&&mode!==lastChatMode))){
         delete body.pedagogical_state;body.history=[];pendingByMode[mode]=null;clearPedagogicalState();forceFreshNext=false
       }
@@ -123,13 +123,11 @@
 
       var pending=canonicalState?null:(pendingByMode[mode]||null),expected=pending&&mathExpected(pending.question),answerText=answerFromBodyText(body.text),answer=parseRational(answerText);
 
-      /* "Sí"/"No" is not a numeric result. Do not mark it wrong or alter progress. */
       if(pending&&expected&&isBareYesNo(answerText)){
         var ask=expected.kind==='fraction'?'Necesito que respondas con una fracción, por ejemplo 2/4. Inténtalo de nuevo.':'Necesito que respondas con un número. Inténtalo de nuevo.';
         return responseJson(pendingPayload(mode,ask,pending,body.mode_state))
       }
 
-      /* Review mode: deterministic simple arithmetic wins over a false model negative. */
       if(mode==='review'&&pending&&expected&&answer&&sameRat(answer,expected.value)){
         pendingByMode[mode]=null;
         return responseJson(correctReviewPayload(body,pending,answer,expected))
@@ -140,7 +138,6 @@
       var data;try{data=await response.clone().json()}catch(_e){return response}
       if(!data||typeof data!=='object')return response;
 
-      /* Homework must not reveal the answer to the very check it asks the child to do. */
       if(mode==='homework'&&data.check_question){
         var checkExpected=mathExpected(data.check_question);
         if(checkExpected&&answerLeaked(data.reply,checkExpected)){
@@ -162,15 +159,12 @@
     root.fetch=hotfixFetch
   }
 
-  /* Primary fix: switching activity clears the hidden pedagogical state too. */
   document.addEventListener('click',function(ev){
     var target=ev.target&&ev.target.closest?ev.target.closest('[data-et-modechoice],[data-et-mode]'):null;
     if(!target||target.classList.contains('is-active'))return;
     clearActivityState()
   },true);
 
-  /* Desktop UX guard: the transient conversation/microphone state stays in flow,
-     anchored to the left, and can never cover the right-side activity control. */
   function installMicLayoutFix(){
     if(document.getElementById('eterna-mic-layout-160902-hf2'))return;
     var style=document.createElement('style');
@@ -183,6 +177,16 @@
     document.head.appendChild(style)
   }
   installMicLayoutFix();
+
+  function loadVoiceAutocut(){
+    if(document.querySelector('script[data-et-voice-autocut="1609311"]'))return;
+    var s=document.createElement('script');
+    s.src='./eterna-voice-autocut-v160907.js?v=1609311';
+    s.async=false;
+    s.setAttribute('data-et-voice-autocut','1609311');
+    document.head.appendChild(s)
+  }
+  loadVoiceAutocut();
 
   root.ETERNA_HOTFIX_160902_HF1=Object.freeze({version:VERSION,reset:clearActivityState});
 })(window);
