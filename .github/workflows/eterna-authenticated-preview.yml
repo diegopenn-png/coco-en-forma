@@ -117,8 +117,10 @@ jobs:
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
           grep -F '160.94.1-mobile-fixed-viewport' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/eterna-experience-v160.js >/dev/null
+          grep -F 'ETERNA Conversation Voice v160.94.7' preview-dist/eterna-experience-v160.js >/dev/null
+          grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.94.6-benchmark-tutor' eterna-worker/src/index.js >/dev/null
+          grep -F '160.94.7-coherence-engine' eterna-worker/src/index.js >/dev/null
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
 
@@ -156,7 +158,7 @@ jobs:
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/eterna-experience-v160.js?v=160940&verify=${GITHUB_SHA}" \
-            | grep -F '160.93.10-canonical-expired-checkout' >/dev/null
+            | grep -F 'ETERNA Conversation Voice v160.94.7' >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/coco-release-v160903.js?verify=${GITHUB_SHA}" \
@@ -180,7 +182,7 @@ jobs:
             exit 1
           fi
           curl --max-time 20 -fsS "${API_PREVIEW_URL}/health" | tee authenticated-preview-health.json
-          grep -F '160.94.6-benchmark-tutor' authenticated-preview-health.json >/dev/null
+          grep -F '160.94.7-coherence-engine' authenticated-preview-health.json >/dev/null
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
           grep -Fi 'x-robots-tag: noindex' authenticated-preview-headers.log >/dev/null
 
@@ -188,7 +190,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · UX 160.94.5-game-difficulty · API 160.94.6-benchmark-tutor"
+            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · UX 160.94.5-game-difficulty · API 160.94.7-coherence-engine"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preserve preview evidence

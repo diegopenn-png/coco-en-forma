@@ -2879,3 +2879,34 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
   inject();patchAuth();intercept();normalizeLauncher();requestAnimationFrame(normalizeLauncher);var deepLink=false;try{var q=new URLSearchParams(location.search);if(q.get("open")==="eterna"||q.get("eterna")==="1"){deepLink=true;setIntent(q.get("source")||"direct")}}catch(e){}if(intent())session().then(function(s){if(s)runState();else if(deepLink){goCreateAccount();setTimeout(goCreateAccount,260)}});
   root.ETERNA_LAUNCH_STATE_V16070=root.ETERNA_LAUNCH_STATE_V16069=root.ETERNA_LAUNCH_STATE_V16068=Object.freeze({version:"160.70",run:runState,setIntent:setIntent,states:["SIN_CUENTA","EMAIL_PENDIENTE","EMAIL_CONFIRMADO","PIN_SIN_CREAR","PIN_NECESARIO","PIN_OK","AUTORIZACION_PENDIENTE","TRIAL_PENDIENTE","TRIAL_ACTIVO","CURSO_PENDIENTE","ETERNA_LISTA"],global_observer:false});
 })(window);
+
+
+/* ETERNA Conversation Voice v160.94.7 */
+(function(root){
+  "use strict";
+  if(root.__ETERNA_CONVERSATION_VOICE_160947__)return;
+  root.__ETERNA_CONVERSATION_VOICE_160947__=true;
+  var pending=false,expires=0;
+  function reset(){pending=false;expires=0}
+  function latestListenButton(){
+    var buttons=document.querySelectorAll("#eternaOverlayV159 [data-et-listen]");
+    return buttons.length?buttons[buttons.length-1]:null
+  }
+  document.addEventListener("click",function(event){
+    var button=event.target&&event.target.closest?event.target.closest("#eternaOverlayV159 [data-et-converse]"):null;
+    if(!button)return;
+    event.preventDefault();
+    event.stopPropagation();
+    var mic=document.querySelector("#eternaOverlayV159 [data-et-mic]");
+    if(!mic||mic.disabled)return;
+    pending=true;expires=Date.now()+90000;
+    mic.click()
+  },true);
+  root.addEventListener("coco:eterna-response-applied",function(){
+    if(!pending||Date.now()>expires){reset();return}
+    reset();
+    setTimeout(function(){var listen=latestListenButton();if(listen&&!listen.disabled)listen.click()},120)
+  });
+  root.addEventListener("coco:eterna-context-invalidated",reset);
+  root.addEventListener("coco:eterna-ui-reset",reset)
+})(window);
