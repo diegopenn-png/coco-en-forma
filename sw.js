@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.17 · persistent Eterna desktop dropdown */
-const CACHE_VERSION="coco-en-forma-v160.94.17-eterna-desktop-dropdown-r1";
+/* Coco en Forma · Service Worker v160.94.18 · polished Eterna desktop dropdown */
+const CACHE_VERSION="coco-en-forma-v160.94.18-eterna-desktop-dropdown-polish-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
