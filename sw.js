@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.20 · Eterna desktop Coco mascot */
-const CACHE_VERSION="coco-en-forma-v160.94.20-eterna-desktop-coco-r1";
+/* Coco en Forma · Service Worker v160.94.21 · Eterna desktop Coco binary asset refresh */
+const CACHE_VERSION="coco-en-forma-v160.94.21-eterna-desktop-coco-binary-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
