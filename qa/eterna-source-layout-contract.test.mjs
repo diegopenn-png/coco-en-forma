@@ -20,11 +20,16 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
 
   assert.match(worker, /answer_contract_engine_v1:true/);
   assert.match(worker, /coherence_progression_v1:true/);
-  assert.match(core, /data-et-converse/);
+  const modeBar = core.slice(core.indexOf("function renderModeBar"), core.indexOf("function setStatus"));
+  assert.match(modeBar, /data-et-converse/);
+  assert.match(modeBar, /🎙️ Conversar con Eterna/);
+  assert.equal((core.match(/data-et-converse/g) || []).length, 1);
   assert.match(core, /api\("\/v1\/speak"/);
   assert.doesNotMatch(core, /new SpeechSynthesisUtterance/);
   assert.doesNotMatch(core, /speechSynthesis\.speak/);
   assert.match(experience, /ETERNA Conversation Voice v160\.94\.7/);
   assert.match(experience, /\[data-et-listen\]/);
-  assert.match(serviceWorker, /160\.94\.7-coherence-voice-r1/);
+  assert.match(experience, /eternaV160Conversation/);
+  assert.match(experience, /grid-column:1\/-1/);
+  assert.match(serviceWorker, /160\.94\.8-conversation-from-start-r1/);
 });
