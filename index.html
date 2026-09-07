@@ -6624,7 +6624,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     return{ok:true,stats:local,local:true};
   }
   async function saveScore(id,points,detail,userId){
-    points=Math.round(clamp(points,0,1000));var cli=gameClient(),session=await currentSession(false);if(session)syncDailyIdentity(session);if(!cli||!session)return saveLocal(id,points,detail,userId||(session&&session.user&&session.user.id));
+    var scoreLimit=id==="futbol"?1300:1000;points=Math.round(clamp(points,0,scoreLimit));var cli=gameClient(),session=await currentSession(false);if(session)syncDailyIdentity(session);if(!cli||!session)return saveLocal(id,points,detail,userId||(session&&session.user&&session.user.id));
     var unlimited=unlimitedTesting(session.user.id),before=await loadStats(id);if(before.today>0)return unlimited?{ok:true,test:true,unranked:true,error:"",stats:before}:{ok:false,daily:true,error:"La partida de hoy ya estaba registrada.",stats:before};
     session=await currentSession(false)||session;var payload={jugador:session.user.id,juego:id,puntos:points},saved;
     try{saved=await cli.from("partidas").insert(payload)}catch(error){saved={error:error}}
@@ -7117,6 +7117,8 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   var FOOTBALL_ZONES=["Arriba izquierda","Arriba centro","Arriba derecha","Abajo izquierda","Abajo centro","Abajo derecha"];
   function sportRounds(){return active.level===1?6:active.level===2?8:10}
   function sportPoints(quality){return Math.round(clamp(quality,0,1)*(1000/active.total))}
+  function footballMaxPoints(){return active&&active.level===4?1300:1000}
+  function footballPoints(quality){return Math.round(clamp(quality,0,1)*(footballMaxPoints()/active.total))}
   function startFootball(){active.round=0;active.total=sportRounds();active.goals=0;active.sportScore=0;active.locked=false;active.combo=0;renderFootballRound()}
   function renderFootballRound(){
     if(!active||active.phase!=="playing")return;active.locked=true;var pattern=window.CocoRotationV134.generateLegacy(active.user.id,"futbol_"+active.level,function(){var safe=Math.floor(active.rng()*6),tempo=Math.floor(active.rng()*3);return{safe:safe,tempo:tempo,order:shuffle([0,1,2,3,4,5].filter(function(index){return index!==safe}),active.rng)}},100,function(item){return item.safe+"|"+item.tempo+"|"+item.order.join(",")});active.safeZone=pattern.safe;active.redOrder=pattern.order;
@@ -7131,7 +7133,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     var zone=active.redOrder[index],btn=body.querySelector('[data-goal-zone="'+zone+'"]');if(btn)btn.classList.add("memory-red","memory-pulse");if(feedback){feedback.querySelector("b").textContent="Señal "+(index+1)+" de 5";feedback.querySelector("p").textContent="Mira esta zona. Desaparecerá antes de la siguiente."}sound("mark");setTimer(function(){if(btn)btn.classList.remove("memory-red","memory-pulse");setTimer(function(){showFootballSignal(index+1)},active.footballGap)},active.footballExposure)
   }
   function shootFootball(choice){
-    if(!active||active.locked)return;active.locked=true;var goal=choice===active.safeZone,reaction=Math.max(0,performance.now()-(active.reactionStarted||performance.now())),quick=Math.max(0,1-reaction/(active.level===1?5000:active.level===2?3600:active.level===3?2500:1800)),quality=goal ? .84+.16*quick : .04,points=sportPoints(quality);active.sportScore=Math.min(1000,active.sportScore+points);if(goal){active.goals++;active.combo++}else active.combo=0;
+    if(!active||active.locked)return;active.locked=true;var goal=choice===active.safeZone,reaction=Math.max(0,performance.now()-(active.reactionStarted||performance.now())),quick=Math.max(0,1-reaction/(active.level===1?5000:active.level===2?3600:active.level===3?2500:1800)),quality=goal ? .84+.16*quick : .04,points=footballPoints(quality);active.sportScore=Math.min(footballMaxPoints(),active.sportScore+points);if(goal){active.goals++;active.combo++}else active.combo=0;
     var coordinates=[[-82,-122],[0,-132],[82,-122],[-82,-55],[0,-62],[82,-55]],chosen=coordinates[choice],keeperZone=goal?active.redOrder[(active.round+active.combo)%active.redOrder.length]:choice,guarded=coordinates[keeperZone],ball=body.querySelector("[data-goal-ball]"),keeper=body.querySelector("[data-goalkeeper]");
     if(ball){ball.style.setProperty("--shot-x",chosen[0]+"px");ball.style.setProperty("--shot-y",chosen[1]+"px");ball.classList.add(goal?"shot-goal":"shot-save")}if(keeper){keeper.style.setProperty("--dive-x",guarded[0]+"px");keeper.style.setProperty("--dive-y",guarded[1]+"px");keeper.style.setProperty("--dive-rot",(guarded[0]<0?-28:guarded[0]>0?28:0)+"deg");keeper.classList.add("dive")}
     body.querySelectorAll("[data-goal-zone]").forEach(function(btn){var zone=Number(btn.dataset.goalZone);btn.disabled=true;btn.classList.remove("memory-hidden");if(zone===active.safeZone)btn.classList.add("memory-safe");else btn.classList.add("memory-reveal");if(zone===choice)btn.classList.add(goal?"goal":"saved")});
@@ -7375,7 +7377,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   var COG_WEIGHTS={
     numeros:{executive:.35,speed:.25,visual:.4},calculo:{quant:.65,speed:.25,memory:.1},palabras:{language:.65,memory:.25,speed:.1},series:{quant:.6,executive:.25,memory:.15},memoria:{memory:.8,executive:.2},sudoku:{quant:.45,executive:.4,memory:.15},sopa:{executive:.5,language:.3,visual:.2},crucigrama:{language:.55,memory:.25,quant:.2},tiempo:{speed:.4,executive:.25,quant:.2,memory:.15},verdadero:{quant:.35,language:.25,memory:.2,executive:.2},cocomed:{language:.45,quant:.35,memory:.2},futbol:{memory:.55,executive:.25,visual:.2},padel:{visual:.45,speed:.35,executive:.2}
   };
-  var SCORE_CAPS={numeros:672,calculo:840,palabras:739,series:907,memoria:874,sudoku:1075,sopa:773,crucigrama:320,tiempo:320,verdadero:320,cocomed:1000,futbol:1000,padel:1000};
+  var SCORE_CAPS={numeros:672,calculo:840,palabras:739,series:907,memoria:874,sudoku:1075,sopa:773,crucigrama:320,tiempo:320,verdadero:320,cocomed:1000,futbol:1300,padel:1000};
   var DEFAULT_WEIGHTS={executive:.4,memory:.2,speed:.2,language:.2};
 
   window.CocoCognitiveCatalog={

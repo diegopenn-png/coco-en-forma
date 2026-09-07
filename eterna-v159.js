@@ -436,7 +436,7 @@
       ".eternaV160ModeChoices{display:grid;gap:9px}.eternaV160ModeChoice{width:100%;min-height:64px;padding:10px 12px;display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:center;border:2px solid #d8edf5;border-radius:17px;background:#fff;color:#234f66;text-align:left;cursor:pointer}.eternaV160ModeChoice.is-active{border-color:#6fc9e9;background:#effaff;box-shadow:0 0 0 3px rgba(47,169,220,.09)}.eternaV160ModeChoice i{font-style:normal;font-size:22px}.eternaV160ModeChoice strong{display:block;font-size:12px}.eternaV160ModeChoice small{display:block;margin-top:3px;color:#69818f;font-size:10px;line-height:1.3}",
       ".eternaV160ModeNote{margin:2px 2px 10px;padding:8px 10px;border-radius:12px;background:#eef9fd;color:#557486;font-size:10px;font-weight:800;line-height:1.35}.eternaV160ModeProgress{display:block;margin-top:4px;color:#1f6f91;font-size:10px;font-weight:900}",
       ".eternaV160Start{max-width:720px;margin:30px auto 18px;padding:18px;text-align:center;color:#17394b}.eternaV160StartIcon{font-size:42px;line-height:1}.eternaV160Start h3{margin:8px 0 5px;font-size:24px;color:#173f59}.eternaV160Start p{margin:0 auto 16px;max-width:590px;color:#607c8c;font-size:13px;font-weight:700;line-height:1.45}",
-      ".eternaV160StartActions{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:9px}.eternaV160StartAction{min-height:62px;padding:10px 12px;border:2px solid #d8edf5;border-radius:17px;background:#fff;color:#234f66;font:850 12px/1.3 inherit;cursor:pointer;box-shadow:0 2px 0 #e1eef4}.eternaV160StartAction strong{display:block}.eternaV160StartAction small{display:block;margin-top:3px;color:#78909c;font-size:9.5px;font-weight:700}",
+      ".eternaV160StartActions{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:9px}.eternaV160StartAction{min-height:62px;padding:10px 12px;border:2px solid #d8edf5;border-radius:17px;background:#fff;color:#234f66;font:850 12px/1.3 inherit;cursor:pointer;box-shadow:0 2px 0 #e1eef4}.eternaV160StartAction strong{display:flex;align-items:center;justify-content:center;gap:7px}.eternaV160StartAction small{display:block;margin-top:3px;color:#78909c;font-size:9.5px;font-weight:700}.eternaV160StartMicSvg{display:block;width:22px;height:22px;flex:0 0 22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible}.eternaV160StartMicSvg *{fill:none;stroke:currentColor;vector-effect:non-scaling-stroke}",
       "#cocoApp .eternaV160FamilyPromo{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0 14px;padding:11px 12px;border:1px solid #cfe8f3;border-radius:15px;background:#f7fcff}#cocoApp .eternaV160FamilyPromo span{color:#5d7786;font-size:10px;font-weight:750}",
       "#cocoApp .eternaV160ShareBtn{min-height:44px;padding:9px 13px;border:0;border-radius:12px;background:#173f59;color:#fff;font:900 11px inherit;cursor:pointer}",
       "#cocoApp .eternaV160ProgressPanel{margin:14px 0;padding:14px;border-radius:18px;background:#eef9fd;border:1px solid #cde8f3}#cocoApp .eternaV160ProgressHead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:9px}#cocoApp .eternaV160ProgressHead b{color:#173f59;font-size:14px}#cocoApp .eternaV160ProgressHead button{min-height:44px;padding:8px 12px;border:1px solid #c7e2ed;border-radius:12px;background:#fff;color:#173f59;font:900 10.5px inherit;cursor:pointer}",
@@ -671,19 +671,30 @@
 
   function startPanelForMode(){
     var panels={
-      homework:{icon:"📸",title:"Empieza por tu tarea",text:"Enséñame el ejercicio o cuéntame exactamente dónde te has bloqueado.",actions:[["photo","📷 Adjuntar una tarea","Foto o carrete"],["text","✏️ Escribir el ejercicio","Usa el cuadro de texto"],["voice","🎙️ Contármelo por voz","Yo lo transcribo"]]},
-      ask:{icon:"✏️",title:"Haz tu pregunta del cole",text:"Pregunta directamente lo que necesitas entender y comprobaré que la explicación quede clara.",actions:[["text","✏️ Escribir mi pregunta","Pregunta concreta"],["voice","🎙️ Preguntarlo por voz","Yo lo transcribo"]]},
-      review:{icon:"✅",title:"Enséñame lo que hiciste",text:"Partiré de tu respuesta para ayudarte a localizar el primer error sin darte la solución de entrada.",actions:[["photo","📷 Adjuntar mi respuesta","Foto o carrete"],["text","✏️ Escribir lo que hice","Incluye tu resultado"],["voice","🎙️ Explicarlo por voz","Cuéntame tus pasos"]]},
-      explain:{icon:"🧠",title:"Dime qué tema quieres entender",text:"Lo construiremos desde cero con una explicación adecuada a tu curso y una comprobación breve.",actions:[["text","✏️ Escribir el tema","Por ejemplo: números primos"],["voice","🎙️ Decir el tema por voz","Yo lo transcribo"]]},
-      exam:{icon:"📚",title:"¿Qué entra en el examen?",text:"Dime asignatura y tema. Te haré una pregunta cada vez y adaptaré la dificultad según tus respuestas.",actions:[["text","✏️ Indicar asignatura y tema","Empieza aquí"],["voice","🎙️ Contármelo por voz","Yo lo transcribo"]]},
+      homework:{icon:"📸",title:"Empieza por tu tarea",text:"Enséñame el ejercicio o cuéntame exactamente dónde te has bloqueado.",actions:[["photo","📷 Adjuntar una tarea","Foto o carrete"],["text","✏️ Escribir el ejercicio","Usa el cuadro de texto"],["voice","Contármelo por voz","Yo lo transcribo"]]},
+      ask:{icon:"✏️",title:"Haz tu pregunta del cole",text:"Pregunta directamente lo que necesitas entender y comprobaré que la explicación quede clara.",actions:[["text","✏️ Escribir mi pregunta","Pregunta concreta"],["voice","Preguntarlo por voz","Yo lo transcribo"]]},
+      review:{icon:"✅",title:"Enséñame lo que hiciste",text:"Partiré de tu respuesta para ayudarte a localizar el primer error sin darte la solución de entrada.",actions:[["photo","📷 Adjuntar mi respuesta","Foto o carrete"],["text","✏️ Escribir lo que hice","Incluye tu resultado"],["voice","Explicarlo por voz","Cuéntame tus pasos"]]},
+      explain:{icon:"🧠",title:"Dime qué tema quieres entender",text:"Lo construiremos desde cero con una explicación adecuada a tu curso y una comprobación breve.",actions:[["text","✏️ Escribir el tema","Por ejemplo: números primos"],["voice","Decir el tema por voz","Yo lo transcribo"]]},
+      exam:{icon:"📚",title:"¿Qué entra en el examen?",text:"Dime asignatura y tema. Te haré una pregunta cada vez y adaptaré la dificultad según tus respuestas.",actions:[["text","✏️ Indicar asignatura y tema","Empieza aquí"],["voice","Contármelo por voz","Yo lo transcribo"]]},
       practice:{icon:"🎯",title:"Vamos a reforzar lo que más necesitas",text:"Puedo empezar usando tu progreso guardado o puedes decirme qué quieres practicar hoy.",actions:[["auto","🎯 Empezar con mi progreso","Eterna elige qué reforzar"],["text","✏️ Elegir qué practicar","Escribe un tema"]]}
     };return panels[state.mode]||panels.homework
+  }
+
+  function startActionLabel(action){
+    var label=esc(action[1]);
+    if(action[0]!=="voice")return label;
+    return '<svg class="eternaV160MicSvg eternaV160StartMicSvg" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">'+
+      '<path d="M12 14.75a3.75 3.75 0 0 0 3.75-3.75V7a3.75 3.75 0 1 0-7.5 0v4A3.75 3.75 0 0 0 12 14.75Z"/>'+
+      '<path d="M6.5 11a5.5 5.5 0 0 0 11 0"/>'+
+      '<path d="M12 16.5V20"/>'+
+      '<path d="M9.5 20h5"/>'+
+    '</svg>'+label
   }
 
   function renderConversation(chat){
     if(state.history.length){chat.innerHTML="";state.history.forEach(function(m,index){appendMessage(m.role,m.text,m.meta,false,index===state.history.length-1)});return}
     var p=startPanelForMode(),studentName=preferredStudentName(),startTitle=(studentName?"Hola, "+studentName+". ":"")+p.title;
-    chat.innerHTML='<div class="eternaV160Start"><div class="eternaV160StartIcon">'+p.icon+'</div><h3>'+esc(startTitle)+'</h3><p>'+esc(p.text)+'</p><div class="eternaV160StartActions">'+p.actions.map(function(a){return '<button type="button" class="eternaV160StartAction" data-et-startaction="'+a[0]+'"><strong>'+a[1]+'</strong><small>'+a[2]+'</small></button>'}).join("")+'</div></div>';
+    chat.innerHTML='<div class="eternaV160Start"><div class="eternaV160StartIcon">'+p.icon+'</div><h3>'+esc(startTitle)+'</h3><p>'+esc(p.text)+'</p><div class="eternaV160StartActions">'+p.actions.map(function(a){return '<button type="button" class="eternaV160StartAction" data-et-startaction="'+a[0]+'"><strong>'+startActionLabel(a)+'</strong><small>'+a[2]+'</small></button>'}).join("")+'</div></div>';
     chat.querySelectorAll("[data-et-startaction]").forEach(function(b){b.onclick=function(){var action=b.dataset.etStartaction,o=overlay(),i=o.querySelector("[data-et-input]");if(action==="photo"){o.querySelector("[data-et-camera]").click();return}if(action==="voice"){o.querySelector("[data-et-mic]").click();return}if(action==="auto"){i.value="Empezamos.";state.inputSource="text";send();return}i.focus()}})
   }
 

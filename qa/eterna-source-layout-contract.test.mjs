@@ -39,7 +39,18 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.94\.10-spoken-audio-atomic-r1/);
+  assert.match(serviceWorker, /160\.94\.11-uniform-mic-football-rayo-r1/);
   assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
+});
+
+
+test("Eterna start voice actions use the same modern microphone icon as the composer", () => {
+  const core = readFileSync("eterna-v159.js", "utf8");
+
+  assert.match(core, /function startActionLabel\(action\)/);
+  assert.match(core, /eternaV160MicSvg eternaV160StartMicSvg/);
+  assert.match(core, /M12 14\.75a3\.75 3\.75/);
+  assert.match(core, /\["voice","Decir el tema por voz","Yo lo transcribo"\]/);
+  assert.doesNotMatch(core, /🎙️ Decir el tema por voz/);
 });
