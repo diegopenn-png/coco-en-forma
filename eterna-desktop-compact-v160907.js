@@ -1,11 +1,11 @@
-/* ETERNA desktop compact header · 160.93.22
+/* ETERNA desktop compact header · 160.93.23
  * Scope: desktop-only compact mode/action bar + same Coco image already used in the player profile card.
  * Keeps mobile/tablet unchanged.
  */
 (function(){
   'use strict';
-  if(window.__ETERNA_DESKTOP_COMPACT_1609322__)return;
-  window.__ETERNA_DESKTOP_COMPACT_1609322__=true;
+  if(window.__ETERNA_DESKTOP_COMPACT_1609323__)return;
+  window.__ETERNA_DESKTOP_COMPACT_1609323__=true;
 
   function findProfileCoco(){
     var imgs=document.querySelectorAll('img');
@@ -35,7 +35,7 @@
       mascot.setAttribute('aria-hidden','true');
       var img=document.createElement('img');
       img.alt='';
-      img.src=source&&source.currentSrc?source.currentSrc:(source&&source.src?source.src:'./coco-flex-eterna.jpg?v=1609425');
+      img.src=source&&source.currentSrc?source.currentSrc:(source&&source.src?source.src:'./coco-flex-eterna.jpg?v=1609426');
       mascot.appendChild(img);
       bar.insertBefore(mascot,bar.firstChild);
     }else if(source){
@@ -46,19 +46,19 @@
   }
 
   var style=document.createElement('style');
-  style.id='eterna-desktop-compact-v1609322';
+  style.id='eterna-desktop-compact-v1609323';
   style.textContent='@media (min-width:761px){'+
     '#eternaOverlayV159 .eternaV160ModeBar{display:grid!important;grid-template-columns:110px minmax(0,1fr)!important;align-items:center!important;gap:8px!important;min-height:0!important;padding:8px 10px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeBar>:not(.eternaV160ModeActions):not(.eternaV160CocoFlex){display:none!important;}'+
-    '#eternaOverlayV159 .eternaV160CocoFlex{grid-column:1!important;display:grid!important;place-items:center!important;width:104px!important;height:86px!important;overflow:hidden!important;pointer-events:none!important;}'+
-    '#eternaOverlayV159 .eternaV160CocoFlex img{display:block!important;width:78px!important;height:78px!important;object-fit:cover!important;object-position:center!important;border-radius:18px!important;filter:drop-shadow(0 4px 7px rgba(23,63,89,.12));animation:eternaCocoFlex1609322 1.8s ease-in-out infinite!important;transform-origin:50% 82%!important;}'+
+    '#eternaOverlayV159 .eternaV160CocoFlex{grid-column:1!important;display:grid!important;place-items:center!important;width:104px!important;height:86px!important;overflow:visible!important;pointer-events:none!important;}'+
+    '#eternaOverlayV159 .eternaV160CocoFlex img{display:block!important;width:78px!important;height:78px!important;object-fit:contain!important;object-position:center!important;border-radius:18px!important;filter:drop-shadow(0 4px 7px rgba(23,63,89,.12));animation:eternaCocoFlex1609323 5s ease-in-out infinite!important;transform-origin:50% 82%!important;}'+
     '#eternaOverlayV159 .eternaV160ModeActions{grid-column:2!important;display:grid!important;grid-template-columns:240px minmax(300px,1fr)!important;grid-template-rows:40px 40px!important;gap:6px 10px!important;align-items:stretch!important;justify-content:stretch!important;flex:0 1 690px!important;width:min(690px,100%)!important;max-width:690px!important;min-width:540px!important;margin-left:auto!important;}'+
     '#eternaOverlayV159 .eternaV160DesktopModeSelector{height:40px!important;padding:0 9px!important;border-radius:11px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeDropdownButton{height:38px!important;font-size:11.5px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160NewActivity{height:40px!important;min-height:40px!important;border-radius:11px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{min-height:86px!important;border-radius:13px!important;}'+
   '}'+
-  '@keyframes eternaCocoFlex1609322{0%,100%{transform:translateY(2px) rotate(-1deg) scale(1)}35%{transform:translateY(-3px) rotate(1deg) scale(1.035)}70%{transform:translateY(0) rotate(-.5deg) scale(1.015)}}'+
+  '@keyframes eternaCocoFlex1609323{0%,20%,100%{transform:translateY(0) rotate(0) scale(1)}5%{transform:translateY(-2px) rotate(-1deg) scale(1.02)}10%{transform:translateY(1px) rotate(1deg) scale(1.025)}15%{transform:translateY(-1px) rotate(-.5deg) scale(1.015)}}'+
   '@media (prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160CocoFlex img{animation:none!important;}}';
   document.head.appendChild(style);
 
