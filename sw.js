@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.29 · Eterna Coco profile frame */
-const CACHE_VERSION="coco-en-forma-v160.94.29-eterna-coco-profile-frame-r1";
+/* Coco en Forma · Service Worker v160.94.30 · Eterna Coco main-profile match */
+const CACHE_VERSION="coco-en-forma-v160.94.30-eterna-coco-main-profile-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
