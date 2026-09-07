@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.94.25 · Eterna desktop profile Coco */
-const CACHE_VERSION="coco-en-forma-v160.94.25-eterna-desktop-profile-coco-r1";
+/* Coco en Forma · Service Worker v160.94.26 · Eterna desktop profile Coco motion */
+const CACHE_VERSION="coco-en-forma-v160.94.26-eterna-desktop-profile-coco-motion-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
