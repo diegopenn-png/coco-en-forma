@@ -1,6 +1,6 @@
 import "../../eterna-state-contract-v3.js";
 
-/* ETERNA v160.96.3 · Baja latencia + inteligencia plena + seguridad útil
+/* ETERNA v160.96.4 · Respuesta adaptativa + inteligencia plena + seguridad útil
  * Release Candidate construido exclusivamente sobre el Worker desplegado 160.9-scope-tutor3.
  * Mantiene Scope Gate + tutor + verifier + vision + speech + transcription + Stripe.
  * Conserva legal, pagos, scope, safety, memoria, límites y pedagogía adaptativa.
@@ -13,7 +13,7 @@ import "../../eterna-state-contract-v3.js";
  */
 const OUT_SCOPE="Soy una IA tutora escolar. Este espacio está centrado en el colegio y el aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.96.3-low-latency-full-quality";
+const VERSION="160.96.4-adaptive-verification-low-latency";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -666,6 +666,65 @@ function reconcileModeState(mode,incoming,proposed,{assessment="not_applicable",
 function containsStandaloneNumber(text,value){const s=String(text||""),v=String(value),e=v.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");return new RegExp(`(^|[^0-9])${e}([^0-9]|$)`).test(s)}
 function safeMathHint(mathCheck,mode){if(!mathCheck||mathCheck.type!=="arithmetic")return null;const a=mathCheck.a,b=mathCheck.b,op=mathCheck.op;if(mode==="review"&&["x","×","*"].includes(op))return{reply:`Ese resultado necesita revisión. Comprueba ${a} grupos de ${b} sin mirar una solución final. Puedes empezar ${b}, ${b*2}, ${b*3}… y continuar tú. ¿Qué resultado obtienes?`,practice:`Continúa contando de ${b} en ${b} hasta tener ${a} grupos y escribe el resultado que obtengas.`};if(mode==="exam")return{reply:"Esa respuesta necesita revisión. Vuelve a intentarlo con una estrategia que conozcas; todavía no te doy el resultado final.",practice:null};if(mode==="practice"&&["x","×","*"].includes(op)){const sum=Number.isInteger(b)&&b>1&&b<=12?Array(b).fill(String(a)).join(" + "):`${b} grupos de ${a}`;return{reply:`Incorrecto. Revisa ${a} × ${b} sin mirar todavía el resultado final. Puedes comprobarlo como ${sum}.`,practice:null}}if(mode==="practice")return{reply:`Incorrecto. Revisa ${mathCheck.expression} paso a paso; todavía no te doy el resultado final.`,practice:null};if(mode==="homework")return{reply:`Vas a poder sacarlo. Trabaja la operación ${mathCheck.expression} por partes y dime tu siguiente paso; todavía no te doy el resultado final.`,practice:"Haz solo el siguiente paso y escríbemelo para comprobarlo juntos."};return null}
 function numericStudentAnswer(text){const s=stripTurnPunctuation(text).replace(/,/g,".");if(!/^-?\d+(?:\.\d+)?$/.test(s))return null;const n=Number(s);return Number.isFinite(n)?n:null}
+function mathDisplayNumber(value){const n=Number(value);return Number.isInteger(n)?String(n):String(Number(n.toFixed(6)))}
+function simpleArithmeticInText(text){
+  const raw=String(text||"").replace(/,/g,".");
+  const fractionExpression=raw.match(/-?\d+\s*\/\s*\d+\s*[+\-*x×÷]\s*-?\d+\s*\/\s*\d+/);
+  if(fractionExpression)return deterministicMath(fractionExpression[0]);
+  const match=raw.match(/(-?\d+(?:\.\d+)?)\s*([+\-*x×÷/])\s*(-?\d+(?:\.\d+)?)/);
+  if(!match)return null;
+  return deterministicMath(`${match[1]} ${match[2]} ${match[3]}`)
+}
+function pendingNumericEquation(question){
+  const raw=String(question||"").replace(/,/g,"."),direct=deterministicMath(raw)||simpleArithmeticInText(raw);
+  if(direct&&direct.type==="arithmetic"&&Number.isFinite(Number(direct.result)))return{expected:Number(direct.result),filled:`${direct.expression} = ${mathDisplayNumber(direct.result)}`,math:direct};
+  let match=raw.match(/(-?\d+(?:\.\d+)?)\s*([+\-*x×÷/])\s*(?:[□▢◻_?]+)\s*=\s*(-?\d+(?:\.\d+)?)/);
+  if(match){
+    const a=Number(match[1]),target=Number(match[3]),op=match[2]==="x"||match[2]==="×"?"*":match[2]==="÷"?"/":match[2];let expected=NaN;
+    if(op==="+")expected=target-a;else if(op==="-")expected=a-target;else if(op==="*"&&a!==0)expected=target/a;else if(op==="/"&&target!==0)expected=a/target;
+    if(Number.isFinite(expected))return{expected,filled:`${mathDisplayNumber(a)} ${op==="*"?"×":op==="/"?"÷":op} ${mathDisplayNumber(expected)} = ${mathDisplayNumber(target)}`,math:{type:"missing_operand",a,target,op,side:"right"}}
+  }
+  match=raw.match(/(?:[□▢◻_?]+)\s*([+\-*x×÷/])\s*(-?\d+(?:\.\d+)?)\s*=\s*(-?\d+(?:\.\d+)?)/);
+  if(match){
+    const b=Number(match[2]),target=Number(match[3]),op=match[1]==="x"||match[1]==="×"?"*":match[1]==="÷"?"/":match[1];let expected=NaN;
+    if(op==="+")expected=target-b;else if(op==="-")expected=target+b;else if(op==="*"&&b!==0)expected=target/b;else if(op==="/")expected=target*b;
+    if(Number.isFinite(expected))return{expected,filled:`${mathDisplayNumber(expected)} ${op==="*"?"×":op==="/"?"÷":op} ${mathDisplayNumber(b)} = ${mathDisplayNumber(target)}`,math:{type:"missing_operand",b,target,op,side:"left"}}
+  }
+  return null
+}
+function deterministicArithmeticGuidanceTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject,concept,mathCheck}={}){
+  if(mode!=="homework"||turnRel==="answer_to_pending"||!mathCheck||mathCheck.type!=="arithmetic")return null;
+  const a=Number(mathCheck.a),b=Number(mathCheck.b),result=Number(mathCheck.result),op=mathCheck.op,activeSubject=subject||"Matemáticas",activeConcept=concept||({"/":"división","*":"multiplicación","+":"suma","-":"resta"}[op]||"cálculo");
+  if(![a,b,result].every(Number.isFinite))return null;
+  let reply,check;
+  if(op==="/"&&Number.isInteger(a)&&Number.isInteger(b)&&Number.isInteger(result)){
+    reply=`Vamos paso a paso. Convierte la división en su multiplicación inversa: busca cuántos grupos de ${mathDisplayNumber(b)} forman ${mathDisplayNumber(a)}. Así puedes encontrarlo sin que te dé el resultado.`;
+    check=`¿Qué número completa ${mathDisplayNumber(b)} × □ = ${mathDisplayNumber(a)}?`
+  }else if(op==="*"){
+    reply=`Vamos paso a paso. Puedes interpretar ${mathDisplayNumber(a)} × ${mathDisplayNumber(b)} como ${mathDisplayNumber(b)} grupos de ${mathDisplayNumber(a)} y sumar esos grupos con orden.`;
+    check=`¿Cuánto es ${mathDisplayNumber(a)} × ${mathDisplayNumber(b)}?`
+  }else if(op==="+"){
+    reply="Vamos paso a paso. Separa decenas y unidades, suma primero cada parte y después júntalas. Haz tú el cálculo final.";
+    check=`¿Cuánto es ${mathDisplayNumber(a)} + ${mathDisplayNumber(b)}?`
+  }else if(op==="-"){
+    reply="Vamos paso a paso. Empieza por las unidades, continúa con las decenas y comprueba al final con la suma inversa.";
+    check=`¿Cuánto es ${mathDisplayNumber(a)} - ${mathDisplayNumber(b)}?`
+  }else return null;
+  const tutorOutput={help_level:1,expected_answer_type:"numeric",expected_key_ideas:[mathDisplayNumber(result)],likely_misconceptions:[],conversation_stage:"awaiting_student_answer",strategy_used:"step_by_step",tutor_act:"ask_numeric",new_explained_points:[`Estrategia para ${activeConcept}`],needs_clarification:false},pedagogical_state=buildPedagogicalState({incoming:incomingPedState,mode,subject:activeSubject,concept:activeConcept,tutorOutput,assessment:"not_applicable",finalCheck:check,turnRel});
+  return{reply,verification_status:"verified",subject:activeSubject,concept:activeConcept,help_level:1,check_question:check,practice_suggestion:"Resuelve solo este paso y escríbelo para comprobarlo juntos.",student_answer_assessment:"not_applicable",strategy_used:"step_by_step",mode_label:MODE_PROFILES.homework.label,mode_state:sanitizeModeState(incomingModeState),pedagogical_state,source_links:[],auto_speak:false,deterministic_arithmetic_guidance:true}
+}
+function deterministicPendingNumericTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject,concept}={}){
+  if(!["homework","review","ask","explain"].includes(mode)||turnRel!=="answer_to_pending")return null;
+  const pending=String(incomingPedState?.pending_question||"").trim(),student=numericStudentAnswer(text),equation=pendingNumericEquation(pending),idea=(incomingPedState?.expected_key_ideas||[]).map(numericStudentAnswer).find(Number.isFinite),expected=equation?equation.expected:idea;
+  if(!pending||student==null||!Number.isFinite(Number(expected)))return null;
+  const correct=Math.abs(student-Number(expected))<1e-9,assessment=correct?"correct":"incorrect",activeSubject=subject||incomingPedState?.active_subject||"Matemáticas",activeConcept=concept||incomingPedState?.active_concept||"cálculo",check=correct?null:pending,help=correct?0:2;
+  let reply;
+  if(correct)reply=equation?`Correcto. ${equation.filled}. Has resuelto este paso por ti mismo.`:`Correcto. ${mathDisplayNumber(student)} es la respuesta esperada. Has resuelto este paso por ti mismo.`;
+  else if(equation?.math?.type==="missing_operand"&&equation.math.side==="right"&&equation.math.op==="*")reply=`Incorrecto. Comprueba tu intento: ${mathDisplayNumber(equation.math.a)} × ${mathDisplayNumber(student)} = ${mathDisplayNumber(equation.math.a*student)}, y debe llegar a ${mathDisplayNumber(equation.math.target)}. Usa la tabla de multiplicar e inténtalo de nuevo.`;
+  else reply="Incorrecto. Comprueba la operación con la inversa o rehace el último paso, pero mantén el mismo ejercicio e inténtalo de nuevo.";
+  const tutorOutput={help_level:help,expected_answer_type:check?"numeric":"none",expected_key_ideas:check?[mathDisplayNumber(expected)]:[],likely_misconceptions:[],conversation_stage:check?"awaiting_student_answer":"complete",strategy_used:correct?"retrieval_practice":"socratic_question",tutor_act:check?"ask_numeric":"correct",new_explained_points:[],needs_clarification:false},pedagogical_state=buildPedagogicalState({incoming:incomingPedState,mode,subject:activeSubject,concept:activeConcept,tutorOutput,assessment,finalCheck:check,turnRel});
+  return{reply,verification_status:"verified",subject:activeSubject,concept:activeConcept,help_level:help,check_question:check,practice_suggestion:check?"Corrige únicamente este paso y vuelve a intentarlo.":null,student_answer_assessment:assessment,strategy_used:tutorOutput.strategy_used,mode_label:(MODE_PROFILES[mode]||MODE_PROFILES.homework).label,mode_state:sanitizeModeState(incomingModeState),pedagogical_state,source_links:[],auto_speak:false,deterministic_pending_numeric:true}
+}
 function gcdInt(a,b){a=Math.abs(Math.trunc(a));b=Math.abs(Math.trunc(b));while(b){const t=a%b;a=b;b=t}return a||1}
 function normalizedFraction(n,d){n=Number(n);d=Number(d);if(!Number.isInteger(n)||!Number.isInteger(d)||d===0)return null;if(d<0){n=-n;d=-d}const g=gcdInt(n,d);return{n:n/g,d:d/g}}
 function fractionDenominatorFromWord(value){const word=normalizeDetectionText(value).replace(/\s+/g,"").replace(/s$/,"");return({medio:2,media:2,tercio:3,tercera:3,cuarto:4,cuarta:4,quinto:5,quinta:5,sexto:6,sexta:6,septimo:7,septima:7,octavo:8,octava:8,noveno:9,novena:9,decimo:10,decima:10})[word]||null}
@@ -1065,6 +1124,17 @@ function stableSchoolKnowledge(text,scope,mode,image){
   if(!["explain","ask","practice","homework","review","exam"].includes(mode))return false;
   return true
 }
+function synchronousVerificationRequired({image,mode,turnRel,scope,stableSchool,externalEvidence,mathCheck,answerAnchor,tutorData,text}={}){
+  if(image||mode==="review"||externalEvidence||!stableSchool)return true;
+  if(scope?.sensitive_topic||scope?.unsafe_action||scope?.needs_clarification)return true;
+  if(String(text||"").length>1800)return true;
+  if(turnRel==="answer_to_pending"){
+    const locallyGrounded=Boolean(answerAnchor?.assessment==="correct"||mathCheck&&Number.isFinite(Number(mathCheck.result)));
+    if(!locallyGrounded)return true
+  }
+  if(["incorrect","partial"].includes(String(tutorData?.student_answer_assessment||""))&&!mathCheck&&!answerAnchor)return true;
+  return false
+}
 function verificationFallbackForMode(mode){
   const map={
     homework:"Estoy teniendo un problema temporal para comprobar este ejercicio. Puedes intentarlo de nuevo sin volver a escribirlo.",
@@ -1162,7 +1232,14 @@ async function handleChatCore(request,env,auth,event,timings){
   const answerAnchor=turnRel==="answer_to_pending"?expectedIdeaMatch(text,incomingPedState):null;
   if(["confusion_request","simplification_request"].includes(turnRel))deferWork(event,"previous-strategy-learning",()=>learnPrev(env,uid,{history,pedState:incomingPedState,subject:effectiveSubject,turnRel,assessment:"not_applicable"}));
   const factAnchor=stableFactAnchorForTurn(text,turnRel,incomingPedState,history,{...scope,subject:effectiveSubject,concept:effectiveConcept}),directKnowledge=directKnowledgeQuestion(text,image,scope,turnRel)||(["continuation_request","detail_request","why_request","example_request","confusion_request","simplification_request","technical_request"].includes(turnRel)&&Boolean(factAnchor));
-  const curriculum=await retrieveCurriculum(env,ctx.profile,effectiveSubject,effectiveConcept),pendingMathCheck=turnRel==="answer_to_pending"&&incomingPedState.pending_question&&/matem/i.test(effectiveSubject||"")?deterministicMath(incomingPedState.pending_question):null,mathCheck=/matem/i.test(effectiveSubject||"")?(pendingMathCheck||deterministicMath(text)):null;let externalEvidence=null;timings?.mark("curriculum");
+  const pendingMathCheck=turnRel==="answer_to_pending"&&incomingPedState.pending_question&&/matem/i.test(effectiveSubject||"")?deterministicMath(incomingPedState.pending_question):null,mathCheck=/matem/i.test(effectiveSubject||"")?(pendingMathCheck||deterministicMath(text)||simpleArithmeticInText(text)):null;
+  const deterministicPendingNumeric=deterministicPendingNumericTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject:effectiveSubject,concept:effectiveConcept});
+  if(deterministicPendingNumeric){
+    timings?.mark("deterministic");deferWork(event,"deterministic-pending-numeric",async()=>{let conceptId=null;try{const rows=await retrieveCurriculum(env,ctx.profile,deterministicPendingNumeric.subject,deterministicPendingNumeric.concept);conceptId=rows?.[0]?.id||null;await Promise.all([applyStudentMemory(env,uid,{subject:deterministicPendingNumeric.subject,concept:deterministicPendingNumeric.concept,conceptId,outcome:deterministicPendingNumeric.student_answer_assessment,help:deterministicPendingNumeric.help_level}),applyMasteryOutcome(env,uid,conceptId,{outcome:deterministicPendingNumeric.student_answer_assessment,help:deterministicPendingNumeric.help_level}),learnPrev(env,uid,{history,pedState:incomingPedState,subject:deterministicPendingNumeric.subject,turnRel,assessment:deterministicPendingNumeric.student_answer_assessment})])}catch(e){}await logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"verified",subject:deterministicPendingNumeric.subject,concept:deterministicPendingNumeric.concept,help:deterministicPendingNumeric.help_level,modelRoute:"deterministic-pending-numeric-v1",mode,strategy:deterministicPendingNumeric.strategy_used,visionConfidence:vision?.confidence})});return json(deterministicPendingNumeric)
+  }
+  const deterministicArithmeticGuidance=deterministicArithmeticGuidanceTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject:effectiveSubject,concept:effectiveConcept,mathCheck});
+  if(deterministicArithmeticGuidance){timings?.mark("deterministic");deferWork(event,"deterministic-arithmetic-guidance",()=>logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"verified",subject:deterministicArithmeticGuidance.subject,concept:deterministicArithmeticGuidance.concept,help:deterministicArithmeticGuidance.help_level,modelRoute:"deterministic-arithmetic-guidance-v1",mode,strategy:deterministicArithmeticGuidance.strategy_used,visionConfidence:vision?.confidence}));return json(deterministicArithmeticGuidance)}
+  const curriculum=await retrieveCurriculum(env,ctx.profile,effectiveSubject,effectiveConcept);let externalEvidence=null;timings?.mark("curriculum");
   const deterministicRiverTurn=deterministicSpanishRiverTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject:effectiveSubject,concept:effectiveConcept,focus:practiceTarget?.concept||incomingModeState.focus||incomingPedState.active_concept});
   if(deterministicRiverTurn){const conceptId=curriculum?.[0]?.id||null,assessment=deterministicRiverTurn.student_answer_assessment,help=deterministicRiverTurn.help_level,strategy=deterministicRiverTurn.strategy_used;deferWork(event,"deterministic-spanish-river",async()=>{try{await Promise.all([applyStudentMemory(env,uid,{subject:deterministicRiverTurn.subject,concept:deterministicRiverTurn.concept,conceptId,outcome:assessment,help}),applyMasteryOutcome(env,uid,conceptId,{outcome:assessment,help}),learnPrev(env,uid,{history,pedState:incomingPedState,subject:deterministicRiverTurn.subject,turnRel,assessment})])}catch(e){}await logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"verified",subject:deterministicRiverTurn.subject,concept:deterministicRiverTurn.concept,help,modelRoute:"deterministic-spanish-river-v1",mode,strategy,visionConfidence:vision?.confidence})});return json(deterministicRiverTurn)}
   const deterministicConceptCheck=deterministicConceptCheckTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject:effectiveSubject,concept:effectiveConcept,history});
@@ -1196,7 +1273,9 @@ async function handleChatCore(request,env,auth,event,timings){
   if(pendingMathCheck&&pendingMathCheck.type==="arithmetic"&&pendingStudentNumber!=null&&Number.isFinite(Number(pendingMathCheck.result))){
     tutorData={...tutorData,student_answer_assessment:Math.abs(pendingStudentNumber-Number(pendingMathCheck.result))<1e-9?"correct":"incorrect"};
   }
-  const v=await verify(env,{text,image,mode,scope:{...scope,subject:effectiveSubject,concept:effectiveConcept},curriculum,mathCheck,tutorOutput:tutorData,ctx,vision,externalEvidence,pedState:incomingPedState,history,turnRel,factAnchor,directKnowledge,answerAnchor});timings?.mark("verifier");
+  const verifyArgs={text,image,mode,scope:{...scope,subject:effectiveSubject,concept:effectiveConcept},curriculum,mathCheck,tutorOutput:tutorData,ctx,vision,externalEvidence,pedState:incomingPedState,history,turnRel,factAnchor,directKnowledge,answerAnchor},syncVerification=synchronousVerificationRequired({image,mode,turnRel,scope,stableSchool,externalEvidence,mathCheck,answerAnchor,tutorData,text});
+  let v={data:{verdict:"verified",verified:true,requires_clarification:false,blocking:false,issues:[],corrected_reply:null},usage:{}},verificationRoute=syncVerification?"synchronous":"asynchronous_audit";
+  if(syncVerification){v=await verify(env,verifyArgs);timings?.mark("verifier")}else timings?.mark("verifier_deferred");
   const firstVerifyUsage={input_tokens:Number(v.usage?.input_tokens||0),output_tokens:Number(v.usage?.output_tokens||0)},verifyDecision=normalizeVerifyDecision(v.data,{stableSchool,factAnchor,mathCheck,curriculum,externalEvidence});
   let verificationRepaired=false;
   if(verifyDecision.use_correction&&v.data.corrected_reply){tutorData={...tutorData,reply:cleanChildText(v.data.corrected_reply),needs_clarification:false};verificationRepaired=true}
@@ -1254,9 +1333,21 @@ ${pendingQuestion}`
   if(status==="verified"&&["exam","practice"].includes(mode)&&pendingQuestion){finalCheck=pendingQuestion;const embedded=embeddedStudentQuestion(reply);if(embedded&&normalizeDetectionText(embedded)===normalizeDetectionText(pendingQuestion))reply=stripTrailingStudentQuestion(reply,embedded)}
   if(status!=="verified"&&["exam","practice"].includes(mode)&&pendingQuestion)finalCheck=pendingQuestion;
   const finalModeState=reconcileModeState(mode,incomingModeState,tutorData.mode_state,{assessment,help:tutorData.help_level,checkQuestion:questionCountsAsNew?pendingQuestion:null,focus:practiceTarget?.concept||concept}),pedagogical_state=buildPedagogicalState({incoming:incomingPedState,mode,subject,concept,tutorOutput:tutorData,assessment,finalCheck:pendingQuestion,turnRel}),source_links=status==="verified"?sourceLinksForStudent(ctx,externalEvidence):[];
-  deferWork(event,"verified-chat-persistence",async()=>{await requestUsagePromise;if(status==="verified"&&assessment!=="not_applicable")await Promise.all([applyStudentMemory(env,uid,{subject,concept,conceptId,outcome:assessment,help:tutorData.help_level}),applyMasteryOutcome(env,uid,conceptId,{outcome:assessment,help:tutorData.help_level}),learnPrev(env,uid,{history,pedState:incomingPedState,subject,turnRel,assessment})]);await Promise.all([logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:status,subject,concept,help:tutorData.help_level,modelRoute:`${env.TUTOR_MODEL||"gpt-5.6-sol"}+verify${externalEvidence?"+"+externalEvidence.kind+"-web":""}`,mode,strategy:tutorData.strategy_used,visionConfidence:vision?.confidence}),bumpUsage(env,uid,tokenUsage,Boolean(image))]);if(status==="verified")await saveMem(env,uid,{subject,concept,scope,tutorData,reply,assessment,help:tutorData.help_level,image})});
+  deferWork(event,"verified-chat-persistence",async()=>{
+    await requestUsagePromise;
+    if(status==="verified"&&assessment!=="not_applicable")await Promise.all([applyStudentMemory(env,uid,{subject,concept,conceptId,outcome:assessment,help:tutorData.help_level}),applyMasteryOutcome(env,uid,conceptId,{outcome:assessment,help:tutorData.help_level}),learnPrev(env,uid,{history,pedState:incomingPedState,subject,turnRel,assessment})]);
+    await Promise.all([logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:status,subject,concept,help:tutorData.help_level,modelRoute:`${env.TUTOR_MODEL||"gpt-5.6-sol"}+${verificationRoute}${externalEvidence?"+"+externalEvidence.kind+"-web":""}`,mode,strategy:tutorData.strategy_used,visionConfidence:vision?.confidence}),bumpUsage(env,uid,tokenUsage,Boolean(image))]);
+    if(status==="verified")await saveMem(env,uid,{subject,concept,scope,tutorData,reply,assessment,help:tutorData.help_level,image});
+    if(!syncVerification){
+      try{
+        const shadow=await verify(env,verifyArgs),shadowDecision=normalizeVerifyDecision(shadow.data,{stableSchool,factAnchor,mathCheck,curriculum,externalEvidence}),shadowUsage={input_tokens:Number(shadow.usage?.input_tokens||0),output_tokens:Number(shadow.usage?.output_tokens||0)};
+        await bumpUsage(env,uid,shadowUsage,false);
+        if(shadowDecision.blocking)console.error("ETERNA ASYNC VERIFIER FLAG",shadowDecision.verdict,mode,String(subject||"").slice(0,80))
+      }catch(error){console.error("ETERNA ASYNC VERIFIER ERROR",String(error?.message||error))}
+    }
+  });
   timings?.mark("compose");
-  return json({reply,verification_status:status,subject,concept,help_level:tutorData.help_level,check_question:finalCheck,practice_suggestion:status==="verified"?practiceSuggestion:null,student_answer_assessment:assessment,strategy_used:tutorData.strategy_used,mode_label:MODE_PROFILES[mode].label,mode_state:finalModeState,pedagogical_state,practice_target:practiceTarget||null,vision_confidence:vision?.confidence||null,source_links,auto_speak:false,verification_repaired:verificationRepaired,verification_verdict:verifyDecision.verdict,retryable:status==="verification_conflict",error_kind:status==="verification_conflict"?"verification_temp":null})
+  return json({reply,verification_status:status,subject,concept,help_level:tutorData.help_level,check_question:finalCheck,practice_suggestion:status==="verified"?practiceSuggestion:null,student_answer_assessment:assessment,strategy_used:tutorData.strategy_used,mode_label:MODE_PROFILES[mode].label,mode_state:finalModeState,pedagogical_state,practice_target:practiceTarget||null,vision_confidence:vision?.confidence||null,source_links,auto_speak:false,verification_repaired:verificationRepaired,verification_route:verificationRoute,verification_verdict:syncVerification?verifyDecision.verdict:"deferred_audit",retryable:status==="verification_conflict",error_kind:status==="verification_conflict"?"verification_temp":null})
 }
 
 
@@ -1336,6 +1427,7 @@ function healthFeatures(env){return {
   flagship_tutor_model_v1:true,independent_balanced_verifier_v1:true,configurable_reasoning_effort_v1:true,strict_structured_outputs_v1:true,
   parallel_chat_preflight_v1:true,deferred_chat_persistence_v1:true,curriculum_warm_cache_v1:true,
   background_result_long_poll_v1:true,server_timing_v1:true,prompt_cache_routing_v1:true,
+  deterministic_arithmetic_guidance_v1:true,deterministic_pending_numeric_v1:true,adaptive_sync_verification_v1:true,asynchronous_verifier_audit_v1:true,
   payments_code_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET)
 }}
 function modelConfiguration(env){return{

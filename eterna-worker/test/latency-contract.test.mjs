@@ -43,7 +43,12 @@ function loadApi(fetchImpl = fetch) {
     clearAcademicFastPath,
     createChatTimings,
     modelConfiguration,
-    openaiServiceTier
+    openaiServiceTier,
+    simpleArithmeticInText,
+    pendingNumericEquation,
+    deterministicArithmeticGuidanceTurn,
+    deterministicPendingNumericTurn,
+    synchronousVerificationRequired
   };`, sandbox);
   return sandbox.__latencyApi;
 }
@@ -90,6 +95,68 @@ test("obvious school prompts skip only the scope model while unsafe operations d
   assert.equal(api.clearAcademicFastPath("Recomiéndame una película para esta noche", profile, "ask"), null);
 });
 
+test("routine arithmetic help and its numeric reply avoid both model round trips", () => {
+  const api = loadApi();
+  const math = api.simpleArithmeticInText("Tengo que resolver 48 ÷ 6. ¿Me ayudas paso a paso sin darme el resultado directamente?");
+  assert.equal(math?.type, "arithmetic");
+  assert.equal(math?.result, 8);
+
+  const first = api.deterministicArithmeticGuidanceTurn({
+    mode: "homework",
+    text: "Tengo que resolver 48 ÷ 6. ¿Me ayudas paso a paso sin darme el resultado directamente?",
+    turnRel: "new_topic",
+    incomingModeState: {},
+    incomingPedState: {},
+    subject: "Matemáticas",
+    concept: "división",
+    mathCheck: math,
+  });
+  assert.equal(first?.deterministic_arithmetic_guidance, true);
+  assert.equal(first?.student_answer_assessment, "not_applicable");
+  assert.equal(first?.check_question, "¿Qué número completa 6 × □ = 48?");
+  assert.doesNotMatch(first?.reply || "", /(?:^|\D)8(?:\D|$)/);
+  assert.deepEqual(JSON.parse(JSON.stringify(first?.pedagogical_state?.expected_key_ideas)), ["8"]);
+
+  const correct = api.deterministicPendingNumericTurn({
+    mode: "homework",
+    text: "8",
+    turnRel: "answer_to_pending",
+    incomingModeState: {},
+    incomingPedState: first.pedagogical_state,
+    subject: "Matemáticas",
+    concept: "división",
+  });
+  assert.equal(correct?.deterministic_pending_numeric, true);
+  assert.equal(correct?.student_answer_assessment, "correct");
+  assert.equal(correct?.check_question, null);
+  assert.match(correct?.reply || "", /6 × 8 = 48/);
+
+  const wrong = api.deterministicPendingNumericTurn({
+    mode: "homework",
+    text: "7",
+    turnRel: "answer_to_pending",
+    incomingModeState: {},
+    incomingPedState: first.pedagogical_state,
+    subject: "Matemáticas",
+    concept: "división",
+  });
+  assert.equal(wrong?.student_answer_assessment, "incorrect");
+  assert.equal(wrong?.check_question, first.check_question);
+  assert.match(wrong?.reply || "", /^Incorrecto\./);
+  assert.doesNotMatch(wrong?.reply || "", /(?:^|\D)8(?:\D|$)/);
+});
+
+test("verification blocks only risky turns while routine school replies are audited after delivery", () => {
+  const api = loadApi();
+  const routine = { mode: "ask", turnRel: "new_topic", scope: { scope: "school" }, stableSchool: true, text: "¿Por qué flotan los barcos?", tutorData: { student_answer_assessment: "not_applicable" } };
+  assert.equal(api.synchronousVerificationRequired(routine), false);
+  assert.equal(api.synchronousVerificationRequired({ ...routine, image: "data:image/png;base64,AA==" }), true);
+  assert.equal(api.synchronousVerificationRequired({ ...routine, mode: "review" }), true);
+  assert.equal(api.synchronousVerificationRequired({ ...routine, scope: { scope: "school", sensitive_topic: true } }), true);
+  assert.equal(api.synchronousVerificationRequired({ ...routine, turnRel: "answer_to_pending" }), true);
+  assert.equal(api.synchronousVerificationRequired({ ...routine, turnRel: "answer_to_pending", answerAnchor: { assessment: "correct" } }), false);
+});
+
 test("full-quality model route is unchanged and paid priority is opt-in", () => {
   const api = loadApi();
   const defaults = JSON.parse(JSON.stringify(api.modelConfiguration({})));
@@ -115,6 +182,8 @@ test("response-ready work is deferred, timed and stored before background persis
   assert.match(chat.slice(persistence, response), /await\s+(?:saveMem|logInteraction|bumpUsage|applyStudentMemory|applyMasteryOutcome)\s*\(/);
   assert.match(source, /"Server-Timing"/);
   assert.match(source, /"X-Eterna-Latency-Ms"/);
+  assert.match(chat, /verificationRoute=syncVerification\?"synchronous":"asynchronous_audit"/);
+  assert.match(chat, /if\(!syncVerification\)\{/);
 
   const jobs = sourceBetween("async function handleChatJob(", "async function handleTranscribe(");
   assert.ok(jobs.indexOf("await putChatJob(uid,id,payload)") < jobs.indexOf("await Promise.allSettled(deferred)"));
