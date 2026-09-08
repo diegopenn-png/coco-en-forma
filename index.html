@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Coco en Forma + Eterna | Apoyo escolar personalizado">
 <meta name="twitter:description" content="Foto, voz o texto. Eterna guía al alumno paso a paso y aprende qué ayuda necesita para avanzar.">
-<meta name="twitter:image" content="https://www.cocoenforma.com/share/eterna.png?v=15900"><link rel="manifest" href="./manifest.webmanifest?v=160960" type="application/manifest+json">
+<meta name="twitter:image" content="https://www.cocoenforma.com/share/eterna.png?v=15900"><link rel="manifest" href="./manifest.webmanifest?v=160962" type="application/manifest+json">
 <link rel="icon" type="image/png" sizes="48x48" href="./favicon.png?v=1420">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=1420">
 <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=1420">
@@ -1097,11 +1097,12 @@ body{min-height:100dvh}
   }
 
   function registerPwa() {
-    if (!("serviceWorker" in navigator) || location.protocol === "file:" || window.__cocoPwaV135Registered) return;
+    if (!("serviceWorker" in navigator) || location.protocol === "file:" || window.__COCO_PWA_REGISTRATION_OWNER__ || window.__cocoPwaV135Registered) return;
+    window.__COCO_PWA_REGISTRATION_OWNER__ = "index-v160962";
     window.__cocoPwaV135Registered = true;
-    var hadController = Boolean(navigator.serviceWorker.controller), reloading = false;
+    var hadController = Boolean(navigator.serviceWorker.controller), reloading = false, reloadKey = "coco_pwa_controller_reload_v160962";
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register(new URL("sw.js?v=160960-r1",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
+      navigator.serviceWorker.register(new URL("sw.js?v=160962-r1",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
         function offerUpdate(worker) {
           if (!worker || !hadController || document.querySelector(".cocoV134Update")) return;
           var app = document.getElementById("cocoApp") || document.body, button = document.createElement("button");
@@ -1120,6 +1121,11 @@ body{min-height:100dvh}
       }).catch(function () {});
       navigator.serviceWorker.addEventListener("controllerchange", function () {
         if (!hadController || reloading) return;
+        try {
+          var previousReload = Number(sessionStorage.getItem(reloadKey) || 0);
+          if (Date.now() - previousReload < 15000) return;
+          sessionStorage.setItem(reloadKey, String(Date.now()));
+        } catch (_) {}
         reloading = true;
         location.reload();
       });
@@ -7693,7 +7699,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   #cocoApp .memoriaCara { transition: none !important; }
 }
 </style>
-<script id="coco-v149-runtime" src="./coco-v142-runtime.js?v=160960"></script>
+<script id="coco-v149-runtime" src="./coco-v142-runtime.js?v=160962"></script>
 <script id="coco-variety-director-v160960" src="./coco-variety-director-v160960.js?v=160960"></script>
 <script id="coco-v149-unified" src="./coco-v142-unified.js?v=160932"></script>
 <script id="coco-v149-core" src="./coco-v144-core.js?v=15001"></script>

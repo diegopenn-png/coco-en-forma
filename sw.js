@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.96.0 · Eterna intelligence + game variety */
-const CACHE_VERSION="coco-en-forma-v160.96.0-launch-excellence-r1";
+/* Coco en Forma · Service Worker v160.96.2 · single PWA registration owner */
+const CACHE_VERSION="coco-en-forma-v160.96.2-pwa-single-owner-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

@@ -570,11 +570,12 @@
   }
 
   function registerPwa() {
-    if (!("serviceWorker" in navigator) || location.protocol === "file:" || window.__cocoPwaV142Registered) return;
+    if (!("serviceWorker" in navigator) || location.protocol === "file:" || window.__COCO_PWA_REGISTRATION_OWNER__ || window.__cocoPwaV142Registered) return;
+    window.__COCO_PWA_REGISTRATION_OWNER__ = "runtime-v160962";
     window.__cocoPwaV142Registered = true;
-    var hadController = Boolean(navigator.serviceWorker.controller), reloading = false;
+    var hadController = Boolean(navigator.serviceWorker.controller), reloading = false, reloadKey = "coco_pwa_controller_reload_v160962";
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register(new URL("sw.js",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname}).then(function (registration) {
+      navigator.serviceWorker.register(new URL("sw.js?v=160962-r1",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
         function offerUpdate(worker) {
           if (!worker || !hadController || document.querySelector(".cocoV134Update")) return;
           var app = document.getElementById("cocoApp") || document.body, button = document.createElement("button");
@@ -589,9 +590,15 @@
             if (worker.state === "installed") offerUpdate(worker);
           });
         });
+        if (navigator.onLine !== false) try { registration.update(); } catch (_) {}
       }).catch(function () {});
       navigator.serviceWorker.addEventListener("controllerchange", function () {
         if (!hadController || reloading) return;
+        try {
+          var previousReload = Number(sessionStorage.getItem(reloadKey) || 0);
+          if (Date.now() - previousReload < 15000) return;
+          sessionStorage.setItem(reloadKey, String(Date.now()));
+        } catch (_) {}
         reloading = true;
         location.reload();
       });

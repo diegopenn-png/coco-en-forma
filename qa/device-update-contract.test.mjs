@@ -1,13 +1,24 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import vm from "node:vm";
 
 const index = readFileSync("index.html", "utf8");
 const reto = readFileSync("coco-reto-2026-v160908.js", "utf8");
 const serviceWorker = readFileSync("sw.js", "utf8");
+const runtime = readFileSync("coco-v142-runtime.js", "utf8");
+const legacyRuntime = readFileSync("coco-v141-runtime.js", "utf8");
+const pwaManager = readFileSync("coco-v152-pwa.js", "utf8");
 const manifest = JSON.parse(readFileSync("manifest.webmanifest", "utf8"));
 const workflow = readFileSync(".github/workflows/eterna-authenticated-preview.yml", "utf8");
 const browserQa = readFileSync("qa/device-update-browser.mjs", "utf8");
+
+function extractPwaRegistrar(source) {
+  const start = source.indexOf("  function registerPwa() {");
+  const end = source.indexOf("\n\n  window.CocoRotationV134", start);
+  assert.ok(start >= 0 && end > start, "PWA registrar not found");
+  return source.slice(start, end);
+}
 
 const directScripts = [
   '<script id="coco-product-ux-v160903" src="./coco-release-v160903.js?v=160960"></script>',
@@ -25,14 +36,14 @@ test("first visits load every production presentation layer without depending on
 });
 
 test("PWA clients request and activate the current release instead of retaining an old device cache", () => {
-  assert.match(index, /manifest\.webmanifest\?v=160960/);
-  assert.match(index, /sw\.js\?v=160960-r1/);
+  assert.match(index, /manifest\.webmanifest\?v=160962/);
+  assert.match(index, /sw\.js\?v=160962-r1/);
   assert.match(index, /updateViaCache:"none"/);
   assert.match(index, /registration\.update\(\)/);
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.96\.0-launch-excellence-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.96\.2-pwa-single-owner-r1"/);
   for (const asset of [
     "coco-variety-director-v160960.js",
     "coco-release-v160903.js",
@@ -47,6 +58,61 @@ test("PWA clients request and activate the current release instead of retaining 
   assert.match(serviceWorker, /self\.clients\.claim\(\)/);
   assert.equal(manifest.orientation, "any");
   assert.equal(manifest.display, "standalone");
+});
+
+test("current and legacy PWA entry points share one owner and one canonical worker URL", () => {
+  const owner = "__COCO_PWA_REGISTRATION_OWNER__";
+  for (const source of [index, runtime, legacyRuntime, pwaManager]) assert.match(source, new RegExp(owner), owner);
+  assert.match(index, /__COCO_PWA_REGISTRATION_OWNER__ = "index-v160962"/);
+  assert.match(runtime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-v160962"/);
+  assert.match(legacyRuntime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-legacy-v160962"/);
+  assert.match(pwaManager, /__COCO_PWA_REGISTRATION_OWNER__="manager-v160962"/);
+  assert.match(index, /coco-v142-runtime\.js\?v=160962/);
+  assert.match(runtime, /sw\.js\?v=160962-r1/);
+  assert.match(legacyRuntime, /sw\.js\?v=160962-r1/);
+  assert.match(pwaManager, /SW_TAG="160962-r1"/);
+  assert.doesNotMatch(runtime, /new URL\("sw\.js",document\.baseURI\)/);
+  assert.doesNotMatch(legacyRuntime, /new URL\("sw\.js",document\.baseURI\)/);
+  assert.ok(index.indexOf('__COCO_PWA_REGISTRATION_OWNER__ = "index-v160962"') < index.indexOf('coco-v142-runtime.js?v=160962'));
+  assert.match(index, /Date\.now\(\) - previousReload < 15000/);
+  assert.match(runtime, /Date\.now\(\) - previousReload < 15000/);
+  assert.match(legacyRuntime, /Date\.now\(\) - previousReload < 15000/);
+});
+
+test("loading the production index and runtime schedules exactly one worker registration", async () => {
+  const loadListeners = [];
+  const registrations = [];
+  const registration = { waiting: null, installing: null, addEventListener() {}, update() {} };
+  const serviceWorker = {
+    controller: {},
+    register(url, options) {
+      registrations.push({ url, options });
+      return Promise.resolve(registration);
+    },
+    addEventListener() {},
+  };
+  const context = {
+    window: { addEventListener(type, listener) { if (type === "load") loadListeners.push(listener); } },
+    navigator: { serviceWorker, onLine: true },
+    location: { protocol: "https:", reload() {} },
+    document: { baseURI: "https://www.cocoenforma.com/", querySelector() { return null; }, getElementById() { return null; }, body: {} },
+    sessionStorage: { getItem() { return null; }, setItem() {} },
+    URL,
+    Boolean,
+    Date,
+    Number,
+    String,
+  };
+  vm.createContext(context);
+  vm.runInContext(`${extractPwaRegistrar(index)}\nregisterPwa();`, context);
+  vm.runInContext(`${extractPwaRegistrar(runtime)}\nregisterPwa();`, context);
+  assert.equal(context.window.__COCO_PWA_REGISTRATION_OWNER__, "index-v160962");
+  assert.equal(loadListeners.length, 1);
+  loadListeners[0]();
+  await Promise.resolve();
+  assert.equal(registrations.length, 1);
+  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160962-r1");
+  assert.equal(registrations[0].options.updateViaCache, "none");
 });
 
 test("Reto Coco owns deterministic mobile and desktop placement and reacts to device changes", () => {
