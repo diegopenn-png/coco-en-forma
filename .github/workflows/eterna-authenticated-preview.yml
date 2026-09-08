@@ -264,13 +264,24 @@ jobs:
           mkdir -p device-evidence/delivery
           while IFS='|' read -r profile user_agent; do
             output="device-evidence/delivery/${profile}.html"
-            curl --max-time 25 --compressed -fsS \
-              -H 'Cache-Control: no-cache' \
-              -H 'Pragma: no-cache' \
-              -A "$user_agent" \
-              "${PREVIEW_ORIGIN}/?device=${profile}&verify=${GITHUB_SHA}" \
-              -o "$output"
-            grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" "$output" >/dev/null
+            delivered=0
+            for attempt in {1..10}; do
+              if curl --max-time 25 --compressed -fsS \
+                -H 'Cache-Control: no-cache' \
+                -H 'Pragma: no-cache' \
+                -A "$user_agent" \
+                "${PREVIEW_ORIGIN}/?device=${profile}&verify=${GITHUB_SHA}-${profile}-${attempt}" \
+                -o "$output" \
+                && grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" "$output" >/dev/null; then
+                delivered=1
+                break
+              fi
+              sleep 2
+            done
+            if [[ "$delivered" -ne 1 ]]; then
+              echo "${profile} did not receive the exact preview revision after 10 attempts" >&2
+              exit 1
+            fi
             grep -F 'id="coco-product-ux-v160903"' "$output" >/dev/null
             grep -F 'id="coco-reto-2026-direct"' "$output" >/dev/null
             grep -F 'id="eterna-hotfix-v160902-direct"' "$output" >/dev/null
