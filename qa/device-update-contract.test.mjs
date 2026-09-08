@@ -67,6 +67,9 @@ test("the live preview gate covers representative devices, rotation, overflow an
     assert.match(browserQa, new RegExp(`width: ${dimensions}`), dimensions);
   }
   assert.match(browserQa, /serviceWorkers: "block"/);
+  assert.match(browserQa, /attempt <= 10/);
+  assert.match(browserQa, /"Cache-Control": "no-cache"/);
+  assert.match(browserQa, /verify=\$\{nonce\}/);
   assert.match(browserQa, /htmlScrollWidth <= profile\.width \+ 1/);
   assert.match(browserQa, /naturalWidth, 1200/);
   assert.match(browserQa, /naturalHeight, 1600/);

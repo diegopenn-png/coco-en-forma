@@ -130,7 +130,17 @@ async function preparePage(context, profileName) {
   const pageErrors = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   const suffix = encodeURIComponent(expectedCommit || Date.now());
-  await page.goto(`${base}/?device-qa=${encodeURIComponent(profileName)}&revision=${suffix}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
+  await page.setExtraHTTPHeaders({ "Cache-Control": "no-cache", Pragma: "no-cache" });
+  let observedCommit = "";
+  for (let attempt = 1; attempt <= 10; attempt += 1) {
+    const nonce = `${suffix}-${attempt}-${Date.now()}`;
+    await page.goto(`${base}/?device-qa=${encodeURIComponent(profileName)}&verify=${nonce}`, { waitUntil: "domcontentloaded", timeout: 45_000 });
+    observedCommit = await page.evaluate(() => window.__COCO_PREVIEW_COMMIT__ || "");
+    if (!expectedCommit || observedCommit === expectedCommit) break;
+    await page.waitForTimeout(1_500);
+  }
+  if (expectedCommit) assert.equal(observedCommit, expectedCommit, `${profileName}: el navegador no recibió la revisión actual después de 10 intentos`);
+  pageErrors.length = 0;
   await page.waitForFunction(() => {
     const image = document.querySelector("#cocoReto2026 img");
     return Boolean(
