@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.95.6 · Reto Coco exact equal cards */
-const CACHE_VERSION="coco-en-forma-v160.95.6-reto-coco-exact-equal-cards-r1";
+/* Coco en Forma · Service Worker v160.95.7 · Reto Coco visual integration */
+const CACHE_VERSION="coco-en-forma-v160.95.7-reto-coco-visual-integration-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -28,7 +28,7 @@ async function withRetoScript(response){
   try{
     let html=await response.text();
     if(html.indexOf('id="coco-reto-2026-direct"')===-1){
-      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160956"></script>';
+      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160957"></script>';
       html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag;
     }
     const headers=new Headers(response.headers);
