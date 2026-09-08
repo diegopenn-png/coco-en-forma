@@ -111,11 +111,11 @@ test("full intelligence is preserved while age adapts delivery and risk boundari
   assert.equal(api.reasoningEffort("high"), "high");
   assert.equal(api.reasoningEffort("unsupported", "medium"), "medium");
   assert.deepEqual(JSON.parse(JSON.stringify(api.modelConfiguration({}))), {
-    scope: { model: "gpt-5.6-luna", reasoning_effort: "low" },
-    tutor: { model: "gpt-5.6-sol", reasoning_effort: "high" },
-    verifier: { model: "gpt-5.6-terra", reasoning_effort: "high" },
-    vision: { model: "gpt-5.6-sol", reasoning_effort: "high" },
-    web_search: { model: "gpt-5.6-terra", reasoning_effort: "low" },
+    scope: { model: "gpt-5.6-luna", reasoning_effort: "low", service_tier: "default" },
+    tutor: { model: "gpt-5.6-sol", reasoning_effort: "high", service_tier: "default" },
+    verifier: { model: "gpt-5.6-terra", reasoning_effort: "high", service_tier: "default" },
+    vision: { model: "gpt-5.6-sol", reasoning_effort: "high", service_tier: "default" },
+    web_search: { model: "gpt-5.6-terra", reasoning_effort: "low", service_tier: "default" },
   });
 });
 
@@ -347,13 +347,15 @@ test("handler ordering makes safety and current-turn meaning authoritative", () 
   const safetyCategory = chat.indexOf("currentSafetyCategory=");
   const staleGuard = chat.indexOf("staleQuestionProblem(");
   const safetyRoute = chat.indexOf("if(currentSafetyCategory)");
-  const quota = chat.indexOf("const q=await quota(");
+  const preflight = chat.indexOf("getChatPreflight(env,auth)");
+  const quota = chat.indexOf("if(!q.ok)");
   const contextOverride = chat.indexOf("currentTurnOverridesContext=");
   const modelScope = chat.indexOf("classifyScope(");
 
   assert.ok(safetyCategory >= 0 && safetyCategory < staleGuard);
   assert.match(chat.slice(staleGuard - 80, staleGuard + 40), /!currentSafetyCategory&&!currentSituation/);
-  assert.ok(safetyRoute >= 0 && safetyRoute < quota);
+  assert.ok(safetyRoute >= 0 && safetyRoute < preflight);
+  assert.ok(preflight >= 0 && preflight < quota);
   assert.ok(contextOverride >= 0 && contextOverride < modelScope);
   assert.match(chat, /semanticNewTopic/);
   assert.match(chat, /nonEvaluable=\["new_topic"/);
@@ -366,6 +368,12 @@ test("full chat routing handles the audit message even when the client labels it
   });
   sandbox.getSubscription = async () => ({ status: "active" });
   sandbox.requireLegalState = async () => ({ ok: true });
+  sandbox.getChatPreflight = async () => ({
+    ctx: await sandbox.getStudentContext(),
+    subscription: { status: "active" },
+    legal: { accepted: true },
+    quota: { ok: true, settings: { allow_image_input: true } },
+  });
   sandbox.logInteraction = async () => {};
 
   const request = new Request("https://eterna.test/v1/chat", {

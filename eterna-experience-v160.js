@@ -1183,6 +1183,13 @@
     try{return clean(response&&response.headers&&response.headers.get("X-Eterna-Response-Id")||"")}catch(e){return""}
   }
 
+  function reportPreviewTiming(response){
+    try{
+      if(!/\.workers\.dev$/i.test(location.hostname)||!response||!response.headers)return;
+      console.info("ETERNA_TIMING",JSON.stringify({latency_ms:response.headers.get("X-Eterna-Latency-Ms")||null,job_ms:response.headers.get("X-Eterna-Job-Ms")||null,server_timing:response.headers.get("Server-Timing")||null}))
+    }catch(e){}
+  }
+
   function markResponseConsumed(responseId){
     responseId=clean(responseId);if(!responseId)return;
     consumedResponseIds.add(responseId);
@@ -1312,6 +1319,7 @@
 
   function handleChatResponse(response){
     if(!response||response.status===401)return;
+    reportPreviewTiming(response);
     if(!response.ok){clearThinkingStages();setLive("","");activeBackgroundJobId="";pendingJobClear()}
     response.clone().json().then(function(data){
       if(data&&data.pedagogical_state&&typeof data.pedagogical_state==="object")lastPedagogicalState=data.pedagogical_state;
