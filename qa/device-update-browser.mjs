@@ -56,12 +56,49 @@ async function inspect(page) {
     };
     const cardRect = rect(card);
     const imageRect = rect(image);
+    const imageStyle = image ? getComputedStyle(image) : null;
     const brandRect = rect(brand);
     const gamesRect = rect(games);
     const overlap = cardRect && gamesRect
       ? Math.max(0, Math.min(cardRect.right, gamesRect.right) - Math.max(cardRect.left, gamesRect.left))
         * Math.max(0, Math.min(cardRect.bottom, gamesRect.bottom) - Math.max(cardRect.top, gamesRect.top))
       : null;
+    let imagePixelSignal = null;
+    if (image && image.complete && image.naturalWidth > 0) {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 32;
+        canvas.height = 32;
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        let minimum = 255;
+        let maximum = 0;
+        let sum = 0;
+        let sumSquares = 0;
+        let chroma = 0;
+        for (let index = 0; index < pixels.length; index += 4) {
+          const red = pixels[index];
+          const green = pixels[index + 1];
+          const blue = pixels[index + 2];
+          const luma = (red + green + blue) / 3;
+          minimum = Math.min(minimum, luma);
+          maximum = Math.max(maximum, luma);
+          sum += luma;
+          sumSquares += luma * luma;
+          chroma += Math.max(red, green, blue) - Math.min(red, green, blue);
+        }
+        const samples = pixels.length / 4;
+        const mean = sum / samples;
+        imagePixelSignal = {
+          range: maximum - minimum,
+          variance: sumSquares / samples - mean * mean,
+          chroma: chroma / samples,
+        };
+      } catch (error) {
+        imagePixelSignal = { error: error instanceof Error ? error.message : String(error) };
+      }
+    }
     return {
       width: window.innerWidth,
       height: window.innerHeight,
@@ -82,6 +119,11 @@ async function inspect(page) {
       naturalWidth: image ? image.naturalWidth : 0,
       naturalHeight: image ? image.naturalHeight : 0,
       imageAlt: image ? image.alt : "",
+      imageCurrentSrc: image ? image.currentSrc : "",
+      imageDisplay: imageStyle ? imageStyle.display : "",
+      imageVisibility: imageStyle ? imageStyle.visibility : "",
+      imageOpacity: imageStyle ? Number(imageStyle.opacity) : 0,
+      imagePixelSignal,
       visible: Boolean(card && getComputedStyle(card).display !== "none" && getComputedStyle(card).visibility !== "hidden"),
       desktopPlacement: Boolean(card && brand && card.parentElement === brand && brand.firstElementChild === card),
       mobilePlacement: Boolean(card && games && brand && card.nextElementSibling === games && brand.previousElementSibling === games),
@@ -110,6 +152,14 @@ function assertSnapshot(profile, snapshot) {
   assert.equal(snapshot.naturalWidth, 1200, `${label}: ancho de imagen inesperado`);
   assert.equal(snapshot.naturalHeight, 1600, `${label}: alto de imagen inesperado`);
   assert.match(snapshot.imageAlt, /Reto Coco en Forma 2026/, `${label}: texto alternativo incompleto`);
+  assert.match(snapshot.imageCurrentSrc, /reto-coco-2026-v160958\.jpg/, `${label}: recurso visual incorrecto`);
+  assert.notEqual(snapshot.imageDisplay, "none", `${label}: imagen fuera del flujo visual`);
+  assert.equal(snapshot.imageVisibility, "visible", `${label}: imagen oculta por CSS`);
+  assert.ok(snapshot.imageOpacity >= 0.99, `${label}: imagen transparente`);
+  assert.ok(snapshot.imagePixelSignal && !snapshot.imagePixelSignal.error, `${label}: no se pudieron verificar los píxeles de la imagen`);
+  assert.ok(snapshot.imagePixelSignal.range >= 40, `${label}: la imagen renderizada carece de contraste`);
+  assert.ok(snapshot.imagePixelSignal.variance >= 100, `${label}: la imagen renderizada parece vacía`);
+  assert.ok(snapshot.imagePixelSignal.chroma >= 5, `${label}: la imagen renderizada carece de color`);
   assert.ok(snapshot.cardRect && snapshot.cardRect.width >= 250, `${label}: tarjeta demasiado estrecha`);
   assert.ok(snapshot.imageRect && Math.abs(snapshot.imageRect.height / snapshot.imageRect.width - 4 / 3) < 0.025, `${label}: proporción de imagen deformada`);
   assert.ok(snapshot.htmlScrollWidth <= profile.width + 1, `${label}: desbordamiento horizontal en html (${snapshot.htmlScrollWidth}px)`);
@@ -173,11 +223,18 @@ try {
     });
     try {
       const { page, pageErrors } = await preparePage(context, profile.name);
+      const card = page.locator("#cocoReto2026");
+      await card.scrollIntoViewIfNeeded();
+      await page.evaluate(async () => {
+        const image = document.querySelector("#cocoReto2026 img");
+        if (image && typeof image.decode === "function") await image.decode();
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      await page.waitForTimeout(300);
       const snapshot = await inspect(page);
       assertSnapshot(profile, snapshot);
       assert.deepEqual(pageErrors, [], `${profile.name}: errores JavaScript`);
-      await page.locator("#cocoReto2026").scrollIntoViewIfNeeded();
-      await page.locator("#cocoReto2026").screenshot({ path: path.join(evidenceDir, `${safeName(profile.name)}.png`) });
+      await card.screenshot({ path: path.join(evidenceDir, `${safeName(profile.name)}.png`) });
       results.push({ profile: profile.name, status: "PASS", snapshot });
       console.log(`PASS  ${profile.name} · ${profile.width}x${profile.height}`);
     } finally {
