@@ -1,4 +1,4 @@
-# Eterna Worker v160.94.5
+# Eterna Worker v160.96.0
 
 Worker independiente. **No sustituye ni modifica el Worker de Coco Med.**
 
@@ -22,6 +22,31 @@ autonomía y tipo de ayuda a Infantil, Primaria, ESO y Bachillerato. Exige trato
 digno, inclusivo y no adoctrinador; distingue hechos, interpretaciones y
 opiniones; admite incertidumbre; protege la privacidad; y evita fingir que
 Eterna es una persona o que tiene experiencias humanas.
+
+La edad adapta la presentación, el andamiaje y los límites de riesgo, no la
+calidad del razonamiento ni el acceso a conocimiento académico legítimo. Una
+pregunta avanzada recibe una respuesta rigurosa por capas. Una petición mixta
+conserva la parte educativa segura y rechaza solo la operación peligrosa.
+
+Cada modo tiene un contrato propio de entrada, enseñanza y cierre: tarea guía
+un paso sin hacerla por el alumno; pregunta responde primero; revisión localiza
+el primer error real; explicación construye el concepto; examen evalúa una
+pregunta cada vez; y práctica mantiene el foco hasta obtener evidencia de
+dominio. El estado transitorio puede suspender un tema y retomarlo por nombre o
+con expresiones como «volvamos a lo anterior», conservando la pregunta
+pendiente.
+
+## Ruta de modelos 160.96.0
+
+- Tutor y visión: `gpt-5.6-sol`, razonamiento `high`.
+- Verificador independiente: `gpt-5.6-terra`, razonamiento `high`.
+- Clasificación de alcance: `gpt-5.6-luna`, razonamiento `low`.
+- Consulta académica u oficial: `gpt-5.6-terra`, razonamiento `low`.
+
+`/health` publica esta configuración no secreta para que preview y producción
+fallen antes de aceptar una versión que conserve por error un modelo anterior.
+Los despliegues mantienen los secretos existentes y fijan explícitamente esta
+ruta de modelos.
 
 Las consultas del tiempo requieren una ciudad y usan una fuente oficial de
 AEMET. Eterna pregunta qué ciudad se quiere consultar, no la ubicación del
@@ -52,6 +77,8 @@ Para pagos Stripe:
 Opcional:
 
 - `EXPOSE_ERRORS=false`
+- `ENABLE_ACADEMIC_WEB_SEARCH=true`
+- `ENABLE_OFFICIAL_WEB_SEARCH=true`
 
 El acceso de usuario máster no depende de correos publicados ni de variables de
 entorno: el Worker lo concede únicamente cuando el perfil autenticado tiene el

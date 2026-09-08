@@ -70,6 +70,9 @@ jobs:
         working-directory: eterna-worker
         run: npm run check
 
+      - name: Check first-visit, responsive and update contracts
+        run: node --test qa/eterna-preview-parity.test.mjs qa/device-update-contract.test.mjs
+
       - name: Upload isolated API preview
         working-directory: eterna-worker
         shell: bash
@@ -78,6 +81,16 @@ jobs:
           npx wrangler versions upload \
             --name coco-eterna-v159 \
             --keep-vars \
+            --var "SCOPE_MODEL:gpt-5.6-luna" \
+            --var "SCOPE_REASONING_EFFORT:low" \
+            --var "TUTOR_MODEL:gpt-5.6-sol" \
+            --var "TUTOR_REASONING_EFFORT:high" \
+            --var "VERIFIER_MODEL:gpt-5.6-terra" \
+            --var "VERIFIER_REASONING_EFFORT:high" \
+            --var "VISION_MODEL:gpt-5.6-sol" \
+            --var "VISION_REASONING_EFFORT:high" \
+            --var "WEB_SEARCH_MODEL:gpt-5.6-terra" \
+            --var "WEB_SEARCH_REASONING_EFFORT:low" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee authenticated-preview-api.log
 
           api_preview_url="$(sed -n 's/^Version Preview URL: //p' authenticated-preview-api.log | tail -1)"
@@ -106,22 +119,35 @@ jobs:
             "s#https://coco-eterna-v159.chatinmobiliario.workers.dev#${API_PREVIEW_URL}#g" \
             preview-dist/index.html
 
+          # Production composes these presentation layers through the Service
+          # Worker. The preview intentionally disables that cache, so inject the
+          # same layers as ordinary scripts to keep visual and behavioural parity.
+          node qa/eterna/inject-preview-parity.mjs preview-dist/index.html
+
           # The QA origin must always serve the current PR head. Disable the
           # production PWA cache in the isolated preview and replace any
           # previously installed preview worker with a one-shot cleanup worker.
           sed -i \
-            's#<head>#<head><script>window.__cocoPwaV135Registered=true;window.__cocoPwaV16043Booted=true;</script>#' \
+            "s#<head>#<head><script>window.__cocoPwaV135Registered=true;window.__cocoPwaV16043Booted=true;window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}';</script>#" \
             preview-dist/index.html
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
-          grep -F '160.94.1-mobile-fixed-viewport' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.96.0-full-intelligence-child-safety' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.94.7-coherence-engine' eterna-worker/src/index.js >/dev/null
+          grep -F '160.96.0-full-intelligence-child-safety' eterna-worker/src/index.js >/dev/null
+          grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
+          grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
+          grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
+          grep -F 'id="eterna-hotfix-v160902-direct"' preview-dist/index.html >/dev/null
+          grep -F 'id="eterna-desktop-compact-v160907-direct"' preview-dist/index.html >/dev/null
+          grep -F 'Reto Coco 2026 · v160.96.1' preview-dist/coco-reto-2026-v160908.js >/dev/null
+          test -s preview-dist/reto-coco-2026-v160958.jpg
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
+          grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
 
       - name: Validate frontend preview deployment
@@ -143,9 +169,13 @@ jobs:
         run: |
           ready=0
           for attempt in {1..12}; do
-            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160941&verify=${GITHUB_SHA}-${attempt}"
+            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160960&verify=${GITHUB_SHA}-${attempt}"
+            index_url="${PREVIEW_ORIGIN}/?verify=${GITHUB_SHA}-${attempt}"
             if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
-              && grep -F '160.94.1-mobile-fixed-viewport' /tmp/eterna-preview.js >/dev/null; then
+              && grep -F '160.96.0-full-intelligence-child-safety' /tmp/eterna-preview.js >/dev/null \
+              && curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$index_url" -o /tmp/eterna-preview-index.html \
+              && grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null \
+              && grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null; then
               ready=1
               break
             fi
@@ -165,8 +195,26 @@ jobs:
             | grep -F '160.93.10-canonical-expired-checkout' >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=160945&verify=${GITHUB_SHA}" \
-            | grep -F '160.94.5-game-difficulty' >/dev/null
+            "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=160960&verify=${GITHUB_SHA}" \
+            | grep -F '160.96.0-dynamic-daily-missions' >/dev/null
+
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/coco-variety-director-v160960.js?v=160960&verify=${GITHUB_SHA}" \
+            | grep -F '160.96.0-balanced-variety' >/dev/null
+
+          grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="coco-product-ux-v160903"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="eterna-hotfix-v160902-direct"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="eterna-desktop-compact-v160907-direct"' /tmp/eterna-preview-index.html >/dev/null
+
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/coco-reto-2026-v160908.js?v=160961&verify=${GITHUB_SHA}" \
+            | grep -F 'Reto Coco 2026 · v160.96.1' >/dev/null
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/reto-coco-2026-v160958.jpg?verify=${GITHUB_SHA}" \
+            -o /tmp/reto-coco-2026-preview.jpg
+          test "$(wc -c < /tmp/reto-coco-2026-preview.jpg)" -gt 500000
           core_ready=0
           for attempt in {1..6}; do
             core_url="${PREVIEW_ORIGIN}/coco-v144-core.js?v=15001&verify=${GITHUB_SHA}-${attempt}"
@@ -182,7 +230,24 @@ jobs:
             exit 1
           fi
           curl --max-time 20 -fsS "${API_PREVIEW_URL}/health" | tee authenticated-preview-health.json
-          grep -F '160.94.7-coherence-engine' authenticated-preview-health.json >/dev/null
+          node -e '
+            const payload = require("./authenticated-preview-health.json");
+            const models = payload.model_configuration || {};
+            const valid = payload.ok === true
+              && payload.version === "160.96.0-full-intelligence-child-safety"
+              && models.scope?.model === "gpt-5.6-luna"
+              && models.scope?.reasoning_effort === "low"
+              && models.tutor?.model === "gpt-5.6-sol"
+              && models.tutor?.reasoning_effort === "high"
+              && models.verifier?.model === "gpt-5.6-terra"
+              && models.verifier?.reasoning_effort === "high"
+              && models.vision?.model === "gpt-5.6-sol"
+              && models.web_search?.model === "gpt-5.6-terra";
+            if (!valid) {
+              console.error("Unexpected Eterna model configuration", payload);
+              process.exit(1);
+            }
+          '
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
           grep -Fi 'x-robots-tag: noindex' authenticated-preview-headers.log >/dev/null
 
@@ -190,8 +255,57 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · UX 160.94.5-game-difficulty · API 160.94.7-coherence-engine"
+            echo "- Expected versions: frontend 160.96.0-full-intelligence-child-safety · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.96.0-full-intelligence-child-safety"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify exact revision delivery for device user agents
+        shell: bash
+        run: |
+          mkdir -p device-evidence/delivery
+          while IFS='|' read -r profile user_agent; do
+            output="device-evidence/delivery/${profile}.html"
+            delivered=0
+            for attempt in {1..10}; do
+              if curl --max-time 25 --compressed -fsS \
+                -H 'Cache-Control: no-cache' \
+                -H 'Pragma: no-cache' \
+                -A "$user_agent" \
+                "${PREVIEW_ORIGIN}/?device=${profile}&verify=${GITHUB_SHA}-${profile}-${attempt}" \
+                -o "$output" \
+                && grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" "$output" >/dev/null; then
+                delivered=1
+                break
+              fi
+              sleep 2
+            done
+            if [[ "$delivered" -ne 1 ]]; then
+              echo "${profile} did not receive the exact preview revision after 10 attempts" >&2
+              exit 1
+            fi
+            grep -F 'id="coco-product-ux-v160903"' "$output" >/dev/null
+            grep -F 'id="coco-reto-2026-direct"' "$output" >/dev/null
+            grep -F 'id="eterna-hotfix-v160902-direct"' "$output" >/dev/null
+            grep -F 'id="eterna-desktop-compact-v160907-direct"' "$output" >/dev/null
+            echo "PASS ${profile}"
+          done <<'DEVICE_AGENTS'
+          iphone-safari|Mozilla/5.0 (iPhone; CPU iPhone OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Mobile/15E148 Safari/604.1
+          android-chrome|Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Mobile Safari/537.36
+          ipad-safari|Mozilla/5.0 (iPad; CPU OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Mobile/15E148 Safari/604.1
+          desktop-safari|Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Safari/605.1.15
+          desktop-chrome|Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36
+          DEVICE_AGENTS
+
+      - name: Install isolated browser QA tooling
+        run: npm install --prefix "${RUNNER_TEMP}/coco-device-qa" --no-save --no-package-lock playwright@1.63.0
+
+      - name: Render responsive device matrix
+        env:
+          NODE_PATH: ${{ runner.temp }}/coco-device-qa/node_modules
+          COCO_QA_BROWSER_CHANNEL: chrome
+          COCO_QA_URL: ${{ env.PREVIEW_ORIGIN }}
+          COCO_QA_EXPECTED_COMMIT: ${{ github.sha }}
+          COCO_QA_EVIDENCE_DIR: ${{ github.workspace }}/device-evidence/rendered
+        run: node qa/device-update-browser.mjs
 
       - name: Preserve preview evidence
         if: always()
@@ -203,5 +317,6 @@ jobs:
             authenticated-preview-frontend.log
             authenticated-preview-health.json
             authenticated-preview-headers.log
+            device-evidence
           if-no-files-found: warn
           retention-days: 7

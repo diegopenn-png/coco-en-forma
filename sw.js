@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.95.8 · Reto Coco palette alignment */
-const CACHE_VERSION="coco-en-forma-v160.95.8-reto-coco-palette-alignment-r1";
+/* Coco en Forma · Service Worker v160.96.0 · Eterna intelligence + game variety */
+const CACHE_VERSION="coco-en-forma-v160.96.0-launch-excellence-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -13,7 +13,7 @@ const RETO_2026_PATH="./coco-reto-2026-v160908.js";
 const COCO_BOOTSTRAP_PATH="./coco-v153-fixes.js";
 const SW_UA=String((self.navigator&&self.navigator.userAgent)||"");
 const DESKTOP_SAFARI=/Safari\//.test(SW_UA)&&!/(Chrome|Chromium|CriOS|FxiOS|EdgiOS|OPR)\//.test(SW_UA)&&/Macintosh/.test(SW_UA)&&!/Mobile\//.test(SW_UA);
-const CORE=["./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js","./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js","./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,RETO_2026_PATH,"./coco-excellence-v160934.js","./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,ETERNA_DESKTOP_COMPACT_PATH,ETERNA_VOICE_AUTOCUT_PATH,"./eterna-marketing-attribution-v1.js","./coco-flex-eterna.jpg","./reto-coco-2026-v160958.jpg","./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css","./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"];
+const CORE=["./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js","./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-variety-director-v160960.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js","./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,RETO_2026_PATH,"./coco-excellence-v160934.js","./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,ETERNA_DESKTOP_COMPACT_PATH,ETERNA_VOICE_AUTOCUT_PATH,"./eterna-marketing-attribution-v1.js","./coco-flex-eterna.jpg","./reto-coco-2026-v160958.jpg","./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css","./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"];
 function absolute(p){return new URL(p,SCOPE_URL).href}
 function releaseRequest(url){const fresh=new URL(url);fresh.searchParams.set("__coco_release",CACHE_VERSION);return new Request(fresh.href,{cache:"reload"})}
 async function cacheCore(){const c=await caches.open(CACHE_VERSION);await Promise.allSettled(CORE.map(async p=>{const u=absolute(p);const r=await fetch(releaseRequest(u));if(r&&r.ok)await c.put(u,r.clone())}))}
@@ -28,7 +28,7 @@ async function withRetoScript(response){
   try{
     let html=await response.text();
     if(html.indexOf('id="coco-reto-2026-direct"')===-1){
-      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160958"></script>';
+      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160961"></script>';
       html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag;
     }
     const headers=new Headers(response.headers);

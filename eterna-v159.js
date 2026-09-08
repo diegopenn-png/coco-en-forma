@@ -1,4 +1,4 @@
-/* Coco en Forma · ETERNA v160.94.1 MOBILE FIXED VIEWPORT
+/* Coco en Forma · ETERNA v160.96.0 INTELIGENCIA PLENA + SEGURIDAD ÚTIL
  * Family lifecycle determinista + Tutor Conversacional V3 + desktop/horizontal.
  * - Home según boceto: acceso/carnet + Eterna, después visual Coco + Juegos.
  * - Un solo sistema de modos.
@@ -10,11 +10,11 @@
 (function(){
   "use strict";
 
-  var VERSION="160.94.1-mobile-fixed-viewport";
+  var VERSION="160.96.0-full-intelligence-child-safety";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
-  var OUT_SCOPE="Estoy aquí para ayudarte con el cole y con tu aprendizaje. Para cualquier otra duda o tema, habla con tus padres.";
+  var OUT_SCOPE="Soy una IA tutora escolar. Este espacio está centrado en el colegio y el aprendizaje.";
 
   var MODE_CONFIG={
     homework:{label:"Ayúdame con mi tarea",icon:"📸",description:"Entiendo primero el ejercicio y te doy una pista cada vez.",placeholder:"Escribe qué parte de la tarea no entiendes…"},
@@ -56,7 +56,7 @@
   function opaqueId(prefix){var c=stateContract(),id="";try{if(window.crypto&&typeof window.crypto.randomUUID==="function")id=window.crypto.randomUUID()}catch(e){}if(!id)id=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2)+"-"+Math.random().toString(36).slice(2);id=String(prefix||"id")+":"+id;return!c||c.validOpaqueId(id)?id:String(prefix||"id")+":"+Date.now().toString(36)+Math.random().toString(36).slice(2)}
   function freshModeState(){return{question_number:1,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null}}
   function freshConversationState(){return{current_topic:null,subject:null,concept:null,student_intent:null,tutor_act:null,expected_student_act:null,explained_points:[],known_points:[],unresolved_question:null,confusion_level:0,help_level:1,last_question_type:null,strategy_used:null,next_teaching_goal:null,last_user_intent:null}}
-  function freshPedagogicalState(mode){return{active_topic:null,active_subject:null,active_concept:null,current_mode:mode||state.mode||"homework",pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:1,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"starting",turn_index:0,last_tutor_act:"none",explained_points:[],known_points:[],unresolved_question:null,expected_student_act:"none",last_question_type:"none",next_teaching_goal:null,confusion_count:0,simplification_level:0,last_student_intent:"none"}}
+  function freshPedagogicalState(mode){return{active_topic:null,active_subject:null,active_concept:null,current_mode:mode||state.mode||"homework",pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:1,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"starting",turn_index:0,last_tutor_act:"none",explained_points:[],known_points:[],unresolved_question:null,expected_student_act:"none",last_question_type:"none",next_teaching_goal:null,confusion_count:0,simplification_level:0,last_student_intent:"none",suspended_topic:null}}
   function sessionUserId(){return state.session&&state.session.user&&state.session.user.id?String(state.session.user.id):""}
   function currentActivity(){return state.activities[state.mode]||null}
   function activityModeState(activity){activity=activity||currentActivity()||{};return{question_number:Number(activity.question_number||1),correct_count:Number(activity.correct_count||0),partial_count:Number(activity.partial_count||0),incorrect_count:Number(activity.incorrect_count||0),difficulty:Number(activity.difficulty||2),focus:activity.practice_target&&activity.practice_target.label||null}}
@@ -74,12 +74,17 @@
   function pushUnique(list,value,max){value=cleanText(value);if(!value)return list||[];var out=(list||[]).filter(function(x){return conversationNorm(x)!==conversationNorm(value)});out.push(value);return out.slice(-Math.max(1,Number(max||8)))}
   function lastAssistantTurn(){for(var i=state.history.length-1;i>=0;i--)if(state.history[i].role==="assistant")return state.history[i];return null}
   function pendingTopicLabel(cs){cs=cs||state.conversationState||freshConversationState();return cleanText(cs.concept||cs.current_topic||cs.subject||"el tema que estamos viendo")}
+  function topicReturnWords(value){var ignored={volvamos:1,retomemos:1,retoma:1,retomar:1,vuelve:1,regresemos:1,regresa:1,sigamos:1,continuemos:1,continua:1,continuar:1,tema:1,anterior:1,antes:1,donde:1,dejamos:1,estabamos:1,viendo:1,con:1,los:1,las:1,una:1,uno:1,unos:1,unas:1,del:1,por:1,para:1,que:1};return conversationNorm(value).split(" ").filter(function(word){return word.length>=5&&!ignored[word]})}
+  function namedReturnToSuspended(raw){var target=state.pedagogicalState&&state.pedagogicalState.suspended_topic,n=conversationNorm(raw);if(!target||!/\b(?:volvamos|retomemos|retoma|retomar|vuelve|regresemos|regresa|sigamos|continuemos|continua|continuar)\b/.test(n))return false;var asked=topicReturnWords(n),known=topicReturnWords([target.topic,target.subject,target.concept].filter(Boolean).join(" "));return asked.some(function(a){return known.some(function(k){return a===k||a.length>=5&&k.length>=5&&a.slice(0,5)===k.slice(0,5)})})}
   function resolveContextualTurn(raw){
     var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question);
     var result={text:raw,intent:"question_or_new_topic",directive:null};
+    var returnTopic=/\b(?:volvamos|retomemos|retoma|retomar|vuelve|regresemos|regresa|sigamos)\b.{0,45}\b(?:lo\s+anterior|lo\s+de\s+antes|tema\s+anterior|tema\s+de\s+antes|estabamos\s+viendo|dejamos)\b/.test(n)||/^(?:continuemos|sigamos)\s+con\s+(?:lo\s+)?(?:anterior|de\s+antes)$/.test(n)||namedReturnToSuspended(raw);
     var explicitSwitch=/^(?:(?:vale|ok)\s+)?(?:ahora|otra pregunta|cambiando de tema|cambio de tema)\b/.test(n);
     var explicitNewTopic=explicitSwitch||/^(?:y\s+)?(?:(?:quien|quienes|que|cual|cuales|cuanto|cuantos|donde|cuando)\s+.{3,}|(?:por que|como)\s+.{4,}|define\s+.{3,}|explicame\s+que\s+es\s+.{3,})$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes|cada cosa|los dos|ambos|el primero|el segundo|el otro)\b/.test(n);
-    if(explicitNewTopic){
+    if(returnTopic){
+      result.text=raw;result.intent="return_topic";result.directive="RETURN_TOPIC"
+    }else if(explicitNewTopic){
       state.conversationState=freshConversationState();cs=state.conversationState;result.intent="new_topic";result.directive="EXPLAIN"
     }else if(n==="si"){
       if(isCheck){result.text="Mi respuesta a tu última comprobación es sí. Evalúala usando exactamente la pregunta anterior: "+check;result.intent="answer_check"}
@@ -570,9 +575,9 @@
     injectFinal3Styles();
     o=document.createElement("div");o.id="eternaOverlayV159";o.className="eternaV159";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.setAttribute("aria-label","Eterna, tutor escolar personalizado");
     o.innerHTML='<div class="eternaV159Shell">'+
-      '<header class="eternaV159Top"><div class="eternaV159Mark" aria-hidden="true">✦</div><div class="eternaV159TopCopy"><small>COCO EN FORMA · APOYO ESCOLAR</small><h2>Eterna</h2><p>La IA que aprende cómo ayudarte a aprender.</p></div><button type="button" class="eternaV159Close" aria-label="Cerrar Eterna">×</button></header>'+
+      '<header class="eternaV159Top"><div class="eternaV159Mark" aria-hidden="true">✦</div><div class="eternaV159TopCopy"><small>COCO EN FORMA · APOYO ESCOLAR</small><h2>Eterna</h2><p>IA tutora escolar: razonamiento riguroso, explicación adaptada a tu curso.</p></div><button type="button" class="eternaV159Close" aria-label="Cerrar Eterna">×</button></header>'+
       '<div class="eternaV159Body">'+
-        '<aside class="eternaV159Menu"><div class="eternaV159Identity"><b data-et-name>Alumno Coco</b><span data-et-course>Configura tu curso</span></div><nav class="eternaV159Actions" aria-label="Modos de ayuda">'+Object.keys(MODE_CONFIG).map(function(k){var m=MODE_CONFIG[k];return '<button class="eternaV159Action '+(k==="homework"?"is-active":"")+'" data-et-mode="'+k+'"><i>'+m.icon+'</i><span>'+esc(m.label)+'</span></button>'}).join("")+'</nav><div class="eternaV159Scope">🔒 Eterna está limitada al colegio, estudio y apoyo académico. Para otros temas, hay que hablar con los padres o con un adulto de confianza.</div></aside>'+
+        '<aside class="eternaV159Menu"><div class="eternaV159Identity"><b data-et-name>Alumno Coco</b><span data-et-course>Configura tu curso</span></div><nav class="eternaV159Actions" aria-label="Modos de ayuda">'+Object.keys(MODE_CONFIG).map(function(k){var m=MODE_CONFIG[k];return '<button class="eternaV159Action '+(k==="homework"?"is-active":"")+'" data-et-mode="'+k+'"><i>'+m.icon+'</i><span>'+esc(m.label)+'</span></button>'}).join("")+'</nav><div class="eternaV159Scope">🔒 Soy una IA, no una persona. Puedo ayudarte con toda la profundidad que necesites en temas de aprendizaje: adapto la explicación a tu curso y aplico límites de seguridad sin rebajar el razonamiento.</div></aside>'+
         '<main class="eternaV159Main"><div class="eternaV159Status"><span class="eternaV159Dot" data-et-dot></span><span data-et-status>Preparando Eterna…</span></div><div class="eternaV160ModeBar" data-et-modebar></div><div class="eternaV159Chat" data-et-chat></div>'+
           '<div class="eternaV159Composer" data-et-composer><div class="eternaV159Preview" data-et-preview><img alt="Vista previa de la tarea"><span></span><button type="button" aria-label="Quitar imagen">×</button></div><div class="eternaV159InputRow"><button type="button" class="eternaV159IconBtn" data-et-camera aria-label="Hacer o elegir una foto">📷</button><button type="button" class="eternaV159IconBtn" data-et-mic aria-label="Hablar con Eterna">🎙️</button><textarea data-et-input rows="1" maxlength="1800" placeholder="Escribe algo del cole…" aria-label="Pregunta para Eterna"></textarea><button type="button" class="eternaV159Send" data-et-send aria-label="Enviar">➤</button></div><input data-et-file type="file" accept="image/*" hidden><p class="eternaV159Fine">Eterna guía y verifica. Las fotos se procesan temporalmente y no se guardan por defecto.</p></div>'+
         '</main>'+
@@ -755,7 +760,7 @@
     var o=overlay(),input=o.querySelector("[data-et-input]"),rawText=String(options.text==null?input.value||"":options.text).trim();if(!rawText&&!state.imageData){setStatus("Escribe una pregunta o adjunta una foto","warn");input.focus();syncSendAvailability();return}
     var turn=rawText?resolveContextualTurn(rawText):{text:"",intent:"image_homework",directive:null};
     var activity=ensureActivity(state.mode,false);if(!activity){setStatus("Falta cargar el contrato de actividad","warn");return}
-    var inferredAction=options.studentAction||(turn.intent==="new_topic"?"new_topic":activity.phase==="WAIT"?"answer":activity.phase==="NEXT"?"continue":"continue"),answeredQuestionId=activity.phase==="WAIT"&&inferredAction==="answer"?activity.question_id:(options.questionId||null),requestId=opaqueId("request"),clientTurnId=opaqueId("turn"),controller=typeof AbortController!=="undefined"?new AbortController():null,epoch=state.activityEpoch;
+    var inferredAction=options.studentAction||(turn.intent==="new_topic"?"new_topic":turn.intent==="return_topic"?"return_topic":activity.phase==="WAIT"?"answer":activity.phase==="NEXT"?"continue":"continue"),answeredQuestionId=activity.phase==="WAIT"&&inferredAction==="answer"?activity.question_id:(options.questionId||null),requestId=opaqueId("request"),clientTurnId=opaqueId("turn"),controller=typeof AbortController!=="undefined"?new AbortController():null,epoch=state.activityEpoch;
     state.busy=true;input.disabled=true;o.querySelector("[data-et-send]").disabled=true;
     var apiHistory=historyForApi(),shown=options.displayText||rawText||"He adjuntado una foto de mi tarea.",userEntry={role:"user",text:shown,api_text:turn.text||shown,meta:{student_intent:turn.intent,student_action:inferredAction,answered_question_id:answeredQuestionId}};appendMessage("user",shown,null,true,false);input.value="";setStatus("Eterna está pensando y comprobando…","warn");
     var context={uid:sessionUserId(),mode:state.mode,session_id:activity.session_id,activity:activity,epoch:epoch,request_id:requestId,client_turn_id:clientTurnId,answered_question_id:answeredQuestionId,student_action:inferredAction,turn:turn,userEntry:userEntry,controller:controller};state.activeRequest=context;
