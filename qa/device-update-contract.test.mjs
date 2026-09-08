@@ -76,5 +76,7 @@ test("the live preview gate covers representative devices, rotation, overflow an
   assert.match(browserQa, /orientación y breakpoint 390x844/);
   assert.match(workflow, /node qa\/device-update-browser\.mjs/);
   assert.match(workflow, /COCO_QA_EXPECTED_COMMIT: \$\{\{ github\.sha \}\}/);
+  assert.match(workflow, /for attempt in \{1\.\.10\}/);
+  assert.match(workflow, /did not receive the exact preview revision after 10 attempts/);
   for (const name of ["iphone-safari", "android-chrome", "ipad-safari", "desktop-safari", "desktop-chrome"]) assert.match(workflow, new RegExp(name));
 });
