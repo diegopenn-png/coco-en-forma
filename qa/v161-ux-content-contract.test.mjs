@@ -121,12 +121,12 @@ test("master accounts can replay every game without adding a second daily score"
   assert.match(runtime, /remoteUnlimitedTesting = readCachedUnlimitedTesting\(next\)/);
   assert.match(runtime, /cacheUnlimitedTesting\(syncUserId/);
   assert.match(runtime, /source: "access-status"/);
-  assert.match(html, /coco-v142-runtime\.js\?v=160932/);
+  assert.match(html, /coco-v142-runtime\.js\?v=160960/);
   assert.match(html, /coco-v142-unified\.js\?v=160932/);
   assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
   assert.match(unified, /daily\.isUnlimited\(userId\)/);
   assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.94\.11-uniform-mic-football-rayo-r1/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.96\.0-launch-excellence-r1/);
 });
 
 test("production promotes the exact preview-tested Worker with automatic rollback", () => {

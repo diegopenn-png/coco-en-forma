@@ -1,4 +1,4 @@
-# ETERNA 160.94.6 — benchmark público de tutoría
+# ETERNA 160.96.0 — benchmark público de tutoría
 
 ## Referencia
 
@@ -39,6 +39,12 @@ Fuentes públicas consultadas:
 8. Defender honestidad e integridad académica ofreciendo alternativas útiles.
 9. Mantener una única pregunta activa.
 10. Probar con personas, materias, edades y situaciones diversas.
+11. Mantener la misma exigencia factual y lógica a cualquier edad; adaptar la
+    explicación, no «hacer tonta» la respuesta.
+12. Poder suspender un tema, atender una desviación y retomar exactamente el
+    punto útil o la pregunta pendiente.
+13. Rechazar solo la operación peligrosa y ofrecer de inmediato una vía segura
+    y relevante para seguir aprendiendo.
 
 ## Regresiones procedentes de la auditoría manual PWA
 

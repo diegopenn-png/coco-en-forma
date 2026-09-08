@@ -1,6 +1,8 @@
-# Eterna v160.91 — release and rollback runbook
+# Eterna v160.96.0 — release and rollback runbook
 
-This release changes the six learning modes without changing the Supabase schema or deleting learning data.
+This release upgrades the six-mode teacher core, useful child-safety routing,
+topic suspension/resume and the verified OpenAI model route. It does not change
+the Supabase schema or delete learning data.
 
 ## Required access
 
@@ -32,7 +34,11 @@ node --check eterna-v159.js
 node --check eterna-experience-v160.js
 node --check eterna-hotfix-v160902.js
 node --check coco-v153-fixes.js
+node --check coco-variety-director-v160960.js
 node --check sw.js
+node --test qa/*.test.mjs
+node --test qa/eterna/offline/*.test.mjs
+node qa/eterna/run-matrix.mjs --offline --no-write
 git diff --check
 ```
 
@@ -47,7 +53,11 @@ cd eterna-worker
 npm run upload:preview
 ```
 
-Use the versioned preview URL returned by Cloudflare. Confirm `/health` reports `160.91.0-six-modes-state-machine`. Versioned preview URLs test the new Worker without deploying it to production.
+Use the versioned preview URL returned by Cloudflare. Confirm `/health` reports
+`160.96.0-full-intelligence-child-safety`, tutor `gpt-5.6-sol/high`, verifier
+`gpt-5.6-terra/high`, vision `gpt-5.6-sol/high`, scope `gpt-5.6-luna/low` and
+web search `gpt-5.6-terra/low`. Versioned preview URLs test the new Worker
+without assigning it production traffic.
 
 ## 4. Preview acceptance
 
@@ -55,23 +65,30 @@ Using the master test account and its configured course, run the critical regres
 
 - State survives close/reopen and refresh; no raw child chat appears in local or external persistent storage.
 - Switching mode clears the previous pending question.
+- A topic detour preserves the original question; «volvamos a lo anterior»,
+  «volvamos a los eclipses» and «continúa con el eclipse» restore it.
 - The energy circuit remains academic: energy → car → fuel.
 - Review catches and then accepts corrections for arithmetic, fractions, `e`/`he`, and 476/1492.
 - Exam starts with one concrete question, sustains ten rounds, keeps exact counters, and closes with a coherent summary.
 - Practice retries an error without incrementing the question number, then advances after correction.
 - `no sé` is never marked correct.
-- Entertainment, unsafe instructions, and prompt injection remain blocked while curricular sensitive content remains available.
+- Entertainment and prompt injection remain out of scope. Unsafe operational
+  instructions receive a specific boundary plus useful safe teaching, while
+  curricular sensitive content remains fully available.
+- Compare a sophisticated safe question across Primary and Secondary profiles:
+  accuracy and conceptual relationships stay constant while wording and
+  scaffolding adapt.
 
 Compare the same cases against production and attach exact request/response evidence to the Pull Request.
 
 ## 5. Controlled production release
 
-After approval and merge, deploy the Worker first because it remains compatible with the old client:
-
-```bash
-cd eterna-worker
-npm run deploy
-```
+After approval, merge the reviewed branch and trigger only
+`.github/workflows/eterna-worker-production-160960.yml` by adding the dedicated
+`.github/release-eterna-160960` marker in a separate, explicit production
+release commit. The workflow uploads an isolated candidate, verifies the exact
+version and model route, assigns production traffic only after those checks,
+and rolls back automatically if post-deployment health fails.
 
 Then publish the merged web commit. Confirm that `index.html`, `eterna-v159.js`, `eterna-experience-v160.js`, `eterna-hotfix-v160902.js`, and `sw.js` match GitHub. Reload once to activate the new Service Worker cache.
 
@@ -79,7 +96,9 @@ Smoke-test all six modes, `/health`, authentication, the configured course, coun
 
 ## 6. Immediate rollback
 
-If a P0/P1 appears, stop the affected tests and restore both layers:
+The production workflow rolls the Worker back automatically when its health
+gate fails. If a P0/P1 appears after that gate, stop the affected tests and
+restore both layers:
 
 ```bash
 cd eterna-worker

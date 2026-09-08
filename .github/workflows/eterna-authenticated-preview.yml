@@ -78,6 +78,16 @@ jobs:
           npx wrangler versions upload \
             --name coco-eterna-v159 \
             --keep-vars \
+            --var "SCOPE_MODEL:gpt-5.6-luna" \
+            --var "SCOPE_REASONING_EFFORT:low" \
+            --var "TUTOR_MODEL:gpt-5.6-sol" \
+            --var "TUTOR_REASONING_EFFORT:high" \
+            --var "VERIFIER_MODEL:gpt-5.6-terra" \
+            --var "VERIFIER_REASONING_EFFORT:high" \
+            --var "VISION_MODEL:gpt-5.6-sol" \
+            --var "VISION_REASONING_EFFORT:high" \
+            --var "WEB_SEARCH_MODEL:gpt-5.6-terra" \
+            --var "WEB_SEARCH_REASONING_EFFORT:low" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee authenticated-preview-api.log
 
           api_preview_url="$(sed -n 's/^Version Preview URL: //p' authenticated-preview-api.log | tail -1)"
@@ -115,12 +125,13 @@ jobs:
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
-          grep -F '160.94.1-mobile-fixed-viewport' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.96.0-full-intelligence-child-safety' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.94.7-coherence-engine' eterna-worker/src/index.js >/dev/null
+          grep -F '160.96.0-full-intelligence-child-safety' eterna-worker/src/index.js >/dev/null
+          grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
 
@@ -143,9 +154,9 @@ jobs:
         run: |
           ready=0
           for attempt in {1..12}; do
-            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160941&verify=${GITHUB_SHA}-${attempt}"
+            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160960&verify=${GITHUB_SHA}-${attempt}"
             if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
-              && grep -F '160.94.1-mobile-fixed-viewport' /tmp/eterna-preview.js >/dev/null; then
+              && grep -F '160.96.0-full-intelligence-child-safety' /tmp/eterna-preview.js >/dev/null; then
               ready=1
               break
             fi
@@ -165,8 +176,12 @@ jobs:
             | grep -F '160.93.10-canonical-expired-checkout' >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=160945&verify=${GITHUB_SHA}" \
-            | grep -F '160.94.5-game-difficulty' >/dev/null
+            "${PREVIEW_ORIGIN}/coco-excellence-v160934.js?v=160960&verify=${GITHUB_SHA}" \
+            | grep -F '160.96.0-dynamic-daily-missions' >/dev/null
+
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/coco-variety-director-v160960.js?v=160960&verify=${GITHUB_SHA}" \
+            | grep -F '160.96.0-balanced-variety' >/dev/null
           core_ready=0
           for attempt in {1..6}; do
             core_url="${PREVIEW_ORIGIN}/coco-v144-core.js?v=15001&verify=${GITHUB_SHA}-${attempt}"
@@ -182,7 +197,24 @@ jobs:
             exit 1
           fi
           curl --max-time 20 -fsS "${API_PREVIEW_URL}/health" | tee authenticated-preview-health.json
-          grep -F '160.94.7-coherence-engine' authenticated-preview-health.json >/dev/null
+          node -e '
+            const payload = require("./authenticated-preview-health.json");
+            const models = payload.model_configuration || {};
+            const valid = payload.ok === true
+              && payload.version === "160.96.0-full-intelligence-child-safety"
+              && models.scope?.model === "gpt-5.6-luna"
+              && models.scope?.reasoning_effort === "low"
+              && models.tutor?.model === "gpt-5.6-sol"
+              && models.tutor?.reasoning_effort === "high"
+              && models.verifier?.model === "gpt-5.6-terra"
+              && models.verifier?.reasoning_effort === "high"
+              && models.vision?.model === "gpt-5.6-sol"
+              && models.web_search?.model === "gpt-5.6-terra";
+            if (!valid) {
+              console.error("Unexpected Eterna model configuration", payload);
+              process.exit(1);
+            }
+          '
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
           grep -Fi 'x-robots-tag: noindex' authenticated-preview-headers.log >/dev/null
 
@@ -190,7 +222,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.94.1-mobile-fixed-viewport · UX 160.94.5-game-difficulty · API 160.94.7-coherence-engine"
+            echo "- Expected versions: frontend 160.96.0-full-intelligence-child-safety · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.96.0-full-intelligence-child-safety"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preserve preview evidence

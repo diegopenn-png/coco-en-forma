@@ -278,7 +278,7 @@
     tiempo:["cálculo","lenguaje y lógica","ciencia y atención"],
     verdadero:["matemáticas y lengua","ciencias y geografía","ciudadanía y tecnología"],
     cocomed:["prevención y hábitos","anatomía y fisiología","aplicación y razonamiento seguro"],
-    futbol:["seis zonas posibles","tres ritmos de exposición","tres niveles y reacción variable"],
+    futbol:["seis zonas posibles","tres ritmos de exposición","cuatro niveles y reacción variable"],
     padel:["mixing por niveles","rondas, pistas y duración configurables","games, sets, ranking e historial"]
   });
 

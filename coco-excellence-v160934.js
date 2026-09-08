@@ -1,4 +1,4 @@
-/* Coco en Forma / ETERNA · v160.94.5 · game difficulty cleanup
+/* Coco en Forma / ETERNA · v160.96.0 · dynamic daily missions
  * Capa exclusivamente visual y de experiencia. No cambia autenticacion, pagos,
  * puntuaciones, limites diarios, memoria pedagogica ni contratos del Worker.
  */
@@ -7,22 +7,22 @@
   if(root.__COCO_EXCELLENCE_V160934__)return;
   root.__COCO_EXCELLENCE_V160934__=true;
 
-  var VERSION="160.94.5-game-difficulty";
+  var VERSION="160.96.0-dynamic-daily-missions";
   var scheduled=0,observer=null;
   var GAME={
-    numeros:{name:"Une los números",time:"3-5 min",goal:"Une la secuencia completa sin repetir casillas.",steps:["Empieza en el 1","Arrastra sin levantar el dedo","Usa Pista solo si te bloqueas"]},
-    calculo:{name:"Cálculo veloz",time:"2-4 min",goal:"Resuelve operaciones con precisión y a tu ritmo.",steps:["Elige un nivel","Escribe cada resultado","Comprueba antes de continuar"]},
-    palabras:{name:"Descifra la palabra",time:"3-5 min",goal:"Ordena las letras usando el significado como pista.",steps:["Lee la pista","Toca las letras en orden","Borra o pide una pista si hace falta"]},
-    series:{name:"Series lógicas",time:"3-5 min",goal:"Descubre la regla que conecta cada elemento.",steps:["Observa los cambios","Piensa en una regla","Elige el siguiente elemento"]},
-    memoria:{name:"Memoria",time:"3-6 min",goal:"Encuentra todas las parejas recordando su posición.",steps:["Gira dos tarjetas","Recuerda lo que aparece","Forma todas las parejas"]},
-    sudoku:{name:"Sudoku",time:"4-8 min",goal:"Completa el tablero sin repetir números.",steps:["Mira la fila y la columna","Descarta los números repetidos","Completa primero las casillas seguras"]},
-    sopa:{name:"Sopa de letras",time:"3-6 min",goal:"Localiza todas las palabras escondidas.",steps:["Lee la lista","Busca en varias direcciones","Marca cada palabra completa"]},
-    crucigrama:{name:"Crucigrama",time:"4-8 min",goal:"Completa las palabras a partir de pistas claras.",steps:["Toca una casilla","Lee su pista","Escribe y revisa los cruces"]},
-    tiempo:{name:"Reto tiempo",time:"2-4 min",goal:"Resuelve diez microdesafíos con una dificultad adecuada.",steps:["Elige la dificultad","Lee antes de responder","Una pausa no borra tu progreso"]},
-    verdadero:{name:"Verdadero o falso",time:"3-5 min",goal:"Decide y aprende con la explicación de cada respuesta.",steps:["Lee la afirmación completa","Elige verdadero o falso","Revisa la explicación"]},
-    cocomed:{name:"Coco Med",time:"4-7 min",goal:"Aprende salud con preguntas y explicaciones seguras.",steps:["Elige dificultad","Responde una pregunta","Lee por qué es correcta"]},
-    futbol:{name:"Fútbol",time:"2-4 min",goal:"Recuerda las cinco zonas y chuta a la única que faltó.",steps:["Observa cada señal","Recuerda el hueco","Chuta cuando aparezca la indicación"]},
-    padel:{name:"Pádel",time:"2-5 min",goal:"Organiza el grupo rápido para pasar antes a la pista.",steps:["Agrega jugadores y niveles","Elige pistas y rondas","Crea y comparte el mixing"],tool:true}
+    numeros:{name:"Une los números",time:"3-5 min",goal:"Une la secuencia completa sin repetir casillas.",focus:["Mira dos pasos por delante","Recupera la ruta sin reiniciar","Detecta cruces antes de avanzar"],steps:["Empieza en el 1","Arrastra sin levantar el dedo","Usa Pista solo si te bloqueas"]},
+    calculo:{name:"Cálculo veloz",time:"2-4 min",goal:"Resuelve operaciones con precisión y a tu ritmo.",focus:["Exactitud antes que velocidad","Comprueba con la operación inversa","Cambia de estrategia entre operaciones"],steps:["Elige un nivel","Escribe cada resultado","Comprueba antes de continuar"]},
+    palabras:{name:"Descifra la palabra",time:"3-5 min",goal:"Ordena las letras usando el significado como pista.",focus:["Usa primero el significado","Busca prefijos y terminaciones","Forma sílabas antes de probar"],steps:["Lee la pista","Toca las letras en orden","Borra o pide una pista si hace falta"]},
+    series:{name:"Series lógicas",time:"3-5 min",goal:"Descubre la regla que conecta cada elemento.",focus:["Describe el cambio entre pasos","Comprueba la regla dos veces","Busca si alternan dos patrones"],steps:["Observa los cambios","Piensa en una regla","Elige el siguiente elemento"]},
+    memoria:{name:"Memoria",time:"3-6 min",goal:"Encuentra todas las parejas recordando su posición.",focus:["Agrupa por zonas del tablero","Nombra mentalmente cada imagen","Recuerda primero las esquinas"],steps:["Gira dos tarjetas","Recuerda lo que aparece","Forma todas las parejas"]},
+    sudoku:{name:"Sudoku",time:"4-8 min",goal:"Completa el tablero sin repetir números.",focus:["Empieza por la casilla más limitada","Descarta por fila, columna y bloque","Revisa cada número antes de fijarlo"],steps:["Mira la fila y la columna","Descarta los números repetidos","Completa primero las casillas seguras"]},
+    sopa:{name:"Sopa de letras",time:"3-6 min",goal:"Localiza todas las palabras escondidas.",focus:["Alterna horizontal, vertical y diagonal","Busca primero las letras menos comunes","Recorre el tablero por cuadrantes"],steps:["Lee la lista","Busca en varias direcciones","Marca cada palabra completa"]},
+    crucigrama:{name:"Crucigrama",time:"4-8 min",goal:"Completa las palabras a partir de pistas claras.",focus:["Aprovecha las letras de los cruces","Empieza por la pista más segura","Revisa tildes y significado"],steps:["Toca una casilla","Lee su pista","Escribe y revisa los cruces"]},
+    tiempo:{name:"Reto tiempo",time:"2-4 min",goal:"Resuelve diez microdesafíos con una dificultad adecuada.",focus:["Lee completo antes de tocar","Mantén ritmo sin adivinar","Cambia rápido entre tipos de reto"],steps:["Elige la dificultad","Lee antes de responder","Una pausa no borra tu progreso"]},
+    verdadero:{name:"Verdadero o falso",time:"3-5 min",goal:"Decide y aprende con la explicación de cada respuesta.",focus:["Busca la palabra que decide la frase","Justifica antes de responder","Corrige tu idea con la explicación"],steps:["Lee la afirmación completa","Elige verdadero o falso","Revisa la explicación"]},
+    cocomed:{name:"Coco Med",time:"4-7 min",goal:"Aprende salud con preguntas y explicaciones seguras.",focus:["Relaciona causa, síntoma y cuidado","Distingue prevención de tratamiento","Aprende el porqué de cada respuesta"],steps:["Elige dificultad","Responde una pregunta","Lee por qué es correcta"]},
+    futbol:{name:"Fútbol",time:"2-4 min",goal:"Recuerda las cinco zonas y chuta a la única que faltó.",focus:["Agrupa las señales en bloques","Visualiza la zona que falta","Mantén la precisión al subir el ritmo"],steps:["Observa cada señal","Recuerda el hueco","Chuta cuando aparezca la indicación"]},
+    padel:{name:"Pádel",time:"2-5 min",goal:"Organiza el grupo rápido para pasar antes a la pista.",focus:["Equilibra niveles y descansos","Evita repetir pareja y rival","Compara dos formatos antes de elegir"],steps:["Agrega jugadores y niveles","Elige pistas y rondas","Crea y comparte el mixing"],tool:true}
   };
   var TITLE={"Une los numeros":"numeros","Calculo veloz":"calculo","Descifra la palabra":"palabras","Series logicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto tiempo":"tiempo","Reto Tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Futbol":"futbol","Coco Futbol":"futbol","Padel":"padel","Coco Padel":"padel","Coco Padel Club":"padel"};
   var MODE_EXAMPLES={
@@ -36,6 +36,8 @@
 
   function clean(v){return String(v==null?"":v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim()}
   function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
+  function madridDay(){try{return new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Madrid",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}catch(_e){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}}
+  function dailyFocus(id,meta){var list=meta&&Array.isArray(meta.focus)?meta.focus:[],seed=madridDay()+"|"+String(id||""),hash=2166136261;for(var i=0;i<seed.length;i++){hash^=seed.charCodeAt(i);hash=Math.imul(hash,16777619)}return list.length?list[(hash>>>0)%list.length]:meta.goal}
   function gameIdFromCard(card){
     var id=card&&card.getAttribute&&card.getAttribute("data-coco-juego");
     if(id&&GAME[id])return id;
@@ -71,6 +73,7 @@
       "#cocoApp .cocoExGuide{margin:13px 0;padding:0;border:1px solid #d8e9f1;border-radius:15px;background:#f8fcfe;color:#315d73;overflow:hidden}",
       "#cocoApp .cocoExGuide summary{display:flex;align-items:center;min-height:44px;padding:9px 12px;cursor:pointer;color:#214d65;font-size:11px;font-weight:900;list-style:none}",
       "#cocoApp .cocoExGuide summary::-webkit-details-marker{display:none}#cocoApp .cocoExGuide summary:after{content:'+';margin-left:auto;font-size:18px}#cocoApp .cocoExGuide[open] summary:after{content:'−'}",
+      "#cocoApp .cocoExDaily{margin:0 12px 8px;padding:8px 10px;border-radius:11px;background:#eaf7fc;color:#245c74;font-size:10.5px;font-weight:800;line-height:1.4}",
       "#cocoApp .cocoExGuide ol{margin:0;padding:0 14px 12px 34px;color:#5a7482;font-size:10.5px;font-weight:750;line-height:1.55}",
       "#cocoApp .cocoExHealthyEnd{margin:10px 0 0;padding:10px 12px;border:1px solid #bfe4d1;border-radius:13px;background:#f1fbf6;color:#28704f;font-size:10.5px;font-weight:800;line-height:1.45}",
       "#eternaOverlayV159 .cocoExModeExample{display:block;margin-top:5px;color:#3d7188;font-size:9.5px;font-weight:750;line-height:1.35}",
@@ -86,7 +89,7 @@
       card.dataset.cocoExcellence="1";
       if(meta.tool){card.dataset.cocoKind="tool";if(!card.querySelector(".cocoExToolLabel")){var tool=document.createElement("span");tool.className="cocoExToolLabel";tool.textContent="Herramienta para familias y clubes";var h=card.querySelector("h3,b");if(h)h.parentNode.insertBefore(tool,h)}}
       if(card.querySelector(".cocoExcellenceMeta"))return;
-      var box=document.createElement("div");box.className="cocoExcellenceMeta";box.setAttribute("aria-label","Duracion y objetivo");box.innerHTML='<span>⏱ '+esc(meta.time)+'</span><span>🎯 '+esc(meta.goal)+'</span>';
+      var focus=dailyFocus(id,meta),box=document.createElement("div");box.className="cocoExcellenceMeta";box.setAttribute("aria-label","Duración y misión de hoy");box.title=meta.goal;box.innerHTML='<span>⏱ '+esc(meta.time)+'</span><span>🎯 '+esc(focus)+'</span>';
       var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&desc.parentNode)desc.parentNode.insertBefore(box,desc.nextSibling);else card.appendChild(box)
     })
   }
@@ -95,7 +98,7 @@
     var o=document.querySelector("#cocoApp #cocoArcadeV132.visible,#cocoApp #cocoArcadeV132");if(!o)return;
     var id=gameIdFromOverlay(o),meta=GAME[id],hero=o.querySelector(".cocoArcadeIntro .cocoArcadeHero");
     if(meta&&hero&&!hero.querySelector(".cocoExGuide")){
-      var guide=document.createElement("details");guide.className="cocoExGuide";guide.innerHTML='<summary>Cómo se juega · '+esc(meta.goal)+'</summary><ol>'+meta.steps.map(function(step){return'<li>'+esc(step)+'</li>'}).join("")+'</ol>';
+      var guide=document.createElement("details");guide.className="cocoExGuide";guide.innerHTML='<summary>Cómo se juega · '+esc(meta.goal)+'</summary><p class="cocoExDaily"><b>Misión de hoy:</b> '+esc(dailyFocus(id,meta))+'</p><ol>'+meta.steps.map(function(step){return'<li>'+esc(step)+'</li>'}).join("")+'</ol>';
       var p=hero.querySelector("p");if(p&&p.parentNode)p.parentNode.insertBefore(guide,p.nextSibling);else hero.insertBefore(guide,hero.firstChild)
     }
     var result=o.querySelector(".cocoArcadeResult");if(result&&!result.querySelector(".cocoExHealthyEnd")){
@@ -122,6 +125,6 @@
   function schedule(){if(scheduled)return;scheduled=requestAnimationFrame(run)}
   function boot(){run();[250,700,1600,3200].forEach(function(delay){setTimeout(run,delay)});if(typeof MutationObserver==="function"){observer=new MutationObserver(schedule);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["class","data-et-age-band"]})}document.addEventListener("click",schedule,true)}
 
-  root.CocoExcellenceV160934=Object.freeze({version:VERSION,audit:function(){return{version:VERSION,games:Object.keys(GAME).length,gameGuides:true,healthyEnd:true,timeUsesDifficultyOnly:true,footballLevels:["basic","intermediate","advanced","lightning"],teenPresentation:true,familyRedundancyRemoved:true,noAuthMutation:true,noPaymentMutation:true,noScoreMutation:true}}});
+  root.CocoExcellenceV160934=Object.freeze({version:VERSION,dailyFocus:function(id){return GAME[id]?dailyFocus(id,GAME[id]):null},audit:function(){return{version:VERSION,games:Object.keys(GAME).length,gameGuides:true,dynamicDailyMissions:true,focusVariants:Object.keys(GAME).reduce(function(total,id){return total+GAME[id].focus.length},0),healthyEnd:true,timeUsesDifficultyOnly:true,footballLevels:["basic","intermediate","advanced","lightning"],teenPresentation:true,familyRedundancyRemoved:true,noAuthMutation:true,noPaymentMutation:true,noScoreMutation:true}}});
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot()
 })(window);
