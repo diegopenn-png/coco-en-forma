@@ -128,7 +128,7 @@ jobs:
           # production PWA cache in the isolated preview and replace any
           # previously installed preview worker with a one-shot cleanup worker.
           sed -i \
-            "s#<head>#<head><script>window.__cocoPwaV135Registered=true;window.__cocoPwaV16043Booted=true;window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}';</script>#" \
+            "s#<head>#<head><script>window.__COCO_PWA_REGISTRATION_OWNER__='preview-disabled';window.__cocoPwaV135Registered=true;window.__cocoPwaV16043Booted=true;window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}';</script>#" \
             preview-dist/index.html
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
@@ -147,6 +147,7 @@ jobs:
           grep -F 'Reto Coco 2026 · v160.96.1' preview-dist/coco-reto-2026-v160908.js >/dev/null
           test -s preview-dist/reto-coco-2026-v160958.jpg
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
+          grep -F "window.__COCO_PWA_REGISTRATION_OWNER__='preview-disabled'" preview-dist/index.html >/dev/null
           grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
 
