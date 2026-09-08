@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.95.3 · Reto Coco direct app-shell load */
-const CACHE_VERSION="coco-en-forma-v160.95.3-reto-coco-direct-r1";
+/* Coco en Forma · Service Worker v160.95.4 · Reto Coco stable placement */
+const CACHE_VERSION="coco-en-forma-v160.95.4-reto-coco-placement-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -28,7 +28,7 @@ async function withRetoScript(response){
   try{
     let html=await response.text();
     if(html.indexOf('id="coco-reto-2026-direct"')===-1){
-      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160953"></script>';
+      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160954"></script>';
       html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag;
     }
     const headers=new Headers(response.headers);

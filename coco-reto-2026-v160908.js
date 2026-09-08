@@ -1,19 +1,19 @@
-/* Coco en Forma · Reto Coco 2026 · v160.95.3
+/* Coco en Forma · Reto Coco 2026 · v160.95.4
  * Desktop: promo image above existing Coco brand card.
  * Mobile/PWA: promo image before games; existing brand card after games.
  */
 (function(){
   'use strict';
-  if(window.__COCO_RETO_2026_V160953__) return;
-  window.__COCO_RETO_2026_V160953__=true;
+  if(window.__COCO_RETO_2026_V160954__) return;
+  window.__COCO_RETO_2026_V160954__=true;
 
   var style=document.createElement('style');
-  style.id='coco-reto-2026-v160953-style';
+  style.id='coco-reto-2026-v160954-style';
   style.textContent=`
   #cocoReto2026{box-sizing:border-box;width:100%;margin:0;padding:0;background:transparent;border:0;box-shadow:none;position:relative}
   #cocoReto2026 img{display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 8px 22px rgba(22,56,78,.12)}
-  @media(min-width:761px){#cocoReto2026{max-width:100%;margin:0 0 14px}#cocoApp .marcaHeroe{align-self:start!important;height:auto!important;min-height:0!important;justify-content:flex-start!important}}
-  @media(max-width:760px){#cocoReto2026{width:calc(100% - 24px);max-width:430px;margin:12px auto 16px}#cocoReto2026 img{border-radius:20px}#cocoApp .marcaHeroe.cocoRetoBrandAfterGames{width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;margin:16px auto 0!important}}
+  @media(min-width:761px){#cocoReto2026{max-width:100%;margin:0 0 14px}#cocoApp .marcaHeroe,#cocoApp .cocoHomeBrainFinal3{align-self:start!important;height:auto!important;min-height:0!important;justify-content:flex-start!important}}
+  @media(max-width:760px){#cocoReto2026{width:calc(100% - 24px);max-width:430px;margin:12px auto 16px}#cocoReto2026 img{border-radius:20px}#cocoApp .marcaHeroe.cocoRetoBrandAfterGames,#cocoApp .cocoHomeBrainFinal3.cocoRetoBrandAfterGames{width:100%!important;max-width:none!important;min-width:0!important;height:auto!important;margin:16px auto 0!important}}
   `;
   document.head.appendChild(style);
 
@@ -22,7 +22,7 @@
     el.id='cocoReto2026';
     el.setAttribute('aria-label','Reto Coco en Forma 2026');
     var img=document.createElement('img');
-    img.src='./reto-coco-2026.jpg?v=160953';
+    img.src='./reto-coco-2026.jpg?v=160954';
     img.alt='Reto Coco en Forma 2026. Los 3 jugadores con mayor puntuación acumulada al 31 de diciembre de 2026 recibirán un llavero 3D exclusivo de Coco en Forma, impreso con nuestra impresora 3D, y un diploma personalizado de Campeón Coco en Forma 2026.';
     img.decoding='async';
     img.loading='eager';
@@ -45,9 +45,21 @@
     return cards[0].parentElement;
   }
 
+  function findBrand(app){
+    return app.querySelector('.marcaHeroe,.cocoHomeBrainFinal3');
+  }
+
+  function findGamesPanel(app){
+    var panel=app.querySelector('.cocoHomeGamesRowFinal3 .retosCard,.retosCard');
+    if(panel) return panel;
+    var games=findGamesHost();
+    if(!games) return null;
+    return games.closest('.retosCard,.panelJugador')||games;
+  }
+
   function place(){
     var app=document.getElementById('cocoApp');
-    var brand=app&&app.querySelector('.marcaHeroe');
+    var brand=app&&findBrand(app);
     if(!brand) return;
     var c=document.getElementById('cocoReto2026')||card();
 
@@ -57,7 +69,7 @@
       return;
     }
 
-    var games=findGamesHost();
+    var games=findGamesPanel(app);
     if(!games||!games.parentNode) return;
     var parent=games.parentNode;
     if(c.parentNode!==parent||c.nextElementSibling!==games) parent.insertBefore(c,games);
