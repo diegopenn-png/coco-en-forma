@@ -12,7 +12,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"gpt-5\.6-terra"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.96\.0-full-intelligence-child-safety/);
+  assert.match(worker, /160\.96\.3-low-latency-full-quality/);
   assert.match(worker, /reasoning:\{effort\}/);
   assert.match(worker, /flagship_tutor_model_v1:true/);
   assert.match(worker, /!image&&!topicReturnRequest\(text,incomingPedState\)/);

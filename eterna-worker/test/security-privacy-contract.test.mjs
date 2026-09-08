@@ -100,13 +100,13 @@ test("a moderation outage fails closed before scope or pedagogical routing", asy
   const chatSource = sourceBetween("async function handleChat(", "const CHAT_JOB_TTL_SECONDS");
   const moderationFailure = chatSource.indexOf("mod.moderation_error");
   const moderationAwait = chatSource.indexOf("const modPromise=moderate(");
-  const postModerationUsage = chatSource.indexOf("await markChatRequest", moderationFailure);
+  const postModerationUsage = chatSource.indexOf('deferWork(event,"request-usage"', moderationFailure);
   const scopeGuard = chatSource.indexOf("scopeV3Guard(");
   const safetyRoute = chatSource.indexOf('scope.scope==="safety"');
   assert.ok(moderationFailure >= 0, "Chat must explicitly handle moderation failure");
   assert.ok(moderationAwait >= 0, "Chat must await moderation before normal usage is recorded");
   assert.equal(
-    chatSource.slice(moderationAwait, moderationFailure).includes("await markChatRequest"),
+    chatSource.slice(moderationAwait, moderationFailure).includes('deferWork(event,"request-usage"'),
     false,
     "A moderation outage must not consume the student's usage quota",
   );
@@ -264,8 +264,8 @@ test("tester entitlement is server-authoritative and cannot rely on an email all
   assert.doesNotMatch(workerSource, /isTesterEmail\s*\([^)]*email/);
   assert.doesNotMatch(clientSource, /cuentasPruebaIlimitadas/i);
   assert.doesNotMatch(indexSource, /cuentasPruebaIlimitadas/i);
-  assert.match(sourceBetween("async function handleChat(", "const CHAT_JOB_TTL_SECONDS"), /quota\(env,uid,auth\.user\.email,sub\)/);
-  assert.match(sourceBetween("async function quota(", "async function markChatRequest("), /subscriptionUnlimited\(subscription\)/);
+  assert.match(sourceBetween("async function handleChat(", "const CHAT_JOB_TTL_SECONDS"), /getChatPreflight\(env,auth\)/);
+  assert.match(sourceBetween("function quotaFromSnapshot(", "async function markChatRequest("), /subscriptionUnlimited\(subscription\)/);
   const testerLookup = sourceBetween("async function serverTesterEntitlement(", "async function getSubscription(");
   assert.match(testerLookup, /eterna_test_entitlements\?user_id=eq\.\$\{encodeURIComponent\(uid\)\}&active=eq\.true/);
   assert.doesNotMatch(testerLookup, /email/i);
@@ -293,7 +293,7 @@ test("only an active paid family plan can enable unlimited Eterna consultations"
   assert.equal(JSON.stringify(normalizeParentLimitRequest(50)), JSON.stringify({ requestedUnlimited: false, value: 50 }));
   assert.equal(JSON.stringify(normalizeParentLimitRequest("invalid")), JSON.stringify({ requestedUnlimited: false, value: 20 }));
 
-  const quotaSource = sourceBetween("async function quota(", "async function handleAccessStatus(");
+  const quotaSource = sourceBetween("function quotaFromSnapshot(", "async function handleAccessStatus(");
   assert.match(quotaSource, /parentUnlimitedEnabled\(settings,subscription\)/);
   assert.match(quotaSource, /daily_limit:parentUnlimited\?null:dailyLimit/);
   assert.match(quotaSource, /weekly_limit:parentUnlimited\?null:weeklyLimit/);
