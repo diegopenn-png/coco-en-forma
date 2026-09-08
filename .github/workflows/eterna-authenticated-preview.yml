@@ -116,6 +116,11 @@ jobs:
             "s#https://coco-eterna-v159.chatinmobiliario.workers.dev#${API_PREVIEW_URL}#g" \
             preview-dist/index.html
 
+          # Production composes these presentation layers through the Service
+          # Worker. The preview intentionally disables that cache, so inject the
+          # same layers as ordinary scripts to keep visual and behavioural parity.
+          node qa/eterna/inject-preview-parity.mjs preview-dist/index.html
+
           # The QA origin must always serve the current PR head. Disable the
           # production PWA cache in the isolated preview and replace any
           # previously installed preview worker with a one-shot cleanup worker.
@@ -132,6 +137,12 @@ jobs:
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
           grep -F '160.96.0-full-intelligence-child-safety' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
+          grep -F 'id="coco-release-v160903-preview-parity"' preview-dist/index.html >/dev/null
+          grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
+          grep -F 'id="eterna-hotfix-v160902-preview-parity"' preview-dist/index.html >/dev/null
+          grep -F 'id="eterna-desktop-compact-v160907-preview-parity"' preview-dist/index.html >/dev/null
+          grep -F 'Reto Coco 2026 · v160.95.8' preview-dist/coco-reto-2026-v160908.js >/dev/null
+          test -s preview-dist/reto-coco-2026-v160958.jpg
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
 
@@ -182,6 +193,21 @@ jobs:
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/coco-variety-director-v160960.js?v=160960&verify=${GITHUB_SHA}" \
             | grep -F '160.96.0-balanced-variety' >/dev/null
+
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/?verify=${GITHUB_SHA}" -o /tmp/eterna-preview-index.html
+          grep -F 'id="coco-release-v160903-preview-parity"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="eterna-hotfix-v160902-preview-parity"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="eterna-desktop-compact-v160907-preview-parity"' /tmp/eterna-preview-index.html >/dev/null
+
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/coco-reto-2026-v160908.js?v=160958&verify=${GITHUB_SHA}" \
+            | grep -F 'Reto Coco 2026 · v160.95.8' >/dev/null
+          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
+            "${PREVIEW_ORIGIN}/reto-coco-2026-v160958.jpg?verify=${GITHUB_SHA}" \
+            -o /tmp/reto-coco-2026-preview.jpg
+          test "$(wc -c < /tmp/reto-coco-2026-preview.jpg)" -gt 500000
           core_ready=0
           for attempt in {1..6}; do
             core_url="${PREVIEW_ORIGIN}/coco-v144-core.js?v=15001&verify=${GITHUB_SHA}-${attempt}"
