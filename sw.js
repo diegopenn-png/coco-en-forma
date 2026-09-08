@@ -28,7 +28,7 @@ async function withRetoScript(response){
   try{
     let html=await response.text();
     if(html.indexOf('id="coco-reto-2026-direct"')===-1){
-      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160958"></script>';
+      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160961"></script>';
       html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag;
     }
     const headers=new Headers(response.headers);

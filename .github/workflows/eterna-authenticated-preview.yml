@@ -144,7 +144,7 @@ jobs:
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
           grep -F 'id="eterna-hotfix-v160902-direct"' preview-dist/index.html >/dev/null
           grep -F 'id="eterna-desktop-compact-v160907-direct"' preview-dist/index.html >/dev/null
-          grep -F 'Reto Coco 2026 · v160.95.8' preview-dist/coco-reto-2026-v160908.js >/dev/null
+          grep -F 'Reto Coco 2026 · v160.96.1' preview-dist/coco-reto-2026-v160908.js >/dev/null
           test -s preview-dist/reto-coco-2026-v160958.jpg
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" preview-dist/index.html >/dev/null
@@ -209,8 +209,8 @@ jobs:
           grep -F 'id="eterna-desktop-compact-v160907-direct"' /tmp/eterna-preview-index.html >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/coco-reto-2026-v160908.js?v=160958&verify=${GITHUB_SHA}" \
-            | grep -F 'Reto Coco 2026 · v160.95.8' >/dev/null
+            "${PREVIEW_ORIGIN}/coco-reto-2026-v160908.js?v=160961&verify=${GITHUB_SHA}" \
+            | grep -F 'Reto Coco 2026 · v160.96.1' >/dev/null
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/reto-coco-2026-v160958.jpg?verify=${GITHUB_SHA}" \
             -o /tmp/reto-coco-2026-preview.jpg

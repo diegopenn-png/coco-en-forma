@@ -6,7 +6,7 @@ export const PREVIEW_PARITY_GROUPS = Object.freeze([
     anchor: '<script id="coco-v153-fixes" src="./coco-v153-fixes.js?v=15301"></script>',
     scripts: Object.freeze([
       '<script id="coco-product-ux-v160903" src="./coco-release-v160903.js?v=160960"></script>',
-      '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160958"></script>',
+      '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160961"></script>',
     ]),
   }),
   Object.freeze({

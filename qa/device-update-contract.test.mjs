@@ -11,7 +11,7 @@ const browserQa = readFileSync("qa/device-update-browser.mjs", "utf8");
 
 const directScripts = [
   '<script id="coco-product-ux-v160903" src="./coco-release-v160903.js?v=160960"></script>',
-  '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160958"></script>',
+  '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160961"></script>',
   '<script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960"></script>',
   '<script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=160960"></script>',
 ];
@@ -50,9 +50,9 @@ test("PWA clients request and activate the current release instead of retaining 
 });
 
 test("Reto Coco owns deterministic mobile and desktop placement and reacts to device changes", () => {
-  assert.match(reto, /@media\(min-width:761px\)/);
-  assert.match(reto, /@media\(max-width:760px\)/);
-  assert.match(reto, /window\.innerWidth>760/);
+  assert.match(reto, /@media\(min-width:901px\)/);
+  assert.match(reto, /@media\(max-width:900px\)/);
+  assert.match(reto, /window\.innerWidth>900/);
   assert.match(reto, /brand\.insertBefore\(c,brand\.firstChild\)/);
   assert.match(reto, /parent\.insertBefore\(c,games\)/);
   assert.match(reto, /parent\.insertBefore\(brand,games\.nextSibling\)/);
@@ -73,7 +73,7 @@ test("the live preview gate covers representative devices, rotation, overflow an
   assert.match(browserQa, /htmlScrollWidth <= profile\.width \+ 1/);
   assert.match(browserQa, /naturalWidth, 1200/);
   assert.match(browserQa, /naturalHeight, 1600/);
-  assert.match(browserQa, /cambio de orientación 390x844/);
+  assert.match(browserQa, /orientación y breakpoint 390x844/);
   assert.match(workflow, /node qa\/device-update-browser\.mjs/);
   assert.match(workflow, /COCO_QA_EXPECTED_COMMIT: \$\{\{ github\.sha \}\}/);
   for (const name of ["iphone-safari", "android-chrome", "ipad-safari", "desktop-safari", "desktop-chrome"]) assert.match(workflow, new RegExp(name));

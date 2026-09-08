@@ -68,7 +68,7 @@ async function inspect(page) {
       previewCommit: window.__COCO_PREVIEW_COMMIT__ || "",
       flags: {
         product: Boolean(window.__COCO_PRODUCT_UX_160903__),
-        reto: Boolean(window.__COCO_RETO_2026_V160958__),
+        reto: Boolean(window.__COCO_RETO_2026_V160961__),
         eternaHotfix: Boolean(window.__ETERNA_HOTFIX_160902_HF1__),
         eternaCompact: Boolean(window.__ETERNA_DESKTOP_COMPACT_1609326__),
       },
@@ -115,7 +115,7 @@ function assertSnapshot(profile, snapshot) {
   assert.ok(snapshot.htmlScrollWidth <= profile.width + 1, `${label}: desbordamiento horizontal en html (${snapshot.htmlScrollWidth}px)`);
   assert.ok(snapshot.bodyScrollWidth <= profile.width + 1, `${label}: desbordamiento horizontal en body (${snapshot.bodyScrollWidth}px)`);
   assert.equal(snapshot.overlap, 0, `${label}: Reto Coco se superpone con los juegos`);
-  if (profile.width > 760) {
+  if (profile.width > 900) {
     assert.equal(snapshot.desktopPlacement, true, `${label}: posición de escritorio incorrecta`);
     assert.ok(snapshot.brandRect && snapshot.cardRect.width <= snapshot.brandRect.width + 1, `${label}: Reto Coco sale de su columna`);
   } else {
@@ -145,7 +145,7 @@ async function preparePage(context, profileName) {
     const image = document.querySelector("#cocoReto2026 img");
     return Boolean(
       window.__COCO_PRODUCT_UX_160903__
-      && window.__COCO_RETO_2026_V160958__
+      && window.__COCO_RETO_2026_V160961__
       && window.__ETERNA_HOTFIX_160902_HF1__
       && window.__ETERNA_DESKTOP_COMPACT_1609326__
       && image && image.complete && image.naturalWidth > 0
@@ -202,11 +202,20 @@ try {
     await page.waitForFunction(() => {
       const card = document.getElementById("cocoReto2026");
       const app = document.getElementById("cocoApp");
+      const games = app && app.querySelector(".cocoHomeGamesRowFinal3 .retosCard,.retosCard");
+      const brand = app && app.querySelector(".marcaHeroe,.cocoHomeBrainFinal3");
+      return Boolean(card && games && brand && card.nextElementSibling === games && brand.previousElementSibling === games);
+    });
+    assertSnapshot(DEVICE_MATRIX.find((profile) => profile.name === "phone-landscape"), await inspect(page));
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.waitForFunction(() => {
+      const card = document.getElementById("cocoReto2026");
+      const app = document.getElementById("cocoApp");
       const brand = app && app.querySelector(".marcaHeroe,.cocoHomeBrainFinal3");
       return Boolean(card && brand && card.parentElement === brand && brand.firstElementChild === card);
     });
-    assertSnapshot(DEVICE_MATRIX.find((profile) => profile.name === "phone-landscape"), await inspect(page));
-    await page.setViewportSize({ width: 390, height: 844 });
+    assertSnapshot(DEVICE_MATRIX.find((profile) => profile.name === "tablet-landscape"), await inspect(page));
+    await page.setViewportSize({ width: 768, height: 1024 });
     await page.waitForFunction(() => {
       const card = document.getElementById("cocoReto2026");
       const app = document.getElementById("cocoApp");
@@ -214,8 +223,8 @@ try {
       const brand = app && app.querySelector(".marcaHeroe,.cocoHomeBrainFinal3");
       return Boolean(card && games && brand && card.nextElementSibling === games && brand.previousElementSibling === games);
     });
-    assertSnapshot(DEVICE_MATRIX.find((profile) => profile.name === "phone-modern"), await inspect(page));
-    console.log("PASS  cambio de orientación 390x844 → 844x390 → 390x844");
+    assertSnapshot(DEVICE_MATRIX.find((profile) => profile.name === "tablet-portrait"), await inspect(page));
+    console.log("PASS  orientación y breakpoint 390x844 → 844x390 → 1024x768 → 768x1024");
   } finally {
     await rotationContext.close();
   }
