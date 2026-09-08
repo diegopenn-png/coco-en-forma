@@ -47,6 +47,8 @@ jobs:
         run: node --test qa/eterna-report-export-contract.test.mjs
       - name: Check canonical Worker source layout
         run: node --test qa/eterna-source-layout-contract.test.mjs
+      - name: Check first-visit and responsive update contracts
+        run: node --test qa/eterna-preview-parity.test.mjs qa/device-update-contract.test.mjs
       - name: Check 48-conversation Eterna matrix
         run: |
           node --test qa/eterna/offline/*.test.mjs

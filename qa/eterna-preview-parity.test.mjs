@@ -30,7 +30,10 @@ test("the no-cache preview restores every presentation layer composed by product
 
 test("the authenticated preview deploys and verifies Reto Coco parity", () => {
   assert.match(workflow, /node qa\/eterna\/inject-preview-parity\.mjs preview-dist\/index\.html/);
+  assert.match(workflow, /id="coco-product-ux-v160903"/);
   assert.match(workflow, /id="coco-reto-2026-direct"/);
+  assert.match(workflow, /id="eterna-hotfix-v160902-direct"/);
+  assert.match(workflow, /id="eterna-desktop-compact-v160907-direct"/);
   assert.match(workflow, /reto-coco-2026-v160958\.jpg\?verify=/);
   assert.match(workflow, /wc -c < \/tmp\/reto-coco-2026-preview\.jpg/);
   assert.match(workflow, /window\.__COCO_PREVIEW_COMMIT__='\$\{GITHUB_SHA\}'/);

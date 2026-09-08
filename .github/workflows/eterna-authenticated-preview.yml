@@ -70,6 +70,9 @@ jobs:
         working-directory: eterna-worker
         run: npm run check
 
+      - name: Check first-visit, responsive and update contracts
+        run: node --test qa/eterna-preview-parity.test.mjs qa/device-update-contract.test.mjs
+
       - name: Upload isolated API preview
         working-directory: eterna-worker
         shell: bash
@@ -137,10 +140,10 @@ jobs:
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
           grep -F '160.96.0-full-intelligence-child-safety' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
-          grep -F 'id="coco-release-v160903-preview-parity"' preview-dist/index.html >/dev/null
+          grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
-          grep -F 'id="eterna-hotfix-v160902-preview-parity"' preview-dist/index.html >/dev/null
-          grep -F 'id="eterna-desktop-compact-v160907-preview-parity"' preview-dist/index.html >/dev/null
+          grep -F 'id="eterna-hotfix-v160902-direct"' preview-dist/index.html >/dev/null
+          grep -F 'id="eterna-desktop-compact-v160907-direct"' preview-dist/index.html >/dev/null
           grep -F 'Reto Coco 2026 · v160.95.8' preview-dist/coco-reto-2026-v160908.js >/dev/null
           test -s preview-dist/reto-coco-2026-v160958.jpg
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
@@ -200,10 +203,10 @@ jobs:
             | grep -F '160.96.0-balanced-variety' >/dev/null
 
           grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null
-          grep -F 'id="coco-release-v160903-preview-parity"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="coco-product-ux-v160903"' /tmp/eterna-preview-index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null
-          grep -F 'id="eterna-hotfix-v160902-preview-parity"' /tmp/eterna-preview-index.html >/dev/null
-          grep -F 'id="eterna-desktop-compact-v160907-preview-parity"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="eterna-hotfix-v160902-direct"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="eterna-desktop-compact-v160907-direct"' /tmp/eterna-preview-index.html >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
             "${PREVIEW_ORIGIN}/coco-reto-2026-v160908.js?v=160958&verify=${GITHUB_SHA}" \
@@ -255,6 +258,44 @@ jobs:
             echo "- Expected versions: frontend 160.96.0-full-intelligence-child-safety · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.96.0-full-intelligence-child-safety"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Verify exact revision delivery for device user agents
+        shell: bash
+        run: |
+          mkdir -p device-evidence/delivery
+          while IFS='|' read -r profile user_agent; do
+            output="device-evidence/delivery/${profile}.html"
+            curl --max-time 25 --compressed -fsS \
+              -H 'Cache-Control: no-cache' \
+              -H 'Pragma: no-cache' \
+              -A "$user_agent" \
+              "${PREVIEW_ORIGIN}/?device=${profile}&verify=${GITHUB_SHA}" \
+              -o "$output"
+            grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" "$output" >/dev/null
+            grep -F 'id="coco-product-ux-v160903"' "$output" >/dev/null
+            grep -F 'id="coco-reto-2026-direct"' "$output" >/dev/null
+            grep -F 'id="eterna-hotfix-v160902-direct"' "$output" >/dev/null
+            grep -F 'id="eterna-desktop-compact-v160907-direct"' "$output" >/dev/null
+            echo "PASS ${profile}"
+          done <<'DEVICE_AGENTS'
+          iphone-safari|Mozilla/5.0 (iPhone; CPU iPhone OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Mobile/15E148 Safari/604.1
+          android-chrome|Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Mobile Safari/537.36
+          ipad-safari|Mozilla/5.0 (iPad; CPU OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Mobile/15E148 Safari/604.1
+          desktop-safari|Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Safari/605.1.15
+          desktop-chrome|Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36
+          DEVICE_AGENTS
+
+      - name: Install isolated browser QA tooling
+        run: npm install --prefix "${RUNNER_TEMP}/coco-device-qa" --no-save --no-package-lock playwright@1.63.0
+
+      - name: Render responsive device matrix
+        env:
+          NODE_PATH: ${{ runner.temp }}/coco-device-qa/node_modules
+          COCO_QA_BROWSER_CHANNEL: chrome
+          COCO_QA_URL: ${{ env.PREVIEW_ORIGIN }}
+          COCO_QA_EXPECTED_COMMIT: ${{ github.sha }}
+          COCO_QA_EVIDENCE_DIR: ${{ github.workspace }}/device-evidence/rendered
+        run: node qa/device-update-browser.mjs
+
       - name: Preserve preview evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -265,5 +306,6 @@ jobs:
             authenticated-preview-frontend.log
             authenticated-preview-health.json
             authenticated-preview-headers.log
+            device-evidence
           if-no-files-found: warn
           retention-days: 7

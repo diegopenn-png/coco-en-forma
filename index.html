@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Coco en Forma + Eterna | Apoyo escolar personalizado">
 <meta name="twitter:description" content="Foto, voz o texto. Eterna guía al alumno paso a paso y aprende qué ayuda necesita para avanzar.">
-<meta name="twitter:image" content="https://www.cocoenforma.com/share/eterna.png?v=15900"><link rel="manifest" href="./manifest.webmanifest?v=1590" type="application/manifest+json">
+<meta name="twitter:image" content="https://www.cocoenforma.com/share/eterna.png?v=15900"><link rel="manifest" href="./manifest.webmanifest?v=160960" type="application/manifest+json">
 <link rel="icon" type="image/png" sizes="48x48" href="./favicon.png?v=1420">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=1420">
 <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=1420">
@@ -1101,7 +1101,7 @@ body{min-height:100dvh}
     window.__cocoPwaV135Registered = true;
     var hadController = Boolean(navigator.serviceWorker.controller), reloading = false;
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register(new URL("sw.js",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname}).then(function (registration) {
+      navigator.serviceWorker.register(new URL("sw.js?v=160960-r1",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
         function offerUpdate(worker) {
           if (!worker || !hadController || document.querySelector(".cocoV134Update")) return;
           var app = document.getElementById("cocoApp") || document.body, button = document.createElement("button");
@@ -1116,6 +1116,7 @@ body{min-height:100dvh}
             if (worker.state === "installed") offerUpdate(worker);
           });
         });
+        if (navigator.onLine !== false) try { registration.update(); } catch (_) {}
       }).catch(function () {});
       navigator.serviceWorker.addEventListener("controllerchange", function () {
         if (!hadController || reloading) return;
@@ -7698,6 +7699,8 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 <script id="coco-v149-core" src="./coco-v144-core.js?v=15001"></script>
 <script id="coco-v152-padel" src="./coco-v152-padel.js?v=15201"></script>
 <script id="coco-v153-fixes" src="./coco-v153-fixes.js?v=15301"></script>
+<script id="coco-product-ux-v160903" src="./coco-release-v160903.js?v=160960"></script>
+<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160958"></script>
 <script id="coco-v155-identity" src="./coco-v155-identity.js?v=15500"></script>
 
 
@@ -7707,5 +7710,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 <script id="eterna-state-contract-v3" src="./eterna-state-contract-v3.js?v=160920"></script>
 <script id="coco-excellence-v160934" src="./coco-excellence-v160934.js?v=160960"></script>
 <script id="coco-v159-eterna" src="./eterna-v159.js?v=160960"></script>
+<script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960"></script>
+<script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=160960"></script>
 <script id="eterna-marketing-attribution-v1" src="./eterna-marketing-attribution-v1.js?v=20260828"></script>
 </body></html>
