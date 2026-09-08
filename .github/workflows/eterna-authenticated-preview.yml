@@ -125,7 +125,7 @@ jobs:
           # production PWA cache in the isolated preview and replace any
           # previously installed preview worker with a one-shot cleanup worker.
           sed -i \
-            's#<head>#<head><script>window.__cocoPwaV135Registered=true;window.__cocoPwaV16043Booted=true;</script>#' \
+            "s#<head>#<head><script>window.__cocoPwaV135Registered=true;window.__cocoPwaV16043Booted=true;window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}';</script>#" \
             preview-dist/index.html
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
@@ -144,6 +144,7 @@ jobs:
           grep -F 'Reto Coco 2026 · v160.95.8' preview-dist/coco-reto-2026-v160908.js >/dev/null
           test -s preview-dist/reto-coco-2026-v160958.jpg
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
+          grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" preview-dist/index.html >/dev/null
           grep -F 'self.registration.unregister()' preview-dist/sw.js >/dev/null
 
       - name: Validate frontend preview deployment
@@ -166,8 +167,12 @@ jobs:
           ready=0
           for attempt in {1..12}; do
             verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160960&verify=${GITHUB_SHA}-${attempt}"
+            index_url="${PREVIEW_ORIGIN}/?verify=${GITHUB_SHA}-${attempt}"
             if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
-              && grep -F '160.96.0-full-intelligence-child-safety' /tmp/eterna-preview.js >/dev/null; then
+              && grep -F '160.96.0-full-intelligence-child-safety' /tmp/eterna-preview.js >/dev/null \
+              && curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$index_url" -o /tmp/eterna-preview-index.html \
+              && grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null \
+              && grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null; then
               ready=1
               break
             fi
@@ -194,8 +199,7 @@ jobs:
             "${PREVIEW_ORIGIN}/coco-variety-director-v160960.js?v=160960&verify=${GITHUB_SHA}" \
             | grep -F '160.96.0-balanced-variety' >/dev/null
 
-          curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/?verify=${GITHUB_SHA}" -o /tmp/eterna-preview-index.html
+          grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null
           grep -F 'id="coco-release-v160903-preview-parity"' /tmp/eterna-preview-index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null
           grep -F 'id="eterna-hotfix-v160902-preview-parity"' /tmp/eterna-preview-index.html >/dev/null
