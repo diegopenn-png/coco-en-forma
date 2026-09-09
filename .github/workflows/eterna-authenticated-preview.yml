@@ -82,8 +82,10 @@ jobs:
             --name coco-eterna-v159 \
             --keep-vars \
             --var "SCOPE_MODEL:gpt-5.6-luna" \
+            --var "SCOPE_FALLBACK_MODEL:gpt-5.6-terra" \
             --var "SCOPE_REASONING_EFFORT:low" \
             --var "TUTOR_MODEL:gpt-5.6-sol" \
+            --var "TUTOR_FALLBACK_MODEL:gpt-5.6-terra" \
             --var "TUTOR_REASONING_EFFORT:high" \
             --var "VERIFIER_MODEL:gpt-5.6-terra" \
             --var "VERIFIER_REASONING_EFFORT:high" \
@@ -138,7 +140,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.96.5-exam-intake-recovery' eterna-worker/src/index.js >/dev/null
+          grep -F '160.96.6-resilient-tutor-failover' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -235,15 +237,21 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.96.5-exam-intake-recovery"
+              && payload.version === "160.96.6-resilient-tutor-failover"
               && models.scope?.model === "gpt-5.6-luna"
+              && models.scope?.fallback_model === "gpt-5.6-terra"
               && models.scope?.reasoning_effort === "low"
               && models.tutor?.model === "gpt-5.6-sol"
+              && models.tutor?.fallback_model === "gpt-5.6-terra"
               && models.tutor?.reasoning_effort === "high"
               && models.verifier?.model === "gpt-5.6-terra"
               && models.verifier?.reasoning_effort === "high"
               && models.vision?.model === "gpt-5.6-sol"
-              && models.web_search?.model === "gpt-5.6-terra";
+              && models.web_search?.model === "gpt-5.6-terra"
+              && payload.features?.structured_request_retry_v1 === true
+              && payload.features?.tutor_model_failover_v1 === true
+              && payload.features?.scope_model_failover_v1 === true
+              && payload.features?.moderation_request_retry_v1 === true;
             if (!valid) {
               console.error("Unexpected Eterna model configuration", payload);
               process.exit(1);
@@ -256,7 +264,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.96.0-full-intelligence-child-safety · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.96.5-exam-intake-recovery"
+            echo "- Expected versions: frontend 160.96.0-full-intelligence-child-safety · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.96.6-resilient-tutor-failover"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents
