@@ -8,7 +8,7 @@ const css = readFileSync(new URL("../eterna-v159.css", import.meta.url), "utf8")
 const index = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const sw = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
 
-assert.match(client, /160\.96\.7-transparent-recovery/);
+assert.match(client, /160\.98\.0-human-teacher/);
 assert.match(client, /function trialExpired\(\)/);
 assert.match(client, /status==="expired"/);
 assert.match(client, /status==="trialing"&&\(!Number\.isFinite\(end\)\|\|end<=Date\.now\(\)\)/);
@@ -60,10 +60,10 @@ assert.match(css, /\.eternaV160ExpiredHero\{/);
 assert.match(css, /\.eternaV160ExpiredPlans \.eternaV160PaidPlan button\{width:100%;min-height:52px/);
 assert.match(css, /@media\(max-width:760px\).*\.eternaV160ExpiredPlans\{grid-template-columns:1fr\}/s);
 
-assert.match(index, /eterna-v159\.css\?v=160920/);
+assert.match(index, /eterna-v159\.css\?v=160980/);
 assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
-assert.match(index, /eterna-v159\.js\?v=160960/);
+assert.match(index, /eterna-v159\.js\?v=160980/);
 assert.match(index, /coco-v153-fixes\.js\?v=15301/);
-assert.match(sw, /coco-en-forma-v160\.96\.7-eterna-recovery-r1/);
+assert.match(sw, /coco-en-forma-v160\.98\.0-human-teacher-r2/);
 
 console.log("Eterna trial-expired conversion contract: OK");

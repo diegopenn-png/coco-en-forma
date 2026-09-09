@@ -92,8 +92,8 @@ test("Eterna UX has an explicit end, restart, accessible audio and empty-send gu
   assert.match(core, /data-et-listen-slow/);
   assert.match(core, /aria-pressed/);
   assert.match(core, /syncSendAvailability/);
-  assert.match(experience, /Comprobando el contenido/);
-  assert.match(experience, /Preparando una explicación clara/);
+  assert.match(core, /<span>Pensando…<\/span>/);
+  assert.doesNotMatch(experience, /setLive\("thinking"/);
   assert.doesNotMatch(experience, /permisos de Safari o de la PWA/);
   assert.match(experience, /data-et-age-band=teen/);
 });
@@ -126,7 +126,7 @@ test("master accounts can replay every game without adding a second daily score"
   assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
   assert.match(unified, /daily\.isUnlimited\(userId\)/);
   assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.96\.7-eterna-recovery-r1/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.98\.0-human-teacher-r2/);
 });
 
 test("production promotes the exact preview-tested Worker with automatic rollback", () => {

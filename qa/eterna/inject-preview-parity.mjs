@@ -10,7 +10,7 @@ export const PREVIEW_PARITY_GROUPS = Object.freeze([
     ]),
   }),
   Object.freeze({
-    anchor: '<script id="coco-v159-eterna" src="./eterna-v159.js?v=160960"></script>',
+    anchor: '<script id="coco-v159-eterna" src="./eterna-v159.js?v=160980"></script>',
     scripts: Object.freeze([
       '<script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960"></script>',
       '<script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=160960"></script>',
