@@ -1,4 +1,4 @@
-name: Deploy Eterna Worker 160.96.7
+name: Deploy Eterna Worker 160.96.8
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.96.7-compatible-tutor-recovery
+      EXPECTED_VERSION: 160.96.8-moderation-resilience
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -63,6 +63,10 @@ jobs:
           echo "::add-mask::$account_id"
           echo "CLOUDFLARE_ACCOUNT_ID=${account_id}" >> "$GITHUB_ENV"
 
+          probe_token="$(openssl rand -hex 32)"
+          echo "::add-mask::$probe_token"
+          echo "DEPLOY_PROBE_TOKEN=${probe_token}" >> "$GITHUB_ENV"
+
       - name: Install Worker tooling
         working-directory: eterna-worker
         run: npm ci --no-audit --no-fund
@@ -90,7 +94,8 @@ jobs:
             --var "VISION_MODEL:gpt-5.6-sol" \
             --var "VISION_REASONING_EFFORT:high" \
             --var "WEB_SEARCH_MODEL:gpt-5.6-terra" \
-            --var "WEB_SEARCH_REASONING_EFFORT:low" | tee production-candidate.log
+            --var "WEB_SEARCH_REASONING_EFFORT:low" \
+            --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" | tee production-candidate.log
 
           version_id="$(sed -n -E 's/^(Worker )?Version ID: //p' production-candidate.log | tail -1)"
           preview_url="$(sed -n 's/^Version Preview URL: //p' production-candidate.log | tail -1)"
@@ -104,6 +109,7 @@ jobs:
           fi
           echo "TARGET_VERSION_ID=${version_id}" >> "$GITHUB_ENV"
           echo "PREVIEW_HEALTH_URL=${preview_url}/health" >> "$GITHUB_ENV"
+          echo "PREVIEW_DEPENDENCY_URL=${preview_url}/health/dependencies" >> "$GITHUB_ENV"
 
       - name: Verify isolated candidate and model configuration
         shell: bash
@@ -143,12 +149,25 @@ jobs:
               && payload.features?.tutor_compatibility_model_v1 === true
               && payload.features?.stable_fact_tutor_recovery_v1 === true
               && payload.features?.scope_model_failover_v1 === true
-              && payload.features?.moderation_request_retry_v1 === true;
+              && payload.features?.moderation_request_retry_v1 === true
+              && payload.features?.moderation_diagnostics_v1 === true
+              && payload.features?.degraded_safe_academic_moderation_v1 === true;
             if (!valid) {
               console.error("Unexpected production candidate health payload", payload);
               process.exit(1);
             }
           ' "$preview_payload"
+
+          dependency_payload="$(curl --silent --show-error --max-time 45 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "$PREVIEW_DEPENDENCY_URL" || true)"
+          echo "Sanitized OpenAI dependency probe: ${dependency_payload}"
+          node -e '
+            const payload = JSON.parse(process.argv[1]);
+            if (payload.version !== process.env.EXPECTED_VERSION) process.exit(1);
+            for (const name of ["moderation", "responses"]) {
+              const item = payload[name] || {};
+              if (item.ok !== true && !/^((MODERATION|RESPONSES)_(HTTP|NETWORK|UNKNOWN))/.test(String(item.diagnostic_code || ""))) process.exit(1);
+            }
+          ' "$dependency_payload"
 
       - name: Deploy the verified candidate to production
         working-directory: eterna-worker
@@ -157,7 +176,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.96.7 compatible tutor recovery" \
+            --message "Eterna 160.96.8 moderation resilience" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -196,7 +215,9 @@ jobs:
                   && payload.features?.tutor_compatibility_model_v1 === true
                   && payload.features?.stable_fact_tutor_recovery_v1 === true
                   && payload.features?.scope_model_failover_v1 === true
-                  && payload.features?.moderation_request_retry_v1 === true;
+                  && payload.features?.moderation_request_retry_v1 === true
+                  && payload.features?.moderation_diagnostics_v1 === true
+                  && payload.features?.degraded_safe_academic_moderation_v1 === true;
                 process.exit(valid ? 0 : 1);
               } catch {
                 process.exit(1);
@@ -212,7 +233,7 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.96.7 health check" \
+              --message "Automatic rollback after failed Eterna 160.96.8 health check" \
               --yes
             exit 1
           fi
