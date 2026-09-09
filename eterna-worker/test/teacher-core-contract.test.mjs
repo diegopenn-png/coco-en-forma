@@ -58,6 +58,8 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   expectedIdeaMatch,
   deterministicAnchoredCheckTurn,
   deterministicConceptCheckTurn,
+  disclosedCheckReplacement,
+  synchronousVerificationRequired,
   buildPedagogicalState,
   handleChat
 };`, sandbox);
@@ -357,6 +359,27 @@ test("combined confusion and simplification requests are never graded as answers
     assert.equal(api.turnRelation(message, state, []), "simplification_request", message);
   }
   assert.equal(api.turnRelation("No me queda claro, ponme otro ejemplo.", state, []), "confusion_request");
+});
+
+test("simplification receives synchronous pedagogical verification", () => {
+  assert.equal(api.synchronousVerificationRequired({
+    image: null,
+    mode: "explain",
+    turnRel: "simplification_request",
+    scope: { scope: "school" },
+    stableSchool: true,
+    externalEvidence: null,
+    mathCheck: null,
+    answerAnchor: null,
+    tutorData: { student_answer_assessment: "not_applicable" },
+    text: "No lo entendí, explícamelo más fácil.",
+  }), true);
+});
+
+test("a micro-check never asks for a fraction result already disclosed", () => {
+  const check = "¿Cuál es el resultado de sumar 3/4 y 1/8?";
+  const reply = "Convertimos 3/4 en 6/8. Después sumamos 6/8 + 1/8 = 7/8.";
+  assert.equal(api.disclosedCheckReplacement(check, reply), "Antes de sumar o restar fracciones con distinto denominador, ¿qué necesitamos conseguir primero?");
 });
 
 test("teacher core adapts all Spanish school stages and forbids human impersonation", () => {

@@ -1,6 +1,6 @@
 import "../../eterna-state-contract-v3.js";
 
-/* ETERNA v160.97.1 · Cloudflare Workers AI + prioridad semántica del turno actual
+/* ETERNA v160.97.2 · Cloudflare Workers AI + guardia pedagógica de simplificación
  * Release Candidate construido exclusivamente sobre el Worker desplegado 160.9-scope-tutor3.
  * Mantiene Scope Gate + tutor + verifier + vision + speech + transcription + Stripe.
  * Conserva legal, pagos, scope, safety, memoria, límites y pedagogía adaptativa.
@@ -13,7 +13,7 @@ import "../../eterna-state-contract-v3.js";
  */
 const OUT_SCOPE="Soy una IA tutora escolar. Este espacio está centrado en el colegio y el aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.97.1-current-turn-intent";
+const VERSION="160.97.2-pedagogy-guard";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -796,6 +796,14 @@ function normalizedFraction(n,d){n=Number(n);d=Number(d);if(!Number.isInteger(n)
 function fractionDenominatorFromWord(value){const word=normalizeDetectionText(value).replace(/\s+/g,"").replace(/s$/,"");return({medio:2,media:2,tercio:3,tercera:3,cuarto:4,cuarta:4,quinto:5,quinta:5,sexto:6,sexta:6,septimo:7,septima:7,octavo:8,octava:8,noveno:9,novena:9,decimo:10,decima:10})[word]||null}
 function parseStudentFraction(text){const s=stripTurnPunctuation(text);let m=s.match(/(?:^|\b)(-?\d+)\s*\/\s*(-?\d+)(?:\b|$)/);if(m){const rawN=Number(m[1]),rawD=Number(m[2]),norm=normalizedFraction(rawN,rawD);return norm?{...norm,rawN,rawD}:null}if(/^-?\d+$/.test(s)){const n=Number(s);return{n,d:1,rawN:n,rawD:1}}return null}
 function expectedFractionForQuestion(question){const q=normalizeDetectionText(question||"");let m=q.match(/(-?\d+)\s*\/\s*(-?\d+).{0,100}multiplica(?:do)?\s+por\s+(-?\d+)\s+(?:arriba|en el numerador).{0,60}(?:por\s+)?(-?\d+)\s+(?:abajo|en el denominador)/);if(m){const rawN=Number(m[1]),rawD=Number(m[2]),topFactor=Number(m[3]),bottomFactor=Number(m[4]),source=normalizedFraction(rawN,rawD);if(source&&Number.isInteger(topFactor)&&topFactor>0&&topFactor===bottomFactor){const wantedN=rawN*topFactor,wantedD=rawD*bottomFactor;if(Number.isInteger(wantedN)&&Number.isInteger(wantedD)&&wantedD!==0)return{type:"equivalent_denominator",n:wantedN,d:wantedD,rawN:wantedN,rawD:wantedD,source,wantedDen:wantedD}}}m=q.match(/fraccion equivalente a\s*(-?\d+)\s*\/\s*(-?\d+).*denominador\s*(?:de\s*)?(-?\d+)/);if(m){const source=normalizedFraction(Number(m[1]),Number(m[2])),wanted=Number(m[3]);if(!source||!Number.isInteger(wanted)||wanted===0)return null;const raw=source.n*wanted/source.d;if(!Number.isInteger(raw))return null;return{type:"equivalent_denominator",n:raw,d:wanted,source,wantedDen:wanted}}m=q.match(/cuant[oa]s?\s+([a-z]+)(?:\s+partes?)?\s+(?:son|representan|equivale(?:n)?)\s*(-?\d+)\s*\/\s*(-?\d+)/);if(m){const wanted=fractionDenominatorFromWord(m[1]),source=normalizedFraction(Number(m[2]),Number(m[3]));if(source&&wanted){const raw=source.n*wanted/source.d;if(Number.isInteger(raw))return{type:"equivalent_denominator",n:raw,d:wanted,source,wantedDen:wanted}}}m=q.match(/(?:en|a)?\s*cuant[oa]s?\s+([a-z]+)(?:\s+partes?)?\s+equivale\s*(-?\d+)\s*\/\s*(-?\d+)/);if(m){const wanted=fractionDenominatorFromWord(m[1]),source=normalizedFraction(Number(m[2]),Number(m[3]));if(source&&wanted){const raw=source.n*wanted/source.d;if(Number.isInteger(raw))return{type:"equivalent_denominator",n:raw,d:wanted,source,wantedDen:wanted}}}m=q.match(/(-?\d+)\s*\/\s*(-?\d+).{0,80}\ben\s+([a-z]+)/);if(m){const source=normalizedFraction(Number(m[1]),Number(m[2])),wanted=fractionDenominatorFromWord(m[3]);if(source&&wanted){const raw=source.n*wanted/source.d;if(Number.isInteger(raw))return{type:"equivalent_denominator",n:raw,d:wanted,source,wantedDen:wanted}}}m=q.match(/(-?\d+)\s*\/\s*(-?\d+).{0,100}denominador\s*(?:de\s*)?(-?\d+)/);if(m){const source=normalizedFraction(Number(m[1]),Number(m[2])),wanted=Number(m[3]);if(source&&Number.isInteger(wanted)&&wanted!==0){const raw=source.n*wanted/source.d;if(Number.isInteger(raw))return{type:"equivalent_denominator",n:raw,d:wanted,source,wantedDen:wanted}}}if(/\b(mayor|menor)\b/.test(q)){m=q.match(/(-?\d+)\s*\/\s*(-?\d+)[^0-9]{1,80}(-?\d+)\s*\/\s*(-?\d+)/);if(m){const left=normalizedFraction(+m[1],+m[2]),right=normalizedFraction(+m[3],+m[4]);if(left&&right){const target=/\bmenor\b/.test(q)&&!/\bmayor\b/.test(q)?"lesser":"greater",delta=left.n*right.d-right.n*left.d;if(delta!==0){const useLeft=target==="greater"?delta>0:delta<0,chosen=useLeft?left:right;return{type:"comparison",target,n:chosen.n,d:chosen.d,rawN:Number(useLeft?m[1]:m[3]),rawD:Number(useLeft?m[2]:m[4]),left,right}}}}}m=q.match(/(-?\d+)\s*\/\s*(-?\d+)\s*([+\-x×*÷])\s*(-?\d+)\s*\/\s*(-?\d+)/);if(!m)return null;const a=normalizedFraction(+m[1],+m[2]),b=normalizedFraction(+m[4],+m[5]),op=m[3];if(!a||!b)return null;let n,d;if(op==="+"){n=a.n*b.d+b.n*a.d;d=a.d*b.d}else if(op==="-"){n=a.n*b.d-b.n*a.d;d=a.d*b.d}else if(op==="x"||op==="×"||op==="*"){n=a.n*b.n;d=a.d*b.d}else{if(b.n===0)return null;n=a.n*b.d;d=a.d*b.n}const r=normalizedFraction(n,d);return r?{type:"operation",...r,op}:null}
+function spokenFractionOperation(question){const q=normalizeDetectionText(question||""),m=q.match(/\b(sumar|suma(?:r)?\s+de|restar|resta(?:r)?\s+de)\s*(-?\d+)\s*\/\s*(-?\d+)\s+(?:y|con|menos)\s*(-?\d+)\s*\/\s*(-?\d+)/);if(!m)return null;const a=normalizedFraction(+m[2],+m[3]),b=normalizedFraction(+m[4],+m[5]);if(!a||!b)return null;const subtract=/^rest/.test(m[1]);return normalizedFraction(subtract?a.n*b.d-b.n*a.d:a.n*b.d+b.n*a.d,a.d*b.d)}
+function replyContainsFraction(reply,fraction){if(!fraction)return false;const source=String(reply||""),n=String(fraction.n).replace(/-/g,"-"),d=String(fraction.d);return new RegExp(`(^|[^0-9])${n}\\s*\\/\\s*${d}([^0-9]|$)`).test(source)}
+function disclosedCheckReplacement(question,reply){
+  const fraction=expectedFractionForQuestion(question)||spokenFractionOperation(question),math=deterministicMath(question),disclosed=replyContainsFraction(reply,fraction)||Boolean(math?.type==="arithmetic"&&containsStandaloneNumber(reply,math.result));
+  if(!disclosed)return question;
+  if(fraction)return"Antes de sumar o restar fracciones con distinto denominador, ¿qué necesitamos conseguir primero?";
+  return"Sin repetir el resultado, ¿qué operación o regla permite comprobarlo?"
+}
 function fractionAnswerCorrect(expected,student){if(!expected||!student)return false;if(expected.type==="equivalent_denominator"&&student.rawD!==expected.wantedDen)return false;return student.n*expected.d===expected.n*student.d}
 function fractionText(f){return f.d===1?String(f.n):`${f.n}/${f.d}`}
 function homeworkFractionFactorQuestion(question){const q=normalizeDetectionText(question||"");if(!/\bque numero\b/.test(q)||!/\bmultiplic/.test(q)||!/(?:\bobtener\b|\bllegar a\b|\bda(?:r)?\b)/.test(q))return null;const values=(q.match(/-?\d+/g)||[]).map(Number);if(values.length<2)return null;const from=values[0],to=values[1],factor=to/from;if(!Number.isInteger(from)||!Number.isInteger(to)||from===0||!Number.isInteger(factor)||factor<=0)return null;return{from,to,factor}}
@@ -1005,7 +1013,7 @@ REGLAS:
 3) Si hay ANCLA, una contradicción demostrable = contradiction. Matemática determinista prevalece.
 4) Detecta errores conceptuales reales. Ejemplo: elevar al cuadrado NO significa «duplicar»; es multiplicar el número por sí mismo.
 5) Para continuation/detail/why/example, si repite sin avanzar: pedagogy_improvement y corrected_reply que avance. No uses factual_error salvo hecho falso.
-6) Para confusion/simplification, una paráfrasis sin cambio real = pedagogy_improvement.
+6) Para confusion/simplification, una paráfrasis sin cambio real = pedagogy_improvement. Si el alumno pidió algo más fácil, exige una representación materialmente distinta (objetos, dibujo verbal, analogía o micropasos), vuelve al punto que no entendió y devuelve corrected_reply cuando la propuesta se limite a repetir la misma definición o a formular otra pregunta abstracta.
 7) invalid_short_answer: «sí/no» NO equivale a un concepto/número/opción. Si la propuesta lo finge, factual_error/corrected_reply.
 8) Temas académicos sensibles son válidos si son científicos/neutrales y no operativos.
 9) Reproducción humana educativa puede explicar relación sexual vaginal, semen, espermatozoides, óvulo, fecundación, cigoto e implantación con detalle proporcional.
@@ -1041,7 +1049,7 @@ function expectedActForType(type,mode){if(mode==="exam")return"exam_question";if
 function mergeExplainedPoints(existing,added,reset=false){const out=[],seen=new Set(),src=[...(reset?[]:(Array.isArray(existing)?existing:[])),...(Array.isArray(added)?added:[])];for(const raw of src){const v=String(raw||"").trim().slice(0,220);if(!v)continue;const k=normalizeConceptKey(v);if(seen.has(k))continue;seen.add(k);out.push(v)}return out.slice(-10)}
 function deriveTutorAct(tutorOutput,finalCheck,mode,assessment){if(finalCheck)return expectedActForType(tutorOutput?.expected_answer_type||"open",mode);if(tutorOutput?.needs_clarification)return"clarify";if(TUTOR_ACTS.includes(tutorOutput?.tutor_act))return tutorOutput.tutor_act;if(["partial","incorrect"].includes(assessment))return"correct";return"explain"}
 function validMicroCheck(question,studentText=""){const q=cleanChildText(question||""),student=normalizeDetectionText(studentText);if(!q||q.length<6||q.length>420)return false;if((q.match(/\?/g)||[]).length!==1||!/\?\s*$/.test(q)||/[,;:]\s*$/.test(q))return false;const n=normalizeDetectionText(q);if(n===student)return false;if(/\bcual\s+de\s+estas\s+fracciones\b/.test(n)&&(q.match(/-?\d+\s*\/\s*-?\d+/g)||[]).length<3)return false;if(/^(?:vamos con|seguimos con)\s+una sola\s+(?:pregunta|practica|práctica)|^(?:otra|nueva|siguiente)\s+(?:pregunta|cuestion|cuestión)/.test(n)&&!/[0-9+×x*÷/:]|\b(?:que|qué|como|cómo|cual|cuál|por que|por qué|cuanto|cuánto|donde|dónde|cuando|cuándo)\b/.test(n))return false;return true}
-function smartMicroCheck({mode,tutorData,turnRel,incoming,assessment,studentText=""}){const q=cleanChildText(tutorData?.check_question||"")||null;if(!validMicroCheck(q,studentText))return null;if(mode==="exam"||mode==="practice")return q;if(mode==="homework"||mode==="review")return q;const followup=["continuation_request","topic_return_request","detail_request","why_request","example_request","answer_to_offer","acknowledgement","invalid_short_answer"];if(followup.includes(turnRel))return null;if(mode==="ask"){if(incoming.turn_index>0&&assessment==="not_applicable")return null;return q}if(mode==="explain"){if(["confusion_request","simplification_request","technical_request"].includes(turnRel))return Number(incoming.confusion_count||0)>=1?q:null;if(["partial","incorrect"].includes(assessment))return q;if(turnRel==="answer_to_pending"&&assessment==="correct")return null;return incoming.turn_index===0?q:null}return q}
+function smartMicroCheck({mode,tutorData,turnRel,incoming,assessment,studentText=""}){const q=cleanChildText(tutorData?.check_question||"")||null;if(!validMicroCheck(q,studentText))return null;if(mode==="exam"||mode==="practice")return q;if(mode==="homework"||mode==="review")return q;const followup=["continuation_request","topic_return_request","detail_request","why_request","example_request","answer_to_offer","acknowledgement","invalid_short_answer"];if(followup.includes(turnRel))return null;if(mode==="ask"){if(turnRel!=="new_topic"&&incoming.turn_index>0&&assessment==="not_applicable")return null;return q}if(mode==="explain"){if(["confusion_request","simplification_request","technical_request"].includes(turnRel))return Number(incoming.confusion_count||0)>=1?q:null;if(["partial","incorrect"].includes(assessment))return q;if(turnRel==="answer_to_pending"&&assessment==="correct")return null;return turnRel==="new_topic"||incoming.turn_index===0?q:null}return q}
 function embeddedStudentQuestion(reply){
   const text=cleanChildText(reply||"");if(!text)return null;
   const qs=[];for(const m of text.matchAll(/¿[^?]{2,360}\?|(?:^|[.!]\s+)[^.!?\n]{2,300}\?/g)){const raw=cleanChildText(m[0].replace(/^[.!]\s*/,"")),pos=raw.lastIndexOf("¿"),q=pos>=0?raw.slice(pos):raw;if(q)qs.push(q)}
@@ -1087,6 +1095,8 @@ function singleStudentAct({mode,reply,tutorData,turnRel,incoming,assessment,stud
   let cleanReply=cleanChildText(reply||""),displayCheck=smartMicroCheck({mode,tutorData,turnRel,incoming,assessment,studentText}),embedded=embeddedStudentQuestion(cleanReply),pendingQuestion=null;
   if(embedded)embedded=explicitEmbeddedCheck(cleanReply,embedded);
   if(embedded&&!validMicroCheck(embedded,studentText)){cleanReply=stripTrailingStudentQuestion(cleanReply,embedded);embedded=null}
+  if(displayCheck)displayCheck=disclosedCheckReplacement(displayCheck,cleanReply);
+  if(embedded){const replacement=disclosedCheckReplacement(embedded,cleanReply);if(replacement!==embedded){cleanReply=stripTrailingStudentQuestion(cleanReply,embedded);embedded=null;if(!displayCheck)displayCheck=replacement}}
   if(!embedded&&displayCheck&&["exam","practice"].includes(mode))embedded=embeddedStudentPrompt(cleanReply);
   if(["ask","explain"].includes(mode)&&turnRel==="answer_to_pending"&&assessment==="correct"){
     if(embedded&&!isContinuationOfferQuestion(embedded))cleanReply=stripTrailingStudentQuestion(cleanReply,embedded);
@@ -1205,6 +1215,7 @@ function stableSchoolKnowledge(text,scope,mode,image){
 }
 function synchronousVerificationRequired({image,mode,turnRel,scope,stableSchool,externalEvidence,mathCheck,answerAnchor,tutorData,text}={}){
   if(image||mode==="review"||externalEvidence||!stableSchool)return true;
+  if(["confusion_request","simplification_request"].includes(turnRel))return true;
   if(scope?.sensitive_topic||scope?.unsafe_action||scope?.needs_clarification)return true;
   if(String(text||"").length>1800)return true;
   if(turnRel==="answer_to_pending"){
@@ -1389,7 +1400,7 @@ async function handleChatCore(request,env,auth,event,timings){
     tutorData={...tutorData,check_question:null,conversation_stage:"complete",tutor_act:"correct"}
   }
 
-  if(status==="verified"&&["ask","explain"].includes(mode)&&!pendingQuestion&&incomingPedState.turn_index===0&&!["confusion_request","simplification_request","technical_request"].includes(turnRel)){
+  if(status==="verified"&&["ask","explain"].includes(mode)&&!pendingQuestion&&(incomingPedState.turn_index===0||turnRel==="new_topic")&&!["confusion_request","simplification_request","technical_request"].includes(turnRel)){
     reply=stripTrailingOfferQuestion(reply);
     const label=cleanChildText(concept||effectiveConcept||"este tema");
     pendingQuestion=mode==="explain"?`Con tus palabras, ¿qué significa ${label}?`:`Para comprobarlo: ¿cuál es la idea principal que acabas de aprender sobre ${label}?`;
@@ -1513,7 +1524,7 @@ function healthFeatures(env){return {
   pedagogical_state_contract_v3:true,question_id_stale_guard:true,transient_request_replay:true,
   feedback_entitlement_gate:true,explicit_understood_signal:true,
   teacher_core_v1:true,situational_core_v1:true,current_message_priority_v1:true,answer_contract_engine_v1:true,coherence_progression_v1:true,
-  child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,
+  child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,pedagogical_simplification_guard_v1:true,non_trivial_microcheck_v1:true,
   full_intelligence_child_safety_v1:true,helpful_safe_completion_v1:true,suspended_topic_resume_v1:true,mode_contracts_v2:true,
   flagship_tutor_model_v1:true,independent_balanced_verifier_v1:true,configurable_reasoning_effort_v1:true,strict_structured_outputs_v1:true,
   parallel_chat_preflight_v1:true,deferred_chat_persistence_v1:true,curriculum_warm_cache_v1:true,
