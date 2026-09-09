@@ -34,6 +34,7 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   safetyInterruptionPayload,
   scopeV3Guard,
   turnRelation,
+  learningRepairRelation,
   explicitNewTopicRequest,
   independentQuestionSignal,
   classroomSituation,
@@ -323,6 +324,39 @@ test("classroom small talk is recognised without being graded as science", () =>
   assert.match(api.situationalReply({ kind: "weather_query", location: null }, "", ""), /ciudad/i);
   assert.match(api.situationalReply({ kind: "identity" }, "", ""), /tutor digital/i);
   assert.match(api.situationalReply({ kind: "identity" }, "", ""), /no soy una persona/i);
+});
+
+test("academic questions about weather phenomena outrank situational small talk", () => {
+  for (const message of [
+    "¿Por qué llueve?",
+    "¿Cómo se forma la lluvia?",
+    "¿Por qué nieva?",
+    "Explícame de dónde viene el viento.",
+    "¿Por qué hace frío?",
+  ]) assert.equal(api.classroomSituation(message, []), null, message);
+
+  assert.equal(api.classroomSituation("Llueve mucho.", []).kind, "weather_observation");
+  assert.equal(api.classroomSituation("Está nevando.", []).kind, "weather_observation");
+  assert.equal(api.classroomSituation("¿Qué tiempo hace hoy en Málaga?", []).kind, "weather_query");
+});
+
+test("combined confusion and simplification requests are never graded as answers", () => {
+  const state = {
+    ...pendingState,
+    active_subject: "Matemáticas",
+    active_concept: "suma de fracciones",
+    pending_question: "¿Cuál es el paso siguiente para sumar 3/4 y 1/8?",
+    expected_answer_type: "open",
+  };
+  for (const message of [
+    "No lo entendí, explícamelo de una forma más fácil.",
+    "No entiendo; dímelo con palabras más fáciles.",
+    "Explícamelo de otra forma más sencilla.",
+  ]) {
+    assert.equal(api.learningRepairRelation(message), "simplification_request", message);
+    assert.equal(api.turnRelation(message, state, []), "simplification_request", message);
+  }
+  assert.equal(api.turnRelation("No me queda claro, ponme otro ejemplo.", state, []), "confusion_request");
 });
 
 test("teacher core adapts all Spanish school stages and forbids human impersonation", () => {

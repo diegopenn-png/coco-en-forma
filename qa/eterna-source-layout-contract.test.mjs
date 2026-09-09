@@ -14,7 +14,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.97\.0-cloudflare-ai-primary/);
+  assert.match(worker, /160\.97\.1-current-turn-intent/);
+  assert.match(worker, /academic_weather_question_v1:true/);
+  assert.match(worker, /combined_simplification_request_v1:true/);
   assert.match(worker, /reasoning:\{effort\}/);
   assert.match(worker, /flagship_tutor_model_v1:true/);
   assert.match(worker, /!image&&!topicReturnRequest\(text,incomingPedState\)/);
@@ -27,10 +29,10 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
 
-test("the 160.97 production gate verifies the exact model route before release", () => {
+test("the 160.97.1 production gate verifies the exact model route before release", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-160960.yml", "utf8");
   assert.match(production, /\.github\/release-eterna-160960/);
-  assert.match(production, /EXPECTED_VERSION: 160\.97\.0-cloudflare-ai-primary/);
+  assert.match(production, /EXPECTED_VERSION: 160\.97\.1-current-turn-intent/);
   assert.match(production, /--var "AI_PROVIDER:cloudflare"/);
   assert.match(production, /--var "TUTOR_MODEL:@cf\/meta\/llama-3\.3-70b-instruct-fp8-fast"/);
   assert.match(production, /models\.tutor\?\.reasoning_effort === "high"/);

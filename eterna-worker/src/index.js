@@ -1,6 +1,6 @@
 import "../../eterna-state-contract-v3.js";
 
-/* ETERNA v160.97.0 · Cloudflare Workers AI como proveedor primario de bajo coste
+/* ETERNA v160.97.1 · Cloudflare Workers AI + prioridad semántica del turno actual
  * Release Candidate construido exclusivamente sobre el Worker desplegado 160.9-scope-tutor3.
  * Mantiene Scope Gate + tutor + verifier + vision + speech + transcription + Stripe.
  * Conserva legal, pagos, scope, safety, memoria, límites y pedagogía adaptativa.
@@ -13,7 +13,7 @@ import "../../eterna-state-contract-v3.js";
  */
 const OUT_SCOPE="Soy una IA tutora escolar. Este espacio está centrado en el colegio y el aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.97.0-cloudflare-ai-primary";
+const VERSION="160.97.1-current-turn-intent";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -306,13 +306,20 @@ function pureCourtesy(t){const x=courtesyNorm(t);return!!x&&x.length<=90&&!clear
 function displayStudentName(v){const n=cleanChildText(v||"").split(/\s+/)[0].slice(0,32);return n?n.charAt(0).toLocaleUpperCase("es-ES")+n.slice(1):""}
 function courtesyReply(t,name){const x=courtesyNorm(t),n=displayStudentName(name),h=n?`¡Hola, ${n}!`:`¡Hola!`;if(/gracias/.test(x))return n?`¡De nada, ${n}! 😊 Cuando quieras, seguimos aprendiendo.`:"¡De nada! 😊 Cuando quieras, seguimos aprendiendo.";if(/adios|hasta luego|nos vemos|chao|chau/.test(x))return n?`¡Hasta luego, ${n}! 👋 Cuando quieras, seguimos con el cole.`:"¡Hasta luego! 👋 Cuando quieras, seguimos con el cole.";if(/buenos dias/.test(x))return`${n?`¡Buenos días, ${n}!`:`¡Buenos días!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/buenas tardes/.test(x))return`${n?`¡Buenas tardes, ${n}!`:`¡Buenas tardes!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/buenas noches/.test(x))return`${n?`¡Buenas noches, ${n}!`:`¡Buenas noches!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/como estas|que tal/.test(x))return`${h} 😊 Todo listo por aquí para ayudarte con el cole.`;return`${h} 😊 ¿Qué quieres aprender hoy?`}
 function weatherLocation(text){const raw=String(text||"").trim(),m=raw.match(/\ben\s+([\p{L}][\p{L}\s.'-]{1,58})[?!.]*$/iu);return m?cleanChildText(m[1]).trim().slice(0,60):null}
+function academicWeatherExplanation(text){
+  const s=stripTurnPunctuation(text);if(!s)return false;
+  const phenomenon=/\b(?:llueve|llover|lluvia|nieva|nevar|nieve|granizo|tormenta|trueno|relampago|rayos?|viento|frio|calor|nubes?|arcoiris)\b/.test(s);
+  if(!phenomenon)return false;
+  return /^(?:por que|como|que causa|que provoca|a que se debe|de donde viene|explicame|cuentame|quiero saber)\b/.test(s)||/\b(?:como se forma|por que se forma|ciclo del agua|fenomeno atmosferico)\b/.test(s)
+}
 function classroomSituation(text,history=[]){
   const s=stripTurnPunctuation(text);if(!s||teacherCoreSafetySignal(s))return null;
   if(pureCourtesy(text))return{kind:"courtesy"};
   const previous=normalizeDetectionText(latestAssistantText(history));
   if(/\b(?:que|qué)\s+ciudad\b/.test(previous)&&/^[\p{L}][\p{L}\s.'-]{1,58}$/u.test(String(text||"").trim()))return{kind:"weather_query",location:cleanChildText(text).trim().slice(0,60)};
   if(/\b(?:que|qué)\s+(?:tiempo|clima)\s+hace\s+hoy\b|\b(?:tiempo|clima)\s+de\s+hoy\b|\bva\s+a\s+llover\s+hoy\b|\btemperatura\s+(?:hoy|actual)\b/.test(s))return{kind:"weather_query",location:weatherLocation(text)};
-  if(/\b(?:hace\s+(?:mucho\s+)?(?:frio|frío|calor)|esta\s+lloviendo|está\s+lloviendo|llueve|nieva|hace\s+(?:mucho\s+)?viento)\b/.test(s))return{kind:"weather_observation"};
+  if(academicWeatherExplanation(text))return null;
+  if(/\b(?:hace\s+(?:mucho\s+)?(?:frio|frío|calor)|esta\s+(?:lloviendo|nevando)|está\s+(?:lloviendo|nevando)|llueve|nieva|hace\s+(?:mucho\s+)?viento)\b/.test(s))return{kind:"weather_observation"};
   if(/^(?:como|cómo)\s+te\s+llamas$|^(?:eres|t[uú]\s+eres)\s+(?:una\s+)?(?:persona|humano|humana|robot|ia)$|^(?:cuantos|cuántos)\s+a[nñ]os\s+tienes$/.test(s))return{kind:"identity"};
   const oneOffEmbarrassment=(/\b(?:me\s+equivoqu[eé]|me\s+sali[oó]\s+mal)\b.{0,100}\b(?:leyendo|en\s+voz\s+alta|en\s+clase)\b/.test(s)&&/\b(?:se\s+rieron|se\s+han\s+re[ií]do|verg[uü]enza|no\s+quiero\s+volver)\b/.test(s))||(/\bno\s+hay\s+peligro\b/.test(s)&&/\b(?:se\s+rieron|verg[uü]enza|hablar\s+con\s+(?:ella|el|él|mi\s+profesor))\b/.test(s));
   if(oneOffEmbarrassment)return{kind:"classroom_embarrassment"};
@@ -501,6 +508,13 @@ function scopeV3Guard(text,decision,pedState,history){
 }
 function hasAcademicConversationContext(pedState,history){return Boolean(pedState?.active_subject||pedState?.active_concept||pedState?.active_topic||pedState?.suspended_topic||latestAssistantText(history))}
 function stripTurnPunctuation(text){return normalizeDetectionText(text).trim().replace(/^[¿¡]+|[.!?¿¡]+$/g,"").trim()}
+function learningRepairRelation(text){
+  const s=stripTurnPunctuation(text);if(!s)return null;
+  const simpler=/\bmas\s+(?:facil(?:es)?|sencill[oa]s?)\b/.test(s);
+  if(simpler)return"simplification_request";
+  const confused=/\b(?:no entendi|no entiendo|no lo entendi|no lo entiendo|no me queda claro|me he perdido|me perdi)\b/.test(s),retry=/\b(?:explicame|explicamelo|repite|repitelo|dilo|dimelo)\b.{0,45}\b(?:mejor|de nuevo|otra vez|de otra forma|con otro ejemplo)\b/.test(s)||/^(?:otra forma|lo de antes)$/.test(s);
+  return confused||retry||/\b(?:estrategia realmente distinta|no repitas la misma formulacion)\b/.test(s)?"confusion_request":null
+}
 function isYesNoToken(text){return /^(si|sí|no)$/.test(stripTurnPunctuation(text))}
 function isDontKnow(text){return /^(?:no\s+(?:lo\s+)?s[eé]|ni idea|no tengo ni idea|no me acuerdo|no recuerdo)$/.test(stripTurnPunctuation(text))}
 function isShortContextualContinuation(text){const s=stripTurnPunctuation(text);if(!s||s.length>90)return false;if(clearSafetySignal(s)||clearTopicSwitchSignal(s)||clearNonAcademicIntent(s))return false;if(/^(dime|si|sí|no|vale|ok|aja|ajá|continua|continúa|sigue|adelante|otra vez|mas facil|más fácil|no entendi|no entendí|no entiendo|explicame|explícame|explicamelo|explícamelo|ponme un ejemplo|otro ejemplo|por que|por qué|como|cómo|y despues|y después|que paso|qué pasó|no lo se|no lo sé)$/.test(s))return true;if(/^[a-d]$/.test(s)||/^-?\d+(?:[.,]\d+)?$/.test(s))return true;if(/^(creo que|pienso que|la respuesta es)\b/.test(s)&&s.length<=90)return true;return s.split(/\s+/).length<=7&&!/^(?:ahora|cambiando de tema|quiero saber|quiero que me cuentes|cuentame|cuéntame|como puedo|cómo puedo)\b/.test(s)}
@@ -519,8 +533,7 @@ function studentIntentFromRelation(relation){const map={new_topic:"new_topic",to
 function turnRelation(text,pedState,history){const s=stripTurnPunctuation(text),pending=pedState.pending_question||latestCheckQuestion(history),academicContext=hasAcademicConversationContext(pedState,history),expected=pedState.expected_answer_type||"none",lastAct=pedState.last_tutor_act||"none";if(clearSafetySignal(s)||clearTopicSwitchSignal(s))return"needs_scope";if(!academicContext)return"new_topic";
   if(topicReturnRequest(s,pedState))return pedState?.suspended_topic?"topic_return_request":"continuation_request";
   if(isAdaptiveCloseRequest(s))return"acknowledgement";
-  if(/^(no entendi|no entendí|no entiendo|no lo entiendo|explicame mejor|explícame mejor|explicamelo mejor|explícamelo mejor|explicame de nuevo|explícame de nuevo|explicamelo de nuevo|explícamelo de nuevo|repitelo|repítelo|repite|otra vez|dilo otra vez|dimelo otra vez|otra forma|lo de antes)$/.test(s)||/\b(estrategia realmente distinta|no repitas la misma formulacion|no repitas la misma formulación)\b/.test(s))return"confusion_request";
-  if(/^(mas facil|más fácil|hazlo mas facil|hazlo más fácil|dilo mas facil|dilo más fácil)$/.test(s))return"simplification_request";
+  const repairRelation=learningRepairRelation(s);if(repairRelation)return repairRelation;
   if(/^(mas dificil|más difícil|mas tecnico|más técnico|hazlo mas tecnico|hazlo más técnico|profundiza|con mas detalle|con más detalle)$/.test(s))return"technical_request";
   if(/^(otro ejemplo|ponme un ejemplo|dame un ejemplo|un ejemplo)$/.test(s))return"example_request";
   if(/^(?:y\s+)?(por que|por qué)$/.test(s))return"why_request";
@@ -935,7 +948,7 @@ REGLAS PEDAGÓGICAS CRÍTICAS:
 5) RELACIÓN=answer_to_offer: “sí/vale” significa continuar solo porque Eterna acababa de OFRECER continuar. Si responde “no”, respeta el no y no sigas con contenido extra.
 6) RELACIÓN=answer_to_pending: interpreta primero como respuesta a la pregunta pendiente. “sí/no” solo es respuesta académica cuando expected_answer_type=yes_no. Números/opciones/conceptos deben evaluarse según lo que se pidió.
 7) RELACIÓN=confusion_request: NO evalúes como error. Cambia de estrategia de verdad. Si last_strategy existe, strategy_used debe ser distinta salvo razón pedagógica imprescindible. Si ya diste una explicación normal, usa menos palabras + ejemplo; si vuelve a fallar, usa pasos/estructura; si persiste, una pregunta diagnóstica A/B. No sustituyas palabras por sinónimos y lo llames nueva explicación.
-8) RELACIÓN=simplification_request: reduce vocabulario, longitud, número de conceptos y abstracción. Conserva los hechos. Debe sentirse claramente más fácil que el turno anterior.
+8) RELACIÓN=simplification_request: reduce vocabulario, longitud, número de conceptos y abstracción. Conserva los hechos. Debe sentirse claramente más fácil que el turno anterior. Vuelve al punto que no se entendió: NO avances al siguiente paso, NO des por aprendido un paso intermedio y NO trates la petición como respuesta a la comprobación. Cambia también la representación —por ejemplo, objetos, dibujo verbal, analogía o micropasos— en lugar de limitarte a reformular.
 9) RELACIÓN=detail_request o why_request: responde exactamente el detalle/causa referida por el turno anterior. Solo pide aclaración si hay dos referencias igualmente plausibles.
 10) RELACIÓN=example_request: da un ejemplo nuevo, no repitas la definición entera.
 10b) RELACIÓN=technical_request: aumenta precisión, terminología, relaciones causales y matices de forma adecuada al curso; no reinicies desde cero ni repitas lo ya explicado.
@@ -1500,7 +1513,7 @@ function healthFeatures(env){return {
   pedagogical_state_contract_v3:true,question_id_stale_guard:true,transient_request_replay:true,
   feedback_entitlement_gate:true,explicit_understood_signal:true,
   teacher_core_v1:true,situational_core_v1:true,current_message_priority_v1:true,answer_contract_engine_v1:true,coherence_progression_v1:true,
-  child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,
+  child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,
   full_intelligence_child_safety_v1:true,helpful_safe_completion_v1:true,suspended_topic_resume_v1:true,mode_contracts_v2:true,
   flagship_tutor_model_v1:true,independent_balanced_verifier_v1:true,configurable_reasoning_effort_v1:true,strict_structured_outputs_v1:true,
   parallel_chat_preflight_v1:true,deferred_chat_persistence_v1:true,curriculum_warm_cache_v1:true,
