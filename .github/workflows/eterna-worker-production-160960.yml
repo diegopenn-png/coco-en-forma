@@ -79,6 +79,7 @@ jobs:
             --name "$WORKER_NAME" \
             --keep-vars \
             --var "SCOPE_MODEL:gpt-5.6-luna" \
+            --var "SCOPE_FALLBACK_MODEL:gpt-5.6-terra" \
             --var "SCOPE_REASONING_EFFORT:low" \
             --var "TUTOR_MODEL:gpt-5.6-sol" \
             --var "TUTOR_FALLBACK_MODEL:gpt-5.6-terra" \
@@ -115,6 +116,7 @@ jobs:
               && payload.openai_configured === true
               && payload.supabase_configured === true
               && models.scope?.model === "gpt-5.6-luna"
+              && models.scope?.fallback_model === "gpt-5.6-terra"
               && models.scope?.reasoning_effort === "low"
               && models.tutor?.model === "gpt-5.6-sol"
               && models.tutor?.fallback_model === "gpt-5.6-terra"
@@ -134,7 +136,9 @@ jobs:
               && payload.features?.deterministic_exam_intake_v1 === true
               && payload.features?.exam_tutor_recovery_v1 === true
               && payload.features?.structured_request_retry_v1 === true
-              && payload.features?.tutor_model_failover_v1 === true;
+              && payload.features?.tutor_model_failover_v1 === true
+              && payload.features?.scope_model_failover_v1 === true
+              && payload.features?.moderation_request_retry_v1 === true;
             if (!valid) {
               console.error("Unexpected production candidate health payload", payload);
               process.exit(1);
@@ -164,6 +168,9 @@ jobs:
                 const models = payload.model_configuration || {};
                 const valid = payload.ok === true
                   && payload.version === process.env.EXPECTED_VERSION
+                  && models.scope?.model === "gpt-5.6-luna"
+                  && models.scope?.fallback_model === "gpt-5.6-terra"
+                  && models.scope?.reasoning_effort === "low"
                   && models.tutor?.model === "gpt-5.6-sol"
                   && models.tutor?.fallback_model === "gpt-5.6-terra"
                   && models.tutor?.reasoning_effort === "high"
@@ -178,7 +185,9 @@ jobs:
                   && payload.features?.deterministic_exam_intake_v1 === true
                   && payload.features?.exam_tutor_recovery_v1 === true
                   && payload.features?.structured_request_retry_v1 === true
-                  && payload.features?.tutor_model_failover_v1 === true;
+                  && payload.features?.tutor_model_failover_v1 === true
+                  && payload.features?.scope_model_failover_v1 === true
+                  && payload.features?.moderation_request_retry_v1 === true;
                 process.exit(valid ? 0 : 1);
               } catch {
                 process.exit(1);

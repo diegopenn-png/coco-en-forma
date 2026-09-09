@@ -37,6 +37,8 @@ test("the 160.96 production gate verifies the exact model route before release",
   assert.match(production, /payload\.features\?\.exam_tutor_recovery_v1 === true/);
   assert.match(production, /payload\.features\?\.structured_request_retry_v1 === true/);
   assert.match(production, /payload\.features\?\.tutor_model_failover_v1 === true/);
+  assert.match(production, /payload\.features\?\.scope_model_failover_v1 === true/);
+  assert.match(production, /payload\.features\?\.moderation_request_retry_v1 === true/);
   assert.match(production, /wrangler versions deploy/);
   assert.match(production, /wrangler rollback/);
 });

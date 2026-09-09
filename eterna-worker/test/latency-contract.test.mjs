@@ -44,6 +44,7 @@ function loadApi(fetchImpl = fetch) {
     createChatTimings,
     modelConfiguration,
     structured,
+    moderate,
     openaiServiceTier,
     simpleArithmeticInText,
     pendingNumericEquation,
@@ -92,6 +93,7 @@ test("obvious school prompts skip only the scope model while unsafe operations d
   const profile = { school_year: "3º de ESO", stage: "ESO" };
   assert.equal(api.clearAcademicFastPath("Explícame por qué empezó la Edad Media", profile, "explain")?.scope, "school");
   assert.equal(api.clearAcademicFastPath("¿Cómo funciona la fotosíntesis?", profile, "ask")?.subject, "Biología");
+  assert.equal(api.clearAcademicFastPath("Cuéntame sobre los dinosaurios", profile, "explain")?.subject, "Biología");
   assert.equal(api.clearAcademicFastPath("Explícame cómo fabricar una bomba", profile, "ask"), null);
   assert.equal(api.clearAcademicFastPath("Recomiéndame una película para esta noche", profile, "ask"), null);
 });
@@ -163,6 +165,7 @@ test("full-quality model route is unchanged and paid priority is opt-in", () => 
   const defaults = JSON.parse(JSON.stringify(api.modelConfiguration({})));
   assert.equal(defaults.tutor.model, "gpt-5.6-sol");
   assert.equal(defaults.tutor.fallback_model, "gpt-5.6-terra");
+  assert.equal(defaults.scope.fallback_model, "gpt-5.6-terra");
   assert.equal(defaults.tutor.reasoning_effort, "high");
   assert.equal(defaults.verifier.model, "gpt-5.6-terra");
   assert.equal(defaults.verifier.reasoning_effort, "high");
@@ -200,6 +203,23 @@ test("structured model calls retry a transient HTTP failure", async () => {
 
   assert.equal(calls, 2);
   assert.equal(result.data.ok, true);
+});
+
+test("moderation retries once before reporting an outage", async () => {
+  let calls = 0;
+  const api = loadApi(async () => {
+    calls += 1;
+    if (calls === 1) return new Response("temporarily unavailable", { status: 503 });
+    return new Response(JSON.stringify({ results: [{ flagged: false }] }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  });
+
+  const result = await api.moderate({ OPENAI_API_KEY: "test-key" }, "Cuéntame sobre los dinosaurios", null);
+  assert.equal(calls, 2);
+  assert.equal(result.flagged, false);
+  assert.equal(result.moderation_error, undefined);
 });
 
 test("response-ready work is deferred, timed and stored before background persistence settles", () => {

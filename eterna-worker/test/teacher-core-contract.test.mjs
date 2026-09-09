@@ -111,7 +111,7 @@ test("full intelligence is preserved while age adapts delivery and risk boundari
   assert.equal(api.reasoningEffort("high"), "high");
   assert.equal(api.reasoningEffort("unsupported", "medium"), "medium");
   assert.deepEqual(JSON.parse(JSON.stringify(api.modelConfiguration({}))), {
-    scope: { model: "gpt-5.6-luna", reasoning_effort: "low", service_tier: "default" },
+    scope: { model: "gpt-5.6-luna", fallback_model: "gpt-5.6-terra", reasoning_effort: "low", service_tier: "default" },
     tutor: { model: "gpt-5.6-sol", fallback_model: "gpt-5.6-terra", reasoning_effort: "high", service_tier: "default" },
     verifier: { model: "gpt-5.6-terra", reasoning_effort: "high", service_tier: "default" },
     vision: { model: "gpt-5.6-sol", reasoning_effort: "high", service_tier: "default" },

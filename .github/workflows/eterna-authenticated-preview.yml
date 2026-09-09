@@ -82,6 +82,7 @@ jobs:
             --name coco-eterna-v159 \
             --keep-vars \
             --var "SCOPE_MODEL:gpt-5.6-luna" \
+            --var "SCOPE_FALLBACK_MODEL:gpt-5.6-terra" \
             --var "SCOPE_REASONING_EFFORT:low" \
             --var "TUTOR_MODEL:gpt-5.6-sol" \
             --var "TUTOR_FALLBACK_MODEL:gpt-5.6-terra" \
@@ -238,6 +239,7 @@ jobs:
             const valid = payload.ok === true
               && payload.version === "160.96.6-resilient-tutor-failover"
               && models.scope?.model === "gpt-5.6-luna"
+              && models.scope?.fallback_model === "gpt-5.6-terra"
               && models.scope?.reasoning_effort === "low"
               && models.tutor?.model === "gpt-5.6-sol"
               && models.tutor?.fallback_model === "gpt-5.6-terra"
@@ -247,7 +249,9 @@ jobs:
               && models.vision?.model === "gpt-5.6-sol"
               && models.web_search?.model === "gpt-5.6-terra"
               && payload.features?.structured_request_retry_v1 === true
-              && payload.features?.tutor_model_failover_v1 === true;
+              && payload.features?.tutor_model_failover_v1 === true
+              && payload.features?.scope_model_failover_v1 === true
+              && payload.features?.moderation_request_retry_v1 === true;
             if (!valid) {
               console.error("Unexpected Eterna model configuration", payload);
               process.exit(1);
