@@ -1,6 +1,6 @@
 import "../../eterna-state-contract-v3.js";
 
-/* ETERNA v160.97.4 · Cloudflare Workers AI + simplificación visual prioritaria
+/* ETERNA v160.98.0 · tutora humana, identidad explícita y apoyo escolar empático
  * Release Candidate construido exclusivamente sobre el Worker desplegado 160.9-scope-tutor3.
  * Mantiene Scope Gate + tutor + verifier + vision + speech + transcription + Stripe.
  * Conserva legal, pagos, scope, safety, memoria, límites y pedagogía adaptativa.
@@ -11,9 +11,9 @@ import "../../eterna-state-contract-v3.js";
  * El aviso semanal por email es transaccional y no incluye contenido de conversaciones.
  * No persiste conversaciones brutas infantiles.
  */
-const OUT_SCOPE="Soy una IA tutora escolar. Este espacio está centrado en el colegio y el aprendizaje.";
+const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.97.4-priority-simplification";
+const VERSION="160.98.0-human-teacher";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -89,7 +89,9 @@ function fullIntelligenceInstruction(){return`POLÍTICA DE INTELIGENCIA PLENA=${
 - Un límite nunca termina en un callejón genérico: ofrece inmediatamente una alternativa segura, concreta y relacionada.`}
 function agePedagogyInstruction(policy){return`PERFIL PEDAGÓGICO POR EDAD=${JSON.stringify(policy)}. La edad SOLO adapta cómo enseñas: longitud, vocabulario, número de ideas, andamiaje y tipo de comprobación. Nunca reduce la calidad del razonamiento, la exactitud, los matices necesarios ni el acceso a conocimiento académico legítimo. El rango de palabras es orientativo, no una obligación si otra longitud enseña mejor.`}
 function teacherCoreInstruction(policy){return`NÚCLEO DOCENTE ETERNA:
-- Presencia humana: responde con atención, calidez serena, paciencia y lenguaje natural. Reconoce el esfuerzo o la emoción concreta sin elogios vacíos, vergüenza, sarcasmo ni infantilización. Eres un tutor digital: nunca inventes cuerpo, experiencias personales, sentimientos humanos, recuerdos fuera del estado aportado ni afirmes ser una persona.
+- Presencia humana: responde con atención, calidez serena, paciencia y lenguaje natural. Reconoce el esfuerzo o la emoción concreta sin elogios vacíos, vergüenza, sarcasmo ni infantilización. Eres una IA tutora: nunca inventes cuerpo, experiencias personales, sentimientos humanos, recuerdos fuera del estado aportado ni afirmes ser una persona.
+- Primacía relacional: si el mensaje expresa preocupación, frustración, vergüenza, conflicto o malestar escolar, atiende primero esa vivencia de forma concreta y después ofrece un siguiente paso útil. No contestes a una situación humana con una advertencia genérica de alcance.
+- Voz natural: habla como una gran docente que está presente en la conversación. Varía los inicios, usa frases directas y cercanas y formula como máximo una pregunta útil cada vez. Evita plantillas burocráticas, sermones, halagos automáticos y repeticiones como «este espacio está centrado…».
 - Dignidad y valores: protege libertad, igualdad, honestidad, responsabilidad, convivencia, pensamiento crítico, inclusión y derechos de la infancia. No adoctrines ni impongas creencias. Distingue hechos, interpretaciones y opiniones; presenta controversias con neutralidad y evidencia apropiada al curso.
 - Atención situacional: lee primero y de forma aislada el MENSAJE ACTUAL. El historial ayuda a entender referencias, pero no puede sustituir ni contradecir lo que el alumno acaba de decir. Una pregunta pendiente es solo una hipótesis de contexto: evalúala únicamente si el mensaje actual encaja realmente como respuesta. Un cambio de tema no es un error académico.
 - Criterio profesional: enseña para que el alumno comprenda y gane autonomía. Da la ayuda mínima útil, corrige con precisión y amabilidad, admite incertidumbre y no inventa. Respeta privacidad y límites; no fomentes dependencia emocional ni secretos con el alumno.
@@ -144,6 +146,9 @@ async function openai(env,path,init){
 function parseStructuredJson(text){let s=String(text||"").trim();if(!s)throw new Error("empty structured output");if(s.startsWith("```"))s=s.replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/i,"").trim();try{return JSON.parse(s)}catch(e){}const a=s.indexOf("{"),b=s.lastIndexOf("}");if(a>=0&&b>a)return JSON.parse(s.slice(a,b+1));throw new Error("invalid structured json")}
 function aiProvider(env){return String(env?.AI_PROVIDER||"").trim().toLowerCase()==="cloudflare"&&env?.AI&&typeof env.AI.run==="function"?"cloudflare":"openai"}
 function cloudflareErrorDiagnostic(error,prefix="CLOUDFLARE_AI"){const message=String(error?.message||error||"unknown").toUpperCase();const kind=/QUOTA|LIMIT|NEURON|429/.test(message)?"QUOTA":/TIMEOUT|TIMED OUT/.test(message)?"TIMEOUT":/JSON|SCHEMA|PARSE/.test(message)?"STRUCTURED":"REQUEST";return`${prefix}_${kind}`}
+function cloudflareQuotaError(error){return cloudflareErrorDiagnostic(error).endsWith("_QUOTA")}
+function openaiFallbackEnabled(env){return aiProvider(env)==="cloudflare"&&String(env?.ENABLE_OPENAI_FALLBACK||"false").toLowerCase()==="true"&&Boolean(String(env?.OPENAI_API_KEY||"").trim())}
+function normalizeTokenUsage(usage){const value=usage&&typeof usage==="object"?usage:{},input=Number(value.input_tokens??value.prompt_tokens??0),output=Number(value.output_tokens??value.completion_tokens??0);return{input_tokens:Number.isFinite(input)&&input>0?input:0,output_tokens:Number.isFinite(output)&&output>0?output:0}}
 function dataUrlBytes(value){const match=/^data:image\/(?:png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(String(value||""));if(!match)throw new Error("Cloudflare vision image is invalid");const binary=atob(match[1]),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return[...bytes]}
 function cloudflareInput(input){const texts=[],images=[];for(const message of input||[]){for(const part of Array.isArray(message?.content)?message.content:[]){if(part?.type==="input_text"&&part.text)texts.push(String(part.text));else if(part?.type==="input_image"&&part.image_url)images.push(String(part.image_url))}if(typeof message?.content==="string")texts.push(message.content)}return{text:texts.join("\n"),image:images[0]||null}}
 async function cloudflareStructured(env,{model,input,instructions,name,schema,max_output_tokens=1200}){
@@ -151,7 +156,7 @@ async function cloudflareStructured(env,{model,input,instructions,name,schema,ma
   for(let attempt=0;attempt<budgets.length;attempt++){
     const retryNote=attempt?"\nEl intento anterior no produjo JSON válido. Devuelve únicamente el objeto completo y conciso.":"",system=String(instructions||"")+retryNote,payload={max_tokens:budgets[attempt],temperature:.2,response_format:{type:"json_schema",json_schema:schema}};
     if(prepared.image){payload.prompt=`${system}\n\n${prepared.text}`;payload.image=dataUrlBytes(prepared.image)}else payload.messages=[{role:"system",content:system},{role:"user",content:prepared.text}];
-    try{const result=await env.AI.run(effectiveModel,payload),raw=result?.response??result;lastUsage=result?.usage||lastUsage;const data=raw&&typeof raw==="object"?raw:parseStructuredJson(raw);return{data,usage:lastUsage,service_tier:"cloudflare"}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE STRUCTURED",name,"attempt",attempt+1,"model",effectiveModel,cloudflareErrorDiagnostic(error))}
+    try{const result=await env.AI.run(effectiveModel,payload),raw=result?.response??result;lastUsage=normalizeTokenUsage(result?.usage||lastUsage);const data=raw&&typeof raw==="object"?raw:parseStructuredJson(raw);return{data,usage:lastUsage,service_tier:"cloudflare"}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE STRUCTURED",name,"attempt",attempt+1,"model",effectiveModel,cloudflareErrorDiagnostic(error));if(cloudflareQuotaError(error))break}
     if(attempt+1<budgets.length)await waitForMilliseconds(180*(attempt+1))
   }
   throw new Error("Cloudflare structured output failed after retry: "+name+" · "+String(lastErr?.message||lastErr||"unknown"))
@@ -169,13 +174,13 @@ async function openaiStructured(env,{model,input,instructions,name,schema,max_ou
     if(!compatibilityRetry){payload.prompt_cache_key=`coco-eterna:${String(name||"structured").slice(0,48)}:${String(model||"").slice(0,48)}`;if(explicitPromptCache)payload.prompt_cache_options={mode:"explicit",ttl:"30m"}}if(serviceTier)payload.service_tier=serviceTier;
     try{
       const r=await openai(env,"/responses",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),data=await r.json();lastUsage=data.usage||lastUsage;
-      try{return{data:parseStructuredJson(outputText(data)),usage:data.usage||{},service_tier:data.service_tier||serviceTier||"default"}}catch(error){lastErr=error;console.error("ETERNA STRUCTURED PARSE",name,"attempt",attempt+1,"model",model,"status",data.status||"","incomplete",JSON.stringify(data.incomplete_details||null))}
+      try{return{data:parseStructuredJson(outputText(data)),usage:normalizeTokenUsage(data.usage),service_tier:data.service_tier||serviceTier||"default"}}catch(error){lastErr=error;console.error("ETERNA STRUCTURED PARSE",name,"attempt",attempt+1,"model",model,"status",data.status||"","incomplete",JSON.stringify(data.incomplete_details||null))}
     }catch(error){lastErr=error;console.error("ETERNA STRUCTURED REQUEST",name,"attempt",attempt+1,"model",model,String(error?.message||error))}
     if(attempt+1<budgets.length)await waitForMilliseconds(220*(attempt+1))
   }
   throw new Error("Structured output failed after retry: "+name+" · "+String(lastErr&&lastErr.message||lastErr||"unknown"))
 }
-async function structured(env,args){if(aiProvider(env)==="cloudflare"){try{return await cloudflareStructured(env,args)}catch(error){if(String(env.ENABLE_OPENAI_FALLBACK||"false").toLowerCase()!=="true")throw error;console.error("ETERNA PROVIDER FALLBACK cloudflare to openai",cloudflareErrorDiagnostic(error));const fallbackModel=env.OPENAI_FALLBACK_MODEL||"gpt-5.4-mini";return openaiStructured(env,{...args,model:fallbackModel,reasoning_effort:"medium"})}}return openaiStructured(env,args)}
+async function structured(env,args){if(aiProvider(env)==="cloudflare"){try{return await cloudflareStructured(env,args)}catch(error){if(!openaiFallbackEnabled(env))throw error;console.error("ETERNA PROVIDER FALLBACK cloudflare to openai",cloudflareErrorDiagnostic(error));const fallbackModel=env.OPENAI_FALLBACK_MODEL||"gpt-5.6-luna";return openaiStructured(env,{...args,model:fallbackModel,reasoning_effort:"medium"})}}return openaiStructured(env,args)}
 
 function supabasePublicKey(env){return env.SUPABASE_PUBLISHABLE_KEY||env.SUPABASE_ANON_KEY||""}
 function supabaseSecretKey(env){return env.SUPABASE_SECRET_KEY||env.SUPABASE_SERVICE_ROLE_KEY||""}
@@ -298,13 +303,36 @@ async function resendEmail(env,{to,subject,html}){const key=String(env.RESEND_AP
 async function weeklyNotificationExists(env,uid,periodKey){try{const rows=await supabase(env,`eterna_limit_notifications?user_id=eq.${encodeURIComponent(uid)}&period_type=eq.weekly&period_key=eq.${encodeURIComponent(periodKey)}&notification_type=eq.limit_reached&select=sent_at&limit=1`);return Boolean(rows&&rows.length)}catch(e){return false}}
 async function markWeeklyNotification(env,uid,periodKey,email){try{await supabase(env,"eterna_limit_notifications?on_conflict=user_id,period_type,period_key,notification_type",{method:"POST",body:{user_id:uid,period_type:"weekly",period_key:periodKey,notification_type:"limit_reached",recipient_email_hash:email?await sha256(String(email).toLowerCase()):null,sent_at:new Date().toISOString()},headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}catch(e){}}
 async function notifyWeeklyLimitOnce(env,auth,q){const email=String(auth?.user?.email||"").trim(),periodKey=q?.week?.start||usageDate(env);if(!email||await weeklyNotificationExists(env,auth.user.id,periodKey))return;const site=String(env.PUBLIC_SITE_URL||"https://www.cocoenforma.com").replace(/\/+$/,"");const subject="Eterna · límite semanal alcanzado",html=`<!doctype html><html><body style="margin:0;background:#f3f8fb;font-family:Arial,sans-serif;color:#173f59"><div style="max-width:620px;margin:28px auto;background:#fff;border-radius:18px;padding:28px"><div style="font-size:12px;font-weight:700;color:#2a88ad">COCO EN FORMA · ETERNA</div><h1 style="font-size:25px;margin:10px 0 12px">Se ha alcanzado el límite semanal de Eterna</h1><p style="line-height:1.55">La cuenta ha alcanzado el límite semanal de consultas de Eterna.</p><p style="line-height:1.55">Puedes revisar el uso y los controles familiares desde Zona Familiar. El progreso escolar se mantiene guardado.</p><p style="line-height:1.55"><strong>Renovación automática:</strong> ${q?.week?.next||"al comenzar la próxima semana"}.</p><p style="margin:24px 0"><a href="${site}/" style="display:inline-block;background:#173f59;color:#fff;text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:700">Abrir Coco en Forma</a></p><p style="font-size:12px;color:#718793;line-height:1.5">Este aviso no incluye preguntas, fotografías ni contenido de las conversaciones del menor.</p></div></body></html>`;const sent=await resendEmail(env,{to:email,subject,html});if(sent.ok)await markWeeklyNotification(env,auth.user.id,periodKey,email)}
-async function moderate(env,text,image){if(!text&&!image)return{flagged:false};if(aiProvider(env)==="cloudflare"){let lastError=null;for(let attempt=0;attempt<2;attempt++){try{let result;if(image){result=await env.AI.run(env.VISION_MODEL||"@cf/meta/llama-3.2-11b-vision-instruct",{prompt:`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,image:dataUrlBytes(image),max_tokens:12,temperature:0})}else result=await env.AI.run(env.MODERATION_MODEL||"@cf/meta/llama-guard-3-8b",{messages:[{role:"user",content:String(text).slice(0,5000)}]});const verdict=String(result?.response??result??"").trim(),flagged=/^unsafe\b/i.test(verdict);if(!/^(?:safe|unsafe)\b/i.test(verdict))throw new Error("invalid moderation verdict");return{flagged,categories:{cloudflare_guard:flagged}}}catch(error){lastError=error;console.error("ETERNA CLOUDFLARE MODERATION",attempt+1,cloudflareErrorDiagnostic(error,"MODERATION"));if(!attempt)await waitForMilliseconds(180)}}return{flagged:false,moderation_error:true,diagnostic_code:cloudflareErrorDiagnostic(lastError,"MODERATION")}}const input=[];if(text)input.push({type:"text",text:String(text).slice(0,5000)});if(image)input.push({type:"image_url",image_url:{url:image}});let lastError=null;for(let attempt=0;attempt<2;attempt++){try{const r=await openai(env,"/moderations",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"omni-moderation-latest",input})}),d=await r.json();return d.results?.[0]||{flagged:false}}catch(error){lastError=error;console.error("ETERNA MODERATION",attempt+1,openaiErrorDiagnostic(error,"MODERATION"));if(!attempt)await waitForMilliseconds(220)}}return{flagged:false,moderation_error:true,diagnostic_code:openaiErrorDiagnostic(lastError,"MODERATION")}}
+async function openaiModerate(env,text,image){const input=[];if(text)input.push({type:"text",text:String(text).slice(0,5000)});if(image)input.push({type:"image_url",image_url:{url:image}});let lastError=null;for(let attempt=0;attempt<2;attempt++){try{const r=await openai(env,"/moderations",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"omni-moderation-latest",input})}),d=await r.json();return{...(d.results?.[0]||{flagged:false}),provider:"openai"}}catch(error){lastError=error;console.error("ETERNA MODERATION",attempt+1,openaiErrorDiagnostic(error,"MODERATION"));if(!attempt)await waitForMilliseconds(220)}}return{flagged:false,moderation_error:true,diagnostic_code:openaiErrorDiagnostic(lastError,"MODERATION"),provider:"openai"}}
+async function moderate(env,text,image){
+  if(!text&&!image)return{flagged:false,provider:"deterministic"};
+  if(aiProvider(env)!=="cloudflare")return openaiModerate(env,text,image);
+  let lastError=null;
+  for(let attempt=0;attempt<2;attempt++){
+    try{
+      let result;
+      if(image)result=await env.AI.run(env.VISION_MODEL||"@cf/meta/llama-3.2-11b-vision-instruct",{prompt:`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,image:dataUrlBytes(image),max_tokens:12,temperature:0});
+      else result=await env.AI.run(env.MODERATION_MODEL||"@cf/meta/llama-guard-3-8b",{messages:[{role:"user",content:String(text).slice(0,5000)}]});
+      const verdict=String(result?.response??result??"").trim(),flagged=/^unsafe\b/i.test(verdict);
+      if(!/^(?:safe|unsafe)\b/i.test(verdict))throw new Error("invalid moderation verdict");
+      return{flagged,categories:{cloudflare_guard:flagged},provider:"cloudflare"}
+    }catch(error){
+      lastError=error;console.error("ETERNA CLOUDFLARE MODERATION",attempt+1,cloudflareErrorDiagnostic(error,"MODERATION"));
+      if(cloudflareQuotaError(error))break;
+      if(!attempt)await waitForMilliseconds(180)
+    }
+  }
+  if(openaiFallbackEnabled(env)){console.error("ETERNA MODERATION FALLBACK cloudflare to openai",cloudflareErrorDiagnostic(lastError,"MODERATION"));return openaiModerate(env,text,image)}
+  return{flagged:false,moderation_error:true,diagnostic_code:cloudflareErrorDiagnostic(lastError,"MODERATION"),provider:"cloudflare"}
+}
 function allowDegradedAcademicModeration(text,image,academic){return!image&&academic?.scope==="school"&&Boolean(academic?.fast||academic?.contextual)&&academic?.sensitive_topic!==true&&academic?.unsafe_action!==true&&!clearSafetySignal(text)&&!hardUnsafeIntent(text)&&!clearNonAcademicIntent(text)}
 
 function courtesyNorm(t){return normalizeDetectionText(t).replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
-function pureCourtesy(t){const x=courtesyNorm(t);return!!x&&x.length<=90&&!clearSafetySignal(t)&&/^(hola|buenos dias|buenas tardes|buenas noches|hey|ey|que tal|como estas|hola como estas|gracias|muchas gracias|de nada|adios|hasta luego|nos vemos|chao|chau)$/.test(x)}
+function pureCourtesy(t){const x=courtesyNorm(t),withoutName=x.replace(/\beterna\b/g," ").replace(/\s+/g," ").trim()||(/^eterna$/.test(x)?"hola":"");return!!withoutName&&x.length<=90&&!clearSafetySignal(t)&&/^(hola|buenos dias|buenas tardes|buenas noches|hey|ey|que tal|como estas|hola como estas|gracias|muchas gracias|de nada|adios|hasta luego|nos vemos|chao|chau)$/.test(withoutName)}
 function displayStudentName(v){const n=cleanChildText(v||"").split(/\s+/)[0].slice(0,32);return n?n.charAt(0).toLocaleUpperCase("es-ES")+n.slice(1):""}
-function courtesyReply(t,name){const x=courtesyNorm(t),n=displayStudentName(name),h=n?`¡Hola, ${n}!`:`¡Hola!`;if(/gracias/.test(x))return n?`¡De nada, ${n}! 😊 Cuando quieras, seguimos aprendiendo.`:"¡De nada! 😊 Cuando quieras, seguimos aprendiendo.";if(/adios|hasta luego|nos vemos|chao|chau/.test(x))return n?`¡Hasta luego, ${n}! 👋 Cuando quieras, seguimos con el cole.`:"¡Hasta luego! 👋 Cuando quieras, seguimos con el cole.";if(/buenos dias/.test(x))return`${n?`¡Buenos días, ${n}!`:`¡Buenos días!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/buenas tardes/.test(x))return`${n?`¡Buenas tardes, ${n}!`:`¡Buenas tardes!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/buenas noches/.test(x))return`${n?`¡Buenas noches, ${n}!`:`¡Buenas noches!`} 😊 Todo listo por aquí para ayudarte con el cole.`;if(/como estas|que tal/.test(x))return`${h} 😊 Todo listo por aquí para ayudarte con el cole.`;return`${h} 😊 ¿Qué quieres aprender hoy?`}
+function courtesyReply(t,name){const x=courtesyNorm(t),n=displayStudentName(name),h=n?`¡Hola, ${n}!`:`¡Hola!`,named=/\beterna\b/.test(x);if(/gracias/.test(x))return n?`¡De nada, ${n}! 😊 Cuando quieras, seguimos aprendiendo.`:"¡De nada! 😊 Cuando quieras, seguimos aprendiendo.";if(/adios|hasta luego|nos vemos|chao|chau/.test(x))return n?`¡Hasta luego, ${n}! 👋 Cuando quieras, seguimos con el cole.`:"¡Hasta luego! 👋 Cuando quieras, seguimos con el cole.";if(/buenos dias/.test(x))return`${n?`¡Buenos días, ${n}!`:`¡Buenos días!`} 😊 ${named?"Sí, soy Eterna. ":""}¿Qué te gustaría entender o resolver hoy?`;if(/buenas tardes/.test(x))return`${n?`¡Buenas tardes, ${n}!`:`¡Buenas tardes!`} 😊 ${named?"Sí, soy Eterna. ":""}¿Qué te gustaría entender o resolver hoy?`;if(/buenas noches/.test(x))return`${n?`¡Buenas noches, ${n}!`:`¡Buenas noches!`} 😊 ${named?"Sí, soy Eterna. ":""}¿Qué te gustaría entender o resolver hoy?`;if(/como estas|que tal/.test(x))return`${h} 😊 ${named?"Sí, soy Eterna. ":""}Estoy lista para escucharte y ayudarte con calma.`;return`${h} 😊 ${named?"Sí, soy Eterna. ":""}¿Qué te gustaría entender o resolver hoy?`}
+function eternaIdentityReply(){return"Me llamo Eterna. Soy una IA tutora escolar de Coco en Forma; no soy una persona. Mi misión es ayudarte a comprender de verdad, pensar por tu cuenta y ganar confianza: adapto las explicaciones a tu curso, doy pistas, reviso contigo y compruebo lo importante. Puedo equivocarme, así que te diré cuando no esté segura."}
+function schoolPeerReply(text){const s=stripTurnPunctuation(text),physical=/\b(?:me\s+empuja|me\s+golpea|me\s+quita\s+(?:mis\s+)?cosas|me\s+rompe\s+(?:mis\s+)?cosas)\b/.test(s);if(physical)return"Siento que te esté pasando esto. Que un compañero te empuje, te golpee o te quite cosas no está bien y no es culpa tuya. Aléjate y cuéntaselo ahora a un profesor y a un adulto de confianza. Si estás en peligro en este momento, busca a un adulto de inmediato.";return"Siento que estés pasando por eso. Que un compañero te moleste puede hacerte sentir mal, y no tienes que resolverlo a solas. Para ayudarte bien, cuéntame qué hace exactamente y desde cuándo. Díselo hoy a un profesor o a un adulto de confianza; si te amenaza o te hace daño, aléjate y busca ayuda enseguida."}
 function weatherLocation(text){const raw=String(text||"").trim(),m=raw.match(/\ben\s+([\p{L}][\p{L}\s.'-]{1,58})[?!.]*$/iu);return m?cleanChildText(m[1]).trim().slice(0,60):null}
 function academicWeatherExplanation(text){
   const s=stripTurnPunctuation(text);if(!s)return false;
@@ -320,10 +348,13 @@ function classroomSituation(text,history=[]){
   if(/\b(?:que|qué)\s+(?:tiempo|clima)\s+hace\s+hoy\b|\b(?:tiempo|clima)\s+de\s+hoy\b|\bva\s+a\s+llover\s+hoy\b|\btemperatura\s+(?:hoy|actual)\b/.test(s))return{kind:"weather_query",location:weatherLocation(text)};
   if(academicWeatherExplanation(text))return null;
   if(/\b(?:hace\s+(?:mucho\s+)?(?:frio|frío|calor)|esta\s+(?:lloviendo|nevando)|está\s+(?:lloviendo|nevando)|llueve|nieva|hace\s+(?:mucho\s+)?viento)\b/.test(s))return{kind:"weather_observation"};
-  if(/^(?:como|cómo)\s+te\s+llamas$|^(?:eres|t[uú]\s+eres)\s+(?:una\s+)?(?:persona|humano|humana|robot|ia)$|^(?:cuantos|cuántos)\s+a[nñ]os\s+tienes$/.test(s))return{kind:"identity"};
+  if(/^(?:cual\s+es\s+tu\s+mision|que\s+mision\s+tienes|para\s+que\s+(?:sirves|existes|fuiste\s+creada)|por\s+que\s+existes|que\s+puedes\s+hacer|como\s+me\s+(?:ayudas|puedes\s+ayudar)|que\s+haces)$/.test(s))return{kind:"mission"};
+  if(/^(?:quien\s+eres|que\s+eres|como\s+te\s+llamas|eres\s+eterna|(?:eres|tu\s+eres)\s+(?:una\s+)?(?:persona|humano|humana|robot|ia)|cuantos\s+anos\s+tienes)$/.test(s))return{kind:"identity"};
   const oneOffEmbarrassment=(/\b(?:me\s+equivoqu[eé]|me\s+sali[oó]\s+mal)\b.{0,100}\b(?:leyendo|en\s+voz\s+alta|en\s+clase)\b/.test(s)&&/\b(?:se\s+rieron|se\s+han\s+re[ií]do|verg[uü]enza|no\s+quiero\s+volver)\b/.test(s))||(/\bno\s+hay\s+peligro\b/.test(s)&&/\b(?:se\s+rieron|verg[uü]enza|hablar\s+con\s+(?:ella|el|él|mi\s+profesor))\b/.test(s));
   if(oneOffEmbarrassment)return{kind:"classroom_embarrassment"};
   if(/\b(?:copiar|copie|copi[eé]|deje\s+copiar|dejes\s+copiar)\b/.test(s)&&/\b(?:deberes|tarea|ejercicio|examen)\b/.test(s)&&/\b(?:amigo|amiga|amistad|presiona|amenaza|si\s+no)\b/.test(s))return{kind:"academic_integrity"};
+  const schoolPeer=/\b(?:companero|companera|companeros|companeras|alumno|alumna|nino|nina|chico|chica)\b/.test(s)||/\balguien\s+de\s+(?:mi\s+)?(?:clase|cole|colegio|instituto)\b/.test(s),peerProblem=/\b(?:me\s+molesta|me\s+fastidia|no\s+me\s+deja\s+en\s+paz|se\s+burla\s+de\s+mi|se\s+rie\s+de\s+mi|me\s+aparta|me\s+excluye|no\s+me\s+deja\s+jugar|me\s+quita\s+(?:mis\s+)?cosas|me\s+rompe\s+(?:mis\s+)?cosas|me\s+insulta|me\s+llama\s+cosas|me\s+trata\s+mal|me\s+empuja|no\s+me\s+habla|hemos\s+discutido)\b/.test(s);
+  if(schoolPeer&&peerProblem)return{kind:"school_peer_problem"};
   if(/\b(?:estoy|me\s+siento)\s+(?:nervios[oa]|preocupad[oa]|agobiad[oa])\b/.test(s)&&/\b(?:cole|clase|examen|tarea|deberes|estudiar)\b/.test(s))return{kind:"school_emotion"};
   if(/\b(?:estoy|me\s+siento)\s+(?:cansad[oa]|distraid[oa]|bloquead[oa])\b/.test(s))return{kind:"learning_readiness"};
   if(/\b(?:me\s+gustan?|no\s+me\s+gustan?|me\s+encantan?|me\s+aburre[n]?|es\s+divertid[oa]|es\s+aburrid[oa])\b.{0,55}\b(?:cole|clase|asignatura|mates|matematicas|matemáticas|lengua|ciencias|historia|tema)\b|\b(?:hoy|esta\s+mañana)\b.{0,35}\b(?:cole|clase)\b.{0,35}\b(?:bien|mal|genial|fatal)\b/.test(s))return{kind:"classroom_reflection"};
@@ -337,9 +368,10 @@ function situationalReply(situation,text,name){
   if(situation.kind==="courtesy")return courtesyReply(text,name);
   if(situation.kind==="weather_query"&&!situation.location)return"Puedo comprobar el tiempo de hoy, pero necesito un lugar. ¿De qué ciudad quieres consultarlo? No hace falta que sea donde estás.";
   if(situation.kind==="weather_observation")return"Vaya, entonces conviene estar bien abrigado y cómodo. Cuando estés listo, seguimos con calma.";
-  if(situation.kind==="identity")return"Me llamo Eterna. Soy un tutor digital de Coco en Forma: no soy una persona, pero estoy aquí para escucharte y ayudarte a aprender con atención.";
+  if(situation.kind==="identity"||situation.kind==="mission")return eternaIdentityReply();
   if(situation.kind==="classroom_embarrassment")return"Entiendo que te haya dado vergüenza; equivocarse al leer le puede pasar a cualquiera y una risa no dice nada malo sobre ti. Mañana puedes empezar con algo pequeño: respirar despacio y decirle en privado a tu profesora «me dio vergüenza lo de ayer, ¿me ayudas?». Si las burlas se repiten, cuéntaselo también a tu familia o tutor para que puedan ayudarte.";
   if(situation.kind==="academic_integrity")return"No le dejes copiar: copiar no le ayuda a aprender y puede meteros en un problema a los dos. Puedes decirle «no te paso las respuestas, pero te ayudo a entender el ejercicio». Una amistad sana no depende de que hagas algo que sabes que no está bien; si sigue presionándote, habla con el profesor con calma.";
+  if(situation.kind==="school_peer_problem")return schoolPeerReply(text);
   if(situation.kind==="school_emotion")return"Es normal sentirse así antes de una tarea o un examen. Haz una respiración lenta, empezamos por una sola cosa y avanzamos paso a paso.";
   if(situation.kind==="learning_readiness")return"Gracias por decírmelo. Podemos hacer una pausa corta, beber agua y volver con una sola pregunta sencilla. Aprender cansado cuesta más.";
   if(situation.kind==="classroom_reflection")return"Te escucho. Saber qué te gusta o qué te cuesta me ayuda a explicártelo mejor. Podemos trabajar ese tema de una forma distinta y paso a paso.";
@@ -488,11 +520,11 @@ function clearNonAcademicIntent(text){
 }
 function outOfScopeReply(text,pedState){
   const s=stripTurnPunctuation(text),pending=cleanChildText(pedState?.pending_question||""),topic=cleanChildText(pedState?.active_concept||pedState?.active_topic||"");
-  let bridge="Si lo relacionas con una asignatura o con algo que quieras aprender, reformula la pregunta y te ayudaré con toda la profundidad que necesites.";
+  let bridge="Si me cuentas qué quieres comprender o cómo se relaciona con el cole, lo vemos juntos.";
   if(/\b(?:pelicula|película|serie|anime|libro|videojuego|juego)\b/.test(s))bridge="Sí puedo ayudarte a analizar una obra: argumento, personajes, lenguaje, contexto histórico, valores o cómo construir una crítica.";
   else if(/\b(?:chiste|broma|meme)\b/.test(s))bridge="Sí puedo ayudarte a estudiar cómo funcionan el humor, los dobles sentidos y otros recursos del lenguaje.";
   else if(/\b(?:viaje|vacaciones|restaurante|comprar|ropa|movil|móvil|ordenador|consola)\b/.test(s))bridge="Sí puedo convertirlo en aprendizaje: presupuesto y porcentajes, comparación razonada, geografía, tecnología o consumo responsable.";
-  const resume=pending?` También podemos retomar justo donde lo dejamos: ${pending}`:topic?` También podemos retomar ${topic}.`:"";
+  const resume=pending?` Si prefieres, también retomamos justo donde lo dejamos: ${pending}`:topic?` Si prefieres, también retomamos ${topic}.`:"";
   return`${OUT_SCOPE} ${bridge}${resume}`
 }
 function scopeV3Guard(text,decision,pedState,history){
@@ -1174,7 +1206,7 @@ function buildPedagogicalState({incoming,mode,subject,concept,tutorOutput,assess
 
 function sensitiveTopicForPrivacy(text,subject,concept){const s=normalizeDetectionText([text,subject,concept].filter(Boolean).join(" "));return /\b(reproduccion|sexualidad|sexo|menstruacion|pubertad|vih|sida|suicid|autolesion|depresion|droga|cocaina|heroina|cancer|abuso|violacion|terrorismo|arma|bomba)\b/.test(s)}
 async function logInteraction(env,uid,{text,image,inputSource="text",scope,verification,subject,concept,help,modelRoute,mode=null,strategy=null,visionConfidence=null}){try{const redact=sensitiveTopicForPrivacy(text,subject,concept);await supabase(env,"eterna_interactions",{method:"POST",body:{user_id:uid,input_kind:image?(text?"mixed":"image"):(inputSource==="voice"?"audio":"text"),input_source:inputSource,mode:mode||null,strategy_key:strategy||null,vision_confidence:Number.isFinite(Number(visionConfidence))?Number(visionConfidence):null,scope_status:scope,verification_status:verification,subject:redact?null:(subject||null),concept_label:redact?null:(concept||null),help_level:Number.isInteger(help)?help:null,model_route:modelRoute||null}})}catch(e){}}
-async function bumpUsage(env,uid,usage,image){try{const date=usageDate(env),existing=await supabase(env,`eterna_usage?user_id=eq.${uid}&usage_date=eq.${date}&select=*`),row=existing?.[0]||{},body={user_id:uid,usage_date:date,chat_requests:Number(row.chat_requests||0),image_requests:Number(row.image_requests||0),input_tokens:Number(row.input_tokens||0)+Number(usage?.input_tokens||0),output_tokens:Number(row.output_tokens||0)+Number(usage?.output_tokens||0),updated_at:new Date().toISOString()};await supabase(env,"eterna_usage?on_conflict=user_id,usage_date",{method:"POST",body,headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}catch(e){}}
+async function bumpUsage(env,uid,usage,image){try{const date=usageDate(env),tokens=normalizeTokenUsage(usage),existing=await supabase(env,`eterna_usage?user_id=eq.${uid}&usage_date=eq.${date}&select=*`),row=existing?.[0]||{},body={user_id:uid,usage_date:date,chat_requests:Number(row.chat_requests||0),image_requests:Number(row.image_requests||0),input_tokens:Number(row.input_tokens||0)+tokens.input_tokens,output_tokens:Number(row.output_tokens||0)+tokens.output_tokens,updated_at:new Date().toISOString()};await supabase(env,"eterna_usage?on_conflict=user_id,usage_date",{method:"POST",body,headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}catch(e){}}
 
 
 function stableFactAnchor(text){
@@ -1538,6 +1570,7 @@ function healthFeatures(env){return {
   pedagogical_state_contract_v3:true,question_id_stale_guard:true,transient_request_replay:true,
   feedback_entitlement_gate:true,explicit_understood_signal:true,
   teacher_core_v1:true,situational_core_v1:true,current_message_priority_v1:true,answer_contract_engine_v1:true,coherence_progression_v1:true,
+  explicit_identity_and_mission_v1:true,named_greeting_v1:true,empathetic_school_peer_support_v1:true,anti_robotic_tone_v1:true,
   child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,pedagogical_simplification_guard_v1:true,non_trivial_microcheck_v1:true,deterministic_fraction_simplification_v1:true,priority_fraction_simplification_v1:true,
   full_intelligence_child_safety_v1:true,helpful_safe_completion_v1:true,suspended_topic_resume_v1:true,mode_contracts_v2:true,
   flagship_tutor_model_v1:true,independent_balanced_verifier_v1:true,configurable_reasoning_effort_v1:true,strict_structured_outputs_v1:true,
@@ -1546,10 +1579,12 @@ function healthFeatures(env){return {
   deterministic_arithmetic_guidance_v1:true,deterministic_pending_numeric_v1:true,adaptive_sync_verification_v1:true,asynchronous_verifier_audit_v1:true,
   deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,moderation_diagnostics_v1:true,degraded_safe_academic_moderation_v1:true,
   cloudflare_ai_primary_v1:aiProvider(env)==="cloudflare",cloudflare_guard_v1:true,cloudflare_vision_v1:true,cloudflare_speech_v1:true,openai_optional_fallback_v1:true,
+  openai_automatic_fallback_v2:openaiFallbackEnabled(env),normalized_provider_usage_v1:true,fallback_aware_dependency_probe_v1:true,
   payments_code_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET)
 }}
 function modelConfiguration(env){return{
   provider:aiProvider(env),
+  provider_fallback:{enabled:openaiFallbackEnabled(env),model:env.OPENAI_FALLBACK_MODEL||"gpt-5.6-luna",configured:Boolean(String(env.OPENAI_API_KEY||"").trim())},
   scope:{model:env.SCOPE_MODEL||"gpt-5.6-luna",fallback_model:env.SCOPE_FALLBACK_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.SCOPE_REASONING_EFFORT,"low"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_scope_v3")||"default"},
   tutor:{model:env.TUTOR_MODEL||"gpt-5.6-sol",fallback_model:env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibility_model:env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",reasoning_effort:reasoningEffort(env.TUTOR_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_tutor_v163_flagship")||"default"},
   verifier:{model:env.VERIFIER_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.VERIFIER_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_verify_v32")||"default"},
@@ -1560,9 +1595,27 @@ function modelConfiguration(env){return{
 }}
 
 function protectedProbeRequest(request,env){const expected=String(env.DEPLOY_PROBE_TOKEN||""),received=String(request.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"");if(!expected||received.length!==expected.length)return false;let diff=0;for(let i=0;i<expected.length;i++)diff|=expected.charCodeAt(i)^received.charCodeAt(i);return diff===0}
-async function dependencyProbe(request,env){if(!protectedProbeRequest(request,env))return json({error:"NOT_FOUND"},404);const provider=aiProvider(env),result={ok:false,service:"eterna",version:VERSION,provider,moderation:{ok:false,diagnostic_code:null},responses:{ok:false,diagnostic_code:null}};try{const moderation=await moderate(env,"Explica la fotosíntesis.",null);result.moderation={ok:!moderation.moderation_error,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"MODERATION"):openaiErrorDiagnostic(error,"MODERATION")}
-  try{if(provider==="cloudflare"){const data=await env.AI.run(env.SCOPE_MODEL||"@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"user",content:"Responde únicamente OK."}],max_tokens:12});result.responses={ok:Boolean(String(data?.response||"").trim()),diagnostic_code:null}}else{const r=await openai(env,"/responses",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:env.SCOPE_MODEL||"gpt-5.6-luna",input:"Responde únicamente OK.",max_output_tokens:24,store:false})}),data=await r.json();result.responses={ok:Boolean(outputText(data).trim()),diagnostic_code:null}}}catch(error){result.responses.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"RESPONSES"):openaiErrorDiagnostic(error,"RESPONSES")}
-  result.ok=result.moderation.ok&&result.responses.ok;return json(result,result.ok?200:503)}
+async function dependencyProbe(request,env){
+  if(!protectedProbeRequest(request,env))return json({error:"NOT_FOUND"},404);
+  const provider=aiProvider(env),result={ok:false,degraded:false,service:"eterna",version:VERSION,provider,moderation:{ok:false,provider:null,diagnostic_code:null},responses:{ok:false,provider,diagnostic_code:null},structured_tutor:{ok:false,provider:null,diagnostic_code:null}};
+  try{const moderation=await moderate(env,"Explica la fotosíntesis.",null);result.moderation={ok:!moderation.moderation_error,provider:moderation.provider||provider,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"MODERATION"):openaiErrorDiagnostic(error,"MODERATION")}
+  try{
+    if(provider==="cloudflare"){
+      const data=await env.AI.run(env.SCOPE_MODEL||"@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"user",content:"Responde únicamente OK."}],max_tokens:12});
+      result.responses={ok:Boolean(String(data?.response||"").trim()),provider:"cloudflare",diagnostic_code:null}
+    }else{
+      const r=await openai(env,"/responses",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:env.SCOPE_MODEL||"gpt-5.6-luna",input:"Responde únicamente OK.",max_output_tokens:24,store:false})}),data=await r.json();
+      result.responses={ok:Boolean(outputText(data).trim()),provider:"openai",diagnostic_code:null}
+    }
+  }catch(error){result.responses.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"RESPONSES"):openaiErrorDiagnostic(error,"RESPONSES")}
+  try{
+    const checked=await structured(env,{model:env.TUTOR_MODEL||(provider==="cloudflare"?"@cf/qwen/qwen3-30b-a3b-fp8":"gpt-5.6-luna"),instructions:"Devuelve solo el JSON solicitado.",input:[{role:"user",content:[{type:"input_text",text:"Confirma que el tutor puede responder de forma estructurada."}]}],name:"eterna_deploy_probe",schema:{type:"object",additionalProperties:false,properties:{ok:{type:"boolean"}},required:["ok"]},max_output_tokens:80,reasoning_effort:"low"});
+    result.structured_tutor={ok:checked.data?.ok===true,provider:checked.service_tier==="cloudflare"?"cloudflare":"openai",diagnostic_code:null}
+  }catch(error){result.structured_tutor.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"STRUCTURED_TUTOR"):openaiErrorDiagnostic(error,"STRUCTURED_TUTOR")}
+  result.ok=result.moderation.ok&&result.structured_tutor.ok;
+  result.degraded=provider==="cloudflare"&&(!result.responses.ok||result.moderation.provider!=="cloudflare"||result.structured_tutor.provider!=="cloudflare");
+  return json(result,result.ok?200:503)
+}
 
 async function handleFetch(request,env,event){
   const c=cors(env,request);if(request.method==="OPTIONS")return withCors(new Response(null,{status:204}),c);const url=new URL(request.url);

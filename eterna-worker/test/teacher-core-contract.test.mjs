@@ -117,6 +117,7 @@ test("full intelligence is preserved while age adapts delivery and risk boundari
   assert.equal(api.reasoningEffort("unsupported", "medium"), "medium");
   assert.deepEqual(JSON.parse(JSON.stringify(api.modelConfiguration({}))), {
     provider: "openai",
+    provider_fallback: { enabled: false, model: "gpt-5.6-luna", configured: false },
     scope: { model: "gpt-5.6-luna", fallback_model: "gpt-5.6-terra", reasoning_effort: "low", service_tier: "default" },
     tutor: { model: "gpt-5.6-sol", fallback_model: "gpt-5.6-terra", compatibility_model: "gpt-5.4-mini", reasoning_effort: "high", service_tier: "default" },
     verifier: { model: "gpt-5.6-terra", reasoning_effort: "high", service_tier: "default" },
@@ -235,7 +236,7 @@ test("progressive hints and summary acts remain inside the declared schemas", ()
 test("out-of-scope guidance preserves the academic thread and offers a usable bridge", () => {
   const reply = api.outOfScopeReply("Recomiéndame una película para esta noche.", pendingState);
   assert.match(reply, /analizar una obra/i);
-  assert.match(reply, /retomar justo donde lo dejamos/i);
+  assert.match(reply, /retomamos justo donde lo dejamos/i);
   assert.match(reply, /eclipse de Sol/i);
 });
 
@@ -326,8 +327,36 @@ test("classroom small talk is recognised without being graded as science", () =>
   assert.equal(weather.kind, "weather_query");
   assert.equal(weather.location, "Madrid");
   assert.match(api.situationalReply({ kind: "weather_query", location: null }, "", ""), /ciudad/i);
-  assert.match(api.situationalReply({ kind: "identity" }, "", ""), /tutor digital/i);
+  assert.match(api.situationalReply({ kind: "identity" }, "", ""), /IA tutora escolar/i);
   assert.match(api.situationalReply({ kind: "identity" }, "", ""), /no soy una persona/i);
+});
+
+test("Eterna recognises her name in greetings and answers naturally", () => {
+  for (const message of ["Hola Eterna", "¡Hola, Eterna!", "Buenos días, Eterna", "Eterna"]) {
+    const situation = api.classroomSituation(message, []);
+    assert.equal(situation?.kind, "courtesy", message);
+    const reply = api.situationalReply(situation, message, "Lucía");
+    assert.match(reply, /soy Eterna/i, message);
+    assert.match(reply, /Lucía|Eterna/i, message);
+    assert.doesNotMatch(reply, /este espacio está centrado/i, message);
+  }
+});
+
+test("identity and mission are explicit, truthful and useful", () => {
+  for (const [message, kind] of [
+    ["¿Quién eres?", "identity"],
+    ["¿Qué eres?", "identity"],
+    ["¿Cuál es tu misión?", "mission"],
+    ["¿Qué puedes hacer?", "mission"],
+  ]) assert.equal(api.classroomSituation(message, [])?.kind, kind, message);
+
+  const reply = api.situationalReply({ kind: "mission" }, "¿Cuál es tu misión?", "");
+  assert.match(reply, /Me llamo Eterna/i);
+  assert.match(reply, /IA tutora escolar/i);
+  assert.match(reply, /Mi misión es ayudarte a comprender de verdad/i);
+  assert.match(reply, /pensar por tu cuenta/i);
+  assert.match(reply, /Puedo equivocarme/i);
+  assert.match(reply, /no soy una persona/i);
 });
 
 test("academic questions about weather phenomena outrank situational small talk", () => {
@@ -598,6 +627,52 @@ test("ordinary classroom peer pressure receives integrity guidance", () => {
   assert.match(reply, /ayudo a entender/i);
   assert.match(reply, /amistad sana/i);
   assert.doesNotMatch(reply, /112|peligro inmediato/i);
+});
+
+test("an ordinary school peer problem receives empathy instead of a scope rejection", () => {
+  const message = "Un compañero de colegio me molesta";
+  assert.equal(api.childSafeguardingCategory(message), null);
+  const situation = api.classroomSituation(message, []);
+  assert.equal(situation?.kind, "school_peer_problem");
+  const reply = api.situationalReply(situation, message, "");
+  assert.match(reply, /^Siento que estés pasando por eso\./i);
+  assert.match(reply, /no tienes que resolverlo a solas/i);
+  assert.match(reply, /qué hace exactamente y desde cuándo/i);
+  assert.match(reply, /profesor|adulto de confianza/i);
+  assert.doesNotMatch(reply, /solo responde|este espacio está centrado|reformula la pregunta/i);
+});
+
+test("full chat routing preserves the lesson while responding to the exact peer concern", async () => {
+  sandbox.getChatPreflight = async () => ({
+    ctx: {
+      base: { edad: 10, apodo: "Lucía" },
+      profile: { school_year: "5.º de Primaria", stage: "Primaria" },
+    },
+    subscription: { status: "active" },
+    legal: { accepted: true },
+    quota: { ok: true, settings: { allow_image_input: true } },
+  });
+
+  const request = new Request("https://eterna.test/v1/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: "Un compañero de colegio me molesta",
+      mode: "explain",
+      mode_state: modeState,
+      pedagogical_state: pendingState,
+    }),
+  });
+  const response = await api.handleChat(request, {}, { user: { id: "student-1", email: "adult@example.test" } });
+  const payload = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(payload.situational, true);
+  assert.equal(payload.situational_kind, "school_peer_problem");
+  assert.match(payload.reply, /Siento que estés pasando por eso/i);
+  assert.equal(payload.student_answer_assessment, "not_applicable");
+  assert.equal(payload.pedagogical_state.pending_question, pendingState.pending_question);
+  assert.equal(payload.resume_available, true);
 });
 
 

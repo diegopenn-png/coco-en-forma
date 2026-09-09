@@ -37,13 +37,13 @@ test("first visits load every production presentation layer without depending on
 
 test("PWA clients request and activate the current release instead of retaining an old device cache", () => {
   assert.match(index, /manifest\.webmanifest\?v=160962/);
-  assert.match(index, /sw\.js\?v=160962-r1/);
+  assert.match(index, /sw\.js\?v=160980-r1/);
   assert.match(index, /updateViaCache:"none"/);
   assert.match(index, /registration\.update\(\)/);
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.96\.7-eterna-recovery-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.0-human-teacher-r1"/);
   for (const asset of [
     "coco-variety-director-v160960.js",
     "coco-release-v160903.js",
@@ -111,7 +111,7 @@ test("loading the production index and runtime schedules exactly one worker regi
   loadListeners[0]();
   await Promise.resolve();
   assert.equal(registrations.length, 1);
-  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160962-r1");
+  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160980-r1");
   assert.equal(registrations[0].options.updateViaCache, "none");
 });
 
