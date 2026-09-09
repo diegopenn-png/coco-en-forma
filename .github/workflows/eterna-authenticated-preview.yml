@@ -62,6 +62,10 @@ jobs:
           echo "::add-mask::$account_id"
           echo "CLOUDFLARE_ACCOUNT_ID=${account_id}" >> "$GITHUB_ENV"
 
+          probe_token="$(openssl rand -hex 32)"
+          echo "::add-mask::$probe_token"
+          echo "DEPLOY_PROBE_TOKEN=${probe_token}" >> "$GITHUB_ENV"
+
       - name: Install Worker tooling
         working-directory: eterna-worker
         run: npm ci --no-audit --no-fund
@@ -94,6 +98,7 @@ jobs:
             --var "VISION_REASONING_EFFORT:high" \
             --var "WEB_SEARCH_MODEL:gpt-5.6-terra" \
             --var "WEB_SEARCH_REASONING_EFFORT:low" \
+            --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee authenticated-preview-api.log
 
           api_preview_url="$(sed -n 's/^Version Preview URL: //p' authenticated-preview-api.log | tail -1)"
@@ -141,7 +146,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.96.7-compatible-tutor-recovery' eterna-worker/src/index.js >/dev/null
+          grep -F '160.96.8-moderation-resilience' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -238,7 +243,7 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.96.7-compatible-tutor-recovery"
+              && payload.version === "160.96.8-moderation-resilience"
               && models.scope?.model === "gpt-5.6-luna"
               && models.scope?.fallback_model === "gpt-5.6-terra"
               && models.scope?.reasoning_effort === "low"
@@ -256,12 +261,25 @@ jobs:
               && payload.features?.tutor_compatibility_model_v1 === true
               && payload.features?.stable_fact_tutor_recovery_v1 === true
               && payload.features?.scope_model_failover_v1 === true
-              && payload.features?.moderation_request_retry_v1 === true;
+              && payload.features?.moderation_request_retry_v1 === true
+              && payload.features?.moderation_diagnostics_v1 === true
+              && payload.features?.degraded_safe_academic_moderation_v1 === true;
             if (!valid) {
               console.error("Unexpected Eterna model configuration", payload);
               process.exit(1);
             }
           '
+
+          dependency_payload="$(curl --silent --show-error --max-time 45 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "${API_PREVIEW_URL}/health/dependencies" || true)"
+          echo "Sanitized OpenAI dependency probe: ${dependency_payload}"
+          node -e '
+            const payload = JSON.parse(process.argv[1]);
+            if (payload.version !== "160.96.8-moderation-resilience") process.exit(1);
+            for (const name of ["moderation", "responses"]) {
+              const item = payload[name] || {};
+              if (item.ok !== true && !/^((MODERATION|RESPONSES)_(HTTP|NETWORK|UNKNOWN))/.test(String(item.diagnostic_code || ""))) process.exit(1);
+            }
+          ' "$dependency_payload"
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
           grep -Fi 'x-robots-tag: noindex' authenticated-preview-headers.log >/dev/null
 
@@ -269,7 +287,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.96.7-transparent-recovery · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.96.7-compatible-tutor-recovery"
+            echo "- Expected versions: frontend 160.96.7-transparent-recovery · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.96.8-moderation-resilience"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents
