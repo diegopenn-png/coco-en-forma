@@ -13,7 +13,7 @@ import "../../eterna-state-contract-v3.js";
  */
 const OUT_SCOPE="Soy una IA tutora escolar. Este espacio está centrado en el colegio y el aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.96.7-compatible-tutor-recovery";
+const VERSION="160.96.8-moderation-resilience";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -128,11 +128,18 @@ async function sha256(text){const b=await crypto.subtle.digest("SHA-256",new Tex
 function outputText(data){if(typeof data?.output_text==="string")return data.output_text;for(const item of data?.output||[]){if(item?.type==="message")for(const c of item.content||[])if(c?.type==="output_text"&&typeof c.text==="string")return c.text}return""}
 
 function extractWebSources(data){const out=[],seen=new Set();for(const item of data?.output||[]){for(const c of item?.content||[]){for(const a of c?.annotations||[]){const u=a?.url_citation?.url||a?.url||"",title=a?.url_citation?.title||a?.title||"";if(!/^https?:\/\//i.test(u)||seen.has(u))continue;seen.add(u);out.push({title:String(title||u).slice(0,180),url:String(u).slice(0,1200)})}}}return out.slice(0,8)}
+class OpenAIRequestError extends Error{
+  constructor(kind,{status=0,code=null,type=null,requestId=null}={}){super(`OpenAI ${kind}${status?` (${status})`:""}`);this.name="OpenAIRequestError";this.kind=kind;this.status=Number(status)||0;this.code=code?String(code).slice(0,80):null;this.type=type?String(type).slice(0,80):null;this.requestId=requestId?String(requestId).slice(0,120):null}
+}
+function openaiErrorDiagnostic(error,prefix="OPENAI"){
+  const status=Number(error?.status)||0,kind=String(error?.kind||"unknown").toUpperCase().replace(/[^A-Z0-9]+/g,"_").slice(0,32)||"UNKNOWN",code=String(error?.code||"").toUpperCase().replace(/[^A-Z0-9]+/g,"_").slice(0,48);
+  return`${prefix}_${kind}${status?`_${status}`:""}${code?`_${code}`:""}`
+}
 async function openai(env,path,init){
   const apiKey=String(env.OPENAI_API_KEY||"").trim();if(!apiKey)throw new Error("Missing Worker environment: OPENAI_API_KEY");
   const url="https://api.openai.com/v1"+path;let r;
-  try{r=await fetch(url,{...init,headers:{Authorization:"Bearer "+apiKey,...(init?.headers||{})}})}catch(e){console.error("ETERNA OPENAI NETWORK",path,String(e?.message||e));throw new Error("OpenAI network error: "+String(e?.message||e))}
-  if(!r.ok){console.error("ETERNA OPENAI HTTP",path,r.status);throw new Error("OpenAI request failed with status "+r.status)}return r
+  try{r=await fetch(url,{...init,headers:{Authorization:"Bearer "+apiKey,...(init?.headers||{})}})}catch(_e){console.error("ETERNA OPENAI NETWORK",path);throw new OpenAIRequestError("network")}
+  if(!r.ok){let payload=null;try{payload=await r.json()}catch(_e){}const meta={status:r.status,code:payload?.error?.code||null,type:payload?.error?.type||null,requestId:r.headers.get("x-request-id")};console.error("ETERNA OPENAI HTTP",path,meta.status,meta.type||"unknown",meta.code||"unknown",meta.requestId||"no-request-id");throw new OpenAIRequestError("http",meta)}return r
 }
 function parseStructuredJson(text){let s=String(text||"").trim();if(!s)throw new Error("empty structured output");if(s.startsWith("```"))s=s.replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/i,"").trim();try{return JSON.parse(s)}catch(e){}const a=s.indexOf("{"),b=s.lastIndexOf("}");if(a>=0&&b>a)return JSON.parse(s.slice(a,b+1));throw new Error("invalid structured json")}
 const REASONING_EFFORTS=new Set(["none","low","medium","high","xhigh","max"]);
@@ -276,7 +283,8 @@ async function resendEmail(env,{to,subject,html}){const key=String(env.RESEND_AP
 async function weeklyNotificationExists(env,uid,periodKey){try{const rows=await supabase(env,`eterna_limit_notifications?user_id=eq.${encodeURIComponent(uid)}&period_type=eq.weekly&period_key=eq.${encodeURIComponent(periodKey)}&notification_type=eq.limit_reached&select=sent_at&limit=1`);return Boolean(rows&&rows.length)}catch(e){return false}}
 async function markWeeklyNotification(env,uid,periodKey,email){try{await supabase(env,"eterna_limit_notifications?on_conflict=user_id,period_type,period_key,notification_type",{method:"POST",body:{user_id:uid,period_type:"weekly",period_key:periodKey,notification_type:"limit_reached",recipient_email_hash:email?await sha256(String(email).toLowerCase()):null,sent_at:new Date().toISOString()},headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}catch(e){}}
 async function notifyWeeklyLimitOnce(env,auth,q){const email=String(auth?.user?.email||"").trim(),periodKey=q?.week?.start||usageDate(env);if(!email||await weeklyNotificationExists(env,auth.user.id,periodKey))return;const site=String(env.PUBLIC_SITE_URL||"https://www.cocoenforma.com").replace(/\/+$/,"");const subject="Eterna · límite semanal alcanzado",html=`<!doctype html><html><body style="margin:0;background:#f3f8fb;font-family:Arial,sans-serif;color:#173f59"><div style="max-width:620px;margin:28px auto;background:#fff;border-radius:18px;padding:28px"><div style="font-size:12px;font-weight:700;color:#2a88ad">COCO EN FORMA · ETERNA</div><h1 style="font-size:25px;margin:10px 0 12px">Se ha alcanzado el límite semanal de Eterna</h1><p style="line-height:1.55">La cuenta ha alcanzado el límite semanal de consultas de Eterna.</p><p style="line-height:1.55">Puedes revisar el uso y los controles familiares desde Zona Familiar. El progreso escolar se mantiene guardado.</p><p style="line-height:1.55"><strong>Renovación automática:</strong> ${q?.week?.next||"al comenzar la próxima semana"}.</p><p style="margin:24px 0"><a href="${site}/" style="display:inline-block;background:#173f59;color:#fff;text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:700">Abrir Coco en Forma</a></p><p style="font-size:12px;color:#718793;line-height:1.5">Este aviso no incluye preguntas, fotografías ni contenido de las conversaciones del menor.</p></div></body></html>`;const sent=await resendEmail(env,{to:email,subject,html});if(sent.ok)await markWeeklyNotification(env,auth.user.id,periodKey,email)}
-async function moderate(env,text,image){const input=[];if(text)input.push({type:"text",text:String(text).slice(0,5000)});if(image)input.push({type:"image_url",image_url:{url:image}});if(!input.length)return{flagged:false};let lastError=null;for(let attempt=0;attempt<2;attempt++){try{const r=await openai(env,"/moderations",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"omni-moderation-latest",input})}),d=await r.json();return d.results?.[0]||{flagged:false}}catch(error){lastError=error;console.error("ETERNA MODERATION",attempt+1,String(error?.message||error));if(!attempt)await waitForMilliseconds(220)}}return{flagged:false,moderation_error:true,error_kind:String(lastError?.message||lastError||"unknown")}}
+async function moderate(env,text,image){const input=[];if(text)input.push({type:"text",text:String(text).slice(0,5000)});if(image)input.push({type:"image_url",image_url:{url:image}});if(!input.length)return{flagged:false};let lastError=null;for(let attempt=0;attempt<2;attempt++){try{const r=await openai(env,"/moderations",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"omni-moderation-latest",input})}),d=await r.json();return d.results?.[0]||{flagged:false}}catch(error){lastError=error;console.error("ETERNA MODERATION",attempt+1,openaiErrorDiagnostic(error,"MODERATION"));if(!attempt)await waitForMilliseconds(220)}}return{flagged:false,moderation_error:true,diagnostic_code:openaiErrorDiagnostic(lastError,"MODERATION")}}
+function allowDegradedAcademicModeration(text,image,academic){return!image&&academic?.scope==="school"&&Boolean(academic?.fast||academic?.contextual)&&academic?.sensitive_topic!==true&&academic?.unsafe_action!==true&&!clearSafetySignal(text)&&!hardUnsafeIntent(text)&&!clearNonAcademicIntent(text)}
 
 function courtesyNorm(t){return normalizeDetectionText(t).replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
 function pureCourtesy(t){const x=courtesyNorm(t);return!!x&&x.length<=90&&!clearSafetySignal(t)&&/^(hola|buenos dias|buenas tardes|buenas noches|hey|ey|que tal|como estas|hola como estas|gracias|muchas gracias|de nada|adios|hasta luego|nos vemos|chao|chau)$/.test(x)}
@@ -1234,7 +1242,8 @@ async function handleChatCore(request,env,auth,event,timings){
   else{const contextual=contextualAcademicScope(text,incomingPedState,history);academicPromise=contextual?Promise.resolve(contextual):classifyScope(env,text,ctx.profile,history,mode,incomingPedState)}
   if(teacherCoreSafetySignal(text)){deferWork(event,"teacher-core-safety",()=>logInteraction(env,uid,{text,image,inputSource,scope:"safety",verification:"blocked_safety",subject:null,concept:null,help:null,modelRoute:"teacher-core-safety-fallback-v1",mode}));return json(safetyInterruptionPayload(childSafeguardingCategory(text)||"personal_danger",incomingPedState,mode,incomingModeState,text))}
   const modPromise=moderate(env,text,image),[academic,mod]=await Promise.all([academicPromise,modPromise]);timings?.mark("scope_safety");
-  if(mod.moderation_error)return json({reply:"Ahora no puedo completar las comprobaciones de seguridad. Prueba de nuevo dentro de un momento.",verification_status:"needs_clarification",student_answer_assessment:"not_applicable",mode_state:incomingModeState,pedagogical_state:incomingPedState},503);
+  const moderationDegraded=Boolean(mod.moderation_error&&allowDegradedAcademicModeration(text,image,academic));
+  if(mod.moderation_error&&!moderationDegraded)return json({reply:"Ahora no puedo completar las comprobaciones de seguridad. Prueba de nuevo dentro de un momento.",verification_status:"needs_clarification",student_answer_assessment:"not_applicable",mode_state:incomingModeState,pedagogical_state:incomingPedState,diagnostic_code:mod.diagnostic_code||"MODERATION_UNKNOWN"},503);
   const requestUsagePromise=deferWork(event,"request-usage",()=>markChatRequest(env,uid,q,Boolean(image)));
   const scope=scopeV3Guard(text,academic,incomingPedState,history),vision=image?academic.vision:null;
   if(scope.scope==="safety"){deferWork(event,"intake-safety",()=>logInteraction(env,uid,{text,image,inputSource,scope:"safety",verification:"blocked_safety",subject:scope.subject,concept:scope.concept,help:null,modelRoute:"intake-safety",mode,visionConfidence:vision?.confidence}));return json(safetyInterruptionPayload(scope.safety_category||childSafeguardingCategory(text)||"personal_danger",incomingPedState,mode,incomingModeState,text))}
@@ -1482,7 +1491,7 @@ function healthFeatures(env){return {
   parallel_chat_preflight_v1:true,deferred_chat_persistence_v1:true,curriculum_warm_cache_v1:true,
   background_result_long_poll_v1:true,server_timing_v1:true,prompt_cache_routing_v1:true,
   deterministic_arithmetic_guidance_v1:true,deterministic_pending_numeric_v1:true,adaptive_sync_verification_v1:true,asynchronous_verifier_audit_v1:true,
-  deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,
+  deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,moderation_diagnostics_v1:true,degraded_safe_academic_moderation_v1:true,
   payments_code_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET)
 }}
 function modelConfiguration(env){return{
@@ -1493,10 +1502,16 @@ function modelConfiguration(env){return{
   web_search:{model:env.WEB_SEARCH_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.WEB_SEARCH_REASONING_EFFORT,"low"),service_tier:openaiServiceTier(env,"eterna_web")||"default"}
 }}
 
+function protectedProbeRequest(request,env){const expected=String(env.DEPLOY_PROBE_TOKEN||""),received=String(request.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"");if(!expected||received.length!==expected.length)return false;let diff=0;for(let i=0;i<expected.length;i++)diff|=expected.charCodeAt(i)^received.charCodeAt(i);return diff===0}
+async function dependencyProbe(request,env){if(!protectedProbeRequest(request,env))return json({error:"NOT_FOUND"},404);const result={ok:false,service:"eterna",version:VERSION,moderation:{ok:false,diagnostic_code:null},responses:{ok:false,diagnostic_code:null}};try{const moderation=await moderate(env,"Explica la fotosíntesis.",null);result.moderation={ok:!moderation.moderation_error,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.moderation.diagnostic_code=openaiErrorDiagnostic(error,"MODERATION")}
+  try{const r=await openai(env,"/responses",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:env.SCOPE_MODEL||"gpt-5.6-luna",input:"Responde únicamente OK.",max_output_tokens:24,store:false})});const data=await r.json();result.responses={ok:Boolean(outputText(data).trim()),diagnostic_code:null}}catch(error){result.responses.diagnostic_code=openaiErrorDiagnostic(error,"RESPONSES")}
+  result.ok=result.moderation.ok&&result.responses.ok;return json(result,result.ok?200:503)}
+
 async function handleFetch(request,env,event){
   const c=cors(env,request);if(request.method==="OPTIONS")return withCors(new Response(null,{status:204}),c);const url=new URL(request.url);
   try{
     if(url.pathname==="/health"||url.pathname==="/")return withCors(json({ok:true,service:"eterna",version:VERSION,openai_configured:Boolean(String(env.OPENAI_API_KEY||"").trim()),supabase_configured:Boolean(env.SUPABASE_URL&&supabasePublicKey(env)&&supabaseSecretKey(env)),stripe_configured:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET),model_configuration:modelConfiguration(env),features:healthFeatures(env)}),c);
+    if(url.pathname==="/health/dependencies"&&request.method==="GET")return withCors(await dependencyProbe(request,env),c);
     if(url.pathname==="/v1/stripe/webhook"&&request.method==="POST")return await handleStripeWebhook(request,env);if(!c)return json({error:"ORIGIN_NOT_ALLOWED"},403);
     const auth=await authenticate(request,env);if(!auth)return withCors(json({error:"UNAUTHORIZED"},401),c);
     let bodyCopy=null,contractMeta=null,replayId=null,replayKind=null,mode="homework";
