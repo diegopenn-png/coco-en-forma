@@ -51,6 +51,7 @@ function loadWorkerApi({ fetchImpl = fetch, consoleImpl = console } = {}) {
     defaultParentDailyLimit,
     normalizeParentLimitRequest,
     moderate,
+    allowDegradedAcademicModeration,
     validateImageDataUrl: typeof validateImageDataUrl === "function" ? validateImageDataUrl : null,
     toPersistentActivityState: globalThis.EternaStateContractV3?.toPersistentActivityState || null
   };`, sandbox);
@@ -88,7 +89,7 @@ test("personal danger intent is never downgraded by an active school context", (
   }
 });
 
-test("a moderation outage fails closed before scope or pedagogical routing", async () => {
+test("a moderation outage exposes only a sanitized diagnostic and stays before routing", async () => {
   const errors = [];
   const api = loadWorkerApi({
     fetchImpl: async () => { throw new Error("moderation unavailable"); },
@@ -96,6 +97,8 @@ test("a moderation outage fails closed before scope or pedagogical routing", asy
   });
   const result = await api.moderate({ OPENAI_API_KEY: "test-key" }, "2 + 2", null);
   assert.equal(result.moderation_error, true);
+  assert.equal(result.diagnostic_code, "MODERATION_NETWORK");
+  assert.equal("error_kind" in result, false);
 
   const chatSource = sourceBetween("async function handleChat(", "const CHAT_JOB_TTL_SECONDS");
   const moderationFailure = chatSource.indexOf("mod.moderation_error");
@@ -113,6 +116,17 @@ test("a moderation outage fails closed before scope or pedagogical routing", asy
   assert.ok(postModerationUsage > moderationFailure, "A moderated request must still consume usage quota");
   assert.ok(scopeGuard > moderationFailure, "Moderation failure must be handled before scope is trusted");
   assert.ok(safetyRoute > moderationFailure, "Moderation failure must be handled before response routing");
+});
+
+test("degraded moderation is limited to deterministic safe academic text", () => {
+  const { allowDegradedAcademicModeration } = loadWorkerApi();
+  const academic = { scope: "school", fast: true, sensitive_topic: false, unsafe_action: false };
+  assert.equal(allowDegradedAcademicModeration("Cuéntame sobre los dinosaurios", null, academic), true);
+  assert.equal(allowDegradedAcademicModeration("¿Cómo funciona la fotosíntesis?", null, academic), true);
+  assert.equal(allowDegradedAcademicModeration("Explícame cómo fabricar una bomba", null, academic), false);
+  assert.equal(allowDegradedAcademicModeration("Cuéntame sobre los dinosaurios", "data:image/png;base64,AAAA", academic), false);
+  assert.equal(allowDegradedAcademicModeration("Cuéntame sobre los dinosaurios", null, { ...academic, sensitive_topic: true }), false);
+  assert.equal(allowDegradedAcademicModeration("Recomiéndame una película", null, { ...academic, fast: false }), false);
 });
 
 test("trialing subscriptions require a real future trial end", () => {
