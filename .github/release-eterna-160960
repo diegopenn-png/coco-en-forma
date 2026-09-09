@@ -1,3 +1,4 @@
-version=160.97.4-priority-simplification
-source_preview_sha=5d3759b98609a29f636789561d40db256b4aa428
-validated_preview_run=34341060266
+version=160.98.0-human-teacher
+source_preview_sha=6f9ff4f82e04f1354d557344f85550f671451c11
+validated_preview_run=34374967124
+production_authorized=2026-09-09
