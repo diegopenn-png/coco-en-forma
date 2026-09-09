@@ -12,7 +12,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"gpt-5\.6-terra"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.96\.7-compatible-tutor-recovery/);
+  assert.match(worker, /160\.96\.8-moderation-resilience/);
   assert.match(worker, /reasoning:\{effort\}/);
   assert.match(worker, /flagship_tutor_model_v1:true/);
   assert.match(worker, /!image&&!topicReturnRequest\(text,incomingPedState\)/);
@@ -27,7 +27,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
 test("the 160.96 production gate verifies the exact model route before release", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-160960.yml", "utf8");
   assert.match(production, /\.github\/release-eterna-160960/);
-  assert.match(production, /EXPECTED_VERSION: 160\.96\.7-compatible-tutor-recovery/);
+  assert.match(production, /EXPECTED_VERSION: 160\.96\.8-moderation-resilience/);
   assert.match(production, /--var "TUTOR_MODEL:gpt-5\.6-sol"/);
   assert.match(production, /models\.tutor\?\.reasoning_effort === "high"/);
   assert.match(production, /models\.verifier\?\.model === "gpt-5\.6-terra"/);
@@ -41,6 +41,8 @@ test("the 160.96 production gate verifies the exact model route before release",
   assert.match(production, /payload\.features\?\.stable_fact_tutor_recovery_v1 === true/);
   assert.match(production, /payload\.features\?\.scope_model_failover_v1 === true/);
   assert.match(production, /payload\.features\?\.moderation_request_retry_v1 === true/);
+  assert.match(production, /payload\.features\?\.moderation_diagnostics_v1 === true/);
+  assert.match(production, /payload\.features\?\.degraded_safe_academic_moderation_v1 === true/);
   assert.match(production, /wrangler versions deploy/);
   assert.match(production, /wrangler rollback/);
 });
