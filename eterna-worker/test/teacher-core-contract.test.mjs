@@ -34,6 +34,7 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   safetyInterruptionPayload,
   scopeV3Guard,
   turnRelation,
+  learningRepairRelation,
   explicitNewTopicRequest,
   independentQuestionSignal,
   classroomSituation,
@@ -57,6 +58,10 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   expectedIdeaMatch,
   deterministicAnchoredCheckTurn,
   deterministicConceptCheckTurn,
+  disclosedCheckReplacement,
+  fractionExpression,
+  deterministicFractionSimplificationTurn,
+  synchronousVerificationRequired,
   buildPedagogicalState,
   handleChat
 };`, sandbox);
@@ -111,11 +116,14 @@ test("full intelligence is preserved while age adapts delivery and risk boundari
   assert.equal(api.reasoningEffort("high"), "high");
   assert.equal(api.reasoningEffort("unsupported", "medium"), "medium");
   assert.deepEqual(JSON.parse(JSON.stringify(api.modelConfiguration({}))), {
+    provider: "openai",
     scope: { model: "gpt-5.6-luna", fallback_model: "gpt-5.6-terra", reasoning_effort: "low", service_tier: "default" },
     tutor: { model: "gpt-5.6-sol", fallback_model: "gpt-5.6-terra", compatibility_model: "gpt-5.4-mini", reasoning_effort: "high", service_tier: "default" },
     verifier: { model: "gpt-5.6-terra", reasoning_effort: "high", service_tier: "default" },
     vision: { model: "gpt-5.6-sol", reasoning_effort: "high", service_tier: "default" },
-    web_search: { model: "gpt-5.6-terra", reasoning_effort: "low", service_tier: "default" },
+    moderation: { model: "omni-moderation-latest" },
+    speech: { transcribe_model: "gpt-4o-mini-transcribe", tts_model: "gpt-4o-mini-tts" },
+    web_search: { enabled: true, model: "gpt-5.6-terra", reasoning_effort: "low", service_tier: "default" },
   });
 });
 
@@ -322,6 +330,82 @@ test("classroom small talk is recognised without being graded as science", () =>
   assert.match(api.situationalReply({ kind: "identity" }, "", ""), /no soy una persona/i);
 });
 
+test("academic questions about weather phenomena outrank situational small talk", () => {
+  for (const message of [
+    "¿Por qué llueve?",
+    "¿Cómo se forma la lluvia?",
+    "¿Por qué nieva?",
+    "Explícame de dónde viene el viento.",
+    "¿Por qué hace frío?",
+  ]) assert.equal(api.classroomSituation(message, []), null, message);
+
+  assert.equal(api.classroomSituation("Llueve mucho.", []).kind, "weather_observation");
+  assert.equal(api.classroomSituation("Está nevando.", []).kind, "weather_observation");
+  assert.equal(api.classroomSituation("¿Qué tiempo hace hoy en Málaga?", []).kind, "weather_query");
+});
+
+test("combined confusion and simplification requests are never graded as answers", () => {
+  const state = {
+    ...pendingState,
+    active_subject: "Matemáticas",
+    active_concept: "suma de fracciones",
+    pending_question: "¿Cuál es el paso siguiente para sumar 3/4 y 1/8?",
+    expected_answer_type: "open",
+  };
+  for (const message of [
+    "No lo entendí, explícamelo de una forma más fácil.",
+    "No entiendo; dímelo con palabras más fáciles.",
+    "Explícamelo de otra forma más sencilla.",
+  ]) {
+    assert.equal(api.learningRepairRelation(message), "simplification_request", message);
+    assert.equal(api.turnRelation(message, state, []), "simplification_request", message);
+  }
+  assert.equal(api.turnRelation("No me queda claro, ponme otro ejemplo.", state, []), "confusion_request");
+});
+
+test("simplification receives synchronous pedagogical verification", () => {
+  assert.equal(api.synchronousVerificationRequired({
+    image: null,
+    mode: "explain",
+    turnRel: "simplification_request",
+    scope: { scope: "school" },
+    stableSchool: true,
+    externalEvidence: null,
+    mathCheck: null,
+    answerAnchor: null,
+    tutorData: { student_answer_assessment: "not_applicable" },
+    text: "No lo entendí, explícamelo más fácil.",
+  }), true);
+});
+
+test("a micro-check never asks for a fraction result already disclosed", () => {
+  const check = "¿Cuál es el resultado de sumar 3/4 y 1/8?";
+  const reply = "Convertimos 3/4 en 6/8. Después sumamos 6/8 + 1/8 = 7/8.";
+  assert.equal(api.disclosedCheckReplacement(check, reply), "Antes de sumar o restar fracciones con distinto denominador, ¿qué necesitamos conseguir primero?");
+});
+
+test("fraction simplification changes to a concrete visual representation", () => {
+  const result = api.deterministicFractionSimplificationTurn({
+    mode: "explain",
+    history: [{ role: "user", text: "Explícame cómo sumar 3/4 + 1/8 paso a paso." }],
+    pedState: { active_subject: "Matemáticas", active_concept: "suma de fracciones" },
+    modeState: {},
+    subject: "Matemáticas",
+    concept: "suma de fracciones",
+  });
+  assert.match(result.reply, /barra de chocolate/i);
+  assert.match(result.reply, /8 trozos iguales/i);
+  assert.match(result.reply, /3\/4 ocupa 6/i);
+  assert.doesNotMatch(result.reply, /denominador común/i);
+  assert.equal(result.strategy_used, "analogy");
+  assert.equal(result.student_answer_assessment, "not_applicable");
+  assert.equal(result.check_question, "Si tienes 6 trozos y añades 1, ¿cuántos trozos de los 8 quedan?");
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(api.fractionExpression("Ahora podemos sumar 6/8 y 1/8."))),
+    { left: { n: 6, d: 8 }, right: { n: 1, d: 8 }, op: "+" },
+  );
+});
+
 test("teacher core adapts all Spanish school stages and forbids human impersonation", () => {
   const profiles = [
     api.ageTeachingProfile({ base: { edad: 4 }, profile: { stage: "Infantil" } }),
@@ -396,6 +480,49 @@ test("full chat routing handles the audit message even when the client labels it
   assert.equal(payload.student_answer_assessment, "not_applicable");
   assert.equal(payload.pedagogical_state.pending_question, pendingState.pending_question);
   assert.equal(payload.mode_state.question_number, modeState.question_number);
+});
+
+test("full chat routing prioritizes visual fraction simplification over a pending answer", async () => {
+  sandbox.moderate = async () => ({ flagged: false, moderation_error: false });
+  sandbox.retrieveCurriculum = async () => [];
+  sandbox.markChatRequest = async () => {};
+  sandbox.bumpUsage = async () => {};
+  sandbox.tutor = async () => { throw new Error("the tutor model must not run"); };
+
+  const fractionState = {
+    ...pendingState,
+    active_topic: "suma de fracciones",
+    active_subject: "Matemáticas",
+    active_concept: "suma de fracciones",
+    pending_question: "¿Cuál es el resultado de sumar 3/4 y 1/8?",
+    pending_question_id: "question:fractions-1",
+    expected_answer_type: "numeric",
+    expected_key_ideas: ["7/8"],
+  };
+  const request = new Request("https://eterna.test/v1/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: "No lo entendí, explícamelo de una forma más fácil.",
+      mode: "explain",
+      student_intent: "answer_check",
+      history: [
+        { role: "user", text: "Explícame cómo sumar 3/4 + 1/8 paso a paso." },
+        { role: "assistant", text: "Convertimos 3/4 en 6/8. Ahora podemos sumar 6/8 y 1/8." },
+      ],
+      pedagogical_state: fractionState,
+      mode_state: modeState,
+    }),
+  });
+  const response = await api.handleChat(request, {}, { user: { id: "student-1", email: "adult@example.test" } });
+  const payload = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.match(payload.reply, /barra de chocolate/i);
+  assert.match(payload.reply, /8 trozos iguales/i);
+  assert.equal(payload.strategy_used, "analogy");
+  assert.equal(payload.check_question, "Si tienes 6 trozos y añades 1, ¿cuántos trozos de los 8 quedan?");
+  assert.equal(payload.student_answer_assessment, "not_applicable");
 });
 
 

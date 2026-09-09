@@ -35,6 +35,7 @@ function loadApi(fetchImpl = fetch) {
     fetch: fetchImpl,
     setTimeout,
     clearTimeout,
+    atob,
   };
   vm.createContext(sandbox);
   vm.runInContext(stateContractSource, sandbox);
@@ -210,6 +211,63 @@ test("structured model calls retry a transient HTTP failure", async () => {
   assert.match(payloads[0].prompt_cache_key, /^coco-eterna:/);
   assert.equal(payloads[1].prompt_cache_key, undefined);
   assert.equal(payloads[1].prompt_cache_options, undefined);
+});
+
+test("Cloudflare is the primary structured provider when its binding is configured", async () => {
+  const calls = [];
+  const api = loadApi();
+  const env = {
+    AI_PROVIDER: "cloudflare",
+    AI: { run: async (model, payload) => {
+      calls.push({ model, payload });
+      return { response: { ok: true }, usage: { input_tokens: 4, output_tokens: 2 } };
+    } },
+  };
+  const result = await api.structured(env, {
+    model: "@cf/meta/llama-3.1-8b-instruct-fast",
+    input: [{ role: "user", content: [{ type: "input_text", text: "test" }] }],
+    instructions: "Return the schema.",
+    name: "cloudflare_test",
+    schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"] },
+    max_output_tokens: 100,
+  });
+  assert.equal(result.data.ok, true);
+  assert.equal(result.service_tier, "cloudflare");
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].payload.response_format.type, "json_schema");
+});
+
+test("Cloudflare Guard moderates ordinary school text without OpenAI", async () => {
+  const calls = [];
+  const api = loadApi();
+  const result = await api.moderate({
+    AI_PROVIDER: "cloudflare",
+    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { response: "safe" }; } },
+  }, "Cuéntame sobre los dinosaurios", null);
+  assert.equal(result.flagged, false);
+  assert.equal(calls[0].model, "@cf/meta/llama-guard-3-8b");
+});
+
+test("Cloudflare routes every photographed task through the vision model", async () => {
+  const calls = [];
+  const api = loadApi();
+  await api.structured({
+    AI_PROVIDER: "cloudflare",
+    VISION_MODEL: "@cf/meta/llama-3.2-11b-vision-instruct",
+    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { response: { ok: true } }; } },
+  }, {
+    model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    input: [{ role: "user", content: [
+      { type: "input_text", text: "Analiza la ficha" },
+      { type: "input_image", image_url: "data:image/png;base64,AA==" },
+    ] }],
+    instructions: "Return the schema.",
+    name: "vision_route_test",
+    schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"] },
+    max_output_tokens: 100,
+  });
+  assert.equal(calls[0].model, "@cf/meta/llama-3.2-11b-vision-instruct");
+  assert.equal(Array.from(calls[0].payload.image).join(","), "0");
 });
 
 test("dinosaur explanations have a verified local recovery when every tutor model is unavailable", () => {

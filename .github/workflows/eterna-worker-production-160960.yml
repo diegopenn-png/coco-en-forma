@@ -1,4 +1,4 @@
-name: Deploy Eterna Worker 160.96.8
+name: Deploy Eterna Worker 160.97.4
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.96.8-moderation-resilience
+      EXPECTED_VERSION: 160.97.4-priority-simplification
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -82,19 +82,24 @@ jobs:
           npx wrangler versions upload \
             --name "$WORKER_NAME" \
             --keep-vars \
-            --var "SCOPE_MODEL:gpt-5.6-luna" \
-            --var "SCOPE_FALLBACK_MODEL:gpt-5.6-terra" \
+            --var "AI_PROVIDER:cloudflare" \
+            --var "ENABLE_OPENAI_FALLBACK:false" \
+            --var "SCOPE_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
+            --var "SCOPE_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct" \
             --var "SCOPE_REASONING_EFFORT:low" \
-            --var "TUTOR_MODEL:gpt-5.6-sol" \
-            --var "TUTOR_FALLBACK_MODEL:gpt-5.6-terra" \
-            --var "TUTOR_COMPATIBILITY_MODEL:gpt-5.4-mini" \
+            --var "TUTOR_MODEL:@cf/meta/llama-3.3-70b-instruct-fp8-fast" \
+            --var "TUTOR_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
+            --var "TUTOR_COMPATIBILITY_MODEL:@cf/meta/llama-3.1-8b-instruct" \
             --var "TUTOR_REASONING_EFFORT:high" \
-            --var "VERIFIER_MODEL:gpt-5.6-terra" \
+            --var "VERIFIER_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "VERIFIER_REASONING_EFFORT:high" \
-            --var "VISION_MODEL:gpt-5.6-sol" \
+            --var "VISION_MODEL:@cf/meta/llama-3.2-11b-vision-instruct" \
             --var "VISION_REASONING_EFFORT:high" \
-            --var "WEB_SEARCH_MODEL:gpt-5.6-terra" \
-            --var "WEB_SEARCH_REASONING_EFFORT:low" \
+            --var "MODERATION_MODEL:@cf/meta/llama-guard-3-8b" \
+            --var "TRANSCRIBE_MODEL:@cf/openai/whisper-large-v3-turbo" \
+            --var "TTS_MODEL:@cf/myshell-ai/melotts" \
+            --var "ENABLE_ACADEMIC_WEB_SEARCH:false" \
+            --var "ENABLE_OFFICIAL_WEB_SEARCH:false" \
             --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" | tee production-candidate.log
 
           version_id="$(sed -n -E 's/^(Worker )?Version ID: //p' production-candidate.log | tail -1)"
@@ -120,20 +125,24 @@ jobs:
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
               && payload.version === process.env.EXPECTED_VERSION
-              && payload.openai_configured === true
+              && payload.ai_provider === "cloudflare"
+              && payload.cloudflare_ai_configured === true
               && payload.supabase_configured === true
-              && models.scope?.model === "gpt-5.6-luna"
-              && models.scope?.fallback_model === "gpt-5.6-terra"
+              && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
+              && models.scope?.fallback_model === "@cf/meta/llama-3.1-8b-instruct"
               && models.scope?.reasoning_effort === "low"
-              && models.tutor?.model === "gpt-5.6-sol"
-              && models.tutor?.fallback_model === "gpt-5.6-terra"
-              && models.tutor?.compatibility_model === "gpt-5.4-mini"
+              && models.tutor?.model === "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+              && models.tutor?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast"
+              && models.tutor?.compatibility_model === "@cf/meta/llama-3.1-8b-instruct"
               && models.tutor?.reasoning_effort === "high"
-              && models.verifier?.model === "gpt-5.6-terra"
+              && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.verifier?.reasoning_effort === "high"
-              && models.vision?.model === "gpt-5.6-sol"
+              && models.vision?.model === "@cf/meta/llama-3.2-11b-vision-instruct"
               && models.vision?.reasoning_effort === "high"
-              && models.web_search?.model === "gpt-5.6-terra"
+              && models.moderation?.model === "@cf/meta/llama-guard-3-8b"
+              && models.speech?.transcribe_model === "@cf/openai/whisper-large-v3-turbo"
+              && models.speech?.tts_model === "@cf/myshell-ai/melotts"
+              && models.web_search?.enabled === false
               && models.web_search?.reasoning_effort === "low"
               && payload.features?.full_intelligence_child_safety_v1 === true
               && payload.features?.suspended_topic_resume_v1 === true
@@ -159,13 +168,13 @@ jobs:
           ' "$preview_payload"
 
           dependency_payload="$(curl --silent --show-error --max-time 45 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "$PREVIEW_DEPENDENCY_URL" || true)"
-          echo "Sanitized OpenAI dependency probe: ${dependency_payload}"
+          echo "Sanitized Cloudflare AI dependency probe: ${dependency_payload}"
           node -e '
             const payload = JSON.parse(process.argv[1]);
-            if (payload.version !== process.env.EXPECTED_VERSION) process.exit(1);
+            if (payload.version !== process.env.EXPECTED_VERSION || payload.provider !== "cloudflare") process.exit(1);
             for (const name of ["moderation", "responses"]) {
               const item = payload[name] || {};
-              if (item.ok !== true && !/^((MODERATION|RESPONSES)_(HTTP|NETWORK|UNKNOWN))/.test(String(item.diagnostic_code || ""))) process.exit(1);
+              if (item.ok !== true) process.exit(1);
             }
           ' "$dependency_payload"
 
@@ -176,7 +185,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.96.8 moderation resilience" \
+            --message "Eterna 160.97.4 priority simplification" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -192,14 +201,16 @@ jobs:
                 const models = payload.model_configuration || {};
                 const valid = payload.ok === true
                   && payload.version === process.env.EXPECTED_VERSION
-                  && models.scope?.model === "gpt-5.6-luna"
-                  && models.scope?.fallback_model === "gpt-5.6-terra"
+                  && payload.ai_provider === "cloudflare"
+                  && payload.cloudflare_ai_configured === true
+                  && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
+                  && models.scope?.fallback_model === "@cf/meta/llama-3.1-8b-instruct"
                   && models.scope?.reasoning_effort === "low"
-                  && models.tutor?.model === "gpt-5.6-sol"
-                  && models.tutor?.fallback_model === "gpt-5.6-terra"
-                  && models.tutor?.compatibility_model === "gpt-5.4-mini"
+                  && models.tutor?.model === "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+                  && models.tutor?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast"
+                  && models.tutor?.compatibility_model === "@cf/meta/llama-3.1-8b-instruct"
                   && models.tutor?.reasoning_effort === "high"
-                  && models.verifier?.model === "gpt-5.6-terra"
+                  && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
                   && models.verifier?.reasoning_effort === "high"
                   && payload.features?.full_intelligence_child_safety_v1 === true
                   && payload.features?.suspended_topic_resume_v1 === true
@@ -233,7 +244,7 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.96.8 health check" \
+              --message "Automatic rollback after failed Eterna 160.97.4 health check" \
               --yes
             exit 1
           fi

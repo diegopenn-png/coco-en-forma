@@ -85,19 +85,24 @@ jobs:
           npx wrangler versions upload \
             --name coco-eterna-v159 \
             --keep-vars \
-            --var "SCOPE_MODEL:gpt-5.6-luna" \
-            --var "SCOPE_FALLBACK_MODEL:gpt-5.6-terra" \
+            --var "AI_PROVIDER:cloudflare" \
+            --var "ENABLE_OPENAI_FALLBACK:false" \
+            --var "SCOPE_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
+            --var "SCOPE_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct" \
             --var "SCOPE_REASONING_EFFORT:low" \
-            --var "TUTOR_MODEL:gpt-5.6-sol" \
-            --var "TUTOR_FALLBACK_MODEL:gpt-5.6-terra" \
-            --var "TUTOR_COMPATIBILITY_MODEL:gpt-5.4-mini" \
+            --var "TUTOR_MODEL:@cf/meta/llama-3.3-70b-instruct-fp8-fast" \
+            --var "TUTOR_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
+            --var "TUTOR_COMPATIBILITY_MODEL:@cf/meta/llama-3.1-8b-instruct" \
             --var "TUTOR_REASONING_EFFORT:high" \
-            --var "VERIFIER_MODEL:gpt-5.6-terra" \
+            --var "VERIFIER_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "VERIFIER_REASONING_EFFORT:high" \
-            --var "VISION_MODEL:gpt-5.6-sol" \
+            --var "VISION_MODEL:@cf/meta/llama-3.2-11b-vision-instruct" \
             --var "VISION_REASONING_EFFORT:high" \
-            --var "WEB_SEARCH_MODEL:gpt-5.6-terra" \
-            --var "WEB_SEARCH_REASONING_EFFORT:low" \
+            --var "MODERATION_MODEL:@cf/meta/llama-guard-3-8b" \
+            --var "TRANSCRIBE_MODEL:@cf/openai/whisper-large-v3-turbo" \
+            --var "TTS_MODEL:@cf/myshell-ai/melotts" \
+            --var "ENABLE_ACADEMIC_WEB_SEARCH:false" \
+            --var "ENABLE_OFFICIAL_WEB_SEARCH:false" \
             --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee authenticated-preview-api.log
 
@@ -146,7 +151,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.96.8-moderation-resilience' eterna-worker/src/index.js >/dev/null
+          grep -F '160.97.4-priority-simplification' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -243,18 +248,23 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.96.8-moderation-resilience"
-              && models.scope?.model === "gpt-5.6-luna"
-              && models.scope?.fallback_model === "gpt-5.6-terra"
+              && payload.version === "160.97.4-priority-simplification"
+              && payload.ai_provider === "cloudflare"
+              && payload.cloudflare_ai_configured === true
+              && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
+              && models.scope?.fallback_model === "@cf/meta/llama-3.1-8b-instruct"
               && models.scope?.reasoning_effort === "low"
-              && models.tutor?.model === "gpt-5.6-sol"
-              && models.tutor?.fallback_model === "gpt-5.6-terra"
-              && models.tutor?.compatibility_model === "gpt-5.4-mini"
+              && models.tutor?.model === "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+              && models.tutor?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast"
+              && models.tutor?.compatibility_model === "@cf/meta/llama-3.1-8b-instruct"
               && models.tutor?.reasoning_effort === "high"
-              && models.verifier?.model === "gpt-5.6-terra"
+              && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.verifier?.reasoning_effort === "high"
-              && models.vision?.model === "gpt-5.6-sol"
-              && models.web_search?.model === "gpt-5.6-terra"
+              && models.vision?.model === "@cf/meta/llama-3.2-11b-vision-instruct"
+              && models.moderation?.model === "@cf/meta/llama-guard-3-8b"
+              && models.speech?.transcribe_model === "@cf/openai/whisper-large-v3-turbo"
+              && models.speech?.tts_model === "@cf/myshell-ai/melotts"
+              && models.web_search?.enabled === false
               && payload.features?.structured_request_retry_v1 === true
               && payload.features?.structured_compatibility_retry_v1 === true
               && payload.features?.tutor_model_failover_v1 === true
@@ -271,13 +281,13 @@ jobs:
           '
 
           dependency_payload="$(curl --silent --show-error --max-time 45 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "${API_PREVIEW_URL}/health/dependencies" || true)"
-          echo "Sanitized OpenAI dependency probe: ${dependency_payload}"
+          echo "Sanitized Cloudflare AI dependency probe: ${dependency_payload}"
           node -e '
             const payload = JSON.parse(process.argv[1]);
-            if (payload.version !== "160.96.8-moderation-resilience") process.exit(1);
+            if (payload.version !== "160.97.4-priority-simplification" || payload.provider !== "cloudflare") process.exit(1);
             for (const name of ["moderation", "responses"]) {
               const item = payload[name] || {};
-              if (item.ok !== true && !/^((MODERATION|RESPONSES)_(HTTP|NETWORK|UNKNOWN))/.test(String(item.diagnostic_code || ""))) process.exit(1);
+              if (item.ok !== true) process.exit(1);
             }
           ' "$dependency_payload"
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
@@ -287,7 +297,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.96.7-transparent-recovery · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.96.8-moderation-resilience"
+            echo "- Expected versions: frontend 160.96.7-transparent-recovery · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.97.4-priority-simplification"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents
