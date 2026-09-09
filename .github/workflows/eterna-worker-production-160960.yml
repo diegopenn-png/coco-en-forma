@@ -1,4 +1,4 @@
-name: Deploy Eterna Worker 160.96.5
+name: Deploy Eterna Worker 160.96.6
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.96.5-exam-intake-recovery
+      EXPECTED_VERSION: 160.96.6-resilient-tutor-failover
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -81,6 +81,7 @@ jobs:
             --var "SCOPE_MODEL:gpt-5.6-luna" \
             --var "SCOPE_REASONING_EFFORT:low" \
             --var "TUTOR_MODEL:gpt-5.6-sol" \
+            --var "TUTOR_FALLBACK_MODEL:gpt-5.6-terra" \
             --var "TUTOR_REASONING_EFFORT:high" \
             --var "VERIFIER_MODEL:gpt-5.6-terra" \
             --var "VERIFIER_REASONING_EFFORT:high" \
@@ -116,6 +117,7 @@ jobs:
               && models.scope?.model === "gpt-5.6-luna"
               && models.scope?.reasoning_effort === "low"
               && models.tutor?.model === "gpt-5.6-sol"
+              && models.tutor?.fallback_model === "gpt-5.6-terra"
               && models.tutor?.reasoning_effort === "high"
               && models.verifier?.model === "gpt-5.6-terra"
               && models.verifier?.reasoning_effort === "high"
@@ -130,7 +132,9 @@ jobs:
               && payload.features?.adaptive_sync_verification_v1 === true
               && payload.features?.asynchronous_verifier_audit_v1 === true
               && payload.features?.deterministic_exam_intake_v1 === true
-              && payload.features?.exam_tutor_recovery_v1 === true;
+              && payload.features?.exam_tutor_recovery_v1 === true
+              && payload.features?.structured_request_retry_v1 === true
+              && payload.features?.tutor_model_failover_v1 === true;
             if (!valid) {
               console.error("Unexpected production candidate health payload", payload);
               process.exit(1);
@@ -144,7 +148,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.96.5 resilient exam intake" \
+            --message "Eterna 160.96.6 resilient tutor failover" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -161,6 +165,7 @@ jobs:
                 const valid = payload.ok === true
                   && payload.version === process.env.EXPECTED_VERSION
                   && models.tutor?.model === "gpt-5.6-sol"
+                  && models.tutor?.fallback_model === "gpt-5.6-terra"
                   && models.tutor?.reasoning_effort === "high"
                   && models.verifier?.model === "gpt-5.6-terra"
                   && models.verifier?.reasoning_effort === "high"
@@ -171,7 +176,9 @@ jobs:
                   && payload.features?.adaptive_sync_verification_v1 === true
                   && payload.features?.asynchronous_verifier_audit_v1 === true
                   && payload.features?.deterministic_exam_intake_v1 === true
-                  && payload.features?.exam_tutor_recovery_v1 === true;
+                  && payload.features?.exam_tutor_recovery_v1 === true
+                  && payload.features?.structured_request_retry_v1 === true
+                  && payload.features?.tutor_model_failover_v1 === true;
                 process.exit(valid ? 0 : 1);
               } catch {
                 process.exit(1);
@@ -187,7 +194,7 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.96.5 health check" \
+              --message "Automatic rollback after failed Eterna 160.96.6 health check" \
               --yes
             exit 1
           fi
