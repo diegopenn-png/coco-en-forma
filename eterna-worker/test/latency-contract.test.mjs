@@ -334,6 +334,24 @@ test("dependency health stays available through fallback and reports degraded Cl
   assert.equal(payload.responses.ok, false);
   assert.equal(payload.moderation.provider, "openai");
   assert.equal(payload.structured_tutor.provider, "openai");
+
+  const directResponse = await api.dependencyProbe(new Request("https://eterna.test/health/dependencies", {
+    headers: { Authorization: "Bearer probe-secret" },
+  }), {
+    AI_PROVIDER: "cloudflare",
+    DEPLOY_PROBE_TOKEN: "probe-secret",
+    TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model) => model.includes("llama-guard")
+      ? { response: "safe" }
+      : model.includes("qwen")
+        ? { response: { ok: false } }
+        : { response: "OK" } },
+  });
+  const directPayload = await directResponse.json();
+  assert.equal(directResponse.status, 200);
+  assert.equal(directPayload.ok, true, "A valid structured boolean proves the dependency contract even when its sample value is false");
+  assert.equal(directPayload.degraded, false);
+  assert.equal(directPayload.structured_tutor.provider, "cloudflare");
 });
 
 test("Cloudflare routes every photographed task through the vision model", async () => {
