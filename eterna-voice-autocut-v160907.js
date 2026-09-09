@@ -1,7 +1,8 @@
-/* ETERNA voice reliability hotfix · 160.93.17
+/* ETERNA voice reliability hotfix · 160.98.1
  * Scope: reliable automatic end-of-speech cutoff for ETERNA conversation mic,
- * age-adaptive silence windows, bounded watchdogs, continuous visible progress,
- * and a compact desktop mode dropdown with titles only.
+ * age-adaptive silence windows, bounded watchdogs, canonical bottom progress,
+ * and a compact desktop mode dropdown with titles only. Visible request status
+ * is owned by Eterna's bottom composer so it never becomes stale in the chat.
  * Does not change auth, subscriptions, payments, games, scoring, Safety or School Scope.
  */
 (function(root){
@@ -166,20 +167,6 @@
     return{silenceMs:2200,noSpeechMs:12000,maxMs:38000,minSpeechMs:180}
   }
 
-  function ensureLive(){
-    var o=overlay();if(!o)return null;
-    var c=o.querySelector('[data-et-chat]');if(!c)return null;
-    var live=c.querySelector('.eternaV160LiveState');
-    if(!live){live=document.createElement('div');live.className='eternaV160LiveState';c.insertBefore(live,c.firstChild)}
-    return live
-  }
-
-  function showProgress(text){
-    var live=ensureLive();if(!live||!text)return;
-    live.className='eternaV160LiveState is-visible is-thinking';
-    live.innerHTML='<span class="eternaV160LiveIcon" aria-hidden="true">✦</span><span>'+String(text).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[c]})+'<span class="eternaV160ThinkingDots" aria-hidden="true"><i></i><i></i><i></i></span></span>'
-  }
-
   function clickControl(selector){
     var o=overlay(),b=o&&o.querySelector(selector);if(!b)return false;
     try{b.click();return true}catch(e){return false}
@@ -200,7 +187,6 @@
       cleanup();
       return
     }
-    showProgress(reason==='max'?'Procesando lo que has dicho…':'Procesando tu voz…');
     if(!clickControl('[data-et-voice-finish]'))clickControl('[data-et-mic]');
     cleanup()
   }
@@ -263,9 +249,7 @@
 
   document.addEventListener('click',function(ev){
     var mic=ev.target&&ev.target.closest?ev.target.closest('#eternaOverlayV159 [data-et-mic]'):null;
-    if(mic){recentEternaMicIntentAt=Date.now();showProgress('Activando el micrófono…');return}
-    var send=ev.target&&ev.target.closest?ev.target.closest('#eternaOverlayV159 [data-et-send]'):null;
-    if(send&&!send.disabled)showProgress('Enviando tu pregunta…')
+    if(mic)recentEternaMicIntentAt=Date.now()
   },true);
 
   document.addEventListener('click',function(ev){

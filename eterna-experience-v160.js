@@ -766,9 +766,9 @@
     var c=chat();thinkingAssistantCount=c?c.querySelectorAll(".eternaV159Msg.assistant").length:0;
     setVoicePanel(false);
     clearThinkingStages();
-    setLive("thinking","Leyendo tu pregunta…");
-    thinkingStageTimers.push(setTimeout(function(){setLive("thinking","Comprobando el contenido…")},2500));
-    thinkingStageTimers.push(setTimeout(function(){setLive("thinking","Preparando una explicación clara…")},6000))
+    /* eterna-v159 owns the single accessible "Pensando…" state in the fixed
+       bottom composer. Clear voice/status copy here instead of duplicating it. */
+    setLive("","")
   }
 
   function fileNameForMime(type){

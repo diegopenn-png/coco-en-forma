@@ -2,7 +2,7 @@
  * Scope: mode isolation + pending-math input guard + review arithmetic guard
  *        + homework scaffolding guard + stronger SIMPLIFY instruction
  *        + desktop microphone-status layout guard
- *        + loader for age-adaptive conversation microphone autocut/progress.
+ *        + loader for age-adaptive conversation microphone autocut.
  * Does not change auth, subscription, Safety, School Scope, Supabase or attribution.
  */
 (function(root){
@@ -179,11 +179,11 @@
   installMicLayoutFix();
 
   function loadVoiceAutocut(){
-    if(document.querySelector('script[data-et-voice-autocut="1609311"]'))return;
+    if(document.querySelector('script[data-et-voice-autocut="160981"]'))return;
     var s=document.createElement('script');
-    s.src='./eterna-voice-autocut-v160907.js?v=1609311';
+    s.src='./eterna-voice-autocut-v160907.js?v=160981';
     s.async=false;
-    s.setAttribute('data-et-voice-autocut','1609311');
+    s.setAttribute('data-et-voice-autocut','160981');
     document.head.appendChild(s)
   }
   loadVoiceAutocut();

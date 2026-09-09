@@ -64,6 +64,6 @@ assert.match(index, /eterna-v159\.css\?v=160980/);
 assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
 assert.match(index, /eterna-v159\.js\?v=160980/);
 assert.match(index, /coco-v153-fixes\.js\?v=15301/);
-assert.match(sw, /coco-en-forma-v160\.98\.0-human-teacher-r1/);
+assert.match(sw, /coco-en-forma-v160\.98\.0-human-teacher-r2/);
 
 console.log("Eterna trial-expired conversion contract: OK");
