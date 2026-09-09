@@ -45,6 +45,8 @@ vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   stripTrailingStudentQuestion: typeof stripTrailingStudentQuestion === "function" ? stripTrailingStudentQuestion : null,
   isAdaptiveCloseRequest: typeof isAdaptiveCloseRequest === "function" ? isAdaptiveCloseRequest : null,
   adaptiveCloseResponse: typeof adaptiveCloseResponse === "function" ? adaptiveCloseResponse : null,
+  broadExamSubject: typeof broadExamSubject === "function" ? broadExamSubject : null,
+  broadExamIntakePayload: typeof broadExamIntakePayload === "function" ? broadExamIntakePayload : null,
   sanitizePedagogicalState: typeof sanitizePedagogicalState === "function" ? sanitizePedagogicalState : null,
   buildPedagogicalState: typeof buildPedagogicalState === "function" ? buildPedagogicalState : null,
   parseContractV3Input: typeof parseContractV3Input === "function" ? parseContractV3Input : null,
@@ -199,6 +201,17 @@ test("Exam and Practice always receive a concrete initial question", () => {
     api.initialAdaptiveQuestion({ mode: "practice", text: "Quiero practicar divisiones", subject: "Matemáticas", concept: "divisiones", difficulty: 1, questionNumber: 0 }),
     /÷.*\?/,
   );
+});
+
+test("Exam asks for a concrete topic immediately when only a broad subject is provided", () => {
+  assert.equal(api.broadExamSubject("Cuéntame sobre las matemáticas"), "Matemáticas");
+  assert.equal(api.broadExamSubject("Tengo examen de fracciones"), null);
+  const result = api.broadExamIntakePayload("Cuéntame sobre las matemáticas", { turn_index: 0 }, { difficulty: 2 });
+  assert.equal(result?.deterministic_exam_intake, true);
+  assert.equal(result?.verification_status, "needs_clarification");
+  assert.equal(result?.pedagogical_state?.conversation_stage, "clarifying");
+  assert.equal(result?.pedagogical_state?.pending_question, null);
+  assert.match(result?.reply || "", /operaciones, fracciones, decimales, geometría/i);
 });
 
 test("Exam removes an imperative model question when a different canonical check is active", () => {
