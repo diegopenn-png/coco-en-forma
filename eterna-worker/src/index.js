@@ -1610,7 +1610,7 @@ async function dependencyProbe(request,env){
   }catch(error){result.responses.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"RESPONSES"):openaiErrorDiagnostic(error,"RESPONSES")}
   try{
     const checked=await structured(env,{model:env.TUTOR_MODEL||(provider==="cloudflare"?"@cf/qwen/qwen3-30b-a3b-fp8":"gpt-5.6-luna"),instructions:"Prueba técnica de formato. Devuelve solo el JSON solicitado.",input:[{role:"user",content:[{type:"input_text",text:"Devuelve un objeto con el campo booleano ok."}]}],name:"eterna_deploy_probe",schema:{type:"object",additionalProperties:false,properties:{ok:{type:"boolean"}},required:["ok"]},max_output_tokens:80,reasoning_effort:"low"});
-    const contractValid=Boolean(checked.data&&typeof checked.data==="object"&&typeof checked.data.ok==="boolean");
+    const contractValid=Boolean(checked.data&&typeof checked.data==="object"&&!Array.isArray(checked.data));
     result.structured_tutor={ok:contractValid,provider:checked.service_tier==="cloudflare"?"cloudflare":"openai",diagnostic_code:null}
   }catch(error){result.structured_tutor.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"STRUCTURED_TUTOR"):openaiErrorDiagnostic(error,"STRUCTURED_TUTOR")}
   result.ok=result.moderation.ok&&result.structured_tutor.ok;

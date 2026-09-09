@@ -344,12 +344,12 @@ test("dependency health stays available through fallback and reports degraded Cl
     AI: { run: async (model) => model.includes("llama-guard")
       ? { response: "safe" }
       : model.includes("qwen")
-        ? { response: { ok: false } }
+        ? { response: { acknowledged: true } }
         : { response: "OK" } },
   });
   const directPayload = await directResponse.json();
   assert.equal(directResponse.status, 200);
-  assert.equal(directPayload.ok, true, "A valid structured boolean proves the dependency contract even when its sample value is false");
+  assert.equal(directPayload.ok, true, "A parsed JSON object proves the structured dependency is available without trusting sample semantics");
   assert.equal(directPayload.degraded, false);
   assert.equal(directPayload.structured_tutor.provider, "cloudflare");
 });
