@@ -64,7 +64,8 @@ test("the excellence layer removes redundant family presentation without privile
 test("failed Eterna requests keep the student's input ready to retry",()=>{
   const core=read("eterna-v159.js");
   assert.match(core,/if\(rawText\)\{input\.value=rawText/);
-  assert.match(core,/No se pudo verificar · tu pregunta sigue preparada/);
+  assert.match(core,/Tu pregunta sigue preparada para volver a intentarlo/);
+  assert.match(core,/function chatErrorPresentation\(code\)/);
   assert.match(core,/Preparando la foto…/);
   assert.match(core,/No pude preparar la foto · prueba con otra imagen/);
 });
@@ -74,12 +75,12 @@ test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   assert.match(html,/coco-excellence-v160934\.js\?v=160960/);
   assert.match(html,/eterna-v159\.js\?v=160960/);
   assert.match(html,/coco-v144-core\.js\?v=15001/);
-  assert.match(sw,/coco-en-forma-v160\.96\.2-pwa-single-owner-r1/);
+  assert.match(sw,/coco-en-forma-v160\.96\.7-eterna-recovery-r1/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión para abrir /);
   assert.match(core,/#cocoApp input\[type='email'\]/);
-  assert.match(workflow,/frontend 160\.96\.0-full-intelligence-child-safety/);
+  assert.match(workflow,/frontend 160\.96\.7-transparent-recovery/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
   assert.match(workflow,/coco-excellence-v160934\.js\?v=160960&verify=\$\{GITHUB_SHA\}/);
   assert.match(workflow,/grep -F '160\.96\.0-dynamic-daily-missions'/);

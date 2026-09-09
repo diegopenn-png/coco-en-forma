@@ -1,4 +1,4 @@
-name: Deploy Eterna Worker 160.96.6
+name: Deploy Eterna Worker 160.96.7
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.96.6-resilient-tutor-failover
+      EXPECTED_VERSION: 160.96.7-compatible-tutor-recovery
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -83,6 +83,7 @@ jobs:
             --var "SCOPE_REASONING_EFFORT:low" \
             --var "TUTOR_MODEL:gpt-5.6-sol" \
             --var "TUTOR_FALLBACK_MODEL:gpt-5.6-terra" \
+            --var "TUTOR_COMPATIBILITY_MODEL:gpt-5.4-mini" \
             --var "TUTOR_REASONING_EFFORT:high" \
             --var "VERIFIER_MODEL:gpt-5.6-terra" \
             --var "VERIFIER_REASONING_EFFORT:high" \
@@ -120,6 +121,7 @@ jobs:
               && models.scope?.reasoning_effort === "low"
               && models.tutor?.model === "gpt-5.6-sol"
               && models.tutor?.fallback_model === "gpt-5.6-terra"
+              && models.tutor?.compatibility_model === "gpt-5.4-mini"
               && models.tutor?.reasoning_effort === "high"
               && models.verifier?.model === "gpt-5.6-terra"
               && models.verifier?.reasoning_effort === "high"
@@ -136,7 +138,10 @@ jobs:
               && payload.features?.deterministic_exam_intake_v1 === true
               && payload.features?.exam_tutor_recovery_v1 === true
               && payload.features?.structured_request_retry_v1 === true
+              && payload.features?.structured_compatibility_retry_v1 === true
               && payload.features?.tutor_model_failover_v1 === true
+              && payload.features?.tutor_compatibility_model_v1 === true
+              && payload.features?.stable_fact_tutor_recovery_v1 === true
               && payload.features?.scope_model_failover_v1 === true
               && payload.features?.moderation_request_retry_v1 === true;
             if (!valid) {
@@ -152,7 +157,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.96.6 resilient tutor failover" \
+            --message "Eterna 160.96.7 compatible tutor recovery" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -173,6 +178,7 @@ jobs:
                   && models.scope?.reasoning_effort === "low"
                   && models.tutor?.model === "gpt-5.6-sol"
                   && models.tutor?.fallback_model === "gpt-5.6-terra"
+                  && models.tutor?.compatibility_model === "gpt-5.4-mini"
                   && models.tutor?.reasoning_effort === "high"
                   && models.verifier?.model === "gpt-5.6-terra"
                   && models.verifier?.reasoning_effort === "high"
@@ -185,7 +191,10 @@ jobs:
                   && payload.features?.deterministic_exam_intake_v1 === true
                   && payload.features?.exam_tutor_recovery_v1 === true
                   && payload.features?.structured_request_retry_v1 === true
+                  && payload.features?.structured_compatibility_retry_v1 === true
                   && payload.features?.tutor_model_failover_v1 === true
+                  && payload.features?.tutor_compatibility_model_v1 === true
+                  && payload.features?.stable_fact_tutor_recovery_v1 === true
                   && payload.features?.scope_model_failover_v1 === true
                   && payload.features?.moderation_request_retry_v1 === true;
                 process.exit(valid ? 0 : 1);
@@ -203,7 +212,7 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.96.6 health check" \
+              --message "Automatic rollback after failed Eterna 160.96.7 health check" \
               --yes
             exit 1
           fi

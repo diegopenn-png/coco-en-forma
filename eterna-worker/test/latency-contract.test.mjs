@@ -46,6 +46,7 @@ function loadApi(fetchImpl = fetch) {
     structured,
     moderate,
     openaiServiceTier,
+    stableFactTutorRecovery,
     simpleArithmeticInText,
     pendingNumericEquation,
     deterministicArithmeticGuidanceTurn,
@@ -165,6 +166,7 @@ test("full-quality model route is unchanged and paid priority is opt-in", () => 
   const defaults = JSON.parse(JSON.stringify(api.modelConfiguration({})));
   assert.equal(defaults.tutor.model, "gpt-5.6-sol");
   assert.equal(defaults.tutor.fallback_model, "gpt-5.6-terra");
+  assert.equal(defaults.tutor.compatibility_model, "gpt-5.4-mini");
   assert.equal(defaults.scope.fallback_model, "gpt-5.6-terra");
   assert.equal(defaults.tutor.reasoning_effort, "high");
   assert.equal(defaults.verifier.model, "gpt-5.6-terra");
@@ -176,8 +178,10 @@ test("full-quality model route is unchanged and paid priority is opt-in", () => 
 
 test("structured model calls retry a transient HTTP failure", async () => {
   let calls = 0;
-  const api = loadApi(async () => {
+  const payloads = [];
+  const api = loadApi(async (_input, init) => {
     calls += 1;
+    payloads.push(JSON.parse(init.body));
     if (calls === 1) return new Response("temporarily unavailable", { status: 503 });
     return new Response(JSON.stringify({
       output_text: '{"ok":true}',
@@ -203,6 +207,25 @@ test("structured model calls retry a transient HTTP failure", async () => {
 
   assert.equal(calls, 2);
   assert.equal(result.data.ok, true);
+  assert.match(payloads[0].prompt_cache_key, /^coco-eterna:/);
+  assert.equal(payloads[1].prompt_cache_key, undefined);
+  assert.equal(payloads[1].prompt_cache_options, undefined);
+});
+
+test("dinosaur explanations have a verified local recovery when every tutor model is unavailable", () => {
+  const api = loadApi();
+  const recovery = api.stableFactTutorRecovery({
+    text: "Cuéntame sobre los dinosaurios",
+    mode: "explain",
+    modeState: {},
+    subject: "Biología",
+    concept: "dinosaurios",
+  });
+  assert.equal(recovery.subject, "Biología");
+  assert.equal(recovery.needs_clarification, false);
+  assert.match(recovery.reply, /66 millones de años/);
+  assert.match(recovery.reply, /aves actuales son dinosaurios avianos/);
+  assert.equal(recovery.check_question, "¿Qué grupo de dinosaurios sigue existiendo hoy?");
 });
 
 test("moderation retries once before reporting an outage", async () => {
@@ -247,7 +270,8 @@ test("response-ready work is deferred, timed and stored before background persis
 test("tutor and verifier use an explicit stable-prefix cache breakpoint", () => {
   const structuredSource = sourceBetween("function hasExplicitPromptCacheBreakpoint(", "function supabasePublicKey(");
   assert.match(structuredSource, /prompt_cache_options=\{mode:"explicit",ttl:"30m"\}/);
-  assert.match(structuredSource, /prompt_cache_key:/);
+  assert.match(structuredSource, /payload\.prompt_cache_key=/);
+  assert.match(structuredSource, /withoutExplicitPromptCache/);
   const tutorSource = sourceBetween("async function tutor(", "const VERIFY_VERDICTS");
   const verifierSource = sourceBetween("async function verify(", "function normalizeVerifyDecision(");
   assert.match(tutorSource, /prompt_cache_breakpoint:\{mode:"explicit"\}/);
