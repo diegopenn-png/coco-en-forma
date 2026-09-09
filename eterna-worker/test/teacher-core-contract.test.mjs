@@ -59,6 +59,7 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   deterministicAnchoredCheckTurn,
   deterministicConceptCheckTurn,
   disclosedCheckReplacement,
+  fractionExpression,
   deterministicFractionSimplificationTurn,
   synchronousVerificationRequired,
   buildPedagogicalState,
@@ -399,6 +400,10 @@ test("fraction simplification changes to a concrete visual representation", () =
   assert.equal(result.strategy_used, "analogy");
   assert.equal(result.student_answer_assessment, "not_applicable");
   assert.equal(result.check_question, "Si tienes 6 trozos y añades 1, ¿cuántos trozos de los 8 quedan?");
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(api.fractionExpression("Ahora podemos sumar 6/8 y 1/8."))),
+    { left: { n: 6, d: 8 }, right: { n: 1, d: 8 }, op: "+" },
+  );
 });
 
 test("teacher core adapts all Spanish school stages and forbids human impersonation", () => {
@@ -475,6 +480,49 @@ test("full chat routing handles the audit message even when the client labels it
   assert.equal(payload.student_answer_assessment, "not_applicable");
   assert.equal(payload.pedagogical_state.pending_question, pendingState.pending_question);
   assert.equal(payload.mode_state.question_number, modeState.question_number);
+});
+
+test("full chat routing prioritizes visual fraction simplification over a pending answer", async () => {
+  sandbox.moderate = async () => ({ flagged: false, moderation_error: false });
+  sandbox.retrieveCurriculum = async () => [];
+  sandbox.markChatRequest = async () => {};
+  sandbox.bumpUsage = async () => {};
+  sandbox.tutor = async () => { throw new Error("the tutor model must not run"); };
+
+  const fractionState = {
+    ...pendingState,
+    active_topic: "suma de fracciones",
+    active_subject: "Matemáticas",
+    active_concept: "suma de fracciones",
+    pending_question: "¿Cuál es el resultado de sumar 3/4 y 1/8?",
+    pending_question_id: "question:fractions-1",
+    expected_answer_type: "numeric",
+    expected_key_ideas: ["7/8"],
+  };
+  const request = new Request("https://eterna.test/v1/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: "No lo entendí, explícamelo de una forma más fácil.",
+      mode: "explain",
+      student_intent: "answer_check",
+      history: [
+        { role: "user", text: "Explícame cómo sumar 3/4 + 1/8 paso a paso." },
+        { role: "assistant", text: "Convertimos 3/4 en 6/8. Ahora podemos sumar 6/8 y 1/8." },
+      ],
+      pedagogical_state: fractionState,
+      mode_state: modeState,
+    }),
+  });
+  const response = await api.handleChat(request, {}, { user: { id: "student-1", email: "adult@example.test" } });
+  const payload = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.match(payload.reply, /barra de chocolate/i);
+  assert.match(payload.reply, /8 trozos iguales/i);
+  assert.equal(payload.strategy_used, "analogy");
+  assert.equal(payload.check_question, "Si tienes 6 trozos y añades 1, ¿cuántos trozos de los 8 quedan?");
+  assert.equal(payload.student_answer_assessment, "not_applicable");
 });
 
 

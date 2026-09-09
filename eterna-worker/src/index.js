@@ -1,6 +1,6 @@
 import "../../eterna-state-contract-v3.js";
 
-/* ETERNA v160.97.3 · Cloudflare Workers AI + simplificación visual determinista
+/* ETERNA v160.97.4 · Cloudflare Workers AI + simplificación visual prioritaria
  * Release Candidate construido exclusivamente sobre el Worker desplegado 160.9-scope-tutor3.
  * Mantiene Scope Gate + tutor + verifier + vision + speech + transcription + Stripe.
  * Conserva legal, pagos, scope, safety, memoria, límites y pedagogía adaptativa.
@@ -13,7 +13,7 @@ import "../../eterna-state-contract-v3.js";
  */
 const OUT_SCOPE="Soy una IA tutora escolar. Este espacio está centrado en el colegio y el aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.97.3-visual-simplification";
+const VERSION="160.97.4-priority-simplification";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -561,6 +561,7 @@ function turnRelation(text,pedState,history){const s=stripTurnPunctuation(text),
   return"needs_scope"}
 function clientTurnRelationHint(current,intent,directive){
   const i=String(intent||""),d=String(directive||"");
+  if(["confusion_request","simplification_request"].includes(current))return current;
   if(i==="return_topic"||d==="RETURN_TOPIC")return"topic_return_request";
   if(i==="answer_check")return"answer_to_pending";
   if(i==="confused"||d==="CHANGE_STRATEGY")return"confusion_request";
@@ -804,10 +805,10 @@ function disclosedCheckReplacement(question,reply){
   if(fraction)return"Antes de sumar o restar fracciones con distinto denominador, ¿qué necesitamos conseguir primero?";
   return"Sin repetir el resultado, ¿qué operación o regla permite comprobarlo?"
 }
-function fractionExpression(value){const s=normalizeDetectionText(value||""),m=s.match(/(-?\d+)\s*\/\s*(-?\d+)\s*([+\-])\s*(-?\d+)\s*\/\s*(-?\d+)/);if(!m)return null;const left={n:+m[1],d:+m[2]},right={n:+m[4],d:+m[5]};if(!left.d||!right.d||left.n<0||right.n<0||left.n>left.d||right.n>right.d)return null;return{left,right,op:m[3]}}
+function fractionExpression(value){const s=normalizeDetectionText(value||""),symbol=s.match(/(-?\d+)\s*\/\s*(-?\d+)\s*([+\-])\s*(-?\d+)\s*\/\s*(-?\d+)/),words=s.match(/\b(sumar|suma|anadir|añadir|juntar|restar|resta|quitar)\b.{0,90}?(-?\d+)\s*\/\s*(-?\d+)\s*(?:y|con|menos)\s*(-?\d+)\s*\/\s*(-?\d+)/);if(!symbol&&!words)return null;const left=symbol?{n:+symbol[1],d:+symbol[2]}:{n:+words[2],d:+words[3]},right=symbol?{n:+symbol[4],d:+symbol[5]}:{n:+words[4],d:+words[5]},op=symbol?symbol[3]:/^(?:restar|resta|quitar)$/.test(words[1])?"-":"+";if(!left.d||!right.d||left.n<0||right.n<0||left.n>left.d||right.n>right.d)return null;return{left,right,op}}
 function greatestCommonDivisor(a,b){a=Math.abs(a);b=Math.abs(b);while(b){const r=a%b;a=b;b=r}return a||1}
-function deterministicFractionSimplificationTurn({mode,history,pedState,modeState,subject,concept}={}){
-  let expression=null;for(let i=(history||[]).length-1;i>=0&&!expression;i--){const item=history[i];if(item?.role==="user")expression=fractionExpression(item.text)}
+function deterministicFractionSimplificationTurn({text,mode,history,pedState,modeState,subject,concept}={}){
+  let expression=fractionExpression(text);for(let i=(history||[]).length-1;i>=0&&!expression;i--){const item=history[i];expression=fractionExpression(item?.text)}
   if(!expression)expression=fractionExpression([pedState?.active_topic,pedState?.active_concept,pedState?.pending_question].filter(Boolean).join(" "));
   if(!expression)return null;
   const {left,right,op}=expression,common=Math.abs(left.d*right.d)/greatestCommonDivisor(left.d,right.d);if(!Number.isInteger(common)||common<2||common>24)return null;
@@ -1275,7 +1276,7 @@ async function handleChatCore(request,env,auth,event,timings){
     const contract=contractV3(),actionId=contractMeta.requestId||contractMeta.clientTurnId;if(!actionId)return json({error:"ETERNA_REQUEST_ID_REQUIRED",verification_status:"verification_conflict",student_answer_assessment:"not_applicable",mode_state:incomingModeState,pedagogical_state:incomingPedState,activity_state:contractMeta.activityState},400);
     const transitioned=contract?.transitionActivityState?.({...contractMeta.activityState,phase:"WAIT",question_id:incomingPedState.pending_question_id},contract.EVENTS.HINT_USED,{action_id:actionId,expected_mode:mode});guarded.activity_state=transitioned?.ok?transitioned.state:{...contractMeta.activityState,hints_used:contractMeta.activityState.hints_used+1,last_action_id:actionId};return json(guarded)
   }
-  if(!image&&!topicReturnRequest(text,incomingPedState)){const mm=matchMemory(ctx,text);if(mm){deferWork(event,"memory-recall-count",()=>bumpRecall(env,uid,mm));return json({reply:recallReply(mm),verification_status:"verified",subject:mm.subject||null,concept:mm.topic_label||null,help_level:null,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:mm.strategy_key||null,mode_label:MODE_PROFILES[mode].label,mode_state:incomingModeState,pedagogical_state:{...incomingPedState,active_topic:mm.topic_label||incomingPedState.active_topic,active_subject:mm.subject||incomingPedState.active_subject,active_concept:mm.resolved_meaning?`${mm.topic_label} (${mm.resolved_meaning})`:mm.topic_label||incomingPedState.active_concept,conversation_stage:"explaining",turn_index:incomingPedState.turn_index+1},auto_speak:false,memory_recall:true})}}
+  if(!image&&!topicReturnRequest(text,incomingPedState)&&!learningRepairRelation(text)){const mm=matchMemory(ctx,text);if(mm){deferWork(event,"memory-recall-count",()=>bumpRecall(env,uid,mm));return json({reply:recallReply(mm),verification_status:"verified",subject:mm.subject||null,concept:mm.topic_label||null,help_level:null,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:mm.strategy_key||null,mode_label:MODE_PROFILES[mode].label,mode_state:incomingModeState,pedagogical_state:{...incomingPedState,active_topic:mm.topic_label||incomingPedState.active_topic,active_subject:mm.subject||incomingPedState.active_subject,active_concept:mm.resolved_meaning?`${mm.topic_label} (${mm.resolved_meaning})`:mm.topic_label||incomingPedState.active_concept,conversation_stage:"explaining",turn_index:incomingPedState.turn_index+1},auto_speak:false,memory_recall:true})}}
   if(!q.ok){if(q.period==="weekly")deferWork(event,"weekly-limit-notification",()=>notifyWeeklyLimitOnce(env,auth,q));return json({error:q.period==="weekly"?"ETERNA_WEEKLY_LIMIT":"ETERNA_DAILY_LIMIT",limit:q.limit,used:q.used,limit_type:q.period,daily_limit:q.daily_limit,daily_used:q.daily_used,weekly_limit:q.weekly_limit,weekly_used:q.weekly_used,week_start:q.week?.start||null,week_end:q.week?.end||null,reset_date:q.period==="weekly"?(q.week?.next||null):addUsageDays(usageDate(env),1)},429)}if(image&&!q.settings.allow_image_input)return json({error:"ETERNA_IMAGES_DISABLED"},403);
   if(mode==="exam"&&!image&&(startsNewTopic||incomingPedState.turn_index===0)){
     const broadIntake=broadExamIntakePayload(text,incomingPedState,incomingModeState);if(broadIntake){deferWork(event,"exam-topic-intake",()=>Promise.all([markChatRequest(env,uid,q,false),logInteraction(env,uid,{text,image:null,inputSource,scope:"school",verification:"needs_clarification",subject:broadIntake.subject,concept:null,help:0,modelRoute:"deterministic-exam-intake-v1",mode})]));return json(broadIntake)}
@@ -1372,7 +1373,7 @@ async function handleChatCore(request,env,auth,event,timings){
   const academicNeedsSource=!stableSchool&&!/matem/i.test(effectiveSubject||"")&&curriculum.length===0&&!scope.self_contained&&!externalEvidence;
   if(academicNeedsSource){const reply="Quiero ayudarte sin inventar información. Dime con un poco más de precisión qué parte del tema quieres entender o, si estás siguiendo un material concreto, puedes enseñármelo.";deferWork(event,"source-gate",()=>logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"needs_clarification",subject:effectiveSubject,concept:effectiveConcept,help:1,modelRoute:"source-gate",mode,visionConfidence:vision?.confidence}));return json({reply,verification_status:"needs_clarification",subject:effectiveSubject,concept:effectiveConcept,help_level:1,mode_label:MODE_PROFILES[mode].label,mode_state:incomingModeState,pedagogical_state:{...incomingPedState,active_subject:effectiveSubject||incomingPedState.active_subject,active_concept:effectiveConcept||incomingPedState.active_concept,current_mode:mode,conversation_stage:"clarifying",turn_index:incomingPedState.turn_index+1}})}
 
-  const deterministicSimplification=turnRel==="simplification_request"&&/matem/i.test(effectiveSubject||"")?deterministicFractionSimplificationTurn({mode,history,pedState:incomingPedState,modeState:incomingModeState,subject:effectiveSubject,concept:effectiveConcept}):null;
+  const explicitSimplification=learningRepairRelation(text)==="simplification_request"||clientStudentIntent==="simplify"||clientTutorDirective==="SIMPLIFY",deterministicSimplification=explicitSimplification?deterministicFractionSimplificationTurn({text,mode,history,pedState:incomingPedState,modeState:incomingModeState,subject:effectiveSubject||"Matemáticas",concept:effectiveConcept||"operaciones con fracciones"}):null;
   let t;if(deterministicSimplification)t={data:deterministicSimplification,usage:{},model_route:"deterministic-fraction-simplification-v1"};else try{t=await tutor(env,{text,image,mode,history,ctx,scope:{...scope,subject:effectiveSubject,concept:effectiveConcept},curriculum,mathCheck,vision,externalEvidence,modeState:incomingModeState,practiceTarget,pedState:incomingPedState,turnRel,factAnchor,directKnowledge,repetitionGuard:clientRepetitionGuard,answerAnchor})}catch(error){
     if(mode==="exam"&&turnRel==="new_topic"){
       const subject=effectiveSubject||"la asignatura",reply=`He entendido que quieres preparar ${subject}. Dime el tema o la unidad concreta que entra en el examen y empezaré con una pregunta cada vez.`,pedagogical_state={...incomingPedState,active_subject:effectiveSubject||incomingPedState.active_subject,active_concept:null,current_mode:mode,pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],student_answer_assessment:"not_applicable",conversation_stage:"clarifying",turn_index:Math.min(500,Number(incomingPedState.turn_index||0)+1),last_tutor_act:"ask_open",unresolved_question:reply,expected_student_act:"clarify",last_question_type:"none",next_teaching_goal:"concretar el tema del examen",last_student_intent:"new_topic"};
@@ -1537,7 +1538,7 @@ function healthFeatures(env){return {
   pedagogical_state_contract_v3:true,question_id_stale_guard:true,transient_request_replay:true,
   feedback_entitlement_gate:true,explicit_understood_signal:true,
   teacher_core_v1:true,situational_core_v1:true,current_message_priority_v1:true,answer_contract_engine_v1:true,coherence_progression_v1:true,
-  child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,pedagogical_simplification_guard_v1:true,non_trivial_microcheck_v1:true,deterministic_fraction_simplification_v1:true,
+  child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,pedagogical_simplification_guard_v1:true,non_trivial_microcheck_v1:true,deterministic_fraction_simplification_v1:true,priority_fraction_simplification_v1:true,
   full_intelligence_child_safety_v1:true,helpful_safe_completion_v1:true,suspended_topic_resume_v1:true,mode_contracts_v2:true,
   flagship_tutor_model_v1:true,independent_balanced_verifier_v1:true,configurable_reasoning_effort_v1:true,strict_structured_outputs_v1:true,
   parallel_chat_preflight_v1:true,deferred_chat_persistence_v1:true,curriculum_warm_cache_v1:true,
