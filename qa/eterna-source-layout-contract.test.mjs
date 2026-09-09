@@ -8,29 +8,33 @@ test("Eterna has one canonical Worker entrypoint", () => {
   const preview = readFileSync(".github/workflows/eterna-authenticated-preview.yml", "utf8");
 
   assert.match(wrangler, /"main"\s*:\s*"src\/index\.js"/);
-  assert.match(wrangler, /"TUTOR_MODEL"\s*:\s*"gpt-5\.6-sol"/);
-  assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"gpt-5\.6-terra"/);
+  assert.match(wrangler, /"ai"\s*:\s*\{\s*"binding"\s*:\s*"AI"/);
+  assert.match(wrangler, /"AI_PROVIDER"\s*:\s*"cloudflare"/);
+  assert.match(wrangler, /"TUTOR_MODEL"\s*:\s*"@cf\/meta\/llama-3\.3-70b-instruct-fp8-fast"/);
+  assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.96\.8-moderation-resilience/);
+  assert.match(worker, /160\.97\.0-cloudflare-ai-primary/);
   assert.match(worker, /reasoning:\{effort\}/);
   assert.match(worker, /flagship_tutor_model_v1:true/);
   assert.match(worker, /!image&&!topicReturnRequest\(text,incomingPedState\)/);
   assert.match(worker, /model_configuration:modelConfiguration\(env\)/);
-  assert.match(preview, /--var "TUTOR_MODEL:gpt-5\.6-sol"/);
-  assert.match(preview, /models\.tutor\?\.model === "gpt-5\.6-sol"/);
-  assert.match(preview, /models\.verifier\?\.model === "gpt-5\.6-terra"/);
+  assert.match(preview, /--var "AI_PROVIDER:cloudflare"/);
+  assert.match(preview, /--var "TUTOR_MODEL:@cf\/meta\/llama-3\.3-70b-instruct-fp8-fast"/);
+  assert.match(preview, /models\.tutor\?\.model === "@cf\/meta\/llama-3\.3-70b-instruct-fp8-fast"/);
+  assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
 
-test("the 160.96 production gate verifies the exact model route before release", () => {
+test("the 160.97 production gate verifies the exact model route before release", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-160960.yml", "utf8");
   assert.match(production, /\.github\/release-eterna-160960/);
-  assert.match(production, /EXPECTED_VERSION: 160\.96\.8-moderation-resilience/);
-  assert.match(production, /--var "TUTOR_MODEL:gpt-5\.6-sol"/);
+  assert.match(production, /EXPECTED_VERSION: 160\.97\.0-cloudflare-ai-primary/);
+  assert.match(production, /--var "AI_PROVIDER:cloudflare"/);
+  assert.match(production, /--var "TUTOR_MODEL:@cf\/meta\/llama-3\.3-70b-instruct-fp8-fast"/);
   assert.match(production, /models\.tutor\?\.reasoning_effort === "high"/);
-  assert.match(production, /models\.verifier\?\.model === "gpt-5\.6-terra"/);
+  assert.match(production, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(production, /payload\.features\?\.adaptive_sync_verification_v1 === true/);
   assert.match(production, /payload\.features\?\.asynchronous_verifier_audit_v1 === true/);
   assert.match(production, /payload\.features\?\.deterministic_exam_intake_v1 === true/);
