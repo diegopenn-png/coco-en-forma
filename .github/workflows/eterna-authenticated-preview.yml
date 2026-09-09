@@ -86,11 +86,12 @@ jobs:
             --name coco-eterna-v159 \
             --keep-vars \
             --var "AI_PROVIDER:cloudflare" \
-            --var "ENABLE_OPENAI_FALLBACK:false" \
+            --var "ENABLE_OPENAI_FALLBACK:true" \
+            --var "OPENAI_FALLBACK_MODEL:gpt-5.6-luna" \
             --var "SCOPE_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "SCOPE_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct" \
             --var "SCOPE_REASONING_EFFORT:low" \
-            --var "TUTOR_MODEL:@cf/meta/llama-3.3-70b-instruct-fp8-fast" \
+            --var "TUTOR_MODEL:@cf/qwen/qwen3-30b-a3b-fp8" \
             --var "TUTOR_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "TUTOR_COMPATIBILITY_MODEL:@cf/meta/llama-3.1-8b-instruct" \
             --var "TUTOR_REASONING_EFFORT:high" \
@@ -151,7 +152,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.97.4-priority-simplification' eterna-worker/src/index.js >/dev/null
+          grep -F '160.97.5-ai-budget-resilience' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -248,13 +249,13 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.97.4-priority-simplification"
+              && payload.version === "160.97.5-ai-budget-resilience"
               && payload.ai_provider === "cloudflare"
               && payload.cloudflare_ai_configured === true
               && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.scope?.fallback_model === "@cf/meta/llama-3.1-8b-instruct"
               && models.scope?.reasoning_effort === "low"
-              && models.tutor?.model === "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+              && models.tutor?.model === "@cf/qwen/qwen3-30b-a3b-fp8"
               && models.tutor?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.tutor?.compatibility_model === "@cf/meta/llama-3.1-8b-instruct"
               && models.tutor?.reasoning_effort === "high"
@@ -265,6 +266,9 @@ jobs:
               && models.speech?.transcribe_model === "@cf/openai/whisper-large-v3-turbo"
               && models.speech?.tts_model === "@cf/myshell-ai/melotts"
               && models.web_search?.enabled === false
+              && models.provider_fallback?.enabled === true
+              && models.provider_fallback?.configured === true
+              && models.provider_fallback?.model === "gpt-5.6-luna"
               && payload.features?.structured_request_retry_v1 === true
               && payload.features?.structured_compatibility_retry_v1 === true
               && payload.features?.tutor_model_failover_v1 === true
@@ -273,7 +277,10 @@ jobs:
               && payload.features?.scope_model_failover_v1 === true
               && payload.features?.moderation_request_retry_v1 === true
               && payload.features?.moderation_diagnostics_v1 === true
-              && payload.features?.degraded_safe_academic_moderation_v1 === true;
+              && payload.features?.degraded_safe_academic_moderation_v1 === true
+              && payload.features?.openai_automatic_fallback_v2 === true
+              && payload.features?.normalized_provider_usage_v1 === true
+              && payload.features?.fallback_aware_dependency_probe_v1 === true;
             if (!valid) {
               console.error("Unexpected Eterna model configuration", payload);
               process.exit(1);
@@ -284,8 +291,8 @@ jobs:
           echo "Sanitized Cloudflare AI dependency probe: ${dependency_payload}"
           node -e '
             const payload = JSON.parse(process.argv[1]);
-            if (payload.version !== "160.97.4-priority-simplification" || payload.provider !== "cloudflare") process.exit(1);
-            for (const name of ["moderation", "responses"]) {
+            if (payload.ok !== true || payload.version !== "160.97.5-ai-budget-resilience" || payload.provider !== "cloudflare") process.exit(1);
+            for (const name of ["moderation", "structured_tutor"]) {
               const item = payload[name] || {};
               if (item.ok !== true) process.exit(1);
             }
@@ -297,7 +304,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.96.7-transparent-recovery · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.97.4-priority-simplification"
+            echo "- Expected versions: frontend 160.96.7-transparent-recovery · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.97.5-ai-budget-resilience"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents

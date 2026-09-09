@@ -46,6 +46,8 @@ function loadApi(fetchImpl = fetch) {
     modelConfiguration,
     structured,
     moderate,
+    dependencyProbe,
+    normalizeTokenUsage,
     openaiServiceTier,
     stableFactTutorRecovery,
     simpleArithmeticInText,
@@ -220,7 +222,7 @@ test("Cloudflare is the primary structured provider when its binding is configur
     AI_PROVIDER: "cloudflare",
     AI: { run: async (model, payload) => {
       calls.push({ model, payload });
-      return { response: { ok: true }, usage: { input_tokens: 4, output_tokens: 2 } };
+      return { response: { ok: true }, usage: { prompt_tokens: 4, completion_tokens: 2 } };
     } },
   };
   const result = await api.structured(env, {
@@ -233,8 +235,41 @@ test("Cloudflare is the primary structured provider when its binding is configur
   });
   assert.equal(result.data.ok, true);
   assert.equal(result.service_tier, "cloudflare");
+  assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 4, output_tokens: 2 });
   assert.equal(calls.length, 1);
   assert.equal(calls[0].payload.response_format.type, "json_schema");
+});
+
+test("Cloudflare quota exhaustion switches structured output to the low-cost OpenAI fallback", async () => {
+  let cloudflareCalls = 0;
+  const openaiPayloads = [];
+  const api = loadApi(async (_input, init) => {
+    openaiPayloads.push(JSON.parse(init.body));
+    return new Response(JSON.stringify({
+      output_text: '{"ok":true}',
+      usage: { input_tokens: 7, output_tokens: 3 },
+      service_tier: "default",
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+  });
+  const result = await api.structured({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_FALLBACK_MODEL: "gpt-5.6-luna",
+    OPENAI_API_KEY: "test-key",
+    AI: { run: async () => { cloudflareCalls += 1; throw new Error("Workers AI neuron quota exceeded"); } },
+  }, {
+    model: "@cf/qwen/qwen3-30b-a3b-fp8",
+    input: [{ role: "user", content: [{ type: "input_text", text: "test" }] }],
+    instructions: "Return the schema.",
+    name: "quota_fallback_test",
+    schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"] },
+    max_output_tokens: 100,
+  });
+  assert.equal(cloudflareCalls, 1, "A known quota error must not be retried against the exhausted provider");
+  assert.equal(openaiPayloads.length, 1);
+  assert.equal(openaiPayloads[0].model, "gpt-5.6-luna");
+  assert.equal(result.data.ok, true);
+  assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 7, output_tokens: 3 });
 });
 
 test("Cloudflare Guard moderates ordinary school text without OpenAI", async () => {
@@ -248,6 +283,59 @@ test("Cloudflare Guard moderates ordinary school text without OpenAI", async () 
   assert.equal(calls[0].model, "@cf/meta/llama-guard-3-8b");
 });
 
+test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", async () => {
+  let cloudflareCalls = 0;
+  let openaiCalls = 0;
+  const api = loadApi(async () => {
+    openaiCalls += 1;
+    return new Response(JSON.stringify({ results: [{ flagged: false }] }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  });
+  const result = await api.moderate({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_API_KEY: "test-key",
+    AI: { run: async () => { cloudflareCalls += 1; throw new Error("Workers AI neuron quota exceeded"); } },
+  }, "Explícame la germinación", null);
+  assert.equal(cloudflareCalls, 1);
+  assert.equal(openaiCalls, 1);
+  assert.equal(result.flagged, false);
+  assert.equal(result.provider, "openai");
+});
+
+test("dependency health stays available through fallback and reports degraded Cloudflare", async () => {
+  const api = loadApi(async (input) => {
+    if (String(input).endsWith("/moderations")) {
+      return new Response(JSON.stringify({ results: [{ flagged: false }] }), { status: 200, headers: { "Content-Type": "application/json" } });
+    }
+    return new Response(JSON.stringify({
+      output_text: '{"ok":true}',
+      usage: { input_tokens: 5, output_tokens: 2 },
+      service_tier: "default",
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+  });
+  const response = await api.dependencyProbe(new Request("https://eterna.test/health/dependencies", {
+    headers: { Authorization: "Bearer probe-secret" },
+  }), {
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_FALLBACK_MODEL: "gpt-5.6-luna",
+    OPENAI_API_KEY: "test-key",
+    DEPLOY_PROBE_TOKEN: "probe-secret",
+    TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async () => { throw new Error("Workers AI neuron quota exceeded"); } },
+  });
+  const payload = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(payload.ok, true);
+  assert.equal(payload.degraded, true);
+  assert.equal(payload.responses.ok, false);
+  assert.equal(payload.moderation.provider, "openai");
+  assert.equal(payload.structured_tutor.provider, "openai");
+});
+
 test("Cloudflare routes every photographed task through the vision model", async () => {
   const calls = [];
   const api = loadApi();
@@ -256,7 +344,7 @@ test("Cloudflare routes every photographed task through the vision model", async
     VISION_MODEL: "@cf/meta/llama-3.2-11b-vision-instruct",
     AI: { run: async (model, payload) => { calls.push({ model, payload }); return { response: { ok: true } }; } },
   }, {
-    model: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    model: "@cf/qwen/qwen3-30b-a3b-fp8",
     input: [{ role: "user", content: [
       { type: "input_text", text: "Analiza la ficha" },
       { type: "input_image", image_url: "data:image/png;base64,AA==" },
