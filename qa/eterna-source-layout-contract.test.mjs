@@ -12,7 +12,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"gpt-5\.6-terra"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.96\.6-resilient-tutor-failover/);
+  assert.match(worker, /160\.96\.7-compatible-tutor-recovery/);
   assert.match(worker, /reasoning:\{effort\}/);
   assert.match(worker, /flagship_tutor_model_v1:true/);
   assert.match(worker, /!image&&!topicReturnRequest\(text,incomingPedState\)/);
@@ -27,7 +27,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
 test("the 160.96 production gate verifies the exact model route before release", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-160960.yml", "utf8");
   assert.match(production, /\.github\/release-eterna-160960/);
-  assert.match(production, /EXPECTED_VERSION: 160\.96\.6-resilient-tutor-failover/);
+  assert.match(production, /EXPECTED_VERSION: 160\.96\.7-compatible-tutor-recovery/);
   assert.match(production, /--var "TUTOR_MODEL:gpt-5\.6-sol"/);
   assert.match(production, /models\.tutor\?\.reasoning_effort === "high"/);
   assert.match(production, /models\.verifier\?\.model === "gpt-5\.6-terra"/);
@@ -36,7 +36,9 @@ test("the 160.96 production gate verifies the exact model route before release",
   assert.match(production, /payload\.features\?\.deterministic_exam_intake_v1 === true/);
   assert.match(production, /payload\.features\?\.exam_tutor_recovery_v1 === true/);
   assert.match(production, /payload\.features\?\.structured_request_retry_v1 === true/);
+  assert.match(production, /payload\.features\?\.structured_compatibility_retry_v1 === true/);
   assert.match(production, /payload\.features\?\.tutor_model_failover_v1 === true/);
+  assert.match(production, /payload\.features\?\.stable_fact_tutor_recovery_v1 === true/);
   assert.match(production, /payload\.features\?\.scope_model_failover_v1 === true/);
   assert.match(production, /payload\.features\?\.moderation_request_retry_v1 === true/);
   assert.match(production, /wrangler versions deploy/);
@@ -71,7 +73,7 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.96\.2-pwa-single-owner-r1/);
+  assert.match(serviceWorker, /160\.96\.7-eterna-recovery-r1/);
   assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
 });
@@ -85,4 +87,14 @@ test("Eterna start voice actions use the same modern microphone icon as the comp
   assert.match(core, /M12 14\.75a3\.75 3\.75/);
   assert.match(core, /\["voice","Decir el tema por voz","Yo lo transcribo"\]/);
   assert.doesNotMatch(core, /🎙️ Decir el tema por voz/);
+});
+
+test("Eterna preserves recoverable questions while showing the actual failure category", () => {
+  const core = readFileSync("eterna-v159.js", "utf8");
+  assert.match(core, /function chatErrorPresentation\(code\)/);
+  assert.match(core, /STUDENT_PROFILE_REQUIRED:\{message:/);
+  assert.match(core, /ETERNA_LEGAL_ACCEPTANCE_REQUIRED:\{message:/);
+  assert.match(core, /ETERNA_BACKEND_ERROR:\{message:/);
+  assert.match(core, /if\(data&&data\.reply\)\{var recovered=applyChatResponse/);
+  assert.doesNotMatch(core, /Ahora no puedo comprobar esta tarea con suficiente seguridad/);
 });

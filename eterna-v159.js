@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.96.0-full-intelligence-child-safety";
+  var VERSION="160.96.7-transparent-recovery";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -735,6 +735,19 @@
     return r
   }
 
+  function chatErrorPresentation(code){
+    var errors={
+      ETERNA_ENDPOINT_NOT_CONFIGURED:{message:"Eterna todavía necesita que configures su servicio.",status:"Servicio sin configurar"},
+      ETERNA_DAILY_LIMIT:{message:"Has alcanzado el límite familiar de consultas de Eterna por hoy. Un adulto puede revisarlo en Zona familiar.",status:"Límite diario alcanzado"},
+      ETERNA_WEEKLY_LIMIT:{message:"Has alcanzado el límite familiar de consultas de esta semana. Un adulto puede revisarlo en Zona familiar.",status:"Límite semanal alcanzado"},
+      STUDENT_PROFILE_REQUIRED:{message:"Falta configurar el curso y la comunidad autónoma antes de continuar.",status:"Falta configurar el curso"},
+      ETERNA_LEGAL_ACCEPTANCE_REQUIRED:{message:"Un adulto debe revisar y aceptar la autorización de Eterna en Zona familiar.",status:"Autorización familiar necesaria"},
+      UNAUTHORIZED:{message:"La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.",status:"Sesión caducada"},
+      ETERNA_BACKEND_ERROR:{message:"El servicio de Eterna ha tenido un fallo temporal. Tu pregunta sigue preparada para volver a intentarlo.",status:"Servicio temporalmente no disponible"},
+      ETERNA_STALE_RESPONSE:{message:"La actividad cambió mientras llegaba la respuesta. Tu pregunta sigue preparada para enviarla otra vez.",status:"Actividad actualizada"}
+    };return errors[code]||{message:"Eterna no ha podido completar la respuesta. Tu pregunta sigue preparada para volver a intentarlo.",status:"Respuesta no completada"}
+  }
+
   function historyForApi(){return state.history.slice(-8).map(function(m){return{role:m.role,text:m.api_text||m.text,check_question:m.meta&&m.meta.check_question?m.meta.check_question:null,strategy_used:m.meta&&m.meta.strategy_used?m.meta.strategy_used:null,tutor_act:m.meta&&m.meta.tutor_act?m.meta.tutor_act:null,expected_student_act:m.meta&&m.meta.expected_student_act?m.meta.expected_student_act:null}})}
 
   function legacyActivityFromResponse(data,context){var c=stateContract(),before=context.activity,ms=data&&data.mode_state&&typeof data.mode_state==="object"?data.mode_state:{},ps=data&&data.pedagogical_state&&typeof data.pedagogical_state==="object"?data.pedagogical_state:{},question=cleanText(data&&data.check_question||ps.pending_question||""),qid=ps.pending_question_id||data&&data.question_id||null;if(question&&!c.validOpaqueId(qid))qid=c.resolveQuestionId(before,{previous_question:null,question:question});var assessment=String(data&&data.student_answer_assessment||"not_applicable");return c.sanitizeActivityState({contract_version:3,session_id:before.session_id,mode:context.mode,phase:qid?"WAIT":assessment!=="not_applicable"?"NEXT":"ASK",question_id:qid,practice_target:data&&data.practice_target||before.practice_target,question_number:ms.question_number==null?before.question_number:ms.question_number,correct_count:ms.correct_count==null?before.correct_count:ms.correct_count,partial_count:ms.partial_count==null?before.partial_count:ms.partial_count,incorrect_count:ms.incorrect_count==null?before.incorrect_count:ms.incorrect_count,difficulty:ms.difficulty==null?before.difficulty:ms.difficulty,hints_used:before.hints_used,last_action_id:context.client_turn_id},{mode:context.mode,session_id:before.session_id})}
@@ -771,15 +784,16 @@
       var r=await api("/v1/chat",requestOptions),data=await safeJson(r);
       if(!r.ok){
         if(r.status===402||data&&data.error==="ETERNA_SUBSCRIPTION_REQUIRED"){state.dataLoadedAt=0;await loadData(true);render();return}
-        if(data&&data.error==="ETERNA_DAILY_LIMIT")throw new Error("ETERNA_DAILY_LIMIT");throw new Error(data&&data.error?data.error:"No se pudo obtener respuesta.")
+        if(data&&data.reply){var recovered=applyChatResponse(data,context);if(recovered.applied||recovered.duplicate)return}
+        throw new Error(data&&data.error?data.error:"ETERNA_RESPONSE_FAILED")
       }
       var applied=applyChatResponse(data,context);if(!applied.applied&&!applied.duplicate)throw new Error("ETERNA_STALE_RESPONSE")
     }catch(e){
       if(e&&e.name==="AbortError"||context.epoch!==state.activityEpoch)return;
       if(window.__ETERNA_VOICE_DIALOG_ACTIVE__===true){window.__ETERNA_VOICE_DIALOG_ACTIVE__=false;announceVoiceState("idle")}
       renderConversation(o.querySelector("[data-et-chat]"));
-      var msg=e&&e.message==="ETERNA_ENDPOINT_NOT_CONFIGURED"?"Eterna todavía necesita que configures su Worker.":e&&e.message==="ETERNA_DAILY_LIMIT"?"Has alcanzado el límite familiar de consultas de Eterna por hoy. Un adulto puede revisarlo en Zona familiar.":"Ahora no puedo comprobar esta tarea con suficiente seguridad. Prueba de nuevo dentro de un momento.";
-      appendMessage("assistant",msg,{verification_status:"needs_clarification"},true,false);if(rawText){input.value=rawText;state.inputSource=source==="voice"?"voice":"text"}setStatus(e&&e.message==="ETERNA_DAILY_LIMIT"?"Límite diario alcanzado":"No se pudo verificar · tu pregunta sigue preparada","warn")
+      var presentation=chatErrorPresentation(e&&e.message||"ETERNA_RESPONSE_FAILED");
+      appendMessage("assistant",presentation.message,{verification_status:"needs_clarification"},true,false);if(rawText){input.value=rawText;state.inputSource=source==="voice"?"voice":"text"}setStatus(presentation.status,"warn")
     }finally{if(state.activeRequest===context){state.activeRequest=null;state.busy=false;input.disabled=false;syncSendAvailability();input.focus()}}
   }
 

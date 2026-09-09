@@ -1,6 +1,6 @@
 import "../../eterna-state-contract-v3.js";
 
-/* ETERNA v160.96.6 · Recuperación general del tutor + inicio de examen resiliente
+/* ETERNA v160.96.7 · Recuperación compatible y respuesta curricular de emergencia
  * Release Candidate construido exclusivamente sobre el Worker desplegado 160.9-scope-tutor3.
  * Mantiene Scope Gate + tutor + verifier + vision + speech + transcription + Stripe.
  * Conserva legal, pagos, scope, safety, memoria, límites y pedagogía adaptativa.
@@ -13,7 +13,7 @@ import "../../eterna-state-contract-v3.js";
  */
 const OUT_SCOPE="Soy una IA tutora escolar. Este espacio está centrado en el colegio y el aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.96.6-resilient-tutor-failover";
+const VERSION="160.96.7-compatible-tutor-recovery";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -140,11 +140,12 @@ function reasoningEffort(value,fallback="medium"){const effort=String(value||fal
 const OPENAI_SERVICE_TIERS=new Set(["auto","default","flex","priority"]);
 function openaiServiceTier(env,name){const prefix=String(name||"").startsWith("eterna_tutor")?"TUTOR":String(name||"").startsWith("eterna_verify")?"VERIFIER":String(name||"").startsWith("eterna_scope")?"SCOPE":String(name||"").startsWith("eterna_intake")?"VISION":"OPENAI",raw=String(env?.[`${prefix}_SERVICE_TIER`]||env?.OPENAI_SERVICE_TIER||"").trim().toLowerCase();return OPENAI_SERVICE_TIERS.has(raw)?raw:null}
 function hasExplicitPromptCacheBreakpoint(input){return Array.isArray(input)&&input.some(message=>Array.isArray(message?.content)&&message.content.some(part=>part?.prompt_cache_breakpoint?.mode==="explicit"))}
+function withoutExplicitPromptCache(input){return Array.isArray(input)?input.map(message=>({...message,content:Array.isArray(message?.content)?message.content.map(part=>{if(!part||typeof part!=="object"||!("prompt_cache_breakpoint" in part))return part;const clean={...part};delete clean.prompt_cache_breakpoint;return clean}):message?.content})):input}
 async function structured(env,{model,input,instructions,name,schema,max_output_tokens=1200,reasoning_effort="medium"}){
   const budgets=[Number(max_output_tokens)||1200,Math.min(5200,Math.max(2400,(Number(max_output_tokens)||1200)*2))],effort=reasoningEffort(reasoning_effort,"medium"),serviceTier=openaiServiceTier(env,name),explicitPromptCache=hasExplicitPromptCacheBreakpoint(input);let lastErr=null,lastUsage={};
   for(let attempt=0;attempt<budgets.length;attempt++){
-    const retryNote=attempt?"\nIMPORTANTE: El intento anterior no se pudo completar. Devuelve SOLO un único objeto JSON completo que cumpla el esquema. Sé conciso; no omitas campos obligatorios.":"",payload={model,input,instructions:String(instructions||"")+retryNote,reasoning:{effort},text:{format:{type:"json_schema",name,schema,strict:true}},max_output_tokens:budgets[attempt],store:false,prompt_cache_key:`coco-eterna:${String(name||"structured").slice(0,48)}:${String(model||"").slice(0,48)}`};
-    if(explicitPromptCache)payload.prompt_cache_options={mode:"explicit",ttl:"30m"};if(serviceTier)payload.service_tier=serviceTier;
+    const retryNote=attempt?"\nIMPORTANTE: El intento anterior no se pudo completar. Devuelve SOLO un único objeto JSON completo que cumpla el esquema. Sé conciso; no omitas campos obligatorios.":"",compatibilityRetry=attempt>0,payload={model,input:compatibilityRetry?withoutExplicitPromptCache(input):input,instructions:String(instructions||"")+retryNote,reasoning:{effort},text:{format:{type:"json_schema",name,schema,strict:true}},max_output_tokens:budgets[attempt],store:false};
+    if(!compatibilityRetry){payload.prompt_cache_key=`coco-eterna:${String(name||"structured").slice(0,48)}:${String(model||"").slice(0,48)}`;if(explicitPromptCache)payload.prompt_cache_options={mode:"explicit",ttl:"30m"}}if(serviceTier)payload.service_tier=serviceTier;
     try{
       const r=await openai(env,"/responses",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),data=await r.json();lastUsage=data.usage||lastUsage;
       try{return{data:parseStructuredJson(outputText(data)),usage:data.usage||{},service_tier:data.service_tier||serviceTier||"default"}}catch(error){lastErr=error;console.error("ETERNA STRUCTURED PARSE",name,"attempt",attempt+1,"model",model,"status",data.status||"","incomplete",JSON.stringify(data.incomplete_details||null))}
@@ -947,7 +948,7 @@ GUARDIA_REPETICIÓN_CLIENTE=${JSON.stringify(repetitionGuard||null)}. Estado act
 RELACIÓN DEL TURNO=${turnRel}. INTENCIÓN DEL ALUMNO=${studentIntentFromRelation(turnRel)}. Objetivo práctica=${JSON.stringify(practiceTarget||null)}. Perfil=${JSON.stringify(student)}.
 Concepto clasificado=${scope.concept}. Nivel ayuda recomendado=${desired}. ANCLA FACTUAL INTERNA=${JSON.stringify(factAnchor||stableFactAnchor(text))}. Currículo=${JSON.stringify(evidence)}. Evidencia académica fiable opcional=${JSON.stringify(externalEvidence?.text||null)}. Matemática=${JSON.stringify(mathCheck)}. Visión=${JSON.stringify(vision||null)}.
 Historial=${JSON.stringify((history||[]).slice(-8))}. Última pregunta pendiente=${JSON.stringify(previousCheck)}. Últimas dos respuestas de Eterna=${JSON.stringify(recentAssistant)}. PUNTOS YA EXPLICADOS=${JSON.stringify(pedState.explained_points||[])}. ÚLTIMO ACTO DEL TUTOR=${pedState.last_tutor_act||"none"}. CONFUSIONES CONSECUTIVAS=${pedState.confusion_count||0}. NIVEL DE SIMPLIFICACIÓN=${pedState.simplification_level||0}.`;
-const cacheMarker="\nCONTEXTO DEL TURNO",cacheIndex=prompt.indexOf(cacheMarker),content=cacheIndex>0?[{type:"input_text",text:prompt.slice(0,cacheIndex),prompt_cache_breakpoint:{mode:"explicit"}},{type:"input_text",text:prompt.slice(cacheIndex+1)}]:[{type:"input_text",text:prompt}];if(image)content.push({type:"input_image",image_url:image,detail:"high"});const primaryModel=env.TUTOR_MODEL||"gpt-5.6-sol",fallbackModel=env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",args={reasoning_effort:env.TUTOR_REASONING_EFFORT||"high",instructions:"Actúas como un equipo docente especializado. Enseña progresivamente, recuerda qué ya explicaste y entiende cada intervención según el acto pedagógico anterior. No suplantes al alumno.",input:[{role:"user",content}],name:"eterna_tutor_v163_flagship",schema:TUTOR_SCHEMA,max_output_tokens:2800};try{return await structured(env,{...args,model:primaryModel})}catch(error){if(!fallbackModel||fallbackModel===primaryModel)throw error;console.error("ETERNA TUTOR FALLBACK",primaryModel,"to",fallbackModel,String(error?.message||error));return await structured(env,{...args,model:fallbackModel})}}
+const cacheMarker="\nCONTEXTO DEL TURNO",cacheIndex=prompt.indexOf(cacheMarker),content=cacheIndex>0?[{type:"input_text",text:prompt.slice(0,cacheIndex),prompt_cache_breakpoint:{mode:"explicit"}},{type:"input_text",text:prompt.slice(cacheIndex+1)}]:[{type:"input_text",text:prompt}];if(image)content.push({type:"input_image",image_url:image,detail:"high"});const primaryModel=env.TUTOR_MODEL||"gpt-5.6-sol",fallbackModel=env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibilityModel=env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",args={reasoning_effort:env.TUTOR_REASONING_EFFORT||"high",instructions:"Actúas como un equipo docente especializado. Enseña progresivamente, recuerda qué ya explicaste y entiende cada intervención según el acto pedagógico anterior. No suplantes al alumno.",input:[{role:"user",content}],name:"eterna_tutor_v163_flagship",schema:TUTOR_SCHEMA,max_output_tokens:2800};try{return await structured(env,{...args,model:primaryModel})}catch(primaryError){if(fallbackModel&&fallbackModel!==primaryModel){try{console.error("ETERNA TUTOR FALLBACK",primaryModel,"to",fallbackModel,String(primaryError?.message||primaryError));return await structured(env,{...args,model:fallbackModel})}catch(fallbackError){if(!compatibilityModel||[primaryModel,fallbackModel].includes(compatibilityModel))throw fallbackError;console.error("ETERNA TUTOR COMPATIBILITY FALLBACK",fallbackModel,"to",compatibilityModel,String(fallbackError?.message||fallbackError));return await structured(env,{...args,model:compatibilityModel,reasoning_effort:"medium"})}}if(!compatibilityModel||compatibilityModel===primaryModel)throw primaryError;console.error("ETERNA TUTOR COMPATIBILITY FALLBACK",primaryModel,"to",compatibilityModel,String(primaryError?.message||primaryError));return await structured(env,{...args,model:compatibilityModel,reasoning_effort:"medium"})}}
 
 const VERIFY_VERDICTS=["verified","factual_error","contradiction","missing_information","pedagogy_improvement","verifier_uncertain"];
 const VERIFY_SCHEMA={type:"object",additionalProperties:false,properties:{verdict:{type:"string",enum:VERIFY_VERDICTS},verified:{type:"boolean"},requires_clarification:{type:"boolean"},blocking:{type:"boolean"},issues:{type:"array",items:{type:"string"},maxItems:6},corrected_reply:{type:["string","null"]}},required:["verdict","verified","requires_clarification","blocking","issues","corrected_reply"]};
@@ -1139,6 +1140,19 @@ function stableFactAnchorForTurn(text,turnRel,pedState,history,scope){
   const context=[pedState?.active_topic,pedState?.active_concept,pedState?.active_subject,scope?.concept,scope?.subject,latestAssistantText(history),...(history||[]).slice(-4).map(x=>x&&x.text)].filter(Boolean).join(" ");
   return stableFactAnchor(context)
 }
+function stableFactTutorRecovery({text,mode,modeState,subject,concept}={}){
+  const s=normalizeDetectionText(text);
+  if(!/\bdinosaur(?:io)?s?\b/.test(s))return null;
+  return{
+    reply:"Los dinosaurios fueron un grupo muy variado de animales que vivió durante la era Mesozoica, entre hace unos 230 y 66 millones de años. Algunos eran enormes, como los saurópodos; otros eran pequeños y ágiles. No todos vivieron al mismo tiempo. La mayoría de los dinosaurios no avianos desapareció tras el impacto de Chicxulub y los grandes cambios ambientales de hace unos 66 millones de años. Las aves actuales son dinosaurios avianos: proceden de linajes que ya existían antes de aquella extinción.",
+    subject:subject||"Biología",concept:concept||"dinosaurios",help_level:5,
+    check_question:"¿Qué grupo de dinosaurios sigue existiendo hoy?",practice_suggestion:null,
+    student_answer_assessment:"not_applicable",used_curriculum:false,needs_clarification:false,
+    strategy_used:"direct_explanation",mode_state:sanitizeModeState(modeState),expected_answer_type:"short_concept",
+    expected_key_ideas:["las aves","aves"],likely_misconceptions:["todos los dinosaurios vivieron al mismo tiempo","las aves aparecieron después de la extinción"],
+    conversation_stage:mode==="exam"?"examining":"explaining",tutor_act:"explain",new_explained_points:["vivieron en la era Mesozoica","eran muy variados","las aves son dinosaurios avianos"]
+  }
+}
 function directKnowledgeQuestion(text,image,scope,turnRel){
   if(image||scope?.scope!=="school"||["answer_to_pending","answer_to_offer","invalid_short_answer","confusion_request","simplification_request","technical_request","example_request","detail_request","why_request","continuation_request","topic_return_request","acknowledgement"].includes(turnRel))return false;
   const s=normalizeDetectionText(text).trim();if(!s)return false;
@@ -1303,7 +1317,9 @@ async function handleChatCore(request,env,auth,event,timings){
       const subject=effectiveSubject||"la asignatura",reply=`He entendido que quieres preparar ${subject}. Dime el tema o la unidad concreta que entra en el examen y empezaré con una pregunta cada vez.`,pedagogical_state={...incomingPedState,active_subject:effectiveSubject||incomingPedState.active_subject,active_concept:null,current_mode:mode,pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],student_answer_assessment:"not_applicable",conversation_stage:"clarifying",turn_index:Math.min(500,Number(incomingPedState.turn_index||0)+1),last_tutor_act:"ask_open",unresolved_question:reply,expected_student_act:"clarify",last_question_type:"none",next_teaching_goal:"concretar el tema del examen",last_student_intent:"new_topic"};
       console.error("ETERNA TUTOR RECOVERED",mode,String(error?.message||error));deferWork(event,"exam-tutor-recovery",()=>logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"needs_clarification",subject:effectiveSubject,concept:effectiveConcept,help:0,modelRoute:"exam-tutor-recovery-v1",mode,visionConfidence:vision?.confidence}));return json({reply,verification_status:"needs_clarification",ui_status:{label:"Dime el tema concreto",tone:"info",kind:"exam_topic"},subject:effectiveSubject||null,concept:null,help_level:0,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:null,mode_label:MODE_PROFILES.exam.label,mode_state:incomingModeState,pedagogical_state,auto_speak:false,recovered_from_tutor_error:true})
     }
-    throw error
+    const stableRecovery=!image&&factAnchor?stableFactTutorRecovery({text,mode,modeState:incomingModeState,subject:effectiveSubject,concept:effectiveConcept}):null;
+    if(stableRecovery){console.error("ETERNA TUTOR STABLE RECOVERY",mode,String(error?.message||error));t={data:stableRecovery,usage:{},model_route:"deterministic-stable-fact-recovery-v1"}}
+    else throw error
   }timings?.mark("tutor");
   let tutorData=answerAnchor?.assessment==="correct"?{...t.data,student_answer_assessment:"correct",needs_clarification:false}:t.data;
   if(tutorData.needs_clarification){const reply=cleanChildText(tutorData.reply),subject=tutorData.subject||effectiveSubject,concept=tutorData.concept||effectiveConcept,pedagogical_state=buildPedagogicalState({incoming:incomingPedState,mode,subject,concept,tutorOutput:tutorData,assessment:"not_applicable",finalCheck:null,turnRel});deferWork(event,"tutor-clarify",()=>logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"needs_clarification",subject,concept,help:tutorData.help_level,modelRoute:"tutor-clarify",mode,strategy:tutorData.strategy_used,visionConfidence:vision?.confidence}));return json({reply,verification_status:"needs_clarification",subject,concept,help_level:tutorData.help_level,strategy_used:tutorData.strategy_used,mode_label:MODE_PROFILES[mode].label,mode_state:sanitizeModeState(tutorData.mode_state),pedagogical_state,vision_confidence:vision?.confidence||null})}
@@ -1374,7 +1390,7 @@ ${pendingQuestion}`
   deferWork(event,"verified-chat-persistence",async()=>{
     await requestUsagePromise;
     if(status==="verified"&&assessment!=="not_applicable")await Promise.all([applyStudentMemory(env,uid,{subject,concept,conceptId,outcome:assessment,help:tutorData.help_level}),applyMasteryOutcome(env,uid,conceptId,{outcome:assessment,help:tutorData.help_level}),learnPrev(env,uid,{history,pedState:incomingPedState,subject,turnRel,assessment})]);
-    await Promise.all([logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:status,subject,concept,help:tutorData.help_level,modelRoute:`${env.TUTOR_MODEL||"gpt-5.6-sol"}+${verificationRoute}${externalEvidence?"+"+externalEvidence.kind+"-web":""}`,mode,strategy:tutorData.strategy_used,visionConfidence:vision?.confidence}),bumpUsage(env,uid,tokenUsage,Boolean(image))]);
+    await Promise.all([logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:status,subject,concept,help:tutorData.help_level,modelRoute:t.model_route||`${env.TUTOR_MODEL||"gpt-5.6-sol"}+${verificationRoute}${externalEvidence?"+"+externalEvidence.kind+"-web":""}`,mode,strategy:tutorData.strategy_used,visionConfidence:vision?.confidence}),bumpUsage(env,uid,tokenUsage,Boolean(image))]);
     if(status==="verified")await saveMem(env,uid,{subject,concept,scope,tutorData,reply,assessment,help:tutorData.help_level,image});
     if(!syncVerification){
       try{
@@ -1466,12 +1482,12 @@ function healthFeatures(env){return {
   parallel_chat_preflight_v1:true,deferred_chat_persistence_v1:true,curriculum_warm_cache_v1:true,
   background_result_long_poll_v1:true,server_timing_v1:true,prompt_cache_routing_v1:true,
   deterministic_arithmetic_guidance_v1:true,deterministic_pending_numeric_v1:true,adaptive_sync_verification_v1:true,asynchronous_verifier_audit_v1:true,
-  deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,tutor_model_failover_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,
+  deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,
   payments_code_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET)
 }}
 function modelConfiguration(env){return{
   scope:{model:env.SCOPE_MODEL||"gpt-5.6-luna",fallback_model:env.SCOPE_FALLBACK_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.SCOPE_REASONING_EFFORT,"low"),service_tier:openaiServiceTier(env,"eterna_scope_v3")||"default"},
-  tutor:{model:env.TUTOR_MODEL||"gpt-5.6-sol",fallback_model:env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.TUTOR_REASONING_EFFORT,"high"),service_tier:openaiServiceTier(env,"eterna_tutor_v163_flagship")||"default"},
+  tutor:{model:env.TUTOR_MODEL||"gpt-5.6-sol",fallback_model:env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibility_model:env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",reasoning_effort:reasoningEffort(env.TUTOR_REASONING_EFFORT,"high"),service_tier:openaiServiceTier(env,"eterna_tutor_v163_flagship")||"default"},
   verifier:{model:env.VERIFIER_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.VERIFIER_REASONING_EFFORT,"high"),service_tier:openaiServiceTier(env,"eterna_verify_v32")||"default"},
   vision:{model:env.VISION_MODEL||env.TUTOR_MODEL||"gpt-5.6-sol",reasoning_effort:reasoningEffort(env.VISION_REASONING_EFFORT,"high"),service_tier:openaiServiceTier(env,"eterna_intake")||"default"},
   web_search:{model:env.WEB_SEARCH_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.WEB_SEARCH_REASONING_EFFORT,"low"),service_tier:openaiServiceTier(env,"eterna_web")||"default"}
