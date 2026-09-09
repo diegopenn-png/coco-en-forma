@@ -59,6 +59,7 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   deterministicAnchoredCheckTurn,
   deterministicConceptCheckTurn,
   disclosedCheckReplacement,
+  deterministicFractionSimplificationTurn,
   synchronousVerificationRequired,
   buildPedagogicalState,
   handleChat
@@ -380,6 +381,24 @@ test("a micro-check never asks for a fraction result already disclosed", () => {
   const check = "¿Cuál es el resultado de sumar 3/4 y 1/8?";
   const reply = "Convertimos 3/4 en 6/8. Después sumamos 6/8 + 1/8 = 7/8.";
   assert.equal(api.disclosedCheckReplacement(check, reply), "Antes de sumar o restar fracciones con distinto denominador, ¿qué necesitamos conseguir primero?");
+});
+
+test("fraction simplification changes to a concrete visual representation", () => {
+  const result = api.deterministicFractionSimplificationTurn({
+    mode: "explain",
+    history: [{ role: "user", text: "Explícame cómo sumar 3/4 + 1/8 paso a paso." }],
+    pedState: { active_subject: "Matemáticas", active_concept: "suma de fracciones" },
+    modeState: {},
+    subject: "Matemáticas",
+    concept: "suma de fracciones",
+  });
+  assert.match(result.reply, /barra de chocolate/i);
+  assert.match(result.reply, /8 trozos iguales/i);
+  assert.match(result.reply, /3\/4 ocupa 6/i);
+  assert.doesNotMatch(result.reply, /denominador común/i);
+  assert.equal(result.strategy_used, "analogy");
+  assert.equal(result.student_answer_assessment, "not_applicable");
+  assert.equal(result.check_question, "Si tienes 6 trozos y añades 1, ¿cuántos trozos de los 8 quedan?");
 });
 
 test("teacher core adapts all Spanish school stages and forbids human impersonation", () => {
