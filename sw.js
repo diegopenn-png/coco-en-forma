@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v161.1.0 · Eterna iOS/PWA single voice engine */
-const CACHE_VERSION="coco-en-forma-v161.1.0-ios-single-voice-engine-r1";
+/* Coco en Forma · Service Worker v161.1.1 · Eterna iOS/PWA voice engine hard-load */
+const CACHE_VERSION="coco-en-forma-v161.1.1-ios-voice-hardload-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -32,10 +32,6 @@ async function withRetoScript(response){
       const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160961"></script>';
       html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag;
     }
-    if(html.indexOf('id="eterna-ios-mic-prime-v161000"')===-1){
-      const micTag='<script id="eterna-ios-mic-prime-v161000" src="./eterna-ios-mic-prime-v161000.js?v=161100"></script>';
-      html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,micTag+'</body>'):html+micTag;
-    }
     const headers=new Headers(response.headers);
     headers.set("Content-Type","text/html; charset=utf-8");
     headers.set("Cache-Control","no-cache");
@@ -48,5 +44,20 @@ async function networkFirst(e){try{const preload=await e.preloadResponse;if(prel
 function stale(e){const cachePromise=caches.open(CACHE_VERSION);const cachedPromise=cachePromise.then(c=>c.match(e.request,{ignoreSearch:false}));const networkPromise=fetch(e.request).then(async r=>{if(r&&r.ok){const c=await cachePromise;await c.put(e.request,r.clone())}return r}).catch(()=>null);e.waitUntil(networkPromise.then(()=>undefined).catch(()=>undefined));return cachedPromise.then(async cached=>{if(cached)return cached;const r=await networkPromise;if(r)return r;return offlineFallback(e.request)})}
 async function cachedPatch(path){const url=absolute(path);const c=await caches.open(CACHE_VERSION);let r=await c.match(url);if(r)return r;try{r=await fetch(releaseRequest(url));if(r&&r.ok)await c.put(url,r.clone());return r}catch(_e){return null}}
 async function eternaCoreWithHotfix(e){const basePromise=cachedPatch(ETERNA_CORE_PATH);const patchPromise=cachedPatch(ETERNA_HOTFIX_PATH);const compactPromise=cachedPatch(ETERNA_DESKTOP_COMPACT_PATH);const[base,patch,compact]=await Promise.all([basePromise,patchPromise,compactPromise]);if(!base||!patch||!patch.ok)return base||offlineFallback(e.request);const[coreText,patchText,compactText]=await Promise.all([base.text(),patch.text(),compact&&compact.ok?compact.text():Promise.resolve("")]);const headers=new Headers(base.headers);headers.set("Content-Type","application/javascript; charset=utf-8");headers.set("Cache-Control","no-cache");["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));return new Response(coreText+"\n\n/* --- ETERNA HF injected by SW --- */\n"+patchText+"\n\n/* --- ETERNA desktop compact injected by SW --- */\n"+compactText+"\n",{status:base.status,statusText:base.statusText,headers})}
+async function eternaExperienceWithIosVoice(e){
+  const basePromise=cachedPatch(ETERNA_EXPERIENCE_PATH);
+  const iosPromise=cachedPatch(ETERNA_IOS_MIC_PRIME_PATH);
+  const[base,ios]=await Promise.all([basePromise,iosPromise]);
+  if(!base)return offlineFallback(e.request);
+  if(!ios||!ios.ok)return base;
+  try{
+    const[baseText,iosText]=await Promise.all([base.text(),ios.text()]);
+    const headers=new Headers(base.headers);
+    headers.set("Content-Type","application/javascript; charset=utf-8");
+    headers.set("Cache-Control","no-cache");
+    ["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));
+    return new Response(baseText+"\n\n/* --- ETERNA iOS/PWA voice engine hard-loaded by SW v161.1.1 --- */\n"+iosText+"\n",{status:base.status,statusText:base.statusText,headers});
+  }catch(_e){return base}
+}
 async function cocoBootstrapWithProductUx(e){const basePromise=stale(e);const patchPromise=cachedPatch(PRODUCT_UX_PATH);const retoPromise=cachedPatch(RETO_2026_PATH);const[base,patch,reto]=await Promise.all([basePromise,patchPromise,retoPromise]);if(!base||!patch||!patch.ok)return base||offlineFallback(e.request);const[baseText,patchText,retoText]=await Promise.all([base.text(),patch.text(),reto&&reto.ok?reto.text():Promise.resolve("")]);const headers=new Headers(base.headers);headers.set("Content-Type","application/javascript; charset=utf-8");headers.set("Cache-Control","no-cache");["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));return new Response(baseText+"\n\n/* --- COCO PRODUCT UX injected by SW --- */\n"+patchText+"\n\n/* --- RETO COCO 2026 injected by SW --- */\n"+retoText+"\n",{status:base.status,statusText:base.statusText,headers})}
-self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;const doc=e.request.mode==="navigate"||e.request.destination==="document";const shellDoc=doc&&(u.pathname===SCOPE_URL.pathname||u.pathname===new URL("index.html",SCOPE_URL).pathname);const eternaCore=u.pathname===new URL(ETERNA_CORE_PATH,SCOPE_URL).pathname;const eternaExperience=u.pathname===new URL(ETERNA_EXPERIENCE_PATH,SCOPE_URL).pathname;const cocoBootstrap=u.pathname===new URL(COCO_BOOTSTRAP_PATH,SCOPE_URL).pathname;const identity=u.pathname===new URL("./coco-v155-identity.js",SCOPE_URL).pathname;if(shellDoc){e.respondWith(DESKTOP_SAFARI?networkFirst(e):shellFast(e));return}if(doc){e.respondWith(networkFirst(e));return}if(eternaCore){e.respondWith(eternaCoreWithHotfix(e));return}if(eternaExperience){e.respondWith(cachedPatch(ETERNA_EXPERIENCE_PATH).then(r=>r||offlineFallback(e.request)));return}if(cocoBootstrap){e.respondWith(cocoBootstrapWithProductUx(e));return}if(identity){e.respondWith(stale(e));return}e.respondWith(stale(e))});
+self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;const u=new URL(e.request.url);if(u.origin!==self.location.origin)return;const doc=e.request.mode==="navigate"||e.request.destination==="document";const shellDoc=doc&&(u.pathname===SCOPE_URL.pathname||u.pathname===new URL("index.html",SCOPE_URL).pathname);const eternaCore=u.pathname===new URL(ETERNA_CORE_PATH,SCOPE_URL).pathname;const eternaExperience=u.pathname===new URL(ETERNA_EXPERIENCE_PATH,SCOPE_URL).pathname;const cocoBootstrap=u.pathname===new URL(COCO_BOOTSTRAP_PATH,SCOPE_URL).pathname;const identity=u.pathname===new URL("./coco-v155-identity.js",SCOPE_URL).pathname;if(shellDoc){e.respondWith(DESKTOP_SAFARI?networkFirst(e):shellFast(e));return}if(doc){e.respondWith(networkFirst(e));return}if(eternaCore){e.respondWith(eternaCoreWithHotfix(e));return}if(eternaExperience){e.respondWith(eternaExperienceWithIosVoice(e));return}if(cocoBootstrap){e.respondWith(cocoBootstrapWithProductUx(e));return}if(identity){e.respondWith(stale(e));return}e.respondWith(stale(e))});
