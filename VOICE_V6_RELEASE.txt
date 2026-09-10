@@ -1,0 +1,3 @@
+ETERNA Voice V6 release candidate
+Cache: coco-en-forma-v160.98.6-voice-v6-auth-r1
+Scope: authenticated mic/conversation only; no pedagogy, payments, games, scoring, or safety changes.
