@@ -1,0 +1,1 @@
+Voice V6 touches only isolated voice capture/authentication and Service Worker loading/cache. No intentional changes to ETERNA pedagogy, Safety/School Scope, auth flows, Stripe, Supabase schema, games, scoring, Family Zone, or visual layout.
