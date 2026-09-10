@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v161.0.1 · Eterna iOS/PWA microphone replay fix */
-const CACHE_VERSION="coco-en-forma-v161.0.1-ios-mic-replay-r1";
+/* Coco en Forma · Service Worker v161.1.0 · Eterna iOS/PWA single voice engine */
+const CACHE_VERSION="coco-en-forma-v161.1.0-ios-single-voice-engine-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -33,7 +33,7 @@ async function withRetoScript(response){
       html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag;
     }
     if(html.indexOf('id="eterna-ios-mic-prime-v161000"')===-1){
-      const micTag='<script id="eterna-ios-mic-prime-v161000" src="./eterna-ios-mic-prime-v161000.js?v=161001"></script>';
+      const micTag='<script id="eterna-ios-mic-prime-v161000" src="./eterna-ios-mic-prime-v161000.js?v=161100"></script>';
       html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,micTag+'</body>'):html+micTag;
     }
     const headers=new Headers(response.headers);
