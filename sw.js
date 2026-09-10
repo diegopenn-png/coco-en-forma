@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.98.0 · Eterna human teacher delivery */
-const CACHE_VERSION="coco-en-forma-v160.98.0-human-teacher-r2";
+/* Coco en Forma · Service Worker v160.98.1 · native Eterna mic recovery */
+const CACHE_VERSION="coco-en-forma-v160.98.1-native-mic-recovery-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -7,13 +7,12 @@ const ETERNA_CORE_PATH="./eterna-v159.js";
 const ETERNA_EXPERIENCE_PATH="./eterna-experience-v160.js";
 const ETERNA_HOTFIX_PATH="./eterna-hotfix-v160902.js";
 const ETERNA_DESKTOP_COMPACT_PATH="./eterna-desktop-compact-v160907.js";
-const ETERNA_VOICE_AUTOCUT_PATH="./eterna-voice-autocut-v160907.js";
 const PRODUCT_UX_PATH="./coco-release-v160903.js";
 const RETO_2026_PATH="./coco-reto-2026-v160908.js";
 const COCO_BOOTSTRAP_PATH="./coco-v153-fixes.js";
 const SW_UA=String((self.navigator&&self.navigator.userAgent)||"");
 const DESKTOP_SAFARI=/Safari\//.test(SW_UA)&&!/(Chrome|Chromium|CriOS|FxiOS|EdgiOS|OPR)\//.test(SW_UA)&&/Macintosh/.test(SW_UA)&&!/Mobile\//.test(SW_UA);
-const CORE=["./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js","./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-variety-director-v160960.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js","./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,RETO_2026_PATH,"./coco-excellence-v160934.js","./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,ETERNA_DESKTOP_COMPACT_PATH,ETERNA_VOICE_AUTOCUT_PATH,"./eterna-marketing-attribution-v1.js","./coco-flex-eterna.jpg","./reto-coco-2026-v160958.jpg","./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css","./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"];
+const CORE=["./index.html","./manifest.webmanifest","./manifest.json","./supabase-js-2.112.3.min.js","./coco-v142-content-extension.js","./coco-v142-runtime.js","./coco-variety-director-v160960.js","./coco-v142-unified.js","./coco-v144-content.js","./coco-v144-core.js","./coco-v152-pwa.js",COCO_BOOTSTRAP_PATH,"./coco-v155-identity.js",PRODUCT_UX_PATH,RETO_2026_PATH,"./coco-excellence-v160934.js","./eterna-state-contract-v3.js",ETERNA_CORE_PATH,"./eterna-v159.css",ETERNA_EXPERIENCE_PATH,ETERNA_HOTFIX_PATH,ETERNA_DESKTOP_COMPACT_PATH,"./eterna-marketing-attribution-v1.js","./coco-flex-eterna.jpg","./reto-coco-2026-v160958.jpg","./coco-v144-professional.css","./coco-v147-refinements.css","./coco-v149-refinements.css","./coco-v152-refinements.css","./coco-v153-release.css","./icon-192.png","./icon-512.png","./icon-maskable-192.png","./icon-maskable-512.png","./apple-touch-icon.png","./favicon.png"];
 function absolute(p){return new URL(p,SCOPE_URL).href}
 function releaseRequest(url){const fresh=new URL(url);fresh.searchParams.set("__coco_release",CACHE_VERSION);return new Request(fresh.href,{cache:"reload"})}
 async function cacheCore(){const c=await caches.open(CACHE_VERSION);await Promise.allSettled(CORE.map(async p=>{const u=absolute(p);const r=await fetch(releaseRequest(u));if(r&&r.ok)await c.put(u,r.clone())}))}
@@ -21,23 +20,7 @@ self.addEventListener("install",e=>{e.waitUntil((async()=>{await cacheCore();sel
 self.addEventListener("activate",e=>{e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(CACHE_PREFIX)&&k!==CACHE_VERSION).map(k=>caches.delete(k)));if(self.registration.navigationPreload){try{if(DESKTOP_SAFARI)await self.registration.navigationPreload.enable();else await self.registration.navigationPreload.disable()}catch(_e){}}await self.clients.claim()})())});
 self.addEventListener("message",e=>{if(e.data&&e.data.type==="SKIP_WAITING")self.skipWaiting()});
 async function offlineFallback(request){return(await caches.match(request,{ignoreSearch:false}))||(await caches.match(request,{ignoreSearch:true}))||(await caches.match(INDEX_URL))||new Response("Sin conexión",{status:503,headers:{"Content-Type":"text/plain; charset=utf-8"}})}
-async function withRetoScript(response){
-  if(!response||!response.ok)return response;
-  const type=String(response.headers.get("Content-Type")||"");
-  if(type&&type.indexOf("text/html")===-1)return response;
-  try{
-    let html=await response.text();
-    if(html.indexOf('id="coco-reto-2026-direct"')===-1){
-      const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160961"></script>';
-      html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag;
-    }
-    const headers=new Headers(response.headers);
-    headers.set("Content-Type","text/html; charset=utf-8");
-    headers.set("Cache-Control","no-cache");
-    ["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));
-    return new Response(html,{status:response.status,statusText:response.statusText,headers});
-  }catch(_e){return response}
-}
+async function withRetoScript(response){if(!response||!response.ok)return response;const type=String(response.headers.get("Content-Type")||"");if(type&&type.indexOf("text/html")===-1)return response;try{let html=await response.text();if(html.indexOf('id="coco-reto-2026-direct"')===-1){const tag='<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160981"></script>';html=/<\/body>/i.test(html)?html.replace(/<\/body>/i,tag+'</body>'):html+tag}const headers=new Headers(response.headers);headers.set("Content-Type","text/html; charset=utf-8");headers.set("Cache-Control","no-cache");["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));return new Response(html,{status:response.status,statusText:response.statusText,headers})}catch(_e){return response}}
 async function shellFast(e){const c=await caches.open(CACHE_VERSION);const cached=await c.match(INDEX_URL);if(cached)return withRetoScript(cached);try{const r=await fetch(e.request);if(r&&r.ok)await c.put(INDEX_URL,r.clone());return withRetoScript(r)}catch(_e){return withRetoScript(await offlineFallback(e.request))}}
 async function networkFirst(e){try{const preload=await e.preloadResponse;if(preload){if(preload.ok){const c=await caches.open(CACHE_VERSION);await c.put(e.request,preload.clone())}return withRetoScript(preload)}const r=await fetch(e.request);if(r&&r.ok){const c=await caches.open(CACHE_VERSION);await c.put(e.request,r.clone())}return withRetoScript(r)}catch(_e){return withRetoScript(await offlineFallback(e.request))}}
 function stale(e){const cachePromise=caches.open(CACHE_VERSION);const cachedPromise=cachePromise.then(c=>c.match(e.request,{ignoreSearch:false}));const networkPromise=fetch(e.request).then(async r=>{if(r&&r.ok){const c=await cachePromise;await c.put(e.request,r.clone())}return r}).catch(()=>null);e.waitUntil(networkPromise.then(()=>undefined).catch(()=>undefined));return cachedPromise.then(async cached=>{if(cached)return cached;const r=await networkPromise;if(r)return r;return offlineFallback(e.request)})}
