@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v161.1.1 · Eterna iOS/PWA voice engine hard-load */
-const CACHE_VERSION="coco-en-forma-v161.1.1-ios-voice-hardload-r1";
+/* Coco en Forma · Service Worker v161.2.0 · Eterna iOS persistent mic stream */
+const CACHE_VERSION="coco-en-forma-v161.2.0-ios-persistent-mic-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -56,7 +56,7 @@ async function eternaExperienceWithIosVoice(e){
     headers.set("Content-Type","application/javascript; charset=utf-8");
     headers.set("Cache-Control","no-cache");
     ["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));
-    return new Response(baseText+"\n\n/* --- ETERNA iOS/PWA voice engine hard-loaded by SW v161.1.1 --- */\n"+iosText+"\n",{status:base.status,statusText:base.statusText,headers});
+    return new Response(baseText+"\n\n/* --- ETERNA iOS/PWA persistent voice engine hard-loaded by SW v161.2.0 --- */\n"+iosText+"\n",{status:base.status,statusText:base.statusText,headers});
   }catch(_e){return base}
 }
 async function cocoBootstrapWithProductUx(e){const basePromise=stale(e);const patchPromise=cachedPatch(PRODUCT_UX_PATH);const retoPromise=cachedPatch(RETO_2026_PATH);const[base,patch,reto]=await Promise.all([basePromise,patchPromise,retoPromise]);if(!base||!patch||!patch.ok)return base||offlineFallback(e.request);const[baseText,patchText,retoText]=await Promise.all([base.text(),patch.text(),reto&&reto.ok?reto.text():Promise.resolve("")]);const headers=new Headers(base.headers);headers.set("Content-Type","application/javascript; charset=utf-8");headers.set("Cache-Control","no-cache");["Content-Length","Content-Encoding","ETag","Last-Modified"].forEach(h=>headers.delete(h));return new Response(baseText+"\n\n/* --- COCO PRODUCT UX injected by SW --- */\n"+patchText+"\n\n/* --- RETO COCO 2026 injected by SW --- */\n"+retoText+"\n",{status:base.status,statusText:base.statusText,headers})}
