@@ -1,0 +1,1 @@
+Confirmed backend contract: /v1/transcribe and /v1/speak are authenticated routes. Voice V6 resolves and retries the bearer token before transcription/speech, rather than allowing a physically active microphone to fail later with a generic transcription message.
