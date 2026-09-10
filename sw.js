@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.98.0 · Eterna human teacher delivery */
-const CACHE_VERSION="coco-en-forma-v160.98.0-human-teacher-r2";
+/* Coco en Forma · Service Worker v160.99.0 · Eterna persistent voice conversation */
+const CACHE_VERSION="coco-en-forma-v160.99.0-persistent-voice-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
