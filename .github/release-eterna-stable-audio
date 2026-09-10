@@ -1,0 +1,3 @@
+release=stable-audio-openai-2026-09-10
+reason=restore_known-working-transcription-and-tts-path
+scope=worker-provider-only
