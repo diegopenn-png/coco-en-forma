@@ -105,6 +105,7 @@
 
   async function transcribe(blob,type,s){
     if(!current(s))return;
+    s.transcribing=true;
     status('Transcribiendo lo que dijiste…','warn');
     var base=String(root.COCO_CONFIG&&root.COCO_CONFIG.eternaEndpoint||'').replace(/\/+$/,'');if(!base){voiceDiagnostic(0,'ENDPOINT_MISSING','Eterna no tiene configurado el servicio de voz.');return}
     var token=await authToken(false);if(!current(s))return;if(!token){voiceDiagnostic(0,'SESSION_MISSING','La sesión ha caducado. Vuelve a entrar y prueba el micrófono.');return}
@@ -136,6 +137,8 @@
   }
 
   async function start(){
+    // A late synthetic stop must not cancel transcription and reopen capture.
+    if(pending&&pending.transcribing||dispatchTurn)return;
     if(session){stop('manual');return}
     cancelPending();
     var o=overlay(),field=input();if(!o||!o.classList.contains('is-open')||!field||field.disabled||busy()||document.hidden)return;
