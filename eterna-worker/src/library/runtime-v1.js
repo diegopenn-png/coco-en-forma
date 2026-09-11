@@ -21,7 +21,7 @@
     if(/bachillerato/.test(label)){m=label.match(/([1-2])/);return m?{stage:'bachillerato',grade:Number(m[1])}:null}
     return null;
   }
-  function appropriate(lesson,profile){const p=school(profile);return !!p&&p.stage===lesson.stage&&p.grade>=lesson.grade_min&&p.grade<=lesson.grade_max}
+  function appropriate(lesson,profile){if(profile?.preferred_language&&!/^es(?:-es)?$/i.test(profile.preferred_language))return false;const p=school(profile);return !!p&&p.stage===lesson.stage&&p.grade>=lesson.grade_min&&p.grade<=lesson.grade_max}
   const PROTOCOLS=Object.freeze([
     {id:'hello',aliases:['hola','buenos dias','buenas tardes','buenas noches','hey','ey']},
     {id:'how_are_you',aliases:['como estas','que tal','hola como estas','todo bien']},
@@ -102,9 +102,11 @@
   }
   const question=q=>`${q.question}\n${q.options.map((o,i)=>`${'ABC'[i]}) ${o}`).join('\n')}`;
   function choice(text,q){
-    const s=whole(text),letter=s.match(/^(?:(?:creo que es|creo que|la respuesta es|la opcion|opcion|la) )?([abc])$/);
-    if(letter)return letter[1].toUpperCase();
-    const matches=q.options.map((o,i)=>[norm(o),'ABC'[i]]).filter(([o])=>o===s||'es '+o===s);
+    const s=whole(text),letter=s.match(/^(?:(?:creo que es|creo que|la respuesta es|la opcion|opcion|la) )?(a|b|c|be|ce)$/);
+    if(letter)return {a:'A',b:'B',be:'B',c:'C',ce:'C'}[letter[1]];
+    // Keep signs, decimal separators, powers, units and negation significant.
+    const exact=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es-ES').replace(/−/g,'-').replace(/\s+/g,' ').trim();
+    const value=exact(text),matches=q.options.map((o,i)=>[exact(o),'ABC'[i]]).filter(([o])=>o===value||'es '+o===value);
     return matches.length===1?matches[0][1]:null;
   }
   function decision({text,profile={},pedState={},modeState={},mode='ask',image=null,newTopic=false}={}){
