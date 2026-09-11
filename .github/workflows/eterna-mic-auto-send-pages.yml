@@ -1,0 +1,64 @@
+name: Publish verified Eterna microphone frontend
+on:
+  push:
+    branches: ["ops/eterna-mic-auto-send-pages-699ee9b"]
+    paths: [".github/workflows/eterna-mic-auto-send-pages.yml"]
+permissions:
+  contents: read
+  pages: write
+jobs:
+  request-existing-pages-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Request normal Pages build of exact main and verify delivered assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          node --input-type=module <<'JS'
+          import{writeFileSync}from'node:fs';import{createHash}from'node:crypto';import assert from'node:assert/strict';
+          const expected='699ee9b8ea433bdb02edfcff23bed27993e6bb08';
+          const report={commit:expected,version:'coco-en-forma-v160.99.1-mic-auto-send-r1',phase:'pending',backend_changed:false};
+          const save=()=>writeFileSync('mic-auto-send-pages-report.json',JSON.stringify(report,null,2));save();
+          async function api(path,method='GET'){const r=await fetch(`https://api.github.com/repos/${process.env.GH_REPO}/${path}`,{method,headers:{Authorization:`Bearer ${process.env.GH_TOKEN}`,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},signal:AbortSignal.timeout(25000)});const p=await r.json();if(!r.ok)throw Error(`GitHub ${method} ${path}: ${r.status} ${p.message||''}`);return p}
+          const wait=ms=>new Promise(r=>setTimeout(r,ms));
+          try{
+            assert.equal((await api('git/ref/heads/main')).object.sha,expected,'Main changed; do not publish another revision');
+            const site=await api('pages');assert.equal(site.source.branch,'main');assert.equal(site.source.path,'/');
+            report.pages_source_unchanged=true;report.build_request=await api('pages/builds','POST');save();
+            let ready=false;
+            for(let i=0;i<60;i++){
+              const b=await api('pages/builds/latest');report.last_build={commit:b.commit,status:b.status,url:b.url};save();
+              if(b.commit===expected&&b.status==='built'){ready=true;break}
+              if(b.commit===expected&&b.status==='errored')throw Error('Target Pages build failed');
+              await wait(5000)
+            }
+            assert.equal(ready,true,'Expected Pages build has not completed');
+            const expectedAssets={'sw.js':'1045bd190a8498246c06135e1654ecc201bd6e732a8f3db81d6ae347b93f266a','eterna-mic-only-v4.js':'1d392518953291995fee43e34d8a832d313387c044c90a0afb70a22789cac325'};
+            report.assets={};
+            for(const[path,hash]of Object.entries(expectedAssets)){
+              let delivered=false;
+              for(let i=0;i<12;i++){
+                const r=await fetch(`https://cocoenforma.com/${path}?__coco_release=${report.version}&verify=${expected}-${i}`,{headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(20000)});
+                const actual=createHash('sha256').update(Buffer.from(await r.arrayBuffer())).digest('hex');
+                if(r.ok&&actual===hash){report.assets[path]={sha256:actual,exact_match:true};delivered=true;break}
+                await wait(3000)
+              }
+              assert.equal(delivered,true,`Public ${path} does not yet match tested bytes`)
+            }
+            assert.equal((await api('git/ref/heads/main')).object.sha,expected);
+            report.phase='published-and-delivery-verified';report.verified_at=new Date().toISOString();save();console.log(JSON.stringify(report));
+          }catch(e){report.phase='not-ready';report.error=String(e.message).slice(0,400);save();throw e}
+          JS
+      - name: Preserve publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mic-auto-send-pages-publication
+          path: mic-auto-send-pages-report.json
+          retention-days: 14
+          if-no-files-found: warn
