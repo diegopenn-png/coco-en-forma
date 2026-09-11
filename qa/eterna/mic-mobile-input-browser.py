@@ -7,7 +7,7 @@ parser=argparse.ArgumentParser();parser.add_argument('--engine',choices=['chromi
 # Reuse the full-module fixture (identity, legal gate, mock API) from the previous regression.
 previous=(root/'qa/eterna/mic-single-owner-browser.py').read_text()
 seed=previous.split("seed=r'''",1)[1].split("'''\ndef original",1)[0]
-begin=seed.index('let streamCount=0;');end=seed.index('window.qaVoice=false;',begin)
+begin=seed.indexOf('let streamCount=0;') if False else seed.index('let streamCount=0;');end=seed.index('window.qaVoice=false;',begin)
 seed=seed[:begin]+r'''
 window.NativeAudioContext=window.AudioContext||window.webkitAudioContext;window.signalGain=null;window.signalContext=null;window.signalStreams=[];
 Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{getUserMedia:async()=>{
@@ -29,7 +29,12 @@ with sync_playwright() as p:
         opts['args']=['--no-sandbox','--autoplay-policy=no-user-gesture-required']
     browser=getattr(p,args.engine).launch(**opts)
     page=browser.new_page(viewport={'width':393,'height':852})
-    page.set_content('<html><head></head><body></body></html>');page.evaluate(seed)
+    # A routed HTTPS fixture is a secure context like production, with no external network.
+    page.route('https://eterna-audio-test.invalid/**',lambda route:route.fulfill(status=200,content_type='text/html',body='<html><head></head><body></body></html>'))
+    page.goto('https://eterna-audio-test.invalid/')
+    assert page.evaluate('isSecureContext'), 'Native microphone tests require HTTPS'
+    assert page.evaluate('typeof MediaRecorder === "function"'), 'Native MediaRecorder unavailable in test engine'
+    page.evaluate(seed)
     errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
     page.add_script_tag(content=(root/'eterna-state-contract-v3.js').read_text())
     core=(root/'eterna-v159.js').read_text().replace('  window.CocoEternaV160=Object.freeze({','  window.__qa={state,overlay,setMode,render};\n  window.CocoEternaV160=Object.freeze({')
@@ -61,5 +66,5 @@ with sync_playwright() as p:
         print(mode,outcome,flush=True);page.evaluate('stopTestFeed()')
     assert not errors,errors
     browser.close()
-report={'engine':args.engine,'baseline':bool(args.baseline_dir),'native_audio_context':True,'native_media_recorder':True,'synthetic_input':'230Hz tone; not a physical microphone','network':'mocked, no child data, no production request','cases':cases,'errors':errors}
+report={'engine':args.engine,'secure_context':True,'baseline':bool(args.baseline_dir),'native_audio_context':True,'native_media_recorder':True,'synthetic_input':'230Hz tone; not a physical microphone','network':'mocked, no child data, no production request','cases':cases,'errors':errors}
 Path(args.output).write_text(json.dumps(report,ensure_ascii=False,indent=2))
