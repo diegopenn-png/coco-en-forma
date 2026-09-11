@@ -1,0 +1,79 @@
+name: Eterna mobile microphone six-mode verification
+on:
+  push:
+    branches: ["fix/eterna-mic-mobile-input-160993"]
+    paths: ["qa/eterna/apply-mic-mobile-input.py", "qa/eterna/mic-mobile-input-browser.py", ".github/workflows/eterna-mic-mobile-input-verify.yml"]
+permissions:
+  contents: write
+jobs:
+  isolated-mobile-input-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preserve published baseline and apply exact local correction
+        run: |
+          mkdir -p /tmp/mic-baseline
+          cp eterna-mic-only-v4.js /tmp/mic-baseline/
+          python qa/eterna/apply-mic-mobile-input.py
+      - name: Syntax and complete regression tests
+        shell: bash
+        run: |
+          set -o pipefail
+          node --check eterna-mic-only-v4.js
+          node --check sw.js
+          mkdir -p mic-mobile-evidence
+          cd eterna-worker
+          npm run check | tee ../mic-mobile-evidence/regression.txt
+      - name: Install Chromium and WebKit test engines
+        run: |
+          pip install playwright==1.57.0
+          python -m playwright install --with-deps webkit
+      - name: Reproduce published low-signal failure with native audio
+        run: timeout 120s python qa/eterna/mic-mobile-input-browser.py --baseline-dir /tmp/mic-baseline --output mic-mobile-evidence/baseline.json
+      - name: Test every mode twice on Chromium with native audio and recorder
+        run: timeout 180s python qa/eterna/mic-mobile-input-browser.py --engine chromium --output mic-mobile-evidence/chromium.json
+      - name: Test every mode twice on WebKit with native audio and recorder
+        run: timeout 180s python qa/eterna/mic-mobile-input-browser.py --engine webkit --output mic-mobile-evidence/webkit.json
+      - name: Verify evidence and preserve working server and canonical chat
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          def h(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+          assert h('eterna-worker/src/index.js')=='b62aaaedc07cbc2ada1e1410b675dc62c4d8fcd3b5b626e2e855e157e706e9c5'
+          assert h('eterna-v159.js')=='a31a36f546528b5e4a30e701957589fe4ae88a0ab2fff3368f86fc082ae8eced'
+          assert h('eterna-mic-only-v4.js')=='7163e7e56ecc2a74c007b226fde4f45b18098209a00706d60145d27f55a206dd'
+          t=Path('mic-mobile-evidence/regression.txt').read_text();assert '# pass 283\n' in t and '# fail 0\n' in t
+          for name in ['chromium','webkit']:
+              p=json.loads(Path('mic-mobile-evidence/'+name+'.json').read_text());assert len(p['cases'])==12 and not p['errors'];assert all(c['chat_requests']==1 for c in p['cases'])
+          PY
+      - name: Commit verified files to isolated branch only
+        run: |
+          test "$GITHUB_REF" = "refs/heads/fix/eterna-mic-mobile-input-160993"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-mic-only-v4.js sw.js eterna-worker/test/client-state-contract.test.mjs eterna-worker/test/mic-auto-send.test.mjs
+          git commit -m "fix(eterna): reinitialize mobile audio and preserve quiet voice across modes" -m "283 regressions and 12 sequential mode recordings per engine in Chromium/WebKit passed. Native WebAudio and recorder, synthetic tone input and mocked API. No physical iPhone claim; no production deployment."
+          git push origin HEAD:refs/heads/fix/eterna-mic-mobile-input-160993
+          python - <<'PY'
+          import json,hashlib,subprocess
+          from pathlib import Path
+          files=['eterna-mic-only-v4.js','sw.js','eterna-worker/test/client-state-contract.test.mjs','eterna-worker/test/mic-auto-send.test.mjs','qa/eterna/mic-mobile-input-browser.py']
+          blobs={p:{'sha':subprocess.check_output(['git','hash-object',p],text=True).strip(),'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in files}
+          Path('mic-mobile-evidence/report.json').write_text(json.dumps({'commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'regression_passed':283,'native_audio_cases_per_engine':12,'engines':['chromium','webkit'],'input_is_synthetic':True,'api_mocked':True,'iphone_hardware_tested':False,'production_changed':False,'backend_unchanged':True,'canonical_chat_unchanged':True,'version':'coco-en-forma-v160.99.3-mic-mobile-input-r1','blobs':blobs},indent=2))
+          PY
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mic-mobile-input-verification
+          path: mic-mobile-evidence
+          retention-days: 14
+          if-no-files-found: warn
