@@ -30,9 +30,24 @@ jobs:
       - name: Validate canonical syntax and existing regression
         run: |
           node --check qa/library/stage_library.mjs
+          mkdir -p library-stage-evidence
           cd eterna-worker
-          npm run check
+          npm run check > ../library-stage-evidence/regression.txt
+          tail -10 ../library-stage-evidence/regression.txt
           npm ci --no-audit --no-fund
+      - name: Verify generated importer before upload
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('qa/library/stage_library.mjs');s=p.read_text()
+          before=r"env.SUPABASE_URL.replace(/\/$/,'')"
+          assert s.count(before)==1
+          s=s.replace(before,'new URL(env.SUPABASE_URL).origin')
+          before="writeFileSync('eterna-worker/src/.library-stage.js',generated);"
+          assert s.count(before)==1
+          s=s.replace(before,before+"\nexecFileSync(process.execPath,['--check','eterna-worker/src/.library-stage.js'],{stdio:'pipe'});")
+          p.write_text(s)
+          PY
       - name: Import fixed public content via expiring private version, never deploy
         run: node qa/library/stage_library.mjs
       - name: Preserve sanitized import and runtime evidence
