@@ -1,0 +1,36 @@
+name: Eterna library integration source snapshot
+on:
+  push:
+    branches: ["feat/eterna-library-first-202609"]
+    paths: [".github/workflows/eterna-library-audit-snapshot.yml"]
+permissions:
+  contents: read
+jobs:
+  source-and-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Record source and repeat regression without external services
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p integration-snapshot
+          git archive --format=tar.gz HEAD > integration-snapshot/source.tar.gz
+          git rev-parse HEAD > integration-snapshot/commit.txt
+          cd eterna-worker
+          npm run check > ../integration-snapshot/regression.txt
+          tail -10 ../integration-snapshot/regression.txt
+      - name: Preserve exact tracked public source; no environment or credentials
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-integration-source
+          path: integration-snapshot
+          retention-days: 7
+          if-no-files-found: error
