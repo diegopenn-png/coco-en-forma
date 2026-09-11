@@ -1,0 +1,63 @@
+name: Eterna prepared library integration verification
+on:
+  push:
+    branches: ["feat/eterna-library-first-202609"]
+    paths: [".github/workflows/eterna-library-integrate.yml", "qa/library/apply_library_integration.py"]
+permissions:
+  contents: write
+jobs:
+  verify-isolated-library:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build original reviewed teaching cards and integrate exact baseline
+        run: |
+          python qa/library/build_library.py
+          python qa/library/apply_library_integration.py
+      - name: Execute all regression and no-inference HTTP contracts
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p library-integration-evidence
+          cd eterna-worker
+          npm run check | tee ../library-integration-evidence/regression.txt
+      - name: Assert exact local-tested source and unchanged frontend
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          expected={'eterna-worker/src/index.js':'07aa9081cc8ff2bbd79032124358dbae1ddc86903df03679ad2b6aa81c282087','eterna-mic-only-v4.js':'3af0f8c1bc58a6f4ca017d46b2f9813b58488bdd530721845337df8318fb3d21','sw.js':'22313d9b77098b1b62be9f0117e97895501917fc7bcea993a3711af17c9949b8','eterna-v159.js':'a31a36f546528b5e4a30e701957589fe4ae88a0ab2fff3368f86fc082ae8eced'}
+          for p,h in expected.items():assert hashlib.sha256(Path(p).read_bytes()).hexdigest()==h,p
+          text=Path('library-integration-evidence/regression.txt').read_text();assert '# pass 405\n' in text and '# fail 0\n' in text
+          m=json.loads(Path('qa/library/library-manifest.json').read_text());assert m['bundle_sha256']=='cf40e0bb4a23617a7a4bee311abcd25f9cab27734d8aa914425683795cacfea4'
+          PY
+      - name: Commit exact generated sources to isolated branch only
+        run: |
+          test "$GITHUB_REF" = "refs/heads/feat/eterna-library-first-202609"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/content-v1.json qa/library/library-manifest.json
+          git commit -m "feat(eterna): integrate tested prepared library behind disabled-by-default flag" -m "405 passing tests; 80 original micro-lessons, 240 questions and 18 conversation protocols. Unknown inputs preserve original tutor route. No microphone or frontend changes; no production deployment."
+          git push origin HEAD:refs/heads/feat/eterna-library-first-202609
+          python - <<'PY'
+          import json,hashlib,subprocess
+          from pathlib import Path
+          files=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/content-v1.json','eterna-worker/src/library/engine-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/library-manifest.json']
+          blobs={p:{'sha':subprocess.check_output(['git','hash-object',p],text=True).strip(),'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in files}
+          m=json.loads(Path('qa/library/library-manifest.json').read_text());m.update({'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'tests_passed':405,'tests_failed':0,'external_services_in_regression':'mocked; inference forbidden and counted','production_changed':False,'blobs':blobs})
+          Path('library-integration-evidence/report.json').write_text(json.dumps(m,ensure_ascii=False,indent=2))
+          PY
+      - name: Preserve sanitized results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-integration-verification
+          path: library-integration-evidence
+          retention-days: 30
