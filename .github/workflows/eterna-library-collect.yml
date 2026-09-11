@@ -1,0 +1,31 @@
+name: Eterna official curriculum collection (no production changes)
+on:
+  push:
+    branches: ["feat/eterna-library-first-202609"]
+    paths: ["qa/library/collect_official.py", ".github/workflows/eterna-library-collect.yml"]
+permissions:
+  contents: read
+jobs:
+  archive-official-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install official text extraction tooling
+        run: |
+          pip install beautifulsoup4==4.13.5
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+      - name: Download BOE and ministerially linked regional norms
+        run: python qa/library/collect_official.py
+      - name: Preserve sources and honest coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-official-curriculum-archive
+          path: library-evidence
+          retention-days: 90
+          if-no-files-found: error
