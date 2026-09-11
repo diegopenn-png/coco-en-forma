@@ -28,7 +28,7 @@
   function newTurn(){return pending={overlay:overlay(),field:input(),key:activityKey(),initialText:input()?input().value:'',cancelled:false,sent:false,processed:false,controller:typeof AbortController!=='undefined'?new AbortController():null}}
   function current(s){return !!(s&&pending===s&&!s.cancelled&&!s.sent&&s.overlay===overlay()&&s.field===input()&&s.overlay&&s.overlay.classList.contains('is-open')&&!document.hidden&&s.key===activityKey())}
   function releaseStream(s){try{if(s.stream)s.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}}
-  function cancelPending(){if(dispatchTurn){dispatchTurn.cancelled=true;dispatchTurn=null}var s=pending;if(!s)return;s.cancelled=true;pending=null;try{if(s.controller)s.controller.abort()}catch(e){}if(session===s)stop('cancel');else releaseStream(s)}
+  function cancelPending(){if(dispatchTurn){dispatchTurn.cancelled=true;dispatchTurn=null}var s=pending;if(!s)return;s.cancelled=true;pending=null;try{if(s.controller)s.controller.abort()}catch(e){}if(session===s)stop('cancel');else{releaseStream(s);closeInputGraph(s)}}
   function submitOnce(s,text){
     var field=input(),button=sendButton();
     if(!current(s)||busy()||!field||field.disabled||!button||button.disabled||typeof button.click!=='function'||clean(field.value)!==clean(text))return false;
@@ -42,6 +42,81 @@
       }
     },{capture:true,once:true});
     s.sent=true;pending=null;status('Enviando tu pregunta…','ok');button.click();return true
+  }
+
+  // Create/resume in the microphone click, before the permission promise yields.
+  // Each turn owns a fresh graph; mode changes can never retain an old source.
+  function openInputGraph(s){
+    var Ctx=root.AudioContext||root.webkitAudioContext;
+    if(!Ctx)return;
+    try{s.audioCtx=new Ctx();if(s.audioCtx.state!=='running')s.audioReady=Promise.resolve(s.audioCtx.resume()).catch(function(){return false})}catch(e){closeInputGraph(s)}
+  }
+  function closeInputGraph(s){
+    if(!s)return;
+    ['source','analyser','sink'].forEach(function(k){try{if(s[k]&&s[k].disconnect)s[k].disconnect()}catch(e){}s[k]=null});
+    var ctx=s.audioCtx;s.audioCtx=null;
+    try{if(ctx&&ctx.state!=='closed')Promise.resolve(ctx.close()).catch(function(){})}catch(e){}
+  }
+  async function inputGraphReady(s){
+    var ctx=s.audioCtx;if(!ctx||ctx.state==='closed')return false;
+    if(ctx.state==='running')return true;
+    var timer;try{
+      var ready=s.audioReady||Promise.resolve(ctx.resume()).catch(function(){return false});
+      await Promise.race([ready,new Promise(function(resolve){timer=setTimeout(resolve,1500)})]);
+      return ctx.state==='running'
+    }catch(e){return false}finally{if(timer)clearTimeout(timer);s.audioReady=null}
+  }
+  function inputFault(s,code){
+    if(!current(s))return;
+    if(session===s)stop('error');else{cancelPending();releaseStream(s);closeInputGraph(s)}
+    voiceDiagnostic(0,code,'El micrófono no está entregando sonido de forma estable. Tócalo de nuevo para activarlo.');
+  }
+  function resumeInterruptedGraph(s){
+    if(s.resuming||!s.audioCtx)return;
+    s.resuming=true;
+    if(s.silenceTimer){clearTimeout(s.silenceTimer);s.silenceTimer=null}
+    s.audioReady=null;
+    inputGraphReady(s).then(function(ok){
+      s.resuming=false;if(!current(s)||session!==s)return;
+      if(!ok){inputFault(s,'AUDIO_CONTEXT_INTERRUPTED');return}
+      s.lastClock=s.audioCtx.currentTime;s.clockAt=Date.now();if(s.speechAt)s.lastVoiceAt=Date.now()
+    })
+  }
+  function sampleVoice(s,now){
+    var values=s.data,analyser=s.analyser,sum=0,mean=0,i,v;
+    if(s.floatSamples){
+      analyser.getFloatTimeDomainData(values);
+      for(i=0;i<values.length;i++)mean+=values[i];mean/=values.length;
+      for(i=0;i<values.length;i++){v=values[i]-mean;sum+=v*v}
+    }else{
+      analyser.getByteTimeDomainData(values);
+      for(i=0;i<values.length;i++){v=(values[i]-128)/128;sum+=v*v}
+    }
+    var rms=Math.sqrt(sum/values.length),step=Math.max(0,Math.min(50,now-s.lastSampleAt));s.lastSampleAt=now;
+    if(!Number.isFinite(rms))return false;
+    s.sampleCount++;s.peakRms=Math.max(s.peakRms,rms);
+    var threshold=Math.max(s.speechAt?.0018:.003,s.noise*(s.speechAt?1.6:2.4));
+    if(rms>threshold){
+      s.voiceEvidence+=step;
+      if(!s.speechAt&&s.voiceEvidence>=64)s.speechAt=now;
+      if(s.speechAt){
+        s.lastVoiceAt=now;
+        if(s.noSpeechTimer){clearTimeout(s.noSpeechTimer);s.noSpeechTimer=null}
+        if(s.silenceTimer){clearTimeout(s.silenceTimer);s.silenceTimer=null}
+      }
+    }else{
+      s.voiceEvidence=0;
+      // Learn background only from quiet frames, never from the child's first words.
+      if(!s.speechAt)s.noise=Math.max(.0003,Math.min(.01,s.noise*.94+rms*.06));
+      if(s.speechAt&&now-s.lastVoiceAt>180&&!s.silenceTimer){
+        s.silenceTimer=setTimeout(function(){
+          s.silenceTimer=null;if(session!==s||!current(s))return;
+          if(s.audioCtx&&s.audioCtx.state!=='running'){resumeInterruptedGraph(s);return}
+          stop('silence')
+        },Math.max(0,s.pauseMs-(now-s.lastVoiceAt)))
+      }
+    }
+    return true
   }
 
   function installStyle(){
@@ -130,8 +205,7 @@
     if(reason==='cancel'||reason==='close'||reason==='no-speech'||reason==='error'){s.cancelled=true;if(pending===s)pending=null}
     if(s.hardTimer)clearTimeout(s.hardTimer);if(s.noSpeechTimer)clearTimeout(s.noSpeechTimer);if(s.silenceTimer)clearTimeout(s.silenceTimer);if(s.raf)cancelAnimationFrame(s.raf);
     try{if(s.rec&&s.rec.state==='recording')s.rec.stop()}catch(e){}
-    try{if(s.audioCtx)s.audioCtx.close()}catch(e){}
-    if(s.cancelled)releaseStream(s);
+    if(s.cancelled){releaseStream(s);closeInputGraph(s)}
     setMic(false);
     if(reason==='no-speech')status('No he oído voz. Toca el micrófono y vuelve a intentarlo.','warn')
   }
@@ -144,20 +218,29 @@
     var o=overlay(),field=input();if(!o||!o.classList.contains('is-open')||!field||field.disabled||busy()||document.hidden)return;
     root.__ETERNA_VOICE_DIALOG_ACTIVE__=false;
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==='undefined'){status('Este dispositivo no permite grabar audio aquí.','warn');return}
-    var s=newTurn();
+    var s=newTurn();openInputGraph(s);
     try{
       var stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});s.stream=stream;
-      if(!current(s)){releaseStream(s);return}
+      if(!current(s)){releaseStream(s);closeInputGraph(s);return}
       try{localStorage.setItem('coco_eterna_mic_granted_v1','1')}catch(_e){}
       var mime=recorderMime(),rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream),chunks=[];
-      var AudioCtx=root.AudioContext||root.webkitAudioContext,ctx=AudioCtx?new AudioCtx():null,analyser=null,data=null,source=null;s.audioCtx=ctx;
-      if(ctx){try{if(ctx.state==='suspended')await ctx.resume();source=ctx.createMediaStreamSource(stream);analyser=ctx.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=.2;source.connect(analyser);data=new Uint8Array(analyser.fftSize)}catch(e){try{ctx.close()}catch(_e){}ctx=null;analyser=null}}
-      if(!current(s)){releaseStream(s);try{if(ctx)ctx.close()}catch(e){}return}
-      Object.assign(s,{rec:rec,chunks:chunks,audioCtx:ctx,analyser:analyser,data:data,startedAt:Date.now(),speechAt:0,lastVoiceAt:0,noise:.008,raf:0,silenceTimer:null,hardTimer:null,noSpeechTimer:null,mime:mime,pauseMs:silenceMs()});session=s;
+      var ctx=s.audioCtx,analyser=null,data=null,source=null,sink=null;
+      if(!await inputGraphReady(s)){inputFault(s,'AUDIO_CONTEXT_NOT_RUNNING');return}
+      if(!current(s)){releaseStream(s);closeInputGraph(s);return}
+      try{
+        source=ctx.createMediaStreamSource(stream);analyser=ctx.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=.2;source.connect(analyser);
+        s.source=source;s.analyser=analyser;
+        // A zero-gain output keeps the graph processing without microphone feedback.
+        if(ctx.createGain&&analyser.connect){sink=ctx.createGain();sink.gain.value=0;analyser.connect(sink);sink.connect(ctx.destination);s.sink=sink}
+        s.floatSamples=typeof analyser.getFloatTimeDomainData==='function';
+        data=s.floatSamples?new Float32Array(analyser.fftSize):new Uint8Array(analyser.fftSize)
+      }catch(e){inputFault(s,'AUDIO_ANALYSER_UNAVAILABLE');return}
+      if(!current(s)){releaseStream(s);closeInputGraph(s);return}
+      Object.assign(s,{rec:rec,chunks:chunks,audioCtx:ctx,analyser:analyser,data:data,startedAt:Date.now(),speechAt:0,lastVoiceAt:0,noise:.001,voiceEvidence:0,lastSampleAt:Date.now(),sampleCount:0,peakRms:0,lastClock:ctx.currentTime,clockAt:Date.now(),mutedAt:0,resuming:false,raf:0,silenceTimer:null,hardTimer:null,noSpeechTimer:null,mime:mime,pauseMs:silenceMs()});session=s;
       rec.ondataavailable=function(ev){if(ev.data&&ev.data.size)chunks.push(ev.data)};
       rec.onerror=function(){if(current(s)){stop('error');status('La grabación se interrumpió. Vuelve a tocar el micrófono.','warn')}};
       rec.onstop=async function(){
-        releaseStream(s);if(s.processed)return;s.processed=true;
+        releaseStream(s);closeInputGraph(s);if(s.processed)return;s.processed=true;
         if(session===s)stop('ended');
         if(!current(s))return;
         var type=rec.mimeType||mime||(chunks[0]&&chunks[0].type)||'audio/webm',blob=new Blob(chunks,{type:type});
@@ -166,16 +249,33 @@
       };
       rec.start(250);setMic(true);status('Escuchando… al terminar, enviaré tu pregunta automáticamente.','ok');
       s.hardTimer=setTimeout(function(){if(session===s)stop('max')},maxMs());
-      s.noSpeechTimer=setTimeout(function(){if(session===s&&!s.speechAt)stop('no-speech')},noSpeechMs());
+      s.noSpeechTimer=setTimeout(function(){if(session!==s||s.speechAt)return;if(!s.audioCtx||s.audioCtx.state!=='running'||!s.sampleCount){inputFault(s,'AUDIO_INPUT_NOT_READY');return}stop('no-speech')},noSpeechMs());
       function loop(){
         if(session!==s)return;
         var now=Date.now();
-        if(analyser&&data){analyser.getByteTimeDomainData(data);var sum=0;for(var i=0;i<data.length;i++){var v=(data[i]-128)/128;sum+=v*v}var rms=Math.sqrt(sum/data.length);if(now-s.startedAt<700)s.noise=Math.max(.004,s.noise*.85+rms*.15);var threshold=Math.max(.016,s.noise*2.6);if(rms>threshold){if(!s.speechAt)s.speechAt=now;s.lastVoiceAt=now;if(s.noSpeechTimer){clearTimeout(s.noSpeechTimer);s.noSpeechTimer=null}if(s.silenceTimer){clearTimeout(s.silenceTimer);s.silenceTimer=null}}else if(s.speechAt&&now-s.lastVoiceAt>180){if(!s.silenceTimer)s.silenceTimer=setTimeout(function(){if(session===s)stop('silence')},Math.max(0,s.pauseMs-(now-s.lastVoiceAt)))}}
+        if(!current(s)){cancelPending();return}
+        var track=stream.getAudioTracks?stream.getAudioTracks()[0]:null;
+        if(stream.active===false||track&&(track.readyState==='ended'||track.enabled===false)){inputFault(s,'AUDIO_TRACK_ENDED');return}
+        if(track&&track.muted){
+          if(!s.mutedAt)s.mutedAt=now;
+          if(s.silenceTimer){clearTimeout(s.silenceTimer);s.silenceTimer=null}
+          if(now-s.mutedAt>1500){inputFault(s,'AUDIO_TRACK_MUTED');return}
+        }else if(ctx.state!=='running'){
+          resumeInterruptedGraph(s)
+        }else{
+          if(s.mutedAt){s.mutedAt=0;if(s.speechAt)s.lastVoiceAt=now}
+          // 'running' alone is insufficient on some mobile audio interruptions.
+          if(typeof ctx.currentTime==='number'){
+            if(ctx.currentTime!==s.lastClock){s.lastClock=ctx.currentTime;s.clockAt=now}
+            else if(now-s.clockAt>1500){inputFault(s,'AUDIO_CLOCK_STALLED');return}
+          }
+          try{if(!sampleVoice(s,now)){inputFault(s,'AUDIO_ANALYSIS_INVALID');return}}catch(e){inputFault(s,'AUDIO_ANALYSIS_UNAVAILABLE');return}
+        }
         s.raf=requestAnimationFrame(loop)
       }
       if(analyser)s.raf=requestAnimationFrame(loop);
     }catch(e){
-      var relevant=current(s);if(session===s)stop('error');releaseStream(s);try{if(s.audioCtx)s.audioCtx.close()}catch(_e){}if(pending===s)pending=null;
+      var relevant=current(s);if(session===s)stop('error');releaseStream(s);closeInputGraph(s);if(pending===s)pending=null;
       if(!relevant)return;setMic(false);var name=String(e&&e.name||'');if(name==='NotAllowedError'||name==='SecurityError')status('El micrófono está bloqueado. Actívalo en los permisos de Coco en Forma y vuelve a tocarlo.','warn');else status('No pude abrir el micrófono. Vuelve a intentarlo.','warn')
     }
   }

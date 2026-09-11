@@ -7,9 +7,9 @@ const core=readFileSync(new URL('../../eterna-v159.js',import.meta.url),'utf8');
 const flush=async()=>{for(let i=0;i<16;i++)await Promise.resolve()};
 const reply=(text='Explícame los números primos',status=200)=>({status,ok:status===200,json:async()=>status===200?{text}:{error:'ETERNA_BACKEND_ERROR'}});
 function deferred(){let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve}}
-function harness({course='5º de Primaria',response=reply(),permission=null,canonical=false,delayedGate=false}={}){
+function harness({course='5º de Primaria',response=reply(),permission=null,canonical=false,delayedGate=false,floatInput=false,volume=.008,contextState="running",resumeStuck=false}={}){
   const listeners={},docListeners={},timers=new Map(),recorders=[],streams=[],requests=[],sent=[];
-  let now=10000,seq=0,voiced=false,requestPending=false,blockSend=false,gatePending=false;const targetGuards=[];
+  let now=10000,seq=0,voiced=false,requestPending=false,blockSend=false,gatePending=false;const targetGuards=[],audioContexts=[],resourceTrace=[];
   const ctx={uid:'test-user',mode:'explain',session_id:'test-session',question_id:null,epoch:1,phase:'ASK'};
   const add=(map,name,fn)=>(map[name]||(map[name]=[])).push(fn);
   const emit=(map,name,event={})=>(map[name]||[]).forEach(fn=>fn(event));
@@ -22,10 +22,18 @@ function harness({course='5º de Primaria',response=reply(),permission=null,cano
   const nodes={'[data-et-input]':field,'[data-et-send]':send,'[data-et-mic]':mic,'[data-et-status]':label,'[data-et-dot]':dot,'[data-et-course]':courseNode};
   const overlay={textContent:'Conversation mentions 2º de Bachillerato',classList:{contains:v=>classes.has(v)},querySelector:s=>nodes[s]||null,querySelectorAll:()=>[]};
   const document={hidden:false,documentElement:{},getElementById:id=>id==='eternaOverlayV159'?overlay:{},addEventListener:(name,fn)=>add(docListeners,name,fn)};
-  class AudioContext {state='running';createMediaStreamSource(){return{connect(){}}}createAnalyser(){return{fftSize:1024,getByteTimeDomainData(a){a.fill(voiced?144:128)}}}close(){return Promise.resolve()}resume(){return Promise.resolve()}}
+  class AudioContext {
+    constructor(){this.state=contextState;this.connections=[];this.resumes=0;this.closed=0;audioContexts.push(this);resourceTrace.push('context-created')}
+    get currentTime(){return this.state==='running'?now/1000:0}
+    createMediaStreamSource(){const n={connect(){},disconnect(){}};this.connections.push(n);return n}
+    createGain(){const n={gain:{value:1},connect(){},disconnect(){}};this.connections.push(n);return n}
+    createAnalyser(){const n={fftSize:1024,connect(){},disconnect(){},getByteTimeDomainData(a){a.fill(voiced?144:128)}};if(floatInput)n.getFloatTimeDomainData=a=>{for(let i=0;i<a.length;i++)a[i]=voiced?volume*Math.sin(i*.1):0};this.connections.push(n);return n}
+    close(){this.state='closed';this.closed++;return Promise.resolve()}
+    resume(){this.resumes++;resourceTrace.push('context-resumed');if(resumeStuck)return new Promise(()=>{});this.state='running';return Promise.resolve()}
+  }
   class Recorder {static isTypeSupported(t){return t==='audio/mp4'}constructor(stream,options){this.stream=stream;this.mimeType=options?.mimeType||'audio/mp4';this.state='inactive';this.stops=0;recorders.push(this)}start(){this.state='recording'}stop(){if(this.state!=='recording')return;this.state='inactive';this.stops++;timeout(()=>{this.ondataavailable?.({data:new Blob([new Uint8Array(2048)],{type:this.mimeType})});this.onstop?.()},0)}}
   const window={AudioContext,addEventListener:(name,fn)=>add(listeners,name,fn),COCO_CONFIG:{eternaEndpoint:'https://voice.invalid'},CocoEternaV160:{getActivityContext:()=>({...ctx}),isRequestPending:()=>requestPending},__COCO_SUPABASE_CLIENT:{auth:{getSession:async()=>({data:{session:{access_token:'test-token'}}}),refreshSession:async()=>{}}}};
-  const sandbox={window,document,navigator:{mediaDevices:{getUserMedia:async()=>{const stream={stopped:0,getTracks(){return[{stop:()=>{stream.stopped++}}]}};streams.push(stream);if(permission)await permission;return stream}}},MediaRecorder:Recorder,FormData,Blob,Event,AbortController,Uint8Array,Object,Date:class extends Date{static now(){return now}},localStorage:{setItem(){}},MutationObserver:class{observe(){}},setTimeout:timeout,clearTimeout:id=>timers.delete(id),requestAnimationFrame:fn=>timeout(fn,16),cancelAnimationFrame:id=>timers.delete(id),fetch:async(url,init)=>{requests.push({url,init});return await response}};
+  const sandbox={window,document,navigator:{mediaDevices:{getUserMedia:async()=>{resourceTrace.push('microphone-request');const stream={stopped:0,getTracks(){return[{stop:()=>{stream.stopped++}}]}};streams.push(stream);if(permission)await permission;return stream}}},MediaRecorder:Recorder,FormData,Blob,Event,AbortController,Uint8Array,Object,Date:class extends Date{static now(){return now}},localStorage:{setItem(){}},MutationObserver:class{observe(){}},setTimeout:timeout,clearTimeout:id=>timers.delete(id),requestAnimationFrame:fn=>timeout(fn,16),cancelAnimationFrame:id=>timers.delete(id),fetch:async(url,init)=>{requests.push({url,init});return await response}};
   const context=vm.createContext(sandbox);
   vm.runInContext(source.replace('})(window);','root.__test={start,stop,transcribe,newTurn,age,silenceMs,cancelPending};})(window);'),context);
   if(canonical){
@@ -35,7 +43,9 @@ function harness({course='5º de Primaria',response=reply(),permission=null,cano
     const start=core.indexOf('  async function send(options){'),end=core.indexOf('  async function feedback(',start);
     assert.ok(start>0&&end>start);vm.runInContext(core.slice(start,end),context);send.onclick=()=>context.send();
   }
-  return{window,document,ctx,field,send,mic,label,courseNode,requests,recorders,streams,sent,
+  return{window,document,ctx,field,send,mic,label,courseNode,requests,recorders,streams,sent,audioContexts,resourceTrace,
+    finishTurn(){requestPending=false;field.disabled=false;field.value="";send.disabled=true},
+    nextMode(mode){ctx.mode=mode;ctx.session_id="session-"+mode+"-"+(++ctx.epoch);emit(listeners,"coco:eterna-context-invalidated")},
     set busy(v){requestPending=v},set blockSend(v){blockSend=v},voice:v=>{voiced=v},event:(name,e)=>emit(listeners,name,e),
     hide(){document.hidden=true;emit(docListeners,'visibilitychange')},close(){classes.delete('is-open');emit(listeners,'coco:eterna-context-invalidated')},
     start:async()=>{await window.__test.start();await flush()},
@@ -81,3 +91,24 @@ test('cache delivers the legacy monitor and the new owner as one release',()=>{c
 
 test('missing endpoint releases ownership so a corrected configuration can retry',async()=>{const h=harness();h.window.COCO_CONFIG.eternaEndpoint='';await h.transcribe();assert.equal(h.send.clicks,0);h.window.COCO_CONFIG.eternaEndpoint='https://voice.invalid';await h.start();assert.equal(h.streams.length,1);h.event('pagehide')});
 test('missing session releases ownership so renewed authorization can retry',async()=>{const h=harness();h.window.__COCO_SUPABASE_CLIENT.auth.getSession=async()=>({data:{session:null}});await h.transcribe();assert.equal(h.send.clicks,0);h.window.__COCO_SUPABASE_CLIENT.auth.getSession=async()=>({data:{session:{access_token:'test-token'}}});await h.start();assert.equal(h.streams.length,1);h.event('pagehide')});
+
+
+// Mobile input regression: use real float amplitudes, not a permanently loud fake microphone.
+for(const mode of ['homework','ask','review','explain','exam','practice']){
+  test('quiet floating-point input auto-sends in '+mode,async()=>{const h=harness({floatInput:true,volume:.006});h.nextMode(mode);await speakThenPause(h,1500);assert.equal(h.send.clicks,1);assert.equal(h.audioContexts[0].state,'closed')});
+}
+test('one page records all six modes twice with fresh per-turn graphs',async()=>{
+  const h=harness({floatInput:true,volume:.006});let count=0;
+  for(const mode of ['explain','exam','practice','ask','review','homework','practice','review','exam','explain','homework','ask']){
+    h.finishTurn();h.nextMode(mode);await h.start();await h.advance(150);h.voice(true);await h.advance(800);h.voice(false);await h.advance(1700);
+    assert.equal(h.send.clicks,++count,mode);assert.equal(h.audioContexts.length,count);assert.ok(h.audioContexts.every(c=>c.state==='closed'));assert.ok(h.streams.every(s=>s.stopped>0));
+  }
+});
+test('audio context is opened and resumed before microphone permission await',async()=>{const h=harness({contextState:'suspended'});await h.start();assert.deepEqual(h.resourceTrace.slice(0,3),['context-created','context-resumed','microphone-request']);h.event('pagehide')});
+test('interrupted context is resumed on a new tap',async()=>{const h=harness({contextState:'interrupted',floatInput:true});await speakThenPause(h,1500);assert.equal(h.send.clicks,1);assert.equal(h.audioContexts[0].resumes,1)});
+test('mid-recording interruption resumes the same graph without another recorder',async()=>{const h=harness({floatInput:true});await h.start();await h.advance(200);h.voice(true);await h.advance(400);h.audioContexts[0].state='interrupted';await h.advance(200);assert.equal(h.audioContexts[0].state,'running');h.voice(false);await h.advance(1700);assert.equal(h.send.clicks,1);assert.equal(h.recorders.length,1)});
+test('speaking immediately is not calibrated as background noise',async()=>{const h=harness({floatInput:true,volume:.01});h.voice(true);await h.start();await h.advance(2600);assert.equal(h.send.clicks,0);assert.equal(h.recorders[0].state,'recording');h.voice(false);await h.advance(1700);assert.equal(h.send.clicks,1)});
+test('real silence is still not transcribed or automatically sent',async()=>{const h=harness({floatInput:true});await h.start();await h.advance(13000);assert.equal(h.send.clicks,0);assert.equal(h.requests.length,0);assert.ok(h.audioContexts.every(c=>c.state==='closed'))});
+test('an isolated brief click is not enough speech to submit',async()=>{const h=harness({floatInput:true});await h.start();await h.advance(200);h.voice(true);await h.advance(32);h.voice(false);await h.advance(13000);assert.equal(h.send.clicks,0);assert.equal(h.requests.length,0)});
+test('blocked audio activation has a diagnostic, not a false no-speech message',async()=>{const h=harness({contextState:'interrupted',resumeStuck:true}),p=h.start();await flush();await h.advance(1600);await p;assert.equal(h.send.clicks,0);assert.equal(h.requests.length,0);assert.match(h.label.textContent,/AUDIO_CONTEXT_NOT_RUNNING/);assert.doesNotMatch(h.label.textContent,/No he oído voz/);assert.ok(h.audioContexts.every(c=>c.state==='closed'))});
+test('silent output graph is muted and never plays the microphone to the speaker',async()=>{const h=harness({floatInput:true});await h.start();const gain=h.audioContexts[0].connections.find(n=>n.gain);assert.equal(gain.gain.value,0);h.event('pagehide')});
