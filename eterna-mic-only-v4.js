@@ -55,17 +55,46 @@
     }catch(e){}
     return''
   }
+  // Diagnostic labels are fixed strings; never display or store raw server errors or audio.
+  function voiceDiagnostic(http,code,message){
+    status(message+' [MIC-DIAG-1'+(http?' HTTP '+http:'')+' '+code+']','warn')
+  }
+  function transcriptionError(response,data){
+    var http=response.status,code=data&&typeof data.error==='string'?data.error:'';
+    var known={
+      UNAUTHORIZED:'La sesión no autoriza el audio. Vuelve a entrar.',
+      ETERNA_SUBSCRIPTION_REQUIRED:'El servidor requiere una suscripción o prueba activa. Revisa Zona Familiar.',
+      ETERNA_LEGAL_ACCEPTANCE_REQUIRED:'Falta completar la autorización legal en Zona Familiar.',
+      PARENTAL_AUTHORIZATION_REQUIRED:'Falta la autorización de un adulto en Zona Familiar.',
+      ADULT_EMAIL_VERIFICATION_REQUIRED:'Falta verificar el correo del adulto en Zona Familiar.',
+      STUDENT_PROFILE_REQUIRED:'Falta completar el perfil escolar en Zona Familiar.',
+      ETERNA_AUDIO_DISABLED:'La entrada por voz está desactivada en Zona Familiar.',
+      AUDIO_REQUIRED:'El servidor no ha recibido el archivo de audio.',
+      AUDIO_TOO_LARGE:'La grabación supera el tamaño permitido. Prueba una frase más corta.',
+      AUDIO_TYPE_NOT_ALLOWED:'El servidor no acepta el formato de esta grabación.',
+      ORIGIN_NOT_ALLOWED:'El servidor no autoriza el origen de esta página.',
+      NOT_FOUND:'No se encuentra el servicio de transcripción.',
+      ETERNA_BACKEND_ERROR:'El servidor de Eterna ha fallado al procesar la transcripción.'
+    };
+    if(Object.prototype.hasOwnProperty.call(known,code)){voiceDiagnostic(http,code,known[code]);return}
+    var messages={401:'La sesión no autoriza el audio. Vuelve a entrar.',402:'El servidor requiere acceso activo. Revisa Zona Familiar.',403:'El servidor ha rechazado el permiso para transcribir.',404:'No se encuentra el servicio de transcripción.',413:'La grabación supera el tamaño permitido.',415:'El servidor no acepta el formato de esta grabación.',429:'El servicio de voz ha alcanzado un límite temporal.'};
+    voiceDiagnostic(http,'HTTP_ERROR',messages[http]||(http>=500?'El servicio de transcripción ha devuelto un error del servidor.':'El servicio de transcripción ha rechazado la petición.'))
+  }
+
   async function transcribe(blob,type){
     status('Transcribiendo lo que dijiste…','warn');
-    var base=String(root.COCO_CONFIG&&root.COCO_CONFIG.eternaEndpoint||'').replace(/\/+$/,'');if(!base){status('Eterna no tiene configurado el servicio de voz.','warn');return}
-    var token=await authToken(false);if(!token){status('La sesión ha caducado. Vuelve a entrar y prueba el micrófono.','warn');return}
+    var base=String(root.COCO_CONFIG&&root.COCO_CONFIG.eternaEndpoint||'').replace(/\/+$/,'');if(!base){voiceDiagnostic(0,'ENDPOINT_MISSING','Eterna no tiene configurado el servicio de voz.');return}
+    var token=await authToken(false);if(!token){voiceDiagnostic(0,'SESSION_MISSING','La sesión ha caducado. Vuelve a entrar y prueba el micrófono.');return}
     async function request(t){var fd=new FormData();fd.append('audio',blob,filename(type));return fetch(base+'/v1/transcribe',{method:'POST',headers:{Authorization:'Bearer '+t},body:fd})}
     try{
       var r=await request(token);if(r.status===401){token=await authToken(true);if(token)r=await request(token)}
-      var data=null;try{data=await r.json()}catch(e){}
-      if(!r.ok||!data||!clean(data.text)){status('No pude transcribir esta vez. Vuelve a tocar el micrófono.','warn');return}
+      var data=null,validJson=true;try{data=await r.json()}catch(e){validJson=false}
+      if(!r.ok){transcriptionError(r,data);return}
+      if(!validJson){voiceDiagnostic(r.status,'INVALID_JSON','El servicio de voz ha devuelto una respuesta que no se puede leer.');return}
+      if(!data||typeof data.text!=='string'){voiceDiagnostic(r.status,'INVALID_RESPONSE','El servicio de voz ha respondido sin el campo de transcripción esperado.');return}
+      if(!clean(data.text)){voiceDiagnostic(r.status,'EMPTY_TRANSCRIPT','El servicio de voz ha devuelto una transcripción vacía.');return}
       if(write(data.text))status('He escrito todo lo que dijiste. Revísalo y pulsa enviar.','ok')
-    }catch(e){status('No pude transcribir esta vez. Comprueba la conexión y vuelve a intentarlo.','warn')}
+    }catch(e){voiceDiagnostic(0,'REQUEST_FAILED','No se ha podido completar la petición de voz. Comprueba la conexión.')}
   }
 
   function stop(reason){
