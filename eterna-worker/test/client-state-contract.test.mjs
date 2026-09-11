@@ -10,6 +10,7 @@ const index = readFileSync(new URL("index.html", root), "utf8");
 const serviceWorker = readFileSync(new URL("sw.js", root), "utf8");
 const bootstrap = readFileSync(new URL("coco-v153-fixes.js", root), "utf8");
 const shareCatalog = readFileSync(new URL("share/catalog-v133.json", root), "utf8");
+const micOnly = readFileSync(new URL("eterna-mic-only-v2.js", root), "utf8");
 
 test("the canonical client sends and receives pedagogical_state", () => {
   assert.match(client, /pedagogical_state\s*:\s*state\.pedagogicalState/);
@@ -47,13 +48,22 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
   assert.match(index, /eterna-v159\.js\?v=160980/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.7-mic-only-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.8-mic-only-v2-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
-  assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v1\.js"/);
+  assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v2\.js"/);
   assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(eternaExperienceWithMicOnly\(e\)\)/);
   assert.match(serviceWorker, /ETERNA_HOTFIX_PATH="\.\/eterna-hotfix-v160902\.js"/);
   assert.match(serviceWorker, /basePromise=cachedPatch\(ETERNA_CORE_PATH\)/);
+});
+
+test("mic-only dictation is independent, age-aware and does not auto-send", () => {
+  assert.match(micOnly, /SpeechRecognition\|\|root\.webkitSpeechRecognition/);
+  assert.match(micOnly, /a<=8\?3200:a<=11\?2700:a<=14\?2200:1800/);
+  assert.match(micOnly, /nativeSetValue/);
+  assert.match(micOnly, /InputEvent\('input'/);
+  assert.doesNotMatch(micOnly, /data-et-send/);
+  assert.match(micOnly, /data-et-converse/);
 });
 
 test("public game cards expose keyboard controls and Eterna announces login", () => {
