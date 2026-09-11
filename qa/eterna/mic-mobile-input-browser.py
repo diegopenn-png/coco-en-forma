@@ -45,7 +45,7 @@ with sync_playwright() as p:
         print('START',i,mode,flush=True)
         page.evaluate('(mode)=>__qa.setMode(mode,false)',mode);page.wait_for_timeout(100)
         page.evaluate('trace=[]');page.evaluate('(v)=>testVolume=v',.05 if i==0 else .006)
-        target='[data-et-mic]' if i%2==0 else '[data-et-startaction="voice"]'
+        target='[data-et-mic]' if i%2==0 or i>=6 else '[data-et-startaction="voice"]'
         page.locator(target).click(force=True);page.wait_for_timeout(350)
         page.evaluate('setSignal(true)');page.wait_for_timeout(900);page.evaluate('setSignal(false)')
         page.wait_for_timeout(12800 if args.baseline_dir and i==1 else 3000)
