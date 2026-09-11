@@ -1,0 +1,38 @@
+name: Eterna corrected official text archive
+on:
+  push:
+    branches: ["feat/eterna-library-first-202609"]
+    paths: ["qa/library/reprocess_official.py", ".github/workflows/eterna-library-reprocess.yml"]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  nonduplicating-official-text:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-official-curriculum-archive
+          run-id: 34656277393
+          github-token: ${{ github.token }}
+          path: library-evidence
+      - name: Install extraction tools
+        run: |
+          pip install beautifulsoup4==4.13.5 lxml==6.0.1
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+      - name: Re-extract without nested text duplication and retry official sources
+        run: python qa/library/reprocess_official.py
+      - name: Preserve corrected national and quarantined regional archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-official-curriculum-corrected
+          path: library-evidence
+          retention-days: 90
+          if-no-files-found: error
