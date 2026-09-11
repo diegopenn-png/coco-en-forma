@@ -142,6 +142,7 @@
   var originalGetUserMedia=media.getUserMedia.bind(media);
   var recentEternaMicIntentAt=0;
   var monitor=null;
+  function singleMicOwnsAudio(){return root.__ETERNA_MIC_ONLY_V4__===true}
 
   function clean(v){return String(v==null?'':v).replace(/\s+/g,' ').trim()}
 
@@ -180,6 +181,7 @@
   }
 
   function finish(reason){
+    if(singleMicOwnsAudio()){cleanup();return}
     var m=monitor;if(!m||m.done)return;
     m.done=true;
     if(reason==='no-speech'){
@@ -193,6 +195,7 @@
 
   function startMonitor(stream){
     cleanup();
+    if(singleMicOwnsAudio())return;
     var o=overlay();if(!o||!o.classList.contains('is-open'))return;
     var Ctx=root.AudioContext||root.webkitAudioContext;if(!Ctx)return;
     var cfg=cfgForAge(ageFromUi()),ctx=null,analyser=null;
@@ -209,6 +212,7 @@
 
     function tick(){
       if(monitor!==m||m.done)return;
+      if(singleMicOwnsAudio()||stream.active===false){cleanup();return}
       if(!overlay()||!overlay().classList.contains('is-open')){cleanup();return}
       if(m.ctx&&m.ctx.state==='suspended'){try{m.ctx.resume()}catch(e){}}
       analyser.getByteTimeDomainData(data);
@@ -242,14 +246,14 @@
   media.getUserMedia=function(constraints){
     var isAudio=Boolean(constraints&&constraints.audio);
     return originalGetUserMedia(constraints).then(function(stream){
-      if(isAudio&&Date.now()-recentEternaMicIntentAt<5000){setTimeout(function(){startMonitor(stream)},120)}
+      if(isAudio&&!singleMicOwnsAudio()&&Date.now()-recentEternaMicIntentAt<5000){setTimeout(function(){if(!singleMicOwnsAudio())startMonitor(stream)},120)}
       return stream
     })
   };
 
   document.addEventListener('click',function(ev){
     var mic=ev.target&&ev.target.closest?ev.target.closest('#eternaOverlayV159 [data-et-mic]'):null;
-    if(mic)recentEternaMicIntentAt=Date.now()
+    if(mic&&!singleMicOwnsAudio())recentEternaMicIntentAt=Date.now()
   },true);
 
   document.addEventListener('click',function(ev){
