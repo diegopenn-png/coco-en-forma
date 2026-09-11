@@ -47,10 +47,11 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
   assert.match(index, /eterna-v159\.js\?v=160980/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.5-voice-v5-clean-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.7-mic-only-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
-  assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(eternaExperienceWithVoiceV5\(e\)\)/);
+  assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v1\.js"/);
+  assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(eternaExperienceWithMicOnly\(e\)\)/);
   assert.match(serviceWorker, /ETERNA_HOTFIX_PATH="\.\/eterna-hotfix-v160902\.js"/);
   assert.match(serviceWorker, /basePromise=cachedPatch\(ETERNA_CORE_PATH\)/);
 });
