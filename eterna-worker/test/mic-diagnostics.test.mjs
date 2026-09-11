@@ -6,10 +6,10 @@ import { readFileSync } from 'node:fs';
 const source = readFileSync(new URL('../../eterna-mic-only-v4.js', import.meta.url), 'utf8');
 // Only the VM test copy exposes the function. No test hooks are shipped in the client.
 function harness(responses, { token = 'test-token', endpoint = 'https://voice.invalid', refreshToken = token } = {}) {
-  const calls = [], events = [], label = { textContent: '' }, dot = {}, send = { disabled: true };
-  const field = { value: '', dispatchEvent(e) { events.push(e.type); }, focus() {} };
+  const calls = [], events = [], label = { textContent: '' }, dot = {}, send = { disabled: true, clicks: 0, click() { this.clicks++; } };
+  const field = { value: '', dispatchEvent(e) { events.push(e.type); if(e.type === "input") send.disabled = !this.value.trim(); }, focus() {} };
   let refreshes = 0;
-  const overlay = { querySelector(s) { return { '[data-et-status]': label, '[data-et-dot]': dot, '[data-et-input]': field, '[data-et-send]': send }[s] || null; } };
+  const overlay = { classList: { contains: () => true }, querySelector(s) { return { '[data-et-status]': label, '[data-et-dot]': dot, '[data-et-input]': field, '[data-et-send]': send }[s] || null; } };
   const window = { COCO_CONFIG: { eternaEndpoint: endpoint }, addEventListener() {}, __COCO_SUPABASE_CLIENT: { auth: {
     async getSession() { return { data: { session: token ? { access_token: token } : null } }; },
     async refreshSession() { refreshes++; token = refreshToken; }
@@ -26,7 +26,7 @@ function harness(responses, { token = 'test-token', endpoint = 'https://voice.in
     }
   });
   assert.ok(source.includes('})(window);'));
-  vm.runInContext(source.replace('})(window);', 'root.__testTranscribe=transcribe;})(window);'), context);
+  vm.runInContext(source.replace('})(window);', 'root.__testTranscribe=(blob,type)=>transcribe(blob,type,newTurn());})(window);'), context);
   return { calls, events, field, send, label, get refreshes() { return refreshes; },
     run: () => window.__testTranscribe(new Blob(['synthetic test audio'], { type: 'audio/mp4' }), 'audio/mp4') };
 }
@@ -96,7 +96,7 @@ test('microphone diagnostics: missing endpoint and session make no requests', as
     assert.match(h.label.textContent, new RegExp(expected)); assert.equal(h.calls.length, 0);
   }
 });
-test('microphone diagnostics: success preserves MP4 upload, input events and manual Send', async () => {
+test('microphone diagnostics: success preserves MP4 upload, input events and one automatic Send', async () => {
   const h = harness([response(200, { text: '  Explica los números primos.  ' })]); await h.run();
   assert.equal(h.field.value, 'Explica los números primos.'); assert.equal(h.send.disabled, false);
   assert.deepEqual(h.events, ['input', 'change']);
@@ -104,7 +104,7 @@ test('microphone diagnostics: success preserves MP4 upload, input events and man
   assert.equal(h.calls[0].init.method, 'POST'); assert.equal(h.calls[0].init.headers.Authorization, 'Bearer test-token');
   assert.equal(h.calls[0].init.body.get('audio').name, 'pregunta.m4a');
   assert.equal(h.calls[0].init.body.get('audio').type, 'audio/mp4');
-  assert.match(h.label.textContent, /Revísalo y pulsa enviar/);
+  assert.equal(h.send.clicks, 1); assert.match(h.label.textContent, /Enviando tu pregunta/);
 });
 test('microphone diagnostics: expired session refresh still retries once with refreshed token', async () => {
   const h = harness([response(401, { error: 'UNAUTHORIZED' }), response(200, { text: 'Números primos' })], { refreshToken: 'refreshed-test-token' });
