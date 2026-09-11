@@ -48,7 +48,7 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
   assert.match(index, /eterna-v159\.js\?v=160980/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.8-mic-only-v2-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.9-mic-only-v3-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v2\.js"/);
@@ -57,12 +57,16 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
   assert.match(serviceWorker, /basePromise=cachedPatch\(ETERNA_CORE_PATH\)/);
 });
 
-test("mic-only dictation is independent, age-aware and does not auto-send", () => {
-  assert.match(micOnly, /SpeechRecognition\|\|root\.webkitSpeechRecognition/);
-  assert.match(micOnly, /a<=8\?3200:a<=11\?2700:a<=14\?2200:1800/);
+test("mic-only v3 captures full audio, auto-stops by age and leaves Send ready", () => {
+  assert.match(micOnly, /navigator\.mediaDevices\.getUserMedia/);
+  assert.match(micOnly, /new MediaRecorder/);
+  assert.match(micOnly, /a<=8\?3600:a<=11\?3200:a<=14\?2700:2300/);
+  assert.match(micOnly, /createAnalyser/);
+  assert.match(micOnly, /\/v1\/transcribe/);
+  assert.match(micOnly, /Authorization:'Bearer '/);
   assert.match(micOnly, /nativeSetValue/);
   assert.match(micOnly, /InputEvent\('input'/);
-  assert.doesNotMatch(micOnly, /data-et-send/);
+  assert.match(micOnly, /if\(b\)b\.disabled=false/);
   assert.match(micOnly, /data-et-converse/);
 });
 
