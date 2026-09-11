@@ -1,0 +1,18 @@
+name: Eterna final library source audit snapshot
+on:
+  push:
+    branches: ["fix/eterna-library-integrated-qa-20260912"]
+    paths: [".github/workflows/eterna-library-qa-snapshot.yml"]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: git archive --format=tar HEAD eterna-worker qa/library eterna-state-contract-v3.js > library-final-source.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eterna-final-library-source
+          path: library-final-source.tar
+          retention-days: 7
