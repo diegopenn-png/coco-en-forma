@@ -1,0 +1,62 @@
+name: Eterna canonical library real authenticated verification
+on:
+  push:
+    branches: ["fix/eterna-library-integrated-qa-20260912"]
+    paths: ["qa/library/final_route_guard.py", "qa/library/remote_canonical_verify.mjs", ".github/workflows/eterna-library-canonical-verify.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: eterna-library-private-qa
+  cancel-in-progress: false
+jobs:
+  canonical-private:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply only final numeric and language guards
+        run: python qa/library/final_route_guard.py
+      - name: Run full regression and 80-lesson canonical HTTP matrix
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p library-canonical-evidence
+          cd eterna-worker
+          npm run check | tee ../library-canonical-evidence/regression.txt
+          grep -q '^# pass 387$' ../library-canonical-evidence/regression.txt
+          grep -q '^# fail 0$' ../library-canonical-evidence/regression.txt
+      - name: Install locked Worker tools
+        run: npm ci --prefix eterna-worker --no-audit --no-fund
+      - name: Validate canonical private Worker with real disposable Supabase identity
+        run: node qa/library/remote_canonical_verify.mjs
+      - name: Commit exact verified guards only to QA branch
+        run: |
+          test "$GITHUB_REF" = "refs/heads/fix/eterna-library-integrated-qa-20260912"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs
+          git commit -m "fix(eterna): verify prepared library through real authenticated canonical Worker" -m "387 regressions. Real Cloudflare/Supabase disposable identity, all six modes and four stages, zero generation tokens. Microphone unchanged; no production deployment."
+          git push origin HEAD:refs/heads/fix/eterna-library-integrated-qa-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{execFileSync}from'node:child_process';import{createHash}from'node:crypto';
+          const p='library-canonical-evidence/report.json',r=JSON.parse(readFileSync(p));r.source_commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+          const files=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json'];
+          r.blobs=Object.fromEntries(files.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));writeFileSync(p,JSON.stringify(r,null,2));
+          JS
+      - name: Preserve sanitized evidence without credentials
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-canonical-private-verification
+          path: library-canonical-evidence
+          retention-days: 30
+          if-no-files-found: warn
