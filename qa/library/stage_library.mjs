@@ -27,7 +27,8 @@ async function cf(path){const r=await fetch(`https://api.cloudflare.com/client/v
 async function live(){const p=await cf('/deployments'),d=(Array.isArray(p)?p:p.deployments)?.[0];assert.ok(d?.versions?.length===1&&d.versions[0].percentage===100);return d}
 const baseline=await live(),version=await cf('/versions/'+baseline.versions[0].version_id),bindings=version.resources.bindings;report.production_version=baseline.versions[0].version_id;report.production_deployment=baseline.id;save();
 const vars=Object.fromEntries(bindings.filter(b=>b.type==='plain_text').map(b=>[b.name,b.text]));
-assert.ok(String(vars.SUPABASE_URL||'').includes('fcatttsfufjiphgohgwp'));
+assert.ok(bindings.some(b=>b.name==='SUPABASE_URL'&&['plain_text','secret_text'].includes(b.type)),'Supabase URL binding missing');
+if(vars.SUPABASE_URL)assert.equal(new URL(vars.SUPABASE_URL).hostname,'fcatttsfufjiphgohgwp.supabase.co');
 const access=randomBytes(32).toString('hex');console.log('::add-mask::'+access);
 const expires=Date.now()+25*60000,probeBody=JSON.stringify({probe:'synthetic-library-only'}),allowed=[probeBody,...batches].map(hash);
 const generated=`import './library/content-v1.js';\nimport './library/runtime-v1.js';\nconst ALLOWED=new Set(${JSON.stringify(allowed)}),TABLES=new Set(${JSON.stringify(Object.keys(tables))});
@@ -36,12 +37,13 @@ export default{async fetch(request,env){
  const reply=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store','X-Robots-Tag':'noindex'}});
  if(Date.now()>${expires}||request.method!=='POST'||new URL(request.url).pathname!=='/__library_stage')return reply({error:'NOT_FOUND'},404);
  if(await digest((request.headers.get('Authorization')||'').replace(/^Bearer /,''))!==${JSON.stringify(hash(access))})return reply({error:'UNAUTHORIZED'},401);
+ try{const target=new URL(env.SUPABASE_URL);if(target.protocol!=='https:'||target.hostname!=='fcatttsfufjiphgohgwp.supabase.co')return reply({error:'PROJECT_SCOPE_REJECTED'},403)}catch{return reply({error:'PROJECT_CONFIGURATION'},500)}
  const raw=await request.text();if(raw.length>14000000||!ALLOWED.has(await digest(raw)))return reply({error:'PAYLOAD_NOT_ALLOWED'},403);
  const data=JSON.parse(raw);
  if(data.probe){
    const l=globalThis.EternaOwnedLibrary;let cases=0;const durations=[];
    for(const lesson of globalThis.ETERNA_LIBRARY_CONTENT.lessons)for(const mode of ['homework','ask','review','explain','exam','practice']){const start=performance.now(),r=l.decision({text:'Explícame '+lesson.title,profile:{school_year:lesson.school_years[0]},mode});durations.push(performance.now()-start);if(!r||r.lesson.id!==lesson.id||r.model_calls!==0)throw Error('Private compiled library test failed');cases++}
-   durations.sort((a,b)=>a-b);return reply({ok:true,cases,model_calls:0,generation_tokens:0,compute_p95_ms:durations[Math.floor(durations.length*.95)],network_included:false,synthetic_only:true})
+   durations.sort((a,b)=>a-b);return reply({ok:true,cases,model_calls:0,generation_tokens:0,compute_p95_ms:durations[Math.floor(durations.length*.95)],network_included:false,synthetic_only:true,project_scope_verified:true})
  }
  if(!TABLES.has(data.table)||!Array.isArray(data.rows)||data.rows.some(r=>r.release_id!==${JSON.stringify(release)}))return reply({error:'SCOPE_REJECTED'},403);
  const key=env.SUPABASE_SECRET_KEY||env.SUPABASE_SERVICE_ROLE_KEY;if(!key)return reply({error:'CONFIGURATION'},500);
