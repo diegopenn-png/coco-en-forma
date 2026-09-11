@@ -1,0 +1,75 @@
+name: Eterna PWA microphone six-mode capture verification
+on:
+  push:
+    branches: ["fix/eterna-pwa-capture-160993"]
+permissions:
+  contents: write
+jobs:
+  isolated-capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preserve baseline and apply exact locally tested patch
+        run: |
+          cp eterna-mic-only-v4.js /tmp/mic-baseline.js
+          python qa/eterna/apply-pwa-capture.py
+      - name: Syntax and complete regression suite
+        shell: bash
+        run: |
+          set -o pipefail
+          node --check eterna-mic-only-v4.js
+          node --check sw.js
+          cd eterna-worker
+          npm run check | tee ../pwa-capture-regression.txt
+      - name: Install isolated browser tooling
+        run: pip install playwright==1.55.0
+      - name: Real audio graph baseline reproduction and six sequential modes
+        run: |
+          python qa/eterna/mic-pwa-capture-browser.py --baseline-file /tmp/mic-baseline.js --output pwa-capture-baseline.json
+          python qa/eterna/mic-pwa-capture-browser.py --output pwa-capture-six-modes.json
+      - name: Validate evidence and preserve backend and canonical Send
+        run: |
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          from hashlib import sha256
+          assert json.loads(Path('pwa-capture-baseline.json').read_text())['baseline_no_voice_reproduced'] is True
+          p=json.loads(Path('pwa-capture-six-modes.json').read_text());assert p['six_modes_passed'] and len(p['results'])==6
+          for r in p['results']: assert r['chat_requests']==1 and r['recordings']==1
+          assert sha256(Path('eterna-worker/src/index.js').read_bytes()).hexdigest()=='b62aaaedc07cbc2ada1e1410b675dc62c4d8fcd3b5b626e2e855e157e706e9c5'
+          assert sha256(Path('eterna-v159.js').read_bytes()).hexdigest()=='a31a36f546528b5e4a30e701957589fe4ae88a0ab2fff3368f86fc082ae8eced'
+          text=Path('pwa-capture-regression.txt').read_text();assert re.search(r'# pass 286\b',text) and '# fail 0' in text
+          PY
+      - name: Commit only verified files to isolated branch
+        run: |
+          test "$GITHUB_REF" = 'refs/heads/fix/eterna-pwa-capture-160993'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add eterna-mic-only-v4.js sw.js eterna-worker/test/client-state-contract.test.mjs
+          git commit -m 'fix(eterna): activate per-turn PWA audio and preserve quiet speech detection' -m '286 regressions passed; six actual modes sequentially passed with real WebAudio and MediaRecorder, synthetic signal and mocked server responses. iPhone confirmation pending. No backend or canonical chat changes.'
+          git push origin HEAD:refs/heads/fix/eterna-pwa-capture-160993
+          python - <<'PY'
+          from pathlib import Path
+          import json,subprocess,hashlib
+          files=['eterna-mic-only-v4.js','sw.js','eterna-worker/test/client-state-contract.test.mjs','eterna-worker/test/mic-pwa-capture.test.mjs','qa/eterna/mic-pwa-capture-browser.py']
+          blobs={p:{'sha':subprocess.check_output(['git','hash-object',p],text=True).strip(),'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in files}
+          Path('pwa-capture-report.json').write_text(json.dumps({'commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'passed':286,'failed':0,'six_modes_passed':True,'backend_unchanged':True,'production_changed':False,'blobs':blobs},indent=2))
+          PY
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pwa-capture-verification
+          path: |
+            pwa-capture-regression.txt
+            pwa-capture-baseline.json
+            pwa-capture-six-modes.json
+            pwa-capture-report.json
+          retention-days: 14
