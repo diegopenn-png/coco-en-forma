@@ -10,7 +10,7 @@ const index = readFileSync(new URL("index.html", root), "utf8");
 const serviceWorker = readFileSync(new URL("sw.js", root), "utf8");
 const bootstrap = readFileSync(new URL("coco-v153-fixes.js", root), "utf8");
 const shareCatalog = readFileSync(new URL("share/catalog-v133.json", root), "utf8");
-const micOnly = readFileSync(new URL("eterna-mic-only-v2.js", root), "utf8");
+const micOnly = readFileSync(new URL("eterna-mic-only-v4.js", root), "utf8");
 
 test("the canonical client sends and receives pedagogical_state", () => {
   assert.match(client, /pedagogical_state\s*:\s*state\.pedagogicalState/);
@@ -48,26 +48,25 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
   assert.match(index, /eterna-v159\.js\?v=160980/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.9-mic-only-v3-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.99\.0-mic-only-v4-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
-  assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v2\.js"/);
+  assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v4\.js"/);
   assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(eternaExperienceWithMicOnly\(e\)\)/);
   assert.match(serviceWorker, /ETERNA_HOTFIX_PATH="\.\/eterna-hotfix-v160902\.js"/);
   assert.match(serviceWorker, /basePromise=cachedPatch\(ETERNA_CORE_PATH\)/);
 });
 
-test("mic-only v3 captures full audio, auto-stops by age and leaves Send ready", () => {
+test("mic-only v4 records the full utterance, auto-stops and leaves text ready to send", () => {
   assert.match(micOnly, /navigator\.mediaDevices\.getUserMedia/);
   assert.match(micOnly, /new MediaRecorder/);
-  assert.match(micOnly, /a<=8\?3600:a<=11\?3200:a<=14\?2700:2300/);
   assert.match(micOnly, /createAnalyser/);
+  assert.match(micOnly, /silenceMs\(\)/);
   assert.match(micOnly, /\/v1\/transcribe/);
-  assert.match(micOnly, /Authorization:'Bearer '/);
-  assert.match(micOnly, /nativeSetValue/);
+  assert.match(micOnly, /data-et-send/);
   assert.match(micOnly, /InputEvent\('input'/);
-  assert.match(micOnly, /if\(b\)b\.disabled=false/);
   assert.match(micOnly, /data-et-converse/);
+  assert.doesNotMatch(micOnly, /SpeechRecognition\|\|root\.webkitSpeechRecognition/);
 });
 
 test("public game cards expose keyboard controls and Eterna announces login", () => {
