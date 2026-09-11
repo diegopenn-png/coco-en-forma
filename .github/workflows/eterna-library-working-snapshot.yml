@@ -1,0 +1,24 @@
+name: Eterna library integration source snapshot
+on:
+  push:
+    branches: ["feat/eterna-library-first-202609"]
+    paths: [".github/workflows/eterna-library-working-snapshot.yml"]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package only tracked integration sources, no credentials or user data
+        run: |
+          git rev-parse HEAD > library-source-commit.txt
+          git archive --format=tar HEAD eterna-worker qa/library eterna-state-contract-v3.js eterna-v159.js eterna-mic-only-v4.js sw.js .github/workflows/eterna-authenticated-preview.yml .github/workflows/eterna-worker-production-160960.yml > library-sources.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-source-snapshot
+          path: |
+            library-sources.tar
+            library-source-commit.txt
+          retention-days: 7
