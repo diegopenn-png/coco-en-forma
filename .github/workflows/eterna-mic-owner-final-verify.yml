@@ -1,0 +1,82 @@
+name: Eterna final single-owner validation
+on:
+  push:
+    branches: ["fix/eterna-mic-single-owner-160992"]
+    paths: [".github/workflows/eterna-mic-owner-final-verify.yml"]
+permissions:
+  contents: write
+jobs:
+  final-microphone-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preserve retry after missing configuration or session
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import assert from'node:assert/strict';
+          const p='eterna-mic-only-v4.js';let s=readFileSync(p,'utf8');assert.equal(createHash('sha256').update(s).digest('hex'),'75ed4426c343033cd342d7de2da8fc9b6f2b09eaf1c7cf6a191609987b4c2c42');
+          for(const name of ['base','token']){const a=`if(!${name}){voiceDiagnostic`,b=`if(!${name}){if(pending===s)pending=null;voiceDiagnostic`;assert.equal(s.split(a).length,2);s=s.replace(a,b)}writeFileSync(p,s);
+          const t='eterna-worker/test/mic-auto-send.test.mjs';writeFileSync(t,readFileSync(t,'utf8')+`
+          test('missing endpoint releases ownership so a corrected configuration can retry',async()=>{const h=harness();h.window.COCO_CONFIG.eternaEndpoint='';await h.transcribe();assert.equal(h.send.clicks,0);h.window.COCO_CONFIG.eternaEndpoint='https://voice.invalid';await h.start();assert.equal(h.streams.length,1);h.event('pagehide')});
+          test('missing session releases ownership so renewed authorization can retry',async()=>{const h=harness();h.window.__COCO_SUPABASE_CLIENT.auth.getSession=async()=>({data:{session:null}});await h.transcribe();assert.equal(h.send.clicks,0);h.window.__COCO_SUPABASE_CLIENT.auth.getSession=async()=>({data:{session:{access_token:'test-token'}}});await h.start();assert.equal(h.streams.length,1);h.event('pagehide')});
+          `);
+          JS
+      - name: Run complete regression suite
+        shell: bash
+        run: |
+          set -o pipefail
+          node --check eterna-mic-only-v4.js
+          node --check eterna-voice-autocut-v160907.js
+          node --check sw.js
+          (cd eterna-worker && npm run check) | tee mic-single-owner-regression.txt
+      - name: Install browser test tooling
+        run: python -m pip install playwright==1.57.0
+      - name: Reproduce baseline and verify all actual-module combinations
+        run: |
+          mkdir -p mic-single-owner-evidence
+          for i in 0 1 2 3 4; do
+            timeout 60s python -u qa/eterna/mic-single-owner-browser.py --case "$i" --output "mic-single-owner-evidence/case-${i}.json"
+          done
+      - name: Verify evidence, backend and canonical chat unchanged
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import{createHash}from'node:crypto';import assert from'node:assert/strict';
+          const h=p=>createHash('sha256').update(readFileSync(p)).digest('hex');
+          assert.equal(h('eterna-worker/src/index.js'),'b62aaaedc07cbc2ada1e1410b675dc62c4d8fcd3b5b626e2e855e157e706e9c5');
+          assert.equal(h('eterna-v159.js'),'a31a36f546528b5e4a30e701957589fe4ae88a0ab2fff3368f86fc082ae8eced');
+          const log=readFileSync('mic-single-owner-regression.txt','utf8');assert.match(log,/# pass 268\b/);assert.match(log,/# fail 0\b/);
+          for(let i=0;i<5;i++){const r=JSON.parse(readFileSync(`mic-single-owner-evidence/case-${i}.json`));if(i===0)assert.equal(r.baseline_bug_reproduced,true);else assert.equal(r.fixed_scenarios_passed,1)}
+          JS
+      - name: Commit only verified retry guard on isolated branch
+        run: |
+          test "$GITHUB_REF" = "refs/heads/fix/eterna-mic-single-owner-160992"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-mic-only-v4.js eterna-worker/test/mic-auto-send.test.mjs
+          git commit -m "fix(eterna): release microphone ownership after failed access preflight" -m "268 regressions passed; original loop reproduced and four corrected browser module combinations verified. Media and network simulated. Production unchanged."
+          git push origin HEAD:refs/heads/fix/eterna-mic-single-owner-160992
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{execFileSync}from'node:child_process';import{createHash}from'node:crypto';
+          const paths=['eterna-mic-only-v4.js','eterna-voice-autocut-v160907.js','sw.js','eterna-worker/test/client-state-contract.test.mjs','eterna-worker/test/mic-auto-send.test.mjs','qa/eterna/mic-single-owner-browser.py'];
+          const blobs=Object.fromEntries(paths.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));
+          writeFileSync('mic-single-owner-evidence/report.json',JSON.stringify({commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),passed:268,failed:0,baseline_bug_reproduced:true,browser_fixed_scenarios_passed:4,media_and_network_simulated:true,backend_unchanged:true,canonical_chat_unchanged:true,production_changed:false,version:'coco-en-forma-v160.99.2-mic-single-owner-r1',blobs},null,2));
+          JS
+      - name: Preserve final exact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mic-single-owner-final-verification
+          path: |
+            mic-single-owner-regression.txt
+            mic-single-owner-evidence
+          retention-days: 14
+          if-no-files-found: warn
