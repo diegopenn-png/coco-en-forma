@@ -1,0 +1,59 @@
+name: Eterna microphone final automatic-send verification
+on:
+  push:
+    branches: ["fix/eterna-mic-auto-send-160991"]
+    paths: ["qa/eterna/apply-mic-final-guard.mjs", ".github/workflows/eterna-mic-final-guard-verify.yml"]
+permissions:
+  contents: write
+jobs:
+  final-client-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Guard final automatic send after existing legal checks
+        run: node qa/eterna/apply-mic-final-guard.mjs
+      - name: Check syntax and all 261 regressions
+        shell: bash
+        run: |
+          set -o pipefail
+          node --check eterna-mic-only-v4.js
+          node --check sw.js
+          cd eterna-worker
+          npm run check | tee ../mic-auto-send-regression.txt
+      - name: Assert working backend and chat stayed byte-identical
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import{createHash}from'node:crypto';import assert from'node:assert/strict';
+          const h=p=>createHash('sha256').update(readFileSync(p)).digest('hex');
+          assert.equal(h('eterna-worker/src/index.js'),'b62aaaedc07cbc2ada1e1410b675dc62c4d8fcd3b5b626e2e855e157e706e9c5');
+          assert.equal(h('eterna-v159.js'),'a31a36f546528b5e4a30e701957589fe4ae88a0ab2fff3368f86fc082ae8eced');
+          const results=readFileSync('mic-auto-send-regression.txt','utf8');assert.match(results,/# pass 261\b/);assert.match(results,/# fail 0\b/);
+          JS
+      - name: Commit validated final client to isolated branch only
+        run: |
+          test "$GITHUB_REF" = "refs/heads/fix/eterna-mic-auto-send-160991"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-mic-only-v4.js eterna-worker/test/mic-auto-send.test.mjs
+          git commit -m "fix(eterna): validate automatic Send after asynchronous legal replay" -m "261 tests passed including 38 voice-flow cases. Backend and chat unchanged. Isolated branch only."
+          git push origin HEAD:refs/heads/fix/eterna-mic-auto-send-160991
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{execFileSync}from'node:child_process';import{createHash}from'node:crypto';
+          const paths=['eterna-mic-only-v4.js','sw.js','eterna-worker/test/client-state-contract.test.mjs','eterna-worker/test/mic-diagnostics.test.mjs','eterna-worker/test/mic-auto-send.test.mjs'];
+          const blobs=Object.fromEntries(paths.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));
+          writeFileSync('mic-auto-send-report.json',JSON.stringify({passed:261,failed:0,voice_flow_tests:38,commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),version:'coco-en-forma-v160.99.1-mic-auto-send-r1',backend_unchanged:true,canonical_chat_unchanged:true,production_changed:false,blobs},null,2));
+          JS
+      - name: Preserve final evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mic-auto-send-final-verification
+          path: |
+            mic-auto-send-regression.txt
+            mic-auto-send-report.json
+          retention-days: 14
+          if-no-files-found: warn
