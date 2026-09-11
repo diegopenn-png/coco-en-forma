@@ -8,7 +8,7 @@
   if(root.__ETERNA_MIC_ONLY_V4__)return;
   root.__ETERNA_MIC_ONLY_V4__=true;
 
-  var session=null,pending=null,writing=false;
+  var session=null,pending=null,writing=false,dispatchTurn=null;
   var MIC_ICON='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6.5 10.5v.5a5.5 5.5 0 0 0 11 0v-.5M12 16.5V21M9 21h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 
   function overlay(){return document.getElementById('eternaOverlayV159')}
@@ -28,11 +28,19 @@
   function newTurn(){return pending={overlay:overlay(),field:input(),key:activityKey(),initialText:input()?input().value:'',cancelled:false,sent:false,processed:false,controller:typeof AbortController!=='undefined'?new AbortController():null}}
   function current(s){return !!(s&&pending===s&&!s.cancelled&&!s.sent&&s.overlay===overlay()&&s.field===input()&&s.overlay&&s.overlay.classList.contains('is-open')&&!document.hidden&&s.key===activityKey())}
   function releaseStream(s){try{if(s.stream)s.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}}
-  function cancelPending(){var s=pending;if(!s)return;s.cancelled=true;pending=null;try{if(s.controller)s.controller.abort()}catch(e){}if(session===s)stop('cancel');else releaseStream(s)}
+  function cancelPending(){if(dispatchTurn){dispatchTurn.cancelled=true;dispatchTurn=null}var s=pending;if(!s)return;s.cancelled=true;pending=null;try{if(s.controller)s.controller.abort()}catch(e){}if(session===s)stop('cancel');else releaseStream(s)}
   function submitOnce(s,text){
     var field=input(),button=sendButton();
     if(!current(s)||busy()||!field||field.disabled||!button||button.disabled||typeof button.click!=='function'||clean(field.value)!==clean(text))return false;
     // Use the existing Send handler and its access checks, not a second chat request path.
+    dispatchTurn=s;
+    // The legal layer may replay this click asynchronously. Check the original intent again.
+    if(button.addEventListener)button.addEventListener('click',function(ev){
+      if(dispatchTurn===s)dispatchTurn=null;
+      if(s.cancelled||s.overlay!==overlay()||s.field!==input()||!s.overlay.classList.contains('is-open')||document.hidden||s.key!==activityKey()||busy()||field.disabled||button.disabled||clean(field.value)!==clean(text)){
+        ev.preventDefault();ev.stopImmediatePropagation()
+      }
+    },{capture:true,once:true});
     s.sent=true;pending=null;status('Enviando tu pregunta…','ok');button.click();return true
   }
 
@@ -171,7 +179,7 @@
 
   installStyle();
   document.addEventListener('click',function(ev){var o=overlay();if(!o||!o.classList.contains('is-open'))return;var target=ev.target&&ev.target.closest?ev.target.closest('#eternaOverlayV159 [data-et-mic],#eternaOverlayV159 [data-et-startaction="voice"]'):null;if(!target){if(pending&&ev.target&&ev.target.closest&&ev.target.closest('#eternaOverlayV159 [data-et-send]'))cancelPending();return}ev.preventDefault();ev.stopImmediatePropagation();modernizeMic();start()},true);
-  document.addEventListener('input',function(ev){if(!writing&&pending&&ev.target===input())cancelPending()},true);
+  document.addEventListener('input',function(ev){if(!writing&&(pending||dispatchTurn)&&ev.target===input())cancelPending()},true);
   document.addEventListener('keydown',function(ev){if(pending&&ev.target===input()&&ev.key==='Enter'&&!ev.shiftKey)cancelPending()},true);
   document.addEventListener('visibilitychange',function(){if(document.hidden)cancelPending()});
   ['coco:eterna-close','coco:eterna-context-invalidated','coco:eterna-ui-reset','pagehide'].forEach(function(event){root.addEventListener(event,cancelPending)});

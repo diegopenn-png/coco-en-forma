@@ -7,9 +7,9 @@ const core=readFileSync(new URL('../../eterna-v159.js',import.meta.url),'utf8');
 const flush=async()=>{for(let i=0;i<16;i++)await Promise.resolve()};
 const reply=(text='Explícame los números primos',status=200)=>({status,ok:status===200,json:async()=>status===200?{text}:{error:'ETERNA_BACKEND_ERROR'}});
 function deferred(){let resolve;const promise=new Promise(r=>resolve=r);return{promise,resolve}}
-function harness({course='5º de Primaria',response=reply(),permission=null,canonical=false}={}){
+function harness({course='5º de Primaria',response=reply(),permission=null,canonical=false,delayedGate=false}={}){
   const listeners={},docListeners={},timers=new Map(),recorders=[],streams=[],requests=[],sent=[];
-  let now=10000,seq=0,voiced=false,requestPending=false,blockSend=false;
+  let now=10000,seq=0,voiced=false,requestPending=false,blockSend=false,gatePending=false;const targetGuards=[];
   const ctx={uid:'test-user',mode:'explain',session_id:'test-session',question_id:null,epoch:1,phase:'ASK'};
   const add=(map,name,fn)=>(map[name]||(map[name]=[])).push(fn);
   const emit=(map,name,event={})=>(map[name]||[]).forEach(fn=>fn(event));
@@ -17,7 +17,7 @@ function harness({course='5º de Primaria',response=reply(),permission=null,cano
   const classes=new Set(['is-open']);
   function element(marker){return{dataset:{},style:{},disabled:false,setAttribute(){},classList:{toggle(){}},closest(selector){return selector.includes(marker)?this:null}}}
   const field=Object.assign(element('[data-et-input]'),{value:'',focus(){},dispatchEvent(e){emit(docListeners,e.type,{type:e.type,target:this});if(e.type==='input'&&!requestPending)send.disabled=blockSend||!this.value.trim();return true}});
-  const send=Object.assign(element('[data-et-send]'),{disabled:true,clicks:0,onclick:null,click(){if(this.disabled)return;emit(docListeners,'click',{target:this});this.clicks++;sent.push(field.value);if(this.onclick)this.onclick();else{field.value='';field.disabled=true;this.disabled=true;requestPending=true}}});
+  const send=Object.assign(element('[data-et-send]'),{disabled:true,clicks:0,onclick:null,addEventListener(type,fn){targetGuards.push(fn)},click(){if(this.disabled)return;emit(docListeners,'click',{target:this});if(delayedGate&&!gatePending){gatePending=true;return}let blocked=false;const event={preventDefault(){},stopImmediatePropagation(){blocked=true}};for(const guard of targetGuards.splice(0)){guard(event);if(blocked)return}this.clicks++;sent.push(field.value);if(this.onclick)this.onclick();else{field.value='';field.disabled=true;this.disabled=true;requestPending=true}}});
   const mic=element('[data-et-mic]'),label={textContent:''},dot={},courseNode={textContent:course};
   const nodes={'[data-et-input]':field,'[data-et-send]':send,'[data-et-mic]':mic,'[data-et-status]':label,'[data-et-dot]':dot,'[data-et-course]':courseNode};
   const overlay={textContent:'Conversation mentions 2º de Bachillerato',classList:{contains:v=>classes.has(v)},querySelector:s=>nodes[s]||null,querySelectorAll:()=>[]};
@@ -67,3 +67,7 @@ test('disabled input and busy tutor block a new capture',async()=>{for(const kin
 test('automatic Send never overrides a disabled Send button',async()=>{const h=harness();h.blockSend=true;await h.transcribe();assert.equal(h.send.clicks,0);assert.equal(h.send.disabled,true);assert.equal(h.field.value,'Explícame los números primos')});
 test('recorder error discards audio',async()=>{const h=harness();await h.start();h.recorders[0].onerror();await h.advance(1);assert.equal(h.requests.length,0);assert.equal(h.send.clicks,0)});
 test('canonical unchanged Send handler receives exactly one automatic chat request',async()=>{const h=harness({canonical:true});await speakThenPause(h,1500);await flush();const chats=h.requests.filter(r=>r.url==='/v1/chat');assert.equal(chats.length,1);assert.equal(h.send.clicks,1);const payload=JSON.parse(chats[0].init.body);assert.equal(payload.text,'Explícame los números primos');assert.equal(payload.mode,'explain');assert.equal(payload.client_state_contract,3);assert.equal(payload.session_id,'test-session');assert.equal(h.field.value,'')});
+
+test('asynchronous legal gate accepts the same automatic intent exactly once',async()=>{const h=harness({delayedGate:true});await h.transcribe();assert.equal(h.send.clicks,0);h.send.click();assert.equal(h.send.clicks,1)});
+test('close during the existing legal gate prevents its delayed automatic replay',async()=>{const h=harness({delayedGate:true});await h.transcribe();h.close();h.send.click();assert.equal(h.send.clicks,0)});
+test('new activity during the legal gate prevents its delayed automatic replay',async()=>{const h=harness({delayedGate:true});await h.transcribe();h.ctx.session_id='another-session';h.event('coco:eterna-context-invalidated');h.send.click();assert.equal(h.send.clicks,0)});
