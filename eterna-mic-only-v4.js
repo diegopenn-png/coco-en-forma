@@ -27,8 +27,25 @@
   function busy(){try{var api=root.CocoEternaV160||root.CocoEternaV159;return !!(api&&api.isRequestPending&&api.isRequestPending())}catch(e){return true}}
   function newTurn(){return pending={overlay:overlay(),field:input(),key:activityKey(),initialText:input()?input().value:'',cancelled:false,sent:false,processed:false,controller:typeof AbortController!=='undefined'?new AbortController():null}}
   function current(s){return !!(s&&pending===s&&!s.cancelled&&!s.sent&&s.overlay===overlay()&&s.field===input()&&s.overlay&&s.overlay.classList.contains('is-open')&&!document.hidden&&s.key===activityKey())}
+  // Start the audio engine inside the tap, before any permission/network await.
+  function closeCaptureAudio(s){
+    if(!s)return;
+    [s.source,s.analyser,s.silentOutput].forEach(function(n){try{if(n&&n.disconnect)n.disconnect()}catch(e){}});
+    try{if(s.audioCtx&&s.audioCtx.state!=='closed'){var p=s.audioCtx.close();if(p&&p.catch)p.catch(function(){})}}catch(e){}
+  }
+  function resumeCaptureAudio(s){
+    var ctx=s.audioCtx;if(!ctx||ctx.state==='closed')return Promise.resolve(false);
+    if(ctx.state==='running')return Promise.resolve(true);
+    return new Promise(function(resolve){
+      var done=false,timer=setTimeout(function(){finish(false)},1200);
+      function finish(ok){if(done)return;done=true;clearTimeout(timer);resolve(ok)}
+      try{Promise.resolve(ctx.resume()).then(function(){finish(ctx.state==='running')},function(){finish(false)})}catch(e){finish(false)}
+    })
+  }
+  function captureUnavailable(code){status('No se ha activado correctamente la detección de voz. Toca el micrófono para reactivarla. [MIC-CAPTURE-1 '+code+']','warn')}
+
   function releaseStream(s){try{if(s.stream)s.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}}
-  function cancelPending(){if(dispatchTurn){dispatchTurn.cancelled=true;dispatchTurn=null}var s=pending;if(!s)return;s.cancelled=true;pending=null;try{if(s.controller)s.controller.abort()}catch(e){}if(session===s)stop('cancel');else releaseStream(s)}
+  function cancelPending(){if(dispatchTurn){dispatchTurn.cancelled=true;dispatchTurn=null}var s=pending;if(!s)return;s.cancelled=true;pending=null;try{if(s.controller)s.controller.abort()}catch(e){}if(session===s)stop('cancel');else{releaseStream(s);closeCaptureAudio(s)}}
   function submitOnce(s,text){
     var field=input(),button=sendButton();
     if(!current(s)||busy()||!field||field.disabled||!button||button.disabled||typeof button.click!=='function'||clean(field.value)!==clean(text))return false;
@@ -127,12 +144,13 @@
 
   function stop(reason){
     if(!session)return;var s=session;session=null;s.stopReason=reason;
-    if(reason==='cancel'||reason==='close'||reason==='no-speech'||reason==='error'){s.cancelled=true;if(pending===s)pending=null}
+    if(reason==='cancel'||reason==='close'||reason==='no-speech'||reason==='error'||reason==='audio-unavailable'){s.cancelled=true;if(pending===s)pending=null}
     if(s.hardTimer)clearTimeout(s.hardTimer);if(s.noSpeechTimer)clearTimeout(s.noSpeechTimer);if(s.silenceTimer)clearTimeout(s.silenceTimer);if(s.raf)cancelAnimationFrame(s.raf);
     try{if(s.rec&&s.rec.state==='recording')s.rec.stop()}catch(e){}
-    try{if(s.audioCtx)s.audioCtx.close()}catch(e){}
+    closeCaptureAudio(s);
     if(s.cancelled)releaseStream(s);
     setMic(false);
+    if(reason==='audio-unavailable')captureUnavailable('ANALYSIS_INTERRUPTED');
     if(reason==='no-speech')status('No he oído voz. Toca el micrófono y vuelve a intentarlo.','warn')
   }
 
@@ -144,16 +162,33 @@
     var o=overlay(),field=input();if(!o||!o.classList.contains('is-open')||!field||field.disabled||busy()||document.hidden)return;
     root.__ETERNA_VOICE_DIALOG_ACTIVE__=false;
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==='undefined'){status('Este dispositivo no permite grabar audio aquí.','warn');return}
-    var s=newTurn();
+    var s=newTurn(),AudioCtx=root.AudioContext||root.webkitAudioContext,ctx=null,warm=null;
     try{
+      // Creating and resuming after getUserMedia can lose the iOS user activation.
+      if(AudioCtx){ctx=new AudioCtx();s.audioCtx=ctx;warm=resumeCaptureAudio(s)}
+      if(!ctx){if(pending===s)pending=null;captureUnavailable('ANALYSER_UNAVAILABLE');return}
       var stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});s.stream=stream;
-      if(!current(s)){releaseStream(s);return}
+      if(!current(s)){releaseStream(s);closeCaptureAudio(s);return}
       try{localStorage.setItem('coco_eterna_mic_granted_v1','1')}catch(_e){}
-      var mime=recorderMime(),rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream),chunks=[];
-      var AudioCtx=root.AudioContext||root.webkitAudioContext,ctx=AudioCtx?new AudioCtx():null,analyser=null,data=null,source=null;s.audioCtx=ctx;
-      if(ctx){try{if(ctx.state==='suspended')await ctx.resume();source=ctx.createMediaStreamSource(stream);analyser=ctx.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=.2;source.connect(analyser);data=new Uint8Array(analyser.fftSize)}catch(e){try{ctx.close()}catch(_e){}ctx=null;analyser=null}}
-      if(!current(s)){releaseStream(s);try{if(ctx)ctx.close()}catch(e){}return}
-      Object.assign(s,{rec:rec,chunks:chunks,audioCtx:ctx,analyser:analyser,data:data,startedAt:Date.now(),speechAt:0,lastVoiceAt:0,noise:.008,raf:0,silenceTimer:null,hardTimer:null,noSpeechTimer:null,mime:mime,pauseMs:silenceMs()});session=s;
+      var mime=recorderMime(),rec=null,chunks=[];
+      if(warm)await warm;
+      if(!current(s)){releaseStream(s);closeCaptureAudio(s);return}
+      if(ctx.state!=='running'&&!await resumeCaptureAudio(s)){
+        if(current(s))captureUnavailable('AUDIO_CONTEXT_START_TIMEOUT');
+        if(pending===s)pending=null;releaseStream(s);closeCaptureAudio(s);return
+      }
+      if(!current(s)){releaseStream(s);closeCaptureAudio(s);return}
+      var analyser=null,data=null,source=null,floatData=false;
+      try{
+        source=ctx.createMediaStreamSource(stream);analyser=ctx.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=.2;
+        s.source=source;s.analyser=analyser;source.connect(analyser);
+        // Keep analysis pulled in WebKit without playing the child's microphone back.
+        if(ctx.createGain&&ctx.destination){s.silentOutput=ctx.createGain();s.silentOutput.gain.value=0;analyser.connect(s.silentOutput);s.silentOutput.connect(ctx.destination)}
+        floatData=typeof analyser.getFloatTimeDomainData==='function';data=floatData?new Float32Array(analyser.fftSize):new Uint8Array(analyser.fftSize)
+      }catch(e){if(pending===s)pending=null;releaseStream(s);closeCaptureAudio(s);captureUnavailable('ANALYSER_UNAVAILABLE');return}
+      if(!current(s)){releaseStream(s);closeCaptureAudio(s);return}
+      rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
+      Object.assign(s,{rec:rec,chunks:chunks,audioCtx:ctx,analyser:analyser,data:data,startedAt:Date.now(),speechAt:0,lastVoiceAt:0,noise:.0015,candidateAt:0,recovering:false,floatData:floatData,raf:0,silenceTimer:null,hardTimer:null,noSpeechTimer:null,mime:mime,pauseMs:silenceMs()});session=s;
       rec.ondataavailable=function(ev){if(ev.data&&ev.data.size)chunks.push(ev.data)};
       rec.onerror=function(){if(current(s)){stop('error');status('La grabación se interrumpió. Vuelve a tocar el micrófono.','warn')}};
       rec.onstop=async function(){
@@ -166,16 +201,41 @@
       };
       rec.start(250);setMic(true);status('Escuchando… al terminar, enviaré tu pregunta automáticamente.','ok');
       s.hardTimer=setTimeout(function(){if(session===s)stop('max')},maxMs());
-      s.noSpeechTimer=setTimeout(function(){if(session===s&&!s.speechAt)stop('no-speech')},noSpeechMs());
+      s.noSpeechTimer=setTimeout(function(){if(session===s&&!s.speechAt)stop(s.recovering||ctx.state!=='running'?'audio-unavailable':'no-speech')},noSpeechMs());
       function loop(){
         if(session!==s)return;
         var now=Date.now();
-        if(analyser&&data){analyser.getByteTimeDomainData(data);var sum=0;for(var i=0;i<data.length;i++){var v=(data[i]-128)/128;sum+=v*v}var rms=Math.sqrt(sum/data.length);if(now-s.startedAt<700)s.noise=Math.max(.004,s.noise*.85+rms*.15);var threshold=Math.max(.016,s.noise*2.6);if(rms>threshold){if(!s.speechAt)s.speechAt=now;s.lastVoiceAt=now;if(s.noSpeechTimer){clearTimeout(s.noSpeechTimer);s.noSpeechTimer=null}if(s.silenceTimer){clearTimeout(s.silenceTimer);s.silenceTimer=null}}else if(s.speechAt&&now-s.lastVoiceAt>180){if(!s.silenceTimer)s.silenceTimer=setTimeout(function(){if(session===s)stop('silence')},Math.max(0,s.pauseMs-(now-s.lastVoiceAt)))}}
+        if(ctx.state!=='running'){
+          if(!s.recovering){
+            s.recovering=true;if(s.silenceTimer){clearTimeout(s.silenceTimer);s.silenceTimer=null}
+            resumeCaptureAudio(s).then(function(ok){if(session!==s)return;s.recovering=false;if(!ok){stop('audio-unavailable');return}if(s.speechAt)s.lastVoiceAt=Date.now()})
+          }
+          s.raf=requestAnimationFrame(loop);return
+        }
+        if(analyser&&data){
+          if(s.floatData)analyser.getFloatTimeDomainData(data);else analyser.getByteTimeDomainData(data);
+          var sum=0,mean=0;for(var i=0;i<data.length;i++){var v=s.floatData?data[i]:(data[i]-128)/128;sum+=v*v;mean+=v}
+          // Float samples retain soft voices; remove DC offset only on that precise path.
+          var variance=sum/data.length-(s.floatData?Math.pow(mean/data.length,2):0),rms=Math.sqrt(Math.max(0,variance));
+          var threshold=Math.max(.004,s.noise*2.2);
+          if(rms>threshold){
+            if(!s.candidateAt)s.candidateAt=now;
+            if(!s.speechAt&&now-s.candidateAt>=64)s.speechAt=s.candidateAt;
+            s.lastVoiceAt=now;
+            if(s.speechAt&&s.noSpeechTimer){clearTimeout(s.noSpeechTimer);s.noSpeechTimer=null}
+            if(s.silenceTimer){clearTimeout(s.silenceTimer);s.silenceTimer=null}
+          }else{
+            s.candidateAt=0;
+            // Never calibrate using detected speech, including the first syllable.
+            if(!s.speechAt)s.noise=Math.max(.0005,Math.min(.0025,s.noise*.95+rms*.05));
+            if(s.speechAt&&now-s.lastVoiceAt>180&&!s.silenceTimer)s.silenceTimer=setTimeout(function(){if(session===s)stop('silence')},Math.max(0,s.pauseMs-(now-s.lastVoiceAt)))
+          }
+        }
         s.raf=requestAnimationFrame(loop)
       }
       if(analyser)s.raf=requestAnimationFrame(loop);
     }catch(e){
-      var relevant=current(s);if(session===s)stop('error');releaseStream(s);try{if(s.audioCtx)s.audioCtx.close()}catch(_e){}if(pending===s)pending=null;
+      var relevant=current(s);if(session===s)stop('error');releaseStream(s);closeCaptureAudio(s);if(pending===s)pending=null;
       if(!relevant)return;setMic(false);var name=String(e&&e.name||'');if(name==='NotAllowedError'||name==='SecurityError')status('El micrófono está bloqueado. Actívalo en los permisos de Coco en Forma y vuelve a tocarlo.','warn');else status('No pude abrir el micrófono. Vuelve a intentarlo.','warn')
     }
   }
