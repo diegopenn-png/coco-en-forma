@@ -1,0 +1,50 @@
+name: Eterna transcription-only verified recovery
+on:
+  push:
+    branches: ["main"]
+    paths: [".github/workflows/eterna-transcribe-base64-production.yml", "qa/eterna/deploy-transcribe-base64.mjs"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-worker-production
+  cancel-in-progress: false
+jobs:
+  guarded-transcription-only-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Recheck canonical source and all 223 regressions
+        shell: bash
+        run: |
+          set -o pipefail
+          cd eterna-worker
+          npm run check | tee ../transcribe-release-regression.txt
+      - name: Install locked Worker tooling
+        run: npm ci --prefix eterna-worker --no-audit --no-fund
+      - name: Retrieve actual passing private-audio evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: transcription-base64-verification
+          run-id: 34647583625
+          github-token: ${{ github.token }}
+          path: .release-evidence
+      - name: Verify live baseline, preserve bindings, deploy only tested canonical correction
+        run: node qa/eterna/deploy-transcribe-base64.mjs
+      - name: Preserve sanitized release evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transcription-production-verification
+          path: |
+            qa/eterna/.transcribe-release/report.json
+            transcribe-release-regression.txt
+          retention-days: 30
+          if-no-files-found: warn
