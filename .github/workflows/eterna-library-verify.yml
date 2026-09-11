@@ -1,0 +1,69 @@
+name: Eterna owned-library verified build
+on:
+  push:
+    branches: ["feat/eterna-library-first-202609"]
+    paths: [".github/workflows/eterna-library-verify.yml", "qa/library/build_content.py", "qa/library/apply_library.py", "eterna-worker/src/library/runtime-v1.js", "eterna-worker/test/library-first.test.mjs"]
+permissions:
+  contents: write
+jobs:
+  validate-before-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile byte-exact original teaching library and guarded adapter
+        run: |
+          python qa/library/build_content.py
+          python qa/library/apply_library.py
+      - name: Match independently exercised local implementation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+          expected={'eterna-worker/src/index.js':'92a5712135b2530506669bc6b6baabba59e14cf9744087abbd22393ea1972adb','eterna-worker/src/library/runtime-v1.js':'3eb25369a980593d4ca81a54cf31e2f7a3ee7c5cdd22c62237bb0e80dddcde13','eterna-worker/src/library/content-v1.js':'907fff5cb8baca727b4c6cc692ce337668c1650bcb020f5ba0d86fb022d1da47','eterna-worker/test/library-first.test.mjs':'5384eed6045a850676b74211b4915b070f980f1f7c5939c7c0613f4f6e506429'}
+          for path,want in expected.items():assert sha256(Path(path).read_bytes()).hexdigest()==want,path
+          PY
+      - name: Run all regression, privacy, state, speech and library tests
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p library-build-evidence
+          cd eterna-worker
+          npm run check | tee ../library-build-evidence/regression.txt
+      - name: Check no frontend, microphone or unrelated tracked file changed
+        run: |
+          python - <<'PY'
+          import subprocess
+          allowed={'eterna-worker/src/index.js','qa/library/lessons-infantil.txt'}
+          changed=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
+          assert changed<=allowed,changed
+          PY
+      - name: Preserve only validated canonical files on isolated branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js qa/library/lessons-v1.json qa/library/lessons-infantil.txt
+          git commit -m "feat(eterna): canonical verified library-first candidate" -m "Original 80 micro-lessons, 240 checks and 24 cordiality protocols; strict whole-turn routing, no model calls on verified routes. Existing safety and access gates preserved. Microphone and frontend unchanged. Feature disabled by default. Not complete national/territorial coverage."
+          git push origin HEAD:refs/heads/feat/eterna-library-first-202609
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
+          const files=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json'];
+          const blobs=Object.fromEntries(files.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));
+          const log=readFileSync('library-build-evidence/regression.txt','utf8');
+          const report={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),regression_passed:Number(log.match(/# pass (\d+)/)[1]),regression_failed:Number(log.match(/# fail (\d+)/)[1]),microphone_unchanged:true,frontend_unchanged:true,production_changed:false,feature_default:'disabled',lessons:80,questions:240,cordial_protocols:24,curriculum_complete:false,human_teacher_reviewed:false,blobs};
+          if(report.regression_failed!==0)throw Error('Regression failed');writeFileSync('library-build-evidence/report.json',JSON.stringify(report,null,2));
+          JS
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-build-verification
+          path: library-build-evidence
+          retention-days: 30
+          if-no-files-found: warn
