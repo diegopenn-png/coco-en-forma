@@ -1,0 +1,75 @@
+name: Eterna microphone single-owner regression
+on:
+  push:
+    branches: ["fix/eterna-mic-single-owner-160992"]
+    paths: ["qa/eterna/apply-mic-single-owner.mjs", "qa/eterna/mic-single-owner-browser.py", ".github/workflows/eterna-mic-single-owner-verify.yml"]
+permissions:
+  contents: write
+jobs:
+  verify-isolated-client:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply exact microphone collision repair
+        run: node qa/eterna/apply-mic-single-owner.mjs
+      - name: Run syntax and regression tests
+        shell: bash
+        run: |
+          set -o pipefail
+          node --check eterna-mic-only-v4.js
+          node --check eterna-voice-autocut-v160907.js
+          node --check sw.js
+          (cd eterna-worker && npm run check) | tee mic-single-owner-regression.txt
+      - name: Install isolated browser tooling
+        run: |
+          python -m pip install playwright==1.57.0
+          command -v google-chrome
+      - name: Reproduce old bug and verify four corrected real-DOM combinations
+        run: |
+          mkdir -p mic-single-owner-evidence
+          for i in 0 1 2 3 4; do
+            timeout 60s python -u qa/eterna/mic-single-owner-browser.py --case "$i" --output "mic-single-owner-evidence/case-${i}.json"
+          done
+      - name: Verify evidence and unchanged working server
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import{createHash}from'node:crypto';import assert from'node:assert/strict';
+          const h=p=>createHash('sha256').update(readFileSync(p)).digest('hex');
+          assert.equal(h('eterna-worker/src/index.js'),'b62aaaedc07cbc2ada1e1410b675dc62c4d8fcd3b5b626e2e855e157e706e9c5');
+          assert.equal(h('eterna-v159.js'),'a31a36f546528b5e4a30e701957589fe4ae88a0ab2fff3368f86fc082ae8eced');
+          const log=readFileSync('mic-single-owner-regression.txt','utf8');assert.match(log,/# pass 266\b/);assert.match(log,/# fail 0\b/);
+          for(let i=0;i<5;i++){const r=JSON.parse(readFileSync(`mic-single-owner-evidence/case-${i}.json`));if(i===0)assert.equal(r.baseline_bug_reproduced,true);else assert.equal(r.fixed_scenarios_passed,1)}
+          JS
+      - name: Commit only verified repair to isolated branch
+        run: |
+          test "$GITHUB_REF" = "refs/heads/fix/eterna-mic-single-owner-160992"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-mic-only-v4.js eterna-voice-autocut-v160907.js sw.js eterna-worker/test/client-state-contract.test.mjs eterna-worker/test/mic-auto-send.test.mjs
+          git commit -m "fix(eterna): prevent legacy watchdog from restarting microphone during transcription" -m "Old loop reproduced in Chromium; corrected full-module integration passes in both load orders, legal replay, and stale legacy asset cases. 266 regressions passed. Speech and backend mocked in browser tests; working production backend untouched."
+          git push origin HEAD:refs/heads/fix/eterna-mic-single-owner-160992
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{execFileSync}from'node:child_process';import{createHash}from'node:crypto';
+          const paths=['eterna-mic-only-v4.js','eterna-voice-autocut-v160907.js','sw.js','eterna-worker/test/client-state-contract.test.mjs','eterna-worker/test/mic-auto-send.test.mjs','qa/eterna/mic-single-owner-browser.py'];
+          const blobs=Object.fromEntries(paths.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));
+          writeFileSync('mic-single-owner-evidence/report.json',JSON.stringify({commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),passed:266,failed:0,baseline_bug_reproduced:true,browser_fixed_scenarios_passed:4,media_and_network_simulated:true,backend_unchanged:true,canonical_chat_unchanged:true,production_changed:false,version:'coco-en-forma-v160.99.2-mic-single-owner-r1',blobs},null,2));
+          JS
+      - name: Preserve exact verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mic-single-owner-verification
+          path: |
+            mic-single-owner-regression.txt
+            mic-single-owner-evidence
+          retention-days: 14
+          if-no-files-found: warn
