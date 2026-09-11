@@ -1,0 +1,51 @@
+name: Eterna private synthetic transcription diagnosis
+on:
+  push:
+    branches: ["fix/eterna-transcribe-private-160990"]
+    paths: ["qa/eterna/transcribe-private-probe.mjs", ".github/workflows/eterna-transcribe-private-probe.yml"]
+permissions:
+  contents: read
+concurrency:
+  group: eterna-transcribe-private-probe
+  cancel-in-progress: false
+jobs:
+  private-audio-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run existing regression tests
+        working-directory: eterna-worker
+        run: npm run check
+      - name: Install tooling
+        run: |
+          npm ci --prefix eterna-worker --no-audit --no-fund
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq espeak ffmpeg
+      - name: Generate synthetic speech; no child data
+        run: |
+          mkdir -p qa/eterna/.transcribe-private
+          espeak -v es -s 145 -w qa/eterna/.transcribe-private/speech.wav "Explica qué son los números primos. El siete es un número primo."
+          ffmpeg -v error -y -i qa/eterna/.transcribe-private/speech.wav -c:a aac qa/eterna/.transcribe-private/speech.m4a
+          ffmpeg -v error -y -i qa/eterna/.transcribe-private/speech.wav -c:a aac -movflags frag_keyframe+empty_moov+default_base_moof qa/eterna/.transcribe-private/speech.fragmented.m4a
+          ffmpeg -v error -y -i qa/eterna/.transcribe-private/speech.wav -c:a libopus qa/eterna/.transcribe-private/speech.webm
+      - name: Prepare protected provider-only preview
+        run: node qa/eterna/transcribe-private-probe.mjs prepare
+      - name: Upload preview without deploying production
+        run: node qa/eterna/transcribe-private-probe.mjs upload
+      - name: Test real synthetic audio in four formats
+        run: node qa/eterna/transcribe-private-probe.mjs run
+      - name: Preserve sanitized result only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transcription-private-diagnosis
+          path: qa/eterna/.transcribe-private/report.json
+          retention-days: 3
+          if-no-files-found: warn
