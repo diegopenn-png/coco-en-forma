@@ -1,0 +1,72 @@
+name: Eterna sixty new lessons authenticated verification
+on:
+  push:
+    branches: ["qa/eterna-content-370-private-20260912"]
+    paths: ["qa/content-370/prepare_private.py", "qa/content-370/combine_private.mjs", ".github/workflows/eterna-content-370-private.yml"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-content-370-private
+  cancel-in-progress: false
+jobs:
+  verify-canonical-and-stage-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/checkout@v4
+        with:
+          ref: 81bf9e7a46c67bb12638a941a1cd774ad3de14bc
+          path: .qa-auth
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: f1f701f03ea39b9f052d145fcd169993245211f6
+          path: .qa-combined
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-content-370-build
+          run-id: 34692999112
+          github-token: ${{ github.token }}
+          path: content-370-evidence
+      - name: Repeat full regression and use locked tools
+        run: |
+          mkdir -p content-370-private
+          cd eterna-worker
+          npm run check > ../content-370-private/regression.txt 2>&1
+          tail -10 ../content-370-private/regression.txt
+          grep -q '^# fail 0$' ../content-370-private/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Prepare fixed-content import and expiring synthetic identity helper
+        run: |
+          python qa/content-370/prepare_private.py
+          node --check qa/content-370/remote_private.generated.mjs
+      - name: First twenty new lessons and answers, identity 1 cleanup
+        env: {ETERNA_QA_GROUP: '1'}
+        run: node qa/content-370/remote_private.generated.mjs
+      - name: Next twenty new lessons and answers, identity 2 cleanup
+        env: {ETERNA_QA_GROUP: '2'}
+        run: node qa/content-370/remote_private.generated.mjs
+      - name: Final twenty new lessons and answers, identity 3 cleanup
+        env: {ETERNA_QA_GROUP: '3'}
+        run: node qa/content-370/remote_private.generated.mjs
+      - name: Require all 60 lessons, 126 real responses and every verified cleanup
+        run: node qa/content-370/combine_private.mjs
+      - name: Preserve actual sanitized evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-content-370-private
+          path: content-370-private
+          retention-days: 90
+          if-no-files-found: warn
