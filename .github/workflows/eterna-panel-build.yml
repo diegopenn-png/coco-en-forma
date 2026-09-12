@@ -21,7 +21,9 @@ jobs:
         with:
           python-version: '3.12'
       - name: Compile exact baseline and reversible panel findings
-        run: python qa/teacher-panel/build_panel.py
+        run: |
+          python qa/teacher-panel/refine_new_item.py
+          python qa/teacher-panel/build_panel.py
       - name: Run complete regression including new educational and state checks
         shell: bash
         run: |
@@ -34,7 +36,7 @@ jobs:
         run: |
           python - <<'PY'
           import subprocess
-          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/src/library/content-v1.js','qa/library/lessons-v1.json','eterna-worker/test/library-first.test.mjs','eterna-worker/test/library-editorial-review.test.mjs'}
+          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/src/library/content-v1.js','qa/library/lessons-v1.json','eterna-worker/test/library-first.test.mjs','eterna-worker/test/library-editorial-review.test.mjs','qa/teacher-panel/expansion-primary.txt'}
           changed=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines());assert changed<=allowed,changed
           PY
       - name: Commit only validated canonical content and declared review evidence to isolated branch
@@ -42,7 +44,7 @@ jobs:
           test "$GITHUB_REF" = "refs/heads/feat/eterna-panel-multidisciplinar-20260912"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- eterna-worker/src/index.js eterna-worker/src/library/runtime-v1.js eterna-worker/src/library/content-v1.js qa/library/lessons-v1.json eterna-worker/test/library-first.test.mjs eterna-worker/test/library-editorial-review.test.mjs qa/teacher-panel/changes.json qa/teacher-panel/review-ledger.json
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/runtime-v1.js eterna-worker/src/library/content-v1.js qa/library/lessons-v1.json eterna-worker/test/library-first.test.mjs eterna-worker/test/library-editorial-review.test.mjs qa/teacher-panel/changes.json qa/teacher-panel/review-ledger.json qa/teacher-panel/expansion-primary.txt
           git commit -m "content(eterna): verified 304-lesson simulated-panel candidate" -m "48 additions, explicitly reversible factual/simplification corrections, 304 per-item review records. Single AI applying role perspectives, not human certification or full curriculum claim. Microphone, frontend and runtime algorithms unchanged. Isolated branch only."
           git push origin HEAD:refs/heads/feat/eterna-panel-multidisciplinar-20260912
           node --input-type=module <<'JS'
