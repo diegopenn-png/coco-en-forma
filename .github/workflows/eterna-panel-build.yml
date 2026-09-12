@@ -1,0 +1,62 @@
+name: Eterna multidisciplinary simulated-panel build
+on:
+  push:
+    branches: ["feat/eterna-panel-multidisciplinar-20260912"]
+    paths: ["qa/teacher-panel/build_panel.py", "qa/teacher-panel/expansion-*.txt", "eterna-worker/test/teacher-panel.test.mjs", ".github/workflows/eterna-panel-build.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: eterna-panel-build
+  cancel-in-progress: false
+jobs:
+  bounded-content-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile exact baseline and reversible panel findings
+        run: python qa/teacher-panel/build_panel.py
+      - name: Run complete regression including new educational and state checks
+        shell: bash
+        run: |
+          set -o pipefail
+          cd eterna-worker
+          npm run check > ../panel-build-evidence/regression.txt 2>&1
+          tail -12 ../panel-build-evidence/regression.txt
+          grep -q '^# fail 0$' ../panel-build-evidence/regression.txt
+      - name: Assert no unrelated tracked modification
+        run: |
+          python - <<'PY'
+          import subprocess
+          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/src/library/content-v1.js','qa/library/lessons-v1.json','eterna-worker/test/library-first.test.mjs','eterna-worker/test/library-editorial-review.test.mjs'}
+          changed=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines());assert changed<=allowed,changed
+          PY
+      - name: Commit only validated canonical content and declared review evidence to isolated branch
+        run: |
+          test "$GITHUB_REF" = "refs/heads/feat/eterna-panel-multidisciplinar-20260912"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/runtime-v1.js eterna-worker/src/library/content-v1.js qa/library/lessons-v1.json eterna-worker/test/library-first.test.mjs eterna-worker/test/library-editorial-review.test.mjs qa/teacher-panel/changes.json qa/teacher-panel/review-ledger.json
+          git commit -m "content(eterna): verified 304-lesson simulated-panel candidate" -m "48 additions, explicitly reversible factual/simplification corrections, 304 per-item review records. Single AI applying role perspectives, not human certification or full curriculum claim. Microphone, frontend and runtime algorithms unchanged. Isolated branch only."
+          git push origin HEAD:refs/heads/feat/eterna-panel-multidisciplinar-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
+          const p=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','eterna-worker/test/library-editorial-review.test.mjs','eterna-worker/test/teacher-panel.test.mjs','qa/library/lessons-v1.json','qa/teacher-panel/changes.json','qa/teacher-panel/review-ledger.json'];
+          const blobs=Object.fromEntries(p.map(path=>[path,{sha:execFileSync('git',['hash-object',path],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(path)).digest('hex')}]));
+          const log=readFileSync('panel-build-evidence/regression.txt','utf8'),base=JSON.parse(readFileSync('panel-build-evidence/build.json'));
+          writeFileSync('panel-build-evidence/report.json',JSON.stringify({...base,tested_commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),tests_passed:Number(log.match(/^# pass (\d+)$/m)[1]),tests_failed:Number(log.match(/^# fail (\d+)$/m)[1]),production_changed:false,blobs},null,2));
+          JS
+          git archive HEAD eterna-worker/src eterna-worker/test eterna-worker/package.json eterna-worker/package-lock.json eterna-state-contract-v3.js qa/teacher-panel qa/curriculum-review/corrections.json qa/library/lessons-v1.json > panel-build-evidence/tested-source.tar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-panel-304-build
+          path: panel-build-evidence
+          retention-days: 30
+          if-no-files-found: warn
