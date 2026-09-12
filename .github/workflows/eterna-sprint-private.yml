@@ -1,0 +1,75 @@
+name: Eterna sprint actual private service verification
+on:
+  push:
+    branches: ["feat/eterna-sprint-3h-20260912"]
+    paths: [".github/workflows/eterna-sprint-private.yml", "qa/sprint-private/**"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-sprint-private
+  cancel-in-progress: false
+jobs:
+  canonical-sprint-real-service:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 81bf9e7a46c67bb12638a941a1cd774ad3de14bc
+          path: .qa-auth
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: f1f701f03ea39b9f052d145fcd169993245211f6
+          path: .qa-combined
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-sprint-build
+          run-id: 34682508300
+          github-token: ${{ github.token }}
+          path: sprint-build-evidence
+      - name: Repeat every test and install locked Worker tooling
+        run: |
+          mkdir -p sprint-private-evidence
+          cd eterna-worker
+          npm run check > ../sprint-private-evidence/regression.txt 2>&1
+          tail -10 ../sprint-private-evidence/regression.txt
+          grep -q '^# pass 753$' ../sprint-private-evidence/regression.txt
+          grep -q '^# fail 0$' ../sprint-private-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Prepare bounded expiring fixtures and canonical preview
+        run: |
+          python qa/sprint-private/prepare.py
+          node --check qa/sprint-private/remote.generated.mjs
+          node --check qa/sprint-private/combine.mjs
+      - name: Validate curated lessons and remove synthetic identity one
+        env:
+          ETERNA_QA_GROUP: '1'
+        run: node qa/sprint-private/remote.generated.mjs
+      - name: Validate all 22 generated families and 56 cordial protocols; remove identity two
+        env:
+          ETERNA_QA_GROUP: '2'
+        run: node qa/sprint-private/remote.generated.mjs
+      - name: Require all requests, exact code, source isolation and both cleanups
+        run: node qa/sprint-private/combine.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-sprint-private
+          path: sprint-private-evidence
+          retention-days: 30
+          if-no-files-found: warn
