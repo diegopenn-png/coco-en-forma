@@ -14,11 +14,22 @@ js=Path('qa/library/remote_combined_verify.mjs').read_text()
 assert "release='eterna-library-2026.09-v6-310-traceable-12c672'" in js
 assert "'ce846fe8-2f9a-4c4e-ba72-397dcc14e2db'" in js
 assert 'regressions_passed:685' in js and 'lessons:310' in js
+# A single trial identity is capped at 60 teaching turns. Do not increase or reset
+# production quotas: use two disposable identities with 40 teaching turns each.
+a="const script='coco-eterna-v159'";assert js.count(a)==1
+js=js.replace(a,"const QA_GROUP=Number(process.env.ETERNA_QA_GROUP);assert.ok([1,2].includes(QA_GROUP),'ETERNA_QA_GROUP must be 1 or 2');\n"+a)
+a="directory='traceable-private-evidence'";assert js.count(a)==1
+js=js.replace(a,"directory='traceable-private-evidence/group-'+QA_GROUP")
 assert js.count('report.ui_scenarios=42;')==1
-js=js.replace('report.ui_scenarios=42;','report.ui_scenarios_newly_tested=0;report.previous_ui_baseline_scenarios=42;report.human_teacher_reviewed=false;report.new_subject_supports_exercised=6;')
+js=js.replace('report.ui_scenarios=42;','report.ui_scenarios_newly_tested=0;report.previous_ui_baseline_scenarios=42;report.human_teacher_reviewed=false;report.synthetic_group=QA_GROUP;report.per_identity_lesson_turn_budget=40;report.production_quota_unchanged=true;')
 a="'bachillerato','stats','cleanup','stage_content'";assert js.count(a)==1;js=js.replace(a,"'bachillerato','bachillerato1','stats','cleanup','stage_content'")
 a="bachillerato:{stage:'bachillerato',school_year:'2º de Bachillerato'}";assert js.count(a)==1;js=js.replace(a,a+",bachillerato1:{stage:'bachillerato',school_year:'1º de Bachillerato'}")
 a="[['infantil','i-full'],['primaria','p-lcm'],['eso','e-systems'],['bachillerato','b-determinant']]";assert js.count(a)==1
-js=js.replace(a,"[['infantil','i-full'],['primaria','p-lcm'],['eso','e-app-permissions'],['bachillerato','b-stage-directions'],['bachillerato1','b-ecosystem-matter'],['bachillerato1','b-compound-meter'],['bachillerato1','b-affine-cost'],['bachillerato1','b-art-project']]")
+plan="[['infantil','i-full'],['primaria','p-lcm'],['eso','e-app-permissions'],['bachillerato','b-stage-directions'],['bachillerato1','b-ecosystem-matter'],['bachillerato1','b-compound-meter'],['bachillerato1','b-affine-cost'],['bachillerato1','b-art-project']]"
+js=js.replace(a,plan+".slice(QA_GROUP===1?0:4,QA_GROUP===1?4:8)")
+a='for(const text of globalThis.EternaOwnedLibrary.protocols.map(p=>p.aliases[0]))await chat(text);';assert js.count(a)==1
+js=js.replace(a,'if(QA_GROUP===2)'+a)
+a="report.phase='canonical-private-verified';";assert js.count(a)==1
+js=js.replace(a,"assert.equal(report.requests.length,QA_GROUP===1?40:96);assert.equal(report.requests.filter(r=>r.route==='owned-lesson-v1').length,40);"+a)
 Path('qa/curriculum-map/remote_private.generated.mjs').write_text(js)
-print('136 actual authenticated fixed-content turns, all six new supports in their course, draft-only import, unchanged production and synthetic cleanup required.')
+print('Prepared two independent synthetic identities: 40 teaching turns each, 56 cordial turns in group 2; 136 total. Student quotas, canonical source and production remain unchanged.')
