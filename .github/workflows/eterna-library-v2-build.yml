@@ -1,0 +1,108 @@
+name: Eterna library v2 content and PWA verification
+on:
+  push:
+    branches: ["feat/eterna-library-v2-content-20260912"]
+    paths: ["qa/library-v2/**", "eterna-worker/test/library-v2-content.test.mjs", ".github/workflows/eterna-library-v2-build.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: eterna-library-v2-build
+  cancel-in-progress: false
+jobs:
+  content-and-existing-application:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/checkout@v4
+        with:
+          ref: 607409ac920036986c868204aa39c2674d20761c
+          path: .tools-context
+      - uses: actions/checkout@v4
+        with:
+          ref: ca678c35851b0da874fd744c7c2c1fef80fe0bbf
+          path: .tools-auth
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile only original content and bounded protocols over immutable working baseline
+        run: |
+          git fetch --depth=1 origin e40e3bbbd7d6ae464a9e17659cd8ae3d36245852
+          git checkout e40e3bbbd7d6ae464a9e17659cd8ae3d36245852 -- eterna-worker/src/index.js eterna-worker/src/library/runtime-v1.js eterna-worker/src/library/content-v1.js eterna-worker/test/library-first.test.mjs
+          node qa/library-v2/build.mjs
+      - name: Run all old and new regressions with inference forbidden on prepared routes
+        shell: bash
+        run: |
+          set -o pipefail
+          cd eterna-worker
+          npm run check > ../library-v2-evidence/regression.txt
+          tail -10 ../library-v2-evidence/regression.txt
+      - name: Install isolated browser tooling
+        run: |
+          pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Extend existing unmodified UI checks to new content and protocols
+        run: |
+          cp .tools-context/qa/library/ui_gateway.mjs qa/library/ui_gateway.mjs
+          cp .tools-context/qa/library/ui_integration.py qa/library/ui_integration.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('qa/library/ui_integration.py');s=p.read_text()
+          anchor="  page.screenshot(path=str(out/(name+'.png')),full_page=True)"
+          assert s.count(anchor)==1
+          new="""  change('explain')
+            d=send('el sistema solar');assert d['library_lesson_id']=='p-solar'
+            qid=d['pedagogical_state']['pending_question_id'];d=send('más fácil');assert d['pedagogical_state']['pending_question_id']==qid
+            d=send('C');assert d['student_answer_assessment']=='correct'
+            d=send('¿Cómo hago un esquema?','owned-protocol-v1');assert d['student_answer_assessment']=='not_applicable'
+            d=send('¿Qué fuentes utilizas?','owned-protocol-v1');assert d['student_answer_assessment']=='not_applicable'
+          """
+          new='\n'.join(line[2:] if line.startswith('    ') else line for line in new.splitlines())
+          s=s.replace(anchor,new+'\n'+anchor);p.write_text(s)
+          PY
+          mkdir -p library-integration-evidence
+          node qa/library/ui_gateway.mjs > library-integration-evidence/gateway.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do curl --silent --fail http://127.0.0.1:4189/fixture > /dev/null && break; sleep 1; done
+          python qa/library/ui_integration.py
+      - name: Require unchanged microphone, frontend, configuration and provider source
+        run: |
+          test -z "$(git diff e40e3bbbd7d6ae464a9e17659cd8ae3d36245852 -- eterna-mic-only-v4.js eterna-v159.js eterna-v159.css index.html sw.js eterna-worker/wrangler.jsonc eterna-worker/package-lock.json)"
+      - name: Commit generated verified content on isolated branch only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs qa/library-v2/lessons-v2.json
+          if ! git diff --cached --quiet; then
+            git commit -m "feat(eterna): verified 160-lesson 40-protocol content expansion" -m "Existing 80 lessons and all voice/frontend files unchanged. New 80 original lessons, 240 new checks and 16 new cordiality protocols. Full curriculum completion or human teacher review not claimed. Isolated branch, not production."
+            git push origin HEAD:refs/heads/feat/eterna-library-v2-content-20260912
+          fi
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
+          const p=JSON.parse(readFileSync('library-v2-evidence/build.json')),log=readFileSync('library-v2-evidence/regression.txt','utf8'),ui=JSON.parse(readFileSync('library-integration-evidence/ui-report.json'));
+          p.tested_commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();p.tests_passed=Number(log.match(/# pass (\d+)/)[1]);p.tests_failed=Number(log.match(/# fail (\d+)/)[1]);p.ui_scenarios=ui.reduce((n,x)=>n+x.scenarios.length,0);p.ui_model_calls=ui.reduce((n,x)=>n+x.model_calls,0);p.physical_iphone_tested=false;
+          const files=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','eterna-worker/test/library-v2-content.test.mjs','qa/library-v2/lessons-v2.json','qa/library-v2/protocolos.json'];
+          p.blobs=Object.fromEntries(files.map(f=>[f,{sha:execFileSync('git',['hash-object',f],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(f)).digest('hex')}]));
+          if(p.tests_failed||p.ui_model_calls||p.ui_scenarios<42)throw Error('Incomplete verification');
+          writeFileSync('library-v2-evidence/report.json',JSON.stringify(p,null,2));
+          JS
+      - name: Preserve actual evidence and portable source, no secrets or student data
+        if: always()
+        run: |
+          mkdir -p library-v2-evidence
+          tar -czf library-v2-evidence/content-source.tar.gz eterna-worker/src/library eterna-worker/src/index.js eterna-worker/test/library-first.test.mjs eterna-worker/test/library-v2-content.test.mjs qa/library-v2 qa/library/ui_gateway.mjs qa/library/ui_integration.py .tools-auth/qa/library/remote_canonical_verify.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-library-v2-content-verification
+          path: |
+            library-v2-evidence
+            library-integration-evidence
+          retention-days: 30
+          if-no-files-found: warn
