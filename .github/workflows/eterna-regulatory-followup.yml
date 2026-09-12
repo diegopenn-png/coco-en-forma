@@ -1,0 +1,49 @@
+name: Eterna official regulatory amendments follow-up
+on:
+  push:
+    branches: ["audit/eterna-curriculum-review-c993-20260912"]
+    paths: ["qa/curriculum-review/followup_registry.py", ".github/workflows/eterna-regulatory-followup.yml"]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  repair-and-extend-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-territorial-regulatory-audit
+          run-id: 34665918943
+          github-token: ${{ github.token }}
+          path: curriculum-review-evidence
+      - name: Install bounded public text tools
+        run: |
+          pip install beautifulsoup4==4.13.5 lxml==6.0.1
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+      - name: Reuse downloaded originals and add promulgated modification references
+        run: python qa/curriculum-review/followup_registry.py
+      - name: Preserve concise registry separately from the full official archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-regulatory-reviewed-registry
+          path: |
+            curriculum-review-evidence/registry.json
+            curriculum-review-evidence/territorial-stage-matrix.json
+            curriculum-review-evidence/report.json
+          retention-days: 90
+      - name: Preserve authentic public bytes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-regulatory-source-chain
+          path: curriculum-review-evidence
+          retention-days: 90
