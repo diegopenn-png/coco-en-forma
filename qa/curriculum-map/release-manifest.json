@@ -1,0 +1,23 @@
+{
+  "release_id": "eterna-library-2026.09-v6-310-traceable-12c672",
+  "baseline_release_id": "eterna-library-2026.09-v5-304-panel-ffe822",
+  "baseline_commit": "12c672a4e67646f8da3bba125ccdaade7e34d7a0",
+  "baseline_lessons": 304,
+  "baseline_canonical_sha256": "d9218b06e7854711ffe6c612b60e06e4f240621044e1bdb25938dc7c19c99592",
+  "lessons": 310,
+  "questions": 930,
+  "protocols": 56,
+  "added_lesson_ids": [
+    "e-app-permissions",
+    "b-ecosystem-matter",
+    "b-compound-meter",
+    "b-stage-directions",
+    "b-affine-cost",
+    "b-art-project"
+  ],
+  "baseline_lessons_byte_equivalent": true,
+  "runtime_algorithms_unchanged": true,
+  "microphone_unchanged": true,
+  "full_curriculum_complete": false,
+  "human_teacher_reviewed": false
+}
