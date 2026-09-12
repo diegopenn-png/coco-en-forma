@@ -1,0 +1,27 @@
+name: Eterna library v2 immutable source snapshot
+on:
+  push:
+    branches: ["feat/eterna-library-expansion-v2-20260912"]
+    paths: [".github/workflows/eterna-library-v2-snapshot.yml"]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Archive immutable baseline and proven QA tooling
+        run: |
+          mkdir -p snapshot
+          git fetch --depth=1 origin a877d730a018fce369b5b262310cd8182439a7bc 81bf9e7a46c67bb12638a941a1cd774ad3de14bc 93e4366754985d89079ef7471272a4783c63290f
+          git archive --format=tar a877d730a018fce369b5b262310cd8182439a7bc eterna-worker qa/library '*.js' index.html > snapshot/baseline.tar
+          git archive --format=tar 81bf9e7a46c67bb12638a941a1cd774ad3de14bc qa/library .github/workflows > snapshot/qa.tar
+          git archive --format=tar 93e4366754985d89079ef7471272a4783c63290f qa/library .github/workflows > snapshot/ops.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-v2-baseline
+          path: snapshot
+          retention-days: 14
