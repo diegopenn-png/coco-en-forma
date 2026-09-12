@@ -1,0 +1,49 @@
+name: Publish verified Eterna library context v1.1
+on:
+  push:
+    branches: ["ops/eterna-library-context-publish-e40e3bb"]
+    paths: [".github/workflows/eterna-library-context-publish.yml"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-worker-production
+  cancel-in-progress: false
+jobs:
+  promote-exact-verified-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_MAIN: e40e3bbbd7d6ae464a9e17659cd8ae3d36245852
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-library-context-final-verification
+          run-id: 34662016544
+          github-token: ${{ github.token }}
+          path: .final-proof
+      - name: Repeat regression and install locked deployment tooling
+        run: |
+          mkdir -p library-context-release-evidence
+          node --check qa/library/deploy_context_verified.mjs
+          cd eterna-worker
+          npm run check > ../library-context-release-evidence/regression.txt
+          tail -10 ../library-context-release-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Verify source, preserve configuration, promote exact candidate and validate production
+        run: node qa/library/deploy_context_verified.mjs
+      - name: Preserve production evidence without credentials
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-context-production-verification
+          path: library-context-release-evidence
+          retention-days: 90
+          if-no-files-found: warn
