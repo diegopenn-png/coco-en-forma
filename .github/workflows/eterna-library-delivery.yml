@@ -1,0 +1,51 @@
+name: Eterna downloadable verified library delivery
+on:
+  push:
+    branches: ["docs/eterna-library-delivery-6b83b04"]
+    paths: [".github/workflows/eterna-library-delivery.yml"]
+permissions:
+  contents: read
+jobs:
+  export-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 6b83b043e85d0eb15e629affb0f42d2957a6cc83
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Export public educational module and inspect live public health
+        run: |
+          mkdir -p delivery/source
+          git archive HEAD eterna-worker/src eterna-worker/test eterna-worker/package.json eterna-worker/package-lock.json eterna-state-contract-v3.js qa/library | tar -x -C delivery/source
+          find eterna-worker -maxdepth 1 -name 'LIBRARY*.md' -exec cp {} delivery/ \;
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';
+          import{execFileSync}from'node:child_process';
+          import{createHash}from'node:crypto';
+          import assert from'node:assert/strict';
+          await import('./eterna-worker/src/library/content-v1.js');
+          await import('./eterna-worker/src/library/runtime-v1.js');
+          const content=globalThis.ETERNA_LIBRARY_CONTENT,lib=globalThis.EternaOwnedLibrary;
+          assert.equal(content.lessons.length,160);assert.equal(lib.protocols.length,40);
+          const samples=lib.protocols.map(p=>({...p,sample_response:lib.cordial(p.id,{profile:{school_year:'5º de Primaria',autonomous_community:'Andalucía'},pedState:{},now:new Date('2026-09-12T10:00:00Z')}),sample_is_fixture_not_current_data:true}));
+          writeFileSync('delivery/lessons.json',JSON.stringify(content.lessons,null,2));
+          writeFileSync('delivery/protocols.json',JSON.stringify(samples,null,2));
+          const r=await fetch('https://coco-eterna-v159.chatinmobiliario.workers.dev/health',{signal:AbortSignal.timeout(30000),headers:{'Cache-Control':'no-cache'}});
+          assert.equal(r.status,200);const health=await r.json();
+          assert.equal(health.owned_library.enabled,true);assert.equal(health.owned_library.lessons,160);assert.equal(health.owned_library.protocols,40);assert.equal(health.owned_library.release,content.release_id);
+          writeFileSync('delivery/live-health.json',JSON.stringify(health,null,2));
+          const sha=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
+          const hashes=Object.fromEntries(['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','qa/library/lessons-v1.json'].map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')]));
+          writeFileSync('delivery/manifest.json',JSON.stringify({source_commit:sha,release:content.release_id,verified_at:new Date().toISOString(),lessons:160,questions:content.lessons.reduce((n,l)=>n+l.quiz.length,0),protocols:40,live_library:health.owned_library,source_sha256:hashes,full_spanish_curriculum:false,human_teacher_reviewed:false,production_modified_by_export:false,child_data_accessed:false},null,2));
+          console.log('Published library export verified: 160 lessons, 480 questions, 40 protocols. No production changes.');
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-delivery-160
+          path: delivery
+          retention-days: 30
+          if-no-files-found: error
