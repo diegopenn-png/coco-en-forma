@@ -1,16 +1,16 @@
-/* Coco en Forma · PWA manager v160.96.2 */
+/* Coco en Forma · PWA manager v160.100.0 */
 (function(root){
   "use strict";
-  var VERSION="160.96.2-single-registration-owner";
-  var SW_TAG="160962-r1";
-  var RELOAD_KEY="coco_pwa_controller_reload_v160962";
+  var VERSION="160.100.0-family-profile-reports";
+  var SW_TAG="160100-r1";
+  var RELOAD_KEY="coco_pwa_controller_reload_v160100";
   root.__COCO_PWA_MANAGER_VERSION__=VERSION;
   function isStandalone(){try{return Boolean((root.matchMedia&&root.matchMedia("(display-mode: standalone)").matches)||root.navigator.standalone===true)}catch(_){return false}}
   function dispatchReady(registration){try{root.dispatchEvent(new CustomEvent("coco:pwa-ready",{detail:{version:VERSION,standalone:isStandalone(),registration:Boolean(registration)}}))}catch(_){}}
   function register(){
     if(!("serviceWorker" in navigator)||location.protocol==="file:"){dispatchReady(null);return}
     if(root.__COCO_PWA_REGISTRATION_OWNER__||root.__cocoPwaV16043Booted)return;
-    root.__COCO_PWA_REGISTRATION_OWNER__="manager-v160962";root.__cocoPwaV16043Booted=true;
+    root.__COCO_PWA_REGISTRATION_OWNER__="manager-v160100";root.__cocoPwaV16043Booted=true;
     var hadController=Boolean(navigator.serviceWorker.controller);
     navigator.serviceWorker.addEventListener("controllerchange",function(){
       try{var previousReload=Number(sessionStorage.getItem(RELOAD_KEY)||0);if(!hadController||Date.now()-previousReload<15000)return;sessionStorage.setItem(RELOAD_KEY,String(Date.now()))}catch(_){if(!hadController)return}

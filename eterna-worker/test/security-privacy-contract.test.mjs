@@ -34,6 +34,7 @@ function loadWorkerApi({ fetchImpl = fetch, consoleImpl = console } = {}) {
     FormData,
     Blob,
     File,
+    Date,
     crypto: webcrypto,
     fetch: fetchImpl,
     setTimeout,
@@ -50,6 +51,7 @@ function loadWorkerApi({ fetchImpl = fetch, consoleImpl = console } = {}) {
     parentUnlimitedEnabled,
     defaultParentDailyLimit,
     normalizeParentLimitRequest,
+    ageFromBirthDate,
     moderate,
     allowDegradedAcademicModeration,
     validateImageDataUrl: typeof validateImageDataUrl === "function" ? validateImageDataUrl : null,
@@ -57,6 +59,26 @@ function loadWorkerApi({ fetchImpl = fetch, consoleImpl = console } = {}) {
   };`, sandbox);
   return sandbox.__securityApi;
 }
+
+test("birth dates produce a bounded age without affecting authorization", () => {
+  const { ageFromBirthDate } = loadWorkerApi();
+  const today = new Date("2026-09-12T18:00:00Z");
+  assert.equal(ageFromBirthDate("2016-09-12", today), 10);
+  assert.equal(ageFromBirthDate("2016-09-13", today), 9);
+  assert.equal(ageFromBirthDate("2024-02-29", new Date("2025-02-28T08:00:00Z")), 0);
+  assert.equal(ageFromBirthDate("2024-02-29", new Date("2025-03-01T08:00:00Z")), 1);
+  assert.equal(ageFromBirthDate("2026-02-30", today), null);
+  assert.equal(ageFromBirthDate("2026-09-13", today), null);
+  assert.equal(ageFromBirthDate("1895-09-12", today), null);
+
+  const profileAge = sourceBetween("async function handleProfileAge(", "async function handleParentSettings(");
+  assert.match(profileAge, /uid=auth\.user\.id/);
+  assert.match(profileAge, /perfiles\?id=eq\.\$\{encodeURIComponent\(uid\)\}/);
+  assert.doesNotMatch(profileAge, /email|role|subscription|user_metadata/);
+
+  const router = sourceBetween("async function handleFetch(", "export default");
+  assert.ok(router.indexOf("const auth=await authenticate") < router.indexOf('url.pathname==="/v1/profile-age"'));
+});
 
 test("personal danger intent is never downgraded by an active school context", () => {
   const { scopeV3Guard } = loadWorkerApi();

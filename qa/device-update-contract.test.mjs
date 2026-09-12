@@ -22,7 +22,8 @@ function extractPwaRegistrar(source) {
 
 const directScripts = [
   '<script id="coco-product-ux-v160903" src="./coco-release-v160903.js?v=160960"></script>',
-  '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160961"></script>',
+  '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160100"></script>',
+  '<script id="coco-family-friendly-v160100" src="./coco-family-friendly-v160100.js?v=160100"></script>',
   '<script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960"></script>',
   '<script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=160960"></script>',
 ];
@@ -31,24 +32,25 @@ test("first visits load every production presentation layer without depending on
   for (const script of directScripts) assert.equal(index.split(script).length - 1, 1, script);
   assert.ok(index.indexOf(directScripts[0]) > index.indexOf('id="coco-v153-fixes"'));
   assert.ok(index.indexOf(directScripts[1]) > index.indexOf(directScripts[0]));
-  assert.ok(index.indexOf(directScripts[2]) > index.indexOf('id="coco-v159-eterna"'));
-  assert.ok(index.indexOf(directScripts[3]) > index.indexOf(directScripts[2]));
+  assert.ok(index.indexOf(directScripts[2]) > index.indexOf(directScripts[1]));
+  assert.ok(index.indexOf(directScripts[3]) > index.indexOf('id="coco-v159-eterna"'));
+  assert.ok(index.indexOf(directScripts[4]) > index.indexOf(directScripts[3]));
 });
 
 test("PWA clients request and activate the current release instead of retaining an old device cache", () => {
-  assert.match(index, /manifest\.webmanifest\?v=160962/);
-  assert.match(index, /sw\.js\?v=160980-r1/);
+  assert.match(index, /manifest\.webmanifest\?v=160100/);
+  assert.match(index, /sw\.js\?v=160100-r1/);
   assert.match(index, /updateViaCache:"none"/);
   assert.match(index, /registration\.update\(\)/);
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.0-human-teacher-r2"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.0-family-profile-reports-r1"/);
   for (const asset of [
     "coco-variety-director-v160960.js",
     "coco-release-v160903.js",
     "coco-reto-2026-v160908.js",
-    "reto-coco-2026-v160958.jpg",
+    "coco-family-friendly-v160100.js",
     "coco-excellence-v160934.js",
     "eterna-v159.js",
   ]) assert.match(serviceWorker, new RegExp(asset.replaceAll(".", "\\.")), asset);
@@ -63,17 +65,17 @@ test("PWA clients request and activate the current release instead of retaining 
 test("current and legacy PWA entry points share one owner and one canonical worker URL", () => {
   const owner = "__COCO_PWA_REGISTRATION_OWNER__";
   for (const source of [index, runtime, legacyRuntime, pwaManager]) assert.match(source, new RegExp(owner), owner);
-  assert.match(index, /__COCO_PWA_REGISTRATION_OWNER__ = "index-v160962"/);
-  assert.match(runtime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-v160962"/);
-  assert.match(legacyRuntime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-legacy-v160962"/);
-  assert.match(pwaManager, /__COCO_PWA_REGISTRATION_OWNER__="manager-v160962"/);
-  assert.match(index, /coco-v142-runtime\.js\?v=160962/);
-  assert.match(runtime, /sw\.js\?v=160962-r1/);
-  assert.match(legacyRuntime, /sw\.js\?v=160962-r1/);
-  assert.match(pwaManager, /SW_TAG="160962-r1"/);
+  assert.match(index, /__COCO_PWA_REGISTRATION_OWNER__ = "index-v160100"/);
+  assert.match(runtime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-v160100"/);
+  assert.match(legacyRuntime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-legacy-v160100"/);
+  assert.match(pwaManager, /__COCO_PWA_REGISTRATION_OWNER__="manager-v160100"/);
+  assert.match(index, /coco-v142-runtime\.js\?v=160100/);
+  assert.match(runtime, /sw\.js\?v=160100-r1/);
+  assert.match(legacyRuntime, /sw\.js\?v=160100-r1/);
+  assert.match(pwaManager, /SW_TAG="160100-r1"/);
   assert.doesNotMatch(runtime, /new URL\("sw\.js",document\.baseURI\)/);
   assert.doesNotMatch(legacyRuntime, /new URL\("sw\.js",document\.baseURI\)/);
-  assert.ok(index.indexOf('__COCO_PWA_REGISTRATION_OWNER__ = "index-v160962"') < index.indexOf('coco-v142-runtime.js?v=160962'));
+  assert.ok(index.indexOf('__COCO_PWA_REGISTRATION_OWNER__ = "index-v160100"') < index.indexOf('coco-v142-runtime.js?v=160100'));
   assert.match(index, /Date\.now\(\) - previousReload < 15000/);
   assert.match(runtime, /Date\.now\(\) - previousReload < 15000/);
   assert.match(legacyRuntime, /Date\.now\(\) - previousReload < 15000/);
@@ -106,26 +108,19 @@ test("loading the production index and runtime schedules exactly one worker regi
   vm.createContext(context);
   vm.runInContext(`${extractPwaRegistrar(index)}\nregisterPwa();`, context);
   vm.runInContext(`${extractPwaRegistrar(runtime)}\nregisterPwa();`, context);
-  assert.equal(context.window.__COCO_PWA_REGISTRATION_OWNER__, "index-v160962");
+  assert.equal(context.window.__COCO_PWA_REGISTRATION_OWNER__, "index-v160100");
   assert.equal(loadListeners.length, 1);
   loadListeners[0]();
   await Promise.resolve();
   assert.equal(registrations.length, 1);
-  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160980-r1");
+  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160100-r1");
   assert.equal(registrations[0].options.updateViaCache, "none");
 });
 
-test("Reto Coco owns deterministic mobile and desktop placement and reacts to device changes", () => {
-  assert.match(reto, /@media\(min-width:901px\)/);
-  assert.match(reto, /@media\(max-width:900px\)/);
-  assert.match(reto, /window\.innerWidth>900/);
-  assert.match(reto, /brand\.insertBefore\(c,brand\.firstChild\)/);
-  assert.match(reto, /parent\.insertBefore\(c,games\)/);
-  assert.match(reto, /parent\.insertBefore\(brand,games\.nextSibling\)/);
-  assert.match(reto, /addEventListener\('resize',schedule/);
-  assert.match(reto, /addEventListener\('orientationchange',schedule/);
-  assert.match(reto, /width:calc\(100% - 28px\);max-width:430px/);
-  assert.match(reto, /aspect-ratio:3\/4/);
+test("Reto Coco is cleanup-only and cannot reinsert the promotional card", () => {
+  assert.match(reto, /disabled v160\.100\.0/);
+  assert.match(reto, /getElementById\('cocoReto2026'\)/);
+  assert.doesNotMatch(reto, /createElement|innerWidth|orientationchange|reto-coco-2026-v160958\.jpg/);
 });
 
 test("the live preview gate covers representative devices, rotation, overflow and exact revision delivery", () => {
@@ -137,8 +132,8 @@ test("the live preview gate covers representative devices, rotation, overflow an
   assert.match(browserQa, /"Cache-Control": "no-cache"/);
   assert.match(browserQa, /verify=\$\{nonce\}/);
   assert.match(browserQa, /htmlScrollWidth <= profile\.width \+ 1/);
-  assert.match(browserQa, /naturalWidth, 1200/);
-  assert.match(browserQa, /naturalHeight, 1600/);
+  assert.match(browserQa, /cardCount, 0/);
+  assert.match(browserQa, /coco-family-friendly-v160100/);
   assert.match(browserQa, /orientación y breakpoint 390x844/);
   assert.match(workflow, /node qa\/device-update-browser\.mjs/);
   assert.match(workflow, /COCO_QA_EXPECTED_COMMIT: \$\{\{ github\.sha \}\}/);

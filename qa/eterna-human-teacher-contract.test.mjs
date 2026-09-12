@@ -44,7 +44,7 @@ test("the PWA invalidates the human-teacher assets as one release", () => {
   const serviceWorker = read("sw.js");
 
   assert.match(index, /eterna-v159\.css\?v=160980/);
-  assert.match(index, /eterna-v159\.js\?v=160980/);
-  assert.match(index, /sw\.js\?v=160980-r1/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.98\.0-human-teacher-r2"/);
+  assert.match(index, /eterna-v159\.js\?v=160100/);
+  assert.match(index, /sw\.js\?v=160100-r1/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.0-family-profile-reports-r1"/);
 });
