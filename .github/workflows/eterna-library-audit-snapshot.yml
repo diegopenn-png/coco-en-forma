@@ -1,4 +1,4 @@
-name: Eterna library integration source snapshot
+name: Eterna published-library source reconciliation
 on:
   push:
     branches: ["feat/eterna-library-first-202609"]
@@ -12,25 +12,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: a877d730a018fce369b5b262310cd8182439a7bc
           fetch-depth: 1
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Record source and repeat regression without external services
+      - name: Read exact published source and repeat regression, no external services
         shell: bash
         run: |
           set -o pipefail
-          mkdir -p integration-snapshot
-          git archive --format=tar.gz HEAD > integration-snapshot/source.tar.gz
-          git rev-parse HEAD > integration-snapshot/commit.txt
+          mkdir -p published-source
+          test "$(git rev-parse HEAD)" = "a877d730a018fce369b5b262310cd8182439a7bc"
+          git archive --format=tar.gz HEAD > published-source/source.tar.gz
+          git rev-parse HEAD > published-source/commit.txt
           cd eterna-worker
-          npm run check > ../integration-snapshot/regression.txt
-          tail -10 ../integration-snapshot/regression.txt
-      - name: Preserve exact tracked public source; no environment or credentials
+          npm run check > ../published-source/regression.txt
+          tail -10 ../published-source/regression.txt
+      - name: Preserve exact public source; no environment or credentials
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eterna-library-integration-source
-          path: integration-snapshot
+          name: eterna-published-library-source
+          path: published-source
           retention-days: 7
           if-no-files-found: error
