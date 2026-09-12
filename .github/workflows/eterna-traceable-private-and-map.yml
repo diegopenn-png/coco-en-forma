@@ -1,0 +1,94 @@
+name: Eterna traceable canonical proof and public curriculum import
+on:
+  push:
+    branches: ["feat/eterna-curriculum-traceability-20260912"]
+    paths: [".github/workflows/eterna-traceable-private-and-map.yml", "qa/curriculum-map/prepare_private.py", "qa/curriculum-map/import_map.mjs"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-traceable-private
+  cancel-in-progress: false
+jobs:
+  exact-library-and-curriculum-drafts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 81bf9e7a46c67bb12638a941a1cd774ad3de14bc
+          path: .qa-auth
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: f1f701f03ea39b9f052d145fcd169993245211f6
+          path: .qa-combined
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-traceable-310-build
+          run-id: 34679744399
+          github-token: ${{ github.token }}
+          path: curriculum-traceability-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-curriculum-authentic-refresh
+          run-id: 34678919953
+          github-token: ${{ github.token }}
+          path: .official-refreshed
+      - name: Repeat 685 tests and use locked deployment tooling
+        run: |
+          mkdir -p traceable-private-evidence
+          cd eterna-worker
+          npm run check > ../traceable-private-evidence/regression.txt 2>&1
+          tail -10 ../traceable-private-evidence/regression.txt
+          grep -q '^# pass 685$' ../traceable-private-evidence/regression.txt
+          grep -q '^# fail 0$' ../traceable-private-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Prepare exact expiring synthetic QA and canonical private candidate
+        run: |
+          python qa/curriculum-map/prepare_private.py
+          node --check qa/curriculum-map/remote_private.generated.mjs
+          node --check qa/curriculum-map/import_map.mjs
+      - name: Real authentication and Supabase tests; remove temporary synthetic identity
+        run: node qa/curriculum-map/remote_private.generated.mjs
+      - name: Require all new supports to pass with zero generation and verified cleanup
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import assert from'node:assert/strict';
+          const r=JSON.parse(readFileSync('traceable-private-evidence/report.json'));
+          assert.equal(r.phase,'canonical-private-verified');assert.equal(r.requests.length,136);assert.equal(r.synthetic_cleanup.ok,true);assert.equal(r.synthetic_cleanup.deleted,true);assert.equal(r.draft_content.lessons,310);assert.equal(r.draft_content.protocols,56);assert.equal(r.draft_content.hash_mismatches,0);
+          const actual=new Set(r.requests.map(x=>x.lesson));for(const id of ['e-app-permissions','b-ecosystem-matter','b-compound-meter','b-stage-directions','b-affine-cost','b-art-project'])assert.ok(actual.has(id),id);
+          for(const q of r.requests){assert.equal(q.generation_model_calls,0);assert.equal(q.generation_tokens,0)}
+          console.log('All 136 actual authenticated prepared turns passed, all six new supports included, identity cleanup verified.');
+          JS
+      - name: Import only hash-allowlisted public source inventory and segregated curriculum links
+        run: node qa/curriculum-map/import_map.mjs
+      - name: Preserve actual sanitized private proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-traceable-310-private
+          path: traceable-private-evidence
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Preserve source import counts and status without secrets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-traceable-map-import
+          path: traceable-map-import-evidence
+          retention-days: 90
+          if-no-files-found: warn
