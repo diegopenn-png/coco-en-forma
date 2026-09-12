@@ -1,0 +1,88 @@
+name: Eterna three-hour sprint deterministic practice and curricular compass
+on:
+  push:
+    branches: ["feat/eterna-sprint-3h-20260912"]
+    paths: [".github/workflows/eterna-sprint-build.yml", "qa/sprint/**", "eterna-worker/src/library/procedural-v1.js", "eterna-worker/src/library/curricular-compass-v1.js", "eterna-worker/test/procedural-*.test.mjs", "eterna-worker/test/curricular-compass.test.mjs"]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eterna-sprint-build
+  cancel-in-progress: false
+jobs:
+  bounded-sprint-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-traceable-310-build
+          run-id: 34679744399
+          github-token: ${{ github.token }}
+          path: .sprint-base
+      - name: Compile exact local-tested architecture, no fabricated lesson count
+        run: |
+          mkdir -p sprint-build-evidence
+          cp .sprint-base/national/units.jsonl qa/sprint/units-source.jsonl
+          python qa/sprint/build_compass_data.py
+          python qa/sprint/apply_worker.py
+          python qa/sprint/apply_compass.py
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          p=Path('eterna-worker/test/library-first.test.mjs');s=p.read_text().split('const profile=l=>')[0]
+          s=s.replace('function harness({','export function harness({').replace('delay=0,enabled=true','delay=0,enabled=true,factory=true').replace('vm.runInContext(runtime,sandbox);',"vm.runInContext(runtime,sandbox);vm.runInContext(text('../src/library/procedural-v1.js'),sandbox);").replace("AI_PROVIDER:'cloudflare',ENABLE_ETERNA_LIBRARY","AI_PROVIDER:'cloudflare',ETERNA_EXERCISE_FACTORY:factory?'v1':'off',ENABLE_ETERNA_LIBRARY")
+          Path('eterna-worker/test/sprint-harness.mjs').write_text(s)
+          for path,want in json.loads(Path('qa/sprint/source-hashes.json').read_text()).items():
+            actual=hashlib.sha256(Path(path).read_bytes()).hexdigest()
+            assert actual==want,(path,want,actual)
+          PY
+      - name: Run all 753 regressions and 19800 independent generated-answer checks
+        shell: bash
+        env:
+          ETERNA_PROCEDURAL_EVIDENCE: ../sprint-build-evidence/procedural-oracles.json
+        run: |
+          set -o pipefail
+          cd eterna-worker
+          npm run check > ../sprint-build-evidence/regression.txt 2>&1
+          tail -12 ../sprint-build-evidence/regression.txt
+          grep -q '^# pass 753$' ../sprint-build-evidence/regression.txt
+          grep -q '^# fail 0$' ../sprint-build-evidence/regression.txt
+      - name: Check existing curated content and frontend invariants
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,subprocess
+          for path,want in {'eterna-worker/src/library/content-v1.js':'8c7efe96e10b72dcae055e864cf031d4cc74f429078c7d50eaf4d3ab121bf1ff','eterna-worker/src/library/runtime-v1.js':'9df5c21942c593241388535a4a0bb518bba95a71a0edfacbe770683bb2a83369','qa/library/lessons-v1.json':'1407e890c07257d17d79afa968330f64a1cef06f34a18b0f1d2f5884f90c04c3'}.items():assert hashlib.sha256(Path(path).read_bytes()).hexdigest()==want,path
+          assert set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())=={'eterna-worker/src/index.js'}
+          PY
+      - name: Commit exact verified source to isolated branch only
+        run: |
+          test "$GITHUB_REF" = "refs/heads/feat/eterna-sprint-3h-20260912"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/compass-data-v1.js eterna-worker/test/sprint-harness.mjs
+          git commit -m "feat(eterna): verified bounded exercise factory and curricular compass" -m "310 curated lessons preserved; 22 deterministic exercise families, 19800 independently checked question instances, 753 tests. Read-only national source orientation, not factual proof or territorial completeness. Two opt-in flags, no frontend/microphone/models/quota changes. Isolated candidate, not production."
+          git push origin HEAD:refs/heads/feat/eterna-sprint-3h-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
+          const paths=[...Object.keys(JSON.parse(readFileSync('qa/sprint/source-hashes.json'))),'eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','qa/library/lessons-v1.json'];
+          const blobs=Object.fromEntries(paths.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));
+          const report={release_id:'eterna-library-2026.09-v6-310-traceable-12c672',sprint:'eterna-sprint-3h-20260912',tested_commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),tests_passed:753,tests_failed:0,lessons:310,curated_questions:930,protocols:56,procedural_families:22,generated_question_instances_independently_checked:19800,national_source_elements:9033,official_subject_families:70,microphone_unchanged:true,frontend_unchanged:true,models_unchanged:true,quota_unchanged:true,production_modified:false,feature_flags_required:['ETERNA_EXERCISE_FACTORY=v1','ETERNA_CURRICULAR_COMPASS=v1'],full_curriculum_complete:false,human_teacher_reviewed:false,blobs};
+          writeFileSync('sprint-build-evidence/report.json',JSON.stringify(report,null,2));
+          JS
+          git archive HEAD eterna-worker/src eterna-worker/test eterna-worker/package.json eterna-worker/package-lock.json eterna-state-contract-v3.js qa/sprint qa/library/lessons-v1.json > sprint-build-evidence/tested-source.tar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-sprint-build
+          path: sprint-build-evidence
+          retention-days: 30
+          if-no-files-found: warn
