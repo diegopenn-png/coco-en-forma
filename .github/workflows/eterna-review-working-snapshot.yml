@@ -1,0 +1,26 @@
+name: Eterna review immutable working snapshot
+on:
+  push:
+    branches: ["audit/eterna-curriculum-review-c993-20260912"]
+    paths: [".github/workflows/eterna-review-working-snapshot.yml"]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: |
+          mkdir -p review-source
+          git archive HEAD | tar -x -C review-source
+          rm -rf review-source/.github review-source/assets review-source/node_modules
+          find review-source -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.mp4' -o -iname '*.mp3' -o -iname '*.pdf' \) -delete
+          tar -czf review-current-source.tar.gz -C review-source .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eterna-review-current-source
+          path: review-current-source.tar.gz
+          retention-days: 14
