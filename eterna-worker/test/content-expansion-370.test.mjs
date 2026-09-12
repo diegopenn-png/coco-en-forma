@@ -52,7 +52,7 @@ test('primary numerical answer keys agree with independent arithmetic',()=>{
 });
 
 test('secondary formulas and equations checked independently of the options',()=>{
- assert.equal(answer('e-slope'),String((7-3)/(3-1)));assert.equal(answer('e-slope',1),String(-2));assert.equal(answer('e-pressure'),`${100/2} Pa`);
+ assert.equal(answer('e-slope'),String((7-3)/(3-1)));assert.equal(Number(answer('e-slope',1).replace(/−/g,'-')),-2);assert.equal(answer('e-pressure'),`${100/2} Pa`);
  assert.equal(answer('e-circle-measures'),'9π cm²');assert.equal(3**2,9);assert.equal(answer('e-circle-measures',1),`${2*4} cm`);
  for(const x of [-4,-1,0,2,5]){assert.equal((x+3)**2,x*x+6*x+9);assert.equal((x+2)*(x-2),x*x-4);assert.equal(2*(x+3),2*x+6)}
  assert.equal(answer('e-identities'),'x²+6x+9');assert.equal(answer('e-identities',1),'x²−4');assert.equal(answer('e-program-loops'),String([1,1,1].reduce((s,x)=>s+x,0)));
@@ -62,7 +62,7 @@ test('upper-secondary calculations verified with independent algebra, arithmetic
  const f=x=>x*x,candidates=[-1,0,2];assert.equal(Math.max(...candidates.map(f)),4);assert.equal(answer('b-optimization'),'4, en x=2');
  assert.equal(answer('b-primitive',1),String(4-1));assert.equal(answer('b-matrix-product',1),String(1*3+2*4));
  const defect=.6*.02+.4*.05,fromB=.4*.05/defect;assert.ok(Math.abs(defect-.032)<1e-12);assert.ok(Math.abs(fromB-.625)<1e-12);assert.equal(answer('b-bayes'),'3,2 %');assert.equal(answer('b-bayes',1),'62,5 %');
- assert.equal(answer('b-electric-potential'),`+${2*3} J`);assert.equal(answer('b-enthalpy',1),'+100 kJ');assert.equal(answer('b-enthalpy',2),`${-100*2} kJ`);assert.equal(1/(2**2),.25);
+ assert.equal(answer('b-electric-potential'),`+${2*3} J`);assert.equal(answer('b-enthalpy',1),'+100 kJ');assert.equal(answer('b-enthalpy',2).replace(/−/g,'-'),`${-100*2} kJ`);assert.equal(1/(2**2),.25);
  for(const x of [-2,0,3]){const h=1e-5;assert.ok(Math.abs(((x+h)**2-(x-h)**2)/(2*h)-2*x)<1e-7)}
  const complement={A:'U',T:'A',C:'G',G:'C'};assert.equal([...('TAC')].map(x=>complement[x]).join(''),'AUG');assert.equal(answer('b-transcription'),'5′-AUG-3′');
 });
@@ -73,7 +73,7 @@ test('science and philosophical scope remains explicit in simplified teaching',(
  assert.match(get('b-aristotle').explanation,/teoría filosófica/);assert.match(get('b-marx').explanation,/crítica filosófica e histórica/);assert.match(get('p-en-a-an').explanation,/sonido inicial/);
 });
 
-test('actual Worker envelope uses new content and preserves anonymous denial with synthetic database',async()=>{
+test('actual Worker envelope serves the added content with synthetic database and no model calls',async()=>{
  for(const id of ['i-pairs','p-fraction-quantity','e-pressure','b-matrix-product']){
   const l=get(id),h=harness({year:l.school_years[0]});
   const r=await h.fetchTurn({text:'Explícame '+l.title,mode:'explain'});assert.equal(r.status,200,id);assert.equal(r.data.library_route,'owned-lesson-v1');assert.equal(r.data.library_lesson_id,id);assert.equal(r.data.generation_model_calls,0);assert.equal(r.data.generation_tokens,0);assert.equal(h.inferences.length,0);await h.drain();
