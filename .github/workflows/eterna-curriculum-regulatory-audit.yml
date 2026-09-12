@@ -1,0 +1,33 @@
+name: Eterna territorial regulatory audit
+on:
+  push:
+    branches: ["audit/eterna-curriculum-review-c993-20260912"]
+    paths: ["qa/curriculum-review/collect_registry.py", ".github/workflows/eterna-curriculum-regulatory-audit.yml"]
+permissions:
+  contents: read
+jobs:
+  audit-public-regulatory-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install public text parsers
+        run: |
+          pip install beautifulsoup4==4.13.5 lxml==6.0.1
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+      - name: Audit actual linked sources and known replacements without activating any
+        run: python qa/curriculum-review/collect_registry.py
+      - name: Preserve source and limits evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-territorial-regulatory-audit
+          path: curriculum-review-evidence
+          retention-days: 90
+          if-no-files-found: warn
