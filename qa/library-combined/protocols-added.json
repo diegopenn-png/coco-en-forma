@@ -1,0 +1,163 @@
+[
+  {
+    "id": "outline",
+    "aliases": [
+      "como hago un esquema",
+      "como preparo un esquema",
+      "como organizar un esquema"
+    ],
+    "young": "Podemos ordenar la idea con dibujos o palabras cortas. Elige el tema y busca dos cosas importantes sobre él. ¿De qué tema quieres hacerlo?",
+    "standard": "Empieza por el tema central, separa las ideas principales y coloca debajo los detalles que dependen de cada una. Usa palabras clave y relaciones claras, no un párrafo copiado en cada rama. ¿Sobre qué tema quieres organizarlo?"
+  },
+  {
+    "id": "flashcards",
+    "aliases": [
+      "como hago tarjetas de estudio",
+      "como uso tarjetas de repaso",
+      "como preparar flashcards"
+    ],
+    "young": "En una cara puedes poner un dibujo o una pregunta corta y, detrás, la respuesta. Intenta recordarla antes de dar la vuelta. Un adulto puede ayudarte a preparar una tarjeta.",
+    "standard": "Pon una sola pregunta concreta por tarjeta y una respuesta comprobada al dorso. Intenta responder antes de mirar y separa lo que recuerdas de lo que necesita repaso. Una tarjeta demasiado larga se convierte en una página para releer, no en una comprobación breve."
+  },
+  {
+    "id": "spaced_review",
+    "aliases": [
+      "como repaso sin olvidarme",
+      "como repartir los repasos",
+      "como funciona el repaso espaciado"
+    ],
+    "young": "Podemos practicar una idea hoy y volver a recordarla otro día. No hace falta repetir todo muchas veces seguidas. Un adulto puede ayudarte a organizar pequeños ratos.",
+    "standard": "Reparte el repaso entre varios momentos e intenta recuperar la idea sin mirar antes de comprobarla. Si cuesta, reduce el intervalo y vuelve con una ayuda concreta. No existe un calendario único que garantice memorizarlo todo: ajustamos según lo que realmente recuerdes."
+  },
+  {
+    "id": "check_answer",
+    "aliases": [
+      "como compruebo mi respuesta",
+      "como reviso un resultado",
+      "como se si mi respuesta esta bien"
+    ],
+    "young": "Mira qué pedía la pregunta y comprueba una cosa cada vez. En un cálculo podemos contar o probar al revés. Enséñame la pregunta y lo que hiciste.",
+    "standard": "Compara tu respuesta con lo que pide el enunciado. Revisa datos, unidades y pasos; en una ecuación, sustituye el resultado, y en una explicación, comprueba que las razones sostienen la conclusión. Necesito ver el trabajo concreto antes de decirte que está bien."
+  },
+  {
+    "id": "teacher_difference",
+    "aliases": [
+      "mi profesor lo explico de otra manera",
+      "mi profesora lo explico de otra manera",
+      "en clase lo hacemos diferente"
+    ],
+    "young": "Puede haber otra manera de explicarlo. Muéstrame cómo lo hicisteis en clase y lo comparamos con calma, sin dar por hecho que alguien se ha equivocado.",
+    "standard": "Gracias por señalarlo. Puede ser otro método, otra convención o un error que debamos corregir. Comparte el enunciado y la explicación de clase; revisaremos si ambos procedimientos cumplen las mismas condiciones. No voy a desautorizar a tu profesor sin examinarlo."
+  },
+  {
+    "id": "multiple_methods",
+    "aliases": [
+      "hay otra forma de resolverlo",
+      "puede haber varias soluciones",
+      "todos tienen que hacerlo igual"
+    ],
+    "young": "A veces hay varios caminos. Lo importante es que cada paso tenga sentido. Dime qué camino has probado y veremos si funciona.",
+    "standard": "Puede haber varios métodos correctos, y algunos problemas también tienen varias soluciones. Hay que distinguir método, resultado y condiciones del enunciado. Enséñame tu propuesta para comprobarla; no la descartaré solo porque sea diferente de una respuesta preparada."
+  },
+  {
+    "id": "calculator_use",
+    "aliases": [
+      "puedo usar calculadora",
+      "esta mal usar calculadora",
+      "cuando uso la calculadora"
+    ],
+    "young": "Depende de lo que estéis practicando y de lo que indique tu profesor. Podemos usarla para comprobar cuando esté permitido, sin saltarnos la idea que estás aprendiendo.",
+    "standard": "Sigue las indicaciones de la actividad y de tu profesor. La calculadora puede comprobar operaciones o facilitar un cálculo, pero no decide por ti qué operación corresponde ni justifica el razonamiento. En un examen, respeta las herramientas autorizadas."
+  },
+  {
+    "id": "academic_integrity",
+    "aliases": [
+      "por que no me das la respuesta directamente",
+      "puedes hacer mis deberes por mi",
+      "quiero copiar sin entender"
+    ],
+    "young": "Te ayudaré para que puedas hacerlo tú: una pista, un ejemplo parecido y después tu intento. No necesitas saberlo todo antes de empezar.",
+    "standard": "Puedo explicar el método, resolver un ejemplo de aprendizaje y revisar tu intento. No quiero sustituir tu trabajo por una respuesta que presentes como propia. Empecemos por el primer paso que no te sale; en una actividad evaluada, respetaremos sus reglas."
+  },
+  {
+    "id": "manageable_text",
+    "aliases": [
+      "me cuesta seguir textos largos",
+      "me pierdo cuando hay mucho texto",
+      "necesito ir paso a paso"
+    ],
+    "young": "Vamos con una idea pequeña. Dime qué palabra o frase quieres mirar primero; no hace falta resolverlo todo de una vez.",
+    "standard": "Podemos dividirlo en fragmentos y comprobar una idea antes de pasar a la siguiente. Dime qué frase te hizo perder el hilo. Si necesitas una adaptación habitual, conviene acordarla también con tu profesor o tu familia; no voy a sacar un diagnóstico de esta dificultad."
+  },
+  {
+    "id": "unknown_word",
+    "aliases": [
+      "hay una palabra que no entiendo",
+      "no entiendo una palabra del enunciado",
+      "que hago si no conozco una palabra"
+    ],
+    "young": "Dime la palabra y la frase donde aparece. Así puedo explicarla con un ejemplo que encaje, sin adivinar qué significa aquí.",
+    "standard": "Comparte la palabra junto con la oración donde aparece. Primero revisamos su sentido en ese contexto; después reformulamos el enunciado. Una misma palabra puede significar cosas distintas según la materia y la frase."
+  },
+  {
+    "id": "learning_purpose",
+    "aliases": [
+      "para que sirve aprender esto",
+      "por que tengo que aprender esto",
+      "que utilidad tiene estudiar"
+    ],
+    "young": "Es una buena pregunta. Dime qué idea estamos mirando y busquemos un ejemplo cercano: algo que puedas observar, explicar o hacer con ella.",
+    "standard": "La utilidad depende del tema: puede ayudarnos a resolver situaciones, comprender el mundo o desarrollar una forma de razonar. No todos los contenidos tienen una aplicación inmediata. Podemos buscar un uso concreto y también qué capacidad intelectual estás practicando."
+  },
+  {
+    "id": "content_sources",
+    "aliases": [
+      "de donde sacas las explicaciones",
+      "que fuentes utilizas",
+      "tus explicaciones son oficiales"
+    ],
+    "young": "Uso materiales preparados para ayudarte a aprender y referencias educativas. Soy una IA y puedo equivocarme; una explicación mía no es un texto oficial de tu colegio.",
+    "standard": "Uso materiales propios de ETERNA, referencias curriculares y, cuando hace falta, el tutor de IA. La normativa indica qué aprendizajes se trabajan, pero no convierte cada explicación en texto oficial ni homologado. Para una afirmación importante conviene comprobar la fuente concreta y su vigencia."
+  },
+  {
+    "id": "verify_ai",
+    "aliases": [
+      "como se si una ia se equivoca",
+      "como compruebo lo que dice una ia",
+      "debo creer todo lo que dice una ia"
+    ],
+    "young": "No tienes que creer una respuesta solo porque suene segura. Podemos comprobar un ejemplo, volver a contar o preguntar a un adulto o a tu profesor cuando sea importante.",
+    "standard": "Comprueba los pasos, busca fuentes pertinentes y distingue datos, interpretación y opinión. Una respuesta segura o bien escrita puede contener errores. En cálculos, verifica sustituyendo o con otro método; en hechos, contrasta fuentes fiables y actuales cuando corresponda."
+  },
+  {
+    "id": "no_official_grade",
+    "aliases": [
+      "esto es una nota oficial",
+      "tu puntuacion cuenta para el colegio",
+      "eres quien me pone la nota del cole"
+    ],
+    "young": "No pongo la nota oficial de tu colegio. Las preguntas de aquí nos ayudan a descubrir qué entiendes y qué conviene practicar.",
+    "standard": "No. Los resultados de ETERNA orientan esta práctica y no sustituyen la evaluación de tu centro ni una revisión de tu profesor. Un acierto aislado tampoco demuestra dominar todo el tema; interesa ver cómo razonas y si puedes aplicar la idea de nuevo."
+  },
+  {
+    "id": "trusted_adult",
+    "aliases": [
+      "puedo pedir ayuda a un adulto",
+      "puedo hacerlo con mi madre",
+      "puedo hacerlo con mi padre",
+      "puedo preguntar al profesor"
+    ],
+    "young": "Claro. Aprender con tu familia o con tu profesor puede ayudarte mucho. Puedes enseñarles qué parte te cuesta y explicar lo que ya has intentado.",
+    "standard": "Sí. Pedir apoyo no invalida tu esfuerzo. Explica qué has entendido, muestra tu intento y señala dónde te has atascado. ETERNA es un recurso de apoyo, no un reemplazo de tu familia, de tu profesor ni de otras personas de confianza."
+  },
+  {
+    "id": "celebrate_process",
+    "aliases": [
+      "ya me sale",
+      "lo hice yo solo",
+      "lo hice yo sola"
+    ],
+    "young": "¡Bien por ese avance! Cuéntame qué paso te ayudó. Así podrás volver a usarlo cuando aparezca algo parecido.",
+    "standard": "¡Bien por ese avance! Identifica qué cambió en tu razonamiento o qué estrategia te ayudó. Podemos comprobarlo con otro caso cuando quieras; no voy a dar una respuesta por correcta sin haberla visto."
+  }
+]
