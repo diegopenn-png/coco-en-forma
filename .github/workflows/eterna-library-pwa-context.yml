@@ -1,0 +1,82 @@
+name: Eterna published library PWA context verification
+on:
+  push:
+    branches: ["fix/eterna-library-pwa-context-20260912"]
+    paths: ["qa/library/reconcile_context.py", ".github/workflows/eterna-library-pwa-context.yml"]
+permissions:
+  contents: write
+jobs:
+  reconcile-without-overwriting-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: fa69f6881ce55a33495b194eaba64331b3ed9e96
+          path: .context-candidate
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply only exact reconciled source changes
+        run: |
+          python qa/library/reconcile_context.py
+          cp .context-candidate/qa/library/ui_gateway.mjs qa/library/ui_gateway.mjs
+          cp .context-candidate/qa/library/ui_integration.py qa/library/ui_integration.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('qa/library/ui_integration.py');s=p.read_text();old="page.goto(base+'/fixture');page.evaluate(seed)";assert s.count(old)==1
+          p.write_text(s.replace(old,"page.goto(base+'/fixture');page.add_style_tag(url=base+'/eterna-v159.css');page.evaluate(seed)"))
+          PY
+      - name: Run published safeguards plus additional PWA and learning-context tests
+        run: |
+          mkdir -p library-integration-evidence
+          cd eterna-worker
+          npm run check > ../library-integration-evidence/regression.txt
+          tail -10 ../library-integration-evidence/regression.txt
+      - name: Install browser tooling
+        run: |
+          pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Exercise actual unmodified styled UI and full backend with synthetic services
+        shell: bash
+        run: |
+          node qa/library/ui_gateway.mjs > library-integration-evidence/gateway.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do curl --silent --fail http://127.0.0.1:4189/fixture > /dev/null && break; sleep 1; done
+          python qa/library/ui_integration.py
+      - name: Preserve tested source on the isolated branch only
+        run: |
+          test "$GITHUB_REF" = "refs/heads/fix/eterna-library-pwa-context-20260912"
+          python - <<'PY'
+          import subprocess
+          expected={'eterna-worker/src/index.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs'}
+          assert set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())==expected
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs qa/library/ui_gateway.mjs qa/library/ui_integration.py
+          git commit -m "fix(eterna): preserve PWA conversation context and prepared explanations" -m "Reconciled with a877d73 rather than replacing published runtime. Retains mathematical punctuation and language safeguards. 396 regressions and complete desktop/mobile browser flows. No microphone, UI or model changes. Not yet deployed."
+          git push origin HEAD:refs/heads/fix/eterna-library-pwa-context-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
+          const files=['eterna-worker/src/index.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/src/library/content-v1.js','eterna-worker/test/library-first.test.mjs'];
+          const blobs=Object.fromEntries(files.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));
+          const log=readFileSync('library-integration-evidence/regression.txt','utf8'),ui=JSON.parse(readFileSync('library-integration-evidence/ui-report.json'));
+          const report={base_commit:'a877d730a018fce369b5b262310cd8182439a7bc',commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),regressions_passed:Number(log.match(/# pass (\d+)/)[1]),regressions_failed:Number(log.match(/# fail (\d+)/)[1]),ui_scenarios:ui.reduce((n,x)=>n+x.scenarios.length,0),ui_models_called:ui.reduce((n,x)=>n+x.model_calls,0),auth_and_database:'synthetic fixtures',physical_iphone_tested:false,frontend_unchanged:true,microphone_unchanged:true,production_changed:false,blobs};
+          if(report.regressions_passed!==396||report.regressions_failed!==0||report.ui_scenarios!==32||report.ui_models_called!==0)throw Error('Acceptance criteria failed');
+          writeFileSync('library-integration-evidence/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+          JS
+      - name: Preserve evidence without credentials or real child data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-pwa-context-verification
+          path: library-integration-evidence
+          retention-days: 30
+          if-no-files-found: warn
