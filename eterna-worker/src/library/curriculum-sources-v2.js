@@ -4,25 +4,36 @@ globalThis.ETERNA_CURRICULUM_SOURCES_V2 = Object.freeze({
   human_teacher_reviewed: false,
   scope_note: 'Official-source traceability layer. This is not a claim that every autonomous-community criterion is exhaustively encoded.',
   national: {
-    infantil: [
-      'https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654'
-    ],
-    primaria: [
-      'https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296'
-    ],
-    eso: [
-      'https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975'
-    ],
-    bachillerato: [
-      'https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521'
-    ]
+    infantil: ['https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654'],
+    primaria: ['https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296'],
+    eso: ['https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975'],
+    bachillerato: ['https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521']
   },
   autonomous_communities: {
     'Andalucía': {
       authority: 'Junta de Andalucía / BOJA',
       status: 'territorial_reference_layer',
-      note: 'Use for contextual alignment; exact course/subject legal mappings must remain traceable to the applicable BOJA order/decree.',
-      official_portals: ['https://www.juntadeandalucia.es/eboja.html','https://www.juntadeandalucia.es/educacion/portals/web/ordenacion-y-evaluacion-educativa']
+      note: 'Verified territorial framework for the four ETERNA stages. Subject/course criterion-level mapping remains explicit and must not be inferred merely from these stage sources.',
+      official_portals: ['https://www.juntadeandalucia.es/eboja.html','https://www.juntadeandalucia.es/educacion/portals/web/ordenacion-y-evaluacion-educativa'],
+      stages: {
+        infantil: {
+          decree: {label:'Decreto 100/2023, de 9 de mayo',url:'https://www.juntadeandalucia.es/boja/2023/90/1'},
+          development_order: {label:'Orden de 30 de mayo de 2023 — Educación Infantil',url:'https://www.juntadeandalucia.es/boja/2023/104/38'}
+        },
+        primaria: {
+          decree: {label:'Decreto 101/2023, de 9 de mayo',url:'https://www.juntadeandalucia.es/boja/2023/90/2'},
+          development_order: {label:'Orden de 30 de mayo de 2023 — Educación Primaria',url:'https://www.juntadeandalucia.es/boja/2023/104/39'}
+        },
+        eso: {
+          decree: {label:'Decreto 102/2023, de 9 de mayo',url:'https://www.juntadeandalucia.es/boja/2023/90/3'},
+          development_order: {label:'Orden de 30 de mayo de 2023 — Educación Secundaria Obligatoria',url:'https://www.juntadeandalucia.es/boja/2023/104/36'}
+        },
+        bachillerato: {
+          decree: {label:'Decreto 103/2023, de 9 de mayo',url:'https://www.juntadeandalucia.es/boja/2023/90/4'},
+          development_order: {label:'Orden de 30 de mayo de 2023 — Bachillerato',url:'https://www.juntadeandalucia.es/boja/2023/104/37'},
+          corrections: [{label:'Corrección de errores del Decreto 103/2023',url:'https://www.juntadeandalucia.es/boja/2023/112/2'}]
+        }
+      }
     },
     'Aragón': {authority:'Gobierno de Aragón',status:'territorial_reference_layer',official_portals:['https://educa.aragon.es/']},
     'Asturias': {authority:'Principado de Asturias',status:'territorial_reference_layer',official_portals:['https://www.educastur.es/']},
