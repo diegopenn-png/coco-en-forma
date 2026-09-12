@@ -1,0 +1,94 @@
+name: Eterna isolated 160-lesson final validation
+on:
+  push:
+    branches: ["feat/eterna-library-v2-content-20260912"]
+    paths: ["qa/library-release-v2/isolate_release.mjs", ".github/workflows/eterna-library-v2-isolated.yml"]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eterna-library-v2-isolated
+  cancel-in-progress: false
+jobs:
+  exact-content-and-real-service:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: ca678c35851b0da874fd744c7c2c1fef80fe0bbf
+          path: .qa-auth
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-library-v2-content-verification
+          run-id: 34663746343
+          github-token: ${{ github.token }}
+          path: .content-proof
+      - name: Restore exact tested snapshot then change only its release namespace
+        run: |
+          tar -xzf .content-proof/library-v2-evidence/content-source.tar.gz
+          node qa/library-release-v2/isolate_release.mjs
+          mkdir -p library-v2-private-evidence library-integration-evidence
+          cd eterna-worker
+          npm run check > ../library-v2-private-evidence/regression.txt
+          tail -10 ../library-v2-private-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Recheck same unmodified PWA scenarios
+        run: |
+          pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+          node qa/library/ui_gateway.mjs > library-integration-evidence/gateway.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do curl --silent --fail http://127.0.0.1:4189/fixture > /dev/null && break; sleep 1; done
+          python qa/library/ui_integration.py
+      - name: Commit revalidated namespace only on the content branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs eterna-worker/test/library-v2-content.test.mjs qa/library-v2/lessons-v2.json qa/library-release-v2/prepare_private.py
+          git commit -m "fix(library): isolate verified 160-lesson release and retain concurrent draft content" -m "Only the release identifier changed. 512 regressions and 42 existing desktop/mobile UI cases repeated before import. Never delete or promote unrelated draft rows. Production unchanged."
+          git push origin HEAD:refs/heads/feat/eterna-library-v2-content-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{execFileSync}from'node:child_process';import assert from'node:assert/strict';
+          const path='.content-proof/library-v2-evidence/report.json',p=JSON.parse(readFileSync(path)),log=readFileSync('library-v2-private-evidence/regression.txt','utf8'),ui=JSON.parse(readFileSync('library-integration-evidence/ui-report.json'));
+          assert.match(log,/# pass 512\b/);assert.match(log,/# fail 0\b/);assert.equal(ui.reduce((n,x)=>n+x.scenarios.length,0),42);assert.equal(ui.reduce((n,x)=>n+x.model_calls,0),0);
+          p.tested_commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();writeFileSync(path,JSON.stringify(p,null,2));writeFileSync('library-v2-private-evidence/content-proof.json',JSON.stringify(p,null,2));
+          JS
+      - name: Prepare protected fixed-scope private verification
+        run: |
+          python qa/library-release-v2/prepare_private.py
+          node --check qa/library/remote_canonical_v2.mjs
+      - name: Import isolated draft and run canonical requests with real disposable authentication
+        run: node qa/library/remote_canonical_v2.mjs
+      - name: Assert complete evidence including temporary identity removal
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import assert from'node:assert/strict';
+          const p=JSON.parse(readFileSync('library-v2-private-evidence/report.json'));
+          assert.equal(p.phase,'canonical-private-verified');assert.equal(p.release,'eterna-library-2026.09-v2-160');assert.equal(p.requests.length,80);assert.equal(p.synthetic_cleanup.ok,true);assert.equal(p.draft_content.lessons,160);assert.equal(p.draft_content.protocols,40);assert.equal(p.draft_content.hash_mismatches,0);assert.equal(p.production_changed,false);
+          console.log('Verified 160 lessons, 40 protocols, 80 real authenticated prepared requests, no production change');
+          JS
+      - name: Preserve exact validated content and sanitized results
+        if: always()
+        run: |
+          mkdir -p library-v2-private-evidence
+          tar -czf library-v2-private-evidence/verified-source.tar.gz eterna-worker/src/library eterna-worker/src/index.js eterna-worker/test/library-first.test.mjs eterna-worker/test/library-v2-content.test.mjs qa/library-v2
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-library-v2-isolated-verification
+          path: |
+            library-v2-private-evidence
+            library-integration-evidence
+          retention-days: 30
