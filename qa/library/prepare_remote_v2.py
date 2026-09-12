@@ -5,8 +5,8 @@ p=Path('.v2-previous-qa.mjs');s=p.read_text()
 assert sha256(s.encode()).hexdigest()=='c5adcafd2a2b3d9ede7f615046705c9405ddcfe1891ccaf0feaa1263497db4dc'
 s=s.replace("import '../../eterna-worker/src/library/content-v1.js';","import '../../eterna-worker/src/library/content-v1.js';\nimport '../../eterna-worker/src/library/runtime-v1.js';\nconst officialDocs=JSON.parse(readFileSync('library-v2-source-evidence/documents.json')),officialChunks=JSON.parse(readFileSync('library-v2-source-evidence/chunks.json'));")
 s=s.replace('eterna-library-2026.09-v1','eterna-library-2026.09-v2').replace('library-canonical-evidence','library-v2-evidence')
-s=s.replace('92a5712135b2530506669bc6b6baabba59e14cf9744087abbd22393ea1972adb','c0a46f5eb8fbcc014be1fb51e2ee5cc3e90fec2a5cb46a222bfc4d4bfacd0156').replace('26aad7f15e50050a58edeeeca4012df5b58cde8f87d4928dddebc767a3241c21','faa289b941fb995a6cdecf924bc9c7ea32973fa9ad6c624ef386d11ca2c0f421')
-s=s.replace('0abf2be8-16c4-4695-96ae-48d0e9ef82fe','438466cb-f081-48f1-a4cc-7986deb58f8a').replace('regressions_passed:387','regressions_passed:474')
+s=s.replace('92a5712135b2530506669bc6b6baabba59e14cf9744087abbd22393ea1972adb','8849aeb754f3eaaac69a5b31f39081959ed134770066522e872766f517c98884').replace('26aad7f15e50050a58edeeeca4012df5b58cde8f87d4928dddebc767a3241c21','7eace07381ecab1025d0cb0c2af56f883539ddfcb5a90f6fb17dc90b9a225aad')
+s=s.replace('0abf2be8-16c4-4695-96ae-48d0e9ef82fe','5da15a04-5396-4841-8b21-a94c0c6647c3').replace('regressions_passed:387','regressions_passed:485')
 s=s.replace('db_import_counts:{documents:58,chunks:13130,lessons:80,protocols:24}','db_import_counts:{documents:officialDocs.length,chunks:officialChunks.length,lessons:160,protocols:40}')
 s=s.replace('health.owned_library.lessons,80','health.owned_library.lessons,160').replace('health.owned_library.protocols,24','health.owned_library.protocols,40')
 s=s.replace("[['infantil','i-count'],['primaria','p-prime'],['eso','e-equation'],['bachillerato','b-derivative']]","[['infantil','i-count'],['primaria','p-prime'],['eso','e-equation'],['bachillerato','b-derivative'],['infantil','i-sorting'],['primaria','p-solar'],['eso','e-median'],['bachillerato','b-logarithms']]")
@@ -38,5 +38,6 @@ block="""  if(command==='stage-content'){
   }
 """
 needle="  if(command==='stats'){";assert needle in s;s=s.replace(needle,block+needle)
+s=s.replace("const report={phase:","const report={baseline_source_commit:'e40e3bbbd7d6ae464a9e17659cd8ae3d36245852',phase:")
 Path('qa/library/remote_v2.generated.mjs').write_text(s)
 print('Generated private QA tool; no production deployment; expected real cases 120')

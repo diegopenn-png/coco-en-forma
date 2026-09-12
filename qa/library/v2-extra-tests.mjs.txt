@@ -28,3 +28,9 @@ test('v2 does not pretend that quarantined official documents are complete lesso
 test('v2 uses fallback instead of falsely grading an unknown free answer',()=>{
  const h=harness();for(const l of h.lessons.slice(80)){const q=l.quiz[0],ped={current_mode:'practice',active_concept:l.title,pending_question:h.library.question(q),next_teaching_goal:`lib:v1:${l.id}:0:0:practice`};assert.equal(h.library.decision({text:'Tengo otra explicación que quiero justificar con un ejemplo',profile:profile(l),pedState:ped,mode:'practice'}),null)}
 });
+
+test('v2 standalone unit answers are case-sensitive too',()=>{
+ const h=harness(),l=h.lessons.find(x=>x.id==='e-acceleration'),q=l.quiz[1],ped={current_mode:'practice',active_concept:l.title,pending_question:h.library.question(q),next_teaching_goal:`lib:v1:${l.id}:1:0:practice`};
+ assert.equal(h.library.decision({text:'m/S²',profile:profile(l),pedState:ped,mode:'practice'}),null);
+ assert.equal(h.library.decision({text:'m/s²',profile:profile(l),pedState:ped,mode:'practice'})?.assessment,'correct');
+});

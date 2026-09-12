@@ -5,7 +5,7 @@
  */
 (function(root){
   'use strict';
-  const VERSION='library-first-v1';
+  const VERSION='library-first-v2';
   const MODES=new Set(['homework','ask','review','explain','exam','practice']);
   const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es-ES').replace(/[¿?¡!.,;:]/g,' ').replace(/\s+/g,' ').trim();
   const whole=v=>{const s=norm(v).replace(/^eterna /,'').replace(/ eterna$/,'').replace(/^(?:por favor|porfa) /,'').replace(/ (?:por favor|porfa|gracias)$/,'').trim();return s==='eterna'?'hola':s};
@@ -46,7 +46,23 @@
     {id:'human_support',aliases:['eres mi mejor amiga','solo quiero hablar contigo','solo tu me entiendes']},
     {id:'learning_plan',aliases:['como estudio mejor','como puedo estudiar mejor','como organizo el estudio']},
     {id:'small_step',aliases:['por donde empiezo','no se por donde empezar']},
-    {id:'school_boredom',aliases:['me aburro estudiando','estudiar es aburrido','no me gusta estudiar']}
+    {id:'school_boredom',aliases:['me aburro estudiando','estudiar es aburrido','no me gusta estudiar']},
+    {"id": "concentration", "aliases": ["me cuesta concentrarme", "no consigo concentrarme"]},
+    {"id": "overloaded", "aliases": ["tengo demasiados deberes", "tengo muchas tareas", "no se como organizar tantas tareas"]},
+    {"id": "frustrated", "aliases": ["me frustra equivocarme", "estoy frustrado", "estoy frustrada", "esto me sale mal siempre"]},
+    {"id": "celebrate", "aliases": ["lo he conseguido", "me ha salido bien", "estoy orgulloso de mi trabajo", "estoy orgullosa de mi trabajo"]},
+    {"id": "show_reasoning", "aliases": ["quiero entenderlo y no memorizarlo", "quiero saber el razonamiento", "prefiero entenderlo"]},
+    {"id": "teach_back", "aliases": ["puedo explicartelo yo", "quiero explicarlo con mis palabras"]},
+    {"id": "ask_teacher", "aliases": ["como le digo al profesor que no entiendo", "como pido ayuda en clase"]},
+    {"id": "study_together", "aliases": ["como estudio con un amigo", "como podemos estudiar juntos"]},
+    {"id": "integrity", "aliases": ["hazme los deberes", "dame solo las respuestas", "quiero copiar las respuestas"]},
+    {"id": "disagreement", "aliases": ["creo que te has equivocado", "esa respuesta esta mal", "no estoy de acuerdo contigo"]},
+    {"id": "my_mistake", "aliases": ["me he equivocado", "he cometido un error"]},
+    {"id": "curiosity", "aliases": ["me gusta aprender", "tengo curiosidad", "quiero aprender algo nuevo"]},
+    {"id": "check_exam", "aliases": ["como reviso un examen", "como compruebo mis respuestas"]},
+    {"id": "presentation_nerves", "aliases": ["me da miedo exponer", "me da verguenza exponer", "estoy nervioso por una exposicion"]},
+    {"id": "source_check", "aliases": ["como se si una fuente es fiable", "como compruebo una fuente"]},
+    {"id": "topic_choice", "aliases": ["puedo elegir el tema", "puedo hacer otra pregunta", "podemos cambiar de tema"]}
   ]);
   const protocolIndex=new Map(PROTOCOLS.flatMap(p=>p.aliases.map(a=>[a,p.id])));
   function protocol(text){if(typeof text!=='string'||text.length>150)return null;const normalized=norm(text),withoutName=normalized.replace(/^eterna /,'').replace(/ eterna$/,'');const id=protocolIndex.get(normalized)||protocolIndex.get(withoutName==='eterna'?'hola':withoutName);return id?{kind:'library_protocol',protocol:id}:null}
@@ -56,7 +72,7 @@
     switch(kind){
       case'hello':return [`¡Hola${name}! ${continuation}`,`¡Qué bien verte por aquí${name}! ${continuation}`,`¡Hola${name}! Vamos paso a paso. ${continuation}`][index];
       case'how_are_you':return `Estoy lista para ayudarte${name}. ${pending?'Seguimos con calma cuando estés preparado.':'¿Cómo vienes hoy: con una duda o con ganas de practicar?'}`;
-      case'thanks':return [`¡De nada${name}! El esfuerzo que has hecho para entenderlo cuenta.`,`¡De nada${name}! Me alegra que la explicación te haya servido.`,`Gracias a ti por trabajar la idea${name}. Podemos continuar cuando te venga bien.`][index];
+      case'thanks':return [`¡De nada${name}! Podemos avanzar a tu ritmo.`,`¡De nada${name}! Me alegra que la explicación te haya servido.`,`Gracias a ti por trabajar la idea${name}. Podemos continuar cuando te venga bien.`][index];
       case'goodbye':return `¡Hasta luego${name}! Descansa y disfruta también fuera de la pantalla.`;
       case'identity':return young?'Me llamo Eterna. Soy una IA: un programa que te ayuda a aprender. No soy una persona y a veces puedo equivocarme.':'Me llamo Eterna. Soy la IA tutora escolar de Coco en Forma, no una persona. Te ayudo a comprender, practicar y revisar; puedo equivocarme, así que compruebo lo importante y te diré cuando algo no esté claro.';
       case'mission':return 'Mi trabajo es ayudarte a aprender, no hacer pasar mis respuestas por tu trabajo. Puedo explicar una idea de otra forma, darte una pista, revisar un intento o practicar contigo una pregunta cada vez.';
@@ -70,7 +86,7 @@
       case'tired':return `Gracias por decírmelo${name}. Hagamos una pausa fuera de la pantalla. Después podemos volver con un solo paso pequeño; no hay que hacerlo todo de golpe.`;
       case'self_doubt':return `Que una tarea te cueste no dice cuánto vales${name}. Podemos dividirla en pasos pequeños y probar otra explicación. ${pending?'Dime en qué parte de la pregunta te has atascado.':'¿Qué parte te está costando ahora?'}`;
       case'exam_nerves':return `Entiendo que el examen pueda preocuparte${name}. No necesitas demostrarlo todo de golpe: podemos practicar una pregunta y revisar qué te ayuda. Si esos nervios te desbordan, coméntalo con tu familia o tu profesor.`;
-      case'reading_embarrassment':return `Preguntar o equivocarse al leer no es un motivo de vergüenza${name}. Puedes empezar con una frase corta y pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto para empezar.`;
+      case'reading_embarrassment':return `Puede dar vergüenza leer o preguntar delante de otros${name}; no tienes que ocultarlo ni hacerlo perfecto. Puedes empezar con una frase corta y pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto para empezar.`;
       case'agency':return 'Sí, puedes equivocarte. Un error nos sirve para ver qué paso conviene revisar. Te señalaré algo concreto que puedas mejorar, sin etiquetas ni compararte con otros.';
       case'honesty':return 'Puedo equivocarme. Por eso distingo lo comprobado de lo dudoso, reviso los cálculos cuando es posible y no debería inventar una respuesta para parecer segura. Si algo no encaja, lo revisamos.';
       case'privacy':return 'Utilizo la información escolar disponible para ayudarte. No compartas contraseñas, dirección, teléfonos ni secretos que te hagan sentir inseguro. La información sobre el uso de datos está en Tu privacidad; si algo te preocupa, habla con un adulto de confianza.';
@@ -78,18 +94,47 @@
       case'learning_plan':return 'Elige un objetivo pequeño, intenta recordarlo o resolver un ejemplo sin mirar y comprueba después qué faltaba. Haz una pausa y vuelve a practicar otro día. Podemos empezar por un tema concreto, sin convertir el estudio en una carrera.';
       case'small_step':return pending?'Empecemos por entender qué pide la pregunta. Dime qué parte reconoces y cuál te resulta nueva; no hace falta resolverla entera todavía.':'Empecemos por una sola cosa: dime la asignatura y el tema que quieres trabajar.';
       case'school_boredom':return 'Podemos cambiar la forma de trabajar: un ejemplo cercano, una pregunta corta o una actividad práctica. No hace falta que te guste todo para avanzar; busquemos una pequeña meta que tenga sentido para ti.';
+      case"concentration":return "Podemos reducir la tarea a un paso y apartar lo que distraiga. Prueba un tramo breve y después descansa. Si te ocurre a menudo y te preocupa, cuéntaselo a tu familia o al profesor para buscar apoyo; no significa que seas incapaz.";
+      case"overloaded":return "Cuando se juntan muchas tareas puede agobiar. Podemos separar lo urgente de lo que puede esperar y elegir un primer paso pequeño. ¿Qué tarea tienes que entregar antes?";
+      case"frustrated":return "Es frustrante cuando lo intentas y no sale. No hace falta repetirlo de la misma forma: podemos revisar un solo paso o cambiar de ejemplo. También puedes hacer una pausa; tu valor no depende de este ejercicio.";
+      case"celebrate":return "¡Qué bien que notes tu avance! Fíjate en qué te ayudó esta vez: esa estrategia puede servirte de nuevo. No necesito ponerte una nota para reconocer el trabajo que has hecho.";
+      case"show_reasoning":return "Ese es un buen objetivo. Podemos conectar la idea con algo que ya sabes, ver por qué funciona y comprobarla con un ejemplo nuevo. Dime qué parte quieres comprender primero.";
+      case"teach_back":return "Claro. Explícalo con tus palabras; primero miraré qué idea has captado y después qué conviene ajustar. No hace falta repetir mi explicación literalmente.";
+      case"ask_teacher":return "Puedes decir: «Entiendo esta parte, pero me pierdo en este paso. ¿Podemos verlo con otro ejemplo?». Si hablar delante del grupo te cuesta, puedes pedir un momento para comentarlo en privado.";
+      case"study_together":return "Podéis turnaros: una persona explica una idea, la otra hace una pregunta y después cambiáis. Comprobad las dudas en una fuente fiable y dejad que cada uno escriba su propia respuesta.";
+      case"integrity":return "Puedo ayudarte a que sepas hacerlo, pero no a presentar mi trabajo como tuyo. Muéstrame una pregunta y lo que has intentado; empezamos con una pista útil y avanzamos desde ahí.";
+      case"disagreement":return "Gracias por señalarlo. Puedo equivocarme. Dime qué paso o afirmación no encaja y lo revisaremos sin dar por hecho que yo tenga razón; tampoco voy a cambiar la respuesta sin comprobarla.";
+      case"my_mistake":return "Podemos usarlo para saber qué revisar. Dime en qué paso crees que ocurrió y lo comprobamos; no voy a deducir un error concreto sin ver tu respuesta.";
+      case"curiosity":return "La curiosidad es un buen punto de partida. Podemos elegir un tema del cole y explorarlo con una pregunta concreta. ¿Qué te gustaría entender?";
+      case"check_exam":return "Revisa primero qué pide cada pregunta, luego tus pasos y, cuando corresponda, las unidades o la concordancia. En un cálculo, prueba una comprobación distinta. No cambies una respuesta solo por nervios: busca una razón.";
+      case"presentation_nerves":return "Hablar delante de otros puede dar nervios. Prepara una idea de inicio, ensaya un tramo corto y apóyate en un esquema, no en memorizar todo. Puedes acordar con tu profesor una forma de empezar que te resulte más cómoda.";
+      case"source_check":return "Mira quién publica, qué pruebas aporta, de cuándo es y si otras fuentes independientes lo confirman. Un diseño atractivo no garantiza veracidad. Para datos oficiales, busca el organismo competente y distingue una fuente de una opinión.";
+      case"topic_choice":return "Sí, puedes elegir otro tema escolar o hacer otra pregunta. Dime cuál; no hace falta terminar esta parte para pedir un cambio. Si luego quieres volver, revisaremos el contexto disponible.";
       default:return null;
     }
+  }
+  let indexedSnapshot=null,indexedAliases=new Map();
+  function aliasIndex(){
+    const snapshot=root.ETERNA_LIBRARY_CONTENT;
+    if(indexedSnapshot!==snapshot){
+      const map=new Map();for(const l of lessons())for(const a of new Set([l.title,...l.aliases].map(a=>norm(a).replace(/^(?:el|la|los|las|un|una) /,'')))){const values=map.get(a)||[];values.push(l);map.set(a,values)}
+      indexedSnapshot=snapshot;indexedAliases=map;
+    }
+    return indexedAliases;
   }
   function exactLesson(text,profile){
     if(typeof text!=='string'||text.length>230||/[\n\r<>`{}\[\]]/.test(text))return null;
     let s=whole(text);
     // A grammar, not a fuzzy substring match. Every remaining word must be an alias.
+    s=s.replace(/^hola(?: eterna)? /,'')
+      .replace(/^(?:me puedes|me podrias|puedes|podrias) (?:explicar|ensenar|ayudar a entender|ayudarme a entender)(?: un poco)? /,'')
+      .replace(/^(?:me explicas|podemos repasar|podemos practicar|necesito ayuda con|tengo dudas sobre) /,'')
+      .replace(/ (?:paso a paso|de forma sencilla|de manera sencilla)$/,'');
     s=s.replace(/^(?:quiero|necesito) (?:aprender|entender|practicar|repasar|estudiar)(?: sobre)? /,'')
       .replace(/^(?:explicame|explica|ensename|cuentame|ayudame con|ayudame a entender|repasar|practicar|repasemos|practiquemos)(?: sobre)? /,'')
       .replace(/^(?:que es|que son|en que consiste|como funciona|como funcionan) /,'')
       .replace(/^(?:el|la|los|las|un|una) /,'').trim();
-    const hits=lessons().filter(l=>appropriate(l,profile)&&[l.title,...l.aliases].some(a=>norm(a).replace(/^(?:el|la|los|las|un|una) /,'')===s));
+    const hits=(aliasIndex().get(s)||[]).filter(l=>appropriate(l,profile));
     return hits.length===1?hits[0]:null;
   }
   const MARK=/^lib:v1:([a-z0-9-]+):([0-2]):([0-3]):(homework|ask|review|explain|exam|practice)$/;
@@ -100,12 +145,32 @@
     if(ped.pending_question&&ped.pending_question!==question(q))return null;
     return {lesson,position,attempts,question:q};
   }
+  // The PWA expands a few short commands before sending them. Decode only the
+  // complete canonical templates for the verified current lesson/question.
+  // Never strip an arbitrary prefix, trailing clause, or untrusted answer key.
+  function clientTurn(text,{profile={},pedState={},mode='ask'}={}){
+    if(typeof text!=='string'||text.length>2400)return text;
+    const active=owned(pedState,profile,mode);if(!active)return text;
+    const topic=active.lesson.title,templates=new Map();
+    const add=(raw,value)=>templates.set(norm(raw),value);
+    if(pedState.pending_question){
+      for(const answer of ['sí','no'])add(`Mi respuesta a tu última comprobación es ${answer}. Evalúala usando exactamente la pregunta anterior: ${question(active.question)}`,answer);
+    }else add(`Sí. Continúa con la explicación que acababas de ofrecer sobre ${topic} y resuelve lo que quedó pendiente.`,'siguiente');
+    add(`Continúa ahora con lo que quedó pendiente sobre ${topic}. No repitas lo ya explicado; avanza al siguiente punto útil.`,'siguiente');
+    add(`Explica por qué ocurre lo que acabamos de mencionar sobre ${topic}. Responde a la causa de la referencia anterior, sin cambiar de tema.`,'por qué');
+    add(`No lo entendí. Explícame de nuevo ${topic} con una estrategia realmente distinta: cambia la representación, analogía o ejemplo y divide la idea en menos pasos. No reformules simplemente la misma explicación.`,'no lo entiendo');
+    add(`Explícame de nuevo ${topic} con una estrategia realmente distinta. No repitas la misma formulación: cambia de representación, ejemplo, analogía o pasos y parte de lo que ya estaba explicado.`,'no lo entiendo');
+    const simpler=`Explícame ${topic} más fácil: menos palabras, menos abstracción y menos pasos, pero mantén la precisión. No repitas literalmente la respuesta anterior.`;
+    const prefix='SIMPLIFICACIÓN OBLIGATORIA: explica la misma idea con palabras cotidianas, frases cortas y un solo ejemplo concreto. Evita términos técnicos o abstractos como base de la explicación; si uno es imprescindible, explícalo después con palabras sencillas. Máximo tres ideas y no repitas la formulación anterior. ';
+    add(simpler,'más fácil');add(prefix+simpler,'más fácil');
+    return templates.get(norm(text))||text;
+  }
   const question=q=>`${q.question}\n${q.options.map((o,i)=>`${'ABC'[i]}) ${o}`).join('\n')}`;
   function choice(text,q){
     const s=whole(text),letter=s.match(/^(?:(?:creo que es|creo que|la respuesta es|la opcion|opcion|la) )?(a|b|c|be|ce)$/);
     if(letter)return {a:'A',b:'B',be:'B',c:'C',ce:'C'}[letter[1]];
     // Keep signs, decimal separators, powers, units and negation significant.
-    const exact=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es-ES').replace(/−/g,'-').replace(/\s+/g,' ').trim();
+    const exact=v=>{const raw=String(v??'').normalize('NFC').replace(/−/g,'-').replace(/\s+/g,' ').trim();return /[0-9]|^(?:(?:es )?m\/?s(?:²|2)?|cm(?:²|³)?|m(?:²|³)?|kg|g|mg|s|ms|Hz|N|J|W|Pa|V|A|C|K|mol|L|mL|Ω|°C)$/i.test(raw)?raw:raw.toLocaleLowerCase('es-ES')};
     const value=exact(text),matches=q.options.map((o,i)=>[exact(o),'ABC'[i]]).filter(([o])=>o===value||'es '+o===value);
     return matches.length===1?matches[0][1]:null;
   }
@@ -172,8 +237,8 @@
     if(mode==='review')return output(l,`Revisamos ${l.title.toLocaleLowerCase('es-ES')}. Necesito ver el enunciado y tu respuesta o tus pasos. Primero comprobaré lo que está bien y después el primer error que se pueda demostrar.`,null,'not_applicable',0,0,'new_topic',{strategy:'error_analysis',needs_clarification:true});
     const q=l.quiz[0],state={...modeState,focus:l.title,question_number:1,correct_count:0,partial_count:0,incorrect_count:0,difficulty:1};
     if(['exam','practice'].includes(mode))return output(l,(mode==='exam'?'Hacemos una ronda de tres preguntas, de una en una. Inténtalo antes de ver la explicación.':'Practicamos una idea cada vez. Si te cuesta, puedes pedir una pista.')+'\n\n'+question(q),question(q),'not_applicable',0,0,'new_topic',{mode_state:state});
-    return output(l,`${l.explanation}\n\n${l.example}\n\nPara comprobar una sola idea:\n${question(q)}`,question(q),'not_applicable',0,0,'new_topic',{mode_state:state,explained_marker:'lib:v1:intro'});
+    return output(l,`${l.explanation}\n\n${l.example}\n\nPara comprobar una sola idea:\n${question(q)}`,question(q),'not_applicable',0,0,'new_topic',{mode_state:state,explained_markers:['lib:v1:intro','lib:v1:example']});
   }
   function contextText(lesson){if(!lesson)return '';return `Material original ETERNA revisado por IA, no texto oficial ni revisión humana. Nivel editorial ${lesson.school_years.join(', ')}.\n${lesson.title}: ${lesson.explanation}\nEjemplo: ${lesson.example}\nError frecuente: ${lesson.misconception}\nLa referencia ${lesson.curriculum_source} es curricular, no aval oficial de esta lección.`}
-  root.EternaOwnedLibrary=Object.freeze({version:VERSION,release_id:'eterna-library-2026.09-v1',school,appropriate,protocol,cordial,protocols:PROTOCOLS,exactLesson,owned,decision,question,contextText});
+  root.EternaOwnedLibrary=Object.freeze({version:VERSION,release_id:'eterna-library-2026.09-v2',school,appropriate,protocol,cordial,protocols:PROTOCOLS,exactLesson,owned,clientTurn,decision,question,contextText});
 })(globalThis);
