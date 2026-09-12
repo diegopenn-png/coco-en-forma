@@ -1,0 +1,73 @@
+name: Eterna reviewed library real private verification
+on:
+  push:
+    branches: ["audit/eterna-curriculum-review-c993-20260912"]
+    paths: ["qa/curriculum-review/prepare_private.py", ".github/workflows/eterna-reviewed-library-private.yml"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-reviewed-library-private
+  cancel-in-progress: false
+jobs:
+  canonical-private-and-draft-import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: 81bf9e7a46c67bb12638a941a1cd774ad3de14bc
+          path: .qa-auth
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-reviewed-256-build
+          run-id: 34667096295
+          github-token: ${{ github.token }}
+          path: review-build-evidence
+      - name: Repeat all 616 tests and install locked tooling
+        run: |
+          mkdir -p review-private-evidence
+          cd eterna-worker
+          npm run check > ../review-private-evidence/regression.txt 2>&1
+          tail -10 ../review-private-evidence/regression.txt
+          grep -q '^# pass 616$' ../review-private-evidence/regression.txt
+          grep -q '^# fail 0$' ../review-private-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Prepare exact expiring scoped QA, not a production authentication bypass
+        run: |
+          python qa/curriculum-review/prepare_private.py
+          node --check qa/curriculum-review/remote_reviewed.generated.mjs
+      - name: Exercise canonical Worker with synthetic identity and actual Supabase, then remove identity
+        run: node qa/curriculum-review/remote_reviewed.generated.mjs
+      - name: Verify complete evidence and cleanup
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import assert from'node:assert/strict';
+          const r=JSON.parse(readFileSync('review-private-evidence/report.json'));
+          assert.equal(r.phase,'canonical-private-verified');assert.equal(r.requests.length,96);
+          assert.equal(r.synthetic_cleanup.ok,true);assert.equal(r.synthetic_cleanup.deleted,true);
+          assert.equal(r.draft_content.lessons,256);assert.equal(r.draft_content.protocols,56);assert.equal(r.draft_content.hash_mismatches,0);
+          for(const q of r.requests){assert.equal(q.generation_model_calls,0);assert.equal(q.generation_tokens,0)}
+          console.log('96 real authenticated prepared responses verified; exact 256-lesson draft imported; temporary identity deleted; production unchanged.');
+          JS
+      - name: Preserve sanitized evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-reviewed-256-private
+          path: review-private-evidence
+          retention-days: 30
+          if-no-files-found: warn
