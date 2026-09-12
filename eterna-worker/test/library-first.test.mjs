@@ -26,7 +26,7 @@ function harness({year='5º de Primaria',legal=true,subscription=true,quota=true
   const sandbox={console:{log(){},warn(){},error(){}},URL,URLSearchParams,Request,Response,Headers,TextEncoder,TextDecoder,FormData,Blob,File,crypto:webcrypto,fetch:sb,setTimeout,clearTimeout,atob,btoa,Intl,caches:{default:{async match(req){return cache.get(req.url)?.clone()||null},async put(req,res){cache.set(req.url,res.clone())}}}};
   vm.createContext(sandbox);vm.runInContext(contract,sandbox);vm.runInContext(content,sandbox);vm.runInContext(runtime,sandbox);
   vm.runInContext(cleanWorker+'\nglobalThis.api={handleFetch,handleChatCore,handleChat,ownedLibraryDecision,ownedLibraryPayload,parseContractV3Input,addContractEnvelope};',sandbox);
-  const env={SUPABASE_URL:'https://supabase.test',SUPABASE_SECRET_KEY:'sb_secret_test',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test',AI_PROVIDER:'cloudflare',ENABLE_ETERNA_LIBRARY:enabled?'true':'false',ETERNA_LIBRARY_RELEASE:'eterna-library-2026.09-v1',AI:{run:async(model,input)=>{inferences.push(model);throw Error('No model calls expected on the owned path')}}};
+  const env={SUPABASE_URL:'https://supabase.test',SUPABASE_SECRET_KEY:'sb_secret_test',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test',AI_PROVIDER:'cloudflare',ENABLE_ETERNA_LIBRARY:enabled?'true':'false',ETERNA_LIBRARY_RELEASE:'eterna-library-2026.09-v2',AI:{run:async(model,input)=>{inferences.push(model);throw Error('No model calls expected on the owned path')}}};
   const auth={user:{id:'student-test',email:'adult@example.invalid',email_confirmed_at:new Date().toISOString()}};
   return {env,sandbox,requests,inferences,library:sandbox.EternaOwnedLibrary,lessons:sandbox.ETERNA_LIBRARY_CONTENT.lessons,
     async turn(body){const r=await sandbox.api.handleChat(new Request('https://worker.test/v1/chat',{method:'POST',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}}),env,auth,{waitUntil(p){work.push(p)}});return{status:r.status,data:await r.json(),headers:Object.fromEntries(r.headers)}} ,
@@ -37,8 +37,8 @@ function harness({year='5º de Primaria',legal=true,subscription=true,quota=true
 const profile=l=>({school_year:l.school_years[0]});
 const state=(r)=>({pedState:r.pedagogical_state,modeState:r.mode_state});
 
-test('library has 80 actual micro-lessons, 240 distinct structured checks and transparent provenance',()=>{
-  const h=harness();assert.equal(h.lessons.length,80);assert.equal(new Set(h.lessons.map(l=>l.id)).size,80);assert.equal(h.lessons.flatMap(l=>l.quiz).length,240);
+test('library has 160 actual micro-lessons, 480 distinct structured checks and transparent provenance',()=>{
+  const h=harness();assert.equal(h.lessons.length,160);assert.equal(new Set(h.lessons.map(l=>l.id)).size,160);assert.equal(h.lessons.flatMap(l=>l.quiz).length,480);
   for(const l of h.lessons){
     assert.ok(l.explanation.length>=90,l.id);assert.ok(l.simpler.length>=40,l.id);assert.ok(l.example.length>=40,l.id);assert.ok(l.why.length>=50,l.id);
     assert.equal(l.human_teacher_reviewed,false);assert.equal(l.source_kind,'original_teaching_material');assert.match(l.curriculum_source,/^https:\/\/www\.boe\.es\//);
@@ -62,7 +62,7 @@ test('every micro-lesson works across all six modes without invoking any model o
   assert.equal(h.requests.length,0);assert.equal(h.inferences.length,0);
 });
 
-test('all 240 known checks rederive correct and wrong answers from trusted content, never from client keys',()=>{
+test('all 480 known checks rederive correct and wrong answers from trusted content, never from client keys',()=>{
   const h=harness();for(const l of h.lessons)for(let pos=0;pos<3;pos++)for(const mode of ['ask','explain','exam','practice']){
     const q=l.quiz[pos],ped={current_mode:mode,active_concept:l.title,pending_question:h.library.question(q),pending_question_id:'q-test',next_teaching_goal:`lib:v1:${l.id}:${pos}:0:${mode}`,expected_key_ideas:['WRONG'],known_points:[]};
     const right=h.library.decision({text:q.answer,mode,profile:profile(l),pedState:ped});assert.equal(right?.assessment,'correct',l.id);
@@ -90,8 +90,8 @@ test('state from another mode or tampered pending question is never used to grad
  ped.pending_question=h.library.question(l.quiz[0]);assert.equal(h.library.decision({text:'A',profile:p,mode:'practice',pedState:ped}),null);
 });
 
-test('24 cordial protocols are exhaustive for their declared phrases and preserve truthful identity',()=>{
- const h=harness();assert.equal(h.library.protocols.length,24);
+test('40 cordial protocols are exhaustive for their declared phrases and preserve truthful identity',()=>{
+ const h=harness();assert.equal(h.library.protocols.length,40);
  for(const p of h.library.protocols)for(const alias of p.aliases){assert.equal(h.library.protocol(alias)?.protocol,p.id);const r=h.library.cordial(p.id,{profile:{school_year:'5º de Primaria'},base:{apodo:'Coco',edad:10},pedState:{pending_question:'¿2+2?',turn_index:2},now:new Date('2026-09-12T10:00:00Z')});assert.ok(typeof r==='string'&&r.length>20)}
  assert.match(h.library.cordial('ai_age',{}),/No tengo edad/);assert.match(h.library.cordial('identity',{}),/no una persona/);
  assert.match(h.library.cordial('student_age',{}),/No tengo una edad confirmada/);
@@ -239,14 +239,14 @@ test('asking for another example never repeats the one already delivered in the 
  assert.equal(candidate,null,'A genuinely new example must go to the existing tutor, not repeat a fixed paragraph');await h.drain();
 });
 
-test('all 480 lesson-mode combinations traverse the complete Worker route with zero inference',async()=>{
+test('all 960 lesson-mode combinations traverse the complete Worker route with zero inference',async()=>{
  const seed=harness();for(const lesson of seed.lessons)for(const mode of ['homework','ask','review','explain','exam','practice']){
   const h=harness({year:lesson.school_years[0]}),r=await h.turn({text:'Explícame '+lesson.title,mode});
   assert.equal(r.status,200,lesson.id+' '+mode);assert.equal(r.data.library_lesson_id,lesson.id);assert.equal(r.data.student_answer_assessment,'not_applicable');assert.equal(h.inferences.length,0);await h.drain();
  }
 });
 
-test('all 240 prepared checks complete through the Worker exam route and preserve correct counters',async()=>{
+test('all 480 prepared checks complete through the Worker exam route and preserve correct counters',async()=>{
  const seed=harness();for(const lesson of seed.lessons){
   const h=harness({year:lesson.school_years[0]});let d=(await h.turn({text:lesson.title,mode:'exam'})).data;
   for(let i=0;i<3;i++){

@@ -5,7 +5,7 @@
  */
 (function(root){
   'use strict';
-  const VERSION='library-first-v1.1';
+  const VERSION='library-first-v2.0-content';
   const MODES=new Set(['homework','ask','review','explain','exam','practice']);
   const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es-ES').replace(/[¿?¡!.,;:]/g,' ').replace(/\s+/g,' ').trim();
   const whole=v=>{const s=norm(v).replace(/^eterna /,'').replace(/ eterna$/,'').replace(/^(?:por favor|porfa) /,'').replace(/ (?:por favor|porfa|gracias)$/,'').trim();return s==='eterna'?'hola':s};
@@ -47,6 +47,23 @@
     {id:'learning_plan',aliases:['como estudio mejor','como puedo estudiar mejor','como organizo el estudio']},
     {id:'small_step',aliases:['por donde empiezo','no se por donde empezar']},
     {id:'school_boredom',aliases:['me aburro estudiando','estudiar es aburrido','no me gusta estudiar']}
+,
+    {"id":"outline","aliases":["como hago un esquema","como preparo un esquema","como organizar un esquema"]},
+    {"id":"flashcards","aliases":["como hago tarjetas de estudio","como uso tarjetas de repaso","como preparar flashcards"]},
+    {"id":"spaced_review","aliases":["como repaso sin olvidarme","como repartir los repasos","como funciona el repaso espaciado"]},
+    {"id":"check_answer","aliases":["como compruebo mi respuesta","como reviso un resultado","como se si mi respuesta esta bien"]},
+    {"id":"teacher_difference","aliases":["mi profesor lo explico de otra manera","mi profesora lo explico de otra manera","en clase lo hacemos diferente"]},
+    {"id":"multiple_methods","aliases":["hay otra forma de resolverlo","puede haber varias soluciones","todos tienen que hacerlo igual"]},
+    {"id":"calculator_use","aliases":["puedo usar calculadora","esta mal usar calculadora","cuando uso la calculadora"]},
+    {"id":"academic_integrity","aliases":["por que no me das la respuesta directamente","puedes hacer mis deberes por mi","quiero copiar sin entender"]},
+    {"id":"manageable_text","aliases":["me cuesta seguir textos largos","me pierdo cuando hay mucho texto","necesito ir paso a paso"]},
+    {"id":"unknown_word","aliases":["hay una palabra que no entiendo","no entiendo una palabra del enunciado","que hago si no conozco una palabra"]},
+    {"id":"learning_purpose","aliases":["para que sirve aprender esto","por que tengo que aprender esto","que utilidad tiene estudiar"]},
+    {"id":"content_sources","aliases":["de donde sacas las explicaciones","que fuentes utilizas","tus explicaciones son oficiales"]},
+    {"id":"verify_ai","aliases":["como se si una ia se equivoca","como compruebo lo que dice una ia","debo creer todo lo que dice una ia"]},
+    {"id":"no_official_grade","aliases":["esto es una nota oficial","tu puntuacion cuenta para el colegio","eres quien me pone la nota del cole"]},
+    {"id":"trusted_adult","aliases":["puedo pedir ayuda a un adulto","puedo hacerlo con mi madre","puedo hacerlo con mi padre","puedo preguntar al profesor"]},
+    {"id":"celebrate_process","aliases":["lo he conseguido","ya me sale","lo hice yo solo","lo hice yo sola"]}
   ]);
   const protocolIndex=new Map(PROTOCOLS.flatMap(p=>p.aliases.map(a=>[a,p.id])));
   function protocol(text){if(typeof text!=='string'||text.length>150)return null;const normalized=norm(text),withoutName=normalized.replace(/^eterna /,'').replace(/ eterna$/,'');const id=protocolIndex.get(normalized)||protocolIndex.get(withoutName==='eterna'?'hola':withoutName);return id?{kind:'library_protocol',protocol:id}:null}
@@ -78,6 +95,22 @@
       case'learning_plan':return 'Elige un objetivo pequeño, intenta recordarlo o resolver un ejemplo sin mirar y comprueba después qué faltaba. Haz una pausa y vuelve a practicar otro día. Podemos empezar por un tema concreto, sin convertir el estudio en una carrera.';
       case'small_step':return pending?'Empecemos por entender qué pide la pregunta. Dime qué parte reconoces y cuál te resulta nueva; no hace falta resolverla entera todavía.':'Empecemos por una sola cosa: dime la asignatura y el tema que quieres trabajar.';
       case'school_boredom':return 'Podemos cambiar la forma de trabajar: un ejemplo cercano, una pregunta corta o una actividad práctica. No hace falta que te guste todo para avanzar; busquemos una pequeña meta que tenga sentido para ti.';
+      case "outline":return young?"Podemos ordenar la idea con dibujos o palabras cortas. Elige el tema y busca dos cosas importantes sobre él. ¿De qué tema quieres hacerlo?":"Empieza por el tema central, separa las ideas principales y coloca debajo los detalles que dependen de cada una. Usa palabras clave y relaciones claras, no un párrafo copiado en cada rama. ¿Sobre qué tema quieres organizarlo?";
+      case "flashcards":return young?"En una cara puedes poner un dibujo o una pregunta corta y, detrás, la respuesta. Intenta recordarla antes de dar la vuelta. Un adulto puede ayudarte a preparar una tarjeta.":"Pon una sola pregunta concreta por tarjeta y una respuesta comprobada al dorso. Intenta responder antes de mirar y separa lo que recuerdas de lo que necesita repaso. Una tarjeta demasiado larga se convierte en una página para releer, no en una comprobación breve.";
+      case "spaced_review":return young?"Podemos practicar una idea hoy y volver a recordarla otro día. No hace falta repetir todo muchas veces seguidas. Un adulto puede ayudarte a organizar pequeños ratos.":"Reparte el repaso entre varios momentos e intenta recuperar la idea sin mirar antes de comprobarla. Si cuesta, reduce el intervalo y vuelve con una ayuda concreta. No existe un calendario único que garantice memorizarlo todo: ajustamos según lo que realmente recuerdes.";
+      case "check_answer":return young?"Mira qué pedía la pregunta y comprueba una cosa cada vez. En un cálculo podemos contar o probar al revés. Enséñame la pregunta y lo que hiciste.":"Compara tu respuesta con lo que pide el enunciado. Revisa datos, unidades y pasos; en una ecuación, sustituye el resultado, y en una explicación, comprueba que las razones sostienen la conclusión. Necesito ver el trabajo concreto antes de decirte que está bien.";
+      case "teacher_difference":return young?"Puede haber otra manera de explicarlo. Muéstrame cómo lo hicisteis en clase y lo comparamos con calma, sin dar por hecho que alguien se ha equivocado.":"Gracias por señalarlo. Puede ser otro método, otra convención o un error que debamos corregir. Comparte el enunciado y la explicación de clase; revisaremos si ambos procedimientos cumplen las mismas condiciones. No voy a desautorizar a tu profesor sin examinarlo.";
+      case "multiple_methods":return young?"A veces hay varios caminos. Lo importante es que cada paso tenga sentido. Dime qué camino has probado y veremos si funciona.":"Puede haber varios métodos correctos, y algunos problemas también tienen varias soluciones. Hay que distinguir método, resultado y condiciones del enunciado. Enséñame tu propuesta para comprobarla; no la descartaré solo porque sea diferente de una respuesta preparada.";
+      case "calculator_use":return young?"Depende de lo que estéis practicando y de lo que indique tu profesor. Podemos usarla para comprobar cuando esté permitido, sin saltarnos la idea que estás aprendiendo.":"Sigue las indicaciones de la actividad y de tu profesor. La calculadora puede comprobar operaciones o facilitar un cálculo, pero no decide por ti qué operación corresponde ni justifica el razonamiento. En un examen, respeta las herramientas autorizadas.";
+      case "academic_integrity":return young?"Te ayudaré para que puedas hacerlo tú: una pista, un ejemplo parecido y después tu intento. No necesitas saberlo todo antes de empezar.":"Puedo explicar el método, resolver un ejemplo de aprendizaje y revisar tu intento. No quiero sustituir tu trabajo por una respuesta que presentes como propia. Empecemos por el primer paso que no te sale; en una actividad evaluada, respetaremos sus reglas.";
+      case "manageable_text":return young?"Vamos con una idea pequeña. Dime qué palabra o frase quieres mirar primero; no hace falta resolverlo todo de una vez.":"Podemos dividirlo en fragmentos y comprobar una idea antes de pasar a la siguiente. Dime qué frase te hizo perder el hilo. Si necesitas una adaptación habitual, conviene acordarla también con tu profesor o tu familia; no voy a sacar un diagnóstico de esta dificultad.";
+      case "unknown_word":return young?"Dime la palabra y la frase donde aparece. Así puedo explicarla con un ejemplo que encaje, sin adivinar qué significa aquí.":"Comparte la palabra junto con la oración donde aparece. Primero revisamos su sentido en ese contexto; después reformulamos el enunciado. Una misma palabra puede significar cosas distintas según la materia y la frase.";
+      case "learning_purpose":return young?"Es una buena pregunta. Dime qué idea estamos mirando y busquemos un ejemplo cercano: algo que puedas observar, explicar o hacer con ella.":"La utilidad depende del tema: puede ayudarnos a resolver situaciones, comprender el mundo o desarrollar una forma de razonar. No todos los contenidos tienen una aplicación inmediata. Podemos buscar un uso concreto y también qué capacidad intelectual estás practicando.";
+      case "content_sources":return young?"Uso materiales preparados para ayudarte a aprender y referencias educativas. Soy una IA y puedo equivocarme; una explicación mía no es un texto oficial de tu colegio.":"Uso materiales propios de ETERNA, referencias curriculares y, cuando hace falta, el tutor de IA. La normativa indica qué aprendizajes se trabajan, pero no convierte cada explicación en texto oficial ni homologado. Para una afirmación importante conviene comprobar la fuente concreta y su vigencia.";
+      case "verify_ai":return young?"No tienes que creer una respuesta solo porque suene segura. Podemos comprobar un ejemplo, volver a contar o preguntar a un adulto o a tu profesor cuando sea importante.":"Comprueba los pasos, busca fuentes pertinentes y distingue datos, interpretación y opinión. Una respuesta segura o bien escrita puede contener errores. En cálculos, verifica sustituyendo o con otro método; en hechos, contrasta fuentes fiables y actuales cuando corresponda.";
+      case "no_official_grade":return young?"No pongo la nota oficial de tu colegio. Las preguntas de aquí nos ayudan a descubrir qué entiendes y qué conviene practicar.":"No. Los resultados de ETERNA orientan esta práctica y no sustituyen la evaluación de tu centro ni una revisión de tu profesor. Un acierto aislado tampoco demuestra dominar todo el tema; interesa ver cómo razonas y si puedes aplicar la idea de nuevo.";
+      case "trusted_adult":return young?"Claro. Aprender con tu familia o con tu profesor puede ayudarte mucho. Puedes enseñarles qué parte te cuesta y explicar lo que ya has intentado.":"Sí. Pedir apoyo no invalida tu esfuerzo. Explica qué has entendido, muestra tu intento y señala dónde te has atascado. ETERNA es un recurso de apoyo, no un reemplazo de tu familia, de tu profesor ni de otras personas de confianza.";
+      case "celebrate_process":return young?"¡Bien por ese avance! Cuéntame qué paso te ayudó. Así podrás volver a usarlo cuando aparezca algo parecido.":"¡Bien por ese avance! Identifica qué cambió en tu razonamiento o qué estrategia te ayudó. Podemos comprobarlo con otro caso cuando quieras; no voy a dar una respuesta por correcta sin haberla visto.";
       default:return null;
     }
   }
@@ -195,5 +228,5 @@
     return output(l,`${l.explanation}\n\n${l.example}\n\nPara comprobar una sola idea:\n${question(q)}`,question(q),'not_applicable',0,0,'new_topic',{mode_state:state,explained_markers:['lib:v1:intro','lib:v1:example']});
   }
   function contextText(lesson){if(!lesson)return '';return `Material original ETERNA revisado por IA, no texto oficial ni revisión humana. Nivel editorial ${lesson.school_years.join(', ')}.\n${lesson.title}: ${lesson.explanation}\nEjemplo: ${lesson.example}\nError frecuente: ${lesson.misconception}\nLa referencia ${lesson.curriculum_source} es curricular, no aval oficial de esta lección.`}
-  root.EternaOwnedLibrary=Object.freeze({version:VERSION,release_id:'eterna-library-2026.09-v1',school,appropriate,protocol,cordial,protocols:PROTOCOLS,exactLesson,owned,clientTurn,decision,question,contextText});
+  root.EternaOwnedLibrary=Object.freeze({version:VERSION,release_id:'eterna-library-2026.09-v2',school,appropriate,protocol,cordial,protocols:PROTOCOLS,exactLesson,owned,clientTurn,decision,question,contextText});
 })(globalThis);
