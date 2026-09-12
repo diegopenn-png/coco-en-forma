@@ -1,6 +1,9 @@
 import "../../eterna-state-contract-v3.js";
 import "./library/content-v1.js";
 import "./library/runtime-v1.js";
+import "./library/procedural-v1.js";
+import "./library/compass-data-v1.js";
+import "./library/curricular-compass-v1.js";
 
 /* ETERNA v160.98.0 · tutora humana, identidad explícita y apoyo escolar empático
  * Release Candidate construido exclusivamente sobre el Worker desplegado 160.9-scope-tutor3.
@@ -699,6 +702,27 @@ async function curriculumBaseRows(env,profile){
   if(curriculumBaseCache.size>=CURRICULUM_CACHE_MAX)curriculumBaseCache.delete(curriculumBaseCache.keys().next().value);
   curriculumBaseCache.set(key,{expires_at:now+CURRICULUM_CACHE_TTL_MS,value});return await value
 }
+// Bounded read-only public source search. Raw chats, names and pupil IDs are not cache keys or request fields.
+const COMPASS_TTL_MS=10*60*1000,COMPASS_CACHE_LIMIT=128,compassCache=new Map();
+async function readCurricularCompass(env,profile,subject,concept){
+  if(env.ETERNA_CURRICULAR_COMPASS!=="v1"||!globalThis.EternaCurricularCompass||!globalThis.ETERNA_COMPASS_DATA)return null;
+  const compass=globalThis.EternaCurricularCompass,plan=compass.plan(profile,subject,concept);if(!plan)return null;
+  let origin;try{origin=new URL(env.SUPABASE_URL).origin}catch{return null}
+  const key=await sha256(origin+JSON.stringify(plan)),now=Date.now(),cached=compassCache.get(key);if(cached&&cached.expires_at>now)return await cached.value;
+  const secret=supabaseSecretKey(env);if(!secret)return null;
+  const value=(async()=>{
+    const controller=typeof AbortController!=="undefined"?new AbortController():null;
+    let timer;try{
+      const headers={apikey:secret,"Content-Type":"application/json"};if(!secret.startsWith("sb_secret_"))headers.Authorization="Bearer "+secret;
+      const work=fetch(origin+"/rest/v1/rpc/eterna_curricular_compass_v1",{method:"POST",headers,body:JSON.stringify(plan),...(controller?{signal:controller.signal}:{})}).then(async r=>r.ok?compass.context(await r.json(),plan):null);
+      const cutoff=new Promise(resolve=>{timer=setTimeout(()=>{try{controller?.abort()}catch{}resolve(null)},900)});
+      return await Promise.race([work,cutoff]);
+    }catch{return null}finally{if(timer)clearTimeout(timer)}
+  })();
+  if(compassCache.size>=COMPASS_CACHE_LIMIT)compassCache.delete(compassCache.keys().next().value);
+  compassCache.set(key,{expires_at:now+COMPASS_TTL_MS,value});return await value
+}
+
 async function retrieveCurriculum(env,profile,subject,concept){if(!profile?.school_year||!subject)return[];let rows=[];try{rows=await curriculumBaseRows(env,profile)}catch(e){return[]}const cq=normalizeForSearch(concept),words=cq.split(/\s+/).filter(x=>x.length>2);return(rows||[]).map(r=>{const t=normalizeForSearch(`${r.title||""} ${r.summary||""} ${(r.keywords||[]).join(" ")}`),communityBonus=r.autonomous_community&&r.autonomous_community===profile.autonomous_community?4:0,conceptScore=words.reduce((n,w)=>n+(t.includes(w)?2:0),0);return{...r,__score:subjectScore(subject,r)+communityBonus+conceptScore}}).filter(r=>r.__score>0).sort((a,b)=>b.__score-a.__score).slice(0,8)}
 function deterministicMath(text){
   const raw=String(text||"").replace(/,/g,".");
@@ -986,6 +1010,7 @@ async function tutor(env,{text,image,mode,history,ctx,scope,curriculum,mathCheck
 const prompt=`Devuelve JSON. Eres Eterna, tutor escolar personalizado.
 ${fullIntelligenceInstruction()}
 ${publicTutorBenchmarkInstruction()}
+BRÚJULA CURRICULAR: scope.curricular_compass contiene solo orientación de saberes y criterios estatales, no explicaciones ni prueba de la respuesta. Nunca la uses para dar por cierta una afirmación, cerrar una verificación o afirmar que una materia es obligatoria en un curso autonómico. Respeta el curso y las optativas; no cites un fragmento incompleto como norma íntegra.
 MEMORIA ACADÉMICA LONGITUDINAL: Perfil.academic_memory contiene únicamente señales académicas estructuradas autorizadas —tema, progreso, estrategia y próxima revisión—, nunca el chat bruto del menor. Úsala para adaptar sin atribuir frases o recuerdos que no estén presentes.
 NOMBRE: Perfil.student_name, si existe, es el nombre/apodo configurado. Úsalo de forma natural al saludar, retomar o reforzar; no lo repitas en cada respuesta.
 PRIORIDAD DEL TURNO ACTUAL: el mensaje actual del alumno manda. Nunca cites como actual una respuesta antigua; si escribió una nueva variante incorrecta, evalúa ESA variante.
@@ -1037,7 +1062,7 @@ EVALUACIÓN PREVIA DE LA RESPUESTA=${JSON.stringify(answerAnchor||null)}. Si ind
 MODO ACTIVO=${mode} (${profile.label}). CONTRATO DEL MODO=${JSON.stringify(MODE_CONTRACTS[mode]||MODE_CONTRACTS.homework)}. OBJETIVO=${directKnowledge&&mode==="homework"?MODE_PROFILES.ask.goal:profile.goal}. CONSULTA_FACTUAL_DIRECTA=${Boolean(directKnowledge)}.
 GUARDIA_REPETICIÓN_CLIENTE=${JSON.stringify(repetitionGuard||null)}. Estado actividad=${JSON.stringify(modeState)}. ESTADO PEDAGÓGICO TRANSITORIO=${JSON.stringify(pedState)}. TEMA SUSPENDIDO=${JSON.stringify(pedState.suspended_topic||null)}.
 RELACIÓN DEL TURNO=${turnRel}. INTENCIÓN DEL ALUMNO=${studentIntentFromRelation(turnRel)}. Objetivo práctica=${JSON.stringify(practiceTarget||null)}. Perfil=${JSON.stringify(student)}.
-Concepto clasificado=${scope.concept}. Nivel ayuda recomendado=${desired}. ANCLA FACTUAL INTERNA=${JSON.stringify(factAnchor||stableFactAnchor(text))}. Currículo=${JSON.stringify(evidence)}. Evidencia académica fiable opcional=${JSON.stringify(externalEvidence?.text||null)}. Matemática=${JSON.stringify(mathCheck)}. Visión=${JSON.stringify(vision||null)}.
+Concepto clasificado=${scope.concept}. Nivel ayuda recomendado=${desired}. ANCLA FACTUAL INTERNA=${JSON.stringify(factAnchor||stableFactAnchor(text))}. Currículo=${JSON.stringify(evidence)}. ORIENTACIÓN CURRICULAR ESTATAL, NO PRUEBA FACTUAL=${JSON.stringify(scope.curricular_compass||null)}. Evidencia académica fiable opcional=${JSON.stringify(externalEvidence?.text||null)}. Matemática=${JSON.stringify(mathCheck)}. Visión=${JSON.stringify(vision||null)}.
 Historial=${JSON.stringify((history||[]).slice(-8))}. Última pregunta pendiente=${JSON.stringify(previousCheck)}. Últimas dos respuestas de Eterna=${JSON.stringify(recentAssistant)}. PUNTOS YA EXPLICADOS=${JSON.stringify(pedState.explained_points||[])}. ÚLTIMO ACTO DEL TUTOR=${pedState.last_tutor_act||"none"}. CONFUSIONES CONSECUTIVAS=${pedState.confusion_count||0}. NIVEL DE SIMPLIFICACIÓN=${pedState.simplification_level||0}.`;
 const cacheMarker="\nCONTEXTO DEL TURNO",cacheIndex=prompt.indexOf(cacheMarker),content=cacheIndex>0?[{type:"input_text",text:prompt.slice(0,cacheIndex),prompt_cache_breakpoint:{mode:"explicit"}},{type:"input_text",text:prompt.slice(cacheIndex+1)}]:[{type:"input_text",text:prompt}];if(image)content.push({type:"input_image",image_url:image,detail:"high"});const primaryModel=env.TUTOR_MODEL||"gpt-5.6-sol",fallbackModel=env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibilityModel=env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",args={reasoning_effort:env.TUTOR_REASONING_EFFORT||"high",instructions:"Actúas como un equipo docente especializado. Enseña progresivamente, recuerda qué ya explicaste y entiende cada intervención según el acto pedagógico anterior. No suplantes al alumno.",input:[{role:"user",content}],name:"eterna_tutor_v163_flagship",schema:TUTOR_SCHEMA,max_output_tokens:2800};try{return await structured(env,{...args,model:primaryModel})}catch(primaryError){if(fallbackModel&&fallbackModel!==primaryModel){try{console.error("ETERNA TUTOR FALLBACK",primaryModel,"to",fallbackModel,String(primaryError?.message||primaryError));return await structured(env,{...args,model:fallbackModel})}catch(fallbackError){if(!compatibilityModel||[primaryModel,fallbackModel].includes(compatibilityModel))throw fallbackError;console.error("ETERNA TUTOR COMPATIBILITY FALLBACK",fallbackModel,"to",compatibilityModel,String(fallbackError?.message||fallbackError));return await structured(env,{...args,model:compatibilityModel,reasoning_effort:"medium"})}}if(!compatibilityModel||compatibilityModel===primaryModel)throw primaryError;console.error("ETERNA TUTOR COMPATIBILITY FALLBACK",primaryModel,"to",compatibilityModel,String(primaryError?.message||primaryError));return await structured(env,{...args,model:compatibilityModel,reasoning_effort:"medium"})}}
 
@@ -1071,6 +1096,7 @@ REGLAS:
 14) Divisibilidad entre 12: el criterio central es divisible entre 3 Y entre 4. «Ser par» no debe presentarse como tercera condición independiente necesaria.
 15) SEGURIDAD ÚTIL: no confundas protección con simplificación intelectual. Una respuesta académica segura no debe perder rigor, precisión ni matices por la edad. En una petición mixta, comprueba que se omite solo la parte operativa peligrosa y se conserva una explicación segura y relevante.
 16) topic_return_request: debe retomar el estado restaurado sin evaluar la petición de retorno como respuesta académica ni repetir desde el principio.
+17) Scope.curricular_compass es orientación normativa estatal, no evidencia factual de una solución ni acreditación autonómica. Su presencia no justifica declarar verified ni sustituir una comprobación independiente.
 CONTEXTO A VERIFICAR — aplícalo después de todas las reglas anteriores:
 Mensaje=${JSON.stringify(String(text||"").slice(0,5000))}. Modo=${mode}. Contrato del modo=${JSON.stringify(MODE_CONTRACTS[mode]||MODE_CONTRACTS.homework)}. Curso=${ctx.profile?.school_year||"desconocido"}. Perfil edad=${JSON.stringify(agePolicy)}.
 Scope=${JSON.stringify(scope)}. Estado pedagógico previo=${JSON.stringify(pedState)}. Relación turno=${turnRel}. Historial=${JSON.stringify((history||[]).slice(-6))}. Últimas respuestas=${JSON.stringify(recentAssistant)}. Puntos ya explicados=${JSON.stringify(pedState?.explained_points||[])}.
@@ -1284,9 +1310,23 @@ function verificationFallbackForMode(mode){
   return map[mode]||map.ask
 }
 
+// Optional exercise factory is composed with the existing library; no auth or quota path is replaced.
+let ownedLibraryFacade=null,ownedLibraryFacadeBase=null;
+function trustedOwnedContext(ped,profile,mode){return globalThis.EternaProceduralPractice?.owned(ped,profile,mode)||globalThis.EternaOwnedLibrary?.owned(ped,profile,mode)||null}
 function ownedLibraryRuntime(env){
   const library=globalThis.EternaOwnedLibrary,content=globalThis.ETERNA_LIBRARY_CONTENT;
-  return env.ENABLE_ETERNA_LIBRARY==="true"&&env.ETERNA_LIBRARY_RELEASE==="eterna-library-2026.09-v6-310-traceable-12c672"&&library?.release_id===env.ETERNA_LIBRARY_RELEASE&&content?.release_id===library.release_id?library:null
+  if(!(env.ENABLE_ETERNA_LIBRARY==="true"&&env.ETERNA_LIBRARY_RELEASE==="eterna-library-2026.09-v6-310-traceable-12c672"&&library?.release_id===env.ETERNA_LIBRARY_RELEASE&&content?.release_id===library.release_id))return null;
+  const factory=env.ETERNA_EXERCISE_FACTORY==="v1"?globalThis.EternaProceduralPractice:null;
+  if(!factory)return library;
+  if(ownedLibraryFacadeBase!==library){
+    ownedLibraryFacadeBase=library;
+    ownedLibraryFacade=Object.freeze({...library,
+      owned:(ped,profile,mode)=>factory.owned(ped,profile,mode)||library.owned(ped,profile,mode),
+      clientTurn:(text,args)=>factory.clientTurn(library.clientTurn(text,args),args),
+      decision:args=>factory.decision(args)||library.decision(args)
+    });
+  }
+  return ownedLibraryFacade
 }
 function ownedLibraryPayload(candidate,{incomingPedState,incomingModeState,mode}){
   if(!candidate||candidate.safety_route!=="closed-domain-library-allowlist")return null;
@@ -1299,11 +1339,11 @@ function ownedLibraryPayload(candidate,{incomingPedState,incomingModeState,mode}
   // Do not promote an unattempted answer to knowledge. Answer keys in the incoming client state are never read.
   if(assessment!=="correct")pedagogical_state.known_points=candidate.relation==="new_topic"?[]:incomingPedState.known_points;
   else{
-    const previous=globalThis.EternaOwnedLibrary.owned(incomingPedState,{school_year:l.school_years[0]},mode);
+    const previous=trustedOwnedContext(incomingPedState,{school_year:l.school_years[0]},mode);
     const evidence=previous?`Respuesta comprobada a «${previous.question.question}»: ${previous.question.options["ABC".indexOf(previous.question.answer)]}.`:null;
     pedagogical_state.known_points=[...new Set([...(incomingPedState.known_points||[]),...(evidence?[evidence]:[])])].slice(-10);
   }
-  return{reply:candidate.reply,verification_status:candidate.needs_clarification?"needs_clarification":"verified",subject:l.subject,concept:l.title,help_level:candidate.help_level,check_question:check,practice_suggestion:null,student_answer_assessment:assessment,strategy_used:candidate.strategy,mode_label:MODE_PROFILES[mode].label,mode_state:sanitizeModeState(candidate.mode_state||incomingModeState),pedagogical_state,auto_speak:false,library_route:"owned-lesson-v1",library_release:"eterna-library-2026.09-v6-310-traceable-12c672",library_lesson_id:l.id,generation_model_calls:0,generation_tokens:0,safety_route:candidate.safety_route,content_provenance:{kind:"original_teaching_material",curriculum_reference:l.curriculum_source,official_endorsement:false,human_teacher_reviewed:false}}
+  return{reply:candidate.reply,verification_status:candidate.needs_clarification?"needs_clarification":"verified",subject:l.subject,concept:l.title,help_level:candidate.help_level,check_question:check,practice_suggestion:null,student_answer_assessment:assessment,strategy_used:candidate.strategy,mode_label:MODE_PROFILES[mode].label,mode_state:sanitizeModeState(candidate.mode_state||incomingModeState),pedagogical_state,auto_speak:false,library_route:"owned-lesson-v1",library_release:"eterna-library-2026.09-v6-310-traceable-12c672",library_lesson_id:l.id,generation_model_calls:0,generation_tokens:0,safety_route:candidate.safety_route,generated_exercise:Boolean(candidate.generated_exercise),generator_version:candidate.generator_version||null,content_provenance:{kind:candidate.generated_exercise?"deterministic_generated_exercise":"original_teaching_material",curriculum_reference:l.curriculum_source,official_endorsement:false,human_teacher_reviewed:false}}
 }
 function ownedLibraryDecision(env,{text,image,ctx,mode,incomingPedState,incomingModeState,startsNewTopic=false}){
   const library=ownedLibraryRuntime(env);if(!library||image||teacherCoreSafetySignal(text)||hardUnsafeIntent(text)||clearNonAcademicIntent(text))return null;
@@ -1328,7 +1368,7 @@ async function handleChatCore(request,env,auth,event,timings){
     const stale=!currentSafetyCategory&&!currentSituation?staleQuestionProblem(contractMeta,incomingPedState):null;if(stale)return json({...stale,verification_status:"verification_conflict",student_answer_assessment:"not_applicable",mode_state:incomingModeState,pedagogical_state:incomingPedState,activity_state:contractMeta.activityState},409)
   }
   if(startsNewTopic){suspendCurrentTopic(incomingPedState);incomingPedState.pending_question=null;incomingPedState.pending_question_id=null;incomingPedState.expected_answer_type="none";incomingPedState.expected_key_ideas=[];incomingPedState.likely_misconceptions=[];incomingPedState.conversation_stage="new_topic";incomingPedState.last_tutor_act="none";incomingPedState.expected_student_act="none";incomingPedState.unresolved_question=null}
-  if(!startsNewTopic&&!incomingPedState.pending_question&&!(ownedLibraryRuntime(env)&&incomingPedState.conversation_stage==="complete"&&/^lib:v1:/.test(incomingPedState.next_teaching_goal||""))){const q=latestCheckQuestion(history);if(q)incomingPedState.pending_question=q}
+  if(!startsNewTopic&&!incomingPedState.pending_question&&!(ownedLibraryRuntime(env)&&incomingPedState.conversation_stage==="complete"&&/^(?:lib|proc):v1:/.test(incomingPedState.next_teaching_goal||""))){const q=latestCheckQuestion(history);if(q)incomingPedState.pending_question=q}
   if(rawImage&&!image)return json({error:imageValidation.reason==="invalid_size"?"IMAGE_TOO_LARGE":"IMAGE_TYPE_NOT_ALLOWED"},imageValidation.reason==="invalid_size"?413:415);if(!text&&!image)return json({error:"EMPTY_INPUT"},400);
   const uid=auth.user.id;
   if(currentSafetyCategory){const safetyPreflight=await getChatPreflight(env,auth),ctx=safetyPreflight.ctx,sub=safetyPreflight.subscription;if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);if(!ctx.profile?.school_year)return json({error:"STUDENT_PROFILE_REQUIRED"},409);if(!safetyPreflight.legal.accepted)return legalRequiredResponse(safetyPreflight.legal);timings?.mark("safety_access");deferWork(event,"safety-interaction",()=>logInteraction(env,uid,{text,image,inputSource,scope:"safety",verification:"blocked_safety",subject:null,concept:null,help:null,modelRoute:"teacher-core-safety-interrupt-v1",mode}));return json(safetyInterruptionPayload(currentSafetyCategory,incomingPedState,mode,incomingModeState,text))}
@@ -1422,7 +1462,7 @@ async function handleChatCore(request,env,auth,event,timings){
   }
   const deterministicArithmeticGuidance=deterministicArithmeticGuidanceTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject:effectiveSubject,concept:effectiveConcept,mathCheck});
   if(deterministicArithmeticGuidance){timings?.mark("deterministic");deferWork(event,"deterministic-arithmetic-guidance",()=>logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"verified",subject:deterministicArithmeticGuidance.subject,concept:deterministicArithmeticGuidance.concept,help:deterministicArithmeticGuidance.help_level,modelRoute:"deterministic-arithmetic-guidance-v1",mode,strategy:deterministicArithmeticGuidance.strategy_used,visionConfidence:vision?.confidence}));return json(deterministicArithmeticGuidance)}
-  const curriculum=await retrieveCurriculum(env,ctx.profile,effectiveSubject,effectiveConcept);let externalEvidence=null;timings?.mark("curriculum");
+  const [curriculum,compass]=await Promise.all([retrieveCurriculum(env,ctx.profile,effectiveSubject,effectiveConcept),readCurricularCompass(env,ctx.profile,effectiveSubject,effectiveConcept)]);if(compass)scope.curricular_compass=compass;let externalEvidence=null;timings?.mark("curriculum");
   if(ownedLibraryRuntime(env)){const l=ownedLibraryRuntime(env).exactLesson(effectiveConcept||"",ctx.profile);if(l)curriculum.unshift({id:null,title:l.title,summary:ownedLibraryRuntime(env).contextText(l),pedagogy_notes:"Contenido original ETERNA, no disposición oficial. Conserva contexto; ofrece una explicación nueva si el alumno ya vio estas versiones.",common_misconceptions:[l.misconception],example_templates:[l.example],eterna_curriculum_sources:{title:"Referencia curricular por etapa; no aval oficial",official_url:l.curriculum_source}})}
   const deterministicRiverTurn=deterministicSpanishRiverTurn({mode,text,turnRel,incomingModeState,incomingPedState,subject:effectiveSubject,concept:effectiveConcept,focus:practiceTarget?.concept||incomingModeState.focus||incomingPedState.active_concept});
   if(deterministicRiverTurn){const conceptId=curriculum?.[0]?.id||null,assessment=deterministicRiverTurn.student_answer_assessment,help=deterministicRiverTurn.help_level,strategy=deterministicRiverTurn.strategy_used;deferWork(event,"deterministic-spanish-river",async()=>{try{await Promise.all([applyStudentMemory(env,uid,{subject:deterministicRiverTurn.subject,concept:deterministicRiverTurn.concept,conceptId,outcome:assessment,help}),applyMasteryOutcome(env,uid,conceptId,{outcome:assessment,help}),learnPrev(env,uid,{history,pedState:incomingPedState,subject:deterministicRiverTurn.subject,turnRel,assessment})])}catch(e){}await logInteraction(env,uid,{text,image,inputSource,scope:"school",verification:"verified",subject:deterministicRiverTurn.subject,concept:deterministicRiverTurn.concept,help,modelRoute:"deterministic-spanish-river-v1",mode,strategy,visionConfidence:vision?.confidence})});return json(deterministicRiverTurn)}
@@ -1666,7 +1706,7 @@ async function dependencyProbe(request,env){
 async function handleFetch(request,env,event){
   const c=cors(env,request);if(request.method==="OPTIONS")return withCors(new Response(null,{status:204}),c);const url=new URL(request.url);
   try{
-    if(url.pathname==="/health"||url.pathname==="/")return withCors(json({ok:true,service:"eterna",version:VERSION,ai_provider:aiProvider(env),cloudflare_ai_configured:Boolean(env.AI&&typeof env.AI.run==="function"),openai_configured:Boolean(String(env.OPENAI_API_KEY||"").trim()),supabase_configured:Boolean(env.SUPABASE_URL&&supabasePublicKey(env)&&supabaseSecretKey(env)),stripe_configured:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET),model_configuration:modelConfiguration(env),features:healthFeatures(env),owned_library:{revision:ownedLibraryRuntime(env)?.version||null,enabled:Boolean(ownedLibraryRuntime(env)),release:ownedLibraryRuntime(env)?.release_id||null,lessons:ownedLibraryRuntime(env)?globalThis.ETERNA_LIBRARY_CONTENT.lessons.length:0,protocols:ownedLibraryRuntime(env)?.protocols.length||0,curriculum_complete:false}}),c);
+    if(url.pathname==="/health"||url.pathname==="/")return withCors(json({ok:true,service:"eterna",version:VERSION,ai_provider:aiProvider(env),cloudflare_ai_configured:Boolean(env.AI&&typeof env.AI.run==="function"),openai_configured:Boolean(String(env.OPENAI_API_KEY||"").trim()),supabase_configured:Boolean(env.SUPABASE_URL&&supabasePublicKey(env)&&supabaseSecretKey(env)),stripe_configured:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET),model_configuration:modelConfiguration(env),features:healthFeatures(env),owned_library:{revision:ownedLibraryRuntime(env)?.version||null,enabled:Boolean(ownedLibraryRuntime(env)),release:ownedLibraryRuntime(env)?.release_id||null,lessons:ownedLibraryRuntime(env)?globalThis.ETERNA_LIBRARY_CONTENT.lessons.length:0,protocols:ownedLibraryRuntime(env)?.protocols.length||0,curriculum_complete:false},exercise_factory:{enabled:env.ETERNA_EXERCISE_FACTORY==="v1"&&Boolean(ownedLibraryRuntime(env))&&Boolean(globalThis.EternaProceduralPractice),version:globalThis.EternaProceduralPractice?.version||null,families:env.ETERNA_EXERCISE_FACTORY==="v1"?globalThis.EternaProceduralPractice?.skills.length||0:0,generated_variants_are_not_new_lessons:true},curricular_compass:{enabled:env.ETERNA_CURRICULAR_COMPASS==="v1"&&Boolean(globalThis.EternaCurricularCompass),version:globalThis.EternaCurricularCompass?.version||null,source_elements:globalThis.ETERNA_COMPASS_DATA?.source_elements||0,scope:"state_curriculum_orientation_only",max_items:3,additional_generation_model_calls:0,territorial_completeness:false}}),c);
     if(url.pathname==="/health/dependencies"&&request.method==="GET")return withCors(await dependencyProbe(request,env),c);
     if(url.pathname==="/v1/stripe/webhook"&&request.method==="POST")return await handleStripeWebhook(request,env);if(!c)return json({error:"ORIGIN_NOT_ALLOWED"},403);
     const auth=await authenticate(request,env);if(!auth)return withCors(json({error:"UNAUTHORIZED"},401),c);
