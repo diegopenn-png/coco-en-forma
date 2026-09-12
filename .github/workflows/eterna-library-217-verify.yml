@@ -1,0 +1,114 @@
+name: Eterna consolidated 217-lesson verification
+on:
+  push:
+    branches: ["feat/eterna-library-217-consolidated-20260912"]
+    paths: ["qa/library-combined/build.mjs", "qa/library-combined/prepare_private.py", ".github/workflows/eterna-library-217-verify.yml"]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eterna-library-217-verify
+  cancel-in-progress: false
+jobs:
+  preserve-current-and-verify-expansion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: 5b851df5bb2173eb967a8d3cede5fd8b370b2c93
+          path: .additional
+      - uses: actions/checkout@v4
+        with:
+          ref: ca678c35851b0da874fd744c7c2c1fef80fe0bbf
+          path: .qa-auth
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-library-v2-content-verification
+          run-id: 34663746343
+          github-token: ${{ github.token }}
+          path: .prior-ui
+      - name: Preserve latest 160 objects and add only noncolliding verified lessons and protocols
+        run: |
+          node qa/library-combined/build.mjs
+          cd eterna-worker
+          npm run check > ../combined-evidence/regression.txt
+          tail -10 ../combined-evidence/regression.txt
+      - name: Install isolated browser tooling
+        run: |
+          pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Exercise unchanged styled PWA and context using additional content
+        run: |
+          tar -xzf .prior-ui/library-v2-evidence/content-source.tar.gz qa/library/ui_gateway.mjs qa/library/ui_integration.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('qa/library/ui_integration.py');s=p.read_text()
+          assert s.count("d=send('el sistema solar');assert d['library_lesson_id']=='p-solar'")==1
+          s=s.replace("d=send('el sistema solar');assert d['library_lesson_id']=='p-solar'","d=send('mínimo común múltiplo');assert d['library_lesson_id']=='p-lcm'")
+          needle="d=send('C');assert d['student_answer_assessment']=='correct'\n  d=send('¿Cómo hago un esquema?'"
+          assert s.count(needle)==1
+          s=s.replace(needle,needle.replace("send('C')","send('B')"));p.write_text(s)
+          PY
+          mkdir -p library-integration-evidence
+          node qa/library/ui_gateway.mjs > library-integration-evidence/gateway.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do curl --silent --fail http://127.0.0.1:4189/fixture > /dev/null && break; sleep 1; done
+          python qa/library/ui_integration.py
+      - name: Verify no microphone, interface, billing, models or deployment settings changed
+        run: |
+          git fetch --depth=1 origin 6b83b043e85d0eb15e629affb0f42d2957a6cc83
+          test -z "$(git diff 6b83b043e85d0eb15e629affb0f42d2957a6cc83 -- eterna-mic-only-v4.js eterna-v159.js eterna-v159.css index.html sw.js eterna-worker/wrangler.jsonc eterna-worker/package-lock.json)"
+      - name: Commit exact validated content only on isolated branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs qa/library/lessons-v1.json qa/library-combined/alternatives-not-activated.json qa/library-combined/protocols-added.json
+          git commit -m "feat(eterna): consolidated 217-lesson 56-protocol verified content" -m "Preserves exact current 160 lessons and indexed natural-language routing. Adds 57 noncolliding lessons and 16 conversational protocols; retains 23 alternatives unactivated. Microphone and frontend unchanged. No complete-curriculum or human-review claim."
+          git push origin HEAD:refs/heads/feat/eterna-library-217-consolidated-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';import assert from'node:assert/strict';
+          const p=JSON.parse(readFileSync('combined-evidence/build.json')),log=readFileSync('combined-evidence/regression.txt','utf8'),ui=JSON.parse(readFileSync('library-integration-evidence/ui-report.json'));
+          p.tests_passed=Number(log.match(/# pass (\d+)/)[1]);p.tests_failed=Number(log.match(/# fail (\d+)/)[1]);p.ui_scenarios=ui.reduce((n,x)=>n+x.scenarios.length,0);p.ui_model_calls=ui.reduce((n,x)=>n+x.model_calls,0);assert.equal(p.tests_failed,0);assert.ok(p.tests_passed>=500);assert.equal(p.ui_scenarios,42);assert.equal(p.ui_model_calls,0);
+          p.tested_commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();const files=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json','qa/library-combined/alternatives-not-activated.json','qa/library-combined/protocols-added.json'];
+          p.blobs=Object.fromEntries(files.map(f=>[f,{sha:execFileSync('git',['hash-object',f],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(f)).digest('hex')}]));writeFileSync('combined-evidence/report.json',JSON.stringify(p,null,2));
+          JS
+      - name: Prepare fixed-scope private import and disposable real authentication
+        run: |
+          python qa/library-combined/prepare_private.py
+          node --check qa/library/remote_combined_verify.mjs
+          npm ci --prefix eterna-worker --no-audit --no-fund
+      - name: Import unique release and validate canonical Worker with real services, never deploy
+        run: node qa/library/remote_combined_verify.mjs
+      - name: Require 96 complete real-service requests and verified cleanup
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import assert from'node:assert/strict';
+          const p=JSON.parse(readFileSync('combined-private-evidence/report.json'));assert.equal(p.phase,'canonical-private-verified');assert.equal(p.release,'eterna-library-2026.09-v3-217-6b83');assert.equal(p.requests.length,96);assert.equal(p.synthetic_cleanup.ok,true);assert.equal(p.synthetic_cleanup.deleted,true);assert.equal(p.draft_content.lessons,217);assert.equal(p.draft_content.protocols,56);assert.equal(p.draft_content.hash_mismatches,0);assert.equal(p.production_changed,false);for(const r of p.requests){assert.equal(r.generation_model_calls,0);assert.equal(r.generation_tokens,0)}
+          console.log('PASS: exact current content preserved, 217 lessons, 651 checks, 56 protocols, 96 actual authenticated private requests, synthetic identity deleted');
+          JS
+      - name: Preserve source and honest result without credentials
+        if: always()
+        run: |
+          mkdir -p combined-evidence
+          tar -czf combined-evidence/verified-source.tar.gz eterna-worker/src eterna-worker/test/library-first.test.mjs qa/library/lessons-v1.json qa/library-combined
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-library-217-final-verification
+          path: |
+            combined-evidence
+            combined-private-evidence
+            library-integration-evidence
+          retention-days: 30
