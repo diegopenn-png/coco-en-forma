@@ -1,0 +1,25 @@
+name: Eterna current-main content reconciliation snapshot
+on:
+  push:
+    branches: ["feat/eterna-library-v2-content-20260912"]
+    paths: [".github/workflows/eterna-library-current-content-snapshot.yml"]
+permissions:
+  contents: read
+jobs:
+  reconcile-current-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 6b83b043e85d0eb15e629affb0f42d2957a6cc83
+      - name: Snapshot exact new main and no credentials
+        run: |
+          mkdir -p current-source-evidence
+          git rev-parse HEAD > current-source-evidence/commit.txt
+          tar -czf current-source-evidence/current-source.tar.gz eterna-worker/src eterna-worker/test eterna-worker/LIBRARY_V2.md eterna-worker/package.json eterna-worker/package-lock.json qa/library/lessons-v1.json qa/library/expansion-v2.json eterna-state-contract-v3.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eterna-current-main-content-source
+          path: current-source-evidence
+          retention-days: 7
