@@ -1,0 +1,56 @@
+name: Publish verified reviewed Eterna 256-lesson library
+on:
+  push:
+    branches: ["ops/eterna-reviewed-256-publish-ffe822e"]
+    paths: [".github/workflows/eterna-reviewed-256-publish.yml", "qa/curriculum-review/publish.mjs"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-worker-production
+  cancel-in-progress: false
+jobs:
+  promote-immutable-reviewed-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-reviewed-256-private
+          run-id: 34667553301
+          github-token: ${{ github.token }}
+          path: .private-proof
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-reviewed-256-build
+          run-id: 34667096295
+          github-token: ${{ github.token }}
+          path: .build-proof
+      - name: Repeat all release tests and install locked deployment tooling
+        run: |
+          mkdir -p review-production-evidence
+          node --check qa/curriculum-review/publish.mjs
+          cd eterna-worker
+          npm run check > ../review-production-evidence/regression.txt 2>&1
+          tail -10 ../review-production-evidence/regression.txt
+          grep -q '^# pass 616$' ../review-production-evidence/regression.txt
+          grep -q '^# fail 0$' ../review-production-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Verify current main, source hashes, bindings and actual canonical proof before promotion
+        run: node qa/curriculum-review/publish.mjs
+      - name: Preserve sanitized publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-reviewed-256-production
+          path: review-production-evidence
+          retention-days: 90
+          if-no-files-found: warn
