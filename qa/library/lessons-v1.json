@@ -830,7 +830,7 @@
       "seres vivos",
       "plantas y animales"
     ],
-    "explanation": "Los seres vivos realizan funciones vitales, como nutrirse y relacionarse con el entorno; las poblaciones continúan mediante la reproducción. Las plantas y los animales son seres vivos. No todo lo que se mueve está vivo.",
+    "explanation": "Las plantas y los animales son seres vivos. Necesitan condiciones adecuadas para vivir y pueden crecer y responder a lo que ocurre a su alrededor. Un coche puede moverse, pero no está vivo. Podemos observar plantas y animales con ayuda de un adulto y sin hacerles daño.",
     "simpler": "Una planta necesita agua y condiciones adecuadas para vivir. Un coche se mueve, pero no está vivo.",
     "example": "Observa una planta con un adulto durante varios días. Puedes ver cómo crece, sin arrancar sus hojas ni molestar a animales.",
     "why": "Las funciones vitales distinguen a los organismos de los objetos, aunque algunos objetos se muevan o consuman energía.",
@@ -908,7 +908,7 @@
       "sumar",
       "adicion"
     ],
-    "explanation": "Sumar reúne cantidades o añade una cantidad a otra. El resultado se llama suma. Puedes comprobar una suma cambiando el orden de sus sumandos: el resultado se conserva.",
+    "explanation": "Sumar reúne cantidades o añade una cantidad a otra. El resultado se llama suma. Si cambias el orden de los sumandos, la suma correcta se conserva. Recalcular por otro procedimiento puede ayudar a detectar errores; cambiar solo el orden escrito no demuestra que un resultado sea correcto.",
     "simpler": "Junta un grupo con otro y cuenta cuántos elementos hay en total.",
     "example": "Si tienes 3 lápices y recibes 2, ahora tienes 5: 3 + 2 = 5.",
     "why": "La suma de cantidades cuenta todos los elementos sin contarlos dos veces.",
@@ -1738,7 +1738,7 @@
       "perimetro",
       "perimetros"
     ],
-    "explanation": "El perímetro es la longitud del contorno de una figura. Se calcula sumando las longitudes de todos sus lados. Sus unidades son de longitud, como centímetros o metros.",
+    "explanation": "El perímetro es la longitud del contorno de una figura plana. En un polígono se calcula sumando las longitudes de todos sus lados. Sus unidades son de longitud, como centímetros o metros. Los contornos curvos requieren otros procedimientos de medida o cálculo.",
     "simpler": "Imagina una cuerda rodeando la figura. Su longitud es el perímetro.",
     "example": "Un rectángulo de 5 cm por 3 cm tiene perímetro 5 + 3 + 5 + 3 = 16 cm.",
     "why": "Sumar los lados equivale a sumar todos los tramos del recorrido alrededor de la figura.",
@@ -1967,7 +1967,7 @@
       "leer el reloj",
       "horas y minutos"
     ],
-    "explanation": "Una hora tiene 60 minutos y un minuto 60 segundos. En un reloj de agujas, la aguja larga indica los minutos y la corta las horas. No confundas la hora del día con una duración.",
+    "explanation": "Una hora tiene 60 minutos y un minuto 60 segundos. En un reloj analógico sencillo de dos agujas, la aguja larga indica los minutos y la corta las horas. Otros relojes incorporan también un segundero. No confundas la hora del día con una duración.",
     "simpler": "La aguja larga da una vuelta en una hora. Media hora son 30 minutos.",
     "example": "Si empiezas a las 10:15 y pasan 30 minutos, serán las 10:45.",
     "why": "El reloj combina unidades distintas; por eso al llegar a 60 minutos se completa otra hora.",
@@ -2130,11 +2130,11 @@
     "quiz": [
       {
         "id": "p-noun:q0",
-        "question": "¿Cuál es un sustantivo?",
+        "question": "En «La mochila pesa», ¿qué palabra es un sustantivo?",
         "options": [
-          "Correr",
+          "La",
           "Mochila",
-          "Azul"
+          "Pesa"
         ],
         "answer": "B",
         "hint": "Busca la palabra que nombra una entidad o una idea.",
@@ -2570,7 +2570,7 @@
       "ciclo del agua",
       "el ciclo del agua"
     ],
-    "explanation": "El agua circula entre la superficie terrestre y la atmósfera. Puede evaporarse, condensarse formando gotitas o cristales y caer como precipitación. También se infiltra en el suelo o fluye hacia ríos y mares. No es una única ruta igual para cada gota.",
+    "explanation": "El agua circula entre la superficie terrestre y la atmósfera. Puede evaporarse y condensarse formando gotitas de agua líquida. Las nubes también pueden contener cristales de hielo. El agua vuelve a la superficie como precipitación, se infiltra en el suelo o fluye hacia ríos y mares. Cada porción de agua puede seguir recorridos diferentes.",
     "simpler": "El agua puede pasar al aire como vapor, formar nubes y volver a la superficie como lluvia o nieve.",
     "example": "Un charco disminuye cuando parte del agua se evapora. El vapor puede condensarse y participar en la formación de nubes.",
     "why": "La energía solar y la gravedad impulsan distintas partes del ciclo; el agua cambia de lugar y de estado.",
@@ -3547,14 +3547,14 @@
       "celulas",
       "la celula"
     ],
-    "explanation": "La célula es la unidad estructural y funcional básica de los seres vivos. Las células tienen membrana plasmática, material genético y un medio interno donde ocurren procesos. Las eucariotas tienen núcleo; las procariotas no tienen un núcleo delimitado por membrana.",
-    "simpler": "Los seres vivos están formados por células. Algunas tienen núcleo y otras no.",
+    "explanation": "La célula es la unidad estructural y funcional básica de los seres vivos. El modelo celular básico incluye membrana plasmática, material genético y un medio interno donde ocurren procesos. Las células eucariotas típicas tienen un núcleo delimitado por membrana; las procariotas no. Algunas células especializadas pierden estructuras durante su maduración.",
+    "simpler": "Los seres vivos están formados por células. En el modelo básico, las eucariotas tienen núcleo y las procariotas no tienen uno delimitado por membrana. Hay células especializadas con particularidades.",
     "example": "Una bacteria es un organismo procariota; una célula de una hoja es eucariota y suele tener pared celular y cloroplastos.",
     "why": "El núcleo es una forma de organizar el ADN, no un requisito para que exista una célula.",
     "misconception": "Las procariotas tienen material genético aunque carezcan de núcleo membranoso.",
     "hints": [
       "Distingue tener material genético de tener núcleo.",
-      "Los seres vivos están formados por células. Algunas tienen núcleo y otras no.",
+      "Los seres vivos están formados por células. En el modelo básico, las eucariotas tienen núcleo y las procariotas no tienen uno delimitado por membrana. Hay células especializadas con particularidades.",
       "Una bacteria es un organismo procariota; una célula de una hoja es eucariota y suele tener pared celular y cloroplastos."
     ],
     "quiz": [
@@ -4446,13 +4446,13 @@
     ],
     "explanation": "Una metáfora presenta una realidad en términos de otra por una relación de semejanza, sin formular necesariamente una comparación explícita. Un símil hace explícita esa comparación, a menudo con «como». Hay que interpretarlos en contexto.",
     "simpler": "«Tus ojos son estrellas» es una metáfora. «Tus ojos brillan como estrellas» es una comparación explícita.",
-    "example": "La imagen de estrellas sugiere brillo; no afirma que haya astros físicamente en los ojos.",
+    "example": "En «tus ojos son estrellas», la imagen de estrellas sugiere brillo o admiración según el contexto; no afirma que haya astros físicamente en los ojos.",
     "why": "La semejanza seleccionada crea un significado que el contexto ayuda a precisar.",
     "misconception": "El lenguaje figurado no se interpreta siempre como una afirmación literal.",
     "hints": [
       "Busca qué cualidad relaciona las dos realidades.",
       "«Tus ojos son estrellas» es una metáfora. «Tus ojos brillan como estrellas» es una comparación explícita.",
-      "La imagen de estrellas sugiere brillo; no afirma que haya astros físicamente en los ojos."
+      "En «tus ojos son estrellas», la imagen de estrellas sugiere brillo o admiración según el contexto; no afirma que haya astros físicamente en los ojos."
     ],
     "quiz": [
       {
@@ -6233,7 +6233,7 @@
     "quiz": [
       {
         "id": "i-listening:q0",
-        "question": "En ese cuento, ¿quién planta la semilla?",
+        "question": "Escucha: «Lola lleva una semilla al jardín y la planta». ¿Quién planta la semilla?",
         "options": [
           "El jardín",
           "Lola",
@@ -6245,7 +6245,7 @@
       },
       {
         "id": "i-listening:q1",
-        "question": "¿Dónde la planta?",
+        "question": "Escucha: «Lola lleva una semilla al jardín y la planta». ¿Dónde planta Lola la semilla?",
         "options": [
           "En el jardín",
           "En el mar",
@@ -6311,7 +6311,7 @@
         "options": [
           "Pedir ayuda",
           "Esconderte siempre",
-          "Hacerte daño"
+          "Dejar de intentarlo sin decir qué necesitas"
         ],
         "answer": "A",
         "hint": "Explica o muestra qué parte necesitas resolver.",
@@ -6964,7 +6964,7 @@
       "angulo recto",
       "angulos agudos y obtusos"
     ],
-    "explanation": "Un ángulo mide la abertura entre dos semirrectas con origen común. Se puede expresar en grados. Un ángulo recto mide 90°; uno agudo es menor de 90° y mayor de 0°; uno obtuso está entre 90° y 180°.",
+    "explanation": "Dos semirrectas con origen común forman un ángulo. Su amplitud mide la abertura y puede expresarse en grados. Un ángulo recto mide 90°; uno agudo es mayor de 0° y menor de 90°; uno obtuso es mayor de 90° y menor de 180°.",
     "simpler": "Mira cuánto se abre, no cuánto miden los lados dibujados.",
     "example": "La esquina de una hoja rectangular forma un ángulo recto. Un ángulo de 40° es agudo.",
     "why": "El ángulo mide una abertura o un giro, no una longitud.",
@@ -7508,7 +7508,7 @@
     "quiz": [
       {
         "id": "p-pronouns:q0",
-        "question": "En ese ejemplo, ella se refiere a…",
+        "question": "En «Lucía lee. Ella disfruta del cuento», ¿a quién se refiere «ella»?",
         "options": [
           "El cuento",
           "Lucía",
@@ -9311,7 +9311,7 @@
     "quiz": [
       {
         "id": "e-linear-systems:q0",
-        "question": "La solución del ejemplo es…",
+        "question": "Resuelve el sistema x + y = 7, x − y = 1. Su solución es…",
         "options": [
           "x=3, y=4",
           "x=4, y=3",
@@ -9323,7 +9323,7 @@
       },
       {
         "id": "e-linear-systems:q1",
-        "question": "Para comprobarla sustituimos en…",
+        "question": "Para comprobar una solución de un sistema de ecuaciones, sustituimos sus valores en…",
         "options": [
           "Todas las ecuaciones",
           "Solo una al azar",
@@ -9463,7 +9463,7 @@
     "quiz": [
       {
         "id": "e-volume:q0",
-        "question": "Ese ortoedro tiene volumen…",
+        "question": "Un ortoedro mide 4 cm de largo, 3 cm de ancho y 2 cm de alto. Su volumen es…",
         "options": [
           "24 cm²",
           "24 cm³",
@@ -9612,7 +9612,7 @@
     "quiz": [
       {
         "id": "e-acceleration:q0",
-        "question": "La aceleración del ejemplo es…",
+        "question": "En línea recta y con el mismo sentido positivo, la velocidad pasa de 2 a 8 m/s en 3 s. La aceleración media es…",
         "options": [
           "6 m/s²",
           "2 m/s²",
@@ -10810,7 +10810,7 @@
     "quiz": [
       {
         "id": "b-quadratic:q0",
-        "question": "Las soluciones del ejemplo son…",
+        "question": "Las soluciones reales de x² − 5x + 6 = 0 son…",
         "options": [
           "2 y 3",
           "−2 y −3",
@@ -10957,7 +10957,7 @@
     "quiz": [
       {
         "id": "b-trigonometry:q0",
-        "question": "En ese ejemplo, el seno es…",
+        "question": "En un triángulo rectángulo, la hipotenusa mide 5 y el cateto opuesto a un ángulo agudo mide 3. El seno de ese ángulo es…",
         "options": [
           "5/3",
           "4/5",
@@ -11103,7 +11103,7 @@
     "quiz": [
       {
         "id": "b-conditional:q0",
-        "question": "En ese ejemplo, la probabilidad condicionada de 6 es…",
+        "question": "Al lanzar un dado equilibrado de seis caras, sabemos que salió un número par. La probabilidad condicionada de obtener 6 es…",
         "options": [
           "1/6",
           "1/3",
@@ -11165,18 +11165,18 @@
     ],
     "explanation": "Para una fuerza constante y desplazamiento rectilíneo, W = F·d·cosθ. El trabajo neto sobre una partícula equivale a su variación de energía cinética, Ec=mv²/2. El trabajo puede ser positivo, negativo o cero según la relación entre fuerza y desplazamiento.",
     "simpler": "Una fuerza perpendicular al desplazamiento no realiza trabajo en ese modelo, aunque exista fuerza.",
-    "example": "Una fuerza de 10 N paralela a un desplazamiento de 3 m realiza 30 J de trabajo.",
+    "example": "Una fuerza constante de 10 N, paralela y en el mismo sentido que un desplazamiento de 3 m, realiza 30 J de trabajo.",
     "why": "Solo la componente de fuerza en la dirección del desplazamiento contribuye al producto escalar.",
     "misconception": "Aplicar fuerza no garantiza que haya trabajo mecánico.",
     "hints": [
       "Incluye el ángulo y distingue trabajo de fuerza.",
       "Una fuerza perpendicular al desplazamiento no realiza trabajo en ese modelo, aunque exista fuerza.",
-      "Una fuerza de 10 N paralela a un desplazamiento de 3 m realiza 30 J de trabajo."
+      "Una fuerza constante de 10 N, paralela y en el mismo sentido que un desplazamiento de 3 m, realiza 30 J de trabajo."
     ],
     "quiz": [
       {
         "id": "b-work:q0",
-        "question": "El trabajo del ejemplo es…",
+        "question": "Una fuerza constante de 10 N actúa paralela y en el mismo sentido que un desplazamiento de 3 m. El trabajo que realiza es…",
         "options": [
           "30 J",
           "13 J",
@@ -11249,7 +11249,7 @@
     "quiz": [
       {
         "id": "b-waves:q0",
-        "question": "La longitud del ejemplo es…",
+        "question": "Una onda se propaga a 340 m/s y tiene frecuencia 170 Hz. Su longitud de onda es…",
         "options": [
           "170 m",
           "2 m",
@@ -12586,7 +12586,7 @@
     "quiz": [
       {
         "id": "i-story:q0",
-        "question": "En nuestro cuento, ¿quién pierde la cesta?",
+        "question": "Escucha: «Un conejo pierde su cesta y una tortuga le ayuda a buscarla». ¿Quién pierde la cesta?",
         "options": [
           "La tortuga",
           "El conejo",
@@ -13198,7 +13198,7 @@
     "quiz": [
       {
         "id": "p-inference:q0",
-        "question": "¿Qué dice expresamente el texto?",
+        "question": "Lee: «Al entrar, Julia dejó un paraguas mojado junto a la puerta». ¿Qué dice expresamente el texto?",
         "options": [
           "Que había tormenta",
           "Que el paraguas estaba mojado",
@@ -13210,7 +13210,7 @@
       },
       {
         "id": "p-inference:q1",
-        "question": "Que había llovido es…",
+        "question": "Lee: «Al entrar, Julia dejó un paraguas mojado junto a la puerta». Pensar que había llovido es…",
         "options": [
           "Una inferencia posible",
           "Una frase literal del texto",
@@ -13222,7 +13222,7 @@
       },
       {
         "id": "p-inference:q2",
-        "question": "¿Qué detalle no podemos asegurar con esas pistas?",
+        "question": "Lee: «Al entrar, Julia dejó un paraguas mojado junto a la puerta». ¿Qué detalle no podemos asegurar con estas pistas?",
         "options": [
           "Que hay una puerta",
           "Que Julia entra",
@@ -13679,7 +13679,7 @@
       },
       {
         "id": "p-have:q2",
-        "question": "La pregunta correspondiente es…",
+        "question": "La pregunta equivalente a «She has got a bike» en la construcción have got es…",
         "options": [
           "She has got a bike? siempre",
           "Has she got a bike?",
@@ -13885,7 +13885,7 @@
     "quiz": [
       {
         "id": "e-systems:q0",
-        "question": "¿Qué pareja resuelve el sistema del ejemplo?",
+        "question": "¿Qué pareja resuelve simultáneamente x + y = 7 y x − y = 1?",
         "options": [
           "x = 4, y = 3",
           "x = 3, y = 4",
@@ -13960,7 +13960,7 @@
     "quiz": [
       {
         "id": "e-quadratic:q0",
-        "question": "Las soluciones del ejemplo son…",
+        "question": "Las soluciones reales de la ecuación x² − 5x + 6 = 0 son…",
         "options": [
           "5 y 6",
           "2 y 3",
@@ -14111,7 +14111,7 @@
     "quiz": [
       {
         "id": "e-trig:q0",
-        "question": "El seno del ángulo del ejemplo es…",
+        "question": "En un triángulo rectángulo de lados 3, 4 y 5, ¿cuál es el seno del ángulo opuesto al lado de longitud 3?",
         "options": [
           "3/5",
           "4/5",
@@ -14188,7 +14188,7 @@
     "quiz": [
       {
         "id": "e-similarity:q0",
-        "question": "La razón lineal del ejemplo es…",
+        "question": "Un rectángulo de 2 por 3 se amplía a otro de 4 por 6. La razón lineal de la ampliación es…",
         "options": [
           "4",
           "2",
@@ -14325,7 +14325,7 @@
       "leyes de mendel",
       "dominante y recesivo"
     ],
-    "explanation": "En un modelo mendeliano sencillo, un gen tiene variantes llamadas alelos. Dominante describe qué alelo se expresa en el heterocigoto para el rasgo estudiado; no significa mejor, más frecuente ni más fuerte. Muchos rasgos no siguen este modelo simple.",
+    "explanation": "En un modelo mendeliano sencillo, un gen presenta variantes llamadas alelos. Con dominancia completa para el rasgo estudiado, el heterocigoto muestra el mismo fenotipo que el homocigoto para el alelo dominante. Dominante no significa mejor, más frecuente ni más fuerte; tampoco describe por sí solo toda la expresión molecular del gen. Muchos rasgos no siguen este modelo simple.",
     "simpler": "Usa letras para representar alelos, pero recuerda que es un modelo concreto y no explica por sí solo todos los rasgos.",
     "example": "En Aa × Aa, con dominancia completa de A, las combinaciones esperadas son AA, Aa, Aa y aa. La probabilidad de aa es 1/4 en cada descendiente, bajo las condiciones del modelo.",
     "why": "Las probabilidades describen resultados esperables a gran escala bajo ciertas condiciones, no un cupo que deba cumplirse en cada grupo pequeño.",
@@ -14338,7 +14338,7 @@
     "quiz": [
       {
         "id": "e-mendel:q0",
-        "question": "En el cruce del ejemplo, la probabilidad de aa es…",
+        "question": "En el modelo mendeliano Aa × Aa, con segregación de alelos y fecundación aleatoria, la probabilidad de un descendiente aa es…",
         "options": [
           "1/2",
           "1/4",
@@ -14350,9 +14350,9 @@
       },
       {
         "id": "e-mendel:q1",
-        "question": "Dominante significa aquí…",
+        "question": "En un modelo con dominancia completa para un rasgo, llamar dominante a un alelo significa…",
         "options": [
-          "Que se expresa en el heterocigoto",
+          "Que el heterocigoto muestra el rasgo asociado a ese alelo",
           "Que siempre es más frecuente",
           "Que es mejor biológicamente"
         ],
@@ -14362,7 +14362,7 @@
       },
       {
         "id": "e-mendel:q2",
-        "question": "Estas proporciones…",
+        "question": "Las proporciones calculadas para un cruce mendeliano Aa × Aa…",
         "options": [
           "Obligan a que cada familia de cuatro tenga una persona aa",
           "Explican todos los rasgos",
@@ -14413,7 +14413,7 @@
     "quiz": [
       {
         "id": "e-motion:q0",
-        "question": "La aceleración media del ejemplo es…",
+        "question": "En movimiento rectilíneo y con el mismo sentido positivo, la velocidad pasa de 2 m/s a 8 m/s en 3 s. La aceleración media es…",
         "options": [
           "6 m/s²",
           "3 m/s²",
@@ -14489,7 +14489,7 @@
     "quiz": [
       {
         "id": "e-electric:q0",
-        "question": "La corriente del ejemplo es…",
+        "question": "Una resistencia óhmica de 3 Ω tiene una diferencia de potencial de 6 V. La corriente que la atraviesa es…",
         "options": [
           "2 A",
           "18 A",
@@ -14566,7 +14566,7 @@
     "quiz": [
       {
         "id": "e-solution:q0",
-        "question": "La concentración del ejemplo es…",
+        "question": "Una disolución contiene 10 g de soluto en 2 L de volumen final. Su concentración en masa es…",
         "options": [
           "20 g/L",
           "5 g/L",
@@ -14867,7 +14867,7 @@
     "quiz": [
       {
         "id": "e-population:q0",
-        "question": "El cambio del ejemplo es…",
+        "question": "En el mismo territorio y periodo se registran 100 nacimientos, 80 defunciones, 30 llegadas y 20 salidas. El cambio poblacional por estos componentes es…",
         "options": [
           "30 personas",
           "10 personas",
@@ -14955,7 +14955,7 @@
       },
       {
         "id": "e-direct-object:q1",
-        "question": "La sustitución adecuada es…",
+        "question": "Al sustituir «el libro» por un pronombre en «Lucía lee el libro», la forma adecuada es…",
         "options": [
           "Lucía lo lee",
           "Lucía le lee el libro, necesariamente",
@@ -15018,7 +15018,7 @@
     "quiz": [
       {
         "id": "e-subordinate:q0",
-        "question": "En el ejemplo, la subordinada es…",
+        "question": "En «Espero que llegues pronto», la oración subordinada es…",
         "options": [
           "Espero",
           "Pronto",
@@ -15030,7 +15030,7 @@
       },
       {
         "id": "e-subordinate:q1",
-        "question": "La subordinada del ejemplo expresa…",
+        "question": "En «Espero que llegues pronto», la subordinada «que llegues pronto» expresa…",
         "options": [
           "Lo esperado",
           "Quién espera necesariamente",
@@ -15479,7 +15479,7 @@
     "quiz": [
       {
         "id": "b-determinant:q0",
-        "question": "El determinante del ejemplo es…",
+        "question": "El determinante de la matriz de dos filas (1, 2) y (3, 4) es…",
         "options": [
           "−2",
           "2",
@@ -15554,7 +15554,7 @@
     "quiz": [
       {
         "id": "b-binomial:q0",
-        "question": "La probabilidad del ejemplo es…",
+        "question": "En tres lanzamientos independientes de una moneda equilibrada, la probabilidad de obtener exactamente dos caras es…",
         "options": [
           "1/8",
           "1/2",
@@ -15630,7 +15630,7 @@
     "quiz": [
       {
         "id": "b-normal:q0",
-        "question": "En el ejemplo, z vale…",
+        "question": "Al tipificar x = 130 con media μ = 100 y desviación típica σ = 15 mediante z = (x − μ)/σ, obtenemos…",
         "options": [
           "2",
           "15",
@@ -15705,7 +15705,7 @@
     "quiz": [
       {
         "id": "b-dot:q0",
-        "question": "El producto escalar del ejemplo es…",
+        "question": "El producto escalar de los vectores u = (1, 2) y v = (2, −1) es…",
         "options": [
           "4",
           "0",
@@ -16159,7 +16159,7 @@
     "quiz": [
       {
         "id": "b-conditionals:q0",
-        "question": "La segunda oración del ejemplo utiliza…",
+        "question": "La oración «If I had more time, I would read more» utiliza el patrón básico del…",
         "options": [
           "Third conditional",
           "Presente perfecto",
@@ -16278,5 +16278,2979 @@
     "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
     "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
     "introduced_in_release": "eterna-library-2026.09-v2-160"
+  },
+  {
+    "id": "p-polygons",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "Polígonos",
+    "grade_min": 4,
+    "grade_max": 6,
+    "school_years": [
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Polígonos",
+      "poligonos",
+      "poligono"
+    ],
+    "explanation": "Un polígono es una figura plana delimitada por una línea poligonal cerrada. Sus lados son segmentos rectos. Se puede clasificar por su número de lados; un polígono regular tiene todos sus lados y ángulos iguales. No basta que sus lados midan lo mismo para asegurar que sea regular.",
+    "simpler": "Busca un borde cerrado formado por segmentos rectos. Cuenta sus lados antes de ponerle nombre.",
+    "example": "Un pentágono tiene cinco lados. Un círculo no es un polígono porque su borde es curvo. Un rombo no cuadrado tiene lados iguales, pero no todos los ángulos iguales.",
+    "why": "Clasificar exige cumplir todas las condiciones de una definición; una sola semejanza visual no basta.",
+    "misconception": "Un rombo no es necesariamente un polígono regular.",
+    "hints": [
+      "Comprueba por separado el cierre, los lados rectos y, para la regularidad, lados y ángulos.",
+      "Busca un borde cerrado formado por segmentos rectos. Cuenta sus lados antes de ponerle nombre.",
+      "Un pentágono tiene cinco lados. Un círculo no es un polígono porque su borde es curvo. Un rombo no cuadrado tiene lados iguales, pero no todos los ángulos iguales."
+    ],
+    "quiz": [
+      {
+        "id": "p-polygons:q0",
+        "question": "¿Cuántos lados tiene un pentágono?",
+        "options": [
+          "Cinco",
+          "Seis",
+          "Cuatro"
+        ],
+        "answer": "A",
+        "hint": "Comprueba por separado el cierre, los lados rectos y, para la regularidad, lados y ángulos.",
+        "level": 1
+      },
+      {
+        "id": "p-polygons:q1",
+        "question": "¿Por qué un círculo no es un polígono?",
+        "options": [
+          "Porque es pequeño",
+          "Porque su borde no está formado por segmentos rectos",
+          "Porque no tiene color"
+        ],
+        "answer": "B",
+        "hint": "Comprueba por separado el cierre, los lados rectos y, para la regularidad, lados y ángulos.",
+        "level": 2
+      },
+      {
+        "id": "p-polygons:q2",
+        "question": "Para que un polígono sea regular, deben ser iguales…",
+        "options": [
+          "Solo sus lados",
+          "Solo dos ángulos",
+          "Todos sus lados y todos sus ángulos"
+        ],
+        "answer": "C",
+        "hint": "Comprueba por separado el cierre, los lados rectos y, para la regularidad, lados y ángulos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-triangle-area",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "Área de un triángulo",
+    "grade_min": 5,
+    "grade_max": 6,
+    "school_years": [
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Área de un triángulo",
+      "area del triangulo",
+      "area de un triangulo"
+    ],
+    "explanation": "El área de un triángulo es base por altura perpendicular dividido entre dos. La altura se mide perpendicularmente a la base elegida o a su prolongación. Las dos longitudes deben expresarse en la misma unidad y el resultado, en unidades cuadradas.",
+    "simpler": "Compara el triángulo con un paralelogramo de la misma base y altura: ocupa la mitad de su área.",
+    "example": "Un triángulo con base de 8 cm y altura perpendicular de 3 cm tiene área 8 × 3 ÷ 2 = 12 cm². No usamos un lado inclinado como altura sin comprobarlo.",
+    "why": "Dos triángulos congruentes pueden formar un paralelogramo; repartir su área entre dos explica la fórmula.",
+    "misconception": "Un lado inclinado no es automáticamente la altura.",
+    "hints": [
+      "Identifica la base y su altura correspondiente antes de multiplicar y dividir entre dos.",
+      "Compara el triángulo con un paralelogramo de la misma base y altura: ocupa la mitad de su área.",
+      "Un triángulo con base de 8 cm y altura perpendicular de 3 cm tiene área 8 × 3 ÷ 2 = 12 cm². No usamos un lado inclinado como altura sin comprobarlo."
+    ],
+    "quiz": [
+      {
+        "id": "p-triangle-area:q0",
+        "question": "Un triángulo de base 10 cm y altura 4 cm tiene área…",
+        "options": [
+          "40 cm²",
+          "20 cm²",
+          "14 cm²"
+        ],
+        "answer": "B",
+        "hint": "Identifica la base y su altura correspondiente antes de multiplicar y dividir entre dos.",
+        "level": 1
+      },
+      {
+        "id": "p-triangle-area:q1",
+        "question": "La altura debe ser…",
+        "options": [
+          "Perpendicular a la base o su prolongación",
+          "Siempre el lado más largo",
+          "La mitad de cualquier lado"
+        ],
+        "answer": "A",
+        "hint": "Identifica la base y su altura correspondiente antes de multiplicar y dividir entre dos.",
+        "level": 2
+      },
+      {
+        "id": "p-triangle-area:q2",
+        "question": "La unidad apropiada para esa área es…",
+        "options": [
+          "cm",
+          "cm³",
+          "cm²"
+        ],
+        "answer": "C",
+        "hint": "Identifica la base y su altura correspondiente antes de multiplicar y dividir entre dos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-cardinal",
+    "stage": "primaria",
+    "subject": "Conocimiento del Medio",
+    "title": "Puntos cardinales",
+    "grade_min": 3,
+    "grade_max": 6,
+    "school_years": [
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Puntos cardinales",
+      "puntos cardinales",
+      "norte sur este oeste"
+    ],
+    "explanation": "Norte, sur, este y oeste son direcciones de referencia. En un plano hay que consultar su orientación: no debemos asumir siempre que la parte de arriba es el norte. Una rosa de los vientos o una flecha de norte ayudan a interpretarlo.",
+    "simpler": "Mira la flecha que indica el norte. El sur queda en la dirección opuesta.",
+    "example": "En un plano con el norte arriba, el este queda a la derecha y el oeste a la izquierda. Si giramos el plano, cambia su posición en el papel, no las direcciones reales.",
+    "why": "Las direcciones permiten compartir una referencia espacial, aunque quien mire el mapa cambie de posición.",
+    "misconception": "El norte no ocupa obligatoriamente la parte superior de cualquier mapa.",
+    "hints": [
+      "Usa la referencia que proporciona el plano; no confundas la derecha de la hoja con una dirección fija.",
+      "Mira la flecha que indica el norte. El sur queda en la dirección opuesta.",
+      "En un plano con el norte arriba, el este queda a la derecha y el oeste a la izquierda. Si giramos el plano, cambia su posición en el papel, no las direcciones reales."
+    ],
+    "quiz": [
+      {
+        "id": "p-cardinal:q0",
+        "question": "Si en un plano el norte está arriba, el este queda…",
+        "options": [
+          "A la derecha",
+          "A la izquierda",
+          "Abajo"
+        ],
+        "answer": "A",
+        "hint": "Usa la referencia que proporciona el plano; no confundas la derecha de la hoja con una dirección fija.",
+        "level": 1
+      },
+      {
+        "id": "p-cardinal:q1",
+        "question": "La dirección opuesta al norte es…",
+        "options": [
+          "Este",
+          "Sur",
+          "Oeste"
+        ],
+        "answer": "B",
+        "hint": "Usa la referencia que proporciona el plano; no confundas la derecha de la hoja con una dirección fija.",
+        "level": 2
+      },
+      {
+        "id": "p-cardinal:q2",
+        "question": "Para orientar un mapa debemos mirar…",
+        "options": [
+          "Solo sus colores",
+          "Solo el tamaño",
+          "Su indicación de orientación"
+        ],
+        "answer": "C",
+        "hint": "Usa la referencia que proporciona el plano; no confundas la derecha de la hoja con una dirección fija.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-renewable",
+    "stage": "primaria",
+    "subject": "Conocimiento del Medio",
+    "title": "Energías renovables",
+    "grade_min": 5,
+    "grade_max": 6,
+    "school_years": [
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Energías renovables",
+      "energias renovables",
+      "energia renovable"
+    ],
+    "explanation": "Una fuente renovable se repone mediante procesos naturales en escalas de tiempo compatibles con su uso, si se gestiona adecuadamente. El Sol y el viento son ejemplos. Renovable no significa que su aprovechamiento carezca de impactos ni que podamos gastar energía sin límites.",
+    "simpler": "La luz solar y el viento pueden aprovecharse para obtener energía, pero las instalaciones también usan materiales y espacio.",
+    "example": "Un panel fotovoltaico transforma parte de la energía solar en electricidad. Fabricarlo y gestionar sus residuos también requieren recursos y decisiones responsables.",
+    "why": "Evaluar una tecnología exige considerar su funcionamiento y su ciclo de vida, no solo una ventaja aislada.",
+    "misconception": "Renovable y sin impacto no son sinónimos.",
+    "hints": [
+      "Distingue la fuente natural de la instalación que permite aprovecharla.",
+      "La luz solar y el viento pueden aprovecharse para obtener energía, pero las instalaciones también usan materiales y espacio.",
+      "Un panel fotovoltaico transforma parte de la energía solar en electricidad. Fabricarlo y gestionar sus residuos también requieren recursos y decisiones responsables."
+    ],
+    "quiz": [
+      {
+        "id": "p-renewable:q0",
+        "question": "¿Qué fuente es renovable?",
+        "options": [
+          "Carbón",
+          "Viento",
+          "Petróleo"
+        ],
+        "answer": "B",
+        "hint": "Distingue la fuente natural de la instalación que permite aprovecharla.",
+        "level": 1
+      },
+      {
+        "id": "p-renewable:q1",
+        "question": "Renovable significa que su aprovechamiento…",
+        "options": [
+          "No está automáticamente libre de impactos",
+          "Nunca usa materiales",
+          "Funciona igual a todas horas"
+        ],
+        "answer": "A",
+        "hint": "Distingue la fuente natural de la instalación que permite aprovecharla.",
+        "level": 2
+      },
+      {
+        "id": "p-renewable:q2",
+        "question": "Usar energía responsablemente incluye…",
+        "options": [
+          "Dejar todo encendido",
+          "Ignorar los residuos",
+          "Evitar consumos innecesarios"
+        ],
+        "answer": "C",
+        "hint": "Distingue la fuente natural de la instalación que permite aprovecharla.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-pulse",
+    "stage": "primaria",
+    "subject": "Educación Artística",
+    "title": "Pulso musical",
+    "grade_min": 3,
+    "grade_max": 6,
+    "school_years": [
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Pulso musical",
+      "pulso musical",
+      "el pulso en musica"
+    ],
+    "explanation": "El pulso es una referencia regular que podemos percibir o establecer en muchas músicas. El ritmo combina duraciones y silencios; no tiene que coincidir siempre con cada pulso. Podemos marcar un pulso con gestos adaptados y sonidos suaves.",
+    "simpler": "Mantén una serie de golpes regulares y prueba a colocar sonidos distintos sobre ella.",
+    "example": "Mientras un adulto o docente marca cuatro pulsos regulares, puedes dar dos palmadas suaves dentro de uno. El pulso continúa aunque el patrón de palmadas cambie.",
+    "why": "Una referencia temporal común permite coordinar patrones distintos sin exigir movimientos idénticos a todas las personas.",
+    "misconception": "Pulso y ritmo no son exactamente lo mismo.",
+    "hints": [
+      "Separa la referencia que se repite del patrón de sonidos que colocas sobre ella.",
+      "Mantén una serie de golpes regulares y prueba a colocar sonidos distintos sobre ella.",
+      "Mientras un adulto o docente marca cuatro pulsos regulares, puedes dar dos palmadas suaves dentro de uno. El pulso continúa aunque el patrón de palmadas cambie."
+    ],
+    "quiz": [
+      {
+        "id": "p-pulse:q0",
+        "question": "El pulso proporciona una referencia…",
+        "options": [
+          "Regular",
+          "De altura de las notas",
+          "De color"
+        ],
+        "answer": "A",
+        "hint": "Separa la referencia que se repite del patrón de sonidos que colocas sobre ella.",
+        "level": 1
+      },
+      {
+        "id": "p-pulse:q1",
+        "question": "Dar dos sonidos dentro de un pulso cambia…",
+        "options": [
+          "Necesariamente el instrumento",
+          "El ritmo, sin cambiar necesariamente el pulso",
+          "Siempre la melodía"
+        ],
+        "answer": "B",
+        "hint": "Separa la referencia que se repite del patrón de sonidos que colocas sobre ella.",
+        "level": 2
+      },
+      {
+        "id": "p-pulse:q2",
+        "question": "Podemos explorar el pulso…",
+        "options": [
+          "Solo compitiendo",
+          "Solo de pie",
+          "Con gestos seguros y adaptados"
+        ],
+        "answer": "C",
+        "hint": "Separa la referencia que se repite del patrón de sonidos que colocas sobre ella.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-staff",
+    "stage": "primaria",
+    "subject": "Educación Artística",
+    "title": "El pentagrama",
+    "grade_min": 4,
+    "grade_max": 6,
+    "school_years": [
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "El pentagrama",
+      "pentagrama",
+      "leer un pentagrama"
+    ],
+    "explanation": "El pentagrama tiene cinco líneas y cuatro espacios principales. En él se sitúan signos musicales. Una clave establece la referencia para interpretar la altura de las notas: la posición por sí sola no basta. También se pueden añadir líneas auxiliares.",
+    "simpler": "Cuenta las cinco líneas de abajo arriba y mira la clave antes de nombrar notas.",
+    "example": "En clave de sol en segunda línea, esa línea representa sol. Una nota más arriba no se identifica solo por contar: hay que considerar la clave y los demás signos.",
+    "why": "La notación funciona mediante convenciones compartidas; la clave permite interpretar las posiciones de forma consistente.",
+    "misconception": "Una misma posición puede representar notas distintas con claves diferentes.",
+    "hints": [
+      "Mira primero la clave y después la posición de cada nota.",
+      "Cuenta las cinco líneas de abajo arriba y mira la clave antes de nombrar notas.",
+      "En clave de sol en segunda línea, esa línea representa sol. Una nota más arriba no se identifica solo por contar: hay que considerar la clave y los demás signos."
+    ],
+    "quiz": [
+      {
+        "id": "p-staff:q0",
+        "question": "¿Cuántas líneas tiene un pentagrama?",
+        "options": [
+          "Cuatro",
+          "Cinco",
+          "Seis"
+        ],
+        "answer": "B",
+        "hint": "Mira primero la clave y después la posición de cada nota.",
+        "level": 1
+      },
+      {
+        "id": "p-staff:q1",
+        "question": "La clave sirve para…",
+        "options": [
+          "Establecer una referencia de altura",
+          "Indicar siempre el volumen",
+          "Elegir el color del papel"
+        ],
+        "answer": "A",
+        "hint": "Mira primero la clave y después la posición de cada nota.",
+        "level": 2
+      },
+      {
+        "id": "p-staff:q2",
+        "question": "Entre las cinco líneas hay…",
+        "options": [
+          "Cinco espacios principales",
+          "Seis espacios principales",
+          "Cuatro espacios principales"
+        ],
+        "answer": "C",
+        "hint": "Mira primero la clave y después la posición de cada nota.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-textures",
+    "stage": "primaria",
+    "subject": "Educación Artística",
+    "title": "Texturas en el arte",
+    "grade_min": 3,
+    "grade_max": 6,
+    "school_years": [
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Texturas en el arte",
+      "texturas",
+      "la textura en arte"
+    ],
+    "explanation": "Una textura es una cualidad de una superficie que percibimos por el tacto o sugerimos visualmente. Una textura dibujada puede parecer rugosa aunque el papel sea liso. Solo exploramos al tacto materiales seguros y conocidos.",
+    "simpler": "Distingue cómo se siente una superficie de cómo parece en una imagen.",
+    "example": "Con supervisión, compara una tela suave y un cartón ondulado. Después representa sus texturas con líneas y puntos sobre papel liso.",
+    "why": "Las imágenes pueden representar cualidades mediante marcas visuales sin reproducir físicamente esas cualidades.",
+    "misconception": "Parecer áspero en una imagen no demuestra que el soporte lo sea.",
+    "hints": [
+      "Separa la propiedad física de la superficie y la sensación que sugiere el dibujo.",
+      "Distingue cómo se siente una superficie de cómo parece en una imagen.",
+      "Con supervisión, compara una tela suave y un cartón ondulado. Después representa sus texturas con líneas y puntos sobre papel liso."
+    ],
+    "quiz": [
+      {
+        "id": "p-textures:q0",
+        "question": "Una textura dibujada…",
+        "options": [
+          "Puede sugerir rugosidad en un papel liso",
+          "Hace siempre áspero el papel",
+          "Solo se percibe oliendo"
+        ],
+        "answer": "A",
+        "hint": "Separa la propiedad física de la superficie y la sensación que sugiere el dibujo.",
+        "level": 1
+      },
+      {
+        "id": "p-textures:q1",
+        "question": "Para explorar con las manos elegimos…",
+        "options": [
+          "Cualquier material desconocido",
+          "Materiales seguros y adecuados",
+          "Objetos cortantes"
+        ],
+        "answer": "B",
+        "hint": "Separa la propiedad física de la superficie y la sensación que sugiere el dibujo.",
+        "level": 2
+      },
+      {
+        "id": "p-textures:q2",
+        "question": "Textura táctil y textura visual…",
+        "options": [
+          "Son siempre idénticas",
+          "No pueden relacionarse",
+          "Se relacionan, pero pueden diferir"
+        ],
+        "answer": "C",
+        "hint": "Separa la propiedad física de la superficie y la sensación que sugiere el dibujo.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-composition",
+    "stage": "primaria",
+    "subject": "Educación Artística",
+    "title": "Composición visual",
+    "grade_min": 4,
+    "grade_max": 6,
+    "school_years": [
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Composición visual",
+      "composicion visual",
+      "composicion artistica"
+    ],
+    "explanation": "Componer una imagen es organizar sus elementos y sus relaciones. Tamaño, posición, contraste y espacio vacío pueden dirigir la atención. No existe una única composición correcta: elegimos según qué queremos comunicar y justificamos las decisiones.",
+    "simpler": "Decide qué quieres que se vea primero y organiza lo demás para ayudar a entenderlo.",
+    "example": "En un cartel de una biblioteca puedes destacar el título y dejar espacio alrededor. Si todo tiene el mismo tamaño y compite por atención, puede ser más difícil distinguir la idea principal.",
+    "why": "Las relaciones visuales crean jerarquías; su valor depende de la finalidad, no de una regla estética universal.",
+    "misconception": "Más elementos no hacen necesariamente más clara una imagen.",
+    "hints": [
+      "Pregunta qué se percibe primero y si eso ayuda al mensaje.",
+      "Decide qué quieres que se vea primero y organiza lo demás para ayudar a entenderlo.",
+      "En un cartel de una biblioteca puedes destacar el título y dejar espacio alrededor. Si todo tiene el mismo tamaño y compite por atención, puede ser más difícil distinguir la idea principal."
+    ],
+    "quiz": [
+      {
+        "id": "p-composition:q0",
+        "question": "Componer implica…",
+        "options": [
+          "Copiar siempre un modelo",
+          "Organizar elementos y relaciones",
+          "Usar todos los colores"
+        ],
+        "answer": "B",
+        "hint": "Pregunta qué se percibe primero y si eso ayuda al mensaje.",
+        "level": 1
+      },
+      {
+        "id": "p-composition:q1",
+        "question": "El espacio vacío puede…",
+        "options": [
+          "Ayudar a destacar un elemento",
+          "Ser siempre un error",
+          "Impedir cualquier lectura"
+        ],
+        "answer": "A",
+        "hint": "Pregunta qué se percibe primero y si eso ayuda al mensaje.",
+        "level": 2
+      },
+      {
+        "id": "p-composition:q2",
+        "question": "Para valorar una composición conviene…",
+        "options": [
+          "Contar solo los colores",
+          "Aplicar un único gusto a todos",
+          "Relacionarla con su intención y contexto"
+        ],
+        "answer": "C",
+        "hint": "Pregunta qué se percibe primero y si eso ayuda al mensaje.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-child-rights",
+    "stage": "primaria",
+    "subject": "Educación en Valores Cívicos y Éticos",
+    "title": "Derechos de la infancia",
+    "grade_min": 5,
+    "grade_max": 6,
+    "school_years": [
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Derechos de la infancia",
+      "derechos de la infancia",
+      "derechos de los ninos"
+    ],
+    "explanation": "Los niños y las niñas tienen derechos, como recibir educación, estar protegidos frente a la violencia y ser escuchados en asuntos que les afectan según su edad y madurez. No hay que ganarse esos derechos mediante notas o obediencia. Las personas adultas tienen responsabilidades de protección.",
+    "simpler": "Tus derechos no desaparecen por equivocarte o por necesitar ayuda. Un adulto de confianza debe ayudarte a estar seguro.",
+    "example": "Si un niño tiene dificultades para aprender, necesita apoyo, no perder su derecho a la educación. Escuchar su opinión no significa pedirle que resuelva solo todos los problemas.",
+    "why": "La protección y la participación permiten atender necesidades y dignidad sin trasladar responsabilidades adultas al menor.",
+    "misconception": "Los derechos no son recompensas condicionadas al rendimiento escolar.",
+    "hints": [
+      "Distingue un derecho básico de un premio que alguien entrega por una conducta.",
+      "Tus derechos no desaparecen por equivocarte o por necesitar ayuda. Un adulto de confianza debe ayudarte a estar seguro.",
+      "Si un niño tiene dificultades para aprender, necesita apoyo, no perder su derecho a la educación. Escuchar su opinión no significa pedirle que resuelva solo todos los problemas."
+    ],
+    "quiz": [
+      {
+        "id": "p-child-rights:q0",
+        "question": "¿Los derechos dependen de sacar buenas notas?",
+        "options": [
+          "No",
+          "Sí",
+          "Solo a partir de cierta nota"
+        ],
+        "answer": "A",
+        "hint": "Distingue un derecho básico de un premio que alguien entrega por una conducta.",
+        "level": 1
+      },
+      {
+        "id": "p-child-rights:q1",
+        "question": "Ser escuchado significa…",
+        "options": [
+          "Decidir todo sin ayuda",
+          "Que se tenga en cuenta tu opinión de forma adecuada",
+          "No necesitar adultos"
+        ],
+        "answer": "B",
+        "hint": "Distingue un derecho básico de un premio que alguien entrega por una conducta.",
+        "level": 2
+      },
+      {
+        "id": "p-child-rights:q2",
+        "question": "Ante una situación de violencia, un niño merece…",
+        "options": [
+          "Guardar silencio siempre",
+          "Resolverlo solo",
+          "Protección y ayuda"
+        ],
+        "answer": "C",
+        "hint": "Distingue un derecho básico de un premio que alguien entrega por una conducta.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-equality",
+    "stage": "primaria",
+    "subject": "Educación en Valores Cívicos y Éticos",
+    "title": "Igualdad y equidad",
+    "grade_min": 5,
+    "grade_max": 6,
+    "school_years": [
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Igualdad y equidad",
+      "igualdad y equidad",
+      "equidad"
+    ],
+    "explanation": "La igualdad de dignidad y derechos no significa que todas las personas necesiten exactamente el mismo apoyo. La equidad busca responder a necesidades y barreras para que la participación sea justa. Debemos escuchar a las personas afectadas, no suponer qué necesitan.",
+    "simpler": "Tratar con justicia puede requerir ayudas diferentes, sin valorar a unas personas más que a otras.",
+    "example": "En una actividad, alguien puede usar un texto ampliado y otra persona una explicación oral. Son maneras distintas de acceder a la misma oportunidad de aprender.",
+    "why": "Una regla idéntica puede producir barreras distintas; adaptar el acceso permite mantener una finalidad común.",
+    "misconception": "Igualdad de derechos no exige ignorar las diferencias de necesidades.",
+    "hints": [
+      "Piensa en la oportunidad de participar, no solo en repartir objetos idénticos.",
+      "Tratar con justicia puede requerir ayudas diferentes, sin valorar a unas personas más que a otras.",
+      "En una actividad, alguien puede usar un texto ampliado y otra persona una explicación oral. Son maneras distintas de acceder a la misma oportunidad de aprender."
+    ],
+    "quiz": [
+      {
+        "id": "p-equality:q0",
+        "question": "Dar apoyos diferentes puede…",
+        "options": [
+          "Ser siempre injusto",
+          "Facilitar una participación justa",
+          "Eliminar todos los derechos"
+        ],
+        "answer": "B",
+        "hint": "Piensa en la oportunidad de participar, no solo en repartir objetos idénticos.",
+        "level": 1
+      },
+      {
+        "id": "p-equality:q1",
+        "question": "Para saber qué apoyo ayuda debemos…",
+        "options": [
+          "Escuchar y valorar las barreras",
+          "Decidir por el aspecto de alguien",
+          "Comparar quién vale más"
+        ],
+        "answer": "A",
+        "hint": "Piensa en la oportunidad de participar, no solo en repartir objetos idénticos.",
+        "level": 2
+      },
+      {
+        "id": "p-equality:q2",
+        "question": "La igualdad de dignidad implica…",
+        "options": [
+          "Que todos sean idénticos",
+          "Que nadie pueda pedir apoyo",
+          "Que todas las personas merecen respeto"
+        ],
+        "answer": "C",
+        "hint": "Piensa en la oportunidad de participar, no solo en repartir objetos idénticos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-comparatives",
+    "stage": "primaria",
+    "subject": "Lengua Extranjera: Inglés",
+    "title": "Comparativos en inglés",
+    "grade_min": 5,
+    "grade_max": 6,
+    "school_years": [
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Comparativos en inglés",
+      "comparativos en ingles",
+      "comparatives"
+    ],
+    "explanation": "Para comparar cualidades en inglés usamos estructuras como taller than o more interesting than. Muchos adjetivos cortos forman el comparativo con -er y otros usan more; existen irregulares, como good y better. Son patrones generales con excepciones.",
+    "simpler": "Compara dos cosas e identifica el adjetivo. No combines more con una forma que ya lleva -er en estas construcciones básicas.",
+    "example": "Ana is taller than Luis compara su altura. This book is more interesting than that one compara el interés. Good cambia a better, no a gooder.",
+    "why": "Las estructuras comparativas expresan una relación entre referentes; la forma elegida depende del adjetivo y del uso.",
+    "misconception": "No todos los comparativos se forman añadiendo -er.",
+    "hints": [
+      "Identifica qué cualidad comparas y comprueba si su forma es regular o irregular.",
+      "Compara dos cosas e identifica el adjetivo. No combines more con una forma que ya lleva -er en estas construcciones básicas.",
+      "Ana is taller than Luis compara su altura. This book is more interesting than that one compara el interés. Good cambia a better, no a gooder."
+    ],
+    "quiz": [
+      {
+        "id": "p-comparatives:q0",
+        "question": "¿Qué expresión es correcta en el patrón básico?",
+        "options": [
+          "More taller than",
+          "Tallest than",
+          "Taller than"
+        ],
+        "answer": "C",
+        "hint": "Identifica qué cualidad comparas y comprueba si su forma es regular o irregular.",
+        "level": 1
+      },
+      {
+        "id": "p-comparatives:q1",
+        "question": "El comparativo de good es…",
+        "options": [
+          "Better",
+          "Gooder",
+          "More good siempre"
+        ],
+        "answer": "A",
+        "hint": "Identifica qué cualidad comparas y comprueba si su forma es regular o irregular.",
+        "level": 2
+      },
+      {
+        "id": "p-comparatives:q2",
+        "question": "More interesting than sirve para…",
+        "options": [
+          "Indicar una hora",
+          "Comparar interés",
+          "Expresar una cantidad exacta de páginas"
+        ],
+        "answer": "B",
+        "hint": "Identifica qué cualidad comparas y comprueba si su forma es regular o irregular.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-must",
+    "stage": "primaria",
+    "subject": "Lengua Extranjera: Inglés",
+    "title": "Must y must not",
+    "grade_min": 5,
+    "grade_max": 6,
+    "school_years": [
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Must y must not",
+      "must",
+      "must not",
+      "must y mustnt"
+    ],
+    "explanation": "Must puede expresar una obligación fuerte. Must not o mustn't expresa prohibición, no ausencia de obligación. Se construye con la forma base del verbo, sin to. Para indicar que algo no es necesario se puede usar don't have to en contextos adecuados.",
+    "simpler": "You mustn't enter significa que no debes entrar. You don't have to enter significa que no tienes obligación de entrar.",
+    "example": "En una norma escolar, You must listen pide escuchar; You mustn't run here prohíbe correr en ese lugar. Estas frases se interpretan según el contexto.",
+    "why": "Comprender la fuerza de una norma requiere interpretar tanto el modal como la negación, no traducir palabras aisladas.",
+    "misconception": "Mustn't y don't have to no significan lo mismo.",
+    "hints": [
+      "Distingue algo prohibido de algo que puedes elegir no hacer.",
+      "You mustn't enter significa que no debes entrar. You don't have to enter significa que no tienes obligación de entrar.",
+      "En una norma escolar, You must listen pide escuchar; You mustn't run here prohíbe correr en ese lugar. Estas frases se interpretan según el contexto."
+    ],
+    "quiz": [
+      {
+        "id": "p-must:q0",
+        "question": "Mustn't expresa normalmente…",
+        "options": [
+          "Prohibición",
+          "Ausencia de obligación",
+          "Una acción pasada"
+        ],
+        "answer": "A",
+        "hint": "Distingue algo prohibido de algo que puedes elegir no hacer.",
+        "level": 1
+      },
+      {
+        "id": "p-must:q1",
+        "question": "¿Qué frase está bien formada?",
+        "options": [
+          "You must to listen",
+          "You must listen",
+          "You must listening"
+        ],
+        "answer": "B",
+        "hint": "Distingue algo prohibido de algo que puedes elegir no hacer.",
+        "level": 2
+      },
+      {
+        "id": "p-must:q2",
+        "question": "You don't have to come significa…",
+        "options": [
+          "Tienes prohibido venir",
+          "Debes venir sin falta",
+          "No tienes obligación de venir"
+        ],
+        "answer": "C",
+        "hint": "Distingue algo prohibido de algo que puedes elegir no hacer.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-endurance",
+    "stage": "eso",
+    "subject": "Educación Física",
+    "title": "La resistencia física",
+    "grade_min": 1,
+    "grade_max": 4,
+    "school_years": [
+      "1º de ESO",
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "La resistencia física",
+      "resistencia fisica",
+      "resistencia en educacion fisica"
+    ],
+    "explanation": "La resistencia física permite sostener un esfuerzo y afrontar la fatiga en una actividad. Depende de la tarea y de las características de cada persona. En la escuela se trabaja de forma progresiva, adaptada y supervisada, sin usar el rendimiento para valorar la dignidad de nadie.",
+    "simpler": "No se trata de aguantar dolor ni de competir por quién soporta más. La actividad debe ajustarse a la persona.",
+    "example": "Dos alumnos pueden necesitar ritmos o adaptaciones distintos para participar en la misma tarea. Si aparece dolor, mareo o malestar, se detiene la actividad y se avisa al docente.",
+    "why": "El aprendizaje motor requiere ajustar las condiciones y observar la respuesta individual, no imponer un único rendimiento.",
+    "misconception": "El dolor no es una prueba de que el aprendizaje o la actividad estén funcionando bien.",
+    "hints": [
+      "Distingue una capacidad física de la obligación de alcanzar un resultado idéntico.",
+      "No se trata de aguantar dolor ni de competir por quién soporta más. La actividad debe ajustarse a la persona.",
+      "Dos alumnos pueden necesitar ritmos o adaptaciones distintos para participar en la misma tarea. Si aparece dolor, mareo o malestar, se detiene la actividad y se avisa al docente."
+    ],
+    "quiz": [
+      {
+        "id": "e-endurance:q0",
+        "question": "La resistencia se relaciona con…",
+        "options": [
+          "Sostener un esfuerzo en una actividad",
+          "Medir el valor de una persona",
+          "Ignorar la fatiga siempre"
+        ],
+        "answer": "A",
+        "hint": "Distingue una capacidad física de la obligación de alcanzar un resultado idéntico.",
+        "level": 1
+      },
+      {
+        "id": "e-endurance:q1",
+        "question": "Las tareas escolares deben…",
+        "options": [
+          "Ser máximas para todos",
+          "Adaptarse y progresar con supervisión",
+          "Realizarse aunque duelan"
+        ],
+        "answer": "B",
+        "hint": "Distingue una capacidad física de la obligación de alcanzar un resultado idéntico.",
+        "level": 2
+      },
+      {
+        "id": "e-endurance:q2",
+        "question": "Ante dolor o mareo corresponde…",
+        "options": [
+          "Ocultarlo",
+          "Aumentar la intensidad",
+          "Parar y avisar al docente"
+        ],
+        "answer": "C",
+        "hint": "Distingue una capacidad física de la obligación de alcanzar un resultado idéntico.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-coordination",
+    "stage": "eso",
+    "subject": "Educación Física",
+    "title": "Coordinación motriz",
+    "grade_min": 1,
+    "grade_max": 4,
+    "school_years": [
+      "1º de ESO",
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Coordinación motriz",
+      "coordinacion motriz",
+      "coordinacion de movimientos"
+    ],
+    "explanation": "La coordinación motriz organiza movimientos en relación con una tarea, el espacio y el tiempo. Incluye ajustar distintas partes del cuerpo y la información percibida. Puede practicarse con adaptaciones; coordinación no equivale simplemente a moverse más rápido.",
+    "simpler": "Piensa cómo encajan tus movimientos con el objeto, el espacio y las otras personas.",
+    "example": "En un pase con pelota blanda, la persona ajusta orientación, fuerza y momento. La distancia y el material pueden adaptarse con el docente para permitir participación segura.",
+    "why": "Modificar distancia, ritmo o material cambia las demandas de la tarea y permite practicar una misma finalidad de maneras distintas.",
+    "misconception": "La coordinación no se mide únicamente por la rapidez.",
+    "hints": [
+      "Relaciona lo que percibes con el movimiento necesario, no solo con su velocidad.",
+      "Piensa cómo encajan tus movimientos con el objeto, el espacio y las otras personas.",
+      "En un pase con pelota blanda, la persona ajusta orientación, fuerza y momento. La distancia y el material pueden adaptarse con el docente para permitir participación segura."
+    ],
+    "quiz": [
+      {
+        "id": "e-coordination:q0",
+        "question": "Coordinar significa principalmente…",
+        "options": [
+          "Moverse siempre al máximo",
+          "Organizar movimientos para una tarea",
+          "Hacer todos el mismo gesto sin adaptación"
+        ],
+        "answer": "B",
+        "hint": "Relaciona lo que percibes con el movimiento necesario, no solo con su velocidad.",
+        "level": 1
+      },
+      {
+        "id": "e-coordination:q1",
+        "question": "En un pase importa ajustar…",
+        "options": [
+          "Dirección, fuerza y momento",
+          "Solo el color de la pelota",
+          "Solo quién gana"
+        ],
+        "answer": "A",
+        "hint": "Relaciona lo que percibes con el movimiento necesario, no solo con su velocidad.",
+        "level": 2
+      },
+      {
+        "id": "e-coordination:q2",
+        "question": "Una adaptación de la actividad puede…",
+        "options": [
+          "Impedir aprender por definición",
+          "Eliminar toda coordinación",
+          "Facilitar una participación segura"
+        ],
+        "answer": "C",
+        "hint": "Relaciona lo que percibes con el movimiento necesario, no solo con su velocidad.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-fair-play",
+    "stage": "eso",
+    "subject": "Educación Física",
+    "title": "Juego limpio",
+    "grade_min": 1,
+    "grade_max": 4,
+    "school_years": [
+      "1º de ESO",
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Juego limpio",
+      "juego limpio",
+      "fair play"
+    ],
+    "explanation": "El juego limpio incluye respetar reglas acordadas, cuidar a otras personas y actuar con honestidad. No se reduce a evitar sanciones ni a aceptar cualquier regla sin reflexión. Un desacuerdo puede plantearse por los procedimientos adecuados, sin violencia ni humillación.",
+    "simpler": "Competir no justifica engañar o dañar. Puedes defender una opinión con respeto.",
+    "example": "Si un punto se ha contado mal, se explica lo observado y se sigue el procedimiento acordado para revisarlo. Si alguien se lesiona, su atención tiene prioridad sobre continuar la jugada.",
+    "why": "La práctica deportiva es una actividad social; su calidad incluye cómo se trata a las personas, no solo el resultado.",
+    "misconception": "Que algo no reciba sanción no lo convierte automáticamente en una conducta justa.",
+    "hints": [
+      "Considera tanto las reglas como el cuidado de quienes participan.",
+      "Competir no justifica engañar o dañar. Puedes defender una opinión con respeto.",
+      "Si un punto se ha contado mal, se explica lo observado y se sigue el procedimiento acordado para revisarlo. Si alguien se lesiona, su atención tiene prioridad sobre continuar la jugada."
+    ],
+    "quiz": [
+      {
+        "id": "e-fair-play:q0",
+        "question": "El juego limpio implica…",
+        "options": [
+          "Respeto y honestidad",
+          "Ganar a cualquier precio",
+          "Ocultar todas las infracciones"
+        ],
+        "answer": "A",
+        "hint": "Considera tanto las reglas como el cuidado de quienes participan.",
+        "level": 1
+      },
+      {
+        "id": "e-fair-play:q1",
+        "question": "Ante un desacuerdo conviene…",
+        "options": [
+          "Humillar al contrario",
+          "Usar diálogo y procedimientos acordados",
+          "Responder con violencia"
+        ],
+        "answer": "B",
+        "hint": "Considera tanto las reglas como el cuidado de quienes participan.",
+        "level": 2
+      },
+      {
+        "id": "e-fair-play:q2",
+        "question": "La atención a una persona lesionada debe…",
+        "options": [
+          "Depender del marcador",
+          "Esperar siempre al final",
+          "Tener prioridad sobre la jugada"
+        ],
+        "answer": "C",
+        "hint": "Considera tanto las reglas como el cuidado de quienes participan.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-latin-cases",
+    "stage": "eso",
+    "subject": "Latín",
+    "title": "Nominativo y acusativo en latín",
+    "grade_min": 4,
+    "grade_max": 4,
+    "school_years": [
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Nominativo y acusativo en latín",
+      "nominativo y acusativo",
+      "nominativo y acusativo en latin"
+    ],
+    "explanation": "En latín, los casos ayudan a indicar la función de un nombre en la oración. En construcciones básicas, el nominativo suele expresar el sujeto y el acusativo el complemento directo. No son sus únicos usos. Para analizar, combinamos terminación, concordancia y contexto.",
+    "simpler": "No traduzcas solo por el orden: observa la forma de cada palabra y su relación con el verbo.",
+    "example": "En Puella rosam portat, puella está en nominativo singular y rosam en acusativo singular: la niña lleva una rosa. La terminación -am de rosam corresponde a esa forma de la primera declinación.",
+    "why": "Las flexiones aportan información gramatical que permite un orden de palabras más variable que en una traducción literal española.",
+    "misconception": "Un caso latino puede tener más de un uso; no basta memorizar una equivalencia sin contexto.",
+    "hints": [
+      "Localiza el verbo y relaciona los casos con las funciones de esta construcción concreta.",
+      "No traduzcas solo por el orden: observa la forma de cada palabra y su relación con el verbo.",
+      "En Puella rosam portat, puella está en nominativo singular y rosam en acusativo singular: la niña lleva una rosa. La terminación -am de rosam corresponde a esa forma de la primera declinación."
+    ],
+    "quiz": [
+      {
+        "id": "e-latin-cases:q0",
+        "question": "En Puella rosam portat, rosam funciona como…",
+        "options": [
+          "Sujeto",
+          "Verbo",
+          "Complemento directo"
+        ],
+        "answer": "C",
+        "hint": "Localiza el verbo y relaciona los casos con las funciones de esta construcción concreta.",
+        "level": 1
+      },
+      {
+        "id": "e-latin-cases:q1",
+        "question": "En la construcción básica, el sujeto suele aparecer en…",
+        "options": [
+          "Nominativo",
+          "Acusativo obligatorio",
+          "Cualquier caso sin relación con la frase"
+        ],
+        "answer": "A",
+        "hint": "Localiza el verbo y relaciona los casos con las funciones de esta construcción concreta.",
+        "level": 2
+      },
+      {
+        "id": "e-latin-cases:q2",
+        "question": "Para identificar una función debemos usar…",
+        "options": [
+          "Solo el orden de palabras",
+          "Formas y contexto sintáctico",
+          "Solo la longitud de la palabra"
+        ],
+        "answer": "B",
+        "hint": "Localiza el verbo y relaciona los casos con las funciones de esta construcción concreta.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-romance",
+    "stage": "eso",
+    "subject": "Latín",
+    "title": "Las lenguas romances",
+    "grade_min": 4,
+    "grade_max": 4,
+    "school_years": [
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Las lenguas romances",
+      "lenguas romances",
+      "lenguas romanicas"
+    ],
+    "explanation": "Las lenguas romances se desarrollaron a partir de variedades habladas del latín mediante procesos históricos diferentes. Español, catalán, gallego, portugués, francés, italiano y rumano son ejemplos. No todas las lenguas de Europa ni todas las habladas en España son romances.",
+    "simpler": "Comparten un origen histórico latino, pero cada lengua tiene su propia evolución y diversidad.",
+    "example": "Español e italiano presentan correspondencias de vocabulario por su historia común. El euskera no es una lengua romance; compartir un territorio no implica compartir el mismo origen lingüístico.",
+    "why": "La comparación de cambios sistemáticos y documentación permite investigar el parentesco, no solo el parecido de una palabra aislada.",
+    "misconception": "Romance es una clasificación histórica, no una valoración de superioridad entre lenguas.",
+    "hints": [
+      "Distingue parentesco lingüístico y localización geográfica.",
+      "Comparten un origen histórico latino, pero cada lengua tiene su propia evolución y diversidad.",
+      "Español e italiano presentan correspondencias de vocabulario por su historia común. El euskera no es una lengua romance; compartir un territorio no implica compartir el mismo origen lingüístico."
+    ],
+    "quiz": [
+      {
+        "id": "e-romance:q0",
+        "question": "¿Cuál es una lengua romance?",
+        "options": [
+          "Italiano",
+          "Euskera",
+          "Alemán"
+        ],
+        "answer": "A",
+        "hint": "Distingue parentesco lingüístico y localización geográfica.",
+        "level": 1
+      },
+      {
+        "id": "e-romance:q1",
+        "question": "Las lenguas romances proceden de…",
+        "options": [
+          "Un único idioma actual sin cambios",
+          "Variedades históricas del latín",
+          "La escritura informática"
+        ],
+        "answer": "B",
+        "hint": "Distingue parentesco lingüístico y localización geográfica.",
+        "level": 2
+      },
+      {
+        "id": "e-romance:q2",
+        "question": "Que dos lenguas se hablen en el mismo país…",
+        "options": [
+          "Demuestra que son la misma",
+          "Demuestra un origen idéntico",
+          "No demuestra que tengan el mismo origen"
+        ],
+        "answer": "C",
+        "hint": "Distingue parentesco lingüístico y localización geográfica.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-interests",
+    "stage": "eso",
+    "subject": "Formación y Orientación Personal y Profesional",
+    "title": "Intereses y orientación formativa",
+    "grade_min": 4,
+    "grade_max": 4,
+    "school_years": [
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Intereses y orientación formativa",
+      "intereses profesionales",
+      "orientacion formativa",
+      "orientacion vocacional"
+    ],
+    "explanation": "Explorar opciones formativas implica relacionar intereses, habilidades en desarrollo, valores y circunstancias con información contrastada sobre itinerarios. Una decisión no debe basarse solo en estereotipos o en una nota aislada. Los intereses pueden cambiar y conviene pedir orientación.",
+    "simpler": "Haz preguntas sobre lo que te interesa y lo que exige cada opción, sin tratar una primera elección como un destino fijo.",
+    "example": "Una alumna interesada en tecnología puede comparar actividades reales, requisitos de acceso y distintas vías formativas con su orientador. No debe descartarlas por estereotipos de género.",
+    "why": "La orientación es un proceso de exploración y revisión apoyado en evidencia y acompañamiento, no una etiqueta definitiva.",
+    "misconception": "Una dificultad actual no determina para siempre la capacidad de aprender en un ámbito.",
+    "hints": [
+      "Separa lo que sabes de ti, lo que sabes de la opción y lo que todavía necesitas averiguar.",
+      "Haz preguntas sobre lo que te interesa y lo que exige cada opción, sin tratar una primera elección como un destino fijo.",
+      "Una alumna interesada en tecnología puede comparar actividades reales, requisitos de acceso y distintas vías formativas con su orientador. No debe descartarlas por estereotipos de género."
+    ],
+    "quiz": [
+      {
+        "id": "e-interests:q0",
+        "question": "Una buena decisión formativa combina…",
+        "options": [
+          "Solo una nota",
+          "Autoconocimiento e información contrastada",
+          "Solo lo que hace un amigo"
+        ],
+        "answer": "B",
+        "hint": "Separa lo que sabes de ti, lo que sabes de la opción y lo que todavía necesitas averiguar.",
+        "level": 1
+      },
+      {
+        "id": "e-interests:q1",
+        "question": "¿Los intereses pueden cambiar?",
+        "options": [
+          "Sí",
+          "No",
+          "Solo antes de aprender a leer"
+        ],
+        "answer": "A",
+        "hint": "Separa lo que sabes de ti, lo que sabes de la opción y lo que todavía necesitas averiguar.",
+        "level": 2
+      },
+      {
+        "id": "e-interests:q2",
+        "question": "Para aclarar itinerarios conviene…",
+        "options": [
+          "Usar rumores sin fecha",
+          "Elegir por estereotipos",
+          "Consultar fuentes oficiales y orientación educativa"
+        ],
+        "answer": "C",
+        "hint": "Separa lo que sabes de ti, lo que sabes de la opción y lo que todavía necesitas averiguar.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-budget",
+    "stage": "eso",
+    "subject": "Economía y Emprendimiento",
+    "title": "Presupuesto personal",
+    "grade_min": 4,
+    "grade_max": 4,
+    "school_years": [
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Presupuesto personal",
+      "presupuesto personal",
+      "hacer un presupuesto"
+    ],
+    "explanation": "Un presupuesto estima ingresos y gastos de un periodo para planificar el uso de recursos. Distingue cantidades previstas de reales y considera gastos necesarios, variables e imprevistos. Es una herramienta de organización, no una recomendación de inversión ni una garantía de resultados.",
+    "simpler": "Compara lo que esperas recibir con lo que planeas gastar en el mismo periodo.",
+    "example": "En un ejemplo ficticio, 40 € de ingresos previstos y 28 € de gastos dejan 12 € sin asignar. Después conviene contrastar la previsión con lo que ocurrió realmente.",
+    "why": "Planificar permite anticipar restricciones; registrar los resultados reales ayuda a corregir supuestos y decisiones.",
+    "misconception": "Un saldo previsto no garantiza que el dinero esté disponible al final.",
+    "hints": [
+      "Resta gastos a ingresos y comprueba que corresponden al mismo periodo.",
+      "Compara lo que esperas recibir con lo que planeas gastar en el mismo periodo.",
+      "En un ejemplo ficticio, 40 € de ingresos previstos y 28 € de gastos dejan 12 € sin asignar. Después conviene contrastar la previsión con lo que ocurrió realmente."
+    ],
+    "quiz": [
+      {
+        "id": "e-budget:q0",
+        "question": "Con 40 € de ingresos y 28 € de gastos, el saldo previsto es…",
+        "options": [
+          "12 €",
+          "68 €",
+          "−12 €"
+        ],
+        "answer": "A",
+        "hint": "Resta gastos a ingresos y comprueba que corresponden al mismo periodo.",
+        "level": 1
+      },
+      {
+        "id": "e-budget:q1",
+        "question": "Un presupuesto trabaja con…",
+        "options": [
+          "Solo deseos sin cantidades",
+          "Un periodo y estimaciones contrastables",
+          "Resultados garantizados"
+        ],
+        "answer": "B",
+        "hint": "Resta gastos a ingresos y comprueba que corresponden al mismo periodo.",
+        "level": 2
+      },
+      {
+        "id": "e-budget:q2",
+        "question": "Un gasto imprevisto…",
+        "options": [
+          "No puede ocurrir",
+          "No necesita registrarse",
+          "Puede exigir revisar la planificación"
+        ],
+        "answer": "C",
+        "hint": "Resta gastos a ingresos y comprueba que corresponden al mismo periodo.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-scatter",
+    "stage": "eso",
+    "subject": "Matemáticas",
+    "title": "Diagramas de dispersión",
+    "grade_min": 3,
+    "grade_max": 4,
+    "school_years": [
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Diagramas de dispersión",
+      "diagrama de dispersion",
+      "diagramas de dispersion"
+    ],
+    "explanation": "Un diagrama de dispersión representa pares de valores de dos variables mediante puntos. Permite observar tendencias, dispersión y valores atípicos. Una asociación visual no demuestra por sí sola causalidad y no debe extrapolarse sin justificar fuera del rango observado.",
+    "simpler": "Cada punto reúne dos medidas del mismo caso. Mira el patrón del conjunto, no solo un punto.",
+    "example": "Un gráfico relaciona horas de luz y temperatura de varios días. Aunque ambas cambien juntas, el dibujo no prueba por sí solo una explicación causal completa.",
+    "why": "Varias causas, sesgos de selección o una tercera variable pueden producir asociaciones semejantes en un gráfico.",
+    "misconception": "Correlación y causalidad no son equivalentes.",
+    "hints": [
+      "Comprueba qué mide cada eje y qué caso corresponde a cada par.",
+      "Cada punto reúne dos medidas del mismo caso. Mira el patrón del conjunto, no solo un punto.",
+      "Un gráfico relaciona horas de luz y temperatura de varios días. Aunque ambas cambien juntas, el dibujo no prueba por sí solo una explicación causal completa."
+    ],
+    "quiz": [
+      {
+        "id": "e-scatter:q0",
+        "question": "Cada punto representa…",
+        "options": [
+          "Un único color",
+          "Dos variables sin relación con ningún caso",
+          "Un par de valores del mismo caso"
+        ],
+        "answer": "C",
+        "hint": "Comprueba qué mide cada eje y qué caso corresponde a cada par.",
+        "level": 1
+      },
+      {
+        "id": "e-scatter:q1",
+        "question": "Una tendencia ascendente puede indicar…",
+        "options": [
+          "Asociación positiva",
+          "Causalidad demostrada siempre",
+          "Ausencia de variación"
+        ],
+        "answer": "A",
+        "hint": "Comprueba qué mide cada eje y qué caso corresponde a cada par.",
+        "level": 2
+      },
+      {
+        "id": "e-scatter:q2",
+        "question": "Para afirmar causalidad se necesita…",
+        "options": [
+          "Solo unir dos puntos",
+          "Más evidencia y un análisis adecuado",
+          "Solo que el gráfico sea grande"
+        ],
+        "answer": "B",
+        "hint": "Comprueba qué mide cada eje y qué caso corresponde a cada par.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-reflection",
+    "stage": "eso",
+    "subject": "Física y Química",
+    "title": "Reflexión de la luz",
+    "grade_min": 3,
+    "grade_max": 4,
+    "school_years": [
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Reflexión de la luz",
+      "reflexion de la luz",
+      "ley de la reflexion"
+    ],
+    "explanation": "En el modelo de reflexión especular, el ángulo de incidencia es igual al de reflexión, ambos medidos respecto a la normal a la superficie. La normal es perpendicular a ella. El rayo incidente, el reflejado y la normal se sitúan en el mismo plano.",
+    "simpler": "Dibuja primero una perpendicular al espejo en el punto donde llega el rayo. Mide desde esa línea, no desde la superficie.",
+    "example": "Si un rayo llega a un espejo con 30° respecto a la normal, sale con 30° respecto a ella. Ese rayo forma 60° con la superficie del espejo.",
+    "why": "La ley relaciona direcciones respecto a una referencia geométrica concreta; cambiarla sin convertir altera la interpretación.",
+    "misconception": "Medir desde la superficie y medir desde la normal no da el mismo ángulo.",
+    "hints": [
+      "Identifica la línea de referencia antes de comparar ángulos.",
+      "Dibuja primero una perpendicular al espejo en el punto donde llega el rayo. Mide desde esa línea, no desde la superficie.",
+      "Si un rayo llega a un espejo con 30° respecto a la normal, sale con 30° respecto a ella. Ese rayo forma 60° con la superficie del espejo."
+    ],
+    "quiz": [
+      {
+        "id": "e-reflection:q0",
+        "question": "Si la incidencia respecto a la normal es 25°, la reflexión es…",
+        "options": [
+          "25°",
+          "65°",
+          "50°"
+        ],
+        "answer": "A",
+        "hint": "Identifica la línea de referencia antes de comparar ángulos.",
+        "level": 1
+      },
+      {
+        "id": "e-reflection:q1",
+        "question": "La normal es…",
+        "options": [
+          "Paralela al espejo",
+          "Perpendicular a la superficie",
+          "El borde más largo del papel"
+        ],
+        "answer": "B",
+        "hint": "Identifica la línea de referencia antes de comparar ángulos.",
+        "level": 2
+      },
+      {
+        "id": "e-reflection:q2",
+        "question": "Un ángulo de 30° con la normal equivale a…",
+        "options": [
+          "30° con la superficie",
+          "90° con la superficie",
+          "60° con la superficie"
+        ],
+        "answer": "C",
+        "hint": "Identifica la línea de referencia antes de comparar ángulos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-sound",
+    "stage": "eso",
+    "subject": "Física y Química",
+    "title": "Frecuencia y altura del sonido",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Frecuencia y altura del sonido",
+      "frecuencia del sonido",
+      "altura del sonido"
+    ],
+    "explanation": "El sonido es una onda mecánica y necesita un medio material. Su frecuencia se relaciona con la altura percibida: frecuencias mayores suelen percibirse más agudas. La intensidad es otra propiedad. Una frecuencia en hercios cuenta ciclos por segundo.",
+    "simpler": "Agudo y fuerte no son lo mismo. Cambiar frecuencia no equivale simplemente a subir el volumen.",
+    "example": "Una señal de 440 Hz realiza 440 ciclos por segundo. Otra de 880 Hz tiene el doble de frecuencia; no podemos deducir solo por eso que sea más intensa.",
+    "why": "Las características temporales de la vibración y la energía transportada describen aspectos distintos del sonido.",
+    "misconception": "Un sonido más agudo no es necesariamente más fuerte.",
+    "hints": [
+      "Separa frecuencia, intensidad y velocidad de propagación.",
+      "Agudo y fuerte no son lo mismo. Cambiar frecuencia no equivale simplemente a subir el volumen.",
+      "Una señal de 440 Hz realiza 440 ciclos por segundo. Otra de 880 Hz tiene el doble de frecuencia; no podemos deducir solo por eso que sea más intensa."
+    ],
+    "quiz": [
+      {
+        "id": "e-sound:q0",
+        "question": "Una frecuencia de 440 Hz indica…",
+        "options": [
+          "440 metros",
+          "440 ciclos por segundo",
+          "440 julios"
+        ],
+        "answer": "B",
+        "hint": "Separa frecuencia, intensidad y velocidad de propagación.",
+        "level": 1
+      },
+      {
+        "id": "e-sound:q1",
+        "question": "El sonido necesita…",
+        "options": [
+          "Un medio material",
+          "Solo vacío",
+          "Una pantalla encendida"
+        ],
+        "answer": "A",
+        "hint": "Separa frecuencia, intensidad y velocidad de propagación.",
+        "level": 2
+      },
+      {
+        "id": "e-sound:q2",
+        "question": "Duplicar la frecuencia…",
+        "options": [
+          "Duplica siempre la intensidad",
+          "Hace desaparecer el medio",
+          "No determina por sí solo la intensidad"
+        ],
+        "answer": "C",
+        "hint": "Separa frecuencia, intensidad y velocidad de propagación.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-french-etre",
+    "stage": "eso",
+    "subject": "Segunda Lengua Extranjera: Francés",
+    "title": "El verbo être en francés",
+    "grade_min": 1,
+    "grade_max": 4,
+    "school_years": [
+      "1º de ESO",
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "El verbo être en francés",
+      "verbo etre",
+      "etre en frances"
+    ],
+    "explanation": "Être significa ser o estar según el contexto. En presente sus formas son je suis, tu es, il o elle est, nous sommes, vous êtes e ils o elles sont. No se forma añadiendo una misma terminación a una base invariable.",
+    "simpler": "Relaciona cada sujeto con su forma verbal: je suis, nous sommes, ils sont.",
+    "example": "Je suis élève significa soy estudiante. Nous sommes ici significa estamos aquí. La traducción depende de lo que se expresa en la frase.",
+    "why": "Una forma verbal irregular se aprende en construcciones con sentido, relacionando sujeto, forma y uso.",
+    "misconception": "Être no se traduce siempre por una única palabra española.",
+    "hints": [
+      "Busca primero el sujeto y después su forma del verbo être.",
+      "Relaciona cada sujeto con su forma verbal: je suis, nous sommes, ils sont.",
+      "Je suis élève significa soy estudiante. Nous sommes ici significa estamos aquí. La traducción depende de lo que se expresa en la frase."
+    ],
+    "quiz": [
+      {
+        "id": "e-french-etre:q0",
+        "question": "Completa: Je ___ élève.",
+        "options": [
+          "Suis",
+          "Est",
+          "Sont"
+        ],
+        "answer": "A",
+        "hint": "Busca primero el sujeto y después su forma del verbo être.",
+        "level": 1
+      },
+      {
+        "id": "e-french-etre:q1",
+        "question": "Completa: Nous ___ ici.",
+        "options": [
+          "Sont",
+          "Sommes",
+          "Êtes"
+        ],
+        "answer": "B",
+        "hint": "Busca primero el sujeto y después su forma del verbo être.",
+        "level": 2
+      },
+      {
+        "id": "e-french-etre:q2",
+        "question": "Completa: Elles ___ prêtes.",
+        "options": [
+          "Est",
+          "Sommes",
+          "Sont"
+        ],
+        "answer": "C",
+        "hint": "Busca primero el sujeto y después su forma del verbo être.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-image-analysis",
+    "stage": "eso",
+    "subject": "Educación Plástica, Visual y Audiovisual",
+    "title": "Análisis de imágenes",
+    "grade_min": 1,
+    "grade_max": 4,
+    "school_years": [
+      "1º de ESO",
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Análisis de imágenes",
+      "analisis de imagenes",
+      "leer una imagen"
+    ],
+    "explanation": "Analizar una imagen implica describir elementos observables y justificar interpretaciones mediante composición, color, encuadre y contexto. Hay que distinguir lo que se ve de lo que suponemos. Una imagen puede seleccionar, omitir o manipular información.",
+    "simpler": "Primero describe, después interpreta y explica qué pistas apoyan tu lectura.",
+    "example": "Una fotografía muestra solo una parte de una manifestación. El encuadre no permite conocer automáticamente el total de asistentes ni las intenciones de todas las personas.",
+    "why": "Reconocer selección y perspectiva permite valorar límites de la evidencia visual sin negar su utilidad.",
+    "misconception": "Una fotografía no muestra por sí sola todo el contexto de un acontecimiento.",
+    "hints": [
+      "Indica qué observas y qué conclusión propones, sin confundir ambos pasos.",
+      "Primero describe, después interpreta y explica qué pistas apoyan tu lectura.",
+      "Una fotografía muestra solo una parte de una manifestación. El encuadre no permite conocer automáticamente el total de asistentes ni las intenciones de todas las personas."
+    ],
+    "quiz": [
+      {
+        "id": "e-image-analysis:q0",
+        "question": "Una interpretación debe apoyarse en…",
+        "options": [
+          "Solo gustos",
+          "Pistas visuales y contexto",
+          "Solo el tamaño del archivo"
+        ],
+        "answer": "B",
+        "hint": "Indica qué observas y qué conclusión propones, sin confundir ambos pasos.",
+        "level": 1
+      },
+      {
+        "id": "e-image-analysis:q1",
+        "question": "Un encuadre…",
+        "options": [
+          "Selecciona una parte de la escena",
+          "Muestra necesariamente todo",
+          "Garantiza neutralidad"
+        ],
+        "answer": "A",
+        "hint": "Indica qué observas y qué conclusión propones, sin confundir ambos pasos.",
+        "level": 2
+      },
+      {
+        "id": "e-image-analysis:q2",
+        "question": "Describir e interpretar…",
+        "options": [
+          "Son siempre idénticos",
+          "No pueden relacionarse",
+          "Son operaciones relacionadas pero distintas"
+        ],
+        "answer": "C",
+        "hint": "Indica qué observas y qué conclusión propones, sin confundir ambos pasos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-intervals",
+    "stage": "eso",
+    "subject": "Música",
+    "title": "Intervalos musicales",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Intervalos musicales",
+      "intervalos musicales",
+      "intervalo musical"
+    ],
+    "explanation": "Un intervalo expresa la distancia de altura entre dos notas. Para nombrar su número se cuentan inclusivamente los nombres de nota entre sus extremos. La cualidad del intervalo requiere considerar también tonos y semitonos; no basta el número de posiciones.",
+    "simpler": "Cuenta incluyendo las dos notas: do-re-mi son tres nombres, por eso de do a mi hay una tercera.",
+    "example": "De do a sol contamos do, re, mi, fa, sol: una quinta. Su cualidad concreta depende de las alteraciones y de la distancia en semitonos.",
+    "why": "La notación distingue una relación entre nombres y una distancia sonora concreta, que pueden variar de forma independiente.",
+    "misconception": "El número del intervalo no determina por sí solo su cualidad.",
+    "hints": [
+      "Cuenta los nombres de nota y después examina alteraciones y semitonos.",
+      "Cuenta incluyendo las dos notas: do-re-mi son tres nombres, por eso de do a mi hay una tercera.",
+      "De do a sol contamos do, re, mi, fa, sol: una quinta. Su cualidad concreta depende de las alteraciones y de la distancia en semitonos."
+    ],
+    "quiz": [
+      {
+        "id": "e-intervals:q0",
+        "question": "De do a mi, contando inclusivamente, hay una…",
+        "options": [
+          "Quinta",
+          "Segunda",
+          "Tercera"
+        ],
+        "answer": "C",
+        "hint": "Cuenta los nombres de nota y después examina alteraciones y semitonos.",
+        "level": 1
+      },
+      {
+        "id": "e-intervals:q1",
+        "question": "De do a sol hay una…",
+        "options": [
+          "Quinta",
+          "Cuarta",
+          "Sexta"
+        ],
+        "answer": "A",
+        "hint": "Cuenta los nombres de nota y después examina alteraciones y semitonos.",
+        "level": 2
+      },
+      {
+        "id": "e-intervals:q2",
+        "question": "Para determinar la cualidad de un intervalo debemos considerar…",
+        "options": [
+          "Solo la letra inicial",
+          "La distancia en tonos y semitonos",
+          "Solo el volumen"
+        ],
+        "answer": "B",
+        "hint": "Cuenta los nombres de nota y después examina alteraciones y semitonos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-circular",
+    "stage": "eso",
+    "subject": "Economía y Emprendimiento",
+    "title": "Economía circular",
+    "grade_min": 4,
+    "grade_max": 4,
+    "school_years": [
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Economía circular",
+      "economia circular",
+      "economia lineal y circular"
+    ],
+    "explanation": "La economía circular busca reducir el uso de recursos y los residuos mediante diseño, mantenimiento, reparación, reutilización y recuperación de materiales. Reciclar es una parte, no toda la estrategia. Hay límites físicos y efectos ambientales que deben evaluarse.",
+    "simpler": "Antes de desechar, piensa si se puede evitar el consumo, cuidar, reparar o reutilizar de forma segura.",
+    "example": "Un producto diseñado para cambiar una pieza averiada puede durar más que otro imposible de reparar. Eso no elimina la necesidad de valorar energía, materiales y condiciones de uso.",
+    "why": "Mantener el valor de productos y materiales puede reducir demandas nuevas, pero requiere condiciones técnicas y organizativas reales.",
+    "misconception": "Que un producto sea reciclable no significa que se recicle siempre ni sin coste ambiental.",
+    "hints": [
+      "Examina todo el recorrido del producto y no solo qué ocurre al desecharlo.",
+      "Antes de desechar, piensa si se puede evitar el consumo, cuidar, reparar o reutilizar de forma segura.",
+      "Un producto diseñado para cambiar una pieza averiada puede durar más que otro imposible de reparar. Eso no elimina la necesidad de valorar energía, materiales y condiciones de uso."
+    ],
+    "quiz": [
+      {
+        "id": "e-circular:q0",
+        "question": "Reciclar es…",
+        "options": [
+          "Una parte de la economía circular",
+          "Toda la economía circular",
+          "Una garantía de impacto cero"
+        ],
+        "answer": "A",
+        "hint": "Examina todo el recorrido del producto y no solo qué ocurre al desecharlo.",
+        "level": 1
+      },
+      {
+        "id": "e-circular:q1",
+        "question": "Diseñar para reparar busca…",
+        "options": [
+          "Averiar antes",
+          "Prolongar la utilidad del producto",
+          "Impedir reutilizar"
+        ],
+        "answer": "B",
+        "hint": "Examina todo el recorrido del producto y no solo qué ocurre al desecharlo.",
+        "level": 2
+      },
+      {
+        "id": "e-circular:q2",
+        "question": "Evaluar una propuesta circular exige…",
+        "options": [
+          "Mirar solo su anuncio",
+          "Suponer recursos infinitos",
+          "Considerar materiales, energía e impactos"
+        ],
+        "answer": "C",
+        "hint": "Examina todo el recorrido del producto y no solo qué ocurre al desecharlo.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-machine-learning",
+    "stage": "eso",
+    "subject": "Tecnología y Digitalización",
+    "title": "Aprendizaje automático",
+    "grade_min": 3,
+    "grade_max": 4,
+    "school_years": [
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Aprendizaje automático",
+      "aprendizaje automatico",
+      "machine learning"
+    ],
+    "explanation": "El aprendizaje automático utiliza datos y procedimientos para ajustar modelos que reconocen patrones o hacen predicciones. Un buen resultado en ejemplos conocidos no garantiza que funcione con casos nuevos. Importan la calidad de los datos, la evaluación y los posibles sesgos.",
+    "simpler": "El modelo aprende relaciones a partir de ejemplos, pero puede equivocarse fuera de ellos o repetir sesgos de los datos.",
+    "example": "Un clasificador entrenado solo con fotos de gatos de un tipo puede fallar con otros gatos. Se necesitan datos y pruebas adecuados, sin recoger datos personales innecesarios.",
+    "why": "La evaluación debe representar el uso previsto y sus riesgos; un patrón estadístico no es una certeza ni una justificación ética.",
+    "misconception": "Un porcentaje alto en una prueba no garantiza fiabilidad universal.",
+    "hints": [
+      "Distingue aprender de unos datos y demostrar que el resultado generaliza a otros casos.",
+      "El modelo aprende relaciones a partir de ejemplos, pero puede equivocarse fuera de ellos o repetir sesgos de los datos.",
+      "Un clasificador entrenado solo con fotos de gatos de un tipo puede fallar con otros gatos. Se necesitan datos y pruebas adecuados, sin recoger datos personales innecesarios."
+    ],
+    "quiz": [
+      {
+        "id": "e-machine-learning:q0",
+        "question": "Para evaluar un modelo conviene usar…",
+        "options": [
+          "Solo los ejemplos que memorizó",
+          "Casos adecuados no usados para ajustarlo",
+          "Solo su anuncio"
+        ],
+        "answer": "B",
+        "hint": "Distingue aprender de unos datos y demostrar que el resultado generaliza a otros casos.",
+        "level": 1
+      },
+      {
+        "id": "e-machine-learning:q1",
+        "question": "Los sesgos de datos pueden…",
+        "options": [
+          "Afectar a los resultados",
+          "Desaparecer automáticamente siempre",
+          "Garantizar justicia"
+        ],
+        "answer": "A",
+        "hint": "Distingue aprender de unos datos y demostrar que el resultado generaliza a otros casos.",
+        "level": 2
+      },
+      {
+        "id": "e-machine-learning:q2",
+        "question": "Una predicción del modelo…",
+        "options": [
+          "Es siempre cierta",
+          "Sustituye toda responsabilidad humana",
+          "Debe interpretarse con sus límites"
+        ],
+        "answer": "C",
+        "hint": "Distingue aprender de unos datos y demostrar que el resultado generaliza a otros casos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-sequences",
+    "stage": "bachillerato",
+    "subject": "Matemáticas",
+    "title": "Progresiones aritméticas y geométricas",
+    "grade_min": 1,
+    "grade_max": 2,
+    "school_years": [
+      "1º de Bachillerato",
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Progresiones aritméticas y geométricas",
+      "progresiones",
+      "progresiones aritmeticas y geometricas"
+    ],
+    "explanation": "En una progresión aritmética la diferencia entre términos consecutivos es constante: a_n = a_1 + (n−1)d. En una geométrica cada término se obtiene multiplicando el anterior por una razón constante: a_n = a_1·r^(n−1). Debe especificarse la regla; pocos términos aislados no determinan una única sucesión posible.",
+    "simpler": "Comprueba si se suma siempre lo mismo o se multiplica por el mismo factor, cuando la regla declara ese tipo de progresión.",
+    "example": "Una progresión aritmética con primer término 3 y diferencia 4 tiene quinto término 3 + 4·4 = 19. Una geométrica con primer término 2 y razón 3 comienza 2, 6, 18.",
+    "why": "Una fórmula explicita las condiciones del modelo y permite calcular términos sin confundir una conjetura visual con una definición.",
+    "misconception": "Reconocer un patrón plausible no demuestra que sea la única regla posible.",
+    "hints": [
+      "Usa n−1 cambios desde el primer término y distingue sumar de multiplicar.",
+      "Comprueba si se suma siempre lo mismo o se multiplica por el mismo factor, cuando la regla declara ese tipo de progresión.",
+      "Una progresión aritmética con primer término 3 y diferencia 4 tiene quinto término 3 + 4·4 = 19. Una geométrica con primer término 2 y razón 3 comienza 2, 6, 18."
+    ],
+    "quiz": [
+      {
+        "id": "b-sequences:q0",
+        "question": "En una progresión aritmética con a₁=3 y d=4, a₅ es…",
+        "options": [
+          "19",
+          "23",
+          "15"
+        ],
+        "answer": "A",
+        "hint": "Usa n−1 cambios desde el primer término y distingue sumar de multiplicar.",
+        "level": 1
+      },
+      {
+        "id": "b-sequences:q1",
+        "question": "En una progresión geométrica con a₁=2 y r=3, a₃ es…",
+        "options": [
+          "12",
+          "18",
+          "8"
+        ],
+        "answer": "B",
+        "hint": "Usa n−1 cambios desde el primer término y distingue sumar de multiplicar.",
+        "level": 2
+      },
+      {
+        "id": "b-sequences:q2",
+        "question": "Conocer unos pocos términos sin una regla adicional…",
+        "options": [
+          "Determina siempre toda sucesión",
+          "Obliga a una progresión aritmética",
+          "Puede admitir distintas continuaciones"
+        ],
+        "answer": "C",
+        "hint": "Usa n−1 cambios desde el primer término y distingue sumar de multiplicar.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-chain",
+    "stage": "bachillerato",
+    "subject": "Matemáticas",
+    "title": "La regla de la cadena",
+    "grade_min": 1,
+    "grade_max": 2,
+    "school_years": [
+      "1º de Bachillerato",
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "La regla de la cadena",
+      "regla de la cadena",
+      "derivar una funcion compuesta"
+    ],
+    "explanation": "Si una función es una composición f(g(x)) y se cumplen las condiciones de derivabilidad, su derivada es f′(g(x))·g′(x). Hay que derivar la función exterior evaluada en la interior y multiplicar por la derivada de la interior. No se omite ese segundo factor.",
+    "simpler": "Identifica qué operación se hace al final y qué expresión contiene; deriva ambas en su lugar correspondiente.",
+    "example": "Para y=(3x+1)², la exterior es elevar al cuadrado y la interior 3x+1. La derivada es 2(3x+1)·3 = 6(3x+1).",
+    "why": "Una variación en x se transmite primero a la función interior y después a la exterior; sus tasas se multiplican.",
+    "misconception": "Derivar la exterior y conservar la interior sin su derivada puede perder un factor.",
+    "hints": [
+      "Separa las dos funciones y comprueba el factor de la función interior.",
+      "Identifica qué operación se hace al final y qué expresión contiene; deriva ambas en su lugar correspondiente.",
+      "Para y=(3x+1)², la exterior es elevar al cuadrado y la interior 3x+1. La derivada es 2(3x+1)·3 = 6(3x+1)."
+    ],
+    "quiz": [
+      {
+        "id": "b-chain:q0",
+        "question": "La derivada de (3x+1)² es…",
+        "options": [
+          "2(3x+1)",
+          "6(3x+1)",
+          "6x"
+        ],
+        "answer": "B",
+        "hint": "Separa las dos funciones y comprueba el factor de la función interior.",
+        "level": 1
+      },
+      {
+        "id": "b-chain:q1",
+        "question": "La derivada de sen(2x), con x en radianes, es…",
+        "options": [
+          "2 cos(2x)",
+          "cos(2x)",
+          "−2 sen(2x)"
+        ],
+        "answer": "A",
+        "hint": "Separa las dos funciones y comprueba el factor de la función interior.",
+        "level": 2
+      },
+      {
+        "id": "b-chain:q2",
+        "question": "La regla exige considerar…",
+        "options": [
+          "Solo la función exterior",
+          "Solo el nombre de la variable",
+          "Las derivadas exterior e interior"
+        ],
+        "answer": "C",
+        "hint": "Separa las dos funciones y comprueba el factor de la función interior.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-ideal-gas",
+    "stage": "bachillerato",
+    "subject": "Física y Química",
+    "title": "El modelo de gas ideal",
+    "grade_min": 1,
+    "grade_max": 2,
+    "school_years": [
+      "1º de Bachillerato",
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "El modelo de gas ideal",
+      "gas ideal",
+      "ley de los gases ideales"
+    ],
+    "explanation": "El modelo de gas ideal relaciona presión, volumen, cantidad de sustancia y temperatura mediante pV=nRT. La temperatura es absoluta y se expresa en kelvin. R debe ser compatible con las unidades elegidas. El modelo aproxima ciertos gases en condiciones adecuadas, no todos los comportamientos reales.",
+    "simpler": "Comprueba temperatura y unidades antes de sustituir números. No uses grados Celsius directamente en pV=nRT.",
+    "example": "Para una cantidad fija de gas ideal a temperatura constante, duplicar la presión reduce el volumen a la mitad. Esta relación no significa que el modelo sea exacto en cualquier condición.",
+    "why": "La ecuación expresa relaciones dentro de un modelo; aplicar sus proporciones exige conservar las condiciones indicadas.",
+    "misconception": "Una temperatura Celsius no puede sustituirse directamente como temperatura absoluta.",
+    "hints": [
+      "Indica qué magnitudes permanecen constantes antes de establecer una proporción.",
+      "Comprueba temperatura y unidades antes de sustituir números. No uses grados Celsius directamente en pV=nRT.",
+      "Para una cantidad fija de gas ideal a temperatura constante, duplicar la presión reduce el volumen a la mitad. Esta relación no significa que el modelo sea exacto en cualquier condición."
+    ],
+    "quiz": [
+      {
+        "id": "b-ideal-gas:q0",
+        "question": "En pV=nRT la temperatura debe expresarse en…",
+        "options": [
+          "Kelvin",
+          "Grados Celsius sin conversión",
+          "Grados angulares"
+        ],
+        "answer": "A",
+        "hint": "Indica qué magnitudes permanecen constantes antes de establecer una proporción.",
+        "level": 1
+      },
+      {
+        "id": "b-ideal-gas:q1",
+        "question": "A n y T constantes, duplicar p hace que V…",
+        "options": [
+          "Se duplique",
+          "Se reduzca a la mitad",
+          "No cambie"
+        ],
+        "answer": "B",
+        "hint": "Indica qué magnitudes permanecen constantes antes de establecer una proporción.",
+        "level": 2
+      },
+      {
+        "id": "b-ideal-gas:q2",
+        "question": "El valor numérico de R se elige según…",
+        "options": [
+          "El color del gas",
+          "El día de la semana",
+          "Las unidades usadas"
+        ],
+        "answer": "C",
+        "hint": "Indica qué magnitudes permanecen constantes antes de establecer una proporción.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-stoichiometry",
+    "stage": "bachillerato",
+    "subject": "Química",
+    "title": "Relaciones estequiométricas",
+    "grade_min": 1,
+    "grade_max": 2,
+    "school_years": [
+      "1º de Bachillerato",
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Relaciones estequiométricas",
+      "estequiometria",
+      "relaciones estequiometricas"
+    ],
+    "explanation": "Una ecuación química ajustada expresa proporciones entre entidades y cantidades de sustancia de reactivos y productos. Sus coeficientes no son proporciones de masas directamente. Para pasar a masa se utiliza la masa molar. Deben considerarse el reactivo limitante y el rendimiento cuando el problema los introduce.",
+    "simpler": "Lee primero la proporción en moles y después convierte a la magnitud que pide el ejercicio.",
+    "example": "En el modelo 2 H₂ + O₂ → 2 H₂O, dos moles de H₂ reaccionan con un mol de O₂ para formar dos moles de agua, si la reacción es completa y las condiciones del problema lo permiten. Es un cálculo teórico, no una práctica para mezclar gases.",
+    "why": "El ajuste conserva átomos; convertir a gramos requiere además conocer cuánto pesa un mol de cada sustancia.",
+    "misconception": "El coeficiente 2 no significa dos gramos en cualquier reacción.",
+    "hints": [
+      "Parte de la ecuación ajustada y mantén separadas las proporciones molares de las conversiones de masa.",
+      "Lee primero la proporción en moles y después convierte a la magnitud que pide el ejercicio.",
+      "En el modelo 2 H₂ + O₂ → 2 H₂O, dos moles de H₂ reaccionan con un mol de O₂ para formar dos moles de agua, si la reacción es completa y las condiciones del problema lo permiten. Es un cálculo teórico, no una práctica para mezclar gases."
+    ],
+    "quiz": [
+      {
+        "id": "b-stoichiometry:q0",
+        "question": "Según 2 H₂ + O₂ → 2 H₂O, 4 mol de H₂ requieren…",
+        "options": [
+          "4 mol de O₂",
+          "8 mol de O₂",
+          "2 mol de O₂"
+        ],
+        "answer": "C",
+        "hint": "Parte de la ecuación ajustada y mantén separadas las proporciones molares de las conversiones de masa.",
+        "level": 1
+      },
+      {
+        "id": "b-stoichiometry:q1",
+        "question": "Los coeficientes ajustados relacionan directamente…",
+        "options": [
+          "Cantidades de sustancia",
+          "Masas iguales de cualquier sustancia",
+          "Volúmenes de líquidos siempre"
+        ],
+        "answer": "A",
+        "hint": "Parte de la ecuación ajustada y mantén separadas las proporciones molares de las conversiones de masa.",
+        "level": 2
+      },
+      {
+        "id": "b-stoichiometry:q2",
+        "question": "Si un reactivo se agota primero, puede…",
+        "options": [
+          "Crear materia nueva",
+          "Limitar la cantidad de producto",
+          "Eliminar la conservación de átomos"
+        ],
+        "answer": "B",
+        "hint": "Parte de la ecuación ajustada y mantén separadas las proporciones molares de las conversiones de masa.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-urbanization",
+    "stage": "bachillerato",
+    "subject": "Geografía",
+    "title": "Urbanización y áreas metropolitanas",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Urbanización y áreas metropolitanas",
+      "urbanizacion",
+      "areas metropolitanas"
+    ],
+    "explanation": "La urbanización incluye el crecimiento de la población urbana y transformaciones de formas de vida, usos del suelo y relaciones territoriales. Un área metropolitana reúne una ciudad central y espacios relacionados por flujos funcionales. Sus límites no coinciden necesariamente con los municipales.",
+    "simpler": "Distingue el límite administrativo de un municipio y las relaciones reales de trabajo, transporte y servicios.",
+    "example": "Una persona puede vivir en un municipio, trabajar en otro y usar servicios de una ciudad cercana. Esos desplazamientos ayudan a estudiar una organización metropolitana.",
+    "why": "Las actividades y desplazamientos conectan territorios que las fronteras municipales no describen completamente.",
+    "misconception": "Toda concentración de edificios no define por sí sola una misma unidad administrativa o funcional.",
+    "hints": [
+      "Compara la delimitación administrativa con las relaciones funcionales del territorio.",
+      "Distingue el límite administrativo de un municipio y las relaciones reales de trabajo, transporte y servicios.",
+      "Una persona puede vivir en un municipio, trabajar en otro y usar servicios de una ciudad cercana. Esos desplazamientos ayudan a estudiar una organización metropolitana."
+    ],
+    "quiz": [
+      {
+        "id": "b-urbanization:q0",
+        "question": "Un área metropolitana se reconoce también por…",
+        "options": [
+          "Flujos funcionales entre espacios",
+          "Un único límite municipal obligatorio",
+          "Solo la altura de un edificio"
+        ],
+        "answer": "A",
+        "hint": "Compara la delimitación administrativa con las relaciones funcionales del territorio.",
+        "level": 1
+      },
+      {
+        "id": "b-urbanization:q1",
+        "question": "Municipio y área metropolitana…",
+        "options": [
+          "Son siempre lo mismo",
+          "Pueden tener límites distintos",
+          "No guardan nunca relación"
+        ],
+        "answer": "B",
+        "hint": "Compara la delimitación administrativa con las relaciones funcionales del territorio.",
+        "level": 2
+      },
+      {
+        "id": "b-urbanization:q2",
+        "question": "Para analizar cambios urbanos conviene estudiar…",
+        "options": [
+          "Solo una fotografía",
+          "Solo el nombre de la ciudad",
+          "Población, suelo, actividades y conexiones"
+        ],
+        "answer": "C",
+        "hint": "Compara la delimitación administrativa con las relaciones funcionales del territorio.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-climograph",
+    "stage": "bachillerato",
+    "subject": "Geografía",
+    "title": "Interpretar un climograma",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Interpretar un climograma",
+      "climograma",
+      "interpretar climogramas"
+    ],
+    "explanation": "Un climograma suele representar temperaturas medias y precipitaciones mensuales de un lugar durante un periodo de referencia. Antes de interpretarlo, comprueba unidades, escalas, ubicación y años utilizados. Un criterio de aridez como P≤2T es una convención de análisis con unidades específicas, no una ley universal.",
+    "simpler": "Lee primero qué mide cada eje y qué periodo resumen los datos. Después describe distribución y estacionalidad.",
+    "example": "Si en un mes la temperatura media es 20 °C y la precipitación 30 mm, cumple P≤2T en el criterio de Gaussen: 30≤40. Eso no describe por sí solo todo el clima ni un episodio concreto.",
+    "why": "Resumir facilita ver patrones, pero también oculta variación; las conclusiones deben ajustarse al tipo de información representada.",
+    "misconception": "Un valor medio no permite reconstruir todos los episodios extremos del periodo.",
+    "hints": [
+      "Separa la lectura de datos de la interpretación con un criterio concreto.",
+      "Lee primero qué mide cada eje y qué periodo resumen los datos. Después describe distribución y estacionalidad.",
+      "Si en un mes la temperatura media es 20 °C y la precipitación 30 mm, cumple P≤2T en el criterio de Gaussen: 30≤40. Eso no describe por sí solo todo el clima ni un episodio concreto."
+    ],
+    "quiz": [
+      {
+        "id": "b-climograph:q0",
+        "question": "Con T=20 °C y P=30 mm, el criterio P≤2T se cumple…",
+        "options": [
+          "No",
+          "Sí",
+          "Solo si cambias mm por litros"
+        ],
+        "answer": "B",
+        "hint": "Separa la lectura de datos de la interpretación con un criterio concreto.",
+        "level": 1
+      },
+      {
+        "id": "b-climograph:q1",
+        "question": "Un climograma describe habitualmente…",
+        "options": [
+          "Datos medios mensuales de un periodo",
+          "El tiempo exacto de mañana",
+          "Una única hora"
+        ],
+        "answer": "A",
+        "hint": "Separa la lectura de datos de la interpretación con un criterio concreto.",
+        "level": 2
+      },
+      {
+        "id": "b-climograph:q2",
+        "question": "Para comparar climogramas debemos comprobar…",
+        "options": [
+          "Solo colores",
+          "Solo títulos",
+          "Escalas, unidades y periodos de referencia"
+        ],
+        "answer": "C",
+        "hint": "Separa la lectura de datos de la interpretación con un criterio concreto.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-first-war",
+    "stage": "bachillerato",
+    "subject": "Historia del Mundo Contemporáneo",
+    "title": "La Primera Guerra Mundial",
+    "grade_min": 1,
+    "grade_max": 1,
+    "school_years": [
+      "1º de Bachillerato"
+    ],
+    "aliases": [
+      "La Primera Guerra Mundial",
+      "primera guerra mundial",
+      "gran guerra"
+    ],
+    "explanation": "La Primera Guerra Mundial se desarrolló entre 1914 y 1918 y tuvo causas múltiples, entre ellas rivalidades imperialistas, nacionalismos, militarización y alianzas. El asesinato de Sarajevo fue un desencadenante, no una explicación suficiente de todo el conflicto. Tuvo dimensiones europeas y mundiales.",
+    "simpler": "Distingue un acontecimiento desencadenante de los procesos que hicieron posible la guerra.",
+    "example": "El atentado de Sarajevo de junio de 1914 se produjo en un contexto de tensiones previas. Analizar la secuencia de decisiones ayuda a explicar la escalada sin atribuirla a una sola causa.",
+    "why": "Los acontecimientos activan tensiones dentro de relaciones políticas y sociales; reconstruir esos vínculos evita explicaciones monocausales.",
+    "misconception": "La causa inmediata no explica por sí sola toda la estructura de un conflicto.",
+    "hints": [
+      "Distingue contexto, desencadenante y desarrollo; no los conviertas en sinónimos.",
+      "Distingue un acontecimiento desencadenante de los procesos que hicieron posible la guerra.",
+      "El atentado de Sarajevo de junio de 1914 se produjo en un contexto de tensiones previas. Analizar la secuencia de decisiones ayuda a explicar la escalada sin atribuirla a una sola causa."
+    ],
+    "quiz": [
+      {
+        "id": "b-first-war:q0",
+        "question": "El conflicto se sitúa entre…",
+        "options": [
+          "1914 y 1918",
+          "1939 y 1945",
+          "1789 y 1799"
+        ],
+        "answer": "A",
+        "hint": "Distingue contexto, desencadenante y desarrollo; no los conviertas en sinónimos.",
+        "level": 1
+      },
+      {
+        "id": "b-first-war:q1",
+        "question": "El atentado de Sarajevo fue…",
+        "options": [
+          "La única causa histórica posible",
+          "Un desencadenante en un contexto de tensiones",
+          "Un acontecimiento de 1945"
+        ],
+        "answer": "B",
+        "hint": "Distingue contexto, desencadenante y desarrollo; no los conviertas en sinónimos.",
+        "level": 2
+      },
+      {
+        "id": "b-first-war:q2",
+        "question": "Una explicación histórica suficiente debe…",
+        "options": [
+          "Memorizar solo una fecha",
+          "Ignorar decisiones políticas",
+          "Relacionar factores y decisiones de distintos actores"
+        ],
+        "answer": "C",
+        "hint": "Distingue contexto, desencadenante y desarrollo; no los conviertas en sinónimos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-imperialism",
+    "stage": "bachillerato",
+    "subject": "Historia del Mundo Contemporáneo",
+    "title": "Imperialismo y colonialismo",
+    "grade_min": 1,
+    "grade_max": 1,
+    "school_years": [
+      "1º de Bachillerato"
+    ],
+    "aliases": [
+      "Imperialismo y colonialismo",
+      "imperialismo",
+      "colonialismo del siglo xix"
+    ],
+    "explanation": "El imperialismo implica relaciones de dominio entre potencias y otros territorios; el colonialismo es una forma que puede incluir control político directo y asentamientos. La expansión del siglo XIX combinó intereses económicos, políticos, estratégicos e ideologías de legitimación. Debe incluirse la experiencia y resistencia de las poblaciones sometidas.",
+    "simpler": "No estudies solo decisiones de las potencias: considera cómo afectaron a quienes vivían en los territorios dominados.",
+    "example": "La Conferencia de Berlín de 1884-1885 estableció acuerdos entre potencias sobre la expansión en África. No significa que todos los procesos coloniales se decidieran o ejecutaran en un único acto.",
+    "why": "Las fuentes proceden de posiciones distintas; contrastarlas permite estudiar el dominio sin adoptar automáticamente su relato legitimador.",
+    "misconception": "Las justificaciones de una potencia no son una descripción neutral ni suficiente de sus efectos.",
+    "hints": [
+      "Compara intereses, relaciones de poder y experiencias de diferentes grupos.",
+      "No estudies solo decisiones de las potencias: considera cómo afectaron a quienes vivían en los territorios dominados.",
+      "La Conferencia de Berlín de 1884-1885 estableció acuerdos entre potencias sobre la expansión en África. No significa que todos los procesos coloniales se decidieran o ejecutaran en un único acto."
+    ],
+    "quiz": [
+      {
+        "id": "b-imperialism:q0",
+        "question": "Para explicar el imperialismo conviene combinar…",
+        "options": [
+          "Solo clima",
+          "Factores económicos, políticos e ideológicos",
+          "Solo nombres de reyes"
+        ],
+        "answer": "B",
+        "hint": "Compara intereses, relaciones de poder y experiencias de diferentes grupos.",
+        "level": 1
+      },
+      {
+        "id": "b-imperialism:q1",
+        "question": "Una perspectiva histórica completa incorpora…",
+        "options": [
+          "Poblaciones colonizadas y resistencias",
+          "Solo las potencias dominantes",
+          "Solo mapas sin personas"
+        ],
+        "answer": "A",
+        "hint": "Compara intereses, relaciones de poder y experiencias de diferentes grupos.",
+        "level": 2
+      },
+      {
+        "id": "b-imperialism:q2",
+        "question": "La Conferencia de Berlín debe entenderse…",
+        "options": [
+          "Como la única causa de toda colonización",
+          "Como un acuerdo de todos los pueblos afectados en igualdad",
+          "Dentro de procesos anteriores y posteriores"
+        ],
+        "answer": "C",
+        "hint": "Compara intereses, relaciones de poder y experiencias de diferentes grupos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-art-analysis",
+    "stage": "bachillerato",
+    "subject": "Historia del Arte",
+    "title": "Comentario de una obra de arte",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Comentario de una obra de arte",
+      "comentario de arte",
+      "comentar una obra de arte"
+    ],
+    "explanation": "Comentar una obra exige identificar datos comprobables, describir elementos formales y relacionarlos con función, técnica y contexto. Deben distinguirse observación, interpretación y atribución documentada. Una característica aislada no basta para adjudicar autoría o fechar con precisión.",
+    "simpler": "Describe primero lo que observas y después argumenta qué interpretación permiten esas pistas.",
+    "example": "Ante una pintura, puedes describir composición, luz y figuras. Para atribuirla a una persona o periodo concreto necesitas documentación o evidencia adicional, no solo parecido.",
+    "why": "El análisis conecta decisiones materiales y visuales con significados y funciones sin confundir hipótesis con datos documentados.",
+    "misconception": "Un parecido de estilo no demuestra por sí solo la autoría.",
+    "hints": [
+      "Separa lo observado de lo inferido y señala qué fuente apoya una atribución.",
+      "Describe primero lo que observas y después argumenta qué interpretación permiten esas pistas.",
+      "Ante una pintura, puedes describir composición, luz y figuras. Para atribuirla a una persona o periodo concreto necesitas documentación o evidencia adicional, no solo parecido."
+    ],
+    "quiz": [
+      {
+        "id": "b-art-analysis:q0",
+        "question": "Afirmar una autoría requiere…",
+        "options": [
+          "Pruebas o documentación pertinentes",
+          "Solo una impresión",
+          "Solo el tamaño de la obra"
+        ],
+        "answer": "A",
+        "hint": "Separa lo observado de lo inferido y señala qué fuente apoya una atribución.",
+        "level": 1
+      },
+      {
+        "id": "b-art-analysis:q1",
+        "question": "Describir la luz y la composición es parte del…",
+        "options": [
+          "Cálculo de población",
+          "Análisis formal",
+          "Registro de notas musicales siempre"
+        ],
+        "answer": "B",
+        "hint": "Separa lo observado de lo inferido y señala qué fuente apoya una atribución.",
+        "level": 2
+      },
+      {
+        "id": "b-art-analysis:q2",
+        "question": "Una interpretación debe…",
+        "options": [
+          "Presentarse como certeza sin evidencia",
+          "Ignorar la función de la obra",
+          "Justificarse y reconocer sus límites"
+        ],
+        "answer": "C",
+        "hint": "Separa lo observado de lo inferido y señala qué fuente apoya una atribución.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-design",
+    "stage": "bachillerato",
+    "subject": "Diseño",
+    "title": "Forma, función y diseño",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Forma, función y diseño",
+      "forma y funcion",
+      "diseno y funcion"
+    ],
+    "explanation": "Diseñar implica resolver necesidades comunicativas o de uso considerando personas, contexto, materiales y consecuencias. La forma no se valora solo por su apariencia: también por accesibilidad, comprensión, mantenimiento y adecuación a la función. El proceso incluye probar y revisar.",
+    "simpler": "Pregunta para quién se diseña, qué necesita hacer y qué barreras encuentra.",
+    "example": "Un cartel puede ser visualmente atractivo y difícil de leer. Probar contraste, tamaño de letra y organización con usuarios ayuda a revisar el diseño sin suponer que todos perciben igual.",
+    "why": "El diseño formula hipótesis sobre el uso; las pruebas permiten contrastarlas antes de tratarlas como certezas.",
+    "misconception": "Que algo resulte atractivo no garantiza que sea comprensible o accesible.",
+    "hints": [
+      "Relaciona cada decisión formal con un uso o necesidad verificable.",
+      "Pregunta para quién se diseña, qué necesita hacer y qué barreras encuentra.",
+      "Un cartel puede ser visualmente atractivo y difícil de leer. Probar contraste, tamaño de letra y organización con usuarios ayuda a revisar el diseño sin suponer que todos perciben igual."
+    ],
+    "quiz": [
+      {
+        "id": "b-design:q0",
+        "question": "Un diseño adecuado debe considerar…",
+        "options": [
+          "Solo el gusto de quien lo crea",
+          "Personas, función y contexto",
+          "Solo el precio del material"
+        ],
+        "answer": "B",
+        "hint": "Relaciona cada decisión formal con un uso o necesidad verificable.",
+        "level": 1
+      },
+      {
+        "id": "b-design:q1",
+        "question": "Probar un prototipo sirve para…",
+        "options": [
+          "Detectar problemas y revisar decisiones",
+          "Garantizar perfección absoluta",
+          "Evitar escuchar a usuarios"
+        ],
+        "answer": "A",
+        "hint": "Relaciona cada decisión formal con un uso o necesidad verificable.",
+        "level": 2
+      },
+      {
+        "id": "b-design:q2",
+        "question": "La accesibilidad…",
+        "options": [
+          "Es siempre incompatible con estética",
+          "Solo importa después de publicar",
+          "Forma parte de las condiciones del diseño"
+        ],
+        "answer": "C",
+        "hint": "Relaciona cada decisión formal con un uso o necesidad verificable.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-greek-alphabet",
+    "stage": "bachillerato",
+    "subject": "Griego",
+    "title": "El alfabeto griego",
+    "grade_min": 1,
+    "grade_max": 1,
+    "school_years": [
+      "1º de Bachillerato"
+    ],
+    "aliases": [
+      "El alfabeto griego",
+      "alfabeto griego",
+      "letras griegas"
+    ],
+    "explanation": "El alfabeto griego que se estudia habitualmente tiene 24 letras. Presenta formas mayúsculas y minúsculas, con convenciones de escritura y pronunciación que dependen de la época y del enfoque didáctico. En minúscula, sigma suele escribirse ς al final de palabra y σ en otras posiciones.",
+    "simpler": "Aprende a reconocer formas y posición antes de confundir un parecido visual con el mismo sonido o función del alfabeto latino.",
+    "example": "Alfa se escribe Α o α; beta, Β o β; sigma, Σ en mayúscula y σ o ς en minúscula según su posición. Aquí practicamos reconocimiento de grafías, no una pronunciación universal.",
+    "why": "Las convenciones gráficas deben estudiarse en su sistema y contexto histórico, no por semejanzas superficiales entre alfabetos.",
+    "misconception": "Una letra parecida a una latina no tiene necesariamente el mismo valor.",
+    "hints": [
+      "Distingue el nombre de la letra, su forma escrita y la pronunciación que se está estudiando.",
+      "Aprende a reconocer formas y posición antes de confundir un parecido visual con el mismo sonido o función del alfabeto latino.",
+      "Alfa se escribe Α o α; beta, Β o β; sigma, Σ en mayúscula y σ o ς en minúscula según su posición. Aquí practicamos reconocimiento de grafías, no una pronunciación universal."
+    ],
+    "quiz": [
+      {
+        "id": "b-greek-alphabet:q0",
+        "question": "¿Cuántas letras tiene el alfabeto griego habitual?",
+        "options": [
+          "24",
+          "26",
+          "28"
+        ],
+        "answer": "A",
+        "hint": "Distingue el nombre de la letra, su forma escrita y la pronunciación que se está estudiando.",
+        "level": 1
+      },
+      {
+        "id": "b-greek-alphabet:q1",
+        "question": "La forma minúscula α corresponde a…",
+        "options": [
+          "Beta",
+          "Alfa",
+          "Sigma"
+        ],
+        "answer": "B",
+        "hint": "Distingue el nombre de la letra, su forma escrita y la pronunciación que se está estudiando.",
+        "level": 2
+      },
+      {
+        "id": "b-greek-alphabet:q2",
+        "question": "La sigma minúscula al final de palabra suele ser…",
+        "options": [
+          "α",
+          "β",
+          "ς"
+        ],
+        "answer": "C",
+        "hint": "Distingue el nombre de la letra, su forma escrita y la pronunciación que se está estudiando.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-physical-plan",
+    "stage": "bachillerato",
+    "subject": "Educación Física",
+    "title": "Planificar una actividad física",
+    "grade_min": 1,
+    "grade_max": 1,
+    "school_years": [
+      "1º de Bachillerato"
+    ],
+    "aliases": [
+      "Planificar una actividad física",
+      "planificacion de actividad fisica",
+      "planificar actividad fisica"
+    ],
+    "explanation": "Planificar una actividad física escolar implica definir una finalidad, considerar el punto de partida y acordar tareas progresivas y adaptadas con supervisión. Se observa la respuesta y se revisa el plan. No se prescribe una misma carga a todo el grupo ni se confunde aprendizaje con soportar dolor.",
+    "simpler": "Define qué se quiere aprender y qué condiciones necesita cada persona para participar con seguridad.",
+    "example": "Para una tarea cooperativa se ajustan espacio, material, duración y descansos con el docente. La evaluación puede valorar decisiones y colaboración, no solo un resultado físico.",
+    "why": "Planificar y revisar permite aprender a tomar decisiones responsables sin convertir diferencias corporales en jerarquías personales.",
+    "misconception": "Un plan escolar no sustituye una valoración sanitaria individual cuando esta es necesaria.",
+    "hints": [
+      "Distingue objetivo educativo, condiciones de la tarea y respuesta individual.",
+      "Define qué se quiere aprender y qué condiciones necesita cada persona para participar con seguridad.",
+      "Para una tarea cooperativa se ajustan espacio, material, duración y descansos con el docente. La evaluación puede valorar decisiones y colaboración, no solo un resultado físico."
+    ],
+    "quiz": [
+      {
+        "id": "b-physical-plan:q0",
+        "question": "El punto de partida del plan debe considerar…",
+        "options": [
+          "Solo el mejor resultado del grupo",
+          "Características y necesidades de quienes participan",
+          "Una carga idéntica obligatoria"
+        ],
+        "answer": "B",
+        "hint": "Distingue objetivo educativo, condiciones de la tarea y respuesta individual.",
+        "level": 1
+      },
+      {
+        "id": "b-physical-plan:q1",
+        "question": "Revisar un plan supone…",
+        "options": [
+          "Valorar la respuesta y ajustar condiciones",
+          "Ignorar cualquier dificultad",
+          "Cambiar sin motivo todos los objetivos"
+        ],
+        "answer": "A",
+        "hint": "Distingue objetivo educativo, condiciones de la tarea y respuesta individual.",
+        "level": 2
+      },
+      {
+        "id": "b-physical-plan:q2",
+        "question": "El dolor durante la actividad…",
+        "options": [
+          "Demuestra aprendizaje",
+          "Debe ocultarse",
+          "Es motivo para detenerse y comunicarlo"
+        ],
+        "answer": "C",
+        "hint": "Distingue objetivo educativo, condiciones de la tarea y respuesta individual.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "AI-assisted domain/editorial review plus explicit answer-key and regression tests; independent human teacher review pending",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA. Referencia curricular por etapa, no homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v4-256-reviewed-c993",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
   }
 ]

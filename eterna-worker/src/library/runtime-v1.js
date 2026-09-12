@@ -5,7 +5,7 @@
  */
 (function(root){
   'use strict';
-  const VERSION='library-first-v3-combined';
+  const VERSION='library-first-v4-reviewed';
   const MODES=new Set(['homework','ask','review','explain','exam','practice']);
   const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es-ES').replace(/[¿?¡!.,;:]/g,' ').replace(/\s+/g,' ').trim();
   const whole=v=>{const s=norm(v).replace(/^eterna /,'').replace(/ eterna$/,'').replace(/^(?:por favor|porfa) /,'').replace(/ (?:por favor|porfa|gracias)$/,'').trim();return s==='eterna'?'hola':s};
@@ -102,7 +102,7 @@
       case'tired':return `Gracias por decírmelo${name}. Hagamos una pausa fuera de la pantalla. Después podemos volver con un solo paso pequeño; no hay que hacerlo todo de golpe.`;
       case'self_doubt':return `Que una tarea te cueste no dice cuánto vales${name}. Podemos dividirla en pasos pequeños y probar otra explicación. ${pending?'Dime en qué parte de la pregunta te has atascado.':'¿Qué parte te está costando ahora?'}`;
       case'exam_nerves':return `Entiendo que el examen pueda preocuparte${name}. No necesitas demostrarlo todo de golpe: podemos practicar una pregunta y revisar qué te ayuda. Si esos nervios te desbordan, coméntalo con tu familia o tu profesor.`;
-      case'reading_embarrassment':return `Puede dar vergüenza leer o preguntar delante de otros${name}; no tienes que ocultarlo ni hacerlo perfecto. Puedes empezar con una frase corta y pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto para empezar.`;
+      case'reading_embarrassment':return `Es comprensible que a veces dé vergüenza leer o preguntar${name}. Podemos empezar con una frase corta, a tu ritmo, y puedes pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto ni forzarte delante de todo el grupo.`;
       case'agency':return 'Sí, puedes equivocarte. Un error nos sirve para ver qué paso conviene revisar. Te señalaré algo concreto que puedas mejorar, sin etiquetas ni compararte con otros.';
       case'honesty':return 'Puedo equivocarme. Por eso distingo lo comprobado de lo dudoso, reviso los cálculos cuando es posible y no debería inventar una respuesta para parecer segura. Si algo no encaja, lo revisamos.';
       case'privacy':return 'Utilizo la información escolar disponible para ayudarte. No compartas contraseñas, dirección, teléfonos ni secretos que te hagan sentir inseguro. La información sobre el uso de datos está en Tu privacidad; si algo te preocupa, habla con un adulto de confianza.';
@@ -272,5 +272,5 @@
     return output(l,`${l.explanation}\n\n${l.example}\n\nPara comprobar una sola idea:\n${question(q)}`,question(q),'not_applicable',0,0,'new_topic',{mode_state:state,explained_markers:['lib:v1:intro','lib:v1:example']});
   }
   function contextText(lesson){if(!lesson)return '';return `Material original ETERNA revisado por IA, no texto oficial ni revisión humana. Nivel editorial ${lesson.school_years.join(', ')}.\n${lesson.title}: ${lesson.explanation}\nEjemplo: ${lesson.example}\nError frecuente: ${lesson.misconception}\nLa referencia ${lesson.curriculum_source} es curricular, no aval oficial de esta lección.`}
-  root.EternaOwnedLibrary=Object.freeze({version:VERSION,release_id:'eterna-library-2026.09-v3-217-6b83',school,appropriate,protocol,cordial,protocols:PROTOCOLS,exactLesson,owned,clientTurn,decision,question,contextText});
+  root.EternaOwnedLibrary=Object.freeze({version:VERSION,release_id:'eterna-library-2026.09-v4-256-reviewed-c993',school,appropriate,protocol,cordial,protocols:PROTOCOLS,exactLesson,owned,clientTurn,decision,question,contextText});
 })(globalThis);
