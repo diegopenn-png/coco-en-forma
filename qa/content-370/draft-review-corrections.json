@@ -1,0 +1,34 @@
+[
+  {
+    "file": "bachillerato.txt",
+    "before": "Con esos mismos datos, P(A|rojo) es…",
+    "after": "Se elige A o B con probabilidad 1/2; P(rojo|A)=3/4 y P(rojo|B)=1/4. P(A|rojo) es…",
+    "reason": "Supply all probabilities in the question itself.",
+    "reviewer_kind": "AI editorial review",
+    "human_teacher_reviewed": false
+  },
+  {
+    "file": "bachillerato.txt",
+    "before": "En ese equilibrio ideal, disminuir volumen a temperatura constante favorece…",
+    "after": "En N₂(g) + 3H₂(g) ⇌ 2NH₃(g), bajo modelo ideal, disminuir volumen a temperatura constante favorece…",
+    "reason": "Include the complete gas equilibrium rather than an unseen example.",
+    "reviewer_kind": "AI editorial review",
+    "human_teacher_reviewed": false
+  },
+  {
+    "file": "eso.txt",
+    "before": "Si DE es paralelo a BC, AD=3, AB=6 y AC=10, ¿cuánto vale AE?",
+    "after": "En ABC, D está en AB y E en AC; DE es paralelo a BC. Si AD=3, AB=6 y AC=10, ¿cuánto vale AE?",
+    "reason": "Specify segment locations and the full geometric premises.",
+    "reviewer_kind": "AI editorial review",
+    "human_teacher_reviewed": false
+  },
+  {
+    "file": "eso.txt",
+    "before": "100 N sobre 0,5 m² producen una presión media de…",
+    "after": "Una fuerza normal de 100 N sobre 0,5 m² produce una presión media de…",
+    "reason": "State the normal-force assumption in the assessment, not only the explanation.",
+    "reviewer_kind": "AI editorial review",
+    "human_teacher_reviewed": false
+  }
+]
