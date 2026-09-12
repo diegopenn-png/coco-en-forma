@@ -27972,5 +27972,3094 @@
     "curriculum_alignment_status": "stage_reference_not_exhaustive_criterion_mapping",
     "subject_availability": "Editorial course range; actual subject availability depends on territory, modality and school offer.",
     "introduced_in_release": "eterna-library-2026.09-v7-370-content-c26c61c"
+  },
+  {
+    "id": "i-same-different",
+    "stage": "infantil",
+    "subject": "Descubrimiento y exploración del entorno",
+    "title": "Igual y diferente según una característica",
+    "grade_min": 3,
+    "grade_max": 5,
+    "school_years": [
+      "Infantil · 3 años",
+      "Infantil · 4 años",
+      "Infantil · 5 años"
+    ],
+    "aliases": [
+      "Igual y diferente según una característica",
+      "igual y diferente",
+      "comparar caracteristicas"
+    ],
+    "explanation": "Dos objetos pueden ser iguales en una característica y diferentes en otra. Por ejemplo, pueden compartir color pero tener distinta forma. Antes de comparar, decimos en qué nos vamos a fijar: el color, la forma o el tamaño. Podemos señalar, hablar o usar dibujos para responder.",
+    "simpler": "Di primero qué miramos. ¿El color o la forma? Un mismo objeto puede parecerse en una cosa y diferenciarse en otra.",
+    "example": "Un círculo rojo y un cuadrado rojo tienen el mismo color. Sus formas son distintas. No hace falta que sean idénticos para compartir una característica.",
+    "why": "Decidir la característica hace comprensible la comparación; dos objetos pueden compartir unas propiedades y no otras.",
+    "misconception": "Tener el mismo color no significa tener también la misma forma.",
+    "hints": [
+      "Nombra una característica y compara solo esa primero.",
+      "Di primero qué miramos. ¿El color o la forma? Un mismo objeto puede parecerse en una cosa y diferenciarse en otra.",
+      "Un círculo rojo y un cuadrado rojo tienen el mismo color. Sus formas son distintas. No hace falta que sean idénticos para compartir una característica."
+    ],
+    "quiz": [
+      {
+        "id": "i-same-different:q0",
+        "question": "Un círculo rojo y un cuadrado rojo tienen igual…",
+        "options": [
+          "Color",
+          "Forma",
+          "Número de esquinas"
+        ],
+        "answer": "A",
+        "hint": "Nombra una característica y compara solo esa primero.",
+        "level": 1
+      },
+      {
+        "id": "i-same-different:q1",
+        "question": "Un círculo azul y un círculo rojo comparten…",
+        "options": [
+          "El color",
+          "La forma",
+          "Todas sus características"
+        ],
+        "answer": "B",
+        "hint": "Nombra una característica y compara solo esa primero.",
+        "level": 2
+      },
+      {
+        "id": "i-same-different:q2",
+        "question": "Antes de comparar dos objetos conviene decidir…",
+        "options": [
+          "Cuál gusta a todo el mundo",
+          "Cuál tiene que ganar",
+          "En qué característica nos fijamos"
+        ],
+        "answer": "C",
+        "hint": "Nombra una característica y compara solo esa primero.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+    "curriculum_source_key": "BOE-A-2022-1654",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "i-one-more",
+    "stage": "infantil",
+    "subject": "Descubrimiento y exploración del entorno",
+    "title": "Añadir uno",
+    "grade_min": 4,
+    "grade_max": 5,
+    "school_years": [
+      "Infantil · 4 años",
+      "Infantil · 5 años"
+    ],
+    "aliases": [
+      "Añadir uno",
+      "anadir uno",
+      "uno mas",
+      "sumar una pieza"
+    ],
+    "explanation": "Si tenemos unas piezas y añadimos una, ahora hay una pieza más. Podemos contar de nuevo para comprobarlo. La pieza nueva tiene que entrar realmente en el grupo: mover las que ya estaban no cambia cuántas hay. Practicamos con piezas grandes y seguras, junto a un adulto.",
+    "simpler": "Cuenta el grupo, añade una pieza y cuenta otra vez. Hay una más que antes.",
+    "example": "Tienes dos bloques grandes. Añades otro bloque. Ahora cuentas uno, dos y tres: hay tres bloques.",
+    "why": "Relacionar la acción de añadir con el nuevo recuento ayuda a construir el significado de una cantidad mayor.",
+    "misconception": "Mover un objeto no es lo mismo que añadir otro.",
+    "hints": [
+      "Comprueba si ha entrado una pieza nueva o solo se han movido las que había.",
+      "Cuenta el grupo, añade una pieza y cuenta otra vez. Hay una más que antes.",
+      "Tienes dos bloques grandes. Añades otro bloque. Ahora cuentas uno, dos y tres: hay tres bloques."
+    ],
+    "quiz": [
+      {
+        "id": "i-one-more:q0",
+        "question": "Tienes dos bloques y añades uno. ¿Cuántos hay?",
+        "options": [
+          "Uno",
+          "Tres",
+          "Cuatro"
+        ],
+        "answer": "B",
+        "hint": "Comprueba si ha entrado una pieza nueva o solo se han movido las que había.",
+        "level": 1
+      },
+      {
+        "id": "i-one-more:q1",
+        "question": "Tienes tres bloques y añades uno. ¿Cuántos hay?",
+        "options": [
+          "Cuatro",
+          "Dos",
+          "Tres"
+        ],
+        "answer": "A",
+        "hint": "Comprueba si ha entrado una pieza nueva o solo se han movido las que había.",
+        "level": 2
+      },
+      {
+        "id": "i-one-more:q2",
+        "question": "Mueves tres bloques sin añadir ni quitar ninguno. ¿Cuántos siguen siendo?",
+        "options": [
+          "Cuatro",
+          "Dos",
+          "Tres"
+        ],
+        "answer": "C",
+        "hint": "Comprueba si ha entrado una pieza nueva o solo se han movido las que había.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+    "curriculum_source_key": "BOE-A-2022-1654",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "i-one-less",
+    "stage": "infantil",
+    "subject": "Descubrimiento y exploración del entorno",
+    "title": "Quitar uno",
+    "grade_min": 4,
+    "grade_max": 5,
+    "school_years": [
+      "Infantil · 4 años",
+      "Infantil · 5 años"
+    ],
+    "aliases": [
+      "Quitar uno",
+      "quitar uno",
+      "uno menos",
+      "quitar una pieza"
+    ],
+    "explanation": "Si quitamos una pieza de un grupo y la dejamos fuera, queda una pieza menos dentro del grupo. Contamos las que siguen allí. Antes de responder, miramos qué grupo estamos contando; la pieza apartada sigue existiendo, pero ya no pertenece a ese grupo.",
+    "simpler": "Aparta una pieza y cuenta solo las que quedan en el grupo.",
+    "example": "En una bandeja hay tres bloques grandes. Un adulto te ayuda a sacar uno y dejarlo al lado. Dentro de la bandeja quedan dos bloques.",
+    "why": "Distinguir el conjunto que contamos permite comprender quitar sin confundir una ubicación con la existencia del objeto.",
+    "misconception": "Sacar una pieza del grupo no significa que desaparezca del mundo.",
+    "hints": [
+      "Señala el grupo que vas a contar y separa la pieza que has quitado.",
+      "Aparta una pieza y cuenta solo las que quedan en el grupo.",
+      "En una bandeja hay tres bloques grandes. Un adulto te ayuda a sacar uno y dejarlo al lado. Dentro de la bandeja quedan dos bloques."
+    ],
+    "quiz": [
+      {
+        "id": "i-one-less:q0",
+        "question": "Hay tres bloques en una bandeja y sacas uno. ¿Cuántos quedan dentro?",
+        "options": [
+          "Dos",
+          "Tres",
+          "Cuatro"
+        ],
+        "answer": "A",
+        "hint": "Señala el grupo que vas a contar y separa la pieza que has quitado.",
+        "level": 1
+      },
+      {
+        "id": "i-one-less:q1",
+        "question": "Hay dos bloques en una bandeja y sacas uno. ¿Cuántos quedan dentro?",
+        "options": [
+          "Dos",
+          "Uno",
+          "Ninguno"
+        ],
+        "answer": "B",
+        "hint": "Señala el grupo que vas a contar y separa la pieza que has quitado.",
+        "level": 2
+      },
+      {
+        "id": "i-one-less:q2",
+        "question": "Al contar los bloques que quedan dentro de la bandeja, cuentas…",
+        "options": [
+          "Siempre también los de fuera",
+          "Solo el bloque que sacaste",
+          "Los que están dentro"
+        ],
+        "answer": "C",
+        "hint": "Señala el grupo que vas a contar y separa la pieza que has quitado.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+    "curriculum_source_key": "BOE-A-2022-1654",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "i-hands",
+    "stage": "infantil",
+    "subject": "Crecimiento en armonía",
+    "title": "Cuidar la higiene de las manos",
+    "grade_min": 3,
+    "grade_max": 5,
+    "school_years": [
+      "Infantil · 3 años",
+      "Infantil · 4 años",
+      "Infantil · 5 años"
+    ],
+    "aliases": [
+      "Cuidar la higiene de las manos",
+      "higiene de manos",
+      "lavarse las manos",
+      "manos limpias"
+    ],
+    "explanation": "Cuidamos las manos con agua y jabón, siguiendo la ayuda de una persona adulta. Lo hacemos, por ejemplo, antes de comer y después de ir al baño. Que las manos parezcan limpias no significa que no necesiten lavarse. Si el grifo o el jabón no están a nuestro alcance, pedimos ayuda.",
+    "simpler": "Antes de comer, pide ayuda para lavarte las manos con agua y jabón. No hace falta poder hacerlo todo sin ayuda.",
+    "example": "Vas a merendar después de jugar. Con ayuda si la necesitas, te lavas las manos y las secas antes de empezar a comer.",
+    "why": "Una rutina compartida ayuda a recordar el cuidado en momentos concretos, sin exigir autonomía antes de estar preparado.",
+    "misconception": "El aspecto de las manos no cuenta todo sobre su limpieza.",
+    "hints": [
+      "Piensa en el cuidado cotidiano y en pedir ayuda para hacerlo con seguridad.",
+      "Antes de comer, pide ayuda para lavarte las manos con agua y jabón. No hace falta poder hacerlo todo sin ayuda.",
+      "Vas a merendar después de jugar. Con ayuda si la necesitas, te lavas las manos y las secas antes de empezar a comer."
+    ],
+    "quiz": [
+      {
+        "id": "i-hands:q0",
+        "question": "Antes de comer, una rutina de cuidado es…",
+        "options": [
+          "Lavarse las manos",
+          "Ensuciarlas a propósito",
+          "Esconder el jabón"
+        ],
+        "answer": "A",
+        "hint": "Piensa en el cuidado cotidiano y en pedir ayuda para hacerlo con seguridad.",
+        "level": 1
+      },
+      {
+        "id": "i-hands:q1",
+        "question": "Si no llegas al grifo con seguridad, puedes…",
+        "options": [
+          "Trepar por cualquier mueble",
+          "Pedir ayuda a una persona adulta",
+          "Dejar correr el agua sin usarla"
+        ],
+        "answer": "B",
+        "hint": "Piensa en el cuidado cotidiano y en pedir ayuda para hacerlo con seguridad.",
+        "level": 2
+      },
+      {
+        "id": "i-hands:q2",
+        "question": "Unas manos que parecen limpias…",
+        "options": [
+          "Nunca necesitan lavarse",
+          "Siempre están llenas de pintura",
+          "También pueden necesitar lavarse"
+        ],
+        "answer": "C",
+        "hint": "Piensa en el cuidado cotidiano y en pedir ayuda para hacerlo con seguridad.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+    "curriculum_source_key": "BOE-A-2022-1654",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "i-observe-change",
+    "stage": "infantil",
+    "subject": "Descubrimiento y exploración del entorno",
+    "title": "Observar y contar un cambio",
+    "grade_min": 4,
+    "grade_max": 5,
+    "school_years": [
+      "Infantil · 4 años",
+      "Infantil · 5 años"
+    ],
+    "aliases": [
+      "Observar y contar un cambio",
+      "observar cambios",
+      "antes y despues de un cambio",
+      "registrar un cambio"
+    ],
+    "explanation": "Observar es fijarnos con atención en lo que ocurre. Podemos mirar cómo estaba algo antes y cómo está después, y describir lo que cambió. Si no sabemos por qué pasó, podemos decir que todavía no lo sabemos. Un dibujo ayuda a recordar lo que vimos.",
+    "simpler": "Mira antes y después. Cuenta lo que ves sin inventar lo que no has podido observar.",
+    "example": "En una foto una planta tiene dos hojas. En otra foto posterior se ven tres. Podemos decir que ahora vemos una hoja más; las fotos, por sí solas, no cuentan todo lo que ocurrió entre ellas.",
+    "why": "Describir primero y preguntar después permite explorar con curiosidad sin confundir observaciones con explicaciones inventadas.",
+    "misconception": "Una suposición no es lo mismo que algo que hemos observado.",
+    "hints": [
+      "Distingue lo que se ve de lo que estamos imaginando para explicarlo.",
+      "Mira antes y después. Cuenta lo que ves sin inventar lo que no has podido observar.",
+      "En una foto una planta tiene dos hojas. En otra foto posterior se ven tres. Podemos decir que ahora vemos una hoja más; las fotos, por sí solas, no cuentan todo lo que ocurrió entre ellas."
+    ],
+    "quiz": [
+      {
+        "id": "i-observe-change:q0",
+        "question": "En una foto se ven dos hojas y en otra posterior tres. ¿Qué observamos?",
+        "options": [
+          "Que la maceta cambió de color necesariamente",
+          "Una hoja más visible",
+          "Que alguien la pintó"
+        ],
+        "answer": "B",
+        "hint": "Distingue lo que se ve de lo que estamos imaginando para explicarlo.",
+        "level": 1
+      },
+      {
+        "id": "i-observe-change:q1",
+        "question": "Para recordar lo que observamos podemos…",
+        "options": [
+          "Hacer un dibujo",
+          "Cambiar la historia cada vez",
+          "Decir que vimos algo que no vimos"
+        ],
+        "answer": "A",
+        "hint": "Distingue lo que se ve de lo que estamos imaginando para explicarlo.",
+        "level": 2
+      },
+      {
+        "id": "i-observe-change:q2",
+        "question": "Si no sabemos la causa de un cambio, podemos decir…",
+        "options": [
+          "Que conocemos todas las causas",
+          "Que no hace falta mirar",
+          "Que todavía no lo sabemos"
+        ],
+        "answer": "C",
+        "hint": "Distingue lo que se ve de lo que estamos imaginando para explicarlo.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+    "curriculum_source_key": "BOE-A-2022-1654",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "i-sound-source",
+    "stage": "infantil",
+    "subject": "Comunicación y representación de la realidad",
+    "title": "De dónde viene un sonido",
+    "grade_min": 3,
+    "grade_max": 5,
+    "school_years": [
+      "Infantil · 3 años",
+      "Infantil · 4 años",
+      "Infantil · 5 años"
+    ],
+    "aliases": [
+      "De dónde viene un sonido",
+      "de donde viene un sonido",
+      "origen de un sonido",
+      "fuentes de sonido"
+    ],
+    "explanation": "Los sonidos pueden venir de fuentes diferentes, como una voz, un instrumento o una puerta. Escuchamos a un volumen cómodo y buscamos pistas para saber qué suena. No siempre basta oír un sonido una vez para estar seguros. Quien no lo oiga puede explorar la fuente mediante otras señales con ayuda.",
+    "simpler": "Busca qué objeto o persona está produciendo el sonido. Si dudas, puedes pedir que te lo muestren.",
+    "example": "Un adulto mueve suavemente una maraca y después la deja quieta. Relacionamos el sonido que se escucha con el movimiento de esa maraca, sin acercarla demasiado a los oídos.",
+    "why": "Buscar y comprobar pistas permite identificar fuentes respetando distintas formas de percibir y participar.",
+    "misconception": "Parecerse a un sonido conocido no garantiza que tenga la misma fuente.",
+    "hints": [
+      "Relaciona el sonido con lo que ocurre a la vez y compruébalo con ayuda.",
+      "Busca qué objeto o persona está produciendo el sonido. Si dudas, puedes pedir que te lo muestren.",
+      "Un adulto mueve suavemente una maraca y después la deja quieta. Relacionamos el sonido que se escucha con el movimiento de esa maraca, sin acercarla demasiado a los oídos."
+    ],
+    "quiz": [
+      {
+        "id": "i-sound-source:q0",
+        "question": "Un adulto agita suavemente una maraca que suena. ¿Cuál es la fuente del sonido?",
+        "options": [
+          "El color de la mesa",
+          "La sombra de la maraca",
+          "La maraca en movimiento"
+        ],
+        "answer": "C",
+        "hint": "Relaciona el sonido con lo que ocurre a la vez y compruébalo con ayuda.",
+        "level": 1
+      },
+      {
+        "id": "i-sound-source:q1",
+        "question": "Si no sabes qué ha sonado, puedes…",
+        "options": [
+          "Pedir más pistas",
+          "Afirmar cualquier cosa como segura",
+          "Tapar todas las fuentes"
+        ],
+        "answer": "A",
+        "hint": "Relaciona el sonido con lo que ocurre a la vez y compruébalo con ayuda.",
+        "level": 2
+      },
+      {
+        "id": "i-sound-source:q2",
+        "question": "Para explorar sonidos elegimos…",
+        "options": [
+          "Siempre el volumen máximo",
+          "Un volumen cómodo y seguro",
+          "Acercarlos mucho al oído"
+        ],
+        "answer": "B",
+        "hint": "Relaciona el sonido con lo que ocurre a la vez y compruébalo con ayuda.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+    "curriculum_source_key": "BOE-A-2022-1654",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-double-half",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "El doble y la mitad",
+    "grade_min": 2,
+    "grade_max": 6,
+    "school_years": [
+      "2º de Primaria",
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "El doble y la mitad",
+      "doble y mitad",
+      "el doble",
+      "la mitad"
+    ],
+    "explanation": "El doble de una cantidad se obtiene reuniendo dos cantidades iguales a ella. La mitad resulta de repartirla en dos partes iguales y tomar una. Son relaciones distintas: no basta separar en dos grupos si no tienen la misma cantidad. En números naturales, algunas cantidades no se pueden repartir en dos grupos enteros iguales.",
+    "simpler": "Para el doble, junta dos grupos iguales. Para la mitad, reparte en dos grupos iguales y mira uno.",
+    "example": "El doble de 6 es 6 + 6 = 12. La mitad de 12 es 6, porque 6 y 6 forman 12. Si los grupos fueran 5 y 7, ninguno sería la mitad de 12.",
+    "why": "El doble repite la misma cantidad dos veces; la mitad recupera una de esas partes iguales.",
+    "misconception": "Cualquier reparto en dos grupos no representa necesariamente dos mitades.",
+    "hints": [
+      "Comprueba que las dos partes o los dos grupos sean iguales.",
+      "Para el doble, junta dos grupos iguales. Para la mitad, reparte en dos grupos iguales y mira uno.",
+      "El doble de 6 es 6 + 6 = 12. La mitad de 12 es 6, porque 6 y 6 forman 12. Si los grupos fueran 5 y 7, ninguno sería la mitad de 12."
+    ],
+    "quiz": [
+      {
+        "id": "p-double-half:q0",
+        "question": "El doble de 7 es…",
+        "options": [
+          "9",
+          "14",
+          "21"
+        ],
+        "answer": "B",
+        "hint": "Comprueba que las dos partes o los dos grupos sean iguales.",
+        "level": 1
+      },
+      {
+        "id": "p-double-half:q1",
+        "question": "La mitad de 18 es…",
+        "options": [
+          "9",
+          "8",
+          "36"
+        ],
+        "answer": "A",
+        "hint": "Comprueba que las dos partes o los dos grupos sean iguales.",
+        "level": 2
+      },
+      {
+        "id": "p-double-half:q2",
+        "question": "¿Qué reparto muestra dos mitades de 10 fichas?",
+        "options": [
+          "4 y 6",
+          "3 y 7",
+          "5 y 5"
+        ],
+        "answer": "C",
+        "hint": "Comprueba que las dos partes o los dos grupos sean iguales.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-carry-add",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "Sumar reagrupando decenas",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de Primaria",
+      "3º de Primaria",
+      "4º de Primaria"
+    ],
+    "aliases": [
+      "Sumar reagrupando decenas",
+      "sumas con llevadas",
+      "sumar reagrupando",
+      "reagrupar en una suma"
+    ],
+    "explanation": "En el sistema decimal, diez unidades equivalen a una decena. Al sumar por columnas, alineamos unidades con unidades y decenas con decenas. Si reunimos diez o más unidades, podemos reagrupar diez como una decena sin cambiar el valor. La llamada llevada representa esa nueva decena.",
+    "simpler": "Cuando las unidades llegan a diez, cambiamos diez unidades por una decena. No aparece un número de la nada.",
+    "example": "En 28 + 17, las unidades suman 8 + 7 = 15: una decena y cinco unidades. Las decenas son 2 + 1 + 1 = 4. El resultado es 45.",
+    "why": "Reagrupar conserva el valor porque sustituye diez unidades por una decena equivalente.",
+    "misconception": "La llevada tiene un valor posicional, no es un uno que pueda colocarse en cualquier columna.",
+    "hints": [
+      "Separa decenas y unidades; la decena reagrupada también debe contarse.",
+      "Cuando las unidades llegan a diez, cambiamos diez unidades por una decena. No aparece un número de la nada.",
+      "En 28 + 17, las unidades suman 8 + 7 = 15: una decena y cinco unidades. Las decenas son 2 + 1 + 1 = 4. El resultado es 45."
+    ],
+    "quiz": [
+      {
+        "id": "p-carry-add:q0",
+        "question": "En 28 + 17, el resultado es…",
+        "options": [
+          "45",
+          "35",
+          "315"
+        ],
+        "answer": "A",
+        "hint": "Separa decenas y unidades; la decena reagrupada también debe contarse.",
+        "level": 1
+      },
+      {
+        "id": "p-carry-add:q1",
+        "question": "Quince unidades equivalen a…",
+        "options": [
+          "Una decena y quince unidades",
+          "Una decena y cinco unidades",
+          "Cinco decenas y una unidad"
+        ],
+        "answer": "B",
+        "hint": "Separa decenas y unidades; la decena reagrupada también debe contarse.",
+        "level": 2
+      },
+      {
+        "id": "p-carry-add:q2",
+        "question": "Al sumar por columnas, las unidades se colocan…",
+        "options": [
+          "Debajo de las decenas siempre",
+          "Sin importar la posición",
+          "Debajo de las unidades"
+        ],
+        "answer": "C",
+        "hint": "Separa decenas y unidades; la decena reagrupada también debe contarse.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-estimate",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "Estimar un resultado",
+    "grade_min": 3,
+    "grade_max": 6,
+    "school_years": [
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Estimar un resultado",
+      "estimar resultados",
+      "estimacion de resultados",
+      "calculo aproximado"
+    ],
+    "explanation": "Estimar consiste en obtener un resultado aproximado útil para una finalidad. Podemos redondear cantidades para calcular con rapidez y comprobar si un resultado exacto es razonable. La estimación no se presenta como igualdad exacta y su precisión debe ajustarse a la situación.",
+    "simpler": "Cambia los números por otros cercanos y fáciles. Recuerda que el resultado será aproximado.",
+    "example": "Para estimar 198 + 304, usamos 200 + 300 = 500. La suma exacta es 502. Decimos que es aproximadamente 500, no que 198 + 304 sea exactamente 500.",
+    "why": "Una aproximación facilita comprobar órdenes de magnitud sin confundir rapidez con exactitud.",
+    "misconception": "El signo de igualdad no debe sustituir a «aproximadamente» cuando los valores son distintos.",
+    "hints": [
+      "Compara el tamaño de los datos y señala cuándo usas una aproximación.",
+      "Cambia los números por otros cercanos y fáciles. Recuerda que el resultado será aproximado.",
+      "Para estimar 198 + 304, usamos 200 + 300 = 500. La suma exacta es 502. Decimos que es aproximadamente 500, no que 198 + 304 sea exactamente 500."
+    ],
+    "quiz": [
+      {
+        "id": "p-estimate:q0",
+        "question": "Redondeando a centenas, 198 + 304 es aproximadamente…",
+        "options": [
+          "500",
+          "50",
+          "5.000"
+        ],
+        "answer": "A",
+        "hint": "Compara el tamaño de los datos y señala cuándo usas una aproximación.",
+        "level": 1
+      },
+      {
+        "id": "p-estimate:q1",
+        "question": "Una estimación es…",
+        "options": [
+          "Siempre idéntica al resultado exacto",
+          "Un valor aproximado útil",
+          "Una respuesta sin relación con los datos"
+        ],
+        "answer": "B",
+        "hint": "Compara el tamaño de los datos y señala cuándo usas una aproximación.",
+        "level": 2
+      },
+      {
+        "id": "p-estimate:q2",
+        "question": "Si una suma cercana a 200 + 300 da 5.020, conviene…",
+        "options": [
+          "Aceptarla solo porque tiene cifras",
+          "Redondearla a diez mil",
+          "Revisar el cálculo"
+        ],
+        "answer": "C",
+        "hint": "Compara el tamaño de los datos y señala cuándo usas una aproximación.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-divisibility",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "Criterios de divisibilidad",
+    "grade_min": 5,
+    "grade_max": 6,
+    "school_years": [
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Criterios de divisibilidad",
+      "criterios de divisibilidad",
+      "divisibilidad por dos tres cinco y diez"
+    ],
+    "explanation": "Un número natural es divisible por otro cuando la división es exacta. Es divisible por 2 si acaba en cifra par; por 5 si acaba en 0 o 5; por 10 si acaba en 0. Para el 3, sumamos sus cifras y comprobamos si esa suma es múltiplo de 3. Cada criterio corresponde a un divisor concreto.",
+    "simpler": "Mira la última cifra para 2, 5 y 10. Para 3, suma las cifras y comprueba la suma.",
+    "example": "El 246 es divisible por 2 porque termina en 6, y por 3 porque 2 + 4 + 6 = 12. No es divisible por 5 ni por 10. El 135 sí es divisible por 3 y por 5.",
+    "why": "Los criterios son propiedades del sistema decimal que permiten comprobar divisiones sin realizarlas completas.",
+    "misconception": "Tener tres cifras no implica ser divisible por 3.",
+    "hints": [
+      "Elige el criterio del divisor que te preguntan y no lo intercambies con otro.",
+      "Mira la última cifra para 2, 5 y 10. Para 3, suma las cifras y comprueba la suma.",
+      "El 246 es divisible por 2 porque termina en 6, y por 3 porque 2 + 4 + 6 = 12. No es divisible por 5 ni por 10. El 135 sí es divisible por 3 y por 5."
+    ],
+    "quiz": [
+      {
+        "id": "p-divisibility:q0",
+        "question": "¿Cuál es divisible por 10?",
+        "options": [
+          "145",
+          "150",
+          "152"
+        ],
+        "answer": "B",
+        "hint": "Elige el criterio del divisor que te preguntan y no lo intercambies con otro.",
+        "level": 1
+      },
+      {
+        "id": "p-divisibility:q1",
+        "question": "El 123 es divisible por 3 porque…",
+        "options": [
+          "1 + 2 + 3 = 6, múltiplo de 3",
+          "Termina en 3 y eso siempre basta",
+          "Tiene tres cifras y eso siempre basta"
+        ],
+        "answer": "A",
+        "hint": "Elige el criterio del divisor que te preguntan y no lo intercambies con otro.",
+        "level": 2
+      },
+      {
+        "id": "p-divisibility:q2",
+        "question": "¿Cuál es divisible por 5 pero no por 2?",
+        "options": [
+          "120",
+          "140",
+          "135"
+        ],
+        "answer": "C",
+        "hint": "Elige el criterio del divisor que te preguntan y no lo intercambies con otro.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-decimal-add",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "Sumar números decimales",
+    "grade_min": 4,
+    "grade_max": 6,
+    "school_years": [
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Sumar números decimales",
+      "sumar decimales",
+      "suma de numeros decimales"
+    ],
+    "explanation": "Al sumar decimales, reunimos unidades del mismo orden: unidades con unidades, décimas con décimas y centésimas con centésimas. En columnas, alineamos las comas. Podemos añadir ceros a la derecha de la parte decimal sin cambiar el valor, para ver mejor los órdenes que faltan.",
+    "simpler": "Coloca las comas una debajo de otra. Un cero final puede ayudarte: 2,4 y 2,40 valen lo mismo.",
+    "example": "Para 2,4 + 0,35 escribimos 2,40 + 0,35 = 2,75. No alineamos solo el último dígito: importan las posiciones respecto a la coma.",
+    "why": "La suma exige unidades comparables; el valor posicional permite reunir partes del mismo tamaño.",
+    "misconception": "Tener más cifras decimales no significa automáticamente ser mayor.",
+    "hints": [
+      "Identifica décimas y centésimas antes de sumar.",
+      "Coloca las comas una debajo de otra. Un cero final puede ayudarte: 2,4 y 2,40 valen lo mismo.",
+      "Para 2,4 + 0,35 escribimos 2,40 + 0,35 = 2,75. No alineamos solo el último dígito: importan las posiciones respecto a la coma."
+    ],
+    "quiz": [
+      {
+        "id": "p-decimal-add:q0",
+        "question": "2,4 + 0,35 es…",
+        "options": [
+          "2,39",
+          "2,75",
+          "5,9"
+        ],
+        "answer": "B",
+        "hint": "Identifica décimas y centésimas antes de sumar.",
+        "level": 1
+      },
+      {
+        "id": "p-decimal-add:q1",
+        "question": "¿Cuál tiene el mismo valor que 3,5?",
+        "options": [
+          "3,50",
+          "3,05",
+          "35,0"
+        ],
+        "answer": "A",
+        "hint": "Identifica décimas y centésimas antes de sumar.",
+        "level": 2
+      },
+      {
+        "id": "p-decimal-add:q2",
+        "question": "Para sumar decimales por columnas alineamos…",
+        "options": [
+          "Solo la última cifra",
+          "Los números por su longitud",
+          "Las comas y los órdenes decimales"
+        ],
+        "answer": "C",
+        "hint": "Identifica décimas y centésimas antes de sumar.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-double-entry",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "Leer una tabla de doble entrada",
+    "grade_min": 3,
+    "grade_max": 6,
+    "school_years": [
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Leer una tabla de doble entrada",
+      "tabla de doble entrada",
+      "tablas de doble entrada"
+    ],
+    "explanation": "Una tabla de doble entrada organiza información mediante filas y columnas. Para leer una casilla identificamos ambas etiquetas y buscamos su cruce. Antes de sumar datos, comprobamos qué representan y si los grupos se solapan. Una casilla no describe necesariamente toda la tabla.",
+    "simpler": "Busca una etiqueta de fila y una de columna. La respuesta está en el lugar donde se cruzan.",
+    "example": "Una tabla registra libros: fila lunes, columna cuentos, 4; lunes, poesía, 2; martes, cuentos, 3; martes, poesía, 1. El martes se registró un libro de poesía.",
+    "why": "Las dos entradas precisan qué grupo y qué categoría se están describiendo a la vez.",
+    "misconception": "Un dato de una casilla no representa por sí solo el total de una fila o de la tabla.",
+    "hints": [
+      "Lee las dos etiquetas antes de interpretar el número de la casilla.",
+      "Busca una etiqueta de fila y una de columna. La respuesta está en el lugar donde se cruzan.",
+      "Una tabla registra libros: fila lunes, columna cuentos, 4; lunes, poesía, 2; martes, cuentos, 3; martes, poesía, 1. El martes se registró un libro de poesía."
+    ],
+    "quiz": [
+      {
+        "id": "p-double-entry:q0",
+        "question": "En una tabla, el lunes tiene 4 cuentos y 2 libros de poesía. ¿Cuántos libros se registraron ese lunes en total, sin repeticiones?",
+        "options": [
+          "6",
+          "4",
+          "2"
+        ],
+        "answer": "A",
+        "hint": "Lee las dos etiquetas antes de interpretar el número de la casilla.",
+        "level": 1
+      },
+      {
+        "id": "p-double-entry:q1",
+        "question": "La casilla de martes y poesía se localiza cruzando…",
+        "options": [
+          "Dos filas cualesquiera",
+          "La fila martes y la columna poesía",
+          "Solo el título"
+        ],
+        "answer": "B",
+        "hint": "Lee las dos etiquetas antes de interpretar el número de la casilla.",
+        "level": 2
+      },
+      {
+        "id": "p-double-entry:q2",
+        "question": "Si una casilla dice «martes, cuentos: 3», el 3 representa…",
+        "options": [
+          "Todos los libros de la semana",
+          "Solo los poemas del lunes",
+          "Los cuentos registrados el martes"
+        ],
+        "answer": "C",
+        "hint": "Lee las dos etiquetas antes de interpretar el número de la casilla.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-grid-coordinates",
+    "stage": "primaria",
+    "subject": "Matemáticas",
+    "title": "Coordenadas en una cuadrícula",
+    "grade_min": 5,
+    "grade_max": 6,
+    "school_years": [
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Coordenadas en una cuadrícula",
+      "coordenadas en cuadricula",
+      "coordenadas cartesianas basicas",
+      "pares ordenados"
+    ],
+    "explanation": "En una cuadrícula cartesiana, un punto se localiza con un par ordenado (x, y). Desde el origen, la primera coordenada indica la posición horizontal y la segunda, la vertical. Hay que comprobar la escala y el sentido de los ejes. Cambiar el orden suele cambiar el punto.",
+    "simpler": "Lee primero x y después y. En la cuadrícula habitual, avanzas horizontalmente y luego verticalmente.",
+    "example": "Con ejes de unidad en unidad y sentidos positivos hacia la derecha y arriba, (3, 2) está tres unidades a la derecha y dos arriba del origen. No es el mismo punto que (2, 3).",
+    "why": "Un par ordenado fija dos referencias independientes; su orden y su escala forman parte de la información.",
+    "misconception": "Un cuadro no tiene que representar siempre una unidad.",
+    "hints": [
+      "Mantén el orden horizontal-vertical y utiliza la escala indicada.",
+      "Lee primero x y después y. En la cuadrícula habitual, avanzas horizontalmente y luego verticalmente.",
+      "Con ejes de unidad en unidad y sentidos positivos hacia la derecha y arriba, (3, 2) está tres unidades a la derecha y dos arriba del origen. No es el mismo punto que (2, 3)."
+    ],
+    "quiz": [
+      {
+        "id": "p-grid-coordinates:q0",
+        "question": "En (3, 2), la coordenada horizontal es…",
+        "options": [
+          "2",
+          "3",
+          "5"
+        ],
+        "answer": "B",
+        "hint": "Mantén el orden horizontal-vertical y utiliza la escala indicada.",
+        "level": 1
+      },
+      {
+        "id": "p-grid-coordinates:q1",
+        "question": "Con los ejes habituales, dos unidades a la derecha y cuatro arriba del origen corresponden a…",
+        "options": [
+          "(2, 4)",
+          "(4, 2)",
+          "(2, 2)"
+        ],
+        "answer": "A",
+        "hint": "Mantén el orden horizontal-vertical y utiliza la escala indicada.",
+        "level": 2
+      },
+      {
+        "id": "p-grid-coordinates:q2",
+        "question": "Antes de contar cuadros debemos comprobar…",
+        "options": [
+          "Solo su color",
+          "Solo el tamaño de la hoja",
+          "La escala de los ejes"
+        ],
+        "answer": "C",
+        "hint": "Mantén el orden horizontal-vertical y utiliza la escala indicada.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-singular-plural",
+    "stage": "primaria",
+    "subject": "Lengua Castellana y Literatura",
+    "title": "Singular y plural",
+    "grade_min": 1,
+    "grade_max": 3,
+    "school_years": [
+      "1º de Primaria",
+      "2º de Primaria",
+      "3º de Primaria"
+    ],
+    "aliases": [
+      "Singular y plural",
+      "singular y plural",
+      "numero del sustantivo"
+    ],
+    "explanation": "En usos sencillos, el singular se refiere a una unidad y el plural a varias. Muchas palabras forman el plural añadiendo -s o -es, pero existen formas especiales. Las palabras que acompañan al sustantivo deben concordar con él cuando corresponde. Miramos la frase completa.",
+    "simpler": "Un libro y dos libros no se escriben igual. Comprueba también las palabras que los acompañan.",
+    "example": "Decimos «la casa blanca» y «las casas blancas». En este ejemplo cambian el artículo, el sustantivo y el adjetivo para mantener la concordancia.",
+    "why": "La concordancia ayuda a relacionar las palabras que forman un mismo grupo dentro de la oración.",
+    "misconception": "No todos los plurales se forman de la misma manera.",
+    "hints": [
+      "Observa si la frase habla de uno o de varios y revisa la concordancia.",
+      "Un libro y dos libros no se escriben igual. Comprueba también las palabras que los acompañan.",
+      "Decimos «la casa blanca» y «las casas blancas». En este ejemplo cambian el artículo, el sustantivo y el adjetivo para mantener la concordancia."
+    ],
+    "quiz": [
+      {
+        "id": "p-singular-plural:q0",
+        "question": "El plural de «libro» es…",
+        "options": [
+          "Libres",
+          "Libros",
+          "Libra"
+        ],
+        "answer": "B",
+        "hint": "Observa si la frase habla de uno o de varios y revisa la concordancia.",
+        "level": 1
+      },
+      {
+        "id": "p-singular-plural:q1",
+        "question": "¿Qué grupo está bien escrito?",
+        "options": [
+          "Las casas blancas",
+          "Las casa blanco",
+          "La casas blancas"
+        ],
+        "answer": "A",
+        "hint": "Observa si la frase habla de uno o de varios y revisa la concordancia.",
+        "level": 2
+      },
+      {
+        "id": "p-singular-plural:q2",
+        "question": "En «un árbol» hablamos de…",
+        "options": [
+          "Varios árboles",
+          "Ningún árbol",
+          "Un árbol"
+        ],
+        "answer": "C",
+        "hint": "Observa si la frase habla de uno o de varios y revisa la concordancia.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-dialogue",
+    "stage": "primaria",
+    "subject": "Lengua Castellana y Literatura",
+    "title": "El diálogo en una narración",
+    "grade_min": 3,
+    "grade_max": 6,
+    "school_years": [
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "El diálogo en una narración",
+      "dialogo narrativo",
+      "dialogo en una narracion",
+      "raya de dialogo"
+    ],
+    "explanation": "El diálogo reproduce intervenciones de personajes. En muchas narraciones en español se usa la raya para marcar esas intervenciones. Hay que distinguir lo que dice un personaje de lo que cuenta el narrador. La puntuación ayuda, pero también necesitamos comprender quién habla y en qué situación.",
+    "simpler": "Pregunta quién está hablando y qué parte cuenta el narrador. La raya no es el mismo signo que el guion corto.",
+    "example": "En «—Llegaré pronto —dijo Ana», «Llegaré pronto» es la intervención de Ana y «dijo Ana» identifica a quien habla. La frase no obliga a que el narrador sea Ana.",
+    "why": "Distinguir voces ayuda a comprender el intercambio y evita atribuir al narrador todas las opiniones de los personajes.",
+    "misconception": "Todo lo escrito en una narración no está dicho por el mismo personaje.",
+    "hints": [
+      "Separa las palabras pronunciadas de la indicación sobre quién las pronuncia.",
+      "Pregunta quién está hablando y qué parte cuenta el narrador. La raya no es el mismo signo que el guion corto.",
+      "En «—Llegaré pronto —dijo Ana», «Llegaré pronto» es la intervención de Ana y «dijo Ana» identifica a quien habla. La frase no obliga a que el narrador sea Ana."
+    ],
+    "quiz": [
+      {
+        "id": "p-dialogue:q0",
+        "question": "En «—Llegaré pronto —dijo Ana», ¿quién dice «Llegaré pronto»?",
+        "options": [
+          "Ana",
+          "El libro",
+          "Nadie"
+        ],
+        "answer": "A",
+        "hint": "Separa las palabras pronunciadas de la indicación sobre quién las pronuncia.",
+        "level": 1
+      },
+      {
+        "id": "p-dialogue:q1",
+        "question": "La parte «dijo Ana» sirve para…",
+        "options": [
+          "Cambiar el idioma",
+          "Identificar a quien habla",
+          "Indicar necesariamente un lugar"
+        ],
+        "answer": "B",
+        "hint": "Separa las palabras pronunciadas de la indicación sobre quién las pronuncia.",
+        "level": 2
+      },
+      {
+        "id": "p-dialogue:q2",
+        "question": "El narrador y un personaje…",
+        "options": [
+          "Son siempre la misma persona",
+          "Nunca pueden relacionarse",
+          "Cumplen funciones distintas aunque puedan coincidir en una obra"
+        ],
+        "answer": "C",
+        "hint": "Separa las palabras pronunciadas de la indicación sobre quién las pronuncia.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-main-idea",
+    "stage": "primaria",
+    "subject": "Lengua Castellana y Literatura",
+    "title": "Identificar la idea principal",
+    "grade_min": 3,
+    "grade_max": 6,
+    "school_years": [
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Identificar la idea principal",
+      "idea principal",
+      "idea principal de un texto"
+    ],
+    "explanation": "La idea principal expresa lo más importante de un texto o fragmento. Los detalles aportan información, ejemplos o explicaciones que la desarrollan. No siempre coincide con la primera frase ni con la más larga. Para elegirla comprobamos qué idea organiza mejor el conjunto.",
+    "simpler": "Pregunta de qué trata el fragmento y qué quiere comunicar principalmente. Después separa los ejemplos.",
+    "example": "Lee: «La biblioteca ofrece varias actividades. Los martes hay cuentacuentos y los jueves un taller de dibujo». La idea principal es que la biblioteca ofrece varias actividades; los días y ejemplos la desarrollan.",
+    "why": "Identificar la relación entre idea y detalles permite resumir conservando el sentido, en lugar de copiar frases al azar.",
+    "misconception": "La primera frase no es automáticamente la idea principal de cualquier texto.",
+    "hints": [
+      "Comprueba si tu propuesta explica por qué aparecen juntos los distintos detalles.",
+      "Pregunta de qué trata el fragmento y qué quiere comunicar principalmente. Después separa los ejemplos.",
+      "Lee: «La biblioteca ofrece varias actividades. Los martes hay cuentacuentos y los jueves un taller de dibujo». La idea principal es que la biblioteca ofrece varias actividades; los días y ejemplos la desarrollan."
+    ],
+    "quiz": [
+      {
+        "id": "p-main-idea:q0",
+        "question": "Lee: «La biblioteca ofrece varias actividades. Los martes hay cuentacuentos y los jueves dibujo». La idea principal es…",
+        "options": [
+          "Que solo abre los martes",
+          "Que solo se puede dibujar",
+          "Que ofrece varias actividades"
+        ],
+        "answer": "C",
+        "hint": "Comprueba si tu propuesta explica por qué aparecen juntos los distintos detalles.",
+        "level": 1
+      },
+      {
+        "id": "p-main-idea:q1",
+        "question": "Una idea principal debe…",
+        "options": [
+          "Recoger lo esencial del fragmento",
+          "Incluir siempre cada detalle",
+          "Ser obligatoriamente la primera palabra"
+        ],
+        "answer": "A",
+        "hint": "Comprueba si tu propuesta explica por qué aparecen juntos los distintos detalles.",
+        "level": 2
+      },
+      {
+        "id": "p-main-idea:q2",
+        "question": "Los ejemplos de un texto pueden servir para…",
+        "options": [
+          "Borrar su tema",
+          "Desarrollar una idea",
+          "Hacer imposible resumirlo"
+        ],
+        "answer": "B",
+        "hint": "Comprueba si tu propuesta explica por qué aparecen juntos los distintos detalles.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-weather-observe",
+    "stage": "primaria",
+    "subject": "Conocimiento del Medio",
+    "title": "Observar el tiempo atmosférico",
+    "grade_min": 2,
+    "grade_max": 6,
+    "school_years": [
+      "2º de Primaria",
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "Observar el tiempo atmosférico",
+      "observar el tiempo",
+      "tiempo atmosferico",
+      "registro del tiempo"
+    ],
+    "explanation": "El tiempo atmosférico describe cómo está la atmósfera en un lugar y momento: temperatura, lluvia, viento o nubosidad. Podemos registrar observaciones y medidas con instrumentos adecuados y ayuda. Un solo día no describe el clima de un lugar, que requiere observar periodos mucho más largos.",
+    "simpler": "Anota qué ocurre hoy en un lugar. No decidas cómo es todo su clima por una sola tarde.",
+    "example": "Un registro dice: «Lunes, 10:00, patio del colegio: cielo cubierto y 18 °C». Incluye lugar, momento y observaciones; no permite asegurar qué ocurrirá todo el año.",
+    "why": "Registrar condiciones comparables permite reconocer cambios y patrones sin generalizar a partir de una sola observación.",
+    "misconception": "Tiempo atmosférico y clima no son equivalentes.",
+    "hints": [
+      "Distingue una observación de hoy de un patrón estudiado durante mucho tiempo.",
+      "Anota qué ocurre hoy en un lugar. No decidas cómo es todo su clima por una sola tarde.",
+      "Un registro dice: «Lunes, 10:00, patio del colegio: cielo cubierto y 18 °C». Incluye lugar, momento y observaciones; no permite asegurar qué ocurrirá todo el año."
+    ],
+    "quiz": [
+      {
+        "id": "p-weather-observe:q0",
+        "question": "Un registro de 18 °C esta mañana describe…",
+        "options": [
+          "El tiempo en ese lugar y momento",
+          "Todos los años del lugar",
+          "La altura de una montaña"
+        ],
+        "answer": "A",
+        "hint": "Distingue una observación de hoy de un patrón estudiado durante mucho tiempo.",
+        "level": 1
+      },
+      {
+        "id": "p-weather-observe:q1",
+        "question": "Para comparar observaciones conviene anotar…",
+        "options": [
+          "Solo un dibujo sin contexto",
+          "Lugar y momento",
+          "Solo la fecha de nacimiento"
+        ],
+        "answer": "B",
+        "hint": "Distingue una observación de hoy de un patrón estudiado durante mucho tiempo.",
+        "level": 2
+      },
+      {
+        "id": "p-weather-observe:q2",
+        "question": "Un día de lluvia basta para describir todo el clima de una región…",
+        "options": [
+          "Siempre",
+          "Si es lunes",
+          "No"
+        ],
+        "answer": "C",
+        "hint": "Distingue una observación de hoy de un patrón estudiado durante mucho tiempo.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "p-en-a-an",
+    "stage": "primaria",
+    "subject": "Lengua Extranjera: Inglés",
+    "title": "A y an en inglés",
+    "grade_min": 3,
+    "grade_max": 6,
+    "school_years": [
+      "3º de Primaria",
+      "4º de Primaria",
+      "5º de Primaria",
+      "6º de Primaria"
+    ],
+    "aliases": [
+      "A y an en inglés",
+      "a y an",
+      "articulos a an",
+      "articulo indefinido en ingles"
+    ],
+    "explanation": "A y an acompañan a un nombre contable singular en usos como a book o an apple. Elegimos según el sonido inicial de la palabra que viene inmediatamente después, no solo por su primera letra. A precede a un sonido consonántico y an a un sonido vocálico.",
+    "simpler": "Escucha cómo empieza la palabra siguiente: a book, an apple. La pronunciación importa más que la letra.",
+    "example": "Decimos an apple y a book. También an hour porque la h no se pronuncia en ese caso, y a university porque empieza con un sonido consonántico semejante a una y.",
+    "why": "La elección responde a la pronunciación y permite comprender casos que una regla basada solo en letras no explica.",
+    "misconception": "Empezar por una letra vocálica no exige siempre an si el sonido inicial es consonántico.",
+    "hints": [
+      "Fíjate en el sonido que sigue al artículo, no solo en lo que ves escrito.",
+      "Escucha cómo empieza la palabra siguiente: a book, an apple. La pronunciación importa más que la letra.",
+      "Decimos an apple y a book. También an hour porque la h no se pronuncia en ese caso, y a university porque empieza con un sonido consonántico semejante a una y."
+    ],
+    "quiz": [
+      {
+        "id": "p-en-a-an:q0",
+        "question": "¿Qué expresión es correcta?",
+        "options": [
+          "A apple",
+          "An apple",
+          "An book"
+        ],
+        "answer": "B",
+        "hint": "Fíjate en el sonido que sigue al artículo, no solo en lo que ves escrito.",
+        "level": 1
+      },
+      {
+        "id": "p-en-a-an:q1",
+        "question": "En este uso elegimos a o an según…",
+        "options": [
+          "El sonido inicial de la palabra siguiente",
+          "Siempre la última letra",
+          "El número de páginas"
+        ],
+        "answer": "A",
+        "hint": "Fíjate en el sonido que sigue al artículo, no solo en lo que ves escrito.",
+        "level": 2
+      },
+      {
+        "id": "p-en-a-an:q2",
+        "question": "La expresión habitual es…",
+        "options": [
+          "A hour",
+          "An university",
+          "An hour"
+        ],
+        "answer": "C",
+        "hint": "Fíjate en el sonido que sigue al artículo, no solo en lo que ves escrito.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+    "curriculum_source_key": "BOE-A-2022-3296",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-polynomials",
+    "stage": "eso",
+    "subject": "Matemáticas",
+    "title": "Operar con polinomios",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Operar con polinomios",
+      "polinomios",
+      "operar con polinomios",
+      "terminos semejantes"
+    ],
+    "explanation": "Un polinomio en una variable reúne sumas de términos con exponentes enteros no negativos. Para sumar o restar términos, agrupamos los semejantes: tienen la misma parte literal con los mismos exponentes. Multiplicar exige aplicar la propiedad distributiva. No se suman exponentes al sumar términos.",
+    "simpler": "Suma los coeficientes solo cuando la parte con letras sea igual. Para multiplicar, reparte cada término por los del otro factor.",
+    "example": "3x + 2x = 5x, pero 3x + 2x² no se reduce a 5x³. Por distributividad, 2(x + 3) = 2x + 6.",
+    "why": "Agrupar términos semejantes usa la distributividad; conservar partes distintas evita alterar el valor de la expresión.",
+    "misconception": "Las reglas de multiplicación de potencias no se aplican como si una suma fuera un producto.",
+    "hints": [
+      "Compara las letras y sus exponentes antes de operar con los coeficientes.",
+      "Suma los coeficientes solo cuando la parte con letras sea igual. Para multiplicar, reparte cada término por los del otro factor.",
+      "3x + 2x = 5x, pero 3x + 2x² no se reduce a 5x³. Por distributividad, 2(x + 3) = 2x + 6."
+    ],
+    "quiz": [
+      {
+        "id": "e-polynomials:q0",
+        "question": "3x + 2x es…",
+        "options": [
+          "5x",
+          "5x²",
+          "6x"
+        ],
+        "answer": "A",
+        "hint": "Compara las letras y sus exponentes antes de operar con los coeficientes.",
+        "level": 1
+      },
+      {
+        "id": "e-polynomials:q1",
+        "question": "2(x + 3) equivale a…",
+        "options": [
+          "2x + 3",
+          "2x + 6",
+          "5x"
+        ],
+        "answer": "B",
+        "hint": "Compara las letras y sus exponentes antes de operar con los coeficientes.",
+        "level": 2
+      },
+      {
+        "id": "e-polynomials:q2",
+        "question": "¿Qué términos son semejantes?",
+        "options": [
+          "2x y 2x²",
+          "3x y 3y",
+          "5x² y −2x²"
+        ],
+        "answer": "C",
+        "hint": "Compara las letras y sus exponentes antes de operar con los coeficientes.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-slope",
+    "stage": "eso",
+    "subject": "Matemáticas",
+    "title": "Pendiente de una recta",
+    "grade_min": 3,
+    "grade_max": 4,
+    "school_years": [
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Pendiente de una recta",
+      "pendiente de una recta",
+      "pendiente y ordenada",
+      "funcion afin"
+    ],
+    "explanation": "En una recta no vertical, la pendiente m es el cociente entre el cambio vertical y el horizontal: Δy/Δx, con Δx distinto de cero. En y=mx+b, b es la ordenada en el origen. Una pendiente positiva indica que y aumenta al aumentar x; una negativa, que disminuye. Una recta vertical no tiene pendiente finita definida así.",
+    "simpler": "Calcula cuánto cambia y por cada unidad que cambia x. No confundas ese ritmo de cambio con el punto donde la recta corta el eje vertical.",
+    "example": "Entre (1,3) y (3,7), m=(7−3)/(3−1)=2. En y=2x+1, la pendiente es 2 y la ordenada en el origen es 1.",
+    "why": "La razón de cambios describe la inclinación y permite comparar puntos distintos de una misma recta.",
+    "misconception": "La pendiente y la ordenada en el origen describen propiedades diferentes.",
+    "hints": [
+      "Usa diferencias de coordenadas en el mismo orden y comprueba que Δx no sea cero.",
+      "Calcula cuánto cambia y por cada unidad que cambia x. No confundas ese ritmo de cambio con el punto donde la recta corta el eje vertical.",
+      "Entre (1,3) y (3,7), m=(7−3)/(3−1)=2. En y=2x+1, la pendiente es 2 y la ordenada en el origen es 1."
+    ],
+    "quiz": [
+      {
+        "id": "e-slope:q0",
+        "question": "La pendiente entre (1,3) y (3,7) es…",
+        "options": [
+          "2",
+          "4",
+          "1/2"
+        ],
+        "answer": "A",
+        "hint": "Usa diferencias de coordenadas en el mismo orden y comprueba que Δx no sea cero.",
+        "level": 1
+      },
+      {
+        "id": "e-slope:q1",
+        "question": "En y=3x−2, la ordenada en el origen es…",
+        "options": [
+          "3",
+          "−2",
+          "2"
+        ],
+        "answer": "B",
+        "hint": "Usa diferencias de coordenadas en el mismo orden y comprueba que Δx no sea cero.",
+        "level": 2
+      },
+      {
+        "id": "e-slope:q2",
+        "question": "Una recta vertical tiene…",
+        "options": [
+          "Pendiente cero",
+          "Pendiente uno",
+          "Pendiente no definida como cociente finito Δy/Δx"
+        ],
+        "answer": "C",
+        "hint": "Usa diferencias de coordenadas en el mismo orden y comprueba que Δx no sea cero.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-circle-measures",
+    "stage": "eso",
+    "subject": "Matemáticas",
+    "title": "Longitud de una circunferencia y área del círculo",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Longitud de una circunferencia y área del círculo",
+      "longitud de circunferencia",
+      "area del circulo",
+      "circunferencia y circulo"
+    ],
+    "explanation": "La circunferencia es el contorno; el círculo incluye la región interior. Para radio r, la longitud del contorno es 2πr y el área del círculo es πr². El diámetro vale 2r. Debemos distinguir unidades de longitud y de superficie, y señalar si usamos una aproximación de π.",
+    "simpler": "Pregunta si necesitas el borde o el interior. El borde se mide en centímetros y el área en centímetros cuadrados.",
+    "example": "Un círculo de radio 3 cm tiene diámetro 6 cm, circunferencia de longitud 6π cm y área 9π cm². Son tres magnitudes relacionadas, no intercambiables.",
+    "why": "Longitud y área responden a preguntas distintas y crecen de forma diferente al cambiar el tamaño del círculo.",
+    "misconception": "Usar el diámetro como si fuera el radio altera el resultado.",
+    "hints": [
+      "Identifica radio, diámetro y la magnitud solicitada antes de elegir la fórmula.",
+      "Pregunta si necesitas el borde o el interior. El borde se mide en centímetros y el área en centímetros cuadrados.",
+      "Un círculo de radio 3 cm tiene diámetro 6 cm, circunferencia de longitud 6π cm y área 9π cm². Son tres magnitudes relacionadas, no intercambiables."
+    ],
+    "quiz": [
+      {
+        "id": "e-circle-measures:q0",
+        "question": "Con radio 3 cm, el área es…",
+        "options": [
+          "6π cm²",
+          "9π cm²",
+          "3π cm"
+        ],
+        "answer": "B",
+        "hint": "Identifica radio, diámetro y la magnitud solicitada antes de elegir la fórmula.",
+        "level": 1
+      },
+      {
+        "id": "e-circle-measures:q1",
+        "question": "Con radio 4 cm, el diámetro es…",
+        "options": [
+          "8 cm",
+          "2 cm",
+          "16 cm"
+        ],
+        "answer": "A",
+        "hint": "Identifica radio, diámetro y la magnitud solicitada antes de elegir la fórmula.",
+        "level": 2
+      },
+      {
+        "id": "e-circle-measures:q2",
+        "question": "La longitud de una circunferencia se expresa, por ejemplo, en…",
+        "options": [
+          "cm²",
+          "cm³",
+          "cm"
+        ],
+        "answer": "C",
+        "hint": "Identifica radio, diámetro y la magnitud solicitada antes de elegir la fórmula.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-sampling",
+    "stage": "eso",
+    "subject": "Matemáticas",
+    "title": "Población y muestra estadística",
+    "grade_min": 3,
+    "grade_max": 4,
+    "school_years": [
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Población y muestra estadística",
+      "poblacion y muestra",
+      "muestreo estadistico",
+      "muestra representativa"
+    ],
+    "explanation": "La población es el conjunto sobre el que queremos obtener información; la muestra es la parte observada. Su selección influye en las conclusiones. Una muestra grande puede seguir siendo sesgada si excluye sistemáticamente a ciertos grupos. La selección aleatoria puede reducir sesgos de selección, sin garantizar por sí sola ausencia de todos los errores.",
+    "simpler": "Antes de contar respuestas, pregunta a quién quieres estudiar y quién pudo participar realmente.",
+    "example": "Para conocer cómo llega al colegio todo el alumnado, preguntar solo a quienes aparcan bicicletas deja fuera otras formas de desplazamiento. Aumentar mucho ese mismo grupo no corrige necesariamente la exclusión.",
+    "why": "Las inferencias dependen de cómo se obtienen los datos, además de cuántos se obtienen.",
+    "misconception": "Más respuestas no garantizan por sí solas mejores conclusiones si la selección está sesgada.",
+    "hints": [
+      "Distingue el conjunto de interés del grupo realmente observado.",
+      "Antes de contar respuestas, pregunta a quién quieres estudiar y quién pudo participar realmente.",
+      "Para conocer cómo llega al colegio todo el alumnado, preguntar solo a quienes aparcan bicicletas deja fuera otras formas de desplazamiento. Aumentar mucho ese mismo grupo no corrige necesariamente la exclusión."
+    ],
+    "quiz": [
+      {
+        "id": "e-sampling:q0",
+        "question": "Preguntar solo a quienes llegan en bici para describir a todo el alumnado puede producir…",
+        "options": [
+          "Una muestra sesgada",
+          "Un censo completo",
+          "Una garantía de representatividad"
+        ],
+        "answer": "A",
+        "hint": "Distingue el conjunto de interés del grupo realmente observado.",
+        "level": 1
+      },
+      {
+        "id": "e-sampling:q1",
+        "question": "La población es…",
+        "options": [
+          "Solo quienes contestaron",
+          "El conjunto sobre el que queremos concluir",
+          "Siempre una ciudad"
+        ],
+        "answer": "B",
+        "hint": "Distingue el conjunto de interés del grupo realmente observado.",
+        "level": 2
+      },
+      {
+        "id": "e-sampling:q2",
+        "question": "Aumentar el tamaño de una muestra sesgada…",
+        "options": [
+          "Elimina siempre todo sesgo",
+          "Convierte automáticamente la encuesta en censo",
+          "No corrige necesariamente el modo de selección"
+        ],
+        "answer": "C",
+        "hint": "Distingue el conjunto de interés del grupo realmente observado.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-histograms",
+    "stage": "eso",
+    "subject": "Matemáticas",
+    "title": "Leer un histograma",
+    "grade_min": 3,
+    "grade_max": 4,
+    "school_years": [
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Leer un histograma",
+      "histogramas",
+      "histograma y frecuencias"
+    ],
+    "explanation": "Un histograma representa datos cuantitativos agrupados en intervalos mediante barras contiguas. Con intervalos de igual amplitud, podemos representar la frecuencia mediante la altura. Si las amplitudes son diferentes, debe atenderse al área de las barras y a la densidad indicada, no comparar alturas como si fueran frecuencias sin más.",
+    "simpler": "Mira primero los intervalos y su anchura. Comprueba qué mide el eje vertical antes de comparar barras.",
+    "example": "En intervalos de igual amplitud, una barra de frecuencia 8 representa más datos que una de frecuencia 5. No conocemos por ello todos los valores individuales dentro de cada intervalo.",
+    "why": "Agrupar muestra la distribución de los datos, pero pierde detalle y exige interpretar correctamente las escalas.",
+    "misconception": "En intervalos de diferente anchura, una barra más alta no implica por sí sola más observaciones.",
+    "hints": [
+      "Relaciona cada barra con su intervalo y con la escala de frecuencias o densidades.",
+      "Mira primero los intervalos y su anchura. Comprueba qué mide el eje vertical antes de comparar barras.",
+      "En intervalos de igual amplitud, una barra de frecuencia 8 representa más datos que una de frecuencia 5. No conocemos por ello todos los valores individuales dentro de cada intervalo."
+    ],
+    "quiz": [
+      {
+        "id": "e-histograms:q0",
+        "question": "Con intervalos de igual amplitud y alturas que representan frecuencias, una barra de altura 8 contiene…",
+        "options": [
+          "5 datos",
+          "8 datos",
+          "Todos los datos del estudio"
+        ],
+        "answer": "B",
+        "hint": "Relaciona cada barra con su intervalo y con la escala de frecuencias o densidades.",
+        "level": 1
+      },
+      {
+        "id": "e-histograms:q1",
+        "question": "Antes de comparar barras hay que revisar…",
+        "options": [
+          "Amplitudes y significado del eje vertical",
+          "Solo el color",
+          "Solo el título"
+        ],
+        "answer": "A",
+        "hint": "Relaciona cada barra con su intervalo y con la escala de frecuencias o densidades.",
+        "level": 2
+      },
+      {
+        "id": "e-histograms:q2",
+        "question": "Un histograma agrupado permite conocer siempre cada dato individual exacto…",
+        "options": [
+          "Sí",
+          "Solo si hay dos barras",
+          "No"
+        ],
+        "answer": "C",
+        "hint": "Relaciona cada barra con su intervalo y con la escala de frecuencias o densidades.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-heat-temperature",
+    "stage": "eso",
+    "subject": "Física y Química",
+    "title": "Calor y temperatura",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Calor y temperatura",
+      "calor y temperatura",
+      "diferencia entre calor y temperatura"
+    ],
+    "explanation": "La temperatura caracteriza el estado térmico y permite comparar cuerpos. El calor es energía que se transfiere entre sistemas por una diferencia de temperatura; no es una sustancia guardada dentro de ellos. La energía necesaria para cambiar la temperatura depende también de la masa, del material y de si hay cambios de estado.",
+    "simpler": "La temperatura indica el estado térmico; el calor nombra una transferencia de energía. No son dos nombres para lo mismo.",
+    "example": "Dos cantidades de agua a 20 °C tienen la misma temperatura. Si una tiene más masa, no por eso debe estar más caliente. Al poner en contacto cuerpos a distinta temperatura, la transferencia espontánea de energía tiende al equilibrio térmico.",
+    "why": "Separar magnitudes evita confundir cantidad de materia, estado térmico y energía intercambiada.",
+    "misconception": "Una masa mayor a la misma temperatura no está necesariamente a mayor temperatura.",
+    "hints": [
+      "Distingue una propiedad del estado de una transferencia entre sistemas.",
+      "La temperatura indica el estado térmico; el calor nombra una transferencia de energía. No son dos nombres para lo mismo.",
+      "Dos cantidades de agua a 20 °C tienen la misma temperatura. Si una tiene más masa, no por eso debe estar más caliente. Al poner en contacto cuerpos a distinta temperatura, la transferencia espontánea de energía tiende al equilibrio térmico."
+    ],
+    "quiz": [
+      {
+        "id": "e-heat-temperature:q0",
+        "question": "El calor es…",
+        "options": [
+          "Una escala de colores",
+          "Energía transferida por diferencia de temperatura",
+          "Una unidad de masa"
+        ],
+        "answer": "B",
+        "hint": "Distingue una propiedad del estado de una transferencia entre sistemas.",
+        "level": 1
+      },
+      {
+        "id": "e-heat-temperature:q1",
+        "question": "Dos porciones de agua a 20 °C tienen…",
+        "options": [
+          "La misma temperatura",
+          "Necesariamente la misma masa",
+          "Necesariamente el mismo volumen"
+        ],
+        "answer": "A",
+        "hint": "Distingue una propiedad del estado de una transferencia entre sistemas.",
+        "level": 2
+      },
+      {
+        "id": "e-heat-temperature:q2",
+        "question": "La energía para elevar la temperatura depende…",
+        "options": [
+          "Solo del nombre del recipiente",
+          "Solo de la hora",
+          "También de la masa y del material"
+        ],
+        "answer": "C",
+        "hint": "Distingue una propiedad del estado de una transferencia entre sistemas.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-osmosis",
+    "stage": "eso",
+    "subject": "Biología y Geología",
+    "title": "La ósmosis",
+    "grade_min": 3,
+    "grade_max": 4,
+    "school_years": [
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "La ósmosis",
+      "osmosis",
+      "movimiento del agua por membrana"
+    ],
+    "explanation": "La ósmosis es el movimiento neto de agua a través de una membrana que permite su paso pero restringe ciertos solutos. En un modelo sencillo, con igual presión y temperatura y solutos que no atraviesan la membrana, el agua tiende hacia el lado con mayor concentración efectiva de esos solutos. La presión puede contrarrestar el proceso.",
+    "simpler": "Imagina una membrana que deja pasar agua, pero no el soluto considerado. Observa hacia dónde hay un movimiento neto, no solo moléculas aisladas.",
+    "example": "En dos compartimentos a la misma presión separados por una membrana permeable solo al agua, el lado con más soluto no permeante tiende a recibir agua inicialmente. Las condiciones y la presión posterior importan.",
+    "why": "Las condiciones de permeabilidad y equilibrio explican el movimiento neto; una regla sin esas condiciones puede resultar engañosa.",
+    "misconception": "No toda membrana deja pasar las mismas sustancias ni toda diferencia de concentración actúa igual.",
+    "hints": [
+      "Identifica qué puede atravesar la membrana y qué solutos quedan restringidos.",
+      "Imagina una membrana que deja pasar agua, pero no el soluto considerado. Observa hacia dónde hay un movimiento neto, no solo moléculas aisladas.",
+      "En dos compartimentos a la misma presión separados por una membrana permeable solo al agua, el lado con más soluto no permeante tiende a recibir agua inicialmente. Las condiciones y la presión posterior importan."
+    ],
+    "quiz": [
+      {
+        "id": "e-osmosis:q0",
+        "question": "En el modelo descrito, lo que atraviesa la membrana durante la ósmosis es…",
+        "options": [
+          "Siempre todo el soluto",
+          "Agua",
+          "Una célula completa"
+        ],
+        "answer": "B",
+        "hint": "Identifica qué puede atravesar la membrana y qué solutos quedan restringidos.",
+        "level": 1
+      },
+      {
+        "id": "e-osmosis:q1",
+        "question": "Para usar esa explicación sencilla hay que considerar…",
+        "options": [
+          "La permeabilidad de la membrana y las condiciones",
+          "Solo el color de la disolución",
+          "Solo el tamaño del recipiente"
+        ],
+        "answer": "A",
+        "hint": "Identifica qué puede atravesar la membrana y qué solutos quedan restringidos.",
+        "level": 2
+      },
+      {
+        "id": "e-osmosis:q2",
+        "question": "La presión puede…",
+        "options": [
+          "No influir nunca",
+          "Convertir el agua en soluto",
+          "Contrarrestar el movimiento neto osmótico"
+        ],
+        "answer": "C",
+        "hint": "Identifica qué puede atravesar la membrana y qué solutos quedan restringidos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-geologic-time",
+    "stage": "eso",
+    "subject": "Biología y Geología",
+    "title": "Tiempo geológico y datación relativa",
+    "grade_min": 4,
+    "grade_max": 4,
+    "school_years": [
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Tiempo geológico y datación relativa",
+      "tiempo geologico",
+      "datacion relativa",
+      "principio de superposicion"
+    ],
+    "explanation": "La datación relativa ordena acontecimientos sin asignar necesariamente una edad numérica. En una sucesión sedimentaria no invertida, las capas inferiores suelen ser anteriores a las superiores. Una estructura que corta a otra es posterior a la estructura cortada. Debemos reconocer alteraciones, erosión o inversión antes de aplicar reglas.",
+    "simpler": "Ordena qué ocurrió antes y después, pero no inventes una fecha. Comprueba que las capas no estén invertidas.",
+    "example": "Si un dique atraviesa varias capas sedimentarias, su formación es posterior a esas capas. Si una secuencia no invertida tiene A debajo de B, A se depositó antes que B.",
+    "why": "Las relaciones geométricas conservan pistas de la historia, pero hay que interpretar también los procesos que las modificaron.",
+    "misconception": "Estar más abajo no basta si la sucesión ha sido invertida o deformada.",
+    "hints": [
+      "Distingue ordenar acontecimientos de calcular una edad absoluta y revisa las condiciones geológicas.",
+      "Ordena qué ocurrió antes y después, pero no inventes una fecha. Comprueba que las capas no estén invertidas.",
+      "Si un dique atraviesa varias capas sedimentarias, su formación es posterior a esas capas. Si una secuencia no invertida tiene A debajo de B, A se depositó antes que B."
+    ],
+    "quiz": [
+      {
+        "id": "e-geologic-time:q0",
+        "question": "En capas sedimentarias no invertidas, A está bajo B. El depósito de A es…",
+        "options": [
+          "Anterior al de B",
+          "Posterior siempre",
+          "Necesariamente del mismo día"
+        ],
+        "answer": "A",
+        "hint": "Distingue ordenar acontecimientos de calcular una edad absoluta y revisa las condiciones geológicas.",
+        "level": 1
+      },
+      {
+        "id": "e-geologic-time:q1",
+        "question": "Un dique que corta unas capas es…",
+        "options": [
+          "Anterior a todas ellas por definición",
+          "Posterior a las capas que corta",
+          "Imposible de ordenar en ningún caso"
+        ],
+        "answer": "B",
+        "hint": "Distingue ordenar acontecimientos de calcular una edad absoluta y revisa las condiciones geológicas.",
+        "level": 2
+      },
+      {
+        "id": "e-geologic-time:q2",
+        "question": "La datación relativa proporciona principalmente…",
+        "options": [
+          "Siempre una fecha exacta",
+          "Siempre una edad en segundos",
+          "Un orden temporal"
+        ],
+        "answer": "C",
+        "hint": "Distingue ordenar acontecimientos de calcular una edad absoluta y revisa las condiciones geológicas.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-argumentation",
+    "stage": "eso",
+    "subject": "Lengua Castellana y Literatura",
+    "title": "Tesis, argumentos y evidencias",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Tesis, argumentos y evidencias",
+      "tesis y argumentos",
+      "argumentos y evidencias",
+      "estructura argumentativa"
+    ],
+    "explanation": "La tesis es la idea que se defiende. Los argumentos ofrecen razones para sostenerla y las evidencias aportan datos, ejemplos o fuentes pertinentes. Una conclusión debe ajustarse a la fuerza de esas razones. Distinguir una opinión de un argumento no significa que toda opinión sea falsa, sino que necesitamos examinar su justificación.",
+    "simpler": "Localiza qué se quiere defender y pregunta qué razones y pruebas se ofrecen para ello.",
+    "example": "«Conviene ampliar el horario de la biblioteca porque una encuesta representativa muestra demanda por la tarde» contiene una propuesta y una razón que debe contrastarse revisando cómo se hizo la encuesta.",
+    "why": "La argumentación permite examinar por qué aceptar una idea y qué límites conserva su justificación.",
+    "misconception": "Repetir muchas veces una afirmación no la convierte en una prueba.",
+    "hints": [
+      "Separa propuesta, razón y evidencia; no las trates como la misma pieza del texto.",
+      "Localiza qué se quiere defender y pregunta qué razones y pruebas se ofrecen para ello.",
+      "«Conviene ampliar el horario de la biblioteca porque una encuesta representativa muestra demanda por la tarde» contiene una propuesta y una razón que debe contrastarse revisando cómo se hizo la encuesta."
+    ],
+    "quiz": [
+      {
+        "id": "e-argumentation:q0",
+        "question": "En «Conviene ampliar el horario de la biblioteca porque existe demanda por la tarde», la tesis es…",
+        "options": [
+          "Que cualquier encuesta es infalible",
+          "Que conviene ampliar el horario",
+          "Que nunca hay usuarios"
+        ],
+        "answer": "B",
+        "hint": "Separa propuesta, razón y evidencia; no las trates como la misma pieza del texto.",
+        "level": 1
+      },
+      {
+        "id": "e-argumentation:q1",
+        "question": "Una evidencia pertinente debe…",
+        "options": [
+          "Guardar relación con la afirmación y poder examinarse",
+          "Ser solo una frase en mayúsculas",
+          "Evitar toda fuente"
+        ],
+        "answer": "A",
+        "hint": "Separa propuesta, razón y evidencia; no las trates como la misma pieza del texto.",
+        "level": 2
+      },
+      {
+        "id": "e-argumentation:q2",
+        "question": "Una conclusión sólida debe…",
+        "options": [
+          "Decir siempre más de lo que prueban los datos",
+          "Ignorar las objeciones",
+          "Ajustarse a las razones y evidencias disponibles"
+        ],
+        "answer": "C",
+        "hint": "Separa propuesta, razón y evidencia; no las trates como la misma pieza del texto.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-relative-english",
+    "stage": "eso",
+    "subject": "Lengua Extranjera: Inglés",
+    "title": "Oraciones de relativo en inglés",
+    "grade_min": 3,
+    "grade_max": 4,
+    "school_years": [
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Oraciones de relativo en inglés",
+      "relative clauses",
+      "oraciones de relativo en ingles",
+      "who which that"
+    ],
+    "explanation": "En una oración de relativo especificativa, añadimos información que identifica a una persona o cosa. En patrones básicos usamos who para personas y which para cosas; that puede aparecer en muchos relativos especificativos de ambos tipos. No trasladamos esa regla automáticamente a relativos explicativos separados por comas.",
+    "simpler": "Busca a qué nombre se refiere la oración y si la información ayuda a identificarlo.",
+    "example": "The girl who lives next door is my friend identifica a la chica por la oración who lives next door. The book that is on the desk is mine identifica el libro por su ubicación.",
+    "why": "La gramática relaciona significado y estructura; distinguir la función evita generalizaciones que fallan en otros contextos.",
+    "misconception": "Una regla útil para relativos sin comas no explica todos los relativos del inglés.",
+    "hints": [
+      "Identifica el antecedente y el tipo de información antes de elegir la estructura.",
+      "Busca a qué nombre se refiere la oración y si la información ayuda a identificarlo.",
+      "The girl who lives next door is my friend identifica a la chica por la oración who lives next door. The book that is on the desk is mine identifica el libro por su ubicación."
+    ],
+    "quiz": [
+      {
+        "id": "e-relative-english:q0",
+        "question": "En «The girl who lives next door», who se refiere a…",
+        "options": [
+          "Una mesa",
+          "The girl",
+          "Una fecha"
+        ],
+        "answer": "B",
+        "hint": "Identifica el antecedente y el tipo de información antes de elegir la estructura.",
+        "level": 1
+      },
+      {
+        "id": "e-relative-english:q1",
+        "question": "¿Qué relativo encaja en el patrón «The book ___ is on the desk»?",
+        "options": [
+          "That",
+          "Who, como única opción posible",
+          "Where, en esta estructura"
+        ],
+        "answer": "A",
+        "hint": "Identifica el antecedente y el tipo de información antes de elegir la estructura.",
+        "level": 2
+      },
+      {
+        "id": "e-relative-english:q2",
+        "question": "Las reglas de los relativos especificativos…",
+        "options": [
+          "Se copian sin cambios a cualquier relativo",
+          "Eliminan toda puntuación",
+          "No se aplican automáticamente a los explicativos"
+        ],
+        "answer": "C",
+        "hint": "Identifica el antecedente y el tipo de información antes de elegir la estructura.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-past-continuous",
+    "stage": "eso",
+    "subject": "Lengua Extranjera: Inglés",
+    "title": "Past continuous",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Past continuous",
+      "past continuous",
+      "pasado continuo en ingles",
+      "was y were ing"
+    ],
+    "explanation": "El past continuous se forma con was o were más el verbo en -ing. Presenta una acción en desarrollo en un momento pasado. Puede servir de marco para otra acción expresada en past simple, pero no toda frase necesita una interrupción. La forma de was o were depende del sujeto.",
+    "simpler": "Sitúa la acción dentro de un momento pasado: I was reading, they were playing.",
+    "example": "At eight, I was reading describe una acción que estaba en desarrollo a las ocho. I was reading when the phone rang combina ese marco con un acontecimiento puntual.",
+    "why": "El aspecto permite presentar cómo se contempla una acción, además de situarla en el pasado.",
+    "misconception": "Past continuous no exige que la frase contenga siempre una interrupción.",
+    "hints": [
+      "Comprueba el sujeto, el auxiliar pasado y la terminación del verbo principal.",
+      "Sitúa la acción dentro de un momento pasado: I was reading, they were playing.",
+      "At eight, I was reading describe una acción que estaba en desarrollo a las ocho. I was reading when the phone rang combina ese marco con un acontecimiento puntual."
+    ],
+    "quiz": [
+      {
+        "id": "e-past-continuous:q0",
+        "question": "Completa: They ___ playing at six.",
+        "options": [
+          "Were",
+          "Was",
+          "Is"
+        ],
+        "answer": "A",
+        "hint": "Comprueba el sujeto, el auxiliar pasado y la terminación del verbo principal.",
+        "level": 1
+      },
+      {
+        "id": "e-past-continuous:q1",
+        "question": "«I was reading at eight» presenta la lectura como…",
+        "options": [
+          "Una orden",
+          "Una acción en desarrollo en ese momento pasado",
+          "Una acción futura garantizada"
+        ],
+        "answer": "B",
+        "hint": "Comprueba el sujeto, el auxiliar pasado y la terminación del verbo principal.",
+        "level": 2
+      },
+      {
+        "id": "e-past-continuous:q2",
+        "question": "Para formar past continuous se usa…",
+        "options": [
+          "Had + participio siempre",
+          "Will + infinitivo",
+          "Was o were + verbo en -ing"
+        ],
+        "answer": "C",
+        "hint": "Comprueba el sujeto, el auxiliar pasado y la terminación del verbo principal.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "e-program-loops",
+    "stage": "eso",
+    "subject": "Tecnología y Digitalización",
+    "title": "Bucles y repeticiones en programación",
+    "grade_min": 2,
+    "grade_max": 4,
+    "school_years": [
+      "2º de ESO",
+      "3º de ESO",
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Bucles y repeticiones en programación",
+      "bucles",
+      "bucles de programacion",
+      "repeticiones en programacion"
+    ],
+    "explanation": "Un bucle repite un conjunto de instrucciones según un número de veces o una condición. Hay que definir su inicio, el trabajo repetido y cómo termina. Un límite mal expresado puede ejecutar una repetición de más o de menos; una condición que nunca cambia puede impedir la terminación.",
+    "simpler": "Sigue una vuelta cada vez y anota qué cambia. Comprueba el límite antes de suponer cuántas vueltas hay.",
+    "example": "Empiezas con contador 0 y repites «sumar 1» exactamente tres veces. Los valores pasan por 1, 2 y 3. La cantidad de vueltas es tres, aunque exista también el estado inicial 0.",
+    "why": "Simular la ejecución permite verificar el comportamiento y detectar límites incorrectos antes de confiar en el programa.",
+    "misconception": "Contar estados mostrados no equivale siempre a contar vueltas del bucle.",
+    "hints": [
+      "Distingue el estado inicial del número de repeticiones ejecutadas.",
+      "Sigue una vuelta cada vez y anota qué cambia. Comprueba el límite antes de suponer cuántas vueltas hay.",
+      "Empiezas con contador 0 y repites «sumar 1» exactamente tres veces. Los valores pasan por 1, 2 y 3. La cantidad de vueltas es tres, aunque exista también el estado inicial 0."
+    ],
+    "quiz": [
+      {
+        "id": "e-program-loops:q0",
+        "question": "Un contador empieza en 0 y suma 1 exactamente tres veces. Termina en…",
+        "options": [
+          "2",
+          "3",
+          "4"
+        ],
+        "answer": "B",
+        "hint": "Distingue el estado inicial del número de repeticiones ejecutadas.",
+        "level": 1
+      },
+      {
+        "id": "e-program-loops:q1",
+        "question": "Para comprobar un bucle conviene…",
+        "options": [
+          "Seguir sus estados y condición de salida",
+          "Mirar solo el nombre de la variable",
+          "Suponer que siempre termina"
+        ],
+        "answer": "A",
+        "hint": "Distingue el estado inicial del número de repeticiones ejecutadas.",
+        "level": 2
+      },
+      {
+        "id": "e-program-loops:q2",
+        "question": "Un error en el límite puede provocar…",
+        "options": [
+          "Solo cambios de color",
+          "Que no importe el orden",
+          "Una repetición de más o de menos"
+        ],
+        "answer": "C",
+        "hint": "Distingue el estado inicial del número de repeticiones ejecutadas.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-continuity",
+    "stage": "bachillerato",
+    "subject": "Matemáticas",
+    "title": "Continuidad de una función",
+    "grade_min": 1,
+    "grade_max": 2,
+    "school_years": [
+      "1º de Bachillerato",
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Continuidad de una función",
+      "continuidad de funciones",
+      "funcion continua",
+      "continuidad en un punto"
+    ],
+    "explanation": "Una función es continua en un punto interior de su dominio si el límite al acercarse a ese punto existe y coincide con el valor de la función allí. Hay que comprobar valor, límite y coincidencia. En extremos del dominio se considera la aproximación desde los puntos del dominio. Que una fórmula sea sencilla no garantiza continuidad en cualquier punto.",
+    "simpler": "Comprueba tres cosas: existe f(a), existe el límite y ambos son iguales. No ignores los puntos donde la fórmula cambia.",
+    "example": "La función f(x)=(x²−1)/(x−1), definida solo para x distinto de 1, tiene límite 2 cuando x tiende a 1. No es continua en 1 mientras no esté definida allí; al ampliarla con f(1)=2, la discontinuidad se elimina.",
+    "why": "La continuidad conecta el comportamiento cercano con el valor asignado, no solo con una simplificación algebraica fuera del punto.",
+    "misconception": "Un límite existente no implica que la función esté definida en el punto ni que tome ese valor.",
+    "hints": [
+      "Separa valor de la función y límite; no tienen por qué coincidir.",
+      "Comprueba tres cosas: existe f(a), existe el límite y ambos son iguales. No ignores los puntos donde la fórmula cambia.",
+      "La función f(x)=(x²−1)/(x−1), definida solo para x distinto de 1, tiene límite 2 cuando x tiende a 1. No es continua en 1 mientras no esté definida allí; al ampliarla con f(1)=2, la discontinuidad se elimina."
+    ],
+    "quiz": [
+      {
+        "id": "b-continuity:q0",
+        "question": "Para continuidad en un punto interior necesitamos…",
+        "options": [
+          "Solo que exista f(a)",
+          "Que el límite exista y coincida con f(a)",
+          "Solo una gráfica atractiva"
+        ],
+        "answer": "B",
+        "hint": "Separa valor de la función y límite; no tienen por qué coincidir.",
+        "level": 1
+      },
+      {
+        "id": "b-continuity:q1",
+        "question": "El límite de (x²−1)/(x−1) cuando x tiende a 1 es…",
+        "options": [
+          "2",
+          "0",
+          "No existe por obligación"
+        ],
+        "answer": "A",
+        "hint": "Separa valor de la función y límite; no tienen por qué coincidir.",
+        "level": 2
+      },
+      {
+        "id": "b-continuity:q2",
+        "question": "Para una función cuyo límite cuando x tiende a 1 es 2, definir f(1)=5 produce…",
+        "options": [
+          "Continuidad en 1",
+          "Un límite igual a 5 automáticamente",
+          "Falta de continuidad en 1"
+        ],
+        "answer": "C",
+        "hint": "Separa valor de la función y límite; no tienen por qué coincidir.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-optimization",
+    "stage": "bachillerato",
+    "subject": "Matemáticas",
+    "title": "Optimización con derivadas",
+    "grade_min": 1,
+    "grade_max": 2,
+    "school_years": [
+      "1º de Bachillerato",
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Optimización con derivadas",
+      "optimizacion con derivadas",
+      "maximos y minimos de una funcion",
+      "problemas de optimizacion"
+    ],
+    "explanation": "Optimizar consiste en buscar el mayor o menor valor dentro de un dominio y unas restricciones. Las derivadas ayudan a localizar puntos críticos, pero también deben examinarse extremos del intervalo, puntos no derivables y condiciones del problema. Que la derivada sea cero no basta para asegurar un máximo o un mínimo.",
+    "simpler": "Define qué optimizas y dónde. Después compara todos los candidatos válidos, no solo los puntos con derivada cero.",
+    "example": "Para f(x)=x² en [−1,2], el punto crítico es 0. Evaluamos f(−1)=1, f(0)=0 y f(2)=4: el mínimo es 0 en x=0 y el máximo es 4 en x=2.",
+    "why": "La optimización es una comparación sobre un conjunto permitido; las condiciones locales no sustituyen esa comparación global.",
+    "misconception": "Ignorar los extremos puede hacer perder el máximo o mínimo global.",
+    "hints": [
+      "Construye una lista de candidatos y comprueba que respeten el dominio y las restricciones.",
+      "Define qué optimizas y dónde. Después compara todos los candidatos válidos, no solo los puntos con derivada cero.",
+      "Para f(x)=x² en [−1,2], el punto crítico es 0. Evaluamos f(−1)=1, f(0)=0 y f(2)=4: el mínimo es 0 en x=0 y el máximo es 4 en x=2."
+    ],
+    "quiz": [
+      {
+        "id": "b-optimization:q0",
+        "question": "El máximo de x² en [−1,2] es…",
+        "options": [
+          "4, en x=2",
+          "0, en x=0",
+          "1, en x=−1"
+        ],
+        "answer": "A",
+        "hint": "Construye una lista de candidatos y comprueba que respeten el dominio y las restricciones.",
+        "level": 1
+      },
+      {
+        "id": "b-optimization:q1",
+        "question": "Una derivada nula…",
+        "options": [
+          "Garantiza siempre un máximo",
+          "Identifica un candidato que debe estudiarse",
+          "Garantiza siempre un mínimo"
+        ],
+        "answer": "B",
+        "hint": "Construye una lista de candidatos y comprueba que respeten el dominio y las restricciones.",
+        "level": 2
+      },
+      {
+        "id": "b-optimization:q2",
+        "question": "En un intervalo cerrado conviene examinar también…",
+        "options": [
+          "Solo los números enteros",
+          "Solo el punto medio",
+          "Los extremos del intervalo"
+        ],
+        "answer": "C",
+        "hint": "Construye una lista de candidatos y comprueba que respeten el dominio y las restricciones.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-coulomb",
+    "stage": "bachillerato",
+    "subject": "Física",
+    "title": "La ley de Coulomb",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "La ley de Coulomb",
+      "ley de coulomb",
+      "fuerza entre cargas puntuales"
+    ],
+    "explanation": "Para dos cargas puntuales en reposo en el vacío, la magnitud de la fuerza electrostática es F=k·valor absoluto de q₁q₂/r². Actúa sobre la recta que une las cargas; cargas del mismo signo se repelen y de signo opuesto se atraen. La distancia es entre las cargas y no se permite r=0 en este modelo.",
+    "simpler": "Separa magnitud y dirección. El valor absoluto da la magnitud; los signos indican atracción o repulsión.",
+    "example": "Si duplicamos la distancia manteniendo las cargas y el medio, la magnitud pasa a un cuarto. Dos cargas positivas se repelen; una positiva y otra negativa se atraen.",
+    "why": "La dependencia inversa con el cuadrado exige comparar factores de distancia al cuadrado, dentro de las hipótesis del modelo.",
+    "misconception": "Duplicar la distancia no reduce la fuerza solo a la mitad.",
+    "hints": [
+      "Comprueba el cuadrado de la distancia y distingue signo de magnitud.",
+      "Separa magnitud y dirección. El valor absoluto da la magnitud; los signos indican atracción o repulsión.",
+      "Si duplicamos la distancia manteniendo las cargas y el medio, la magnitud pasa a un cuarto. Dos cargas positivas se repelen; una positiva y otra negativa se atraen."
+    ],
+    "quiz": [
+      {
+        "id": "b-coulomb:q0",
+        "question": "Al duplicar la distancia entre las mismas cargas, la fuerza en magnitud pasa a…",
+        "options": [
+          "Un cuarto",
+          "El doble",
+          "La mitad"
+        ],
+        "answer": "A",
+        "hint": "Comprueba el cuadrado de la distancia y distingue signo de magnitud.",
+        "level": 1
+      },
+      {
+        "id": "b-coulomb:q1",
+        "question": "Dos cargas del mismo signo…",
+        "options": [
+          "Se atraen siempre",
+          "Se repelen en este modelo",
+          "No ejercen nunca fuerza"
+        ],
+        "answer": "B",
+        "hint": "Comprueba el cuadrado de la distancia y distingue signo de magnitud.",
+        "level": 2
+      },
+      {
+        "id": "b-coulomb:q2",
+        "question": "La ley descrita supone…",
+        "options": [
+          "Cualquier distancia nula",
+          "Que toda carga tiene tamaño infinito",
+          "Cargas puntuales y condiciones electrostáticas"
+        ],
+        "answer": "C",
+        "hint": "Comprueba el cuadrado de la distancia y distingue signo de magnitud.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-electric-potential",
+    "stage": "bachillerato",
+    "subject": "Física",
+    "title": "Potencial y energía potencial eléctrica",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Potencial y energía potencial eléctrica",
+      "potencial electrico",
+      "energia potencial electrica",
+      "diferencia de potencial"
+    ],
+    "explanation": "El potencial eléctrico relaciona energía potencial y carga: V=U/q para una carga de prueba no nula en el contexto electrostático. Entre dos puntos, ΔU=qΔV. La diferencia de potencial se mide en voltios, equivalentes a julios por culombio. Potencial, energía y campo eléctrico son magnitudes relacionadas pero distintas.",
+    "simpler": "La energía depende de la carga; la diferencia de potencial describe la relación entre puntos. Mantén los signos de q y ΔV.",
+    "example": "Si una carga de +2 C atraviesa una diferencia de potencial de +3 V, su cambio de energía potencial es +6 J. Para una carga de −2 C sería −6 J.",
+    "why": "El potencial permite describir una relación independiente de la carga de prueba, mientras que el cambio de energía sí depende de ella.",
+    "misconception": "Una diferencia de potencial no es por sí sola una cantidad de energía para cualquier carga.",
+    "hints": [
+      "Aplica ΔU=qΔV respetando unidades y signos.",
+      "La energía depende de la carga; la diferencia de potencial describe la relación entre puntos. Mantén los signos de q y ΔV.",
+      "Si una carga de +2 C atraviesa una diferencia de potencial de +3 V, su cambio de energía potencial es +6 J. Para una carga de −2 C sería −6 J."
+    ],
+    "quiz": [
+      {
+        "id": "b-electric-potential:q0",
+        "question": "Con q=+2 C y ΔV=+3 V, ΔU es…",
+        "options": [
+          "1,5 J",
+          "+6 J",
+          "−6 J"
+        ],
+        "answer": "B",
+        "hint": "Aplica ΔU=qΔV respetando unidades y signos.",
+        "level": 1
+      },
+      {
+        "id": "b-electric-potential:q1",
+        "question": "Un voltio equivale a…",
+        "options": [
+          "Un julio por culombio",
+          "Un culombio por segundo",
+          "Un newton por segundo"
+        ],
+        "answer": "A",
+        "hint": "Aplica ΔU=qΔV respetando unidades y signos.",
+        "level": 2
+      },
+      {
+        "id": "b-electric-potential:q2",
+        "question": "Si cambia el signo de q y se mantiene ΔV, ΔU…",
+        "options": [
+          "Siempre conserva el signo",
+          "Se convierte necesariamente en cero",
+          "Cambia de signo"
+        ],
+        "answer": "C",
+        "hint": "Aplica ΔU=qΔV respetando unidades y signos.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-induction",
+    "stage": "bachillerato",
+    "subject": "Física",
+    "title": "Inducción electromagnética",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Inducción electromagnética",
+      "induccion electromagnetica",
+      "ley de faraday",
+      "ley de lenz"
+    ],
+    "explanation": "Un cambio del flujo magnético a través de un circuito puede inducir una fuerza electromotriz. El flujo depende del campo, del área y de la orientación. La ley de Lenz establece el sentido de la respuesta inducida: se opone al cambio de flujo que la produce, no necesariamente al campo en todo caso. Que haya corriente depende también del circuito.",
+    "simpler": "Pregunta qué cambia en el flujo. Un campo presente pero sin cambio de flujo no basta por sí solo para inducir una fuerza electromotriz en este modelo.",
+    "example": "Un imán que se acerca a una espira puede cambiar el flujo. También puede cambiarlo girar la espira dentro de un campo constante. Una espira abierta puede tener fuerza electromotriz sin corriente sostenida alrededor de un circuito cerrado.",
+    "why": "La inducción depende de una variación y la oposición al cambio es coherente con la conservación de la energía.",
+    "misconception": "Un campo magnético constante puede producir un flujo variable si cambia la orientación o el área del circuito.",
+    "hints": [
+      "Distingue campo, flujo y cambio de flujo; no son equivalentes.",
+      "Pregunta qué cambia en el flujo. Un campo presente pero sin cambio de flujo no basta por sí solo para inducir una fuerza electromotriz en este modelo.",
+      "Un imán que se acerca a una espira puede cambiar el flujo. También puede cambiarlo girar la espira dentro de un campo constante. Una espira abierta puede tener fuerza electromotriz sin corriente sostenida alrededor de un circuito cerrado."
+    ],
+    "quiz": [
+      {
+        "id": "b-induction:q0",
+        "question": "La inducción se relaciona con…",
+        "options": [
+          "Un cambio de flujo magnético",
+          "Solo el color del cable",
+          "La existencia de cualquier objeto metálico inmóvil"
+        ],
+        "answer": "A",
+        "hint": "Distingue campo, flujo y cambio de flujo; no son equivalentes.",
+        "level": 1
+      },
+      {
+        "id": "b-induction:q1",
+        "question": "El flujo puede variar al cambiar…",
+        "options": [
+          "Solo la masa del imán",
+          "La orientación de la espira respecto al campo",
+          "Solo el nombre de la unidad"
+        ],
+        "answer": "B",
+        "hint": "Distingue campo, flujo y cambio de flujo; no son equivalentes.",
+        "level": 2
+      },
+      {
+        "id": "b-induction:q2",
+        "question": "La respuesta descrita por Lenz se opone…",
+        "options": [
+          "Siempre a cualquier campo existente",
+          "A toda corriente posible",
+          "Al cambio de flujo que la origina"
+        ],
+        "answer": "C",
+        "hint": "Distingue campo, flujo y cambio de flujo; no son equivalentes.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-acid-base",
+    "stage": "bachillerato",
+    "subject": "Química",
+    "title": "Ácidos y bases de Brønsted",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Ácidos y bases de Brønsted",
+      "acidos y bases",
+      "bronsted lowry",
+      "pares conjugados"
+    ],
+    "explanation": "En el modelo de Brønsted-Lowry, un ácido dona un protón y una base lo acepta. Al donar un protón, el ácido forma su base conjugada; al aceptarlo, la base forma su ácido conjugado. Una especie puede actuar de manera diferente según la reacción. Este modelo no agota todas las teorías ácido-base.",
+    "simpler": "Identifica de dónde sale el protón y quién lo recibe. Después relaciona cada especie con su forma conjugada.",
+    "example": "En NH₃ + H₂O ⇌ NH₄⁺ + OH⁻, el amoniaco acepta un protón y actúa como base. El agua lo dona y actúa como ácido. NH₃/NH₄⁺ y H₂O/OH⁻ son pares conjugados.",
+    "why": "El modelo explica la transferencia de protones y permite identificar pares conjugados sin reducir todo a una etiqueta fija.",
+    "misconception": "El papel ácido o básico de algunas especies depende de la reacción concreta.",
+    "hints": [
+      "Sigue el protón y conserva la relación entre cada reactivo y su forma conjugada.",
+      "Identifica de dónde sale el protón y quién lo recibe. Después relaciona cada especie con su forma conjugada.",
+      "En NH₃ + H₂O ⇌ NH₄⁺ + OH⁻, el amoniaco acepta un protón y actúa como base. El agua lo dona y actúa como ácido. NH₃/NH₄⁺ y H₂O/OH⁻ son pares conjugados."
+    ],
+    "quiz": [
+      {
+        "id": "b-acid-base:q0",
+        "question": "En NH₃ + H₂O ⇌ NH₄⁺ + OH⁻, NH₃ actúa como…",
+        "options": [
+          "Ácido donador",
+          "Base aceptora",
+          "Un electrón libre"
+        ],
+        "answer": "B",
+        "hint": "Sigue el protón y conserva la relación entre cada reactivo y su forma conjugada.",
+        "level": 1
+      },
+      {
+        "id": "b-acid-base:q1",
+        "question": "La base conjugada de H₂O al donar un protón es…",
+        "options": [
+          "OH⁻",
+          "NH₄⁺",
+          "H₂"
+        ],
+        "answer": "A",
+        "hint": "Sigue el protón y conserva la relación entre cada reactivo y su forma conjugada.",
+        "level": 2
+      },
+      {
+        "id": "b-acid-base:q2",
+        "question": "Para clasificar una especie como ácido o base de Brønsted conviene…",
+        "options": [
+          "Mirar solo su nombre",
+          "Ignorar con qué reacciona",
+          "Examinar su papel en la transferencia de protones"
+        ],
+        "answer": "C",
+        "hint": "Sigue el protón y conserva la relación entre cada reactivo y su forma conjugada.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-enzymes",
+    "stage": "bachillerato",
+    "subject": "Biología",
+    "title": "Enzimas y catálisis biológica",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Enzimas y catálisis biológica",
+      "enzimas",
+      "enzimas y catalisis",
+      "catalisis biologica"
+    ],
+    "explanation": "Las enzimas son catalizadores biológicos: aceleran reacciones al ofrecer vías con menor energía de activación. No modifican por ello la diferencia de energía libre entre reactivos y productos ni la posición del equilibrio. Muchas son proteínas y algunas moléculas de ARN también tienen actividad catalítica. Su actividad depende de las condiciones.",
+    "simpler": "Una enzima facilita la velocidad de una reacción posible; no cambia su balance energético ni obliga al equilibrio a desplazarse.",
+    "example": "Una enzima puede acelerar tanto la reacción directa como la inversa y permitir llegar antes al equilibrio. La temperatura y el pH pueden afectar su actividad, sin existir un único valor óptimo para todas.",
+    "why": "La catálisis afecta a la vía y a las barreras cinéticas, no altera las propiedades termodinámicas de los estados inicial y final.",
+    "misconception": "Acelerar una reacción no equivale a modificar su energía libre global.",
+    "hints": [
+      "Separa la rapidez para llegar al equilibrio de la posición de ese equilibrio.",
+      "Una enzima facilita la velocidad de una reacción posible; no cambia su balance energético ni obliga al equilibrio a desplazarse.",
+      "Una enzima puede acelerar tanto la reacción directa como la inversa y permitir llegar antes al equilibrio. La temperatura y el pH pueden afectar su actividad, sin existir un único valor óptimo para todas."
+    ],
+    "quiz": [
+      {
+        "id": "b-enzymes:q0",
+        "question": "Las enzimas suelen acelerar una reacción al…",
+        "options": [
+          "Crear energía de la nada",
+          "Reducir la barrera de activación por otra vía",
+          "Cambiar siempre los productos de equilibrio"
+        ],
+        "answer": "B",
+        "hint": "Separa la rapidez para llegar al equilibrio de la posición de ese equilibrio.",
+        "level": 1
+      },
+      {
+        "id": "b-enzymes:q1",
+        "question": "Un catalizador cambia por sí solo la posición del equilibrio…",
+        "options": [
+          "No",
+          "Siempre",
+          "Solo si tiene nombre largo"
+        ],
+        "answer": "A",
+        "hint": "Separa la rapidez para llegar al equilibrio de la posición de ese equilibrio.",
+        "level": 2
+      },
+      {
+        "id": "b-enzymes:q2",
+        "question": "El valor óptimo de pH para las enzimas…",
+        "options": [
+          "Es idéntico en todas",
+          "Siempre es cero",
+          "Depende de la enzima y de las condiciones"
+        ],
+        "answer": "C",
+        "hint": "Separa la rapidez para llegar al equilibrio de la posición de ese equilibrio.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-transcription",
+    "stage": "bachillerato",
+    "subject": "Biología",
+    "title": "La transcripción genética",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "La transcripción genética",
+      "transcripcion genetica",
+      "transcripcion del adn",
+      "arn polimerasa"
+    ],
+    "explanation": "La transcripción sintetiza ARN utilizando una hebra de ADN como molde. La ARN polimerasa incorpora ribonucleótidos y el ARN se sintetiza en sentido 5′ a 3′. La secuencia es complementaria y antiparalela al molde. En el ARN aparece uracilo en lugar de timina. Transcribir no significa fabricar directamente una proteína.",
+    "simpler": "Identifica la hebra molde y sus extremos. Escribe el ARN complementario en el sentido de síntesis indicado.",
+    "example": "Para el fragmento molde de ADN 3′-TAC-5′, el ARN complementario es 5′-AUG-3′. La lectura de ese ARN para producir una cadena polipeptídica pertenece a la traducción.",
+    "why": "La orientación y el apareamiento de bases permiten transferir información sin confundir el molde con el producto.",
+    "misconception": "Transcripción y traducción no son el mismo proceso.",
+    "hints": [
+      "Comprueba complementariedad y orientación; no copies simplemente las letras del molde.",
+      "Identifica la hebra molde y sus extremos. Escribe el ARN complementario en el sentido de síntesis indicado.",
+      "Para el fragmento molde de ADN 3′-TAC-5′, el ARN complementario es 5′-AUG-3′. La lectura de ese ARN para producir una cadena polipeptídica pertenece a la traducción."
+    ],
+    "quiz": [
+      {
+        "id": "b-transcription:q0",
+        "question": "Frente al ADN molde 3′-TAC-5′, el ARN complementario es…",
+        "options": [
+          "5′-AUG-3′",
+          "5′-ATG-3′",
+          "3′-TAC-5′"
+        ],
+        "answer": "A",
+        "hint": "Comprueba complementariedad y orientación; no copies simplemente las letras del molde.",
+        "level": 1
+      },
+      {
+        "id": "b-transcription:q1",
+        "question": "El ARN se sintetiza en sentido…",
+        "options": [
+          "3′ a 5′",
+          "5′ a 3′",
+          "Sin dirección definida"
+        ],
+        "answer": "B",
+        "hint": "Comprueba complementariedad y orientación; no copies simplemente las letras del molde.",
+        "level": 2
+      },
+      {
+        "id": "b-transcription:q2",
+        "question": "La transcripción produce directamente…",
+        "options": [
+          "Una célula nueva",
+          "Una cadena polipeptídica en todos los casos",
+          "ARN"
+        ],
+        "answer": "C",
+        "hint": "Comprueba complementariedad y orientación; no copies simplemente las letras del molde.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-translation",
+    "stage": "bachillerato",
+    "subject": "Biología",
+    "title": "La traducción genética",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "La traducción genética",
+      "traduccion genetica",
+      "traduccion del arn",
+      "codones y anticodones"
+    ],
+    "explanation": "En la traducción, el ribosoma utiliza la secuencia del ARN mensajero para sintetizar un polipéptido. Los codones son grupos de tres nucleótidos leídos en un marco concreto. Los ARN de transferencia relacionan codones con aminoácidos. El código es degenerado: varios codones pueden corresponder al mismo aminoácido; también hay señales de terminación.",
+    "simpler": "Agrupa el mensaje de tres en tres desde el marco correcto. No cada triplete codifica un aminoácido, porque existen señales de parada.",
+    "example": "En el código genético estándar, AUG codifica metionina y puede funcionar como codón de inicio en el contexto adecuado. UAA es un codón de terminación, no un aminoácido adicional.",
+    "why": "El marco y las señales de inicio y final organizan la lectura; cambiar el agrupamiento altera la interpretación del mensaje.",
+    "misconception": "No todo triplete añade un aminoácido a la cadena.",
+    "hints": [
+      "Distingue codón, aminoácido y señal de terminación, y conserva el marco de lectura.",
+      "Agrupa el mensaje de tres en tres desde el marco correcto. No cada triplete codifica un aminoácido, porque existen señales de parada.",
+      "En el código genético estándar, AUG codifica metionina y puede funcionar como codón de inicio en el contexto adecuado. UAA es un codón de terminación, no un aminoácido adicional."
+    ],
+    "quiz": [
+      {
+        "id": "b-translation:q0",
+        "question": "Un codón contiene…",
+        "options": [
+          "Dos nucleótidos",
+          "Tres nucleótidos",
+          "Cuatro aminoácidos"
+        ],
+        "answer": "B",
+        "hint": "Distingue codón, aminoácido y señal de terminación, y conserva el marco de lectura.",
+        "level": 1
+      },
+      {
+        "id": "b-translation:q1",
+        "question": "En el código estándar, UAA es…",
+        "options": [
+          "Una señal de terminación",
+          "Siempre metionina",
+          "Un anticuerpo"
+        ],
+        "answer": "A",
+        "hint": "Distingue codón, aminoácido y señal de terminación, y conserva el marco de lectura.",
+        "level": 2
+      },
+      {
+        "id": "b-translation:q2",
+        "question": "Que el código sea degenerado significa que…",
+        "options": [
+          "Cada codón carece de significado",
+          "Todos los codones producen aminoácidos diferentes",
+          "Varios codones pueden corresponder al mismo aminoácido"
+        ],
+        "answer": "C",
+        "hint": "Distingue codón, aminoácido y señal de terminación, y conserva el marco de lectura.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-marx",
+    "stage": "bachillerato",
+    "subject": "Historia de la Filosofía",
+    "title": "Trabajo y alienación en Marx",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Trabajo y alienación en Marx",
+      "alienacion en marx",
+      "marx y el trabajo",
+      "trabajo alienado"
+    ],
+    "explanation": "En los Manuscritos de 1844, Marx analiza la alienación del trabajo bajo determinadas relaciones sociales: el trabajador puede experimentar separación respecto al producto, la actividad, sus posibilidades humanas y los demás. No se reduce a sentirse aburrido en cualquier empleo. Es una crítica filosófica e histórica que debe estudiarse atendiendo al contexto y sus argumentos.",
+    "simpler": "Distingue un malestar personal de una explicación sobre cómo se organiza y controla el trabajo y su producto.",
+    "example": "En este análisis, no controlar el producto del propio trabajo es una dimensión de la alienación. Para discutir la teoría debemos examinar relaciones de propiedad y producción, no deducirla solo de que una tarea resulte cansada.",
+    "why": "Distinguir planos personales y estructurales permite comprender la tesis y discutirla sin caricaturizarla ni asumirla como hecho indiscutible.",
+    "misconception": "Alienación no es simplemente un sinónimo de aburrimiento o fatiga.",
+    "hints": [
+      "Pregunta qué relación social se está explicando, no solo qué emoción experimenta una persona.",
+      "Distingue un malestar personal de una explicación sobre cómo se organiza y controla el trabajo y su producto.",
+      "En este análisis, no controlar el producto del propio trabajo es una dimensión de la alienación. Para discutir la teoría debemos examinar relaciones de propiedad y producción, no deducirla solo de que una tarea resulte cansada."
+    ],
+    "quiz": [
+      {
+        "id": "b-marx:q0",
+        "question": "La alienación marxiana aquí estudiada analiza principalmente…",
+        "options": [
+          "Solo el cansancio físico",
+          "Relaciones del trabajador con producto, actividad y vida social",
+          "Una ley química"
+        ],
+        "answer": "B",
+        "hint": "Pregunta qué relación social se está explicando, no solo qué emoción experimenta una persona.",
+        "level": 1
+      },
+      {
+        "id": "b-marx:q1",
+        "question": "Sentirse aburrido en una tarea…",
+        "options": [
+          "No basta por sí solo para describir toda esa teoría",
+          "Demuestra automáticamente todas sus tesis",
+          "No puede mencionarse nunca"
+        ],
+        "answer": "A",
+        "hint": "Pregunta qué relación social se está explicando, no solo qué emoción experimenta una persona.",
+        "level": 2
+      },
+      {
+        "id": "b-marx:q2",
+        "question": "Para evaluar esta propuesta conviene…",
+        "options": [
+          "Sustituir los argumentos por etiquetas",
+          "Suponer que no tiene contexto",
+          "Examinar sus conceptos, razones y contexto histórico"
+        ],
+        "answer": "C",
+        "hint": "Pregunta qué relación social se está explicando, no solo qué emoción experimenta una persona.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary editorial review, self-contained question checks and reproducible tests; not independent human certification",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Contenido docente original ETERNA; referencia curricular estatal por etapa, sin homologación ni aval oficial.",
+    "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+    "introduced_in_release": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
   }
 ]

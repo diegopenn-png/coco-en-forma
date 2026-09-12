@@ -1,0 +1,1086 @@
+{
+  "release_id": "eterna-library-2026.09-v8-410-consolidated-1c484e",
+  "single_AI": true,
+  "records": [
+    {
+      "lesson_id": "i-same-different",
+      "content_sha256": "dd000364d77ccd0161ab0e4cd3789133c9e51bbdbfc70a37de09fc1c71a52af2",
+      "questions": [
+        "Un círculo rojo y un cuadrado rojo tienen igual…",
+        "Un círculo azul y un círculo rojo comparten…",
+        "Antes de comparar dos objetos conviene decidir…"
+      ],
+      "checked_answers": [
+        "Color",
+        "La forma",
+        "En qué característica nos fijamos"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Tener el mismo color no significa tener también la misma forma.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-one-more",
+      "content_sha256": "ecfbb002915ebcdb6ca4340df11b0837c441256434da23e39ad74a6f8a2e7364",
+      "questions": [
+        "Tienes dos bloques y añades uno. ¿Cuántos hay?",
+        "Tienes tres bloques y añades uno. ¿Cuántos hay?",
+        "Mueves tres bloques sin añadir ni quitar ninguno. ¿Cuántos siguen siendo?"
+      ],
+      "checked_answers": [
+        "Tres",
+        "Cuatro",
+        "Tres"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Mover un objeto no es lo mismo que añadir otro.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-one-less",
+      "content_sha256": "0755cff26d3a10d83698ee5963f9485838515366b5ed2d90342faa35c847a005",
+      "questions": [
+        "Hay tres bloques en una bandeja y sacas uno. ¿Cuántos quedan dentro?",
+        "Hay dos bloques en una bandeja y sacas uno. ¿Cuántos quedan dentro?",
+        "Al contar los bloques que quedan dentro de la bandeja, cuentas…"
+      ],
+      "checked_answers": [
+        "Dos",
+        "Uno",
+        "Los que están dentro"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Sacar una pieza del grupo no significa que desaparezca del mundo.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-hands",
+      "content_sha256": "e7fa27f8cdca3134614e5a7af0a5da29e8170531763e5c9fe12a44f9a08a9c20",
+      "questions": [
+        "Antes de comer, una rutina de cuidado es…",
+        "Si no llegas al grifo con seguridad, puedes…",
+        "Unas manos que parecen limpias…"
+      ],
+      "checked_answers": [
+        "Lavarse las manos",
+        "Pedir ayuda a una persona adulta",
+        "También pueden necesitar lavarse"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "El aspecto de las manos no cuenta todo sobre su limpieza.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-observe-change",
+      "content_sha256": "ffcedc8139dcde2e566acc8cc7865f2ea3a4a95a2eaa928b1f92261f6a1b2920",
+      "questions": [
+        "En una foto se ven dos hojas y en otra posterior tres. ¿Qué observamos?",
+        "Para recordar lo que observamos podemos…",
+        "Si no sabemos la causa de un cambio, podemos decir…"
+      ],
+      "checked_answers": [
+        "Una hoja más visible",
+        "Hacer un dibujo",
+        "Que todavía no lo sabemos"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Una suposición no es lo mismo que algo que hemos observado.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-sound-source",
+      "content_sha256": "f3234ae0eecdeafd096876110a23d380353ccb6b19886959c2e24ce8fc84ba30",
+      "questions": [
+        "Un adulto agita suavemente una maraca que suena. ¿Cuál es la fuente del sonido?",
+        "Si no sabes qué ha sonado, puedes…",
+        "Para explorar sonidos elegimos…"
+      ],
+      "checked_answers": [
+        "La maraca en movimiento",
+        "Pedir más pistas",
+        "Un volumen cómodo y seguro"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Parecerse a un sonido conocido no garantiza que tenga la misma fuente.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-double-half",
+      "content_sha256": "93086a76d22d02b4dfdbdac9200968b5e408cfea9682c5c80ee361d9c8e7582c",
+      "questions": [
+        "El doble de 7 es…",
+        "La mitad de 18 es…",
+        "¿Qué reparto muestra dos mitades de 10 fichas?"
+      ],
+      "checked_answers": [
+        "14",
+        "9",
+        "5 y 5"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Cualquier reparto en dos grupos no representa necesariamente dos mitades.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-carry-add",
+      "content_sha256": "4f3f17851b295a60c56cbfaff66afb31c3013c5125ae1acc5ed0972b556a2ae5",
+      "questions": [
+        "En 28 + 17, el resultado es…",
+        "Quince unidades equivalen a…",
+        "Al sumar por columnas, las unidades se colocan…"
+      ],
+      "checked_answers": [
+        "45",
+        "Una decena y cinco unidades",
+        "Debajo de las unidades"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "La llevada tiene un valor posicional, no es un uno que pueda colocarse en cualquier columna.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-estimate",
+      "content_sha256": "e1cf073fc956c921a4fbdc243aeae445d69e8074e3d5e8d1df0046b58b88bfbd",
+      "questions": [
+        "Redondeando a centenas, 198 + 304 es aproximadamente…",
+        "Una estimación es…",
+        "Si una suma cercana a 200 + 300 da 5.020, conviene…"
+      ],
+      "checked_answers": [
+        "500",
+        "Un valor aproximado útil",
+        "Revisar el cálculo"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "El signo de igualdad no debe sustituir a «aproximadamente» cuando los valores son distintos.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-divisibility",
+      "content_sha256": "a688b41feb2e3817dfa096d11514f79f5d94292878cea37544df6e3ecebfe0e3",
+      "questions": [
+        "¿Cuál es divisible por 10?",
+        "El 123 es divisible por 3 porque…",
+        "¿Cuál es divisible por 5 pero no por 2?"
+      ],
+      "checked_answers": [
+        "150",
+        "1 + 2 + 3 = 6, múltiplo de 3",
+        "135"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Tener tres cifras no implica ser divisible por 3.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-decimal-add",
+      "content_sha256": "b97964a162e5ec7c9211554514f4ebd20d36a820ab89e2a60d00e249c0dfcb8e",
+      "questions": [
+        "2,4 + 0,35 es…",
+        "¿Cuál tiene el mismo valor que 3,5?",
+        "Para sumar decimales por columnas alineamos…"
+      ],
+      "checked_answers": [
+        "2,75",
+        "3,50",
+        "Las comas y los órdenes decimales"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Tener más cifras decimales no significa automáticamente ser mayor.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-double-entry",
+      "content_sha256": "5696fc2be404f94958d675c96843cfb6e597dc61176525adeed62ecc42c1b4fa",
+      "questions": [
+        "En una tabla, el lunes tiene 4 cuentos y 2 libros de poesía. ¿Cuántos libros se registraron ese lunes en total, sin repeticiones?",
+        "La casilla de martes y poesía se localiza cruzando…",
+        "Si una casilla dice «martes, cuentos: 3», el 3 representa…"
+      ],
+      "checked_answers": [
+        "6",
+        "La fila martes y la columna poesía",
+        "Los cuentos registrados el martes"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Un dato de una casilla no representa por sí solo el total de una fila o de la tabla.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-grid-coordinates",
+      "content_sha256": "8fc477a397f29e564f10c3b31ce0b2afe10b2b9fe2e23f0ce2a41e7824e98bf6",
+      "questions": [
+        "En (3, 2), la coordenada horizontal es…",
+        "Con los ejes habituales, dos unidades a la derecha y cuatro arriba del origen corresponden a…",
+        "Antes de contar cuadros debemos comprobar…"
+      ],
+      "checked_answers": [
+        "3",
+        "(2, 4)",
+        "La escala de los ejes"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Un cuadro no tiene que representar siempre una unidad.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-singular-plural",
+      "content_sha256": "8b2ac133f85312eedd256b6d9fb71e15c7fdf39dd6276c6c8ce54163f21b10cd",
+      "questions": [
+        "El plural de «libro» es…",
+        "¿Qué grupo está bien escrito?",
+        "En «un árbol» hablamos de…"
+      ],
+      "checked_answers": [
+        "Libros",
+        "Las casas blancas",
+        "Un árbol"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "No todos los plurales se forman de la misma manera.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-dialogue",
+      "content_sha256": "3481703862066ff08c944f7106bf850dbd786d5865086daba2e7e08f06472393",
+      "questions": [
+        "En «—Llegaré pronto —dijo Ana», ¿quién dice «Llegaré pronto»?",
+        "La parte «dijo Ana» sirve para…",
+        "El narrador y un personaje…"
+      ],
+      "checked_answers": [
+        "Ana",
+        "Identificar a quien habla",
+        "Cumplen funciones distintas aunque puedan coincidir en una obra"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Todo lo escrito en una narración no está dicho por el mismo personaje.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-main-idea",
+      "content_sha256": "1a9bcf7d8420236162c975d71cfece8378a1bf4699ba3a759f230eb7722ab342",
+      "questions": [
+        "Lee: «La biblioteca ofrece varias actividades. Los martes hay cuentacuentos y los jueves dibujo». La idea principal es…",
+        "Una idea principal debe…",
+        "Los ejemplos de un texto pueden servir para…"
+      ],
+      "checked_answers": [
+        "Que ofrece varias actividades",
+        "Recoger lo esencial del fragmento",
+        "Desarrollar una idea"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "La primera frase no es automáticamente la idea principal de cualquier texto.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-weather-observe",
+      "content_sha256": "27e7b49d7d34942a34360d652896b7bc3926d16c688374493f1531ca98c35216",
+      "questions": [
+        "Un registro de 18 °C esta mañana describe…",
+        "Para comparar observaciones conviene anotar…",
+        "Un día de lluvia basta para describir todo el clima de una región…"
+      ],
+      "checked_answers": [
+        "El tiempo en ese lugar y momento",
+        "Lugar y momento",
+        "No"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Tiempo atmosférico y clima no son equivalentes.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-en-a-an",
+      "content_sha256": "c25d750440ddbd698bd3937edc319cc3fcd326cd6f3b6d27ecef493358844dbf",
+      "questions": [
+        "¿Qué expresión es correcta?",
+        "En este uso elegimos a o an según…",
+        "La expresión habitual es…"
+      ],
+      "checked_answers": [
+        "An apple",
+        "El sonido inicial de la palabra siguiente",
+        "An hour"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Empezar por una letra vocálica no exige siempre an si el sonido inicial es consonántico.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-polynomials",
+      "content_sha256": "949f5ec92bad4e4fd896d78b5bc47bc20a075b9b868892e50b4fa6c4aab27dbf",
+      "questions": [
+        "3x + 2x es…",
+        "2(x + 3) equivale a…",
+        "¿Qué términos son semejantes?"
+      ],
+      "checked_answers": [
+        "5x",
+        "2x + 6",
+        "5x² y −2x²"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Las reglas de multiplicación de potencias no se aplican como si una suma fuera un producto.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-slope",
+      "content_sha256": "3501aee79c406feff1c835fe502086da817a59f4b327cb48705f3ee41800831d",
+      "questions": [
+        "La pendiente entre (1,3) y (3,7) es…",
+        "En y=3x−2, la ordenada en el origen es…",
+        "Una recta vertical tiene…"
+      ],
+      "checked_answers": [
+        "2",
+        "−2",
+        "Pendiente no definida como cociente finito Δy/Δx"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "La pendiente y la ordenada en el origen describen propiedades diferentes.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-circle-measures",
+      "content_sha256": "9f8bbcba13d78c6c51a4d872a99e1ee089dfc696f0a4e7fde0db111d7c7cfcfa",
+      "questions": [
+        "Con radio 3 cm, el área es…",
+        "Con radio 4 cm, el diámetro es…",
+        "La longitud de una circunferencia se expresa, por ejemplo, en…"
+      ],
+      "checked_answers": [
+        "9π cm²",
+        "8 cm",
+        "cm"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Usar el diámetro como si fuera el radio altera el resultado.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-sampling",
+      "content_sha256": "df7e46cd32b37c7d0674ae581c5ba2d166a0c1de466868ede0ae5435b5cabec4",
+      "questions": [
+        "Preguntar solo a quienes llegan en bici para describir a todo el alumnado puede producir…",
+        "La población es…",
+        "Aumentar el tamaño de una muestra sesgada…"
+      ],
+      "checked_answers": [
+        "Una muestra sesgada",
+        "El conjunto sobre el que queremos concluir",
+        "No corrige necesariamente el modo de selección"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Más respuestas no garantizan por sí solas mejores conclusiones si la selección está sesgada.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-histograms",
+      "content_sha256": "27b110bfa6fa307b99f60a1a9b6b62035d73581256b8092b6a837a110c7ece25",
+      "questions": [
+        "Con intervalos de igual amplitud y alturas que representan frecuencias, una barra de altura 8 contiene…",
+        "Antes de comparar barras hay que revisar…",
+        "Un histograma agrupado permite conocer siempre cada dato individual exacto…"
+      ],
+      "checked_answers": [
+        "8 datos",
+        "Amplitudes y significado del eje vertical",
+        "No"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "En intervalos de diferente anchura, una barra más alta no implica por sí sola más observaciones.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-heat-temperature",
+      "content_sha256": "b450c3e1673a2189f0ccb11725cf19a2fe0c70b81191631b4606175c26d9f654",
+      "questions": [
+        "El calor es…",
+        "Dos porciones de agua a 20 °C tienen…",
+        "La energía para elevar la temperatura depende…"
+      ],
+      "checked_answers": [
+        "Energía transferida por diferencia de temperatura",
+        "La misma temperatura",
+        "También de la masa y del material"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Una masa mayor a la misma temperatura no está necesariamente a mayor temperatura.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-osmosis",
+      "content_sha256": "610d98d4afac5d83ef95b1c72b68348fb396acc3ce0d1494581a08f733d95997",
+      "questions": [
+        "En el modelo descrito, lo que atraviesa la membrana durante la ósmosis es…",
+        "Para usar esa explicación sencilla hay que considerar…",
+        "La presión puede…"
+      ],
+      "checked_answers": [
+        "Agua",
+        "La permeabilidad de la membrana y las condiciones",
+        "Contrarrestar el movimiento neto osmótico"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "No toda membrana deja pasar las mismas sustancias ni toda diferencia de concentración actúa igual.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-geologic-time",
+      "content_sha256": "9cc05131fccc0d7374224921935d10cd0e623e3baf2c685dbfb1ce0974cce104",
+      "questions": [
+        "En capas sedimentarias no invertidas, A está bajo B. El depósito de A es…",
+        "Un dique que corta unas capas es…",
+        "La datación relativa proporciona principalmente…"
+      ],
+      "checked_answers": [
+        "Anterior al de B",
+        "Posterior a las capas que corta",
+        "Un orden temporal"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Estar más abajo no basta si la sucesión ha sido invertida o deformada.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-argumentation",
+      "content_sha256": "70bc60dc3a0215c00083eeaa096bf309cbd2d8f45e7b322ab9b00ce0d33df4a1",
+      "questions": [
+        "En «Conviene ampliar el horario de la biblioteca porque existe demanda por la tarde», la tesis es…",
+        "Una evidencia pertinente debe…",
+        "Una conclusión sólida debe…"
+      ],
+      "checked_answers": [
+        "Que conviene ampliar el horario",
+        "Guardar relación con la afirmación y poder examinarse",
+        "Ajustarse a las razones y evidencias disponibles"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Repetir muchas veces una afirmación no la convierte en una prueba.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-relative-english",
+      "content_sha256": "fc05db10fa2e1b35476360f4fafa9b434222da4423db06391eb18126d84d7e50",
+      "questions": [
+        "En «The girl who lives next door», who se refiere a…",
+        "¿Qué relativo encaja en el patrón «The book ___ is on the desk»?",
+        "Las reglas de los relativos especificativos…"
+      ],
+      "checked_answers": [
+        "The girl",
+        "That",
+        "No se aplican automáticamente a los explicativos"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Una regla útil para relativos sin comas no explica todos los relativos del inglés.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-past-continuous",
+      "content_sha256": "d4c95b3fb9212bd6fd29a4cdeddbd08268c221a88eb8d2564e35f00cc9f563a8",
+      "questions": [
+        "Completa: They ___ playing at six.",
+        "«I was reading at eight» presenta la lectura como…",
+        "Para formar past continuous se usa…"
+      ],
+      "checked_answers": [
+        "Were",
+        "Una acción en desarrollo en ese momento pasado",
+        "Was o were + verbo en -ing"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Past continuous no exige que la frase contenga siempre una interrupción.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-program-loops",
+      "content_sha256": "f30ffe744679cc054714b78439d08f288d3520ac78689eaa6da3fb044e371645",
+      "questions": [
+        "Un contador empieza en 0 y suma 1 exactamente tres veces. Termina en…",
+        "Para comprobar un bucle conviene…",
+        "Un error en el límite puede provocar…"
+      ],
+      "checked_answers": [
+        "3",
+        "Seguir sus estados y condición de salida",
+        "Una repetición de más o de menos"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Contar estados mostrados no equivale siempre a contar vueltas del bucle.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-continuity",
+      "content_sha256": "2784482fafac1643d0f13377fe5ca5cab9294bdc3151594debc94627ddf31528",
+      "questions": [
+        "Para continuidad en un punto interior necesitamos…",
+        "El límite de (x²−1)/(x−1) cuando x tiende a 1 es…",
+        "Para una función cuyo límite cuando x tiende a 1 es 2, definir f(1)=5 produce…"
+      ],
+      "checked_answers": [
+        "Que el límite exista y coincida con f(a)",
+        "2",
+        "Falta de continuidad en 1"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Un límite existente no implica que la función esté definida en el punto ni que tome ese valor.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-optimization",
+      "content_sha256": "366c660fce36236da3004187988b91cfb57a78361814986c19a2b0b616131fa9",
+      "questions": [
+        "El máximo de x² en [−1,2] es…",
+        "Una derivada nula…",
+        "En un intervalo cerrado conviene examinar también…"
+      ],
+      "checked_answers": [
+        "4, en x=2",
+        "Identifica un candidato que debe estudiarse",
+        "Los extremos del intervalo"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Ignorar los extremos puede hacer perder el máximo o mínimo global.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-coulomb",
+      "content_sha256": "7a16bbf2e931bd8d77374545c9ee72547c3583712a2a0fdb171344d8d2cd060c",
+      "questions": [
+        "Al duplicar la distancia entre las mismas cargas, la fuerza en magnitud pasa a…",
+        "Dos cargas del mismo signo…",
+        "La ley descrita supone…"
+      ],
+      "checked_answers": [
+        "Un cuarto",
+        "Se repelen en este modelo",
+        "Cargas puntuales y condiciones electrostáticas"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Duplicar la distancia no reduce la fuerza solo a la mitad.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-electric-potential",
+      "content_sha256": "2c2fcc02ee653d5f51861028dc54bcb917d39c7b7270d79af72d34a3f9d2c4bd",
+      "questions": [
+        "Con q=+2 C y ΔV=+3 V, ΔU es…",
+        "Un voltio equivale a…",
+        "Si cambia el signo de q y se mantiene ΔV, ΔU…"
+      ],
+      "checked_answers": [
+        "+6 J",
+        "Un julio por culombio",
+        "Cambia de signo"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Una diferencia de potencial no es por sí sola una cantidad de energía para cualquier carga.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-induction",
+      "content_sha256": "e65e4d38cc98712794d08281e712aae9120f4a5493b357dac548aeeb5c79c9a1",
+      "questions": [
+        "La inducción se relaciona con…",
+        "El flujo puede variar al cambiar…",
+        "La respuesta descrita por Lenz se opone…"
+      ],
+      "checked_answers": [
+        "Un cambio de flujo magnético",
+        "La orientación de la espira respecto al campo",
+        "Al cambio de flujo que la origina"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Un campo magnético constante puede producir un flujo variable si cambia la orientación o el área del circuito.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-acid-base",
+      "content_sha256": "4851c718539570ec9a0ad3400c51180dd92ce5390eb75147b88ba0927f872ece",
+      "questions": [
+        "En NH₃ + H₂O ⇌ NH₄⁺ + OH⁻, NH₃ actúa como…",
+        "La base conjugada de H₂O al donar un protón es…",
+        "Para clasificar una especie como ácido o base de Brønsted conviene…"
+      ],
+      "checked_answers": [
+        "Base aceptora",
+        "OH⁻",
+        "Examinar su papel en la transferencia de protones"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "El papel ácido o básico de algunas especies depende de la reacción concreta.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-enzymes",
+      "content_sha256": "31abe6e1e54d658f0967bb195028da07bbeb061a2dbb98f686e314c8f7c84044",
+      "questions": [
+        "Las enzimas suelen acelerar una reacción al…",
+        "Un catalizador cambia por sí solo la posición del equilibrio…",
+        "El valor óptimo de pH para las enzimas…"
+      ],
+      "checked_answers": [
+        "Reducir la barrera de activación por otra vía",
+        "No",
+        "Depende de la enzima y de las condiciones"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Acelerar una reacción no equivale a modificar su energía libre global.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-transcription",
+      "content_sha256": "2daef7b2e22f6e58d306123d038222e0d718c4e0f729e6707368f8552514ece1",
+      "questions": [
+        "Frente al ADN molde 3′-TAC-5′, el ARN complementario es…",
+        "El ARN se sintetiza en sentido…",
+        "La transcripción produce directamente…"
+      ],
+      "checked_answers": [
+        "5′-AUG-3′",
+        "5′ a 3′",
+        "ARN"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Transcripción y traducción no son el mismo proceso.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-translation",
+      "content_sha256": "9d166e2c376ee560d8567a4bf1a8f309939415e8a80b6514679924a6c22a6ae5",
+      "questions": [
+        "Un codón contiene…",
+        "En el código estándar, UAA es…",
+        "Que el código sea degenerado significa que…"
+      ],
+      "checked_answers": [
+        "Tres nucleótidos",
+        "Una señal de terminación",
+        "Varios codones pueden corresponder al mismo aminoácido"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "No todo triplete añade un aminoácido a la cadena.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-marx",
+      "content_sha256": "9d4526c9a7bcebc893b26e9ec3369c487b5f23cc78114dab08874ee4b50c5426",
+      "questions": [
+        "La alienación marxiana aquí estudiada analiza principalmente…",
+        "Sentirse aburrido en una tarea…",
+        "Para evaluar esta propuesta conviene…"
+      ],
+      "checked_answers": [
+        "Relaciones del trabajador con producto, actividad y vida social",
+        "No basta por sí solo para describir toda esa teoría",
+        "Examinar sus conceptos, razones y contexto histórico"
+      ],
+      "reviewer": "Single AI applying disciplinary perspectives",
+      "review_dimensions": [
+        "factual assumptions",
+        "age and clarity",
+        "self-contained stimulus",
+        "correct answer",
+        "misconception and hints",
+        "safety and inclusion"
+      ],
+      "misconception_examined": "Alienación no es simplemente un sinónimo de aburrimiento o fatiga.",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    }
+  ]
+}
