@@ -53,13 +53,14 @@ jobs:
           run-id: 34663145165
           github-token: ${{ github.token }}
           path: library-v2-source-evidence
-      - name: Reuse hash-verified immutable authenticated QA tool
+      - name: Reuse verified QA tool with bounded disposable fixtures
         run: |
           git fetch --depth=1 origin 81bf9e7a46c67bb12638a941a1cd774ad3de14bc
           git show 81bf9e7a46c67bb12638a941a1cd774ad3de14bc:qa/library/remote_canonical_verify.mjs > .v2-previous-qa.mjs
           python qa/library/prepare_remote_v2.py
+          python qa/library/partition_synthetic_v2.py
           node --check qa/library/remote_v2.generated.mjs
-      - name: Real canonical auth, 120 prepared turns, protected DB staging, delete synthetic identity
+      - name: Real canonical auth, 120 turns, unchanged trial quotas, protected DB staging and cleanup
         run: node qa/library/remote_v2.generated.mjs
       - name: Commit exact verified sources on isolated branch only
         run: |
@@ -68,6 +69,7 @@ jobs:
           from pathlib import Path
           r=json.loads(Path('library-v2-evidence/report.json').read_text())
           assert r['phase']=='canonical-private-verified' and r['synthetic_cleanup'].get('deleted')
+          assert r['synthetic_fixture_count']==2 and all(b['cleanup_verified'] for b in r['completed_synthetic_batches'])
           assert len(r['requests'])==120 and r['import_verification']['lesson_payloads_exact'] and r['import_verification']['protocol_payloads_exact']
           allowed={'eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json','qa/library/build_expansion_v2.py','qa/library/prepare_remote_v2.py','qa/library/v2-extra-tests.mjs.txt'}
           assert set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())<=allowed
@@ -75,7 +77,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs qa/library/lessons-v1.json qa/library/expansion-v2.json qa/library/build_expansion_v2.py qa/library/prepare_remote_v2.py qa/library/v2-extra-tests.mjs.txt
-          git commit -m "feat(eterna): verified 160-lesson v2 over published PWA context fix" -m "485 regressions, 120 real authenticated zero-generation turns, exact DB copies. Keep all e40e3bb context/handoff fixes, natural phrasing, indexed lookup, spelling and unit case. Original 80 lesson identities and voice/frontend intact. Isolated candidate only. Regional sources remain quarantined."
+          git commit -m "feat(eterna): verified 160-lesson v2 over published PWA context fix" -m "485 regressions, 120 real authenticated zero-generation turns, exact DB copies. Keep e40e3bb context/handoff fixes, natural phrasing, indexed lookup, spelling and unit case. Two disposable fixtures cleaned; trial quotas unchanged. Original 80 lesson identities and voice/frontend intact. Isolated candidate only. Regional sources remain quarantined."
           git push origin HEAD:refs/heads/feat/eterna-library-expansion-v2-20260912
           node --input-type=module <<'JS'
           import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
