@@ -25,6 +25,11 @@ jobs:
           ref: 81bf9e7a46c67bb12638a941a1cd774ad3de14bc
           path: .qa-auth
           persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: f1f701f03ea39b9f052d145fcd169993245211f6
+          path: .qa-combined
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -48,6 +53,8 @@ jobs:
           npm ci --no-audit --no-fund
       - name: Prepare exact expiring scoped QA, not a production authentication bypass
         run: |
+          mkdir -p qa/library-combined
+          cp .qa-combined/qa/library-combined/prepare_private.py qa/library-combined/prepare_private.py
           python qa/curriculum-review/prepare_private.py
           node --check qa/curriculum-review/remote_reviewed.generated.mjs
       - name: Exercise canonical Worker with synthetic identity and actual Supabase, then remove identity
