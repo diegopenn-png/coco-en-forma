@@ -1,0 +1,30 @@
+name: Eterna library v2 content workspace
+on:
+  push:
+    branches: ["feat/eterna-library-v2-content-20260912"]
+    paths: [".github/workflows/eterna-library-v2-snapshot.yml"]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive current release source only
+        run: |
+          mkdir -p evidence
+          git rev-parse HEAD > evidence/commit.txt
+          tar -czf evidence/source.tar.gz eterna-worker eterna-state-contract-v3.js eterna-v159.js qa/library index.html sw.js
+      - name: Retrieve existing fixed-synthetic verification tools
+        run: |
+          git fetch --depth=1 origin fix/eterna-library-pwa-context-20260912 fix/eterna-library-integrated-qa-20260912
+          mkdir -p evidence/prior-context evidence/prior-auth
+          git archive FETCH_HEAD qa/library > evidence/prior-auth.tar
+          git archive origin/fix/eterna-library-pwa-context-20260912 qa/library > evidence/prior-context.tar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-library-v2-workspace
+          path: evidence
+          retention-days: 7
