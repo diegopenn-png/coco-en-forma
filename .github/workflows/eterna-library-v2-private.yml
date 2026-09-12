@@ -1,0 +1,65 @@
+name: Eterna library v2 private real-service validation
+on:
+  push:
+    branches: ["feat/eterna-library-v2-content-20260912"]
+    paths: ["qa/library-release-v2/prepare_private.py", ".github/workflows/eterna-library-v2-private.yml"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-library-v2-private
+  cancel-in-progress: false
+jobs:
+  isolated-content-and-real-authentication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: ca678c35851b0da874fd744c7c2c1fef80fe0bbf
+          path: .qa-auth
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-library-v2-content-verification
+          run-id: 34663746343
+          github-token: ${{ github.token }}
+          path: .content-proof
+      - name: Verify exact source and all regressions again
+        run: |
+          python qa/library-release-v2/prepare_private.py
+          node --check qa/library/remote_canonical_v2.mjs
+          mkdir -p library-v2-private-evidence
+          cd eterna-worker
+          npm run check > ../library-v2-private-evidence/regression.txt
+          tail -10 ../library-v2-private-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Import draft content and exercise actual private Worker and Supabase with disposable fixture
+        run: node qa/library/remote_canonical_v2.mjs
+      - name: Verify complete real-service evidence and cleanup
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import assert from'node:assert/strict';
+          const p=JSON.parse(readFileSync('library-v2-private-evidence/report.json'));
+          assert.equal(p.phase,'canonical-private-verified');assert.equal(p.synthetic_cleanup.ok,true);assert.ok(p.synthetic_cleanup.deleted||p.synthetic_cleanup.already_absent);
+          assert.equal(p.requests.length,80);assert.equal(p.draft_content.lessons,160);assert.equal(p.draft_content.protocols,40);assert.equal(p.draft_content.hash_mismatches,0);
+          assert.equal(p.production_changed,false);
+          for(const r of p.requests){assert.equal(r.generation_model_calls,0);assert.equal(r.generation_tokens,0)}
+          console.log('PASS: 80 actual private requests, stored content verified, temporary identity removed, production unchanged');
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-library-v2-private-verification
+          path: library-v2-private-evidence
+          retention-days: 30
+          if-no-files-found: warn
