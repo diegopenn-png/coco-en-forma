@@ -2,7 +2,7 @@ name: Eterna complete library integration verification
 on:
   push:
     branches: ["feat/eterna-library-first-202609"]
-    paths: ["qa/library/finalize_integration.py", "qa/library/integration-tests.txt", "qa/library/ui_gateway.mjs", "qa/library/ui_integration.py", ".github/workflows/eterna-library-integration.yml"]
+    paths: ["qa/library/finalize_integration.py", "qa/library/preserve_protocol_context.py", "qa/library/integration-tests.txt", "qa/library/ui_gateway.mjs", "qa/library/ui_integration.py", ".github/workflows/eterna-library-integration.yml"]
 permissions:
   contents: write
 jobs:
@@ -18,8 +18,10 @@ jobs:
         with:
           python-version: '3.12'
       - name: Prepare exact locally tested integration
-        run: python qa/library/finalize_integration.py
-      - name: Repeat all 312 regression tests
+        run: |
+          python qa/library/finalize_integration.py
+          python qa/library/preserve_protocol_context.py
+      - name: Repeat all 314 regression tests
         shell: bash
         run: |
           set -o pipefail
@@ -50,7 +52,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- eterna-worker/src/index.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs
-          git commit -m "fix(eterna): validated PWA library integration without frontend changes" -m "Exact client command decoding, completed-state preservation, no repeated prepared example. Full backend regression and actual unmodified browser UI with synthetic services. Feature remains disabled in production."
+          git commit -m "fix(eterna): validated PWA library integration without frontend changes" -m "Exact client command decoding, completed-state preservation, cordiality context and demonstrated knowledge. Full backend regression and actual unmodified browser UI with synthetic services. Feature remains disabled in production."
           git push origin HEAD:refs/heads/feat/eterna-library-first-202609
           node --input-type=module <<'JS'
           import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
@@ -58,7 +60,7 @@ jobs:
           const blobs=Object.fromEntries(files.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));
           const log=readFileSync('library-integration-evidence/regression.txt','utf8'),ui=JSON.parse(readFileSync('library-integration-evidence/ui-report.json'));
           const report={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),regressions_passed:Number(log.match(/# pass (\d+)/)[1]),regressions_failed:Number(log.match(/# fail (\d+)/)[1]),ui_scenarios:ui.reduce((n,x)=>n+x.scenarios.length,0),ui_models_called:ui.reduce((n,x)=>n+x.model_calls,0),auth_and_database:'synthetic fixtures, no child accounts',physical_iphone_tested:false,frontend_unchanged:true,microphone_unchanged:true,production_changed:false,blobs};
-          if(report.regressions_passed!==312||report.regressions_failed!==0||report.ui_models_called!==0)throw Error('Acceptance criteria failed');
+          if(report.regressions_passed!==314||report.regressions_failed!==0||report.ui_models_called!==0)throw Error('Acceptance criteria failed');
           writeFileSync('library-integration-evidence/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
           JS
       - name: Preserve actual results and screenshots
