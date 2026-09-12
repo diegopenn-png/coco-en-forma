@@ -1,0 +1,47 @@
+name: Eterna panel official reference recovery
+on:
+  push:
+    branches: ["feat/eterna-panel-multidisciplinar-20260912"]
+    paths: ["qa/teacher-panel/recover_official.py", ".github/workflows/eterna-panel-regulatory-recovery.yml"]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  recover-authentic-references:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-regulatory-reviewed-registry
+          run-id: 34667511109
+          github-token: ${{ github.token }}
+          path: .prior-registry
+      - run: |
+          pip install beautifulsoup4==4.13.5 lxml==6.0.1 requests==2.32.5
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          python qa/teacher-panel/recover_official.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-panel-recovered-registry
+          path: |
+            panel-regulatory-evidence/recovered-registry.json
+            panel-regulatory-evidence/territorial-stage-matrix.json
+            panel-regulatory-evidence/report.json
+          retention-days: 90
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-panel-recovered-official-sources
+          path: panel-regulatory-evidence
+          retention-days: 90
+          if-no-files-found: warn
