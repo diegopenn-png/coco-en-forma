@@ -1,0 +1,77 @@
+name: Eterna traceable curriculum and six subject-gap supports
+on:
+  push:
+    branches: ["feat/eterna-curriculum-traceability-20260912"]
+    paths: [".github/workflows/eterna-curriculum-traceability-build.yml", "qa/curriculum-map/build_release.py", "qa/curriculum-map/parse_national.py", "qa/curriculum-map/link_lessons.py", "qa/curriculum-map/review_links.py", "qa/curriculum-map/verify_inventory.py", "qa/curriculum-map/fill_subject_gaps.txt", "eterna-worker/test/curriculum-traceability.test.mjs"]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eterna-curriculum-traceability-build
+  cancel-in-progress: false
+jobs:
+  bounded-national-inventory-and-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-curriculum-authentic-refresh
+          run-id: 34678919953
+          github-token: ${{ github.token }}
+          path: .official-refreshed
+      - name: Build source-scoped content and precise curriculum denominator
+        run: |
+          pip install beautifulsoup4==4.13.5 lxml==6.0.1
+          mkdir -p curriculum-traceability-evidence
+          python qa/curriculum-map/build_release.py
+          python qa/curriculum-map/parse_national.py --input .official-refreshed/national --output curriculum-traceability-evidence/national
+          python qa/curriculum-map/link_lessons.py --lessons qa/library/lessons-v1.json --units curriculum-traceability-evidence/national/units.jsonl --output curriculum-traceability-evidence/mapping
+          python qa/curriculum-map/review_links.py --lessons qa/library/lessons-v1.json --units curriculum-traceability-evidence/national/units.jsonl --sources .official-refreshed --output curriculum-traceability-evidence/mapping
+          cp curriculum-traceability-evidence/mapping/reviewed-partial-links.json qa/curriculum-map/reviewed-partial-links.json
+          python qa/curriculum-map/verify_inventory.py curriculum-traceability-evidence
+      - name: Exercise every lesson through existing authenticated state contracts
+        shell: bash
+        run: |
+          set -o pipefail
+          cd eterna-worker
+          npm run check > ../curriculum-traceability-evidence/regression.txt 2>&1
+          tail -12 ../curriculum-traceability-evidence/regression.txt
+          grep -q '^# fail 0$' ../curriculum-traceability-evidence/regression.txt
+      - name: Confirm only approved library source and historic-scope fixtures changed
+        run: |
+          python - <<'PY'
+          import subprocess
+          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','eterna-worker/test/teacher-panel.test.mjs','qa/library/lessons-v1.json'}
+          changed=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines());assert changed<=allowed,changed
+          PY
+      - name: Save only the validated canonical content on the isolated branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs eterna-worker/test/teacher-panel.test.mjs qa/library/lessons-v1.json qa/curriculum-map/release-manifest.json qa/curriculum-map/reviewed-partial-links.json
+          git commit -m "content(eterna): validated 310-lesson traceable candidate; old 304 preserved" -m "Six subject-gap supports, exact partial source links, no runtime algorithm or microphone changes. National inventory 1612 criteria and 3120 knowledge entries; lexical suggestions are not validated coverage. No production deployment."
+          git push origin HEAD:refs/heads/feat/eterna-curriculum-traceability-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
+          const paths=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','eterna-worker/test/teacher-panel.test.mjs','eterna-worker/test/curriculum-traceability.test.mjs','qa/library/lessons-v1.json','qa/curriculum-map/release-manifest.json','qa/curriculum-map/reviewed-partial-links.json'];
+          const blobs=Object.fromEntries(paths.map(path=>[path,{sha:execFileSync('git',['hash-object',path],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(path)).digest('hex')}]));
+          const log=readFileSync('curriculum-traceability-evidence/regression.txt','utf8'),manifest=JSON.parse(readFileSync('qa/curriculum-map/release-manifest.json'));
+          writeFileSync('curriculum-traceability-evidence/report.json',JSON.stringify({...manifest,tested_commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),tests_passed:Number(log.match(/^# pass (\d+)$/m)[1]),tests_failed:Number(log.match(/^# fail (\d+)$/m)[1]),production_modified:false,blobs},null,2));
+          JS
+          git archive HEAD eterna-worker/src eterna-worker/test eterna-worker/package.json eterna-worker/package-lock.json eterna-state-contract-v3.js qa/curriculum-map qa/library/lessons-v1.json qa/curriculum-review/corrections.json qa/teacher-panel > curriculum-traceability-evidence/tested-source.tar
+      - name: Preserve actual tests, source inventory and candidate labels
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-traceable-310-build
+          path: curriculum-traceability-evidence
+          retention-days: 90
+          if-no-files-found: warn
