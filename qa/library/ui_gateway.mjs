@@ -7,7 +7,7 @@ const harnessPath=resolve(root,'eterna-worker/test/.library-ui-harness.mjs');
 writeFileSync(harnessPath,tests.split('const profile=l=>')[0].replace("import test from 'node:test';\n",'')+'\nexport{harness};\n');
 const{harness}=await import(pathToFileURL(harnessPath));let h=harness();let results=[],inputs=[];
 const persist=()=>writeFileSync(resolve(root,'library-integration-evidence/synthetic-envelopes.json'),JSON.stringify({inputs,results,inference_attempts:h.inferences.length},null,2));
-const mime={'.js':'text/javascript','.css':'text/css','.html':'text/html','.png':'image/png','.svg':'image/svg+xml','.webp':'image/webp'};
+const mime={'.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.html':'text/html; charset=utf-8','.png':'image/png','.svg':'image/svg+xml','.webp':'image/webp'};
 const server=createServer(async(req,res)=>{
  try{
   const u=new URL(req.url,'http://localhost');
@@ -24,7 +24,7 @@ const server=createServer(async(req,res)=>{
    Promise.allSettled(deferred).catch(()=>{});
    res.setHeader('Content-Type','application/json');res.end(JSON.stringify({status:response.status,headers:Object.fromEntries(response.headers),body}));return;
   }
-  if(u.pathname==='/fixture'){res.setHeader('Content-Type','text/html');res.end('<!doctype html><html lang="es"><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><main id="cocoApp"></main></body></html>');return}
+  if(u.pathname==='/fixture'){res.setHeader('Content-Type','text/html; charset=utf-8');res.end('<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><main id="cocoApp"></main></body></html>');return}
   const path=resolve(root,'.'+u.pathname);if(!path.startsWith(root+'/')){res.writeHead(403).end();return}
   res.setHeader('Content-Type',mime[extname(path)]||'application/octet-stream');res.end(readFileSync(path));
  }catch(e){res.writeHead(500,{'Content-Type':'application/json'});res.end(JSON.stringify({error:String(e.message)}))}
