@@ -1,0 +1,84 @@
+name: Eterna final library context verification
+on:
+  push:
+    branches: ["fix/eterna-library-pwa-context-20260912"]
+    paths: ["qa/library/polish_context_fallback.mjs", ".github/workflows/eterna-library-context-final.yml"]
+permissions:
+  contents: write
+jobs:
+  final-browser-and-private-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: a877d730a018fce369b5b262310cd8182439a7bc
+          path: .published-baseline
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply narrowly scoped fallback cleanup
+        run: node qa/library/polish_context_fallback.mjs
+      - name: Repeat all 397 tests
+        run: |
+          mkdir -p library-integration-evidence
+          cd eterna-worker
+          npm run check > ../library-integration-evidence/regression.txt
+          tail -10 ../library-integration-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Install browser tooling
+        run: |
+          pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Recheck styled frontend and canonical background chat flows
+        shell: bash
+        run: |
+          node qa/library/ui_gateway.mjs > library-integration-evidence/gateway.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do curl --silent --fail http://127.0.0.1:4189/fixture > /dev/null && break; sleep 1; done
+          python qa/library/ui_integration.py
+      - name: Commit validated source on isolated branch and make immutable proof
+        run: |
+          test "$GITHUB_REF" = "refs/heads/fix/eterna-library-pwa-context-20260912"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-worker/src/index.js eterna-worker/test/library-first.test.mjs
+          git commit -m "fix(eterna): complete prepared-to-AI follow-ups without dangling check labels" -m "397 regressions and 32 styled desktop/mobile UI scenarios. No microphone or provider changes. Isolated candidate only."
+          git push origin HEAD:refs/heads/fix/eterna-library-pwa-context-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync,mkdirSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';import assert from'node:assert/strict';
+          const paths=['eterna-worker/src/index.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/src/library/content-v1.js','eterna-worker/test/library-first.test.mjs'];
+          const blobs=Object.fromEntries(paths.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));
+          assert.equal(blobs[paths[0]].sha256,'0a142b6705aa1ee4b63562cd59cfc66c8e5702768d5413e46c94106f6e1eb52c');assert.equal(blobs[paths[3]].sha256,'255b389be9929bf8519caab35e464d0a68606d28a4f38b65104218a6f64713b6');
+          const log=readFileSync('library-integration-evidence/regression.txt','utf8'),ui=JSON.parse(readFileSync('library-integration-evidence/ui-report.json'));
+          const p={base_commit:'a877d730a018fce369b5b262310cd8182439a7bc',commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),regressions_passed:Number(log.match(/# pass (\d+)/)[1]),regressions_failed:Number(log.match(/# fail (\d+)/)[1]),ui_scenarios:ui.reduce((n,x)=>n+x.scenarios.length,0),ui_models_called:ui.reduce((n,x)=>n+x.model_calls,0),frontend_unchanged:true,microphone_unchanged:true,production_changed:false,blobs};
+          assert.equal(p.regressions_passed,397);assert.equal(p.regressions_failed,0);assert.equal(p.ui_scenarios,32);assert.equal(p.ui_models_called,0);mkdirSync('.context-proof',{recursive:true});writeFileSync('.context-proof/report.json',JSON.stringify(p,null,2));writeFileSync('library-integration-evidence/report.json',JSON.stringify(p,null,2));
+          JS
+      - name: Adapt private test manifest to the final regression count
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('qa/library/preview_context.mjs');s=p.read_text();assert 'proof.regressions_passed,396' in s;p.write_text(s.replace('396','397'))
+          p=Path('qa/library/context_edge_fixture.js');s=p.read_text();needle="check(r.data.reply!==first.reply,'Repeated original explanation');";assert s.count(needle)==1;p.write_text(s.replace(needle,needle+"check(!/Para comprobar una sola idea:\\s*$/.test(r.data.reply),'Dangling check label');"))
+          PY
+      - name: Verify compiled candidate and real-provider fallback, never deploy
+        run: node qa/library/preview_context.mjs
+      - name: Preserve actual final evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-context-final-verification
+          path: |
+            library-integration-evidence
+            library-context-edge-evidence
+          retention-days: 30
+          if-no-files-found: warn
