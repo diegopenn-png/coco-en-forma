@@ -104,6 +104,24 @@
     const id=`proc-${skill.id}-${seedText(n)}`;
     return{id,title:`Práctica de ${skill.title}`,stage:p.stage,subject:skill.subject,school_years:[profile.school_year],grade_min:p.grade,grade_max:p.grade,aliases:[],explanation:quiz[0].rule,simpler:quiz[0].hint,example:quiz[0].worked,why:quiz[0].rule,misconception:'Revisa la condición y las unidades del enunciado; no elijas por la posición de una opción.',quiz,curriculum_source:'https://www.boe.es/buscar/act.php?id='+SRC[p.stage],curriculum_source_key:SRC[p.stage],source_kind:'deterministic_generated_exercise',generator_version:VERSION,skill_id:skillId,seed:seedText(n),human_teacher_reviewed:false,official_endorsement:false};
   }
+  // Changing a round id is not evidence of new content. Keep generate() intact
+  // so questions already visible in a PWA keep their exact expected answers.
+  // Select a bounded candidate seed whose three exercises do not overlap the
+  // immediately previous round; option shuffling cannot disguise a repeat.
+  const roundExerciseKey=q=>q.question.normalize('NFC')+(q.params.hundredths?'|'+[...q.params.hundredths].sort((a,b)=>a-b).join(','):'');
+  function nextRoundSeed(lesson,profile,preferredSeed){
+    const previous=new Set(lesson.quiz.map(roundExerciseKey));
+    const step=Math.imul(3,0x9e3779b9)>>>0;
+    let candidate=preferredSeed===undefined?(seedValue(lesson.seed)+step)>>>0:seedValue(preferredSeed);
+    for(let attempt=0;attempt<96;attempt++,candidate=(candidate+step)>>>0){
+      const next=generate(lesson.skill_id,candidate,profile);if(!next)return null;
+      const keys=next.quiz.map(roundExerciseKey);
+      if(new Set(keys).size===3&&keys.every(key=>!previous.has(key)))return candidate;
+    }
+    // Bounded fallback: ask the ordinary tutor rather than claim a repeated
+    // or incomplete generated round is new. No unbounded search or history.
+    return null;
+  }
   const question=q=>`${q.question}\n${q.options.map((o,i)=>`${'ABC'[i]}) ${o}`).join('\n')}`;
   function owned(ped,profile,mode){
     const m=String(ped?.next_teaching_goal||'').match(MARK);if(!m||m[5]!==mode||ped.current_mode!==mode)return null;
@@ -149,7 +167,9 @@
     const{lesson:l,position,attempts,question:q}=active,hasQ=Boolean(pedState.pending_question);
     if(/^(?:parar|terminar|terminamos|no quiero seguir|lo dejamos aqui|ya esta)$/.test(s))return output(l,'De acuerdo. Dejamos esta ronda aquí; no necesitas terminarla ahora.',position,attempts,{check:false,complete:true,relation:'closure_request'});
     if(!hasQ){
-      if(/^(?:otra ronda|otra ronda nueva|mas ejercicios|otros ejercicios|mas ejercicios nuevos|seguimos practicando)$/.test(s))return start(l.skill_id,seed===undefined?(seedValue(l.seed)+0x9e3779b9)>>>0:seed);
+      if(/^(?:otra ronda|otra ronda nueva|mas ejercicios|otros ejercicios|mas ejercicios nuevos|seguimos practicando)$/.test(s)){
+        const next=nextRoundSeed(l,profile,seed);return next===null?null:start(l.skill_id,next);
+      }
       if(/^(?:por que|explica por que)$/.test(s))return output(l,q.worked,position,attempts,{check:false,complete:true,relation:'why_request'});
       return null;
     }
