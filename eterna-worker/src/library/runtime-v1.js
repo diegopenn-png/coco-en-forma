@@ -5,7 +5,7 @@
  */
 (function(root){
   'use strict';
-  const VERSION='library-first-v1';
+  const VERSION='library-first-v1.1';
   const MODES=new Set(['homework','ask','review','explain','exam','practice']);
   const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es-ES').replace(/[¿?¡!.,;:]/g,' ').replace(/\s+/g,' ').trim();
   const whole=v=>{const s=norm(v).replace(/^eterna /,'').replace(/ eterna$/,'').replace(/^(?:por favor|porfa) /,'').replace(/ (?:por favor|porfa|gracias)$/,'').trim();return s==='eterna'?'hola':s};
@@ -56,7 +56,7 @@
     switch(kind){
       case'hello':return [`¡Hola${name}! ${continuation}`,`¡Qué bien verte por aquí${name}! ${continuation}`,`¡Hola${name}! Vamos paso a paso. ${continuation}`][index];
       case'how_are_you':return `Estoy lista para ayudarte${name}. ${pending?'Seguimos con calma cuando estés preparado.':'¿Cómo vienes hoy: con una duda o con ganas de practicar?'}`;
-      case'thanks':return [`¡De nada${name}! El esfuerzo que has hecho para entenderlo cuenta.`,`¡De nada${name}! Me alegra que la explicación te haya servido.`,`Gracias a ti por trabajar la idea${name}. Podemos continuar cuando te venga bien.`][index];
+      case'thanks':return [`¡De nada${name}! Podemos avanzar a tu ritmo.`,`¡De nada${name}! Me alegra que la explicación te haya servido.`,`Gracias a ti por trabajar la idea${name}. Podemos continuar cuando te venga bien.`][index];
       case'goodbye':return `¡Hasta luego${name}! Descansa y disfruta también fuera de la pantalla.`;
       case'identity':return young?'Me llamo Eterna. Soy una IA: un programa que te ayuda a aprender. No soy una persona y a veces puedo equivocarme.':'Me llamo Eterna. Soy la IA tutora escolar de Coco en Forma, no una persona. Te ayudo a comprender, practicar y revisar; puedo equivocarme, así que compruebo lo importante y te diré cuando algo no esté claro.';
       case'mission':return 'Mi trabajo es ayudarte a aprender, no hacer pasar mis respuestas por tu trabajo. Puedo explicar una idea de otra forma, darte una pista, revisar un intento o practicar contigo una pregunta cada vez.';
@@ -99,6 +99,26 @@
     const position=Number(m[2]),attempts=Number(m[3]),q=lesson.quiz[position];
     if(ped.pending_question&&ped.pending_question!==question(q))return null;
     return {lesson,position,attempts,question:q};
+  }
+  // The PWA expands a few short commands before sending them. Decode only the
+  // complete canonical templates for the verified current lesson/question.
+  // Never strip an arbitrary prefix, trailing clause, or untrusted answer key.
+  function clientTurn(text,{profile={},pedState={},mode='ask'}={}){
+    if(typeof text!=='string'||text.length>2400)return text;
+    const active=owned(pedState,profile,mode);if(!active)return text;
+    const topic=active.lesson.title,templates=new Map();
+    const add=(raw,value)=>templates.set(norm(raw),value);
+    if(pedState.pending_question){
+      for(const answer of ['sí','no'])add(`Mi respuesta a tu última comprobación es ${answer}. Evalúala usando exactamente la pregunta anterior: ${question(active.question)}`,answer);
+    }else add(`Sí. Continúa con la explicación que acababas de ofrecer sobre ${topic} y resuelve lo que quedó pendiente.`,'siguiente');
+    add(`Continúa ahora con lo que quedó pendiente sobre ${topic}. No repitas lo ya explicado; avanza al siguiente punto útil.`,'siguiente');
+    add(`Explica por qué ocurre lo que acabamos de mencionar sobre ${topic}. Responde a la causa de la referencia anterior, sin cambiar de tema.`,'por qué');
+    add(`No lo entendí. Explícame de nuevo ${topic} con una estrategia realmente distinta: cambia la representación, analogía o ejemplo y divide la idea en menos pasos. No reformules simplemente la misma explicación.`,'no lo entiendo');
+    add(`Explícame de nuevo ${topic} con una estrategia realmente distinta. No repitas la misma formulación: cambia de representación, ejemplo, analogía o pasos y parte de lo que ya estaba explicado.`,'no lo entiendo');
+    const simpler=`Explícame ${topic} más fácil: menos palabras, menos abstracción y menos pasos, pero mantén la precisión. No repitas literalmente la respuesta anterior.`;
+    const prefix='SIMPLIFICACIÓN OBLIGATORIA: explica la misma idea con palabras cotidianas, frases cortas y un solo ejemplo concreto. Evita términos técnicos o abstractos como base de la explicación; si uno es imprescindible, explícalo después con palabras sencillas. Máximo tres ideas y no repitas la formulación anterior. ';
+    add(simpler,'más fácil');add(prefix+simpler,'más fácil');
+    return templates.get(norm(text))||text;
   }
   const question=q=>`${q.question}\n${q.options.map((o,i)=>`${'ABC'[i]}) ${o}`).join('\n')}`;
   function choice(text,q){
@@ -170,8 +190,8 @@
     if(mode==='review')return output(l,`Revisamos ${l.title.toLocaleLowerCase('es-ES')}. Necesito ver el enunciado y tu respuesta o tus pasos. Primero comprobaré lo que está bien y después el primer error que se pueda demostrar.`,null,'not_applicable',0,0,'new_topic',{strategy:'error_analysis',needs_clarification:true});
     const q=l.quiz[0],state={...modeState,focus:l.title,question_number:1,correct_count:0,partial_count:0,incorrect_count:0,difficulty:1};
     if(['exam','practice'].includes(mode))return output(l,(mode==='exam'?'Hacemos una ronda de tres preguntas, de una en una. Inténtalo antes de ver la explicación.':'Practicamos una idea cada vez. Si te cuesta, puedes pedir una pista.')+'\n\n'+question(q),question(q),'not_applicable',0,0,'new_topic',{mode_state:state});
-    return output(l,`${l.explanation}\n\n${l.example}\n\nPara comprobar una sola idea:\n${question(q)}`,question(q),'not_applicable',0,0,'new_topic',{mode_state:state,explained_marker:'lib:v1:intro'});
+    return output(l,`${l.explanation}\n\n${l.example}\n\nPara comprobar una sola idea:\n${question(q)}`,question(q),'not_applicable',0,0,'new_topic',{mode_state:state,explained_markers:['lib:v1:intro','lib:v1:example']});
   }
   function contextText(lesson){if(!lesson)return '';return `Material original ETERNA revisado por IA, no texto oficial ni revisión humana. Nivel editorial ${lesson.school_years.join(', ')}.\n${lesson.title}: ${lesson.explanation}\nEjemplo: ${lesson.example}\nError frecuente: ${lesson.misconception}\nLa referencia ${lesson.curriculum_source} es curricular, no aval oficial de esta lección.`}
-  root.EternaOwnedLibrary=Object.freeze({version:VERSION,release_id:'eterna-library-2026.09-v1',school,appropriate,protocol,cordial,protocols:PROTOCOLS,exactLesson,owned,decision,question,contextText});
+  root.EternaOwnedLibrary=Object.freeze({version:VERSION,release_id:'eterna-library-2026.09-v1',school,appropriate,protocol,cordial,protocols:PROTOCOLS,exactLesson,owned,clientTurn,decision,question,contextText});
 })(globalThis);
