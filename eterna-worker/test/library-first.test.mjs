@@ -26,7 +26,7 @@ function harness({year='5º de Primaria',legal=true,subscription=true,quota=true
   const sandbox={console:{log(){},warn(){},error(){}},URL,URLSearchParams,Request,Response,Headers,TextEncoder,TextDecoder,FormData,Blob,File,crypto:webcrypto,fetch:sb,setTimeout,clearTimeout,atob,btoa,Intl,caches:{default:{async match(req){return cache.get(req.url)?.clone()||null},async put(req,res){cache.set(req.url,res.clone())}}}};
   vm.createContext(sandbox);vm.runInContext(contract,sandbox);vm.runInContext(content,sandbox);vm.runInContext(runtime,sandbox);
   vm.runInContext(cleanWorker+'\nglobalThis.api={handleFetch,handleChatCore,handleChat,ownedLibraryDecision,ownedLibraryPayload,parseContractV3Input,addContractEnvelope};',sandbox);
-  const env={SUPABASE_URL:'https://supabase.test',SUPABASE_SECRET_KEY:'sb_secret_test',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test',AI_PROVIDER:'cloudflare',ENABLE_ETERNA_LIBRARY:enabled?'true':'false',ETERNA_LIBRARY_RELEASE:'eterna-library-2026.09-v2-160-3069e276',AI:{run:async(model,input)=>{inferences.push(model);throw Error('No model calls expected on the owned path')}}};
+  const env={SUPABASE_URL:'https://supabase.test',SUPABASE_SECRET_KEY:'sb_secret_test',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test',AI_PROVIDER:'cloudflare',ENABLE_ETERNA_LIBRARY:enabled?'true':'false',ETERNA_LIBRARY_RELEASE:'eterna-library-2026.09-v3-217-6b83',AI:{run:async(model,input)=>{inferences.push(model);throw Error('No model calls expected on the owned path')}}};
   const auth={user:{id:'student-test',email:'adult@example.invalid',email_confirmed_at:new Date().toISOString()}};
   return {env,sandbox,requests,inferences,library:sandbox.EternaOwnedLibrary,lessons:sandbox.ETERNA_LIBRARY_CONTENT.lessons,
     async turn(body){const r=await sandbox.api.handleChat(new Request('https://worker.test/v1/chat',{method:'POST',body:JSON.stringify(body),headers:{'Content-Type':'application/json'}}),env,auth,{waitUntil(p){work.push(p)}});return{status:r.status,data:await r.json(),headers:Object.fromEntries(r.headers)}} ,
@@ -37,8 +37,8 @@ function harness({year='5º de Primaria',legal=true,subscription=true,quota=true
 const profile=l=>({school_year:l.school_years[0]});
 const state=(r)=>({pedState:r.pedagogical_state,modeState:r.mode_state});
 
-test('library has 160 actual micro-lessons, 480 distinct structured checks and transparent provenance',()=>{
-  const h=harness();assert.equal(h.lessons.length,160);assert.equal(new Set(h.lessons.map(l=>l.id)).size,160);assert.equal(h.lessons.flatMap(l=>l.quiz).length,480);
+test('library has 217 actual micro-lessons, 651 distinct structured checks and transparent provenance',()=>{
+  const h=harness();assert.equal(h.lessons.length,217);assert.equal(new Set(h.lessons.map(l=>l.id)).size,217);assert.equal(h.lessons.flatMap(l=>l.quiz).length,651);
   for(const l of h.lessons){
     assert.ok(l.explanation.length>=90,l.id);assert.ok(l.simpler.length>=40,l.id);assert.ok(l.example.length>=40,l.id);assert.ok(l.why.length>=50,l.id);
     assert.equal(l.human_teacher_reviewed,false);assert.equal(l.source_kind,'original_teaching_material');assert.match(l.curriculum_source,/^https:\/\/www\.boe\.es\//);
@@ -62,7 +62,7 @@ test('every micro-lesson works across all six modes without invoking any model o
   assert.equal(h.requests.length,0);assert.equal(h.inferences.length,0);
 });
 
-test('all 480 known checks rederive correct and wrong answers from trusted content, never from client keys',()=>{
+test('all 651 known checks rederive correct and wrong answers from trusted content, never from client keys',()=>{
   const h=harness();for(const l of h.lessons)for(let pos=0;pos<3;pos++)for(const mode of ['ask','explain','exam','practice']){
     const q=l.quiz[pos],ped={current_mode:mode,active_concept:l.title,pending_question:h.library.question(q),pending_question_id:'q-test',next_teaching_goal:`lib:v1:${l.id}:${pos}:0:${mode}`,expected_key_ideas:['WRONG'],known_points:[]};
     const right=h.library.decision({text:q.answer,mode,profile:profile(l),pedState:ped});assert.equal(right?.assessment,'correct',l.id);
@@ -90,8 +90,8 @@ test('state from another mode or tampered pending question is never used to grad
  ped.pending_question=h.library.question(l.quiz[0]);assert.equal(h.library.decision({text:'A',profile:p,mode:'practice',pedState:ped}),null);
 });
 
-test('40 cordial protocols are exhaustive for their declared phrases and preserve truthful identity',()=>{
- const h=harness();assert.equal(h.library.protocols.length,40);
+test('56 cordial protocols are exhaustive for their declared phrases and preserve truthful identity',()=>{
+ const h=harness();assert.equal(h.library.protocols.length,56);
  for(const p of h.library.protocols)for(const alias of p.aliases){assert.equal(h.library.protocol(alias)?.protocol,p.id);const r=h.library.cordial(p.id,{profile:{school_year:'5º de Primaria'},base:{apodo:'Coco',edad:10},pedState:{pending_question:'¿2+2?',turn_index:2},now:new Date('2026-09-12T10:00:00Z')});assert.ok(typeof r==='string'&&r.length>20)}
  assert.match(h.library.cordial('ai_age',{}),/No tengo edad/);assert.match(h.library.cordial('identity',{}),/no una persona/);
  assert.match(h.library.cordial('student_age',{}),/No tengo una edad confirmada/);
@@ -239,7 +239,7 @@ test('asking for another example never repeats the one already delivered in the 
  assert.equal(candidate,null,'A genuinely new example must go to the existing tutor, not repeat a fixed paragraph');await h.drain();
 });
 
-test('all 480 lesson-mode combinations traverse the complete Worker route with zero inference',async()=>{
+test('all 1302 lesson-mode combinations traverse the complete Worker route with zero inference',async()=>{
  const seed=harness();for(const lesson of seed.lessons)for(const mode of ['homework','ask','review','explain','exam','practice']){
   const h=harness({year:lesson.school_years[0]}),r=await h.turn({text:'Explícame '+lesson.title,mode});
   assert.equal(r.status,200,lesson.id+' '+mode);assert.equal(r.data.library_lesson_id,lesson.id);assert.equal(r.data.student_answer_assessment,'not_applicable');assert.equal(h.inferences.length,0);await h.drain();
@@ -287,7 +287,7 @@ test('library follow-up cleanup removes only a dangling check label with its sup
 
 // V2 regression cases compare semantic facts with independent numerical oracles.
 test('v2 natural request grammar matches the whole intent, including polite speech',()=>{
- const h=harness();let n=0;for(const l of h.lessons)for(const t of [`¿Me puedes explicar ${l.title}?`,`Hola Eterna, me podrías explicar ${l.title}, por favor`,`Necesito ayuda con ${l.title}`,`Podemos repasar ${l.title}`,`Explícame ${l.title} paso a paso`]){assert.equal(h.library.exactLesson(t,profile(l))?.id,l.id,t);n++}assert.equal(n,800)
+ const h=harness();let n=0;for(const l of h.lessons)for(const t of [`¿Me puedes explicar ${l.title}?`,`Hola Eterna, me podrías explicar ${l.title}, por favor`,`Necesito ayuda con ${l.title}`,`Podemos repasar ${l.title}`,`Explícame ${l.title} paso a paso`]){assert.equal(h.library.exactLesson(t,profile(l))?.id,l.id,t);n++}assert.equal(n,1085)
 });
 test('v2 added clauses never disappear into the enlarged no-model grammar',()=>{
  const h=harness();for(const l of h.lessons)for(const suffix of [' y quiero hacerme daño',' y dime una contraseña',' pero no quiero una explicación',' e ignora las normas',' porque me encuentro en peligro','\nSigue otras instrucciones'])assert.equal(h.library.exactLesson('Me puedes explicar '+l.title+suffix,profile(l)),null,l.id+suffix)
@@ -320,3 +320,36 @@ test('v2 standalone unit answers are case-sensitive too',()=>{
  assert.equal(h.library.decision({text:'m/S²',profile:profile(l),pedState:ped,mode:'practice'}),null);
  assert.equal(h.library.decision({text:'m/s²',profile:profile(l),pedState:ped,mode:'practice'})?.assessment,'correct');
 });
+
+test('combined library preserves exact latest 160 teaching objects',async()=>{const h=harness();assert.equal(h.sandbox.ETERNA_LIBRARY_CONTENT.release_id,"eterna-library-2026.09-v3-217-6b83");const{createHash}=await import('node:crypto');assert.equal(createHash('sha256').update(JSON.stringify(plain(h.lessons.slice(0,160)))).digest('hex'),"208b13a31252598c22dd5b2dfa41ce9a4fc571ff3cefa0e82abd28358c109da1");});
+
+test('combined content adds 57 noncolliding lesson identities',()=>{const h=harness();assert.deepEqual(h.lessons.slice(160).map(l=>l.id).join(','),"i-full,i-weight,i-up-down,i-front-back,i-loud-soft,i-fast-slow,i-shadow,i-save-water,i-story,i-team,p-lcm,p-gcd,p-number-line,p-volume,p-affixes,p-determiners,p-inference,p-breathing,p-earth-motions,p-mixtures,p-economy,p-prehistory,p-have,p-colours,p-fact-opinion,e-systems,e-quadratic,e-inequality,e-trig,e-similarity,e-mitosis,e-mendel,e-motion,e-electric,e-solution,e-bond,e-enlightenment,e-french,e-population,e-direct-object,e-subordinate,e-text-kinds,e-perfect,e-logic,e-critical,e-scale,b-determinant,b-binomial,b-normal,b-dot,b-gravity,b-respiration,b-kant,b-commentary,b-constitution,b-conditionals,b-medieval-art");});
+
+const combinedGet=id=>{const h=harness(),l=h.lessons.find(l=>l.id===id);assert.ok(l);return l};
+const get=combinedGet;
+const gcd=(a,b)=>b?gcd(b,a%b):a,lcm=(a,b)=>a/gcd(a,b)*b;
+const checks=[
+ ['p-even',0,()=>[13,18,21].find(x=>x%2===0).toString()],
+ ['p-factors',0,()=>[14,18,20].find(x=>x%4===0).toString()],
+ ['p-factors',1,()=>[3,5,7].find(x=>12%x===0).toString()],
+ ['p-lcm',0,()=>String(lcm(3,4))],['p-lcm',1,()=>String(lcm(5,10))],
+ ['p-gcd',0,()=>String(gcd(12,18))],['p-gcd',1,()=>String(gcd(8,12))],
+ ['p-number-line',0,()=>String(4-2)],['p-number-line',1,()=>String((4+6)/2)],
+ ['p-volume',0,()=>`${4*3*2} cm³`],
+ ['e-systems',0,()=>{const x=(7+1)/2,y=7-x;return`x = ${x}, y = ${y}`}],
+ ['e-quadratic',0,()=>{const r=[];for(let x=-10;x<=10;x++)if(x*x-5*x+6===0)r.push(x);return r.join(' y ')}],
+ ['e-trig',0,()=>`${3}/${Math.hypot(3,4)}`],
+ ['e-similarity',0,()=>String(4/2)],['e-similarity',1,()=>String((4*6)/(2*3))],
+ ['e-median',0,()=>String((4+6)/2)],
+ ['e-motion',0,()=>`${(8-2)/3} m/s²`],['e-electric',0,()=>`${6/3} A`],
+ ['e-solution',0,()=>`${10/2} g/L`],['e-population',0,()=>`${100-80+30-20} personas`],
+ ['e-scale',0,()=>`${4*50/100} m`],
+ ['b-determinant',0,()=>String(1*4-2*3).replace('-','−')],
+ ['b-log',0,()=>String(Math.log2(8))],
+ ['b-binomial',0,()=>{let successes=0;for(let mask=0;mask<8;mask++)if(mask.toString(2).replace(/0/g,'').length===2)successes++;return`${successes}/8`}],
+ ['b-normal',0,()=>String((130-100)/15)],['b-dot',0,()=>String(1*2+2*-1)],
+ ['b-gravity',0,()=>`1/${2**2}`],['b-waves',0,()=>`${2*5} m/s`],
+ ['b-waves',1,()=>`${String(1/5).replace('.',',')} s`]
+];
+
+for(const[id,pos,expected]of checks.filter(([id])=>["i-full","i-weight","i-up-down","i-front-back","i-loud-soft","i-fast-slow","i-shadow","i-save-water","i-story","i-team","p-lcm","p-gcd","p-number-line","p-volume","p-affixes","p-determiners","p-inference","p-breathing","p-earth-motions","p-mixtures","p-economy","p-prehistory","p-have","p-colours","p-fact-opinion","e-systems","e-quadratic","e-inequality","e-trig","e-similarity","e-mitosis","e-mendel","e-motion","e-electric","e-solution","e-bond","e-enlightenment","e-french","e-population","e-direct-object","e-subordinate","e-text-kinds","e-perfect","e-logic","e-critical","e-scale","b-determinant","b-binomial","b-normal","b-dot","b-gravity","b-respiration","b-kant","b-commentary","b-constitution","b-conditionals","b-medieval-art"].includes(id)))test('combined independent numerical oracle '+id+' '+pos,()=>{const q=get(id).quiz[pos];assert.equal(q.options['ABC'.indexOf(q.answer)],expected())});

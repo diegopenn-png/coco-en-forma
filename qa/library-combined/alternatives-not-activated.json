@@ -1,0 +1,1839 @@
+[
+  {
+    "reason": "overlapping_title_preserved",
+    "lesson": {
+      "id": "i-sort",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "title": "Clasificar objetos",
+      "grade_min": 3,
+      "grade_max": 5,
+      "school_years": [
+        "Infantil · 3 años",
+        "Infantil · 4 años",
+        "Infantil · 5 años"
+      ],
+      "aliases": [
+        "Clasificar objetos",
+        "clasificar",
+        "clasificacion de objetos",
+        "agrupar objetos"
+      ],
+      "explanation": "Clasificar es reunir cosas que comparten una característica. Podemos agrupar por color, por forma o por uso. Antes de empezar, elegimos una regla y la mantenemos mientras formamos los grupos.",
+      "simpler": "Pon juntas las piezas que se parecen en la característica elegida. Hoy podemos mirar solo el color.",
+      "example": "Con un adulto y piezas grandes, separa las rojas de las azules. Después prueba otra regla: redondas y no redondas. Una pieza puede cambiar de grupo si cambia la regla.",
+      "why": "Un mismo objeto tiene varias características. Al clasificar seleccionamos una y dejamos de lado las demás durante ese juego.",
+      "misconception": "Clasificar por tamaño y por color al mismo tiempo puede ser difícil: empieza con una sola regla.",
+      "hints": [
+        "Recuerda la regla que has elegido para comparar los objetos.",
+        "Pon juntas las piezas que se parecen en la característica elegida. Hoy podemos mirar solo el color.",
+        "Con un adulto y piezas grandes, separa las rojas de las azules. Después prueba otra regla: redondas y no redondas. Una pieza puede cambiar de grupo si cambia la regla."
+      ],
+      "quiz": [
+        {
+          "id": "i-sort:q0",
+          "question": "Si agrupamos por color, una pieza roja va con…",
+          "options": [
+            "Las rojas",
+            "Las grandes aunque sean azules",
+            "Todas sin mirar"
+          ],
+          "answer": "A",
+          "hint": "Recuerda la regla que has elegido para comparar los objetos.",
+          "level": 1
+        },
+        {
+          "id": "i-sort:q1",
+          "question": "¿Podemos clasificar las mismas piezas de otra manera?",
+          "options": [
+            "No",
+            "Sí, cambiando la regla",
+            "Solo rompiéndolas"
+          ],
+          "answer": "B",
+          "hint": "Recuerda la regla que has elegido para comparar los objetos.",
+          "level": 2
+        },
+        {
+          "id": "i-sort:q2",
+          "question": "Antes de formar grupos conviene…",
+          "options": [
+            "Elegir al azar",
+            "Mirar solo la primera pieza",
+            "Decidir qué característica observamos"
+          ],
+          "answer": "C",
+          "hint": "Recuerda la regla que has elegido para comparar los objetos.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "curriculum_source_key": "BOE-A-2022-1654",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "overlapping_title_preserved",
+    "lesson": {
+      "id": "i-size",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "title": "Grande y pequeño",
+      "grade_min": 3,
+      "grade_max": 5,
+      "school_years": [
+        "Infantil · 3 años",
+        "Infantil · 4 años",
+        "Infantil · 5 años"
+      ],
+      "aliases": [
+        "Grande y pequeño",
+        "grande y pequeno",
+        "tamanos",
+        "comparar tamanos"
+      ],
+      "explanation": "Grande y pequeño sirven para comparar tamaños. Algo puede ser grande al lado de un objeto y pequeño al lado de otro. Por eso ayuda indicar con qué lo estamos comparando.",
+      "simpler": "Pon dos objetos cerca y mira cuál ocupa más espacio. Compara sin decir que uno es mejor que otro.",
+      "example": "Una caja mediana es grande junto a una cajita, pero pequeña junto a una caja enorme. La caja mediana no ha cambiado.",
+      "why": "Los tamaños relativos se comprenden comparando; cambiar la referencia cambia la comparación, no el objeto.",
+      "misconception": "Grande no significa mejor, y pequeño no significa peor.",
+      "hints": [
+        "Coloca los objetos juntos y usa el mismo criterio.",
+        "Pon dos objetos cerca y mira cuál ocupa más espacio. Compara sin decir que uno es mejor que otro.",
+        "Una caja mediana es grande junto a una cajita, pero pequeña junto a una caja enorme. La caja mediana no ha cambiado."
+      ],
+      "quiz": [
+        {
+          "id": "i-size:q0",
+          "question": "Una caja puede ser grande o pequeña según…",
+          "options": [
+            "Su color siempre",
+            "Con qué la compares",
+            "Quién la quiera más"
+          ],
+          "answer": "B",
+          "hint": "Coloca los objetos juntos y usa el mismo criterio.",
+          "level": 1
+        },
+        {
+          "id": "i-size:q1",
+          "question": "Si cambiamos el objeto de referencia, la caja mediana…",
+          "options": [
+            "Puede parecer mayor o menor",
+            "Cambia necesariamente de tamaño",
+            "Desaparece"
+          ],
+          "answer": "A",
+          "hint": "Coloca los objetos juntos y usa el mismo criterio.",
+          "level": 2
+        },
+        {
+          "id": "i-size:q2",
+          "question": "Comparar tamaños nos dice…",
+          "options": [
+            "Qué objeto es mejor",
+            "Quién debe jugar primero",
+            "Cuál es mayor respecto a otro"
+          ],
+          "answer": "C",
+          "hint": "Coloca los objetos juntos y usa el mismo criterio.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "curriculum_source_key": "BOE-A-2022-1654",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-even",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "title": "Números pares e impares",
+      "grade_min": 2,
+      "grade_max": 6,
+      "school_years": [
+        "2º de Primaria",
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "Números pares e impares",
+        "pares e impares",
+        "numeros pares",
+        "numeros impares"
+      ],
+      "explanation": "Un número natural es par si se puede repartir en parejas sin que sobre ningún elemento. Si sobra uno, es impar. En escritura decimal son pares los números que terminan en 0, 2, 4, 6 u 8. El cero también es par.",
+      "simpler": "Forma grupos de dos. Si no sobra nada, la cantidad es par; si sobra una pieza, es impar.",
+      "example": "Con 8 fichas haces cuatro parejas. Con 9 haces cuatro parejas y queda una ficha sin pareja.",
+      "why": "Un número par puede expresarse como dos por un entero; un impar queda una unidad por encima de algún número par.",
+      "misconception": "No todos los números de dos cifras son pares; importa si son divisibles entre dos.",
+      "hints": [
+        "Prueba a repartir en grupos de dos o mira la última cifra.",
+        "Forma grupos de dos. Si no sobra nada, la cantidad es par; si sobra una pieza, es impar.",
+        "Con 8 fichas haces cuatro parejas. Con 9 haces cuatro parejas y queda una ficha sin pareja."
+      ],
+      "quiz": [
+        {
+          "id": "p-even:q0",
+          "question": "¿Qué número es par?",
+          "options": [
+            "13",
+            "18",
+            "21"
+          ],
+          "answer": "B",
+          "hint": "Prueba a repartir en grupos de dos o mira la última cifra.",
+          "level": 1
+        },
+        {
+          "id": "p-even:q1",
+          "question": "Al formar parejas con 7 fichas sobra…",
+          "options": [
+            "Una ficha",
+            "Ninguna",
+            "Tres siempre"
+          ],
+          "answer": "A",
+          "hint": "Prueba a repartir en grupos de dos o mira la última cifra.",
+          "level": 2
+        },
+        {
+          "id": "p-even:q2",
+          "question": "¿El cero es par?",
+          "options": [
+            "No",
+            "Solo algunas veces",
+            "Sí"
+          ],
+          "answer": "C",
+          "hint": "Prueba a repartir en grupos de dos o mira la última cifra.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "overlapping_title_preserved",
+    "lesson": {
+      "id": "p-factors",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "title": "Múltiplos y divisores",
+      "grade_min": 4,
+      "grade_max": 6,
+      "school_years": [
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "Múltiplos y divisores",
+        "multiplos y divisores",
+        "multiplos",
+        "divisores"
+      ],
+      "explanation": "Los múltiplos de un número se obtienen multiplicándolo por números enteros. En naturales, 12 es múltiplo de 3 porque 3 × 4 = 12; a la vez, 3 es divisor de 12 porque la división es exacta. Son dos maneras de describir una relación.",
+      "simpler": "Si 3 cabe exactamente cuatro veces en 12, 3 divide a 12 y 12 es un múltiplo de 3.",
+      "example": "Los múltiplos naturales de 4 empiezan 0, 4, 8, 12, 16. Los divisores positivos de 12 son 1, 2, 3, 4, 6 y 12.",
+      "why": "La multiplicación muestra cuántas veces cabe una cantidad en otra; la división exacta expresa esa misma relación al revés.",
+      "misconception": "Divisor y múltiplo no son palabras intercambiables: describe cuál divide a cuál.",
+      "hints": [
+        "Comprueba la relación con una multiplicación o una división exacta.",
+        "Si 3 cabe exactamente cuatro veces en 12, 3 divide a 12 y 12 es un múltiplo de 3.",
+        "Los múltiplos naturales de 4 empiezan 0, 4, 8, 12, 16. Los divisores positivos de 12 son 1, 2, 3, 4, 6 y 12."
+      ],
+      "quiz": [
+        {
+          "id": "p-factors:q0",
+          "question": "¿Cuál es múltiplo de 4?",
+          "options": [
+            "14",
+            "18",
+            "20"
+          ],
+          "answer": "C",
+          "hint": "Comprueba la relación con una multiplicación o una división exacta.",
+          "level": 1
+        },
+        {
+          "id": "p-factors:q1",
+          "question": "¿Cuál es divisor de 12?",
+          "options": [
+            "3",
+            "5",
+            "7"
+          ],
+          "answer": "A",
+          "hint": "Comprueba la relación con una multiplicación o una división exacta.",
+          "level": 2
+        },
+        {
+          "id": "p-factors:q2",
+          "question": "Si 5 × 6 = 30, entonces…",
+          "options": [
+            "30 es divisor de 5",
+            "5 es divisor de 30",
+            "6 no divide a 30"
+          ],
+          "answer": "B",
+          "hint": "Comprueba la relación con una multiplicación o una división exacta.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-angles",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "title": "Los ángulos",
+      "grade_min": 4,
+      "grade_max": 6,
+      "school_years": [
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "Los ángulos",
+        "angulos",
+        "angulo recto",
+        "angulos agudos y obtusos"
+      ],
+      "explanation": "Un ángulo se forma con dos semirrectas de origen común. Su amplitud mide el giro entre ellas, no la longitud de sus lados. Un ángulo recto mide 90°; uno agudo, menos de 90°; uno obtuso, más de 90° y menos de 180°.",
+      "simpler": "Piensa en cuánto giras de una dirección a otra. Abrir más los lados aumenta el ángulo.",
+      "example": "La esquina de un rectángulo representa un ángulo recto. Un ángulo de 40° es agudo y uno de 120° es obtuso.",
+      "why": "Medir un ángulo significa medir un giro relativo; prolongar sus lados no modifica las direcciones que lo forman.",
+      "misconception": "La longitud de los lados dibujados no determina la amplitud.",
+      "hints": [
+        "Compara la amplitud con los 90° de un ángulo recto.",
+        "Piensa en cuánto giras de una dirección a otra. Abrir más los lados aumenta el ángulo.",
+        "La esquina de un rectángulo representa un ángulo recto. Un ángulo de 40° es agudo y uno de 120° es obtuso."
+      ],
+      "quiz": [
+        {
+          "id": "p-angles:q0",
+          "question": "Un ángulo de 120° es…",
+          "options": [
+            "Agudo",
+            "Recto",
+            "Obtuso"
+          ],
+          "answer": "C",
+          "hint": "Compara la amplitud con los 90° de un ángulo recto.",
+          "level": 1
+        },
+        {
+          "id": "p-angles:q1",
+          "question": "Un ángulo recto mide…",
+          "options": [
+            "90°",
+            "45°",
+            "180°"
+          ],
+          "answer": "A",
+          "hint": "Compara la amplitud con los 90° de un ángulo recto.",
+          "level": 2
+        },
+        {
+          "id": "p-angles:q2",
+          "question": "Al alargar los lados dibujados sin cambiar su dirección, el ángulo…",
+          "options": [
+            "Siempre aumenta",
+            "Conserva su amplitud",
+            "Desaparece"
+          ],
+          "answer": "B",
+          "hint": "Compara la amplitud con los 90° de un ángulo recto.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-symmetry",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "title": "Simetría axial",
+      "grade_min": 3,
+      "grade_max": 6,
+      "school_years": [
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "Simetría axial",
+        "simetria axial",
+        "eje de simetria",
+        "simetria"
+      ],
+      "explanation": "Una figura tiene simetría axial respecto a una línea si al reflejarla sobre esa línea coincide consigo misma. Los puntos correspondientes quedan a la misma distancia del eje en lados opuestos. No todas las figuras tienen un eje de simetría.",
+      "simpler": "Imagina doblar una figura por una línea. Si ambas partes coinciden, esa línea es un eje de simetría.",
+      "example": "Un rectángulo que no sea cuadrado tiene dos ejes de simetría: las líneas por su centro paralelas a sus lados. Sus diagonales no son ejes.",
+      "why": "La simetría exige correspondencia punto a punto, no solo igualdad de tamaños o áreas.",
+      "misconception": "Dividir una figura en dos áreas iguales no garantiza que esas partes sean imágenes reflejadas.",
+      "hints": [
+        "Prueba la coincidencia mediante un reflejo o un doblez imaginario.",
+        "Imagina doblar una figura por una línea. Si ambas partes coinciden, esa línea es un eje de simetría.",
+        "Un rectángulo que no sea cuadrado tiene dos ejes de simetría: las líneas por su centro paralelas a sus lados. Sus diagonales no son ejes."
+      ],
+      "quiz": [
+        {
+          "id": "p-symmetry:q0",
+          "question": "Un rectángulo no cuadrado tiene…",
+          "options": [
+            "Dos ejes de simetría",
+            "Cuatro siempre",
+            "Ninguno"
+          ],
+          "answer": "A",
+          "hint": "Prueba la coincidencia mediante un reflejo o un doblez imaginario.",
+          "level": 1
+        },
+        {
+          "id": "p-symmetry:q1",
+          "question": "Dos puntos reflejados respecto al eje están…",
+          "options": [
+            "En el mismo lado siempre",
+            "A igual distancia del eje",
+            "A cualquier distancia"
+          ],
+          "answer": "B",
+          "hint": "Prueba la coincidencia mediante un reflejo o un doblez imaginario.",
+          "level": 2
+        },
+        {
+          "id": "p-symmetry:q2",
+          "question": "Las diagonales de un rectángulo no cuadrado…",
+          "options": [
+            "Siempre son sus únicos ejes",
+            "Son cuatro",
+            "No son ejes de simetría"
+          ],
+          "answer": "C",
+          "hint": "Prueba la coincidencia mediante un reflejo o un doblez imaginario.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-synonyms",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "title": "Sinónimos y antónimos",
+      "grade_min": 3,
+      "grade_max": 6,
+      "school_years": [
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "Sinónimos y antónimos",
+        "sinonimos y antonimos",
+        "sinonimos",
+        "antonimos"
+      ],
+      "explanation": "Los sinónimos tienen un significado igual o parecido en un contexto; los antónimos expresan significados opuestos en algún aspecto. Una palabra puede tener varios sentidos, así que no basta sustituirla sin leer la oración.",
+      "simpler": "Busca palabras que expresen algo parecido o algo contrario, pero comprueba la frase completa.",
+      "example": "En «un camino largo», extenso puede tener un sentido parecido y corto uno contrario. En otros contextos, largo puede necesitar otra sustitución.",
+      "why": "El significado depende también de las palabras que acompañan al término y de la situación comunicativa.",
+      "misconception": "Dos sinónimos no son intercambiables en todos los usos.",
+      "hints": [
+        "Lee la oración entera para decidir qué sentido tiene la palabra.",
+        "Busca palabras que expresen algo parecido o algo contrario, pero comprueba la frase completa.",
+        "En «un camino largo», extenso puede tener un sentido parecido y corto uno contrario. En otros contextos, largo puede necesitar otra sustitución."
+      ],
+      "quiz": [
+        {
+          "id": "p-synonyms:q0",
+          "question": "Un antónimo de largo en «un camino largo» es…",
+          "options": [
+            "Ancho",
+            "Corto",
+            "Extenso"
+          ],
+          "answer": "B",
+          "hint": "Lee la oración entera para decidir qué sentido tiene la palabra.",
+          "level": 1
+        },
+        {
+          "id": "p-synonyms:q1",
+          "question": "Los sinónimos tienen significados…",
+          "options": [
+            "Parecidos en un contexto",
+            "Siempre opuestos",
+            "Siempre idénticos en cualquier frase"
+          ],
+          "answer": "A",
+          "hint": "Lee la oración entera para decidir qué sentido tiene la palabra.",
+          "level": 2
+        },
+        {
+          "id": "p-synonyms:q2",
+          "question": "Antes de sustituir una palabra conviene…",
+          "options": [
+            "Mirar solo su primera letra",
+            "Contar sus sílabas",
+            "Comprobar el contexto"
+          ],
+          "answer": "C",
+          "hint": "Lee la oración entera para decidir qué sentido tiene la palabra.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-pronouns",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "title": "Los pronombres personales",
+      "grade_min": 3,
+      "grade_max": 6,
+      "school_years": [
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "Los pronombres personales",
+        "pronombres personales",
+        "pronombres"
+      ],
+      "explanation": "Los pronombres personales pueden referirse a quienes participan en la comunicación o a otras personas y entidades sin repetir sus nombres. Yo señala a quien habla; tú, a su interlocutor. Su referencia cambia según quién los use.",
+      "simpler": "Un pronombre permite hablar de alguien sin repetir su nombre: Ana puede pasar a ser ella.",
+      "example": "«Ana canta. Ella canta». Ella se refiere a Ana en ese contexto. Si Ana dice «yo», yo se refiere a Ana; si lo dice Luis, a Luis.",
+      "why": "Algunos pronombres dependen de la situación comunicativa; otros recuperan una referencia ya mencionada.",
+      "misconception": "Un pronombre no conserva siempre el mismo referente en todas las conversaciones.",
+      "hints": [
+        "Pregunta quién habla y a quién se refiere cada palabra.",
+        "Un pronombre permite hablar de alguien sin repetir su nombre: Ana puede pasar a ser ella.",
+        "«Ana canta. Ella canta». Ella se refiere a Ana en ese contexto. Si Ana dice «yo», yo se refiere a Ana; si lo dice Luis, a Luis."
+      ],
+      "quiz": [
+        {
+          "id": "p-pronouns:q0",
+          "question": "En «Ana llega. Ella saluda», ella se refiere a…",
+          "options": [
+            "La llegada",
+            "Ana",
+            "Otra persona siempre"
+          ],
+          "answer": "B",
+          "hint": "Pregunta quién habla y a quién se refiere cada palabra.",
+          "level": 1
+        },
+        {
+          "id": "p-pronouns:q1",
+          "question": "Yo se refiere normalmente a…",
+          "options": [
+            "Quien habla",
+            "Quien escucha siempre",
+            "Un lugar"
+          ],
+          "answer": "A",
+          "hint": "Pregunta quién habla y a quién se refiere cada palabra.",
+          "level": 2
+        },
+        {
+          "id": "p-pronouns:q2",
+          "question": "¿Qué palabra es un pronombre personal?",
+          "options": [
+            "Mesa",
+            "Rojo",
+            "Nosotros"
+          ],
+          "answer": "C",
+          "hint": "Pregunta quién habla y a quién se refiere cada palabra.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-punctuation",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "title": "El punto y la coma",
+      "grade_min": 3,
+      "grade_max": 6,
+      "school_years": [
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "El punto y la coma",
+        "el punto y la coma",
+        "signos de puntuacion"
+      ],
+      "explanation": "El punto cierra un enunciado y después suele comenzar otro con mayúscula. La coma puede separar elementos de una enumeración o delimitar ciertos fragmentos. No se coloca automáticamente cada vez que respiramos ni entre sujeto y verbo sin otra razón.",
+      "simpler": "La puntuación ayuda a organizar el significado. No es solo una marca de pausa al hablar.",
+      "example": "«Traje pan, queso y fruta». Las comas separan elementos de la lista. «Mi hermana lee» no necesita una coma entre hermana y lee.",
+      "why": "Los signos guían la lectura de relaciones gramaticales e ideas; una pausa oral no determina por sí sola un signo escrito.",
+      "misconception": "La coma no debe separar por sistema el sujeto de su verbo.",
+      "hints": [
+        "Observa la estructura y el significado, no solo las pausas de la voz.",
+        "La puntuación ayuda a organizar el significado. No es solo una marca de pausa al hablar.",
+        "«Traje pan, queso y fruta». Las comas separan elementos de la lista. «Mi hermana lee» no necesita una coma entre hermana y lee."
+      ],
+      "quiz": [
+        {
+          "id": "p-punctuation:q0",
+          "question": "Después de un punto que cierra un enunciado, la siguiente palabra suele empezar con…",
+          "options": [
+            "Minúscula siempre",
+            "Un número",
+            "Mayúscula"
+          ],
+          "answer": "C",
+          "hint": "Observa la estructura y el significado, no solo las pausas de la voz.",
+          "level": 1
+        },
+        {
+          "id": "p-punctuation:q1",
+          "question": "En una lista, la coma puede…",
+          "options": [
+            "Separar elementos",
+            "Cambiar la ortografía de todos",
+            "Sustituir siempre todas las palabras"
+          ],
+          "answer": "A",
+          "hint": "Observa la estructura y el significado, no solo las pausas de la voz.",
+          "level": 2
+        },
+        {
+          "id": "p-punctuation:q2",
+          "question": "¿Es correcta sin otra circunstancia la coma de «Mi hermana, lee»?",
+          "options": [
+            "Sí, siempre",
+            "No, separa sujeto y verbo sin motivo",
+            "Solo porque hacemos una pausa"
+          ],
+          "answer": "B",
+          "hint": "Observa la estructura y el significado, no solo las pausas de la voz.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-digestion",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio",
+      "title": "La digestión",
+      "grade_min": 4,
+      "grade_max": 6,
+      "school_years": [
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "La digestión",
+        "digestion",
+        "aparato digestivo",
+        "sistema digestivo"
+      ],
+      "explanation": "La digestión transforma los alimentos para que sus componentes aprovechables puedan ser absorbidos. Comienza en la boca y continúa en distintos órganos. La mayor parte de la absorción de nutrientes ocurre en el intestino delgado; no todo sucede en el estómago.",
+      "simpler": "El cuerpo descompone los alimentos y absorbe sustancias que puede utilizar. Cada parte del aparato digestivo cumple una función.",
+      "example": "Al masticar, fragmentas el alimento y lo mezclas con saliva. Más adelante, el intestino delgado absorbe gran parte de los nutrientes hacia el medio interno.",
+      "why": "La transformación y la absorción son procesos relacionados y distintos que requieren la acción coordinada de varios órganos.",
+      "misconception": "El estómago es importante, pero no realiza por sí solo todo el proceso.",
+      "hints": [
+        "Sigue el recorrido del alimento y distingue transformar de absorber.",
+        "El cuerpo descompone los alimentos y absorbe sustancias que puede utilizar. Cada parte del aparato digestivo cumple una función.",
+        "Al masticar, fragmentas el alimento y lo mezclas con saliva. Más adelante, el intestino delgado absorbe gran parte de los nutrientes hacia el medio interno."
+      ],
+      "quiz": [
+        {
+          "id": "p-digestion:q0",
+          "question": "La digestión comienza en…",
+          "options": [
+            "La boca",
+            "El intestino grueso siempre",
+            "Los pulmones"
+          ],
+          "answer": "A",
+          "hint": "Sigue el recorrido del alimento y distingue transformar de absorber.",
+          "level": 1
+        },
+        {
+          "id": "p-digestion:q1",
+          "question": "La mayor parte de la absorción de nutrientes ocurre en…",
+          "options": [
+            "El esófago",
+            "El intestino delgado",
+            "La tráquea"
+          ],
+          "answer": "B",
+          "hint": "Sigue el recorrido del alimento y distingue transformar de absorber.",
+          "level": 2
+        },
+        {
+          "id": "p-digestion:q2",
+          "question": "¿Toda la digestión sucede en el estómago?",
+          "options": [
+            "Sí",
+            "Solo de noche",
+            "No"
+          ],
+          "answer": "C",
+          "hint": "Sigue el recorrido del alimento y distingue transformar de absorber.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-circulation",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio",
+      "title": "La circulación sanguínea",
+      "grade_min": 4,
+      "grade_max": 6,
+      "school_years": [
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "La circulación sanguínea",
+        "circulacion sanguinea",
+        "aparato circulatorio",
+        "corazon y sangre"
+      ],
+      "explanation": "El corazón impulsa la sangre por vasos sanguíneos. Las arterias llevan sangre desde el corazón; las venas la devuelven hacia él. Los capilares permiten intercambios con los tejidos. Arteria no significa siempre sangre rica en oxígeno.",
+      "simpler": "Piensa en una red de transporte impulsada por el corazón: salen arterias, vuelven venas y hay intercambios en capilares.",
+      "example": "La arteria pulmonar lleva sangre del corazón a los pulmones aunque sea pobre en oxígeno respecto a la sangre que regresa de ellos.",
+      "why": "La circulación coordina transporte e intercambio; el nombre del vaso depende de su conexión con el corazón.",
+      "misconception": "Arteria y vena se definen por el recorrido, no simplemente por el oxígeno.",
+      "hints": [
+        "Clasifica los vasos por el sentido respecto al corazón.",
+        "Piensa en una red de transporte impulsada por el corazón: salen arterias, vuelven venas y hay intercambios en capilares.",
+        "La arteria pulmonar lleva sangre del corazón a los pulmones aunque sea pobre en oxígeno respecto a la sangre que regresa de ellos."
+      ],
+      "quiz": [
+        {
+          "id": "p-circulation:q0",
+          "question": "Una arteria lleva sangre…",
+          "options": [
+            "Desde el corazón",
+            "Siempre hacia el corazón",
+            "Solo al estómago"
+          ],
+          "answer": "A",
+          "hint": "Clasifica los vasos por el sentido respecto al corazón.",
+          "level": 1
+        },
+        {
+          "id": "p-circulation:q1",
+          "question": "Los capilares permiten principalmente…",
+          "options": [
+            "Masticar",
+            "Intercambios con tejidos",
+            "Mover el aire de la tráquea"
+          ],
+          "answer": "B",
+          "hint": "Clasifica los vasos por el sentido respecto al corazón.",
+          "level": 2
+        },
+        {
+          "id": "p-circulation:q2",
+          "question": "¿Todas las arterias llevan sangre rica en oxígeno?",
+          "options": [
+            "Sí",
+            "Solo las pequeñas",
+            "No"
+          ],
+          "answer": "C",
+          "hint": "Clasifica los vasos por el sentido respecto al corazón.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-solar",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio",
+      "title": "El sistema solar",
+      "grade_min": 3,
+      "grade_max": 6,
+      "school_years": [
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "El sistema solar",
+        "sistema solar",
+        "planetas del sistema solar"
+      ],
+      "explanation": "El sistema solar incluye el Sol y los cuerpos ligados gravitatoriamente a él, como planetas, planetas enanos, asteroides y cometas. El Sol es una estrella. La Tierra es un planeta y la Luna es su satélite natural.",
+      "simpler": "El Sol es la estrella de nuestro sistema. Los planetas, incluida la Tierra, se mueven en órbitas alrededor de él.",
+      "example": "La Tierra orbita el Sol y la Luna orbita la Tierra mientras ambos se desplazan por el sistema solar. La Luna no emite luz visible como una estrella: refleja luz solar.",
+      "why": "Las clasificaciones describen características físicas y órbitas; el brillo aparente por sí solo no basta para distinguir los cuerpos.",
+      "misconception": "La Luna no es una estrella y el Sol no es un planeta.",
+      "hints": [
+        "Distingue estrella, planeta y satélite por sus características y relaciones.",
+        "El Sol es la estrella de nuestro sistema. Los planetas, incluida la Tierra, se mueven en órbitas alrededor de él.",
+        "La Tierra orbita el Sol y la Luna orbita la Tierra mientras ambos se desplazan por el sistema solar. La Luna no emite luz visible como una estrella: refleja luz solar."
+      ],
+      "quiz": [
+        {
+          "id": "p-solar:q0",
+          "question": "El Sol es…",
+          "options": [
+            "Un satélite",
+            "Un planeta rocoso",
+            "Una estrella"
+          ],
+          "answer": "C",
+          "hint": "Distingue estrella, planeta y satélite por sus características y relaciones.",
+          "level": 1
+        },
+        {
+          "id": "p-solar:q1",
+          "question": "La Luna es principalmente…",
+          "options": [
+            "Un satélite natural de la Tierra",
+            "Una estrella",
+            "El centro del sistema solar"
+          ],
+          "answer": "A",
+          "hint": "Distingue estrella, planeta y satélite por sus características y relaciones.",
+          "level": 2
+        },
+        {
+          "id": "p-solar:q2",
+          "question": "La luz visible que vemos de la Luna procede sobre todo de…",
+          "options": [
+            "Una bombilla interna",
+            "La luz solar reflejada",
+            "Los océanos terrestres"
+          ],
+          "answer": "B",
+          "hint": "Distingue estrella, planeta y satélite por sus características y relaciones.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-relief",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio",
+      "title": "El relieve terrestre",
+      "grade_min": 3,
+      "grade_max": 6,
+      "school_years": [
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "El relieve terrestre",
+        "relieve",
+        "montanas llanuras y mesetas"
+      ],
+      "explanation": "El relieve es el conjunto de formas de la superficie terrestre. Podemos distinguir montañas, llanuras, mesetas y valles. Una meseta es una superficie relativamente llana y elevada respecto a zonas cercanas; llano no significa necesariamente estar al nivel del mar.",
+      "simpler": "Observa la forma y la altura relativa. Una zona puede ser llana y estar elevada.",
+      "example": "Una meseta combina bastante altura y una superficie relativamente plana. Un valle es una depresión alargada entre zonas más altas.",
+      "why": "La forma y la posición relativa describen aspectos diferentes del relieve.",
+      "misconception": "Llanura y meseta no se distinguen solo por que una tenga vegetación.",
+      "hints": [
+        "Distingue la forma de la superficie de su altitud.",
+        "Observa la forma y la altura relativa. Una zona puede ser llana y estar elevada.",
+        "Una meseta combina bastante altura y una superficie relativamente plana. Un valle es una depresión alargada entre zonas más altas."
+      ],
+      "quiz": [
+        {
+          "id": "p-relief:q0",
+          "question": "Una meseta es…",
+          "options": [
+            "Relativamente llana y elevada",
+            "Siempre el fondo del mar",
+            "Una nube"
+          ],
+          "answer": "A",
+          "hint": "Distingue la forma de la superficie de su altitud.",
+          "level": 1
+        },
+        {
+          "id": "p-relief:q1",
+          "question": "Un valle suele ser…",
+          "options": [
+            "Una estrella",
+            "Una depresión alargada",
+            "Una capa del aire"
+          ],
+          "answer": "B",
+          "hint": "Distingue la forma de la superficie de su altitud.",
+          "level": 2
+        },
+        {
+          "id": "p-relief:q2",
+          "question": "Una zona llana…",
+          "options": [
+            "Está siempre al nivel del mar",
+            "No puede estar elevada",
+            "Puede estar a distinta altitud"
+          ],
+          "answer": "C",
+          "hint": "Distingue la forma de la superficie de su altitud.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "p-there",
+      "stage": "primaria",
+      "subject": "Lengua Extranjera: Inglés",
+      "title": "There is y there are",
+      "grade_min": 3,
+      "grade_max": 6,
+      "school_years": [
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "There is y there are",
+        "there is y there are",
+        "there is",
+        "there are"
+      ],
+      "explanation": "En inglés, there is y there are permiten indicar que hay algo. En el uso básico empleamos there is con un nombre contable singular y there are con un plural. Para preguntar invertimos: Is there…? o Are there…?",
+      "simpler": "Para una cosa: there is. Para varias: there are. Mira el número del sustantivo.",
+      "example": "«There is a book on the desk» indica que hay un libro en la mesa. «There are two books» indica que hay dos.",
+      "why": "La estructura presenta la existencia de algo; la forma verbal debe concordar con el grupo correspondiente en estos ejemplos básicos.",
+      "misconception": "There y they no son la misma palabra ni cumplen la misma función.",
+      "hints": [
+        "Identifica si hablamos de un elemento singular o de varios.",
+        "Para una cosa: there is. Para varias: there are. Mira el número del sustantivo.",
+        "«There is a book on the desk» indica que hay un libro en la mesa. «There are two books» indica que hay dos."
+      ],
+      "quiz": [
+        {
+          "id": "p-there:q0",
+          "question": "Completa: There ___ two cats.",
+          "options": [
+            "Is",
+            "Are",
+            "Am"
+          ],
+          "answer": "B",
+          "hint": "Identifica si hablamos de un elemento singular o de varios.",
+          "level": 1
+        },
+        {
+          "id": "p-there:q1",
+          "question": "Completa: There ___ a chair.",
+          "options": [
+            "Is",
+            "Are",
+            "Be"
+          ],
+          "answer": "A",
+          "hint": "Identifica si hablamos de un elemento singular o de varios.",
+          "level": 2
+        },
+        {
+          "id": "p-there:q2",
+          "question": "¿Qué pregunta está bien formada?",
+          "options": [
+            "There are two books? únicamente",
+            "Is there two books?",
+            "Are there two books?"
+          ],
+          "answer": "C",
+          "hint": "Identifica si hablamos de un elemento singular o de varios.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "overlapping_title_preserved",
+    "lesson": {
+      "id": "p-sound",
+      "stage": "primaria",
+      "subject": "Educación Artística: Música",
+      "title": "Cualidades del sonido",
+      "grade_min": 3,
+      "grade_max": 6,
+      "school_years": [
+        "3º de Primaria",
+        "4º de Primaria",
+        "5º de Primaria",
+        "6º de Primaria"
+      ],
+      "aliases": [
+        "Cualidades del sonido",
+        "cualidades del sonido",
+        "altura intensidad duracion y timbre"
+      ],
+      "explanation": "Podemos describir un sonido por su altura, intensidad, duración y timbre. La altura distingue agudo y grave; la intensidad, fuerte y suave; la duración, largo y corto; el timbre ayuda a distinguir fuentes sonoras. Son propiedades diferentes.",
+      "simpler": "Pregunta si el sonido es agudo o grave, fuerte o suave, largo o corto y qué lo produce.",
+      "example": "Una flauta y un violín pueden tocar la misma nota con duración parecida y aun así sonar distintos por su timbre.",
+      "why": "Las propiedades del sonido permiten describir aspectos distintos; variar uno no obliga a variar todos los demás.",
+      "misconception": "Altura e intensidad no son sinónimos.",
+      "hints": [
+        "No confundas qué tan agudo es con qué tan fuerte se escucha.",
+        "Pregunta si el sonido es agudo o grave, fuerte o suave, largo o corto y qué lo produce.",
+        "Una flauta y un violín pueden tocar la misma nota con duración parecida y aun así sonar distintos por su timbre."
+      ],
+      "quiz": [
+        {
+          "id": "p-sound:q0",
+          "question": "Agudo y grave describen…",
+          "options": [
+            "La altura",
+            "La duración",
+            "Solo el volumen"
+          ],
+          "answer": "A",
+          "hint": "No confundas qué tan agudo es con qué tan fuerte se escucha.",
+          "level": 1
+        },
+        {
+          "id": "p-sound:q1",
+          "question": "El timbre ayuda a distinguir…",
+          "options": [
+            "Solo segundos",
+            "Fuentes sonoras",
+            "Solo distancias"
+          ],
+          "answer": "B",
+          "hint": "No confundas qué tan agudo es con qué tan fuerte se escucha.",
+          "level": 2
+        },
+        {
+          "id": "p-sound:q2",
+          "question": "Un sonido puede ser…",
+          "options": [
+            "Agudo solo si es fuerte",
+            "Grave solo si es largo",
+            "Agudo y suave a la vez"
+          ],
+          "answer": "C",
+          "hint": "No confundas qué tan agudo es con qué tan fuerte se escucha.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "curriculum_source_key": "BOE-A-2022-3296",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "e-median",
+      "stage": "eso",
+      "subject": "Matemáticas",
+      "title": "Mediana y moda",
+      "grade_min": 1,
+      "grade_max": 4,
+      "school_years": [
+        "1º de ESO",
+        "2º de ESO",
+        "3º de ESO",
+        "4º de ESO"
+      ],
+      "aliases": [
+        "Mediana y moda",
+        "mediana y moda",
+        "mediana",
+        "moda estadistica"
+      ],
+      "explanation": "La mediana ocupa el centro de los datos ordenados; si hay un número par de datos numéricos, se toma la media de los dos centrales. La moda es un valor de frecuencia máxima. Un conjunto puede tener varias modas.",
+      "simpler": "Ordena antes de buscar el centro. Para la moda, cuenta cuántas veces aparece cada valor.",
+      "example": "En 2, 3, 3, 8 y 9, la mediana es 3 y la moda también es 3. En 2, 4, 6 y 8, la mediana es (4 + 6)/2 = 5.",
+      "why": "Cada medida resume un aspecto del conjunto; valores extremos afectan a la media de manera distinta que a la mediana.",
+      "misconception": "Media, mediana y moda son medidas distintas y no tienen por qué coincidir.",
+      "hints": [
+        "No confundas posición central con frecuencia.",
+        "Ordena antes de buscar el centro. Para la moda, cuenta cuántas veces aparece cada valor.",
+        "En 2, 3, 3, 8 y 9, la mediana es 3 y la moda también es 3. En 2, 4, 6 y 8, la mediana es (4 + 6)/2 = 5."
+      ],
+      "quiz": [
+        {
+          "id": "e-median:q0",
+          "question": "La mediana de 2, 4, 6 y 8 es…",
+          "options": [
+            "4",
+            "6",
+            "5"
+          ],
+          "answer": "C",
+          "hint": "No confundas posición central con frecuencia.",
+          "level": 1
+        },
+        {
+          "id": "e-median:q1",
+          "question": "Antes de localizar la mediana debemos…",
+          "options": [
+            "Ordenar los datos",
+            "Eliminar todos los repetidos",
+            "Sumar solo los extremos"
+          ],
+          "answer": "A",
+          "hint": "No confundas posición central con frecuencia.",
+          "level": 2
+        },
+        {
+          "id": "e-median:q2",
+          "question": "La moda es…",
+          "options": [
+            "Siempre el valor central",
+            "Un valor de máxima frecuencia",
+            "Siempre el mayor dato"
+          ],
+          "answer": "B",
+          "hint": "No confundas posición central con frecuencia.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "curriculum_source_key": "BOE-A-2022-4975",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "e-renaissance",
+      "stage": "eso",
+      "subject": "Geografía e Historia",
+      "title": "El Renacimiento",
+      "grade_min": 2,
+      "grade_max": 4,
+      "school_years": [
+        "2º de ESO",
+        "3º de ESO",
+        "4º de ESO"
+      ],
+      "aliases": [
+        "El Renacimiento",
+        "renacimiento",
+        "humanismo renacentista"
+      ],
+      "explanation": "El Renacimiento fue un conjunto de transformaciones culturales y artísticas desarrollado en Europa, con importantes focos italianos, entre los siglos XIV y XVI aproximadamente. Recuperó y reinterpretó modelos clásicos. No supuso que todo el mundo europeo cambiara de forma idéntica o dejara de ser religioso.",
+      "simpler": "Se estudiaron textos y formas de la Antigüedad para crear nuevas propuestas, no simplemente copiarlas.",
+      "example": "El interés por la proporción, el estudio del cuerpo y la perspectiva influyó en distintas artes. El humanismo promovió el estudio crítico de textos y lenguas clásicas.",
+      "why": "Los periodos históricos agrupan tendencias; conviven novedades, continuidades y diferencias regionales.",
+      "misconception": "Renacimiento no significa ausencia de religión ni un cambio simultáneo de toda la sociedad.",
+      "hints": [
+        "Sitúa el proceso cultural sin convertirlo en una ruptura total y uniforme.",
+        "Se estudiaron textos y formas de la Antigüedad para crear nuevas propuestas, no simplemente copiarlas.",
+        "El interés por la proporción, el estudio del cuerpo y la perspectiva influyó en distintas artes. El humanismo promovió el estudio crítico de textos y lenguas clásicas."
+      ],
+      "quiz": [
+        {
+          "id": "e-renaissance:q0",
+          "question": "El Renacimiento recuperó especialmente modelos de…",
+          "options": [
+            "La Antigüedad clásica",
+            "La Revolución Industrial",
+            "La informática"
+          ],
+          "answer": "A",
+          "hint": "Sitúa el proceso cultural sin convertirlo en una ruptura total y uniforme.",
+          "level": 1
+        },
+        {
+          "id": "e-renaissance:q1",
+          "question": "El humanismo prestó atención al estudio de…",
+          "options": [
+            "Solo máquinas de vapor",
+            "Textos y lenguas clásicas",
+            "Solo estadísticas actuales"
+          ],
+          "answer": "B",
+          "hint": "Sitúa el proceso cultural sin convertirlo en una ruptura total y uniforme.",
+          "level": 2
+        },
+        {
+          "id": "e-renaissance:q2",
+          "question": "¿Las transformaciones fueron idénticas en toda Europa?",
+          "options": [
+            "Sí",
+            "Solo en un día concreto",
+            "No"
+          ],
+          "answer": "C",
+          "hint": "Sitúa el proceso cultural sin convertirlo en una ruptura total y uniforme.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "curriculum_source_key": "BOE-A-2022-4975",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "e-past",
+      "stage": "eso",
+      "subject": "Lengua Extranjera: Inglés",
+      "title": "Past simple",
+      "grade_min": 1,
+      "grade_max": 4,
+      "school_years": [
+        "1º de ESO",
+        "2º de ESO",
+        "3º de ESO",
+        "4º de ESO"
+      ],
+      "aliases": [
+        "Past simple",
+        "past simple",
+        "pasado simple en ingles"
+      ],
+      "explanation": "El past simple suele situar hechos en un pasado terminado. Los verbos regulares forman el pasado con -ed; los irregulares tienen formas propias. En preguntas y negativas con did o did not, el verbo principal vuelve a su forma base, salvo construcciones diferentes como to be.",
+      "simpler": "En «Did she go?», did ya marca el pasado: no añadimos went después.",
+      "example": "«She visited Madrid yesterday». Para preguntar: «Did she visit Madrid yesterday?». Para negar: «She did not visit Madrid yesterday».",
+      "why": "El auxiliar aporta información gramatical, por lo que el verbo principal no conserva la misma flexión que en la afirmativa.",
+      "misconception": "No marques dos veces el pasado en «did + verbo» usando did went.",
+      "hints": [
+        "Localiza el auxiliar antes de cambiar el verbo principal.",
+        "En «Did she go?», did ya marca el pasado: no añadimos went después.",
+        "«She visited Madrid yesterday». Para preguntar: «Did she visit Madrid yesterday?». Para negar: «She did not visit Madrid yesterday»."
+      ],
+      "quiz": [
+        {
+          "id": "e-past:q0",
+          "question": "¿Qué pregunta es correcta?",
+          "options": [
+            "Did she visited Madrid?",
+            "Did she visit Madrid?",
+            "Does she visited Madrid?"
+          ],
+          "answer": "B",
+          "hint": "Localiza el auxiliar antes de cambiar el verbo principal.",
+          "level": 1
+        },
+        {
+          "id": "e-past:q1",
+          "question": "Tras did not usamos normalmente el verbo principal en…",
+          "options": [
+            "Forma base",
+            "Pasado con -ed siempre",
+            "Gerundio siempre"
+          ],
+          "answer": "A",
+          "hint": "Localiza el auxiliar antes de cambiar el verbo principal.",
+          "level": 2
+        },
+        {
+          "id": "e-past:q2",
+          "question": "El pasado de go es…",
+          "options": [
+            "Goed",
+            "Goes",
+            "Went"
+          ],
+          "answer": "C",
+          "hint": "Localiza el auxiliar antes de cambiar el verbo principal.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "curriculum_source_key": "BOE-A-2022-4975",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "overlapping_title_preserved",
+    "lesson": {
+      "id": "b-log",
+      "stage": "bachillerato",
+      "subject": "Matemáticas",
+      "title": "Los logaritmos",
+      "grade_min": 1,
+      "grade_max": 2,
+      "school_years": [
+        "1º de Bachillerato",
+        "2º de Bachillerato"
+      ],
+      "aliases": [
+        "Los logaritmos",
+        "logaritmos",
+        "logaritmo"
+      ],
+      "explanation": "El logaritmo de x en base a responde a qué exponente hay que elevar a para obtener x: log_a(x) = y equivale a a^y = x. En los reales se exige a > 0, a distinto de 1 y x > 0. Las propiedades de productos no deben confundirse con sumas.",
+      "simpler": "Un logaritmo pregunta por un exponente. Piensa en la potencia equivalente.",
+      "example": "log_2(8) = 3 porque 2³ = 8. Para x e y positivos, log_a(xy) = log_a(x) + log_a(y); no existe esa misma regla para log_a(x + y).",
+      "why": "Las propiedades se derivan de las reglas de exponentes; aplicarlas exige conservar tanto la operación como el dominio.",
+      "misconception": "El logaritmo de una suma no se separa como suma de logaritmos.",
+      "hints": [
+        "Convierte la pregunta en una igualdad de potencias.",
+        "Un logaritmo pregunta por un exponente. Piensa en la potencia equivalente.",
+        "log_2(8) = 3 porque 2³ = 8. Para x e y positivos, log_a(xy) = log_a(x) + log_a(y); no existe esa misma regla para log_a(x + y)."
+      ],
+      "quiz": [
+        {
+          "id": "b-log:q0",
+          "question": "log_2(8) vale…",
+          "options": [
+            "4",
+            "3",
+            "2"
+          ],
+          "answer": "B",
+          "hint": "Convierte la pregunta en una igualdad de potencias.",
+          "level": 1
+        },
+        {
+          "id": "b-log:q1",
+          "question": "En logaritmos reales ordinarios, el argumento debe ser…",
+          "options": [
+            "Positivo",
+            "Siempre negativo",
+            "Cualquier real sin condiciones"
+          ],
+          "answer": "A",
+          "hint": "Convierte la pregunta en una igualdad de potencias.",
+          "level": 2
+        },
+        {
+          "id": "b-log:q2",
+          "question": "¿Qué identidad es válida con condiciones adecuadas?",
+          "options": [
+            "log(x+y)=log(x)+log(y) siempre",
+            "log(xy)=log(x)·log(y) siempre",
+            "log(xy)=log(x)+log(y)"
+          ],
+          "answer": "C",
+          "hint": "Convierte la pregunta en una igualdad de potencias.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "curriculum_source_key": "BOE-A-2022-5521",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "b-waves",
+      "stage": "bachillerato",
+      "subject": "Física",
+      "title": "Frecuencia, periodo y longitud de onda",
+      "grade_min": 1,
+      "grade_max": 2,
+      "school_years": [
+        "1º de Bachillerato",
+        "2º de Bachillerato"
+      ],
+      "aliases": [
+        "Frecuencia, periodo y longitud de onda",
+        "frecuencia periodo y longitud de onda",
+        "ondas",
+        "longitud de onda"
+      ],
+      "explanation": "El periodo T es el tiempo de un ciclo; la frecuencia f indica ciclos por segundo y cumple f = 1/T. La longitud de onda λ es la distancia entre puntos consecutivos en la misma fase. Para una onda periódica, v = λf en las condiciones del modelo.",
+      "simpler": "Periodo mide tiempo; longitud de onda mide distancia; frecuencia cuenta ciclos por tiempo.",
+      "example": "Si λ = 2 m y f = 5 Hz, la velocidad de propagación es 10 m/s. El periodo es 0,2 s.",
+      "why": "La perturbación se propaga mientras las partículas pueden oscilar localmente; son movimientos conceptualmente distintos.",
+      "misconception": "La velocidad de propagación no es necesariamente la velocidad de movimiento de cada partícula del medio.",
+      "hints": [
+        "Escribe las unidades para no confundir tiempo, distancia y frecuencia.",
+        "Periodo mide tiempo; longitud de onda mide distancia; frecuencia cuenta ciclos por tiempo.",
+        "Si λ = 2 m y f = 5 Hz, la velocidad de propagación es 10 m/s. El periodo es 0,2 s."
+      ],
+      "quiz": [
+        {
+          "id": "b-waves:q0",
+          "question": "La velocidad del ejemplo es…",
+          "options": [
+            "10 m/s",
+            "2,5 m/s",
+            "7 m/s"
+          ],
+          "answer": "A",
+          "hint": "Escribe las unidades para no confundir tiempo, distancia y frecuencia.",
+          "level": 1
+        },
+        {
+          "id": "b-waves:q1",
+          "question": "Con f = 5 Hz, el periodo es…",
+          "options": [
+            "5 s",
+            "0,2 s",
+            "2 s"
+          ],
+          "answer": "B",
+          "hint": "Escribe las unidades para no confundir tiempo, distancia y frecuencia.",
+          "level": 2
+        },
+        {
+          "id": "b-waves:q2",
+          "question": "La longitud de onda se mide en…",
+          "options": [
+            "Hertz",
+            "Segundos",
+            "Unidades de longitud"
+          ],
+          "answer": "C",
+          "hint": "Escribe las unidades para no confundir tiempo, distancia y frecuencia.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "curriculum_source_key": "BOE-A-2022-5521",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "b-equilibrium",
+      "stage": "bachillerato",
+      "subject": "Química",
+      "title": "Equilibrio químico",
+      "grade_min": 1,
+      "grade_max": 2,
+      "school_years": [
+        "1º de Bachillerato",
+        "2º de Bachillerato"
+      ],
+      "aliases": [
+        "Equilibrio químico",
+        "equilibrio quimico",
+        "equilibrio dinamico"
+      ],
+      "explanation": "Un equilibrio químico dinámico se alcanza cuando las velocidades de las reacciones directa e inversa se igualan, bajo condiciones apropiadas. Las concentraciones permanecen constantes a escala macroscópica, pero no tienen por qué ser iguales entre sí. Un catalizador no cambia por sí solo la posición de equilibrio a temperatura fija.",
+      "simpler": "Que no cambien las cantidades observables no significa que se hayan detenido todas las transformaciones.",
+      "example": "En una reacción reversible en equilibrio, siguen ocurriendo ambos sentidos a igual velocidad. Añadir un catalizador puede acelerar la llegada al equilibrio sin cambiar su composición de equilibrio a la misma temperatura.",
+      "why": "El equilibrio es un balance de procesos, no una ausencia de procesos.",
+      "misconception": "Una concentración constante no demuestra que no ocurran reacciones microscópicas.",
+      "hints": [
+        "Distingue igualar velocidades de igualar concentraciones.",
+        "Que no cambien las cantidades observables no significa que se hayan detenido todas las transformaciones.",
+        "En una reacción reversible en equilibrio, siguen ocurriendo ambos sentidos a igual velocidad. Añadir un catalizador puede acelerar la llegada al equilibrio sin cambiar su composición de equilibrio a la misma temperatura."
+      ],
+      "quiz": [
+        {
+          "id": "b-equilibrium:q0",
+          "question": "En equilibrio se igualan…",
+          "options": [
+            "Todas las concentraciones",
+            "Las velocidades directa e inversa",
+            "Todas las masas"
+          ],
+          "answer": "B",
+          "hint": "Distingue igualar velocidades de igualar concentraciones.",
+          "level": 1
+        },
+        {
+          "id": "b-equilibrium:q1",
+          "question": "Un catalizador a temperatura fija…",
+          "options": [
+            "No cambia por sí solo la constante de equilibrio",
+            "Siempre desplaza el equilibrio hacia productos",
+            "Elimina la reacción inversa"
+          ],
+          "answer": "A",
+          "hint": "Distingue igualar velocidades de igualar concentraciones.",
+          "level": 2
+        },
+        {
+          "id": "b-equilibrium:q2",
+          "question": "Equilibrio dinámico significa…",
+          "options": [
+            "Ausencia de movimiento de partículas",
+            "Que la reacción terminó para siempre",
+            "Transformaciones opuestas que se compensan macroscópicamente"
+          ],
+          "answer": "C",
+          "hint": "Distingue igualar velocidades de igualar concentraciones.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "curriculum_source_key": "BOE-A-2022-5521",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "existing_id_preserved",
+    "lesson": {
+      "id": "b-redox",
+      "stage": "bachillerato",
+      "subject": "Química",
+      "title": "Oxidación y reducción",
+      "grade_min": 1,
+      "grade_max": 2,
+      "school_years": [
+        "1º de Bachillerato",
+        "2º de Bachillerato"
+      ],
+      "aliases": [
+        "Oxidación y reducción",
+        "oxidacion y reduccion",
+        "redox",
+        "numero de oxidacion"
+      ],
+      "explanation": "En una reacción redox cambian números de oxidación. Oxidarse corresponde a perder electrones en el balance; reducirse, a ganarlos. El agente oxidante se reduce y el reductor se oxida. No todas las oxidaciones requieren oxígeno como reactivo.",
+      "simpler": "Sigue los electrones: quien los cede se oxida y quien los recibe se reduce.",
+      "example": "Zn → Zn²⁺ + 2e⁻ representa una oxidación del zinc. Su número de oxidación pasa de 0 a +2 y ha cedido dos electrones.",
+      "why": "El lenguaje redox generaliza transferencias de electrones y cambios de oxidación más allá de las reacciones con oxígeno.",
+      "misconception": "Oxidación no equivale siempre a combinarse directamente con oxígeno.",
+      "hints": [
+        "Comprueba la conservación de carga además de los átomos.",
+        "Sigue los electrones: quien los cede se oxida y quien los recibe se reduce.",
+        "Zn → Zn²⁺ + 2e⁻ representa una oxidación del zinc. Su número de oxidación pasa de 0 a +2 y ha cedido dos electrones."
+      ],
+      "quiz": [
+        {
+          "id": "b-redox:q0",
+          "question": "En el ejemplo, el zinc…",
+          "options": [
+            "Se reduce",
+            "No cambia",
+            "Se oxida"
+          ],
+          "answer": "C",
+          "hint": "Comprueba la conservación de carga además de los átomos.",
+          "level": 1
+        },
+        {
+          "id": "b-redox:q1",
+          "question": "El agente oxidante…",
+          "options": [
+            "Se reduce",
+            "Se oxida siempre",
+            "No participa"
+          ],
+          "answer": "A",
+          "hint": "Comprueba la conservación de carga además de los átomos.",
+          "level": 2
+        },
+        {
+          "id": "b-redox:q2",
+          "question": "Oxidarse implica en el balance…",
+          "options": [
+            "Ganar electrones",
+            "Perder electrones",
+            "Ganar protones necesariamente"
+          ],
+          "answer": "B",
+          "hint": "Comprueba la conservación de carga además de los átomos.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "curriculum_source_key": "BOE-A-2022-5521",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  },
+  {
+    "reason": "overlapping_title_preserved",
+    "lesson": {
+      "id": "b-market",
+      "stage": "bachillerato",
+      "subject": "Economía",
+      "title": "Oferta y demanda",
+      "grade_min": 1,
+      "grade_max": 2,
+      "school_years": [
+        "1º de Bachillerato",
+        "2º de Bachillerato"
+      ],
+      "aliases": [
+        "Oferta y demanda",
+        "oferta y demanda",
+        "equilibrio de mercado"
+      ],
+      "explanation": "En el modelo básico, manteniendo otros factores constantes, una variación del precio provoca un movimiento a lo largo de una curva de demanda u oferta. Cambios en renta, preferencias o costes pueden desplazar curvas. El equilibrio describe compatibilidad entre cantidades ofrecidas y demandadas, no garantiza por sí solo justicia social.",
+      "simpler": "Distingue moverse sobre una curva porque cambia el precio de cambiar toda la curva por otro factor.",
+      "example": "Si aumentan las preferencias por un bien, su demanda puede desplazarse a la derecha. No es lo mismo que comprar más únicamente porque baja su precio, con la demanda dada.",
+      "why": "Distinguir parámetros y variables del modelo permite interpretar movimientos y desplazamientos sin mezclar causas.",
+      "misconception": "Demanda y cantidad demandada no son términos equivalentes en el análisis de curvas.",
+      "hints": [
+        "Identifica qué variable cambia y cuáles mantenemos constantes.",
+        "Distingue moverse sobre una curva porque cambia el precio de cambiar toda la curva por otro factor.",
+        "Si aumentan las preferencias por un bien, su demanda puede desplazarse a la derecha. No es lo mismo que comprar más únicamente porque baja su precio, con la demanda dada."
+      ],
+      "quiz": [
+        {
+          "id": "b-market:q0",
+          "question": "Cambiar la cantidad demandada por un cambio de precio, manteniendo lo demás, es…",
+          "options": [
+            "Siempre desplazar toda la curva",
+            "Moverse sobre la curva",
+            "Eliminar la demanda"
+          ],
+          "answer": "B",
+          "hint": "Identifica qué variable cambia y cuáles mantenemos constantes.",
+          "level": 1
+        },
+        {
+          "id": "b-market:q1",
+          "question": "Un aumento de preferencias por un bien puede…",
+          "options": [
+            "Desplazar su curva de demanda",
+            "Cambiar solo las unidades de medida",
+            "No influir nunca"
+          ],
+          "answer": "A",
+          "hint": "Identifica qué variable cambia y cuáles mantenemos constantes.",
+          "level": 2
+        },
+        {
+          "id": "b-market:q2",
+          "question": "El equilibrio de mercado…",
+          "options": [
+            "Garantiza toda forma de justicia",
+            "Elimina todas las necesidades",
+            "No implica por sí solo una valoración ética favorable"
+          ],
+          "answer": "C",
+          "hint": "Identifica qué variable cambia y cuáles mantenemos constantes.",
+          "level": 3
+        }
+      ],
+      "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "curriculum_source_key": "BOE-A-2022-5521",
+      "source_kind": "original_teaching_material",
+      "grade_mapping": "editorial_progression_not_official_grade_mandate",
+      "review_method": "AI-assisted editorial review plus structural and deterministic tests; not human teacher certification",
+      "human_teacher_reviewed": false,
+      "language": "es",
+      "license_note": "Material original preparado para ETERNA; referencia curricular por etapa, sin aval oficial.",
+      "curriculum_alignment_status": "stage_subject_reference_not_exhaustive_criterion_mapping",
+      "introduced_in_release": "eterna-library-2026.09-v2-160"
+    }
+  }
+]
