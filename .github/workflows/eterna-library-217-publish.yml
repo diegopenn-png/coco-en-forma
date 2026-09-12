@@ -1,0 +1,48 @@
+name: Publish immutable verified Eterna 217-lesson library
+on:
+  push:
+    branches: ["ops/eterna-library-217-publish-c993afe"]
+    paths: [".github/workflows/eterna-library-217-publish.yml", "qa/library-combined/publish.mjs"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-worker-production
+  cancel-in-progress: false
+jobs:
+  promote-verified-canonical-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_MAIN: c993afecbdfe9a8f456af509b5b45b1b03ef4f47
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-library-217-final-verification
+          run-id: 34665248254
+          github-token: ${{ github.token }}
+          path: .private-proof
+      - name: Recheck syntax and full regression against release sources
+        run: |
+          mkdir -p combined-production-evidence
+          node --check qa/library-combined/publish.mjs
+          cd eterna-worker
+          npm run check > ../combined-production-evidence/regression.txt
+          tail -10 ../combined-production-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Verify main, compiled hashes, private evidence and bindings, then promote exactly the tested version
+        run: node qa/library-combined/publish.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-library-217-production-verification
+          path: combined-production-evidence
+          retention-days: 90
+          if-no-files-found: warn
