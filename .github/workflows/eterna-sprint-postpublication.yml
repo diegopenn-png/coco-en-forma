@@ -1,0 +1,44 @@
+name: Eterna read-only final deployment and integration reconciliation
+on:
+  push:
+    branches: ["qa/eterna-sprint-postpublish-86ddb64"]
+    paths: [".github/workflows/eterna-sprint-postpublication.yml", "qa/sprint/reconcile_publication.mjs"]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  reconcile-without-deploying:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-sprint-production
+          run-id: 34683308528
+          github-token: ${{ github.token }}
+          path: .publication
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-sprint-private
+          run-id: 34683137471
+          github-token: ${{ github.token }}
+          path: .integration
+      - name: Explain the concurrency guard without weakening it or changing production
+        run: |
+          node --check qa/sprint/reconcile_publication.mjs
+          node qa/sprint/reconcile_publication.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-sprint-final-readonly-verification
+          path: sprint-postpublication-evidence
+          retention-days: 90
+          if-no-files-found: warn
