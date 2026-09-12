@@ -274,3 +274,13 @@ test('a correct choice records evidence of the answered check, never the answer 
  assert.equal(d.check_question.includes('El 1'),true);
  assert.deepEqual(plain(d.pedagogical_state.known_points),['Respuesta comprobada a «¿Cuál es primo?»: 7.']);await h.drain();
 });
+
+
+test('library follow-up cleanup removes only a dangling check label with its suppressed question',()=>{
+ const h=harness();
+ for(const label of ['Para comprobar una sola idea:', 'Para comprobarlo:', 'Microcomprobación:']){
+  const output=h.sandbox.stripTrailingStudentQuestion('El 11 es primo.\n\n'+label+'\n¿Cuál es primo?', '¿Cuál es primo?');
+  assert.equal(output,'El 11 es primo.');
+ }
+ assert.equal(h.sandbox.stripTrailingStudentQuestion('Para comprobarlo: contamos divisores.','Una pregunta ausente'),'Para comprobarlo: contamos divisores.');
+});
