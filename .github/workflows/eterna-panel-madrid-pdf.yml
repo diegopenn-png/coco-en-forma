@@ -1,0 +1,32 @@
+name: Eterna Madrid authentic PDF recovery
+on:
+  push:
+    branches: ["feat/eterna-panel-multidisciplinar-20260912"]
+    paths: ["qa/teacher-panel/madrid_bach_pdf.mjs", ".github/workflows/eterna-panel-madrid-pdf.yml"]
+permissions:
+  contents: read
+jobs:
+  public-pdf-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          npm install --prefix .panel-browser --no-save --no-audit --no-fund playwright@1.55.0
+          .panel-browser/node_modules/.bin/playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          cp qa/teacher-panel/madrid_bach_pdf.mjs .panel-browser/capture-pdf.mjs
+          node .panel-browser/capture-pdf.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-panel-madrid-pdf
+          path: panel-madrid-pdf-evidence
+          retention-days: 90
+          if-no-files-found: warn
