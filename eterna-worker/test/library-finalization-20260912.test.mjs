@@ -98,6 +98,6 @@ test('finalization truthfulness: prepared coverage is broad but never mislabeled
   assert.equal(c.ETERNA_LIBRARY_CONTENT.human_teacher_reviewed, false);
   for (const l of lessons) {
     assert.doesNotMatch(l.review_method, /human teacher certified/i, l.id);
-    assert.match(l.license_note, /sin aval oficial/i, l.id);
+    assert.match(l.license_note, /(?:sin aval oficial|no homologación ni aval oficial)/i, l.id);
   }
 });
