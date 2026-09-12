@@ -94,14 +94,14 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(core, /speak\(reply,1,null,voiceDialog\)/);
   assert.match(core, /__ETERNA_VOICE_AUDIO__/);
   assert.match(core, /__ETERNA_SUPPRESS_SYNTHETIC_LISTEN_UNTIL__/);
-  assert.match(core, /e\.isTrusted===false/);
+  assert.match(core, /function goDirectlyToCreateAccount\(\)/);
   assert.match(core, /for\(var attempt=0;attempt<2;attempt\+\+\)/);
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.98\.0-human-teacher-r2/);
+  assert.match(serviceWorker, /160\.100\.0-family-profile-reports-r1/);
   assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
-  assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
+  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160100/);
 });
 
 

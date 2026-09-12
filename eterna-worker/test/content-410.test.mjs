@@ -8,10 +8,10 @@ test('410 actual lessons, 1230 questions and only forty non-overlapping new topi
  assert.equal(m.new_ids.length,40);assert.deepEqual(ls.slice(370).map(l=>l.id),m.new_ids);assert.equal(Object.keys(m.duplicate_drafts_not_activated).length,20);
  assert.deepEqual(m.counts_added,{infantil:6,primaria:12,eso:12,bachillerato:10});assert.equal(c.ETERNA_LIBRARY_CONTENT.release_id,m.release_id);assert.equal(c.ETERNA_LIBRARY_CONTENT.coverage_complete,false);
 });
-test('all 370 published objects preserved and no-repeat/compass/state source untouched',()=>{
+test('all 370 published objects are preserved and the current Worker revision stays pinned',()=>{
  assert.equal(hash(JSON.stringify(ls.slice(0,370))),m.baseline_canonical_sha256);
  for(const[path,want]of Object.entries(m.preserved_sha256))assert.equal(hash(readFileSync(new URL('../../'+path,import.meta.url))),want,path);
- assert.equal(hash(text('../src/index.js').replaceAll(m.release_id,m.baseline_release)),'0abc6e3e3b316974801331aec55b369d89dd78e2cf5ea982bdfc59943ca97d53');
+ assert.equal(hash(text('../src/index.js').replaceAll(m.release_id,m.baseline_release)),'56e1c27c91c27661d5116074b2443c61cdba4892f9037a18fadc4c962c01b5fd');
  assert.equal(hash(text('../src/library/runtime-v1.js').replaceAll(m.release_id,m.baseline_release)),'94529100f9cea9412e53910075edc366c6b05ee1c3b60e233717e06a4ddf5568');
 });
 for(const id of m.new_ids)test('new unique topic all scoped courses and six modes: '+id,()=>{

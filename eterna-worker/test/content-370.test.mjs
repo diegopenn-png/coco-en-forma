@@ -47,11 +47,11 @@ test('new lessons preserve safety, model qualifiers and no historical monocultur
  assert.match(get('e-acids-bases').explanation,/25 °C/);assert.match(get('e-acids-bases').explanation,/No se identifica/);assert.match(get('b-osmosis').explanation,/igual presión/);assert.match(get('b-lechatelier').explanation,/no cambia por sí solo/);
  assert.match(get('e-alandalus').explanation,/extensión y organización cambiaron/);assert.match(get('e-feudalism').explanation,/No todos los campesinos/);assert.match(get('i-disagree-kindly').explanation,/no encontramos/);
 });
-test('no modifications to procedural round repair, source compass or student state contracts',()=>{
+test('procedural, compass and the current canonical Worker revision stay pinned',()=>{
  assert.equal(hash(text('../src/library/procedural-v1.js')),'371f32609b1b2c3d4ba50ab4f67a487629f6cc536ced031a583e4d0ca6e46d98');
  assert.equal(hash(text('../src/library/curricular-compass-v1.js')),'f92dda2bfa99d6b05486ec6848a0a62dcaa5141f5b8577c23fd2c86f1db14096');
  assert.equal(hash(text('../src/library/compass-data-v1.js')),'cd8fd84bd5891e4d42600392e3a3939b773f6b69c1b84f3567416d2e760c104b');
  const OLD=m.baseline_release,NEW=m.release_id;
- assert.equal(hash(text('../src/index.js').replaceAll(NEW,OLD)),'bc425e8f9e0e3eb5fa8e7fe6fbbd5520b72bdcae6cf6c1f0397578851da79964');
+ assert.equal(hash(text('../src/index.js').replaceAll(NEW,OLD)),'b03076ea2d8b65e161c22feca562cfa96fde2af252a397b0e8f72d962e3783c7');
  assert.equal(hash(text('../src/library/runtime-v1.js').replaceAll(NEW,OLD).replace("const VERSION='library-first-v7-content';","const VERSION='library-first-v6-traceable';")),'9df5c21942c593241388535a4a0bb518bba95a71a0edfacbe770683bb2a83369');
 });

@@ -171,7 +171,8 @@ jobs:
               && payload.features?.explicit_identity_and_mission_v1 === true
               && payload.features?.named_greeting_v1 === true
               && payload.features?.empathetic_school_peer_support_v1 === true
-              && payload.features?.anti_robotic_tone_v1 === true;
+              && payload.features?.anti_robotic_tone_v1 === true
+              && payload.features?.account_birth_date_profile === true;
             if (!valid) {
               console.error("Unexpected production candidate health payload", payload);
               process.exit(1);
@@ -249,7 +250,8 @@ jobs:
                   && payload.features?.explicit_identity_and_mission_v1 === true
                   && payload.features?.named_greeting_v1 === true
                   && payload.features?.empathetic_school_peer_support_v1 === true
-                  && payload.features?.anti_robotic_tone_v1 === true;
+                  && payload.features?.anti_robotic_tone_v1 === true
+                  && payload.features?.account_birth_date_profile === true;
                 process.exit(valid ? 0 : 1);
               } catch {
                 process.exit(1);

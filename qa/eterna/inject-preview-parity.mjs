@@ -3,14 +3,15 @@ import { pathToFileURL } from "node:url";
 
 export const PREVIEW_PARITY_GROUPS = Object.freeze([
   Object.freeze({
-    anchor: '<script id="coco-v153-fixes" src="./coco-v153-fixes.js?v=15301"></script>',
+    anchor: '<script id="coco-v153-fixes" src="./coco-v153-fixes.js?v=160100"></script>',
     scripts: Object.freeze([
       '<script id="coco-product-ux-v160903" src="./coco-release-v160903.js?v=160960"></script>',
-      '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160961"></script>',
+      '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160100"></script>',
+      '<script id="coco-family-friendly-v160100" src="./coco-family-friendly-v160100.js?v=160100"></script>',
     ]),
   }),
   Object.freeze({
-    anchor: '<script id="coco-v159-eterna" src="./eterna-v159.js?v=160980"></script>',
+    anchor: '<script id="coco-v159-eterna" src="./eterna-v159.js?v=160100"></script>',
     scripts: Object.freeze([
       '<script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960"></script>',
       '<script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=160960"></script>',

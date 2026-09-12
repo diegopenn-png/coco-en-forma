@@ -1,7 +1,6 @@
-/* Coco en Forma · Reto Coco 2026 · disabled v160.99.9
+/* Coco en Forma · Reto Coco 2026 · disabled v160.100.0
  * Promotional Reto card intentionally removed from web and PWA.
- * Keep file as a no-op because the Service Worker may still request this asset
- * during the transition between cache versions.
+ * Keep this compatibility file as cleanup-only while older caches expire.
  */
 (function(){
   'use strict';

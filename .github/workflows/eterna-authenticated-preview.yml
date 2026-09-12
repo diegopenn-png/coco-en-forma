@@ -156,10 +156,12 @@ jobs:
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
+          grep -F 'id="coco-family-friendly-v160100"' preview-dist/index.html >/dev/null
           grep -F 'id="eterna-hotfix-v160902-direct"' preview-dist/index.html >/dev/null
           grep -F 'id="eterna-desktop-compact-v160907-direct"' preview-dist/index.html >/dev/null
-          grep -F 'Reto Coco 2026 · v160.96.1' preview-dist/coco-reto-2026-v160908.js >/dev/null
-          test -s preview-dist/reto-coco-2026-v160958.jpg
+          grep -F 'disabled v160.100.0' preview-dist/coco-reto-2026-v160908.js >/dev/null
+          grep -F '160.100.0-account-birth-date' preview-dist/coco-family-friendly-v160100.js >/dev/null
+          grep -F '/v1/profile-age' preview-dist/coco-family-friendly-v160100.js >/dev/null
           grep -F 'window.__cocoPwaV135Registered=true' preview-dist/index.html >/dev/null
           grep -F "window.__COCO_PWA_REGISTRATION_OWNER__='preview-disabled'" preview-dist/index.html >/dev/null
           grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" preview-dist/index.html >/dev/null
@@ -184,13 +186,14 @@ jobs:
         run: |
           ready=0
           for attempt in {1..12}; do
-            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160980&verify=${GITHUB_SHA}-${attempt}"
+            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160100&verify=${GITHUB_SHA}-${attempt}"
             index_url="${PREVIEW_ORIGIN}/?verify=${GITHUB_SHA}-${attempt}"
             if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
               && grep -F '160.98.0-human-teacher' /tmp/eterna-preview.js >/dev/null \
               && curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$index_url" -o /tmp/eterna-preview-index.html \
               && grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null \
-              && grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null; then
+              && grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null \
+              && grep -F 'id="coco-family-friendly-v160100"' /tmp/eterna-preview-index.html >/dev/null; then
               ready=1
               break
             fi
@@ -202,7 +205,7 @@ jobs:
           fi
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/eterna-experience-v160.js?v=1609410&verify=${GITHUB_SHA}" \
+            "${PREVIEW_ORIGIN}/eterna-experience-v160.js?v=160100&verify=${GITHUB_SHA}" \
             | grep -F 'ETERNA Spoken Dialogue v160.94.9' >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
@@ -220,16 +223,16 @@ jobs:
           grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null
           grep -F 'id="coco-product-ux-v160903"' /tmp/eterna-preview-index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null
+          grep -F 'id="coco-family-friendly-v160100"' /tmp/eterna-preview-index.html >/dev/null
           grep -F 'id="eterna-hotfix-v160902-direct"' /tmp/eterna-preview-index.html >/dev/null
           grep -F 'id="eterna-desktop-compact-v160907-direct"' /tmp/eterna-preview-index.html >/dev/null
 
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/coco-reto-2026-v160908.js?v=160961&verify=${GITHUB_SHA}" \
-            | grep -F 'Reto Coco 2026 · v160.96.1' >/dev/null
+            "${PREVIEW_ORIGIN}/coco-reto-2026-v160908.js?v=160100&verify=${GITHUB_SHA}" \
+            | grep -F 'disabled v160.100.0' >/dev/null
           curl --max-time 20 -fsS -H 'Cache-Control: no-cache' \
-            "${PREVIEW_ORIGIN}/reto-coco-2026-v160958.jpg?verify=${GITHUB_SHA}" \
-            -o /tmp/reto-coco-2026-preview.jpg
-          test "$(wc -c < /tmp/reto-coco-2026-preview.jpg)" -gt 500000
+            "${PREVIEW_ORIGIN}/coco-family-friendly-v160100.js?v=160100&verify=${GITHUB_SHA}" \
+            | grep -F '160.100.0-account-birth-date' >/dev/null
           core_ready=0
           for attempt in {1..6}; do
             core_url="${PREVIEW_ORIGIN}/coco-v144-core.js?v=15001&verify=${GITHUB_SHA}-${attempt}"
@@ -273,6 +276,7 @@ jobs:
               && payload.features?.structured_compatibility_retry_v1 === true
               && payload.features?.tutor_model_failover_v1 === true
               && payload.features?.tutor_compatibility_model_v1 === true
+              && payload.features?.account_birth_date_profile === true
               && payload.features?.stable_fact_tutor_recovery_v1 === true
               && payload.features?.scope_model_failover_v1 === true
               && payload.features?.moderation_request_retry_v1 === true

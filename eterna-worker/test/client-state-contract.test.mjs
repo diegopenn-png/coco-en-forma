@@ -38,17 +38,22 @@ test("legacy layers delegate to the canonical state contract", () => {
   assert.match(hotfix, /client_state_contract\s*>=\s*2/);
 });
 
-test("Practice exposes counters and difficulty, not only focus", () => {
-  assert.match(client, /Práctica\s+\d|Ejercicio.*Aciertos|Aciertos.*Errores.*Nivel/);
+test("Practice exposes counters while adaptive difficulty remains internal", () => {
+  const start = client.indexOf("function renderModeBar(");
+  const end = client.indexOf("function setPlaceholder(", start);
+  const modeBar = client.slice(start, end);
+  assert.match(modeBar, /Práctica\s+|Ejercicio.*Aciertos|Aciertos.*Errores/);
+  assert.doesNotMatch(modeBar, /Nivel\s*\d|difficulty/);
+  assert.match(client, /difficulty:Number\(activity\.difficulty\|\|2\)/);
 });
 
 test("web entrypoint and Service Worker invalidate the corrected assets together", () => {
   assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
-  assert.match(index, /coco-v153-fixes\.js\?v=15301/);
-  assert.match(index, /eterna-v159\.js\?v=160980/);
-  assert.match(bootstrap, /eterna-experience-v160\.js\?v=1609410/);
+  assert.match(index, /coco-v153-fixes\.js\?v=160100/);
+  assert.match(index, /eterna-v159\.js\?v=160100/);
+  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160100/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.99\.3-mic-pwa-capture-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.0-family-profile-reports-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v4\.js"/);
@@ -78,16 +83,21 @@ test("public game cards expose keyboard controls and Eterna announces login", ()
   assert.match(client, /Inicia sesión o crea una cuenta para abrir Eterna\./);
 });
 
-test("family learning reports explain signals, pluralise counts and hide retired English records", () => {
+test("family learning reports require repeated evidence and use only worked subjects", () => {
   for (const source of [client, experience]) {
     assert.match(source, /Una señal es una evidencia orientativa obtenida de una respuesta/);
-    assert.match(source, /respuestas e intentos analizados/);
-    assert.match(source, /señal observada","señales observadas/);
-    assert.match(source, /"intento","intentos"/);
-    assert.match(source, /ingles\(\[\^a-z\]\|\$\)/);
-    assert.doesNotMatch(source, /label:"intentos o señales"/);
+    assert.match(source, /Number\(x\.attempts\|\|0\)>=2/);
+    assert.match(source, /Number\(x\.evidence_count\|\|0\)>=2/);
+    assert.match(source, /observed\.map\(function\(x\)\{return x\.subject\}\)\.concat\(academicMemory\.map/);
+    assert.match(source, /sin inventar conclusiones/);
+    const reportStart = source.indexOf(source === client ? "function buildFamilyLearningReportModel(" : "function buildLearningReportModel(");
+    const reportEnd = source.indexOf(source === client ? "async function getFamilyLearningReportModel(" : "async function getLearningReportModel(", reportStart);
+    const reportBody = source.slice(reportStart, reportEnd);
+    assert.doesNotMatch(reportBody, /Matemáticas|Matematicas/);
+    assert.doesNotMatch(reportBody, /retiredEnglish|familyRetiredEnglish/);
   }
   assert.match(bootstrap, /¿Qué significa “señal observada”\?/);
+  assert.match(bootstrap, /cocoV160100PlainSummary/);
   assert.match(client, /suscripción activa/);
 });
 

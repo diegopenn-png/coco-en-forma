@@ -481,11 +481,11 @@
 
   function registerPwa() {
     if (!("serviceWorker" in navigator) || location.protocol === "file:" || window.__COCO_PWA_REGISTRATION_OWNER__ || window.__cocoPwaV141Registered) return;
-    window.__COCO_PWA_REGISTRATION_OWNER__ = "runtime-legacy-v160962";
+    window.__COCO_PWA_REGISTRATION_OWNER__ = "runtime-legacy-v160100";
     window.__cocoPwaV141Registered = true;
-    var hadController = Boolean(navigator.serviceWorker.controller), reloading = false, reloadKey = "coco_pwa_controller_reload_v160962";
+    var hadController = Boolean(navigator.serviceWorker.controller), reloading = false, reloadKey = "coco_pwa_controller_reload_v160100";
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register(new URL("sw.js?v=160962-r1",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
+      navigator.serviceWorker.register(new URL("sw.js?v=160100-r1",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
         function offerUpdate(worker) {
           if (!worker || !hadController || document.querySelector(".cocoV134Update")) return;
           var app = document.getElementById("cocoApp") || document.body, button = document.createElement("button");
