@@ -22920,5 +22920,461 @@
     "introduced_in_release": "eterna-library-2026.09-v5-304-panel-ffe822",
     "curriculum_alignment_status": "stage_and_subject_family_reference_not_exhaustive_criteria_mapping",
     "subject_availability": "Course, pathway, territorial curriculum and school offer determine availability."
+  },
+  {
+    "id": "e-app-permissions",
+    "stage": "eso",
+    "subject": "Digitalización",
+    "title": "Permisos y privacidad de una aplicación",
+    "grade_min": 4,
+    "grade_max": 4,
+    "school_years": [
+      "4º de ESO"
+    ],
+    "aliases": [
+      "Permisos y privacidad de una aplicación",
+      "permisos de aplicaciones",
+      "permisos y privacidad",
+      "configuracion de privacidad"
+    ],
+    "explanation": "Un permiso autoriza a una aplicación a acceder a una función o a determinados datos del dispositivo. Conviene comprobar para qué lo necesita, cuándo lo utiliza y cómo revocarlo. Autorizar una función concreta no equivale a aceptar cualquier uso de la información. Una configuración prudente reduce riesgos, pero no garantiza privacidad absoluta.",
+    "simpler": "Pregunta si el acceso es necesario para lo que vas a hacer. Revisa los permisos y limita los que no tengan una finalidad clara, con ayuda de un adulto cuando corresponda.",
+    "example": "Una aplicación de mapas puede necesitar ubicación para una ruta, pero eso no justifica por sí solo acceder a tus contactos. En este ejemplo, se revisan por separado la finalidad, el momento del acceso y la información que se comparte.",
+    "why": "La gestión responsable de la identidad digital requiere decisiones sobre finalidades y accesos, además de revisar qué sucede realmente con la información.",
+    "misconception": "Un permiso no es una autorización ilimitada para cualquier tratamiento de datos.",
+    "hints": [
+      "Distingue necesidad de la función, datos afectados y condiciones del acceso.",
+      "Pregunta si el acceso es necesario para lo que vas a hacer. Revisa los permisos y limita los que no tengan una finalidad clara, con ayuda de un adulto cuando corresponda.",
+      "Una aplicación de mapas puede necesitar ubicación para una ruta, pero eso no justifica por sí solo acceder a tus contactos. En este ejemplo, se revisan por separado la finalidad, el momento del acceso y la información que se comparte."
+    ],
+    "quiz": [
+      {
+        "id": "e-app-permissions:q0",
+        "question": "Dar acceso a la ubicación para una ruta significa…",
+        "options": [
+          "Autorizar cualquier dato sin límite",
+          "Permitir esa función bajo las condiciones configuradas",
+          "Autorizar siempre el micrófono"
+        ],
+        "answer": "B",
+        "hint": "Distingue necesidad de la función, datos afectados y condiciones del acceso.",
+        "level": 1
+      },
+      {
+        "id": "e-app-permissions:q1",
+        "question": "¿Qué conviene revisar antes de dar un permiso?",
+        "options": [
+          "Su relación con la finalidad de la aplicación",
+          "Solo el color del icono",
+          "Si pide todos los permisos posibles"
+        ],
+        "answer": "A",
+        "hint": "Distingue necesidad de la función, datos afectados y condiciones del acceso.",
+        "level": 2
+      },
+      {
+        "id": "e-app-permissions:q2",
+        "question": "Limitar permisos…",
+        "options": [
+          "Garantiza riesgo cero",
+          "Hace innecesario revisar la política de datos",
+          "Reduce exposición, sin garantizar privacidad absoluta"
+        ],
+        "answer": "C",
+        "hint": "Distingue necesidad de la función, datos afectados y condiciones del acceso.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+    "curriculum_source_key": "BOE-A-2022-4975",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary simulation: subject correctness, didactic clarity, inclusion, assessment scope and exact source linkage; not an independent human review",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA; referencia oficial por etapa y vinculación parcial explícita. No homologación.",
+    "introduced_in_release": "eterna-library-2026.09-v6-310-traceable-12c672",
+    "curriculum_alignment_status": "reviewed_partial_support_not_whole_criterion_fulfilment",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-ecosystem-matter",
+    "stage": "bachillerato",
+    "subject": "Biología, Geología y Ciencias Ambientales",
+    "title": "Materia y energía en un ecosistema",
+    "grade_min": 1,
+    "grade_max": 1,
+    "school_years": [
+      "1º de Bachillerato"
+    ],
+    "aliases": [
+      "Materia y energía en un ecosistema",
+      "materia y energia en ecosistemas",
+      "ciclos de materia y energia",
+      "flujos de energia y materia"
+    ],
+    "explanation": "En los ecosistemas, la materia circula mediante procesos biológicos y físicos, mientras la energía se transfiere y una parte se dispersa como calor en cada transformación. Los descomponedores participan en la transformación de materia orgánica y la disponibilidad de nutrientes. Reciclar materia no significa reciclar indefinidamente toda la energía útil.",
+    "simpler": "Separa dos recorridos: los elementos químicos pueden volver a utilizarse; mantener los procesos requiere un aporte de energía. Materia y energía no se comportan como dos ciclos idénticos.",
+    "example": "Las hojas caídas contienen materia orgánica. Hongos y otros organismos la transforman y contribuyen a devolver nutrientes al entorno; durante esos procesos se transfiere energía y se disipa calor. El ejemplo no asigna a todos los ecosistemas una proporción fija de transferencia.",
+    "why": "La conservación de energía no implica que toda siga disponible para realizar el mismo trabajo: su dispersión limita las transferencias y hace necesario el aporte energético.",
+    "misconception": "La energía útil no circula indefinidamente igual que los nutrientes.",
+    "hints": [
+      "Sigue por separado los átomos de la materia y las transformaciones de energía.",
+      "Separa dos recorridos: los elementos químicos pueden volver a utilizarse; mantener los procesos requiere un aporte de energía. Materia y energía no se comportan como dos ciclos idénticos.",
+      "Las hojas caídas contienen materia orgánica. Hongos y otros organismos la transforman y contribuyen a devolver nutrientes al entorno; durante esos procesos se transfiere energía y se disipa calor. El ejemplo no asigna a todos los ecosistemas una proporción fija de transferencia."
+    ],
+    "quiz": [
+      {
+        "id": "b-ecosystem-matter:q0",
+        "question": "¿Qué afirmación distingue materia y energía?",
+        "options": [
+          "Los nutrientes pueden circular y parte de la energía se disipa como calor",
+          "Ambas se reciclan siempre íntegramente",
+          "La materia desaparece al descomponerse"
+        ],
+        "answer": "A",
+        "hint": "Sigue por separado los átomos de la materia y las transformaciones de energía.",
+        "level": 1
+      },
+      {
+        "id": "b-ecosystem-matter:q1",
+        "question": "Los descomponedores participan en…",
+        "options": [
+          "Crear elementos químicos de la nada",
+          "Transformar materia orgánica y hacer disponibles nutrientes",
+          "Eliminar la necesidad de energía"
+        ],
+        "answer": "B",
+        "hint": "Sigue por separado los átomos de la materia y las transformaciones de energía.",
+        "level": 2
+      },
+      {
+        "id": "b-ecosystem-matter:q2",
+        "question": "¿Hay una proporción exacta universal de energía transferida entre niveles?",
+        "options": [
+          "Siempre el 100 %",
+          "Siempre la misma sin excepciones",
+          "No; depende del sistema y de cómo se mida"
+        ],
+        "answer": "C",
+        "hint": "Sigue por separado los átomos de la materia y las transformaciones de energía.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary simulation: subject correctness, didactic clarity, inclusion, assessment scope and exact source linkage; not an independent human review",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA; referencia oficial por etapa y vinculación parcial explícita. No homologación.",
+    "introduced_in_release": "eterna-library-2026.09-v6-310-traceable-12c672",
+    "curriculum_alignment_status": "reviewed_partial_support_not_whole_criterion_fulfilment",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-compound-meter",
+    "stage": "bachillerato",
+    "subject": "Lenguaje y Práctica Musical",
+    "title": "Compás simple y compuesto",
+    "grade_min": 1,
+    "grade_max": 1,
+    "school_years": [
+      "1º de Bachillerato"
+    ],
+    "aliases": [
+      "Compás simple y compuesto",
+      "compas simple y compuesto",
+      "compases simples y compuestos",
+      "subdivision binaria y ternaria"
+    ],
+    "explanation": "En la interpretación habitual de un compás simple, cada pulso se subdivide en dos partes iguales; en uno compuesto, en tres. En 6/8 suele haber dos pulsos, cada uno equivalente a una negra con puntillo y divisible en tres corcheas. El contexto, la velocidad y la notación concreta influyen en cómo se percibe la agrupación.",
+    "simpler": "No cuentes solo las figuras escritas: distingue cuántos pulsos hay y cómo se divide cada uno.",
+    "example": "Con la agrupación habitual de 6/8, piensa dos grupos de tres corcheas: 1-2-3, 1-2-3. En 2/4 simple, piensa dos pulsos de negra, cada uno divisible en dos corcheas. No confundas seis corcheas con seis pulsos obligatorios.",
+    "why": "La métrica organiza varios niveles temporales; distinguir pulso y subdivisión explica por qué seis figuras pueden agruparse en dos pulsos.",
+    "misconception": "El numerador de un compás no indica siempre directamente el número de pulsos percibidos.",
+    "hints": [
+      "Separa número de pulsos y número de subdivisiones dentro de cada pulso.",
+      "No cuentes solo las figuras escritas: distingue cuántos pulsos hay y cómo se divide cada uno.",
+      "Con la agrupación habitual de 6/8, piensa dos grupos de tres corcheas: 1-2-3, 1-2-3. En 2/4 simple, piensa dos pulsos de negra, cada uno divisible en dos corcheas. No confundas seis corcheas con seis pulsos obligatorios."
+    ],
+    "quiz": [
+      {
+        "id": "b-compound-meter:q0",
+        "question": "En la agrupación habitual de 6/8 hay…",
+        "options": [
+          "Seis pulsos obligatorios",
+          "Dos pulsos subdivididos en tres",
+          "Tres pulsos subdivididos en dos necesariamente"
+        ],
+        "answer": "B",
+        "hint": "Separa número de pulsos y número de subdivisiones dentro de cada pulso.",
+        "level": 1
+      },
+      {
+        "id": "b-compound-meter:q1",
+        "question": "En un compás simple, la subdivisión habitual del pulso es…",
+        "options": [
+          "Binaria",
+          "Siempre ternaria",
+          "Inexistente"
+        ],
+        "answer": "A",
+        "hint": "Separa número de pulsos y número de subdivisiones dentro de cada pulso.",
+        "level": 2
+      },
+      {
+        "id": "b-compound-meter:q2",
+        "question": "Para interpretar la métrica conviene considerar…",
+        "options": [
+          "Solo el numerador",
+          "Solo el nombre del compositor",
+          "Agrupación, notación y contexto de ejecución"
+        ],
+        "answer": "C",
+        "hint": "Separa número de pulsos y número de subdivisiones dentro de cada pulso.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary simulation: subject correctness, didactic clarity, inclusion, assessment scope and exact source linkage; not an independent human review",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA; referencia oficial por etapa y vinculación parcial explícita. No homologación.",
+    "introduced_in_release": "eterna-library-2026.09-v6-310-traceable-12c672",
+    "curriculum_alignment_status": "reviewed_partial_support_not_whole_criterion_fulfilment",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-stage-directions",
+    "stage": "bachillerato",
+    "subject": "Literatura Dramática",
+    "title": "Diálogo y acotaciones teatrales",
+    "grade_min": 2,
+    "grade_max": 2,
+    "school_years": [
+      "2º de Bachillerato"
+    ],
+    "aliases": [
+      "Diálogo y acotaciones teatrales",
+      "dialogo y acotaciones",
+      "acotaciones teatrales",
+      "texto dramatico y acotaciones"
+    ],
+    "explanation": "En un texto dramático, el diálogo recoge intervenciones de los personajes y las acotaciones aportan indicaciones para imaginar o realizar la escena. Pueden referirse a acciones, espacio, sonido o modos de decir. Su forma y función varían según la obra; no toda acotación prescribe una única puesta en escena posible.",
+    "simpler": "Distingue lo que un personaje dice de las indicaciones que acompañan esa intervención. Después explica qué efecto puede tener en la escena.",
+    "example": "Fragmento original: «MARTA.—No esperaba verte. (Aparta una silla y deja libre la puerta.)». Las palabras de Marta forman el diálogo. La indicación entre paréntesis describe una acción escénica y puede orientar la interpretación sin resolver por sí sola la intención del personaje.",
+    "why": "Un texto teatral combina lenguaje verbal e indicaciones de realización; la relación entre ambos participa en la construcción del sentido y admite decisiones interpretativas justificadas.",
+    "misconception": "Las acotaciones no son necesariamente intervenciones que se pronuncian en voz alta.",
+    "hints": [
+      "Separa la intervención verbal de la indicación escénica y analiza cómo se relacionan.",
+      "Distingue lo que un personaje dice de las indicaciones que acompañan esa intervención. Después explica qué efecto puede tener en la escena.",
+      "Fragmento original: «MARTA.—No esperaba verte. (Aparta una silla y deja libre la puerta.)». Las palabras de Marta forman el diálogo. La indicación entre paréntesis describe una acción escénica y puede orientar la interpretación sin resolver por sí sola la intención del personaje."
+    ],
+    "quiz": [
+      {
+        "id": "b-stage-directions:q0",
+        "question": "En «MARTA.—Hola. (Cierra la ventana.)», la acotación es…",
+        "options": [
+          "Hola",
+          "MARTA",
+          "Cierra la ventana"
+        ],
+        "answer": "C",
+        "hint": "Separa la intervención verbal de la indicación escénica y analiza cómo se relacionan.",
+        "level": 1
+      },
+      {
+        "id": "b-stage-directions:q1",
+        "question": "Una acotación puede indicar…",
+        "options": [
+          "Una acción o un elemento del espacio escénico",
+          "Solo la biografía del autor",
+          "Siempre una frase pronunciada por el personaje"
+        ],
+        "answer": "A",
+        "hint": "Separa la intervención verbal de la indicación escénica y analiza cómo se relacionan.",
+        "level": 2
+      },
+      {
+        "id": "b-stage-directions:q2",
+        "question": "Para interpretar su efecto conviene…",
+        "options": [
+          "Ignorar el diálogo",
+          "Relacionarla con la situación y el conjunto de la escena",
+          "Atribuir siempre una intención única sin contexto"
+        ],
+        "answer": "B",
+        "hint": "Separa la intervención verbal de la indicación escénica y analiza cómo se relacionan.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary simulation: subject correctness, didactic clarity, inclusion, assessment scope and exact source linkage; not an independent human review",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA; referencia oficial por etapa y vinculación parcial explícita. No homologación.",
+    "introduced_in_release": "eterna-library-2026.09-v6-310-traceable-12c672",
+    "curriculum_alignment_status": "reviewed_partial_support_not_whole_criterion_fulfilment",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-affine-cost",
+    "stage": "bachillerato",
+    "subject": "Matemáticas Aplicadas a las Ciencias Sociales",
+    "title": "Modelo afín de costes y pendiente",
+    "grade_min": 1,
+    "grade_max": 1,
+    "school_years": [
+      "1º de Bachillerato"
+    ],
+    "aliases": [
+      "Modelo afín de costes y pendiente",
+      "modelo afin de costes",
+      "pendiente y costes",
+      "coste fijo y variable en una funcion"
+    ],
+    "explanation": "Un modelo afín C(x)=a+bx puede representar un coste fijo a y un coste adicional constante b por unidad, dentro del ámbito donde esos supuestos sean adecuados. La pendiente expresa cuánto cambia C cuando x aumenta una unidad. El modelo no garantiza que costes reales mantengan siempre esa relación y x debe respetar el dominio del problema.",
+    "simpler": "Separa lo que se paga aunque no haya unidades de lo que aumenta por cada unidad. Indica siempre las unidades de medida.",
+    "example": "En el ejemplo ficticio C(x)=50+3x euros, con x unidades enteras entre 0 y 20, el coste fijo es 50 € y cada unidad añade 3 €. Diez unidades cuestan 80 €. No se extrapola automáticamente a cantidades fuera del rango indicado.",
+    "why": "El término fijo impide que duplicar unidades duplique necesariamente el coste total; la pendiente describe el cambio marginal constante dentro del modelo.",
+    "misconception": "Una función afín con término independiente no nulo no representa proporcionalidad directa.",
+    "hints": [
+      "Relaciona cada coeficiente con su significado y comprueba dominio y unidades.",
+      "Separa lo que se paga aunque no haya unidades de lo que aumenta por cada unidad. Indica siempre las unidades de medida.",
+      "En el ejemplo ficticio C(x)=50+3x euros, con x unidades enteras entre 0 y 20, el coste fijo es 50 € y cada unidad añade 3 €. Diez unidades cuestan 80 €. No se extrapola automáticamente a cantidades fuera del rango indicado."
+    ],
+    "quiz": [
+      {
+        "id": "b-affine-cost:q0",
+        "question": "En C(x)=50+3x, la pendiente representa…",
+        "options": [
+          "50 € por unidad",
+          "3 € por unidad",
+          "53 unidades"
+        ],
+        "answer": "B",
+        "hint": "Relaciona cada coeficiente con su significado y comprueba dominio y unidades.",
+        "level": 1
+      },
+      {
+        "id": "b-affine-cost:q1",
+        "question": "Con ese modelo, C(10) es…",
+        "options": [
+          "80 €",
+          "530 €",
+          "30 €"
+        ],
+        "answer": "A",
+        "hint": "Relaciona cada coeficiente con su significado y comprueba dominio y unidades.",
+        "level": 2
+      },
+      {
+        "id": "b-affine-cost:q2",
+        "question": "Si el modelo se definió para 0≤x≤20, usarlo con x=100…",
+        "options": [
+          "Siempre es exacto",
+          "No requiere ninguna justificación",
+          "Requiere comprobar si siguen siendo válidos sus supuestos"
+        ],
+        "answer": "C",
+        "hint": "Relaciona cada coeficiente con su significado y comprueba dominio y unidades.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary simulation: subject correctness, didactic clarity, inclusion, assessment scope and exact source linkage; not an independent human review",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA; referencia oficial por etapa y vinculación parcial explícita. No homologación.",
+    "introduced_in_release": "eterna-library-2026.09-v6-310-traceable-12c672",
+    "curriculum_alignment_status": "reviewed_partial_support_not_whole_criterion_fulfilment",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
+  },
+  {
+    "id": "b-art-project",
+    "stage": "bachillerato",
+    "subject": "Proyectos Artísticos",
+    "title": "Planificar un proyecto artístico colaborativo",
+    "grade_min": 1,
+    "grade_max": 1,
+    "school_years": [
+      "1º de Bachillerato"
+    ],
+    "aliases": [
+      "Planificar un proyecto artístico colaborativo",
+      "proyecto artistico colaborativo",
+      "planificar un proyecto artistico",
+      "fases de un proyecto artistico"
+    ],
+    "explanation": "Un proyecto artístico se organiza a partir de una intención, un contexto y unas condiciones de trabajo. Definir fases, tareas, recursos y plazos facilita desarrollarlo y revisarlo. La documentación permite justificar cambios; en equipo se acuerdan responsabilidades y se escuchan aportaciones. Planificar no elimina la exploración ni obliga a mantener una decisión que ya no funciona.",
+    "simpler": "Aclara qué queréis comunicar, con qué medios y para quién. Reparte tareas de forma acordada y deja momentos para probar y revisar.",
+    "example": "Para una instalación escolar se plantea una idea, se realizan bocetos, se comprueba qué materiales son seguros y reutilizables, se asignan tareas y se prueba un montaje. El equipo documenta un cambio de tamaño para mejorar el acceso, explicando su motivo.",
+    "why": "Un proyecto convierte una intención en decisiones verificables; registrar y contrastar esas decisiones hace posible aprender del proceso y mejorar el resultado.",
+    "misconception": "Revisar un plan con razones no significa que todo el proceso haya fracasado.",
+    "hints": [
+      "Comprueba que cada decisión responda a una intención y a condiciones reales de trabajo.",
+      "Aclara qué queréis comunicar, con qué medios y para quién. Reparte tareas de forma acordada y deja momentos para probar y revisar.",
+      "Para una instalación escolar se plantea una idea, se realizan bocetos, se comprueba qué materiales son seguros y reutilizables, se asignan tareas y se prueba un montaje. El equipo documenta un cambio de tamaño para mejorar el acceso, explicando su motivo."
+    ],
+    "quiz": [
+      {
+        "id": "b-art-project:q0",
+        "question": "Un plan útil debe relacionar…",
+        "options": [
+          "Intención, fases, recursos y plazos",
+          "Solo el título del proyecto",
+          "Solo quién manda"
+        ],
+        "answer": "A",
+        "hint": "Comprueba que cada decisión responda a una intención y a condiciones reales de trabajo.",
+        "level": 1
+      },
+      {
+        "id": "b-art-project:q1",
+        "question": "Documentar una modificación permite…",
+        "options": [
+          "Ocultar el proceso",
+          "Justificar cómo y por qué evolucionó el proyecto",
+          "Demostrar que nunca hubo dificultades"
+        ],
+        "answer": "B",
+        "hint": "Comprueba que cada decisión responda a una intención y a condiciones reales de trabajo.",
+        "level": 2
+      },
+      {
+        "id": "b-art-project:q2",
+        "question": "En una colaboración responsable, las decisiones…",
+        "options": [
+          "Se imponen sin escuchar",
+          "Excluyen toda revisión",
+          "Se acuerdan y pueden revisarse con razones"
+        ],
+        "answer": "C",
+        "hint": "Comprueba que cada decisión responda a una intención y a condiciones reales de trabajo.",
+        "level": 3
+      }
+    ],
+    "curriculum_source": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+    "curriculum_source_key": "BOE-A-2022-5521",
+    "source_kind": "original_teaching_material",
+    "grade_mapping": "editorial_progression_not_official_grade_mandate",
+    "review_method": "Single-AI multidisciplinary simulation: subject correctness, didactic clarity, inclusion, assessment scope and exact source linkage; not an independent human review",
+    "human_teacher_reviewed": false,
+    "language": "es",
+    "license_note": "Material original ETERNA; referencia oficial por etapa y vinculación parcial explícita. No homologación.",
+    "introduced_in_release": "eterna-library-2026.09-v6-310-traceable-12c672",
+    "curriculum_alignment_status": "reviewed_partial_support_not_whole_criterion_fulfilment",
+    "subject_availability": "Depends on territorial curriculum, modality and school offer; not mandatory for every student."
   }
 ]

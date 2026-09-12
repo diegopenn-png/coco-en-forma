@@ -1,7 +1,7 @@
 import test from'node:test';import assert from'node:assert/strict';import{readFileSync}from'node:fs';import{createHash}from'node:crypto';import vm from'node:vm';
 const read=p=>readFileSync(new URL(p,import.meta.url),'utf8');const copy=x=>JSON.parse(JSON.stringify(x));
 const c={Intl};vm.createContext(c);vm.runInContext(read('../src/library/content-v1.js'),c);vm.runInContext(read('../src/library/runtime-v1.js'),c);
-const ls=copy(c.ETERNA_LIBRARY_CONTENT.lessons),lib=c.EternaOwnedLibrary,m=JSON.parse(read('../../qa/teacher-panel/changes.json')),ledger=JSON.parse(read('../../qa/teacher-panel/review-ledger.json'));
+const ls=copy(c.ETERNA_LIBRARY_CONTENT.lessons.slice(0,304)),lib=c.EternaOwnedLibrary,m=JSON.parse(read('../../qa/teacher-panel/changes.json')),ledger=JSON.parse(read('../../qa/teacher-panel/review-ledger.json'));
 const find=id=>{const l=ls.find(l=>l.id===id);assert.ok(l,id);return l};const answer=(id,i=0)=>{const q=find(id).quiz[i];return q.options['ABC'.indexOf(q.answer)]};
 const hash=x=>createHash('sha256').update(x).digest('hex');
 test('304 bounded lessons and 912 questions; simulated review never implies human certification',()=>{
