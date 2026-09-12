@@ -11,13 +11,12 @@ s=s.replace("directory='combined-private-evidence'","directory='review-private-e
 s=s.replace("'616b2ff8-5a2c-43a8-9092-5d70a42f14e2'","'122648ab-15d5-4486-825b-996b06fd86e1'")
 s=s.replace('lessons:217,protocols:56,questions:651','lessons:256,protocols:56,questions:768').replace('health.owned_library.lessons,217','health.owned_library.lessons,256').replace('lessons.length!==217','lessons.length!==256').replace('lessons:217,questions:651,protocols:56','lessons:256,questions:768,protocols:56')
 s=s.replace("['infantil','i-full'],['primaria','p-lcm'],['eso','e-systems'],['bachillerato','b-determinant']","['infantil','i-listening'],['primaria','p-triangle-area'],['eso','e-reflection'],['bachillerato','b-climograph']")
-s=s.replace('report.ui_scenarios=42;','report.ui_scenarios_newly_tested=0;report.previous_ui_baseline_scenarios=42;report.previous_ui_baseline_commit="c993afecbdfe9a8f456af509b5b45b1b03ef4f47";')
-# Execute the reviewed adapter in memory; the canonical source hashes are checked again by it.
 exec(compile(s,str(p),'exec'),{'__name__':'__main__','__file__':str(p)})
 generated=Path('qa/library/remote_combined_verify.mjs');text=generated.read_text()
 assert "release='eterna-library-2026.09-v4-256-reviewed-c993'" in text
 assert "'122648ab-15d5-4486-825b-996b06fd86e1'" in text
 assert 'regressions_passed:616' in text and 'lessons:256' in text
-assert 'report.ui_scenarios=42;' not in text
-Path('qa/curriculum-review/remote_reviewed.generated.mjs').write_text(text.replace("'../../eterna-worker/src/library/","'../../eterna-worker/src/library/"))
+assert text.count('report.ui_scenarios=42;')==1
+text=text.replace('report.ui_scenarios=42;','report.ui_scenarios_newly_tested=0;report.previous_ui_baseline_scenarios=42;report.previous_ui_baseline_commit="c993afecbdfe9a8f456af509b5b45b1b03ef4f47";')
+Path('qa/curriculum-review/remote_reviewed.generated.mjs').write_text(text)
 print('Prepared exact 96-turn real authenticated verification and draft-only content import. No production deployment.')
