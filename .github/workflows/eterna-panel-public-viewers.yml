@@ -1,0 +1,32 @@
+name: Eterna official legal viewer capture
+on:
+  push:
+    branches: ["feat/eterna-panel-multidisciplinar-20260912"]
+    paths: ["qa/teacher-panel/public_viewer_capture.mjs", ".github/workflows/eterna-panel-public-viewers.yml"]
+permissions:
+  contents: read
+jobs:
+  actual-public-viewer-text:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install isolated public-browser tooling
+        run: |
+          npm install --prefix .panel-browser --no-save --no-audit --no-fund playwright@1.55.0
+          .panel-browser/node_modules/.bin/playwright install --with-deps chromium
+          cp qa/teacher-panel/public_viewer_capture.mjs .panel-browser/capture.mjs
+      - name: Capture only official authorities without any user session
+        run: node .panel-browser/capture.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-panel-official-viewers
+          path: panel-viewer-evidence
+          retention-days: 90
+          if-no-files-found: warn
