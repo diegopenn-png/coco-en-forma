@@ -1,0 +1,85 @@
+name: Eterna adjacent round repetition fix
+on:
+  push:
+    branches: ["fix/eterna-next-round-no-repeat-20260912"]
+    paths: [".github/workflows/eterna-next-round-fix.yml", "qa/next-round/**", "eterna-worker/test/procedural-next-round.test.mjs"]
+permissions:
+  contents: write
+concurrency:
+  group: eterna-next-round-fix
+  cancel-in-progress: false
+jobs:
+  reproduce-fix-test-and-private:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: 81bf9e7a46c67bb12638a941a1cd774ad3de14bc
+          path: .qa-auth
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Reproduce the reported bug on unchanged published module
+        run: |
+          mkdir -p next-round-build
+          if node --test --test-name-pattern='regression: another percentage' eterna-worker/test/procedural-next-round.test.mjs > next-round-build/before.txt 2>&1; then
+            echo 'Expected reproduction did not fail; stop rather than patch a different state'; exit 1
+          fi
+          grep -q 'Repeated exercise:' next-round-build/before.txt
+      - name: Apply only the bounded next-round selector, preserving seeded question generation
+        run: python qa/next-round/apply.py
+      - name: Run every existing regression and all added adjacent-round checks
+        run: |
+          cd eterna-worker
+          npm run check > ../next-round-build/after.txt 2>&1
+          tail -10 ../next-round-build/after.txt
+          grep -q '^# pass 779$' ../next-round-build/after.txt
+          grep -q '^# fail 0$' ../next-round-build/after.txt
+          npm ci --no-audit --no-fund
+      - name: Preserve the exact tested patch on the isolated branch, not main
+        run: |
+          test "$GITHUB_REF" = "refs/heads/fix/eterna-next-round-no-repeat-20260912"
+          test "$(git diff --name-only)" = "eterna-worker/src/library/procedural-v1.js"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- eterna-worker/src/library/procedural-v1.js
+          git commit -m 'fix(eterna): exclude all previous round exercises before starting another round'
+          git push origin HEAD:refs/heads/fix/eterna-next-round-no-repeat-20260912
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
+          const paths=['eterna-worker/src/index.js','eterna-worker/src/library/procedural-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/procedural-next-round.test.mjs'];
+          const blobs=Object.fromEntries(paths.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]))
+          const log=readFileSync('next-round-build/after.txt','utf8');writeFileSync('next-round-build/report.json',JSON.stringify({base_commit:'86ddb64a64554f83408dfb2afeccf45dd486c455',tested_commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),tests_passed:Number(log.match(/^# pass (\d+)$/m)[1]),tests_failed:Number(log.match(/^# fail (\d+)$/m)[1]),previous_bug_reproduced:true,new_tests:26,adjacent_round_transitions_tested:26400,existing_seeded_questions_unchanged:true,production_modified:false,blobs},null,2));
+          JS
+          git diff HEAD~1 HEAD > next-round-build/patch.diff
+      - name: Prepare canonical private authentication fixture without any content import
+        run: |
+          python qa/next-round/prepare_private.py
+          node --check qa/next-round/remote.generated.mjs
+      - name: Verify new rounds through actual auth and Supabase; remove temporary identity
+        run: node qa/next-round/remote.generated.mjs
+      - name: Require exact private checks and verified cleanup
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import assert from'node:assert/strict';const r=JSON.parse(readFileSync('next-round-private/report.json'));
+          assert.equal(r.phase,'canonical-private-verified');assert.equal(r.requests.length,52);assert.equal(r.adjacent_round_checks.length,8);
+          assert.equal(r.synthetic_cleanup.ok,true);assert.equal(r.synthetic_cleanup.deleted,true);assert.equal(r.bindings_unchanged,true);assert.equal(r.runtime_unchanged,true);
+          for(const q of r.requests){assert.equal(q.generation_model_calls,0);assert.equal(q.generation_tokens,0)}
+          assert.ok(r.persistence_evidence.usage.reduce((n,u)=>n+Number(u.chat_requests||0),0)<=60);console.log('Verified next-round fix; production remains unchanged.');
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-next-round-fix-proof
+          path: |
+            next-round-build
+            next-round-private
+          retention-days: 30
+          if-no-files-found: warn
