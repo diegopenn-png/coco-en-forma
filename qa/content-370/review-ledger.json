@@ -1,0 +1,1327 @@
+{
+  "reviewer": "One AI system applying discipline, age, clarity, assessment and safeguarding perspectives; not independent humans",
+  "human_review_performed": false,
+  "scope": "New 60 original micro-lessons only; state-stage references, not complete territorial criteria",
+  "records": [
+    {
+      "lesson_id": "i-one-each",
+      "content_sha256": "bd5fcf552fce21e42c4bcba17cc91687102150009f1d1faee767c386c057a614",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "questions": [
+        "Hay tres ositos dibujados y tres fichas. Pones una ficha por osito. ¿Sobra alguna?",
+        "Hay tres dibujos y solo dos fichas. Pones una por dibujo. ¿Qué ocurre?",
+        "Para comprobar un reparto de una ficha por dibujo, puedes…"
+      ],
+      "checked_answers": [
+        "No",
+        "Un dibujo se queda sin ficha",
+        "Poner cada ficha junto a un dibujo distinto"
+      ],
+      "conceptual_caution": "Repartir una a cada uno no es darle muchas al primero y ninguna a los demás.",
+      "reasoning_reference": "Al emparejar una pieza con cada objeto podemos comparar cantidades sin depender de cómo estén colocadas.",
+      "simplification": "Pon una ficha grande junto a cada dibujo. Mira si algún dibujo se queda sin ficha o alguna ficha queda sola.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-same-amount",
+      "content_sha256": "8f59187a299a6f0ebe8bcdfdb684c49d9810ffbbde7dc5772a4c31ca61064ee6",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "questions": [
+        "Una fila tiene tres círculos y otra tres estrellas. ¿Tienen la misma cantidad?",
+        "Separas cuatro fichas sin añadir ni quitar ninguna. ¿Cuántas quedan?",
+        "Para comparar dos grupos podemos…"
+      ],
+      "checked_answers": [
+        "Sí",
+        "Cuatro",
+        "Contar o emparejar de una en una"
+      ],
+      "conceptual_caution": "Una fila más larga no tiene necesariamente más objetos.",
+      "reasoning_reference": "La cantidad se conserva al mover los mismos objetos; cambiar la distancia entre ellos no añade ni elimina ninguno.",
+      "simplification": "Une un dibujo de un grupo con otro del segundo. Si todos tienen pareja y no sobra ninguno, hay la misma cantidad.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-first-last",
+      "content_sha256": "9ecd3c9d9f179670a14eaf7926918aa59631d50c3262bcd7eb04e06eb7aea5b8",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "questions": [
+        "La fila comienza con conejo, sigue oso y termina pato. ¿Quién es primero?",
+        "La fila comienza con conejo, sigue oso y termina pato. ¿Quién es último?",
+        "Ser primero en una fila significa…"
+      ],
+      "checked_answers": [
+        "Conejo",
+        "Pato",
+        "Estar al comienzo de ese orden"
+      ],
+      "conceptual_caution": "Primero y último no describen el valor de las personas.",
+      "reasoning_reference": "Una posición depende de la referencia elegida; conocer el comienzo permite interpretar el orden de la fila.",
+      "simplification": "Decide dónde empieza la fila. Mira quién está al comienzo y quién queda al final.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-long-short",
+      "content_sha256": "6ae38b5b57f6360bccfcf518f31321202bc79586cd29988800c11df00f80f678",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "questions": [
+        "Dos tiras estiradas empiezan juntas. La roja llega más lejos. ¿Cuál es más larga?",
+        "Para compararlas conviene…",
+        "Largo y ancho…"
+      ],
+      "checked_answers": [
+        "La roja",
+        "Alinear un extremo de cada tira",
+        "Describen medidas distintas"
+      ],
+      "conceptual_caution": "Una tira más ancha no es necesariamente más larga.",
+      "reasoning_reference": "Usar el mismo punto de partida hace visible la diferencia de longitud y evita comparar posiciones en lugar de tamaños.",
+      "simplification": "Coloca las dos tiras de papel empezando juntas. Mira cuál continúa cuando la otra ya termina.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-between",
+      "content_sha256": "5944f01c8200de9e266b6c1668492de1bac3b65b725aa40edca064a849f4452b",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "questions": [
+        "En la fila taza, libro, caja, ¿qué está entre la taza y la caja?",
+        "Para explicar dónde está algo, ayuda…",
+        "Estar entre dos objetos exige…"
+      ],
+      "checked_answers": [
+        "El libro",
+        "Nombrar los objetos de referencia",
+        "Quedar en el espacio entre esas referencias"
+      ],
+      "conceptual_caution": "Entre no significa obligatoriamente justo en el centro.",
+      "reasoning_reference": "Las referencias compartidas permiten comunicar posiciones aunque las personas miren desde lugares distintos.",
+      "simplification": "Busca los dos objetos que sirven de referencia. Mira qué hay en el espacio que queda entre ellos.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-first-sound",
+      "content_sha256": "793a4e8bf389a16bd9b9774ee5127d29977ec8488672e4abfd7da84d3b6a3421",
+      "stage": "infantil",
+      "subject": "Comunicación y representación de la realidad",
+      "questions": [
+        "Escucha «mesa, mano, sol». ¿Qué dos palabras empiezan con el mismo sonido?",
+        "Al buscar el primer sonido escuchamos…",
+        "«Rima» y «sonido inicial» nos hacen fijarnos…"
+      ],
+      "checked_answers": [
+        "Mesa y mano",
+        "El comienzo",
+        "En partes diferentes de la palabra"
+      ],
+      "conceptual_caution": "Dos palabras pueden comenzar igual aunque no rimen.",
+      "reasoning_reference": "Escuchar partes de las palabras ayuda a notar semejanzas y diferencias del habla antes de relacionarlas con la escritura.",
+      "simplification": "Escucha «mesa» y «mano»: las dos empiezan con el sonido m. Ahora compáralas con «sol».",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-disagree-kindly",
+      "content_sha256": "2ad7fc564549532a53faedcd02bd17f244559490aba8b9ac9367c0247ff12a54",
+      "stage": "infantil",
+      "subject": "Crecimiento en armonía",
+      "questions": [
+        "Un amigo propone algo distinto. Puedes decir…",
+        "Si una propuesta te hace sentir inseguro, puedes…",
+        "No ponerse de acuerdo significa que…"
+      ],
+      "checked_answers": [
+        "«Yo prefiero otra cosa; podemos hablarlo»",
+        "Decir que no y buscar ayuda",
+        "Se necesita hablar o pedir ayuda"
+      ],
+      "conceptual_caution": "Escuchar no te obliga a aceptar algo inseguro ni a renunciar siempre a lo que necesitas.",
+      "reasoning_reference": "Hablar de las diferencias y pedir ayuda permite cuidar a las personas sin exigir que todas prefieran lo mismo.",
+      "simplification": "Puedes decir «yo prefiero otra cosa». Escucha, explica tu idea y pide ayuda si la necesitas.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-story-prediction",
+      "content_sha256": "1ff2c0c29c88bdd8f39e9900f4d4817c59412b9e5be147cebd59d0907d161147",
+      "stage": "infantil",
+      "subject": "Comunicación y representación de la realidad",
+      "questions": [
+        "Escucha: «Nora ve nubes oscuras y guarda un paraguas». ¿Qué podría pasar después?",
+        "En «Nora guarda un paraguas», ¿qué sabemos por el cuento?",
+        "Si el cuento sigue de otra manera, podemos…"
+      ],
+      "checked_answers": [
+        "Podría llover",
+        "Que Nora guarda un paraguas",
+        "Cambiar nuestra idea al escuchar más"
+      ],
+      "conceptual_caution": "Una predicción no es una certeza ni sustituye lo que después cuenta la historia.",
+      "reasoning_reference": "Usar pistas y comprobar lo que ocurre ayuda a comprender sin convertir una suposición en un hecho.",
+      "simplification": "Escucha una pista, imagina un final posible y espera a oír qué sucede de verdad.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-plant-observation",
+      "content_sha256": "da5f3b450cfb787ea0524ef1e153f5fca6efbceed1bd853a182409e0beb31822",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "questions": [
+        "El lunes ves dos hojas y el viernes tres. ¿Qué cambio observas?",
+        "Para observar una planta con cuidado…",
+        "Un dibujo de cada día puede ayudar a…"
+      ],
+      "checked_answers": [
+        "Que ahora ves una hoja más",
+        "La miras y pides ayuda para cuidarla",
+        "Comparar lo que observaste"
+      ],
+      "conceptual_caution": "Una sola observación no muestra todos los cambios de la planta ni permite explicar por sí sola sus causas.",
+      "reasoning_reference": "Registrar observaciones en momentos distintos ayuda a reconocer cambios sin depender únicamente de la memoria.",
+      "simplification": "Mira la planta hoy y vuelve a mirarla otro día. Describe qué sigue igual y qué ha cambiado, sin hacerle daño.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "i-equal-sharing",
+      "content_sha256": "746cbcdf892c754a56a785721bf77c84eab862651a8ca084817fcfba902d5110",
+      "stage": "infantil",
+      "subject": "Descubrimiento y exploración del entorno",
+      "questions": [
+        "Repartes cuatro fichas por igual entre dos cestas. ¿Cuántas hay en cada una?",
+        "Si una cesta tiene tres fichas y otra una, ¿tienen lo mismo?",
+        "Si queda una ficha sin repartir, conviene…"
+      ],
+      "checked_answers": [
+        "Dos",
+        "No",
+        "Mostrarla y explicar que ha sobrado"
+      ],
+      "conceptual_caution": "Que haya dos grupos no garantiza que tengan la misma cantidad.",
+      "reasoning_reference": "Repartir y volver a comparar permite comprobar la igualdad de cantidades sin exigir aún un algoritmo escrito.",
+      "simplification": "Pon una ficha en un grupo y otra en el segundo. Repite y compara las cantidades al final.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-fraction-quantity",
+      "content_sha256": "c5b2f093fea4fa315e0a432382065ebdef282ecb010e1d664e5e63e11d3cda95",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "questions": [
+        "¿Cuánto es 3/5 de 20?",
+        "¿Cuánto es 1/4 de 28?",
+        "En 2/3 de una cantidad, el 3 indica…"
+      ],
+      "checked_answers": [
+        "12",
+        "7",
+        "En cuántas partes iguales divides"
+      ],
+      "conceptual_caution": "El numerador y el denominador cumplen funciones distintas; no se intercambian sin cambiar la fracción.",
+      "reasoning_reference": "La fracción relaciona un total con partes iguales: dividir fija el tamaño de cada parte y multiplicar reúne las elegidas.",
+      "simplification": "Si necesitas tres quintas partes, forma cinco partes iguales y toma tres de ellas.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-common-denominator",
+      "content_sha256": "0834ff86c04d2d8fc8281acf529ccc76f4dcbb5b3a49b5765c26ffb91ec1b0c5",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "questions": [
+        "¿Cuánto es 1/2 + 1/3?",
+        "Para sumar 1/4 y 1/2, podemos escribir 1/2 como…",
+        "En una suma de fracciones equivalentes con igual denominador…"
+      ],
+      "checked_answers": [
+        "5/6",
+        "2/4",
+        "Se suman los numeradores y se conserva el denominador"
+      ],
+      "conceptual_caution": "Un medio más un tercio no es dos quintos.",
+      "reasoning_reference": "Las fracciones equivalentes permiten describir cantidades con una unidad de partición común para poder sumarlas.",
+      "simplification": "Antes de contar partes juntas, haz que tengan el mismo tamaño.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-regroup-subtraction",
+      "content_sha256": "e6d60d4cf81d2ac8a297d61b1f1fc5e7610a8403be3409e251ba1190316c2d2a",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "questions": [
+        "¿Cuánto es 42 − 17?",
+        "Cambiar una decena por diez unidades…",
+        "Para comprobar 42 − 17 = 25, calculamos…"
+      ],
+      "checked_answers": [
+        "25",
+        "Conserva la cantidad",
+        "25 + 17"
+      ],
+      "conceptual_caution": "Reagrupar no significa crear unidades nuevas sin descontar la decena correspondiente.",
+      "reasoning_reference": "Nuestro sistema decimal permite distintas descomposiciones de una misma cantidad; esa equivalencia explica la reagrupación.",
+      "simplification": "Una decena vale diez unidades. Podemos cambiar su forma de escribirla sin cambiar cuánto tenemos.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-distributive",
+      "content_sha256": "64adb1170a357b60ea137c4f7f85987e614bba2a9eca71feae554a837f6d6cc6",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "questions": [
+        "¿Cuánto es 6 × 14 usando 14 = 10 + 4?",
+        "5 × (8 + 2) equivale a…",
+        "El factor de fuera del paréntesis multiplica…"
+      ],
+      "checked_answers": [
+        "84",
+        "5 × 8 + 5 × 2",
+        "Cada sumando"
+      ],
+      "conceptual_caution": "Multiplicar solo el primer sumando cambia la expresión.",
+      "reasoning_reference": "Separar grupos iguales en dos partes permite contar sus elementos por partes sin perder ninguna contribución.",
+      "simplification": "Separa una cantidad en dos partes más fáciles, multiplica cada parte y reúne los resultados.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-division-remainder",
+      "content_sha256": "2b3eb47b31e15fd17aa4697a787eb38a3c98b97c870f67a598d3c5b214af2deb",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "questions": [
+        "En 17 ÷ 5, el cociente entero y el resto son…",
+        "Si el divisor es 5, un resto válido puede ser…",
+        "Para guardar 17 fichas en cajas de capacidad 5, hacen falta como mínimo…"
+      ],
+      "checked_answers": [
+        "3 y 2",
+        "4",
+        "4 cajas"
+      ],
+      "conceptual_caution": "El resto debe ser menor que el divisor; el contexto decide qué hacer con él.",
+      "reasoning_reference": "Si el resto alcanzara el divisor podríamos formar otro grupo, por eso dejaría de ser el resto final.",
+      "simplification": "Forma grupos completos y cuenta lo que queda fuera. El resto no alcanza para otro grupo completo.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-parallel-lines",
+      "content_sha256": "0643c24a4fd1be88a252bc90ff04d0409c6b912531966796f2df02bf8bd6b288",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "questions": [
+        "Dos rectas perpendiculares forman…",
+        "Dos segmentos que no se tocan en un dibujo…",
+        "En un rectángulo, dos lados opuestos están sobre rectas…"
+      ],
+      "checked_answers": [
+        "Ángulos rectos",
+        "Pueden pertenecer a rectas que se cortan al prolongarlas",
+        "Paralelas"
+      ],
+      "conceptual_caution": "No verse un cruce en un dibujo pequeño no demuestra paralelismo.",
+      "reasoning_reference": "Una definición geométrica se refiere a las propiedades de los objetos completos, no solo al tamaño del dibujo.",
+      "simplification": "Imagina que prolongas las líneas. Si se cruzan en ángulo recto son perpendiculares.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-pictograms",
+      "content_sha256": "1a835a33159c36ed747c940ca1e399acf57a7368db95790c47f3eb3e9f821a5f",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "questions": [
+        "Si cada símbolo vale 2 libros, tres símbolos representan…",
+        "La leyenda permite saber…",
+        "Dos pictogramas con el mismo número de símbolos…"
+      ],
+      "checked_answers": [
+        "6 libros",
+        "Qué cantidad representa un símbolo",
+        "Pueden usar valores diferentes en sus leyendas"
+      ],
+      "conceptual_caution": "Un símbolo no representa necesariamente una sola unidad.",
+      "reasoning_reference": "Los símbolos son una escala gráfica: necesitamos su valor para traducir correctamente la imagen a cantidades.",
+      "simplification": "Antes de contar dibujos, mira cuántas unidades representa cada uno.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-mass-units",
+      "content_sha256": "e6d7e45a8fdafa1fb033b9a8222053f42a1a09bdc3eb04dbfa4a3af230e8e7e5",
+      "stage": "primaria",
+      "subject": "Matemáticas",
+      "questions": [
+        "¿Cuántos gramos son 2 kg y 300 g?",
+        "¿Qué medida es mayor?",
+        "Convertir de kg a g…"
+      ],
+      "checked_answers": [
+        "2.300 g",
+        "1.500 g",
+        "Cambia el número y la unidad, no su masa"
+      ],
+      "conceptual_caution": "Más volumen no significa necesariamente más masa.",
+      "reasoning_reference": "Una conversión describe la misma magnitud con unidades de tamaño diferente; no modifica el objeto medido.",
+      "simplification": "Un kilogramo contiene mil gramos. Cambia las medidas a la misma unidad antes de compararlas.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-temperature",
+      "content_sha256": "2a6ec7edf77096298a65b6f7e538b3d5b230f03206ed87146ad3ac7cdd58672c",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio Natural, Social y Cultural",
+      "questions": [
+        "De −2 °C a 3 °C, la temperatura sube…",
+        "¿Qué temperatura es mayor?",
+        "El símbolo °C indica…"
+      ],
+      "checked_answers": [
+        "5 °C",
+        "3 °C",
+        "Grados Celsius"
+      ],
+      "conceptual_caution": "La diferencia entre −2 y 3 no se obtiene restando sus cifras sin considerar el signo.",
+      "reasoning_reference": "La escala ordena temperaturas y permite expresar cuánto cambian, incluso cuando el recorrido pasa por cero.",
+      "simplification": "Usa una recta numérica: avanza desde la temperatura inicial hasta la final y cuenta el cambio.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-compound-words",
+      "content_sha256": "bcc0b54103802e3a4884960b846bcbc3ecd2e19a7e0ce5f8639941b7c782aa99",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "questions": [
+        "¿Cuál es una palabra compuesta?",
+        "En sacapuntas reconocemos…",
+        "Para confirmar la escritura de una palabra compuesta conviene…"
+      ],
+      "checked_answers": [
+        "Sacapuntas",
+        "Saca y puntas",
+        "Consultar el diccionario"
+      ],
+      "conceptual_caution": "No todas las palabras compuestas se escriben con una misma regla de separación.",
+      "reasoning_reference": "Combinar bases permite crear nombres y significados nuevos, pero su escritura y sentido dependen del uso lingüístico.",
+      "simplification": "Busca las partes que se han combinado y comprueba qué significa la palabra completa.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-word-family",
+      "content_sha256": "04e28c5d9e7a6f08c7d51f5d303e7c8101f3b9202fc81dfdc1df213cfe21cd33",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "questions": [
+        "¿Qué palabra pertenece a la familia de pan?",
+        "Para reconocer una familia léxica necesitamos…",
+        "Panadería y pan…"
+      ],
+      "checked_answers": [
+        "Panadero",
+        "Relación de base y significado",
+        "Pertenecen a una misma familia léxica"
+      ],
+      "conceptual_caution": "Parecerse al principio no demuestra que dos palabras pertenezcan a la misma familia.",
+      "reasoning_reference": "Las familias reflejan relaciones de formación de palabras; reconocerlas ayuda a comprender vocabulario sin basarse en coincidencias gráficas.",
+      "simplification": "Busca una raíz compartida y una relación de significado, no solo letras iguales.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-diminutives",
+      "content_sha256": "e0f2bc4188ee8eedeadd3ce6efd0c335674a57b2009b0956c55969adb0081932",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "questions": [
+        "En «una casita pequeña», casita es…",
+        "En «mi abuelita», el diminutivo puede expresar…",
+        "Para interpretar un sufijo apreciativo debemos considerar…"
+      ],
+      "checked_answers": [
+        "Un diminutivo",
+        "Cariño",
+        "La palabra y su contexto"
+      ],
+      "conceptual_caution": "Un diminutivo no significa siempre que algo sea físicamente pequeño.",
+      "reasoning_reference": "Los recursos de formación de palabras comunican también actitudes y relaciones, por eso el contexto influye en su interpretación.",
+      "simplification": "Mira la terminación y escucha la frase completa: puede hablar de tamaño o de una manera afectuosa de nombrar.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-vowel-groups",
+      "content_sha256": "a195ae5bac08ed40ef86bd71e29c8782534669ea72472d6cdd87e6f8bbb46470",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "questions": [
+        "En aire, ai forma…",
+        "La división silábica de país es…",
+        "En río, la tilde sobre í señala…"
+      ],
+      "checked_answers": [
+        "Un diptongo",
+        "Pa-ís",
+        "Una vocal cerrada tónica en hiato"
+      ],
+      "conceptual_caution": "Dos vocales escritas juntas no forman siempre diptongo.",
+      "reasoning_reference": "La división silábica y las reglas de acentuación relacionan pronunciación y escritura, sin reducir todos los grupos vocálicos a un único caso.",
+      "simplification": "Escucha y divide en sílabas, y después aplica la regla ortográfica de la vocal que recibe la fuerza.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-instruction-text",
+      "content_sha256": "69967254b48fbcf8e8816dc38fc0444ab220db2634edf401c27b0b3225f439cb",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "questions": [
+        "Las instrucciones sirven principalmente para…",
+        "En «reúne, coloca, cierra», las palabras indican…",
+        "Antes de dar instrucciones conviene comprobar…"
+      ],
+      "checked_answers": [
+        "Explicar cómo realizar una tarea",
+        "Acciones",
+        "Que no falten pasos necesarios"
+      ],
+      "conceptual_caution": "Numerar frases no garantiza que el procedimiento esté completo o en orden.",
+      "reasoning_reference": "Un procedimiento comunica relaciones entre acciones; explicitar sus requisitos reduce errores y facilita la autonomía.",
+      "simplification": "Piensa qué necesita saber alguien que nunca ha hecho la actividad y escribe un paso cada vez.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-verb-time",
+      "content_sha256": "3097eadaf839c65a79fb66786bc040cb3603acf2e540545ff6948e483c0da9d2",
+      "stage": "primaria",
+      "subject": "Lengua Castellana y Literatura",
+      "questions": [
+        "En «ayer canté», la acción se sitúa…",
+        "En «mañana cantaré», cantaré es una forma de…",
+        "En «mañana viajo», la forma de presente…"
+      ],
+      "checked_answers": [
+        "Antes",
+        "Futuro",
+        "Puede expresar una acción futura por el contexto"
+      ],
+      "conceptual_caution": "Forma de presente y referencia al momento actual no coinciden en todos los usos.",
+      "reasoning_reference": "Las formas verbales y el contexto colaboran para situar las acciones; aprender sus relaciones evita reglas excesivamente rígidas.",
+      "simplification": "Mira la forma del verbo y las palabras de tiempo de toda la oración.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-pollination",
+      "content_sha256": "e4e3b3ec3548968d3c580ca7bb99f5955b7d95516f4206e45695a636384b1983",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio Natural, Social y Cultural",
+      "questions": [
+        "La polinización transporta…",
+        "¿Puede intervenir el viento en la polinización?",
+        "Polinización y dispersión de semillas…"
+      ],
+      "checked_answers": [
+        "Polen",
+        "Sí",
+        "Son procesos distintos"
+      ],
+      "conceptual_caution": "La polinización no es sinónimo de fecundación ni de germinación.",
+      "reasoning_reference": "Distinguir etapas y materiales ayuda a comprender cómo se reproduce una planta sin mezclar procesos con funciones diferentes.",
+      "simplification": "El polen llega a una parte receptora de la flor. Ese traslado es un paso diferente de formar o dispersar semillas.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-germination",
+      "content_sha256": "001d2c2330f452664aabfe355f014bc895f1508bb593ced6babd18f08db4a500",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio Natural, Social y Cultural",
+      "questions": [
+        "Durante la germinación se desarrolla…",
+        "Las necesidades de luz para germinar…",
+        "Añadir cada vez más agua…"
+      ],
+      "checked_answers": [
+        "El embrión de la semilla",
+        "Pueden variar según la especie",
+        "No garantiza condiciones adecuadas"
+      ],
+      "conceptual_caution": "No todas las semillas necesitan el mismo tiempo o las mismas condiciones.",
+      "reasoning_reference": "Las condiciones ambientales activan y sostienen procesos de desarrollo, mientras las reservas ayudan en las primeras etapas.",
+      "simplification": "La semilla no necesita cualquier condición: necesita las adecuadas para su especie. Agua no significa mantenerla sumergida sin aire.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-magnetism",
+      "content_sha256": "20c9b9551ebb4351bc514ff7fb6e4f1e5ad0b37eba15b07a993a22f2db26dd5a",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio Natural, Social y Cultural",
+      "questions": [
+        "Un imán atrae normalmente una pieza de…",
+        "¿Todos los metales son atraídos por igual por un imán?",
+        "Para una observación escolar con imanes conviene…"
+      ],
+      "checked_answers": [
+        "Hierro",
+        "No",
+        "Usar materiales adecuados con supervisión"
+      ],
+      "conceptual_caution": "Metálico no significa automáticamente atraído por un imán.",
+      "reasoning_reference": "Las propiedades magnéticas dependen del material y de la situación; una apariencia semejante no garantiza igual comportamiento.",
+      "simplification": "No decidas solo porque un objeto parezca metálico. Comprueba qué material es con ayuda del docente.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-simple-machines",
+      "content_sha256": "8330375546510f11dab8ac83f29ade4a81c74d16914b46edca9b21799ed4ae28",
+      "stage": "primaria",
+      "subject": "Conocimiento del Medio Natural, Social y Cultural",
+      "questions": [
+        "Una máquina simple puede…",
+        "En el modelo ideal, reducir la fuerza puede requerir…",
+        "Para estudiar una máquina simple en clase es adecuado…"
+      ],
+      "checked_answers": [
+        "Cambiar cómo se aplica una fuerza",
+        "Aumentar la distancia recorrida",
+        "Usar un modelo seguro supervisado"
+      ],
+      "conceptual_caution": "Una máquina simple no crea energía ni elimina siempre el esfuerzo total.",
+      "reasoning_reference": "La ventaja mecánica relaciona fuerzas y recorridos; analizar ambos permite entender la ayuda sin atribuirle energía gratuita.",
+      "simplification": "Una ayuda mecánica puede cambiar cómo aplicas la fuerza, pero no hace aparecer energía de la nada.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "p-en-possessives",
+      "content_sha256": "9e85798db09b821a1bee2db6115bc59b95e864c0d3de9e7fc9f5c02f2481e705",
+      "stage": "primaria",
+      "subject": "Lengua Extranjera: Inglés",
+      "questions": [
+        "Completa: We read ___ books.",
+        "En «the cat moves its tail», its es…",
+        "Completa: They bring ___ pencils."
+      ],
+      "checked_answers": [
+        "Our",
+        "Un posesivo sin apóstrofo",
+        "Their"
+      ],
+      "conceptual_caution": "Its e it's no son intercambiables.",
+      "reasoning_reference": "La forma posesiva se elige por la referencia del poseedor, mientras el nombre que la sigue indica qué se relaciona con él.",
+      "simplification": "Mira quién posee o con quién se relaciona el nombre: I → my, we → our, they → their.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-algebra-value",
+      "content_sha256": "4b2c06d187954dcafd9593f1fe8d4e4f43fd994d7bb24ea99322ec53a2366ead",
+      "stage": "eso",
+      "subject": "Matemáticas",
+      "questions": [
+        "Si x = −2, ¿cuánto vale 3x + 5?",
+        "La expresión 2x + 1, sin más información…",
+        "Al sustituir una variable que aparece dos veces usamos…"
+      ],
+      "checked_answers": [
+        "−1",
+        "Depende del valor de x",
+        "El mismo valor asignado en ambas"
+      ],
+      "conceptual_caution": "Calcular el valor de una expresión no es lo mismo que resolver una ecuación.",
+      "reasoning_reference": "Las variables representan valores dentro de una expresión; fijarlos permite evaluar las operaciones sin inventar una igualdad.",
+      "simplification": "Sustituye la letra siempre por el mismo valor y escribe los paréntesis necesarios, sobre todo con números negativos.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-notable-identities",
+      "content_sha256": "03c56b49e37a1ffb29363f3ed8d686d17b7f16cca78b13951cc6269597a8cfc8",
+      "stage": "eso",
+      "subject": "Matemáticas",
+      "questions": [
+        "El desarrollo de (x + 3)² es…",
+        "En (a + b)², el término cruzado es…",
+        "Comprobar una identidad en un solo valor…"
+      ],
+      "checked_answers": [
+        "x² + 6x + 9",
+        "2ab",
+        "No demuestra por sí solo que valga para todos"
+      ],
+      "conceptual_caution": "El cuadrado de una suma no es, en general, la suma de los cuadrados.",
+      "reasoning_reference": "La propiedad distributiva produce cuatro productos; dos de ellos son iguales y se reúnen en el término 2ab.",
+      "simplification": "Escribe (a + b)(a + b) y distribuye cada término del primer factor sobre el segundo.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-monomials",
+      "content_sha256": "384810824638bc2b6f0a218c4e82a2b13f181b712731d7b9e3467a50d2574e47",
+      "stage": "eso",
+      "subject": "Matemáticas",
+      "questions": [
+        "¿Cuánto es 3x² + 5x²?",
+        "¿Cuánto es 3x²·2x³?",
+        "Los monomios 2x y 2x²…"
+      ],
+      "checked_answers": [
+        "8x²",
+        "6x⁵",
+        "No son semejantes por tener exponentes distintos"
+      ],
+      "conceptual_caution": "Compartir una letra no basta para que dos monomios sean semejantes.",
+      "reasoning_reference": "La suma reúne cantidades del mismo tipo literal; la multiplicación combina factores y aplica las reglas de potencias.",
+      "simplification": "Antes de sumar, comprueba que las letras y sus exponentes coinciden. Para multiplicar se usa otra regla.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-thales",
+      "content_sha256": "991880d388d5ff3133bae3631a195046440f28353f8e97c808e3286877bfd116",
+      "stage": "eso",
+      "subject": "Matemáticas",
+      "questions": [
+        "En ABC, D está en AB y E en AC; DE es paralelo a BC. Si AD=3, AB=6 y AC=10, ¿cuánto vale AE?",
+        "La condición que asegura la semejanza en este caso es…",
+        "Al formar proporciones debemos usar…"
+      ],
+      "checked_answers": [
+        "5",
+        "Que DE sea paralelo a BC",
+        "Longitudes correspondientes"
+      ],
+      "conceptual_caution": "Mezclar un tramo con un lado completo puede producir una proporción incorrecta.",
+      "reasoning_reference": "El paralelismo conserva ángulos y genera semejanza, de la que se deducen las proporciones entre lados correspondientes.",
+      "simplification": "Dibuja los dos triángulos y compara lados que ocupan la misma posición, comprobando el paralelismo.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-probability-tree",
+      "content_sha256": "39d557199421aa4617055bc5f28570735b1f55550d77b942bd2836e62272870f",
+      "stage": "eso",
+      "subject": "Matemáticas",
+      "questions": [
+        "Dos lanzamientos independientes de moneda equilibrada: P(cara y luego cruz) es…",
+        "La probabilidad de exactamente una cara en dos lanzamientos es…",
+        "Si extraemos sin reemplazar de una bolsa…"
+      ],
+      "checked_answers": [
+        "1/4",
+        "1/2",
+        "Debemos revisar las probabilidades tras cada extracción"
+      ],
+      "conceptual_caution": "Multiplicar probabilidades iniciales sin revisar las condiciones puede ser incorrecto.",
+      "reasoning_reference": "Cada rama incorpora lo que ya ocurrió; por eso el árbol representa tanto resultados como información condicionante.",
+      "simplification": "Recorre un camino multiplicando y reúne caminos separados sumando. Revisa qué información cambia después de cada etapa.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-speed-conversion",
+      "content_sha256": "25efbe45c8c1ba6c41b4b450f773a962f1c8add30a6ff42fe0460ca4579d8662",
+      "stage": "eso",
+      "subject": "Física y Química",
+      "questions": [
+        "¿A cuántos m/s equivalen 72 km/h?",
+        "¿A cuántos km/h equivalen 5 m/s?",
+        "Convertir una rapidez a otra unidad…"
+      ],
+      "checked_answers": [
+        "20 m/s",
+        "18 km/h",
+        "Mantiene la misma magnitud expresada de otro modo"
+      ],
+      "conceptual_caution": "Multiplicar por 3,6 al pasar de km/h a m/s invierte el factor necesario.",
+      "reasoning_reference": "Una rapidez es una razón entre distancia y tiempo; convertir correctamente ambos componentes explica el factor.",
+      "simplification": "Escribe las equivalencias de distancia y tiempo; al convertir una razón cambian ambas unidades.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-pressure",
+      "content_sha256": "9eb5396fbf9fb4053432bea601e5e1bb919b288791cbe0d3f6ab9441ef61229d",
+      "stage": "eso",
+      "subject": "Física y Química",
+      "questions": [
+        "Una fuerza normal de 100 N sobre 0,5 m² produce una presión media de…",
+        "Un pascal equivale a…",
+        "Con la misma fuerza normal, duplicar el área…"
+      ],
+      "checked_answers": [
+        "200 Pa",
+        "Un newton por metro cuadrado",
+        "Reduce la presión media a la mitad"
+      ],
+      "conceptual_caution": "Presión y fuerza no son la misma magnitud.",
+      "reasoning_reference": "La presión describe cómo se distribuye una acción sobre un área; la superficie forma parte de su definición.",
+      "simplification": "Reparte la misma fuerza entre más superficie: cada unidad de área soporta una parte menor.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-mass-conservation",
+      "content_sha256": "7e2810378d20ab19d98a049684db489d923d2151d11e1268746546310ae779bf",
+      "stage": "eso",
+      "subject": "Física y Química",
+      "questions": [
+        "12 g y 32 g reaccionan completamente en sistema cerrado formando un producto. Su masa es…",
+        "En una reacción química ordinaria los átomos…",
+        "Si un gas abandona un recipiente abierto…"
+      ],
+      "checked_answers": [
+        "44 g",
+        "Se reorganizan",
+        "Hay materia que sale del sistema considerado"
+      ],
+      "conceptual_caution": "Un recipiente abierto no retiene necesariamente toda la materia de la reacción.",
+      "reasoning_reference": "Las medidas dependen de la frontera del sistema; seguir la materia que entra o sale evita interpretar un intercambio como desaparición.",
+      "simplification": "Cuenta todo el sistema, incluidos los gases. Un recipiente abierto puede intercambiar materia con el exterior.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-acids-bases",
+      "content_sha256": "690ec13d12e2fb5e083f8371f568ed8a56d134ca900daa244db306d2f473feb6",
+      "stage": "eso",
+      "subject": "Física y Química",
+      "questions": [
+        "A 25 °C, una disolución acuosa de pH 3 es…",
+        "En el modelo de Brønsted, una base puede…",
+        "Para identificar una sustancia desconocida debemos…"
+      ],
+      "checked_answers": [
+        "Ácida",
+        "Aceptar un protón",
+        "Seguir métodos y supervisión adecuados"
+      ],
+      "conceptual_caution": "Ácido no significa necesariamente peligroso en cualquier concentración, ni básico significa seguro.",
+      "reasoning_reference": "Los modelos químicos permiten describir comportamientos; la seguridad requiere considerar sustancias y condiciones concretas, no una etiqueta aislada.",
+      "simplification": "Usa el modelo y los datos del ejercicio, no los sentidos, para clasificar una disolución.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-genes-chromosomes",
+      "content_sha256": "e0034f0f1ef7009ff3da2821917d455046fb5492ba66dd91fa9063ee81b2042f",
+      "stage": "eso",
+      "subject": "Biología y Geología",
+      "questions": [
+        "Un cromosoma suele contener…",
+        "Un rasgo observable…",
+        "Decir «23 pares» equivale a…"
+      ],
+      "checked_answers": [
+        "Muchos genes",
+        "Puede depender de varios genes y del ambiente",
+        "46 cromosomas en ese modelo celular"
+      ],
+      "conceptual_caution": "Gen y cromosoma no son sinónimos.",
+      "reasoning_reference": "Separar niveles de organización ayuda a relacionar información genética y función sin reducir todos los rasgos a una causa única.",
+      "simplification": "Piensa en el ADN organizado en cromosomas: dentro hay muchas regiones con funciones, entre ellas los genes.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-stimulus-response",
+      "content_sha256": "417f3122ddb0c085bbe404215a4437fb04af723df53902819fb457f0a7a05b11",
+      "stage": "eso",
+      "subject": "Biología y Geología",
+      "questions": [
+        "En el ejemplo de luz intensa y contracción pupilar, el estímulo es…",
+        "¿Las plantas pueden responder a estímulos?",
+        "Estímulo y respuesta…"
+      ],
+      "checked_answers": [
+        "La luz intensa",
+        "Sí",
+        "Se relacionan, pero describen elementos distintos"
+      ],
+      "conceptual_caution": "No moverse de un lugar a otro no implica carecer de respuestas al entorno.",
+      "reasoning_reference": "Los seres vivos detectan cambios y ajustan procesos por mecanismos diversos; distinguirlos evita identificar toda respuesta con desplazarse.",
+      "simplification": "Separa qué cambia en el entorno o en el organismo de qué hace el ser vivo como respuesta.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-weathering-erosion",
+      "content_sha256": "40fe374dd9cf9fcb6669295596de2a16b7cbd8e1d2e7d32c0662ec374c4fd707",
+      "stage": "eso",
+      "subject": "Biología y Geología",
+      "questions": [
+        "La alteración de una roca en el lugar donde está se llama…",
+        "Depositar materiales transportados corresponde a…",
+        "Meteorización, transporte y sedimentación…"
+      ],
+      "checked_answers": [
+        "Meteorización",
+        "Sedimentación",
+        "Son procesos distintos que pueden encadenarse"
+      ],
+      "conceptual_caution": "Fragmentar una roca en su lugar no implica que sus fragmentos ya hayan sido transportados.",
+      "reasoning_reference": "Distinguir los procesos permite reconstruir transformaciones del relieve sin asignar todas las acciones a un único agente o etapa.",
+      "simplification": "Distingue romper o alterar una roca en su lugar, retirar material, moverlo y depositarlo.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-migrations",
+      "content_sha256": "d16cb80fc9d55f7cd71b57374d30a37413f09400b1b6eca0923b65c76ca17c83",
+      "stage": "eso",
+      "subject": "Geografía e Historia",
+      "questions": [
+        "Si Ana cambia su residencia de A a B, para B es una…",
+        "Emigración se refiere a…",
+        "Para interpretar una cifra de migración necesitamos…"
+      ],
+      "checked_answers": [
+        "Inmigración",
+        "Salida del territorio de referencia",
+        "Territorio, periodo y definición"
+      ],
+      "conceptual_caution": "Emigrante e inmigrante no describen necesariamente a personas distintas.",
+      "reasoning_reference": "Los términos dependen del punto de referencia; hacerlo explícito evita duplicar o interpretar mal los movimientos.",
+      "simplification": "Una misma persona puede ser emigrante respecto al lugar de salida e inmigrante respecto al de llegada.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-alandalus",
+      "content_sha256": "266744fa8d940f6f0a0e16c4d6aca822deaf0bd6328e012a4c131f2a109b35ed",
+      "stage": "eso",
+      "subject": "Geografía e Historia",
+      "questions": [
+        "Al-Ándalus tuvo a lo largo del tiempo…",
+        "El califato de Córdoba se proclamó en…",
+        "El final del reino nazarí de Granada se sitúa en…"
+      ],
+      "checked_answers": [
+        "Extensión y organización cambiantes",
+        "929",
+        "1492"
+      ],
+      "conceptual_caution": "Al-Ándalus no tuvo siempre el mismo tamaño ni una única organización política.",
+      "reasoning_reference": "Los nombres históricos abarcan procesos cambiantes; combinar cronología y cartografía evita describir siglos distintos como una fotografía fija.",
+      "simplification": "Sitúa cada etapa en su fecha y mapa: no uses el mismo límite territorial para toda la historia.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-feudalism",
+      "content_sha256": "021fa7bebdb34f3d6a3a1346aafb1ba26fd37eefc4424f089fa9cc288081dc04",
+      "stage": "eso",
+      "subject": "Geografía e Historia",
+      "questions": [
+        "Vasallaje y relaciones señoriales…",
+        "¿Todos los campesinos medievales eran siervos?",
+        "Al estudiar estas relaciones debemos considerar…"
+      ],
+      "checked_answers": [
+        "Deben distinguirse",
+        "No",
+        "Diferencias de lugar, época y condición social"
+      ],
+      "conceptual_caution": "Usar feudalismo no autoriza a suponer que toda la sociedad medieval funcionaba de una única manera.",
+      "reasoning_reference": "Separar relaciones jurídicas, económicas y sociales permite explicar dependencias concretas sin borrar la diversidad histórica.",
+      "simplification": "Distingue pactos entre grupos privilegiados y relaciones de poder sobre campesinos y tierras.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-indirect-object",
+      "content_sha256": "d98d8de52e08eccc34e8ea14176519f3af45000d271547a0ab4898fb94c97847",
+      "stage": "eso",
+      "subject": "Lengua Castellana y Literatura",
+      "questions": [
+        "En «Lucía entrega un libro a Ana», a Ana es…",
+        "La combinación de le y lo en esta construcción se expresa como…",
+        "Un grupo introducido por a…"
+      ],
+      "checked_answers": [
+        "Complemento indirecto",
+        "Se lo",
+        "Debe analizarse en su construcción"
+      ],
+      "conceptual_caution": "La preposición a por sí sola no determina la función sintáctica.",
+      "reasoning_reference": "Las funciones se reconocen por sus relaciones en la oración y sus propiedades gramaticales, no por una palabra aislada.",
+      "simplification": "Analiza la oración completa y comprueba la función, no solo la presencia de la preposición.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-verbal-periphrasis",
+      "content_sha256": "a54cfad07d09a9a9749bc3e994840685a691a60ef7d0e0a230871b876efc1c26",
+      "stage": "eso",
+      "subject": "Lengua Castellana y Literatura",
+      "questions": [
+        "En «tengo que estudiar», tener que aporta…",
+        "La forma estudiar es…",
+        "Encontrar dos verbos seguidos…"
+      ],
+      "checked_answers": [
+        "Obligación",
+        "Un infinitivo",
+        "No basta para clasificarlos sin analizar la relación"
+      ],
+      "conceptual_caution": "Una perífrasis no se identifica únicamente contando dos verbos.",
+      "reasoning_reference": "El conjunto funciona como una unidad de predicación, pero reconocerlo requiere interpretar las funciones de sus componentes.",
+      "simplification": "Busca qué aporta el auxiliar y qué acción expresa la forma no personal, sin contar verbos de manera mecánica.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "e-en-future-plans",
+      "content_sha256": "7f531e6bb15cecc4123eeac06c26cf3d1a236958fb1edab57a419942416489c5",
+      "stage": "eso",
+      "subject": "Lengua Extranjera",
+      "questions": [
+        "Una decisión tomada al hablar puede expresarse como…",
+        "Completa: We ___ going to visit the museum.",
+        "La diferencia entre will y going to…"
+      ],
+      "checked_answers": [
+        "I'll answer the phone",
+        "Are",
+        "Se interpreta según el uso y la situación"
+      ],
+      "conceptual_caution": "Will no es la única manera de hablar del futuro en inglés.",
+      "reasoning_reference": "El futuro puede presentarse como decisión, plan o predicción; esas perspectivas ayudan a elegir sin convertir los patrones en reglas absolutas.",
+      "simplification": "Pregunta si se comunica una decisión en ese momento, un plan previo o una predicción con pistas.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-product-rule",
+      "content_sha256": "72995c45fe64b1837adf17425cd3bff89990f9ee6c5f6fcc4cfb5f4ded40ec67",
+      "stage": "bachillerato",
+      "subject": "Matemáticas",
+      "questions": [
+        "La derivada de x²(x + 1) es…",
+        "La regla del producto es…",
+        "Para comprobar el ejemplo podemos…"
+      ],
+      "checked_answers": [
+        "3x² + 2x",
+        "u'v + uv'",
+        "Desarrollar el producto y derivar el polinomio"
+      ],
+      "conceptual_caution": "Derivar un producto no equivale generalmente a multiplicar las derivadas.",
+      "reasoning_reference": "La variación del producto recibe aportaciones de cada factor, y la regla reúne ambas en lugar de ignorar una.",
+      "simplification": "Deriva el primer factor dejando el segundo; suma el primer factor por la derivada del segundo.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-indefinite-integral",
+      "content_sha256": "1d5c7e6b658ef744b10ed45d3b5cc65f9d0bbe17032efd2c646d19164fd15541",
+      "stage": "bachillerato",
+      "subject": "Matemáticas",
+      "questions": [
+        "Una primitiva de x² es…",
+        "El término + C representa…",
+        "Para comprobar una primitiva debemos…"
+      ],
+      "checked_answers": [
+        "x³/3",
+        "La familia de constantes de integración",
+        "Derivarla y comparar con el integrando"
+      ],
+      "conceptual_caution": "La regla de potencias indicada excluye n = −1.",
+      "reasoning_reference": "La derivada elimina las constantes aditivas, de modo que una misma función puede tener una familia de primitivas.",
+      "simplification": "Busca una función que al derivarla devuelva el integrando y no olvides la constante.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-line-equations",
+      "content_sha256": "5676502b69564acb9f9e20c102df698f99d477128926fb09d525dad4832142fe",
+      "stage": "bachillerato",
+      "subject": "Matemáticas",
+      "questions": [
+        "El punto de y = 2x + 1 con x = 3 tiene y igual a…",
+        "La recta y = 2x − 4 es respecto a y = 2x + 1…",
+        "Una recta vertical x = 5…"
+      ],
+      "checked_answers": [
+        "7",
+        "Paralela distinta",
+        "No tiene pendiente finita"
+      ],
+      "conceptual_caution": "Una recta vertical no tiene pendiente cero; eso corresponde a una horizontal.",
+      "reasoning_reference": "La pendiente compara incrementos; en una recta vertical el cambio horizontal es cero y el cociente no define una pendiente finita.",
+      "simplification": "Separa el ritmo de cambio de la altura donde la recta corta el eje y.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-matrix-multiplication",
+      "content_sha256": "65b8e1d65cc3a6da17b3622635de651828ffe6ad02b51d81ccfc884bfb34fd3b",
+      "stage": "bachillerato",
+      "subject": "Matemáticas",
+      "questions": [
+        "La fila (1,2) por la columna (3,4) da la entrada…",
+        "Una matriz 2×3 por una 3×4 produce una…",
+        "La multiplicación de matrices…"
+      ],
+      "checked_answers": [
+        "11",
+        "2×4",
+        "No es conmutativa en general"
+      ],
+      "conceptual_caution": "El producto matricial ordinario no consiste en multiplicar casillas de igual posición.",
+      "reasoning_reference": "Combinar filas y columnas representa la composición de relaciones lineales, y el orden de esa composición importa.",
+      "simplification": "Comprueba las dimensiones y calcula cada casilla como un producto fila por columna.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-bayes",
+      "content_sha256": "deba16fd26966c58efceb1ebdb600f2e1b0297bd26b8342655c125985520bb10",
+      "stage": "bachillerato",
+      "subject": "Matemáticas",
+      "questions": [
+        "En el ejemplo A/B equiprobables, P(rojo∣A)=3/4 y P(rojo∣B)=1/4. P(rojo) es…",
+        "Se elige A o B con probabilidad 1/2; P(rojo∣A)=3/4 y P(rojo∣B)=1/4. P(A∣rojo) es…",
+        "Para aplicar la fórmula indicada, P(B) debe ser…"
+      ],
+      "checked_answers": [
+        "1/2",
+        "3/4",
+        "Mayor que cero"
+      ],
+      "conceptual_caution": "P(A∣B) y P(B∣A) no son intercambiables por definición.",
+      "reasoning_reference": "La evidencia cambia el peso relativo de las posibilidades previas; la normalización permite que las probabilidades resultantes sean coherentes.",
+      "simplification": "Para actualizar una probabilidad, combina lo frecuente que era el caso con lo probable que es la evidencia en él.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-electric-field",
+      "content_sha256": "7fe1fe5246025d5546f17f2aa84909345a3a49aac37dd14d1e8f2d003a52c40c",
+      "stage": "bachillerato",
+      "subject": "Física",
+      "questions": [
+        "Con E = 200 N/C a la derecha y q = −0,01 C, la fuerza es…",
+        "La unidad N/C corresponde al…",
+        "Una carga positiva en un campo eléctrico tiene fuerza…"
+      ],
+      "checked_answers": [
+        "2 N a la izquierda",
+        "Campo eléctrico",
+        "En el mismo sentido que el campo"
+      ],
+      "conceptual_caution": "El campo no cambia de sentido por elegir una carga de prueba negativa; cambia el sentido de la fuerza sobre ella.",
+      "reasoning_reference": "La relación vectorial F = qE separa la propiedad del campo de la carga que lo experimenta y explica el efecto del signo.",
+      "simplification": "El campo indica hacia dónde sería empujada una carga positiva; una negativa experimenta fuerza en sentido contrario.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-enthalpy",
+      "content_sha256": "c747e7f1fec823e46df3b5c3a6523ccfcfdcdfe85137eed1ff92d31b035f7644",
+      "stage": "bachillerato",
+      "subject": "Química",
+      "questions": [
+        "Si ΔH = −50 kJ, el proceso indicado es…",
+        "Al duplicar la ecuación y su cantidad de reacción, −50 kJ pasa a…",
+        "Para interpretar ΔH necesitamos…"
+      ],
+      "checked_answers": [
+        "Exotérmico",
+        "−100 kJ",
+        "Conocer el proceso y la cantidad de reacción"
+      ],
+      "conceptual_caution": "Un valor de entalpía sin reacción ni cantidad asociadas puede interpretarse mal.",
+      "reasoning_reference": "La entalpía es una magnitud extensiva: cambiar la cantidad de proceso cambia proporcionalmente su variación.",
+      "simplification": "Mira el signo desde la perspectiva del sistema: exotérmico libera calor hacia el entorno en esas condiciones.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-lechatelier",
+      "content_sha256": "efc1dfcf9780eaf30293e2fd9f974fa1e9681a9d2b71e1915d641d64c34e5e99",
+      "stage": "bachillerato",
+      "subject": "Química",
+      "questions": [
+        "En N₂(g) + 3H₂(g) ⇌ 2NH₃(g), bajo modelo ideal, disminuir volumen a temperatura constante favorece…",
+        "Un catalizador a temperatura fija…",
+        "La constante de equilibrio para una reacción dada depende de…"
+      ],
+      "checked_answers": [
+        "Productos por tener menos moles gaseosos",
+        "Acelera llegar al equilibrio sin cambiar su constante",
+        "La temperatura"
+      ],
+      "conceptual_caution": "Aumentar la velocidad de alcanzar el equilibrio no equivale a desplazar su composición final.",
+      "reasoning_reference": "La perturbación altera relaciones del sistema; distinguir cinética y equilibrio evita atribuir al catalizador cambios que no produce.",
+      "simplification": "No preguntes solo «hacia dónde»: identifica qué se modifica y qué permanece constante.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-osmosis",
+      "content_sha256": "75742819df5fd6d59da66a55f1010a98cc3278e47fa5f1bd56cef759d74d416c",
+      "stage": "bachillerato",
+      "subject": "Biología",
+      "questions": [
+        "En un medio hipertónico del modelo indicado, la célula tiende a…",
+        "La ósmosis implica el paso de…",
+        "Para predecir el movimiento de agua debemos considerar…"
+      ],
+      "checked_answers": [
+        "Perder agua neta",
+        "Agua a través de una membrana selectiva",
+        "Concentraciones, presión y permeabilidad"
+      ],
+      "conceptual_caution": "La regla de concentración simplificada necesita condiciones; no sustituye toda la descripción del potencial hídrico.",
+      "reasoning_reference": "El potencial hídrico reúne contribuciones que explican el movimiento neto; la concentración es una parte del modelo, no toda la historia.",
+      "simplification": "En el modelo indicado, la membrana deja pasar agua pero no el soluto. Compara ambos lados sin suponer que siempre se iguala cualquier concentración.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-aristotle-virtue",
+      "content_sha256": "a56459e4412f54b33962028f5d9a39e9bea807a311002ad838b764f97cd1eaf6",
+      "stage": "bachillerato",
+      "subject": "Historia de la Filosofía",
+      "questions": [
+        "El término medio aristotélico es…",
+        "Las virtudes éticas se desarrollan mediante…",
+        "Eudaimonía se relaciona con…"
+      ],
+      "checked_answers": [
+        "Una orientación práctica dependiente de la situación",
+        "Hábitos y formación del carácter",
+        "Una vida lograda mediante actividad conforme a la virtud"
+      ],
+      "conceptual_caution": "El término medio no convierte cualquier acción extrema en una acción correcta por reducirla a la mitad.",
+      "reasoning_reference": "La ética de la virtud atiende al carácter y al juicio situado, por lo que no se reduce a una fórmula cuantitativa universal.",
+      "simplification": "La virtud no consiste en hacer siempre la mitad, sino en actuar adecuadamente con juicio y práctica.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-hume-causation",
+      "content_sha256": "09bb40d3138faf3405abee71fb205264d21fa9b366afff2c35df001e352d8d70",
+      "stage": "bachillerato",
+      "subject": "Historia de la Filosofía",
+      "questions": [
+        "En el análisis de Hume, las expectativas causales se relacionan con…",
+        "Que algo se repitiera en el pasado…",
+        "Una inferencia empírica y una demostración deductiva…"
+      ],
+      "checked_answers": [
+        "Hábito y experiencia",
+        "No basta como demostración lógica de que siempre se repetirá",
+        "Tienen formas de justificación diferentes"
+      ],
+      "conceptual_caution": "Hume no convierte una sucesión repetida en una identidad lógica necesaria.",
+      "reasoning_reference": "El análisis muestra un problema de justificación de la inducción: pasar de casos observados a afirmaciones sobre casos todavía no observados.",
+      "simplification": "Ver repetirse una secuencia ayuda a esperar otra repetición, pero no es una prueba lógica absoluta de lo que ocurrirá siempre.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    },
+    {
+      "lesson_id": "b-reported-speech",
+      "content_sha256": "ab51530688f3e23302a15953cc8ea3e93fe9919518249e9716eb5a4c58c48b75",
+      "stage": "bachillerato",
+      "subject": "Lengua Extranjera",
+      "questions": [
+        "Al contar después «Sarah said: I am tired», una forma adecuada es…",
+        "I cambia a she en ese ejemplo porque…",
+        "El desplazamiento de tiempos en estilo indirecto…"
+      ],
+      "checked_answers": [
+        "Sarah said that she was tired",
+        "El relato se refiere a Sarah",
+        "Depende también del contexto y de la vigencia de lo dicho"
+      ],
+      "conceptual_caution": "No se cambian pronombres y tiempos mecánicamente sin interpretar quién habla y cuándo.",
+      "reasoning_reference": "El estilo indirecto reconstruye una enunciación desde otra perspectiva, de modo que las referencias deben seguir siendo coherentes.",
+      "simplification": "Identifica quién habló, quién lo cuenta y cuándo. Después decide qué referencias y tiempos deben cambiar.",
+      "source_role": "curriculum stage reference, not a factual citation for every teaching claim",
+      "human_teacher_reviewed": false,
+      "classroom_validated": false
+    }
+  ]
+}
