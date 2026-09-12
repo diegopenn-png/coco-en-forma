@@ -28,7 +28,28 @@ test('territorial registry names all autonomous communities plus Ceuta and Melil
   }
 });
 
+test('Andalucía pins the 2023 decree and development order for every supported stage', () => {
+  const a = sources.autonomous_communities['Andalucía'];
+  const expected = {
+    infantil: ['100','38'],
+    primaria: ['101','39'],
+    eso: ['102','36'],
+    bachillerato: ['103','37']
+  };
+  assert.deepEqual(Object.keys(a.stages), Object.keys(expected));
+  for (const [stage,[decree,order]] of Object.entries(expected)) {
+    const row = a.stages[stage];
+    assert.match(row.decree.label, new RegExp(`Decreto ${decree}\\/2023`));
+    assert.match(row.decree.url, new RegExp(`/boja/2023/90/[1-4]$`));
+    assert.match(row.development_order.label, /Orden de 30 de mayo de 2023/);
+    assert.match(row.development_order.url, new RegExp(`/boja/2023/104/${order}$`));
+  }
+  assert.equal(a.stages.bachillerato.corrections.length, 1);
+  assert.match(a.stages.bachillerato.corrections[0].url, /\/boja\/2023\/112\/2$/);
+});
+
 test('registry never overclaims teacher review or exhaustive territorial mapping', () => {
   assert.equal(sources.human_teacher_reviewed, false);
   assert.match(sources.scope_note, /not a claim/i);
+  assert.match(sources.autonomous_communities['Andalucía'].note, /must not be inferred/i);
 });
