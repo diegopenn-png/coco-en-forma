@@ -1,0 +1,71 @@
+name: Eterna final 160-lesson real-service verification
+on:
+  push:
+    branches: ["feat/eterna-library-v2-content-20260912"]
+    paths: [".github/workflows/eterna-library-v2-real-final.yml"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-library-v2-private
+  cancel-in-progress: false
+jobs:
+  final-real-authentication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: ca678c35851b0da874fd744c7c2c1fef80fe0bbf
+          path: .qa-auth
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eterna-library-v2-isolated-verification
+          run-id: 34664203090
+          github-token: ${{ github.token }}
+          path: .isolated-proof
+      - name: Verify actual source and make synthetic nickname unique, without changing any real profile
+        run: |
+          mkdir -p .content-proof/library-v2-evidence library-v2-private-evidence
+          cp .isolated-proof/library-v2-private-evidence/content-proof.json .content-proof/library-v2-evidence/report.json
+          python qa/library-release-v2/prepare_private.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('qa/library/remote_canonical_v2.mjs');s=p.read_text()
+          assert s.count("apodo:'Prueba Sintética'")==2
+          s=s.replace("apodo:'Prueba Sintética'","apodo:'QA Biblioteca '+NONCE.slice(0,12)")
+          p.write_text(s)
+          PY
+          node --check qa/library/remote_canonical_v2.mjs
+          cd eterna-worker
+          npm run check > ../library-v2-private-evidence/regression.txt
+          tail -10 ../library-v2-private-evidence/regression.txt
+          npm ci --no-audit --no-fund
+      - name: Idempotent isolated content verification and actual canonical authenticated requests
+        run: node qa/library/remote_canonical_v2.mjs
+      - name: Require all 80 requests, persisted zero generation tokens and verified cleanup
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import assert from'node:assert/strict';
+          const p=JSON.parse(readFileSync('library-v2-private-evidence/report.json'));
+          assert.equal(p.phase,'canonical-private-verified');assert.equal(p.release,'eterna-library-2026.09-v2-160');assert.equal(p.requests.length,80);assert.equal(p.synthetic_cleanup.ok,true);assert.equal(p.synthetic_cleanup.deleted,true);assert.equal(p.draft_content.lessons,160);assert.equal(p.draft_content.protocols,40);assert.equal(p.draft_content.hash_mismatches,0);assert.equal(p.production_changed,false);
+          for(const r of p.requests){assert.equal(r.generation_model_calls,0);assert.equal(r.generation_tokens,0)}
+          console.log('PASS: 80 actual authenticated calls, 160 stored lessons, 40 protocols, zero generation tokens, synthetic identity removed');
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-library-v2-real-final-verification
+          path: library-v2-private-evidence
+          retention-days: 30
+          if-no-files-found: warn
