@@ -1,0 +1,45 @@
+name: Eterna v2 preserve concurrent context baseline
+on:
+  push:
+    branches: ["feat/eterna-library-expansion-v2-20260912"]
+    paths: [".github/workflows/eterna-library-v2-context-baseline.yml"]
+permissions:
+  contents: read
+jobs:
+  read-only-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Snapshot exact source without modifying refs
+        run: |
+          mkdir -p context-baseline-evidence
+          git fetch --depth=1 origin e40e3bbbd7d6ae464a9e17659cd8ae3d36245852
+          git archive --format=tar e40e3bbbd7d6ae464a9e17659cd8ae3d36245852 eterna-worker > context-baseline-evidence/context.tar
+          git archive --format=tar HEAD qa/library .github/workflows/eterna-library-v2-verify.yml > context-baseline-evidence/expansion.tar
+      - name: Read active version and public health, omit secret binding values
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          node --input-type=module <<'JS'
+          import{writeFileSync}from'node:fs';import{createHash}from'node:crypto';import assert from'node:assert/strict';
+          const token=process.env.CF_TOKEN.replace(/\s/g,''),account=process.env.CF_ACCOUNT.replace(/^https:\/\/dash.cloudflare.com\//,'').split('/')[0];console.log('::add-mask::'+token);console.log('::add-mask::'+account);
+          const base=`https://api.cloudflare.com/client/v4/accounts/${account}/workers/scripts/coco-eterna-v159`;
+          async function cf(path){const r=await fetch(base+path,{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(30000)});const p=await r.json();assert.ok(r.ok&&p.success!==false);return p.result}
+          const ds=await cf('/deployments'),d=(Array.isArray(ds)?ds:ds.deployments)[0];assert.equal(d.versions.length,1);
+          const live=await cf('/versions/'+d.versions[0].version_id),old=await cf('/versions/438466cb-f081-48f1-a4cc-7986deb58f8a');
+          const canon=v=>Array.isArray(v)?v.map(canon):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,canon(v[k])])):v;
+          const fingerprint=v=>createHash('sha256').update(JSON.stringify(canon(v))).digest('hex');
+          const clean=v=>({id:v.id,created_on:v.metadata?.created_on,code_etag:v.resources.script.etag,runtime_fingerprint:fingerprint(v.resources.script_runtime),bindings_fingerprint:fingerprint([...v.resources.bindings].sort((a,b)=>a.name.localeCompare(b.name))),library_flags:Object.fromEntries(v.resources.bindings.filter(b=>b.type==='plain_text'&&['ENABLE_ETERNA_LIBRARY','ETERNA_LIBRARY_RELEASE'].includes(b.name)).map(b=>[b.name,b.text]))});
+          const r=await fetch('https://coco-eterna-v159.chatinmobiliario.workers.dev/health',{signal:AbortSignal.timeout(20000)}),health=await r.json();assert.equal(r.status,200);
+          const report={read_only:true,deployment:d,live:clean(live),previous:clean(old),public_health:health,verified_at:new Date().toISOString()};writeFileSync('context-baseline-evidence/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify({read_only:true,active_version:live.id,library:health.owned_library,bindings_equal:report.live.bindings_fingerprint===report.previous.bindings_fingerprint}));
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eterna-v2-context-baseline
+          path: context-baseline-evidence
+          retention-days: 14
