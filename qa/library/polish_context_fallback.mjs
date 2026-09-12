@@ -1,0 +1,10 @@
+import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import assert from'node:assert/strict';
+const path='eterna-worker/src/index.js',source=readFileSync(path,'utf8');
+assert.equal(createHash('sha256').update(source).digest('hex'),'f19f07b712288fc331cefe32cab54adafd3e9b12b5cd948030d7474c6b0c4f93');
+const before='microcomprobaci[oó]n|comprobaci[oó]n breve|comprueba que lo entendiste|a ver si lo tenemos';
+assert.equal(source.split(before).length,2);
+writeFileSync(path,source.replace(before,before+'|para comprobar una sola idea|para comprobarlo'));
+const test='eterna-worker/test/library-first.test.mjs';let tests=readFileSync(test,'utf8');
+tests+=`\n\ntest('library follow-up cleanup removes only a dangling check label with its suppressed question',()=>{\n const h=harness();\n for(const label of ['Para comprobar una sola idea:', 'Para comprobarlo:', 'Microcomprobación:']){\n  const output=h.sandbox.stripTrailingStudentQuestion('El 11 es primo.\\n\\n'+label+'\\n¿Cuál es primo?', '¿Cuál es primo?');\n  assert.equal(output,'El 11 es primo.');\n }\n assert.equal(h.sandbox.stripTrailingStudentQuestion('Para comprobarlo: contamos divisores.','Una pregunta ausente'),'Para comprobarlo: contamos divisores.');\n});\n`;
+writeFileSync(test,tests);
+console.log('Only cleanup of a removed check label changed; no new model call or UI alteration.');
