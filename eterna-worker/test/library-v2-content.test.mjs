@@ -37,7 +37,7 @@ for(const[id,pos,expected]of checks)test(`independent numeric content: ${id} que
 
 test('160 lessons preserve the 80 previously deployed objects byte-equivalently as JSON',()=>{
  assert.equal(content.lessons.length,160);assert.equal(newLessons.length,80);
- assert.equal(library.protocols.length,40);assert.equal(content.release_id,'eterna-library-2026.09-v2');
+ assert.equal(library.protocols.length,40);assert.equal(content.release_id,'eterna-library-2026.09-v2-160');
  for(const old of previous)assert.deepEqual(get(old.id),old,old.id);
  assert.deepEqual(Object.fromEntries(['infantil','primaria','eso','bachillerato'].map(s=>[s,newLessons.filter(l=>l.stage===s).length])),{infantil:12,primaria:28,eso:24,bachillerato:16});
 });
@@ -66,6 +66,6 @@ test('new educational aliases remain exact and do not confuse the semicolon with
  }
 });
 test('content expansion changes no Worker integration logic other than release ID',()=>{
- const code=readFileSync(new URL('../src/index.js',import.meta.url),'utf8').replaceAll('eterna-library-2026.09-v2','eterna-library-2026.09-v1');
+ const code=readFileSync(new URL('../src/index.js',import.meta.url),'utf8').replaceAll('eterna-library-2026.09-v2-160','eterna-library-2026.09-v1');
  assert.equal(createHash('sha256').update(code).digest('hex'),'0a142b6705aa1ee4b63562cd59cfc66c8e5702768d5413e46c94106f6e1eb52c');
 });

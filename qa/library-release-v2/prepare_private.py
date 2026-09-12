@@ -4,14 +4,14 @@ Only the draft library release and a disposable synthetic identity may be writte
 from pathlib import Path
 import hashlib,json,re
 proof=json.loads(Path('.content-proof/library-v2-evidence/report.json').read_text())
-assert proof['release']=='eterna-library-2026.09-v2' and proof['lessons']==160 and proof['protocols']==40
+assert proof['release']=='eterna-library-2026.09-v2-160' and proof['lessons']==160 and proof['protocols']==40
 assert proof['tests_failed']==0 and proof['ui_model_calls']==0 and proof['ui_scenarios']>=42
 for path,p in proof['blobs'].items():assert hashlib.sha256(Path(path).read_bytes()).hexdigest()==p['sha256'],path
 source=Path('.qa-auth/qa/library/remote_canonical_verify.mjs').read_bytes()
 assert hashlib.sha1(b'blob '+str(len(source)).encode()+b'\0'+source).hexdigest()=='e17881ee2b99a689f309b9be281d62d74b401956'
 s=source.decode()
 s=s.replace("import '../../eterna-worker/src/library/content-v1.js';","import '../../eterna-worker/src/library/content-v1.js';\nimport '../../eterna-worker/src/library/runtime-v1.js';")
-s=s.replace('eterna-library-2026.09-v1','eterna-library-2026.09-v2').replace("directory='library-canonical-evidence'","directory='library-v2-private-evidence'")
+s=s.replace('eterna-library-2026.09-v1','eterna-library-2026.09-v2-160').replace("directory='library-canonical-evidence'","directory='library-v2-private-evidence'")
 s=s.replace('92a5712135b2530506669bc6b6baabba59e14cf9744087abbd22393ea1972adb',proof['blobs']['eterna-worker/src/index.js']['sha256'])
 s=s.replace('26aad7f15e50050a58edeeeca4012df5b58cde8f87d4928dddebc767a3241c21',proof['blobs']['eterna-worker/src/library/runtime-v1.js']['sha256'])
 s=s.replace('0abf2be8-16c4-4695-96ae-48d0e9ef82fe','5da15a04-5396-4841-8b21-a94c0c6647c3')
@@ -25,7 +25,7 @@ s=s.replace(needle,"const helper=`import './library/content-v1.js';\nimport './l
 s=s.replace("'bachillerato','stats','cleanup'","'bachillerato','stats','cleanup','stage_content'")
 extra="""
  if(command==='stage_content'){
-  const RELEASE='eterna-library-2026.09-v2';
+  const RELEASE='eterna-library-2026.09-v2-160';
   const rows=await sb('/rest/v1/eterna_library_releases?release_id=eq.'+RELEASE+'&select=status');
   if(rows.length!==1||rows[0].status!=='draft')return reply({error:'RELEASE_NOT_DRAFT'},409);
   if(globalThis.ETERNA_LIBRARY_CONTENT.release_id!==RELEASE||globalThis.ETERNA_LIBRARY_CONTENT.lessons.length!==160||globalThis.EternaOwnedLibrary.protocols.length!==40)throw Error('FIXED_CONTENT_MISMATCH');
