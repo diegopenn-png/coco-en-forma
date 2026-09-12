@@ -5,6 +5,7 @@ on:
     paths: [".github/workflows/eterna-library-v2-verify.yml"]
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: eterna-library-private-qa
   cancel-in-progress: false
@@ -23,9 +24,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Build exact tested v2 and preserve v1 lesson identities
+      - name: Preserve exact current published context source, not the older branch baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(gh api repos/diegopenn-png/coco-en-forma/git/ref/heads/main --jq '.object.sha')" = e40e3bbbd7d6ae464a9e17659cd8ae3d36245852
+          git fetch --depth=1 origin e40e3bbbd7d6ae464a9e17659cd8ae3d36245852
+          git checkout e40e3bbbd7d6ae464a9e17659cd8ae3d36245852 -- eterna-worker
+          python qa/library/reconcile_context_v2.py
+      - name: Build expansion over context fix, preserve every original lesson identity
         run: python qa/library/build_expansion_v2.py
-      - name: Run all 474 regressions and canonical 160-lesson matrix
+      - name: Run all 485 regressions and canonical 160-lesson matrix
         shell: bash
         run: |
           set -euo pipefail
@@ -33,14 +42,17 @@ jobs:
           cd eterna-worker
           npm run check > ../library-v2-evidence/regression.txt 2>&1
           tail -10 ../library-v2-evidence/regression.txt
-          grep -q '^# pass 474$' ../library-v2-evidence/regression.txt
+          grep -q '^# pass 485$' ../library-v2-evidence/regression.txt
           grep -q '^# fail 0$' ../library-v2-evidence/regression.txt
-      - name: Install locked tooling and public source parser
-        run: |
-          npm ci --prefix eterna-worker --no-audit --no-fund
-          pip install beautifulsoup4==4.13.5
-      - name: Archive official Andalusian development orders without claiming full annex review
-        run: python qa/library/collect_andalucia_v2.py
+      - name: Install locked Worker tooling
+        run: npm ci --prefix eterna-worker --no-audit --no-fund
+      - name: Reuse original public sources already downloaded and hashed
+        uses: actions/download-artifact@v4
+        with:
+          name: eterna-library-v2-official-source-archive
+          run-id: 34663145165
+          github-token: ${{ github.token }}
+          path: library-v2-source-evidence
       - name: Reuse hash-verified immutable authenticated QA tool
         run: |
           git fetch --depth=1 origin 81bf9e7a46c67bb12638a941a1cd774ad3de14bc
@@ -57,19 +69,19 @@ jobs:
           r=json.loads(Path('library-v2-evidence/report.json').read_text())
           assert r['phase']=='canonical-private-verified' and r['synthetic_cleanup'].get('deleted')
           assert len(r['requests'])==120 and r['import_verification']['lesson_payloads_exact'] and r['import_verification']['protocol_payloads_exact']
-          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json'}
+          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json','qa/library/build_expansion_v2.py','qa/library/prepare_remote_v2.py','qa/library/v2-extra-tests.mjs.txt'}
           assert set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())<=allowed
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs qa/library/lessons-v1.json qa/library/expansion-v2.json
-          git commit -m "feat(eterna): verified v2 library with 160 lessons and 40 cordiality protocols" -m "474 regressions, 120 real authenticated zero-generation turns, exact DB copies. Natural phrasing, indexed lookup, spelling/unit-preserving grading. Old 80 lesson identities and voice/frontend intact. Isolated candidate only. Regional sources remain quarantined."
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs qa/library/lessons-v1.json qa/library/expansion-v2.json qa/library/build_expansion_v2.py qa/library/prepare_remote_v2.py qa/library/v2-extra-tests.mjs.txt
+          git commit -m "feat(eterna): verified 160-lesson v2 over published PWA context fix" -m "485 regressions, 120 real authenticated zero-generation turns, exact DB copies. Keep all e40e3bb context/handoff fixes, natural phrasing, indexed lookup, spelling and unit case. Original 80 lesson identities and voice/frontend intact. Isolated candidate only. Regional sources remain quarantined."
           git push origin HEAD:refs/heads/feat/eterna-library-expansion-v2-20260912
           node --input-type=module <<'JS'
           import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';
           const path='library-v2-evidence/report.json',r=JSON.parse(readFileSync(path));r.source_commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
           const files=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json','qa/library/expansion-v2.json'];
-          r.blobs=Object.fromEntries(files.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));r.source_archive=JSON.parse(readFileSync('library-v2-source-evidence/report.json'));writeFileSync(path,JSON.stringify(r,null,2));
+          r.blobs=Object.fromEntries(files.map(p=>[p,{sha:execFileSync('git',['hash-object',p],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(p)).digest('hex')}]));r.source_archive=JSON.parse(readFileSync('library-v2-source-evidence/report.json'));r.context_fix_preserved=true;writeFileSync(path,JSON.stringify(r,null,2));
           JS
       - name: Preserve sanitized verification only
         if: always()
@@ -78,12 +90,4 @@ jobs:
           name: eterna-library-v2-private-verification
           path: library-v2-evidence
           retention-days: 30
-          if-no-files-found: warn
-      - name: Preserve public normative originals and source review limitations
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: eterna-library-v2-official-source-archive
-          path: library-v2-source-evidence
-          retention-days: 90
           if-no-files-found: warn
