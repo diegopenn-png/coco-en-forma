@@ -1,0 +1,55 @@
+name: Eterna publish exact authenticated-tested library
+on:
+  push:
+    branches: ["ops/eterna-library-publish-a877d73"]
+    paths: [".github/workflows/eterna-library-production-verified.yml", "qa/library/publish_verified_library.mjs"]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eterna-worker-production
+  cancel-in-progress: false
+jobs:
+  immutable-verified-publication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_MAIN: a877d730a018fce369b5b262310cd8182439a7bc
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Repeat regression against exact release sources
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p library-publication-evidence
+          cd eterna-worker
+          npm run check | tee ../library-publication-evidence/regression.txt
+          grep -q '^# pass 387$' ../library-publication-evidence/regression.txt
+          grep -q '^# fail 0$' ../library-publication-evidence/regression.txt
+      - name: Install locked Worker tools
+        run: npm ci --prefix eterna-worker --no-audit --no-fund
+      - name: Retrieve successful real authenticated private proof
+        uses: actions/download-artifact@v4
+        with:
+          name: eterna-library-canonical-private-verification
+          run-id: 34659948883
+          github-token: ${{ github.token }}
+          path: .canonical-proof
+      - name: Verify unchanged baseline and deploy only the immutable tested version
+        run: node qa/library/publish_verified_library.mjs
+      - name: Preserve sanitized release proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eterna-library-production-verification
+          path: library-publication-evidence
+          retention-days: 30
+          if-no-files-found: warn
