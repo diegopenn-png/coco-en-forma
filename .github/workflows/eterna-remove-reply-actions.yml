@@ -1,0 +1,60 @@
+name: Eterna remove three response controls
+on:
+  push:
+    branches: ["fix/eterna-remove-reply-actions-20260912"]
+    paths: ["qa/reply-actions/**", ".github/workflows/eterna-remove-reply-actions.yml"]
+permissions:
+  contents: write
+jobs:
+  scoped-ui-and-cache-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Apply removal against the exact current frontend
+        run: |
+          python qa/reply-actions/apply.py
+          node --check eterna-v159.js
+          node --check sw.js
+      - name: Install isolated browser tooling
+        run: |
+          pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Check all six modes on phone, tablet and desktop layouts
+        run: python qa/reply-actions/browser_test.py
+      - name: Prove only the requested response controls and cache versions change
+        run: |
+          python - <<'PY'
+          import subprocess,json
+          from pathlib import Path
+          paths=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
+          assert paths=={'eterna-v159.js','index.html','sw.js'},paths
+          before=subprocess.check_output(['git','show','HEAD:eterna-v159.js'],text=True)
+          after=Path('eterna-v159.js').read_text()
+          assert before[before.index('  async function api('):]==after[after.index('  async function api('):], 'API, send, speech, family or auth changed'
+          assert before[:before.index('  function appendMessage(')]==after[:after.index('  function appendMessage(')], 'Mic/composer or state changed'
+          r=json.loads(Path('reply-actions-evidence/browser.json').read_text());assert r['scenarios']==18 and not r['errors']
+          PY
+      - name: Commit tested three-file patch only to the isolated branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- eterna-v159.js index.html sw.js
+          git commit -m "fix(eterna): remove Pista Escuchar and Mas lento response buttons across all layouts" -m "Preserve microphone, auto-send, automatic speech, copy, composer and existing completion behavior. Update shared frontend and Service Worker cache versions for web and installed PWA. All 18 real-browser layout/mode render tests passed. No server or curriculum changes."
+          git push origin HEAD:refs/heads/fix/eterna-remove-reply-actions-20260912
+          python - <<'PY'
+          from pathlib import Path
+          import json,subprocess
+          p=Path('reply-actions-evidence/patch.json');r=json.loads(p.read_text());r['tested_commit']=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip();r['browser_scenarios']=18;r['production_modified']=False;p.write_text(json.dumps(r,indent=2));print(json.dumps(r))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-removed-reply-actions-proof
+          path: reply-actions-evidence
+          retention-days: 30
+          if-no-files-found: warn
