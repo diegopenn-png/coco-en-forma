@@ -1,0 +1,69 @@
+name: Eterna 60 new original lessons build
+on:
+  push:
+    branches: ["content/eterna-370-lessons-20260912"]
+    paths: ["qa/content-370/**", "eterna-worker/test/content-370.test.mjs", ".github/workflows/eterna-content-370-build.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: eterna-content-370-build
+  cancel-in-progress: false
+jobs:
+  append-review-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Apply the explicit editorial pass and append only new content
+        run: |
+          python qa/content-370/editorial_pass.py
+          python qa/content-370/build.py
+      - name: Require all existing and new tests without skips
+        run: |
+          cd eterna-worker
+          npm run check > ../content-370-build/regression.txt 2>&1
+          tail -12 ../content-370-build/regression.txt
+          grep -q '^# fail 0$' ../content-370-build/regression.txt
+          grep -q '^# skipped 0$' ../content-370-build/regression.txt
+      - name: Verify edit scope and commit tested snapshot to the isolated branch
+        run: |
+          python - <<'PY'
+          import subprocess
+          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/src/library/content-v1.js','qa/library/lessons-v1.json','eterna-worker/test/library-first.test.mjs','eterna-worker/test/curriculum-traceability.test.mjs','eterna-worker/test/sprint-harness.mjs','qa/content-370/bachillerato.txt','qa/content-370/eso.txt'}
+          changes=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
+          assert changes<=allowed,changes-allowed
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/runtime-v1.js eterna-worker/src/library/content-v1.js qa/library/lessons-v1.json eterna-worker/test/library-first.test.mjs eterna-worker/test/curriculum-traceability.test.mjs eterna-worker/test/sprint-harness.mjs qa/content-370
+          if ! git diff --cached --quiet; then
+            git commit -m 'content(eterna): tested 370-lesson snapshot preserving all 310 prior lessons and round fix'
+            git push origin HEAD:refs/heads/content/eterna-370-lessons-20260912
+          fi
+      - name: Export precise report, content and tests
+        run: |
+          node --input-type=module <<'JS'
+          import{readFileSync,writeFileSync}from'node:fs';import{createHash}from'node:crypto';import{execFileSync}from'node:child_process';import assert from'node:assert/strict';
+          const m=JSON.parse(readFileSync('qa/content-370/manifest.json')),log=readFileSync('content-370-build/regression.txt','utf8');
+          const pass=Number(log.match(/^# pass (\d+)$/m)[1]),fail=Number(log.match(/^# fail (\d+)$/m)[1]);assert.ok(pass>=846);assert.equal(fail,0);
+          const paths=['eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/src/library/procedural-v1.js','eterna-worker/src/library/curricular-compass-v1.js','eterna-worker/src/library/compass-data-v1.js','qa/library/lessons-v1.json'];
+          const blobs=Object.fromEntries(paths.map(path=>[path,{sha:execFileSync('git',['hash-object',path],{encoding:'utf8'}).trim(),sha256:createHash('sha256').update(readFileSync(path)).digest('hex')}]));
+          const ls=JSON.parse(readFileSync('qa/library/lessons-v1.json'));
+          writeFileSync('content-370-build/report.json',JSON.stringify({...m,tested_commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),tests_passed:pass,tests_failed:fail,counts_by_stage:Object.fromEntries(['infantil','primaria','eso','bachillerato'].map(s=>[s,ls.filter(l=>l.stage===s).length])),blobs,production_modified:false},null,2));
+          writeFileSync('content-370-build/60-new-lessons.json',JSON.stringify(ls.slice(310),null,2));
+          writeFileSync('content-370-build/370-lessons.json',JSON.stringify(ls,null,2));
+          JS
+          cp qa/content-370/review-ledger.json content-370-build/
+          cp qa/content-370/draft-review-corrections.json content-370-build/
+          git archive HEAD eterna-worker/src eterna-worker/test eterna-worker/package.json eterna-worker/package-lock.json eterna-state-contract-v3.js qa/library qa/content-370 qa/teacher-panel qa/curriculum-review qa/curriculum-map/release-manifest.json qa/curriculum-map/reviewed-partial-links.json > content-370-build/tested-source.tar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eterna-content-370-build
+          path: content-370-build
+          retention-days: 30
+          if-no-files-found: warn
