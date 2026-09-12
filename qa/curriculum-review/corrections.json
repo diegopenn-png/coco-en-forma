@@ -1,0 +1,746 @@
+{
+  "release_id": "eterna-library-2026.09-v4-256-reviewed-c993",
+  "base_commit": "c993afecbdfe9a8f456af509b5b45b1b03ef4f47",
+  "base_lessons": 217,
+  "base_canonical_sha256": "efc7fdcba671ecd580471d3ac300b869c58fe64ef687bd6ca9a26b847aba5b52",
+  "changes": [
+    {
+      "lesson_id": "i-listening",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "En ese cuento, ¿quién planta la semilla?",
+      "after": "Escucha: «Lola lleva una semilla al jardín y la planta». ¿Quién planta la semilla?",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "i-listening",
+      "path": [
+        "quiz",
+        1,
+        "question"
+      ],
+      "before": "¿Dónde la planta?",
+      "after": "Escucha: «Lola lleva una semilla al jardín y la planta». ¿Dónde planta Lola la semilla?",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-pronouns",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "En ese ejemplo, ella se refiere a…",
+      "after": "En «Lucía lee. Ella disfruta del cuento», ¿a quién se refiere «ella»?",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-linear-systems",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La solución del ejemplo es…",
+      "after": "Resuelve el sistema x + y = 7, x − y = 1. Su solución es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-linear-systems",
+      "path": [
+        "quiz",
+        1,
+        "question"
+      ],
+      "before": "Para comprobarla sustituimos en…",
+      "after": "Para comprobar una solución de un sistema de ecuaciones, sustituimos sus valores en…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-volume",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "Ese ortoedro tiene volumen…",
+      "after": "Un ortoedro mide 4 cm de largo, 3 cm de ancho y 2 cm de alto. Su volumen es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-acceleration",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La aceleración del ejemplo es…",
+      "after": "En línea recta y con el mismo sentido positivo, la velocidad pasa de 2 a 8 m/s en 3 s. La aceleración media es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-quadratic",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "Las soluciones del ejemplo son…",
+      "after": "Las soluciones reales de x² − 5x + 6 = 0 son…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-trigonometry",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "En ese ejemplo, el seno es…",
+      "after": "En un triángulo rectángulo, la hipotenusa mide 5 y el cateto opuesto a un ángulo agudo mide 3. El seno de ese ángulo es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-conditional",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "En ese ejemplo, la probabilidad condicionada de 6 es…",
+      "after": "Al lanzar un dado equilibrado de seis caras, sabemos que salió un número par. La probabilidad condicionada de obtener 6 es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-work",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "El trabajo del ejemplo es…",
+      "after": "Una fuerza constante de 10 N actúa paralela y en el mismo sentido que un desplazamiento de 3 m. El trabajo que realiza es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-waves",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La longitud del ejemplo es…",
+      "after": "Una onda se propaga a 340 m/s y tiene frecuencia 170 Hz. Su longitud de onda es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "i-story",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "En nuestro cuento, ¿quién pierde la cesta?",
+      "after": "Escucha: «Un conejo pierde su cesta y una tortuga le ayuda a buscarla». ¿Quién pierde la cesta?",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-inference",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "¿Qué dice expresamente el texto?",
+      "after": "Lee: «Al entrar, Julia dejó un paraguas mojado junto a la puerta». ¿Qué dice expresamente el texto?",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-inference",
+      "path": [
+        "quiz",
+        1,
+        "question"
+      ],
+      "before": "Que había llovido es…",
+      "after": "Lee: «Al entrar, Julia dejó un paraguas mojado junto a la puerta». Pensar que había llovido es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-inference",
+      "path": [
+        "quiz",
+        2,
+        "question"
+      ],
+      "before": "¿Qué detalle no podemos asegurar con esas pistas?",
+      "after": "Lee: «Al entrar, Julia dejó un paraguas mojado junto a la puerta». ¿Qué detalle no podemos asegurar con estas pistas?",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-have",
+      "path": [
+        "quiz",
+        2,
+        "question"
+      ],
+      "before": "La pregunta correspondiente es…",
+      "after": "La pregunta equivalente a «She has got a bike» en la construcción have got es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-systems",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "¿Qué pareja resuelve el sistema del ejemplo?",
+      "after": "¿Qué pareja resuelve simultáneamente x + y = 7 y x − y = 1?",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-quadratic",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "Las soluciones del ejemplo son…",
+      "after": "Las soluciones reales de la ecuación x² − 5x + 6 = 0 son…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-trig",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "El seno del ángulo del ejemplo es…",
+      "after": "En un triángulo rectángulo de lados 3, 4 y 5, ¿cuál es el seno del ángulo opuesto al lado de longitud 3?",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-similarity",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La razón lineal del ejemplo es…",
+      "after": "Un rectángulo de 2 por 3 se amplía a otro de 4 por 6. La razón lineal de la ampliación es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-mendel",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "En el cruce del ejemplo, la probabilidad de aa es…",
+      "after": "En el modelo mendeliano Aa × Aa, con segregación de alelos y fecundación aleatoria, la probabilidad de un descendiente aa es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-mendel",
+      "path": [
+        "quiz",
+        1,
+        "question"
+      ],
+      "before": "Dominante significa aquí…",
+      "after": "En un modelo con dominancia completa para un rasgo, llamar dominante a un alelo significa…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-mendel",
+      "path": [
+        "quiz",
+        2,
+        "question"
+      ],
+      "before": "Estas proporciones…",
+      "after": "Las proporciones calculadas para un cruce mendeliano Aa × Aa…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-motion",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La aceleración media del ejemplo es…",
+      "after": "En movimiento rectilíneo y con el mismo sentido positivo, la velocidad pasa de 2 m/s a 8 m/s en 3 s. La aceleración media es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-electric",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La corriente del ejemplo es…",
+      "after": "Una resistencia óhmica de 3 Ω tiene una diferencia de potencial de 6 V. La corriente que la atraviesa es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-solution",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La concentración del ejemplo es…",
+      "after": "Una disolución contiene 10 g de soluto en 2 L de volumen final. Su concentración en masa es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-population",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "El cambio del ejemplo es…",
+      "after": "En el mismo territorio y periodo se registran 100 nacimientos, 80 defunciones, 30 llegadas y 20 salidas. El cambio poblacional por estos componentes es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-direct-object",
+      "path": [
+        "quiz",
+        1,
+        "question"
+      ],
+      "before": "La sustitución adecuada es…",
+      "after": "Al sustituir «el libro» por un pronombre en «Lucía lee el libro», la forma adecuada es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-subordinate",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "En el ejemplo, la subordinada es…",
+      "after": "En «Espero que llegues pronto», la oración subordinada es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-subordinate",
+      "path": [
+        "quiz",
+        1,
+        "question"
+      ],
+      "before": "La subordinada del ejemplo expresa…",
+      "after": "En «Espero que llegues pronto», la subordinada «que llegues pronto» expresa…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-determinant",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "El determinante del ejemplo es…",
+      "after": "El determinante de la matriz de dos filas (1, 2) y (3, 4) es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-binomial",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La probabilidad del ejemplo es…",
+      "after": "En tres lanzamientos independientes de una moneda equilibrada, la probabilidad de obtener exactamente dos caras es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-normal",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "En el ejemplo, z vale…",
+      "after": "Al tipificar x = 130 con media μ = 100 y desviación típica σ = 15 mediante z = (x − μ)/σ, obtenemos…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-dot",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "El producto escalar del ejemplo es…",
+      "after": "El producto escalar de los vectores u = (1, 2) y v = (2, −1) es…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-conditionals",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "La segunda oración del ejemplo utiliza…",
+      "after": "La oración «If I had more time, I would read more» utiliza el patrón básico del…",
+      "reason": "Make the question answerable without an unseen worked example; preserve the answer key.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "i-living",
+      "path": [
+        "explanation"
+      ],
+      "before": "Los seres vivos realizan funciones vitales, como nutrirse y relacionarse con el entorno; las poblaciones continúan mediante la reproducción. Las plantas y los animales son seres vivos. No todo lo que se mueve está vivo.",
+      "after": "Las plantas y los animales son seres vivos. Necesitan condiciones adecuadas para vivir y pueden crecer y responder a lo que ocurre a su alrededor. Un coche puede moverse, pero no está vivo. Podemos observar plantas y animales con ayuda de un adulto y sin hacerles daño.",
+      "reason": "Concrete age-appropriate introduction instead of abstract population terminology in Infantil.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-noun",
+      "path": [
+        "quiz",
+        0,
+        "question"
+      ],
+      "before": "¿Cuál es un sustantivo?",
+      "after": "En «La mochila pesa», ¿qué palabra es un sustantivo?",
+      "reason": "Identify the category in a sentence; isolated infinitives or adjectives can have nominal uses.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-noun",
+      "path": [
+        "quiz",
+        0,
+        "options"
+      ],
+      "before": [
+        "Correr",
+        "Mochila",
+        "Azul"
+      ],
+      "after": [
+        "La",
+        "Mochila",
+        "Pesa"
+      ],
+      "reason": "Use contextual grammatical distractors, keeping correct option B.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-water",
+      "path": [
+        "explanation"
+      ],
+      "before": "El agua circula entre la superficie terrestre y la atmósfera. Puede evaporarse, condensarse formando gotitas o cristales y caer como precipitación. También se infiltra en el suelo o fluye hacia ríos y mares. No es una única ruta igual para cada gota.",
+      "after": "El agua circula entre la superficie terrestre y la atmósfera. Puede evaporarse y condensarse formando gotitas de agua líquida. Las nubes también pueden contener cristales de hielo. El agua vuelve a la superficie como precipitación, se infiltra en el suelo o fluye hacia ríos y mares. Cada porción de agua puede seguir recorridos diferentes.",
+      "reason": "Distinguish condensation (gas to liquid) from formation of ice crystals; USGS Water Science School.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-perimeter",
+      "path": [
+        "explanation"
+      ],
+      "before": "El perímetro es la longitud del contorno de una figura. Se calcula sumando las longitudes de todos sus lados. Sus unidades son de longitud, como centímetros o metros.",
+      "after": "El perímetro es la longitud del contorno de una figura plana. En un polígono se calcula sumando las longitudes de todos sus lados. Sus unidades son de longitud, como centímetros o metros. Los contornos curvos requieren otros procedimientos de medida o cálculo.",
+      "reason": "Scope the sum-of-sides method to polygons rather than all figures.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-angles",
+      "path": [
+        "explanation"
+      ],
+      "before": "Un ángulo mide la abertura entre dos semirrectas con origen común. Se puede expresar en grados. Un ángulo recto mide 90°; uno agudo es menor de 90° y mayor de 0°; uno obtuso está entre 90° y 180°.",
+      "after": "Dos semirrectas con origen común forman un ángulo. Su amplitud mide la abertura y puede expresarse en grados. Un ángulo recto mide 90°; uno agudo es mayor de 0° y menor de 90°; uno obtuso es mayor de 90° y menor de 180°.",
+      "reason": "Distinguish the geometric object from the measure of its amplitude.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-add",
+      "path": [
+        "explanation"
+      ],
+      "before": "Sumar reúne cantidades o añade una cantidad a otra. El resultado se llama suma. Puedes comprobar una suma cambiando el orden de sus sumandos: el resultado se conserva.",
+      "after": "Sumar reúne cantidades o añade una cantidad a otra. El resultado se llama suma. Si cambias el orden de los sumandos, la suma correcta se conserva. Recalcular por otro procedimiento puede ayudar a detectar errores; cambiar solo el orden escrito no demuestra que un resultado sea correcto.",
+      "reason": "Commutativity alone is not independent verification of a computed answer.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "p-clock",
+      "path": [
+        "explanation"
+      ],
+      "before": "Una hora tiene 60 minutos y un minuto 60 segundos. En un reloj de agujas, la aguja larga indica los minutos y la corta las horas. No confundas la hora del día con una duración.",
+      "after": "Una hora tiene 60 minutos y un minuto 60 segundos. En un reloj analógico sencillo de dos agujas, la aguja larga indica los minutos y la corta las horas. Otros relojes incorporan también un segundero. No confundas la hora del día con una duración.",
+      "reason": "Scope the two-hand explanation and acknowledge the second hand.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-cell",
+      "path": [
+        "explanation"
+      ],
+      "before": "La célula es la unidad estructural y funcional básica de los seres vivos. Las células tienen membrana plasmática, material genético y un medio interno donde ocurren procesos. Las eucariotas tienen núcleo; las procariotas no tienen un núcleo delimitado por membrana.",
+      "after": "La célula es la unidad estructural y funcional básica de los seres vivos. El modelo celular básico incluye membrana plasmática, material genético y un medio interno donde ocurren procesos. Las células eucariotas típicas tienen un núcleo delimitado por membrana; las procariotas no. Algunas células especializadas pierden estructuras durante su maduración.",
+      "reason": "Avoid an absolute all-eukaryotic-cells-have-nuclei statement that excludes specialized cells.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-cell",
+      "path": [
+        "simpler"
+      ],
+      "before": "Los seres vivos están formados por células. Algunas tienen núcleo y otras no.",
+      "after": "Los seres vivos están formados por células. En el modelo básico, las eucariotas tienen núcleo y las procariotas no tienen uno delimitado por membrana. Hay células especializadas con particularidades.",
+      "reason": "Maintain the model qualifier when simplifying.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-cell",
+      "path": [
+        "hints",
+        1
+      ],
+      "before": "Los seres vivos están formados por células. Algunas tienen núcleo y otras no.",
+      "after": "Los seres vivos están formados por células. En el modelo básico, las eucariotas tienen núcleo y las procariotas no tienen uno delimitado por membrana. Hay células especializadas con particularidades.",
+      "reason": "Keep the stored simplified hint consistent with the corrected explanation.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-metaphor",
+      "path": [
+        "example"
+      ],
+      "before": "La imagen de estrellas sugiere brillo; no afirma que haya astros físicamente en los ojos.",
+      "after": "En «tus ojos son estrellas», la imagen de estrellas sugiere brillo o admiración según el contexto; no afirma que haya astros físicamente en los ojos.",
+      "reason": "Provide the actual metaphor before interpreting an absent example.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-metaphor",
+      "path": [
+        "hints",
+        2
+      ],
+      "before": "La imagen de estrellas sugiere brillo; no afirma que haya astros físicamente en los ojos.",
+      "after": "En «tus ojos son estrellas», la imagen de estrellas sugiere brillo o admiración según el contexto; no afirma que haya astros físicamente en los ojos.",
+      "reason": "Keep the example hint consistent.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-work",
+      "path": [
+        "example"
+      ],
+      "before": "Una fuerza de 10 N paralela a un desplazamiento de 3 m realiza 30 J de trabajo.",
+      "after": "Una fuerza constante de 10 N, paralela y en el mismo sentido que un desplazamiento de 3 m, realiza 30 J de trabajo.",
+      "reason": "Parallel also includes the opposite direction; explicitly require the same sense for positive work.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "b-work",
+      "path": [
+        "hints",
+        2
+      ],
+      "before": "Una fuerza de 10 N paralela a un desplazamiento de 3 m realiza 30 J de trabajo.",
+      "after": "Una fuerza constante de 10 N, paralela y en el mismo sentido que un desplazamiento de 3 m, realiza 30 J de trabajo.",
+      "reason": "Keep the stored worked example consistent.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-mendel",
+      "path": [
+        "explanation"
+      ],
+      "before": "En un modelo mendeliano sencillo, un gen tiene variantes llamadas alelos. Dominante describe qué alelo se expresa en el heterocigoto para el rasgo estudiado; no significa mejor, más frecuente ni más fuerte. Muchos rasgos no siguen este modelo simple.",
+      "after": "En un modelo mendeliano sencillo, un gen presenta variantes llamadas alelos. Con dominancia completa para el rasgo estudiado, el heterocigoto muestra el mismo fenotipo que el homocigoto para el alelo dominante. Dominante no significa mejor, más frecuente ni más fuerte; tampoco describe por sí solo toda la expresión molecular del gen. Muchos rasgos no siguen este modelo simple.",
+      "reason": "Define complete dominance through phenotype rather than equating it with molecular allele expression.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "e-mendel",
+      "path": [
+        "quiz",
+        1,
+        "options",
+        0
+      ],
+      "before": "Que se expresa en el heterocigoto",
+      "after": "Que el heterocigoto muestra el rasgo asociado a ese alelo",
+      "reason": "Use the phenotype-based definition while preserving option A.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    },
+    {
+      "lesson_id": "i-help",
+      "path": [
+        "quiz",
+        0,
+        "options",
+        2
+      ],
+      "before": "Hacerte daño",
+      "after": "Dejar de intentarlo sin decir qué necesitas",
+      "reason": "Use a non-graphic, age-appropriate distractor unrelated to introducing harm.",
+      "reviewer_kind": "AI-assisted editorial review",
+      "human_teacher_reviewed": false
+    }
+  ],
+  "new_ids": [
+    "p-polygons",
+    "p-triangle-area",
+    "p-cardinal",
+    "p-renewable",
+    "p-pulse",
+    "p-staff",
+    "p-textures",
+    "p-composition",
+    "p-child-rights",
+    "p-equality",
+    "p-comparatives",
+    "p-must",
+    "e-endurance",
+    "e-coordination",
+    "e-fair-play",
+    "e-latin-cases",
+    "e-romance",
+    "e-interests",
+    "e-budget",
+    "e-scatter",
+    "e-reflection",
+    "e-sound",
+    "e-french-etre",
+    "e-image-analysis",
+    "e-intervals",
+    "e-circular",
+    "e-machine-learning",
+    "b-sequences",
+    "b-chain",
+    "b-ideal-gas",
+    "b-stoichiometry",
+    "b-urbanization",
+    "b-climograph",
+    "b-first-war",
+    "b-imperialism",
+    "b-art-analysis",
+    "b-design",
+    "b-greek-alphabet",
+    "b-physical-plan"
+  ],
+  "human_teacher_reviewed": false,
+  "review_scope": "AI-assisted factual, clarity, age, self-contained assessment and safeguarding review. Not classroom validation or complete territorial criterion mapping.",
+  "protocol_changes": [
+    {
+      "protocol_id": "reading_embarrassment",
+      "before": "Puede dar vergüenza leer o preguntar delante de otros${name}; no tienes que ocultarlo ni hacerlo perfecto. Puedes empezar con una frase corta y pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto para empezar.",
+      "after": "Es comprensible que a veces dé vergüenza leer o preguntar${name}. Podemos empezar con una frase corta, a tu ritmo, y puedes pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto ni forzarte delante de todo el grupo.",
+      "reason": "Preserve acknowledgment of the feeling, remove redundant wording and reinforce choice and trusted human support."
+    }
+  ]
+}

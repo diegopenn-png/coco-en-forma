@@ -109,10 +109,10 @@ manifest={'release_id':RELEASE,'base_commit':'c993afecbdfe9a8f456af509b5b45b1b03
 (ROOT/'qa/curriculum-review/corrections.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
 p=ROOT/'eterna-worker/src/index.js';s=p.read_text();assert s.count(OLD)==3;s=s.replace(OLD,RELEASE);p.write_text(s)
 p=ROOT/'eterna-worker/src/library/runtime-v1.js';s=p.read_text();s=s.replace("const VERSION='library-first-v3-combined';","const VERSION='library-first-v4-reviewed';").replace(OLD,RELEASE)
-before='Preguntar o equivocarse al leer no es un motivo de vergüenza${name}. Puedes empezar con una frase corta y pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto para empezar.'
+before='Puede dar vergüenza leer o preguntar delante de otros${name}; no tienes que ocultarlo ni hacerlo perfecto. Puedes empezar con una frase corta y pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto para empezar.'
 after='Es comprensible que a veces dé vergüenza leer o preguntar${name}. Podemos empezar con una frase corta, a tu ritmo, y puedes pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto ni forzarte delante de todo el grupo.'
 assert before in s;s=s.replace(before,after);p.write_text(s)
-manifest['protocol_changes']=[{'protocol_id':'reading_embarrassment','before':before,'after':after,'reason':'Acknowledge the feeling rather than negate it; preserve choice and trusted human support.'}]
+manifest['protocol_changes']=[{'protocol_id':'reading_embarrassment','before':before,'after':after,'reason':'Preserve acknowledgment of the feeling, remove redundant wording and reinforce choice and trusted human support.'}]
 (ROOT/'qa/curriculum-review/corrections.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
 p=ROOT/'eterna-worker/test/library-first.test.mjs';s=p.read_text().replace(OLD,RELEASE).replace('217 actual micro-lessons','256 actual micro-lessons').replace('651 distinct structured checks','768 distinct structured checks').replace('h.lessons.length,217','h.lessons.length,256').replace('l=>l.id)).size,217','l=>l.id)).size,256').replace('l=>l.quiz).length,651','l=>l.quiz).length,768').replace('all 651 known checks','all 768 known checks').replace('assert.equal(n,1085)','assert.equal(n,1280)').replace('h.lessons.slice(160).map(l=>l.id)','h.lessons.slice(160,217).map(l=>l.id)')
 needle='JSON.stringify(plain(h.lessons.slice(0,160)))'
