@@ -1,0 +1,156 @@
+{
+  "base_commit": "ffe822edc7985609ae69da41312ec32835193dcb",
+  "base_canonical_sha256": "0cfec48a23772337636e1d115f054732473a536f3e514a158f8fb21bfe477edc",
+  "release_id": "eterna-library-2026.09-v5-304-panel-ffe822",
+  "corrections": [
+    {
+      "lesson_id": "i-shapes",
+      "path": [
+        "simpler"
+      ],
+      "before": "Un círculo es redondito. Un triángulo tiene tres lados. Un cuadrado tiene cuatro lados iguales.",
+      "after": "Un círculo es redondito. Un triángulo tiene tres lados. Un cuadrado tiene cuatro lados iguales y cuatro esquinas rectas, como las de una hoja rectangular.",
+      "reason": "Infantil/geometría: retain the right-angle condition when simplifying; equal sides alone also describe non-square rhombi."
+    },
+    {
+      "lesson_id": "p-prime",
+      "path": [
+        "simpler"
+      ],
+      "before": "Un primo solo puede repartirse exactamente en grupos de 1 o en un único grupo con todo.",
+      "after": "Un primo es un número natural mayor que 1 que solo tiene dos divisores positivos: 1 y él mismo. Por ejemplo, 7 se divide exactamente entre 1 y 7.",
+      "reason": "Primaria/matemáticas: preserve greater-than-one and exactly-two-divisors conditions in the accessible explanation."
+    },
+    {
+      "lesson_id": "b-vectors",
+      "path": [
+        "explanation"
+      ],
+      "before": "Un vector del plano puede representarse por dos componentes. Su módulo es la raíz de la suma de los cuadrados de las componentes. La suma se realiza componente a componente. Módulo, dirección y sentido son propiedades distintas.",
+      "after": "En coordenadas cartesianas ortonormales, un vector del plano puede representarse por dos componentes. Su módulo es la raíz de la suma de los cuadrados de las componentes. La suma se realiza componente a componente. Módulo, dirección y sentido son propiedades distintas.",
+      "reason": "Matemáticas: explicitly state the coordinate-basis assumptions behind the Euclidean component formula."
+    },
+    {
+      "lesson_id": "e-motion",
+      "path": [
+        "explanation"
+      ],
+      "before": "La velocidad incluye rapidez y dirección; la aceleración mide cómo cambia la velocidad con el tiempo. Puede haber aceleración aunque la rapidez sea constante, si cambia la dirección. En un movimiento rectilíneo uniforme la velocidad es constante y la aceleración es cero.",
+      "after": "La velocidad es una magnitud vectorial: incluye módulo o rapidez, dirección y sentido. La aceleración mide cómo cambia la velocidad con el tiempo. Puede haber aceleración aunque la rapidez sea constante, si cambia la dirección. En un movimiento rectilíneo uniforme la velocidad es constante y la aceleración es cero.",
+      "reason": "Física: distinguish direction and sense explicitly without changing numerical keys."
+    },
+    {
+      "lesson_id": "e-acceleration",
+      "path": [
+        "example"
+      ],
+      "before": "Pasar de 2 a 8 m/s en 3 s da aceleración media (8−2)/3 = 2 m/s².",
+      "after": "En movimiento rectilíneo, tomando un mismo eje y sentido positivo, pasar de 2 a 8 m/s en 3 s da una aceleración media de (8−2)/3 = 2 m/s².",
+      "reason": "Física: make the sign convention explicit in the worked example as well as the question."
+    },
+    {
+      "lesson_id": "i-shapes",
+      "path": [
+        "hints"
+      ],
+      "before": [
+        "Mira el borde y cuenta los lados rectos.",
+        "Un círculo es redondito. Un triángulo tiene tres lados. Un cuadrado tiene cuatro lados iguales.",
+        "Con un adulto, busca una tapa redonda y una hoja cuadrada. Recorre sus bordes con el dedo sin usar objetos cortantes."
+      ],
+      "after": [
+        "Mira el borde y cuenta los lados rectos.",
+        "Un círculo es redondito. Un triángulo tiene tres lados. Un cuadrado tiene cuatro lados iguales y cuatro esquinas rectas, como las de una hoja rectangular.",
+        "Con un adulto, busca una tapa redonda y una hoja cuadrada. Recorre sus bordes con el dedo sin usar objetos cortantes."
+      ],
+      "reason": "Keep stored hints consistent with the explicitly reviewed text."
+    },
+    {
+      "lesson_id": "p-prime",
+      "path": [
+        "hints"
+      ],
+      "before": [
+        "Cuenta los divisores positivos, no solo si el número es impar.",
+        "Un primo solo puede repartirse exactamente en grupos de 1 o en un único grupo con todo.",
+        "El 7 solo tiene como divisores positivos 1 y 7. El 8 no es primo, porque también se divide exactamente entre 2 y 4."
+      ],
+      "after": [
+        "Cuenta los divisores positivos, no solo si el número es impar.",
+        "Un primo es un número natural mayor que 1 que solo tiene dos divisores positivos: 1 y él mismo. Por ejemplo, 7 se divide exactamente entre 1 y 7.",
+        "El 7 solo tiene como divisores positivos 1 y 7. El 8 no es primo, porque también se divide exactamente entre 2 y 4."
+      ],
+      "reason": "Keep stored hints consistent with the explicitly reviewed text."
+    },
+    {
+      "lesson_id": "e-acceleration",
+      "path": [
+        "hints"
+      ],
+      "before": [
+        "Resta velocidad final menos inicial y divide por el tiempo.",
+        "No mide qué rápido vas, sino cuánto cambia tu velocidad por unidad de tiempo.",
+        "Pasar de 2 a 8 m/s en 3 s da aceleración media (8−2)/3 = 2 m/s²."
+      ],
+      "after": [
+        "Resta velocidad final menos inicial y divide por el tiempo.",
+        "No mide qué rápido vas, sino cuánto cambia tu velocidad por unidad de tiempo.",
+        "En movimiento rectilíneo, tomando un mismo eje y sentido positivo, pasar de 2 a 8 m/s en 3 s da una aceleración media de (8−2)/3 = 2 m/s²."
+      ],
+      "reason": "Keep stored hints consistent with the explicitly reviewed text."
+    }
+  ],
+  "new_lesson_ids": [
+    "i-near-far",
+    "i-open-closed",
+    "i-describe",
+    "i-symbols",
+    "i-drawing",
+    "i-sound-duration",
+    "i-choice",
+    "i-belonging",
+    "p-money",
+    "p-duration",
+    "p-probable",
+    "p-capitals",
+    "p-reading-pauses",
+    "p-en-greetings",
+    "p-en-numbers",
+    "p-en-week",
+    "e-rock-cycle",
+    "e-food-web",
+    "e-coordinates",
+    "e-egypt",
+    "e-prehistory",
+    "e-meter",
+    "e-connectors",
+    "e-instruments",
+    "e-french-avoir",
+    "e-printmaking",
+    "e-feedback",
+    "e-media-source",
+    "b-musical-form",
+    "b-stage-space",
+    "b-choir-listening",
+    "b-framing",
+    "b-montage",
+    "b-drawing-values",
+    "b-design-views",
+    "b-collage",
+    "b-solid-void",
+    "b-iconography",
+    "b-epic",
+    "b-latin-verb",
+    "b-georisk",
+    "b-engineering-model",
+    "b-break-even",
+    "b-project-value",
+    "b-weighted-mean",
+    "b-scientific-model",
+    "b-avantgarde",
+    "b-music-context"
+  ],
+  "simulated_panel": true,
+  "independent_models": false,
+  "human_teacher_reviewed": false
+}

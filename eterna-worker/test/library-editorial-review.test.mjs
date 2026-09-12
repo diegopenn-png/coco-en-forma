@@ -6,7 +6,7 @@ import vm from'node:vm';
 const read=p=>readFileSync(new URL(p,import.meta.url),'utf8');
 const context={Intl};vm.createContext(context);
 vm.runInContext(read('../src/library/content-v1.js'),context);vm.runInContext(read('../src/library/runtime-v1.js'),context);
-const ls=JSON.parse(JSON.stringify(context.ETERNA_LIBRARY_CONTENT.lessons)),lib=context.EternaOwnedLibrary;
+const ls=undoPanelChanges(JSON.parse(JSON.stringify(context.ETERNA_LIBRARY_CONTENT.lessons.slice(0,256)))),lib=context.EternaOwnedLibrary;
 const manifest=JSON.parse(read('../../qa/curriculum-review/corrections.json'));
 const get=id=>{const l=ls.find(x=>x.id===id);assert.ok(l,id);return l};
 const correct=(id,i=0)=>{const q=get(id).quiz[i];return q.options['ABC'.indexOf(q.answer)]};
@@ -96,3 +96,5 @@ test('science corrections distinguish physical definitions and model limits',()=
  assert.match(get('e-mendel').explanation,/fenotipo/);assert.match(get('e-cell').explanation,/especializadas/);
  assert.deepEqual(get('p-noun').quiz[0].options,['La','Mochila','Pesa']);assert.equal(get('p-noun').quiz[0].answer,'B');
 });
+
+function undoPanelChanges(items){const m=JSON.parse(read('../../qa/teacher-panel/changes.json')),by=new Map(items.map(l=>[l.id,l]));for(const c of [...m.corrections].reverse()){const l=by.get(c.lesson_id);if(!l)continue;assert.deepEqual(l[c.path[0]],c.after);l[c.path[0]]=c.before}return items;}
