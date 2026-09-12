@@ -20,6 +20,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Match the actual current protocol wording without discarding earlier improvements
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('qa/curriculum-review/build_reviewed.py');s=p.read_text()
+          a='Preguntar o equivocarse al leer no es un motivo de vergüenza${name}. Puedes empezar con una frase corta y pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto para empezar.'
+          b='Puede dar vergüenza leer o preguntar delante de otros${name}; no tienes que ocultarlo ni hacerlo perfecto. Puedes empezar con una frase corta y pedir ayuda a tu profesor en privado. No hace falta hacerlo perfecto para empezar.'
+          if a in s:s=s.replace(a,b)
+          s=s.replace('Acknowledge the feeling rather than negate it; preserve choice and trusted human support.','Preserve acknowledgment of the feeling, remove redundant wording and reinforce choice and trusted human support.')
+          p.write_text(s)
+          PY
       - name: Compile only the explicit reviewed snapshot
         run: python qa/curriculum-review/build_reviewed.py
       - name: Run full regression, every lesson-mode pair and independent review checks
@@ -34,7 +45,7 @@ jobs:
         run: |
           python - <<'PY'
           import subprocess
-          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json'}
+          allowed={'eterna-worker/src/index.js','eterna-worker/src/library/content-v1.js','eterna-worker/src/library/runtime-v1.js','eterna-worker/test/library-first.test.mjs','qa/library/lessons-v1.json','qa/curriculum-review/build_reviewed.py'}
           changes=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
           assert changes<=allowed,changes
           PY
@@ -43,7 +54,7 @@ jobs:
           test "$GITHUB_REF" = "refs/heads/audit/eterna-curriculum-review-c993-20260912"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs qa/library/lessons-v1.json qa/curriculum-review/corrections.json
+          git add -- eterna-worker/src/index.js eterna-worker/src/library/content-v1.js eterna-worker/src/library/runtime-v1.js eterna-worker/test/library-first.test.mjs qa/library/lessons-v1.json qa/curriculum-review/corrections.json qa/curriculum-review/build_reviewed.py
           git commit -m "content(eterna): tested 256-lesson AI-reviewed snapshot with self-contained assessments" -m "39 new micro-lessons; explicit corrections with reversible evidence; all original question identities and answer keys preserved. No human teacher certification or complete territorial curriculum claim. No production deployment."
           git push origin HEAD:refs/heads/audit/eterna-curriculum-review-c993-20260912
           node --input-type=module <<'JS'
