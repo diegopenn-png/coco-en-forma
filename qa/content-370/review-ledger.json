@@ -1,0 +1,1747 @@
+{
+  "release_id": "eterna-library-2026.09-v7-370-c26c61c",
+  "single_AI_system": true,
+  "independent_human_review": false,
+  "records": [
+    {
+      "lesson_id": "i-pairs",
+      "lesson_sha256": "b140447ce297cb42f9854788e1d5203758d48f111c42ad0b89afba9f6914a473",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Infantil",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Hay tres muñecos y tres platos. Pones un plato ante cada muñeco. ¿Sobra alguno?",
+        "Hay tres muñecos y solo dos platos. Repartes un plato a cada uno hasta que se acaban. ¿Qué ocurre?",
+        "Hay dos muñecos y tres platos. Das uno a cada muñeco. ¿Qué queda?"
+      ],
+      "checked_options": [
+        "No",
+        "Un muñeco se queda sin plato",
+        "Un plato sin repartir"
+      ],
+      "misconception_examined": "Separar más los platos no hace que haya uno para un muñeco adicional.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "i-same-different",
+      "lesson_sha256": "d1dad53e4cfb492e9ed8685519a67d2403c39021bda077dad264303cc87c6398",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Infantil",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Un círculo rojo y un cuadrado rojo tienen igual…",
+        "Un círculo azul y un círculo rojo comparten…",
+        "Antes de comparar dos objetos conviene decidir…"
+      ],
+      "checked_options": [
+        "Color",
+        "La forma",
+        "En qué característica nos fijamos"
+      ],
+      "misconception_examined": "Tener el mismo color no significa tener también la misma forma.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "i-one-more",
+      "lesson_sha256": "b38ea8b7d45270948cc34466fd5fef5be99cfaa1a8ceb7cb3b6a3df0129ddc7d",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Infantil",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Tienes dos bloques y añades uno. ¿Cuántos hay?",
+        "Tienes tres bloques y añades uno. ¿Cuántos hay?",
+        "Mueves tres bloques sin añadir ni quitar ninguno. ¿Cuántos siguen siendo?"
+      ],
+      "checked_options": [
+        "Tres",
+        "Cuatro",
+        "Tres"
+      ],
+      "misconception_examined": "Mover un objeto no es lo mismo que añadir otro.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "i-one-less",
+      "lesson_sha256": "48c49d47baccef26481de40b5e38f270b755c8280076c78a347d871933a1da0e",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Infantil",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Hay tres bloques en una bandeja y sacas uno. ¿Cuántos quedan dentro?",
+        "Hay dos bloques en una bandeja y sacas uno. ¿Cuántos quedan dentro?",
+        "Al contar los bloques que quedan dentro de la bandeja, cuentas…"
+      ],
+      "checked_options": [
+        "Dos",
+        "Uno",
+        "Los que están dentro"
+      ],
+      "misconception_examined": "Sacar una pieza del grupo no significa que desaparezca del mundo.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "i-length-compare",
+      "lesson_sha256": "04c70e9f44f64f1e5e17f6c2d6bfa49f8ad734d9f5b0047b83624f5f8b26fc24",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Infantil",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Dos tiras rectas empiezan juntas y la azul llega más lejos. ¿Cuál es más larga?",
+        "Para comparar directamente dos tiras conviene…",
+        "Si una tira empieza más adelante que la otra, ¿puede engañar la comparación?"
+      ],
+      "checked_options": [
+        "La azul",
+        "Alinear sus comienzos",
+        "Sí, conviene alinearlas"
+      ],
+      "misconception_examined": "Llegar más lejos no demuestra mayor longitud si los comienzos no están alineados.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "i-hands",
+      "lesson_sha256": "e49b30e7ef6dbaca370d366d29ed1cec22040c1a26a1c5037f9e983bfeaa0cc1",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Infantil",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Antes de comer, una rutina de cuidado es…",
+        "Si no llegas al grifo con seguridad, puedes…",
+        "Unas manos que parecen limpias…"
+      ],
+      "checked_options": [
+        "Lavarse las manos",
+        "Pedir ayuda a una persona adulta",
+        "También pueden necesitar lavarse"
+      ],
+      "misconception_examined": "El aspecto de las manos no cuenta todo sobre su limpieza.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "i-observe-change",
+      "lesson_sha256": "8606c28b967cf8b13c77159a0c2f2b9c315390e776c2108331623668bcdce0b6",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Infantil",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En una foto se ven dos hojas y en otra posterior tres. ¿Qué observamos?",
+        "Para recordar lo que observamos podemos…",
+        "Si no sabemos la causa de un cambio, podemos decir…"
+      ],
+      "checked_options": [
+        "Una hoja más visible",
+        "Hacer un dibujo",
+        "Que todavía no lo sabemos"
+      ],
+      "misconception_examined": "Una suposición no es lo mismo que algo que hemos observado.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "i-sound-source",
+      "lesson_sha256": "7ececda808cc0a5635c568af56aa84c20157cfffb0e2dc9b3ce918d0e8c55b9b",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Infantil",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Un adulto agita suavemente una maraca que suena. ¿Cuál es la fuente del sonido?",
+        "Si no sabes qué ha sonado, puedes…",
+        "Para explorar sonidos elegimos…"
+      ],
+      "checked_options": [
+        "La maraca en movimiento",
+        "Pedir más pistas",
+        "Un volumen cómodo y seguro"
+      ],
+      "misconception_examined": "Parecerse a un sonido conocido no garantiza que tenga la misma fuente.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-1654",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-double-half",
+      "lesson_sha256": "3bff11c41ba3e0d758adb0022980429ba2a6084144e668be591aae0c71cdcd87",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "El doble de 7 es…",
+        "La mitad de 18 es…",
+        "¿Qué reparto muestra dos mitades de 10 fichas?"
+      ],
+      "checked_options": [
+        "14",
+        "9",
+        "5 y 5"
+      ],
+      "misconception_examined": "Cualquier reparto en dos grupos no representa necesariamente dos mitades.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-carry-add",
+      "lesson_sha256": "46b2cffda0550a049184680c9631cc3206c31b51388e1f94c021cded066e04d7",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En 28 + 17, el resultado es…",
+        "Quince unidades equivalen a…",
+        "Al sumar por columnas, las unidades se colocan…"
+      ],
+      "checked_options": [
+        "45",
+        "Una decena y cinco unidades",
+        "Debajo de las unidades"
+      ],
+      "misconception_examined": "La llevada tiene un valor posicional, no es un uno que pueda colocarse en cualquier columna.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-sub-borrow",
+      "lesson_sha256": "662833977af45e93dc3905d2d48e5cd017ec821c719fbd2d13a801ba51f87af1",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "El resultado de 42 − 17 es…",
+        "Cuatro decenas y dos unidades equivalen a…",
+        "Para comprobar 42 − 17 = 25 podemos calcular…"
+      ],
+      "checked_options": [
+        "25",
+        "Tres decenas y doce unidades",
+        "25 + 17"
+      ],
+      "misconception_examined": "No se puede añadir diez unidades sin ajustar la decena intercambiada.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-estimate",
+      "lesson_sha256": "dd0858365167de600fdfd0407703d4fe279015d999e601ff49fed9754ef442a3",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Redondeando a centenas, 198 + 304 es aproximadamente…",
+        "Una estimación es…",
+        "Si una suma cercana a 200 + 300 da 5.020, conviene…"
+      ],
+      "checked_options": [
+        "500",
+        "Un valor aproximado útil",
+        "Revisar el cálculo"
+      ],
+      "misconception_examined": "El signo de igualdad no debe sustituir a «aproximadamente» cuando los valores son distintos.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-divisibility",
+      "lesson_sha256": "3f7e1293036e90d690e155588980ed8d952ec290ba5f4db2abaca183563e7295",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "¿Cuál es divisible por 10?",
+        "El 123 es divisible por 3 porque…",
+        "¿Cuál es divisible por 5 pero no por 2?"
+      ],
+      "checked_options": [
+        "150",
+        "1 + 2 + 3 = 6, múltiplo de 3",
+        "135"
+      ],
+      "misconception_examined": "Tener tres cifras no implica ser divisible por 3.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-fraction-quantity",
+      "lesson_sha256": "224c292f216caaf5fc721d98711aa7d3914e1c606a23fd892f5d4c8e91cd1f67",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Tres cuartos de 20 son…",
+        "Dos tercios de 18 son…",
+        "Al calcular un quinto de 30, el total de referencia es…"
+      ],
+      "checked_options": [
+        "15",
+        "12",
+        "30"
+      ],
+      "misconception_examined": "El denominador no indica directamente cuántos objetos debes quitar.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-decimal-add",
+      "lesson_sha256": "45ce9176f848797e60a86944e164f9cd5cc09f2efa3576c95bf1a815fabb3d0d",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "2,4 + 0,35 es…",
+        "¿Cuál tiene el mismo valor que 3,5?",
+        "Para sumar decimales por columnas alineamos…"
+      ],
+      "checked_options": [
+        "2,75",
+        "3,50",
+        "Las comas y los órdenes decimales"
+      ],
+      "misconception_examined": "Tener más cifras decimales no significa automáticamente ser mayor.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-double-entry",
+      "lesson_sha256": "e153dae044aafb67276ffdb3d250b538a7666e0e37975d3575e5fcf55e0f2ec4",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En una tabla, el lunes tiene 4 cuentos y 2 libros de poesía. ¿Cuántos libros se registraron ese lunes en total, sin repeticiones?",
+        "La casilla de martes y poesía se localiza cruzando…",
+        "Si una casilla dice «martes, cuentos: 3», el 3 representa…"
+      ],
+      "checked_options": [
+        "6",
+        "La fila martes y la columna poesía",
+        "Los cuentos registrados el martes"
+      ],
+      "misconception_examined": "Un dato de una casilla no representa por sí solo el total de una fila o de la tabla.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-grid-coordinates",
+      "lesson_sha256": "a9f2eafd8991cb96f376a8d404127ea6e3dec2de2621defb4adbd62fb5e036bb",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En (3, 2), la coordenada horizontal es…",
+        "Con los ejes habituales, dos unidades a la derecha y cuatro arriba del origen corresponden a…",
+        "Antes de contar cuadros debemos comprobar…"
+      ],
+      "checked_options": [
+        "3",
+        "(2, 4)",
+        "La escala de los ejes"
+      ],
+      "misconception_examined": "Un cuadro no tiene que representar siempre una unidad.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-mass-units",
+      "lesson_sha256": "47f36ab604a115f4cd2651ef5fb49fbd8d61e54fc65249e96785a51edc3ead11",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "2 kg y 300 g equivalen a…",
+        "500 g equivalen a…",
+        "Antes de sumar 1 kg y 250 g conviene…"
+      ],
+      "checked_options": [
+        "2.300 g",
+        "0,5 kg",
+        "Expresar ambas masas en una misma unidad"
+      ],
+      "misconception_examined": "Un número mayor con otra unidad no indica necesariamente una masa mayor.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-singular-plural",
+      "lesson_sha256": "939b93088dc6c6a7ecd3455e6bb91817a66f9c176fe01c42d460013147956ca8",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "El plural de «libro» es…",
+        "¿Qué grupo está bien escrito?",
+        "En «un árbol» hablamos de…"
+      ],
+      "checked_options": [
+        "Libros",
+        "Las casas blancas",
+        "Un árbol"
+      ],
+      "misconception_examined": "No todos los plurales se forman de la misma manera.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-word-families",
+      "lesson_sha256": "79b01031a7c4ff102545665e45f498d41068542e575d7088686b3bf54dab5ae8",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "¿Qué palabra pertenece a la familia de «pan»?",
+        "Para reconocer una familia de palabras miramos…",
+        "Que dos palabras empiecen igual…"
+      ],
+      "checked_options": [
+        "Panadería",
+        "La base léxica y la relación de significado",
+        "No basta para asegurar que son de la misma familia"
+      ],
+      "misconception_examined": "Una coincidencia de letras no demuestra una relación léxica.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-instructions",
+      "lesson_sha256": "6d1fafcb5f93ba4e1ad124b76438c0ac4a5266636c7d450e7648eb9ef9fe1524",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Lee: «Dibuja un círculo. Después escribe tu nombre dentro». ¿Qué va primero?",
+        "Si una instrucción no se entiende, conviene…",
+        "Un texto instructivo pretende principalmente…"
+      ],
+      "checked_options": [
+        "Dibujar el círculo",
+        "Pedir una aclaración",
+        "Guiar la realización de una tarea"
+      ],
+      "misconception_examined": "Seguir instrucciones no consiste en actuar sin comprender ni poder preguntar.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-dialogue",
+      "lesson_sha256": "57297eecf1c938cb6ce65be78db1af1f7afe72a9ba62aebc125089ce5d1fea13",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En «—Llegaré pronto —dijo Ana», ¿quién dice «Llegaré pronto»?",
+        "La parte «dijo Ana» sirve para…",
+        "El narrador y un personaje…"
+      ],
+      "checked_options": [
+        "Ana",
+        "Identificar a quien habla",
+        "Cumplen funciones distintas aunque puedan coincidir en una obra"
+      ],
+      "misconception_examined": "Todo lo escrito en una narración no está dicho por el mismo personaje.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-main-idea",
+      "lesson_sha256": "82f485dcd7de11c12706572ca980daff50c169dbf50eb5f2a2d3a3c3af3d2518",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Lee: «La biblioteca ofrece varias actividades. Los martes hay cuentacuentos y los jueves dibujo». La idea principal es…",
+        "Una idea principal debe…",
+        "Los ejemplos de un texto pueden servir para…"
+      ],
+      "checked_options": [
+        "Que ofrece varias actividades",
+        "Recoger lo esencial del fragmento",
+        "Desarrollar una idea"
+      ],
+      "misconception_examined": "La primera frase no es automáticamente la idea principal de cualquier texto.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-pollination",
+      "lesson_sha256": "3211433befcc9e8af3cc5c190f96455e20128be13c1f18fd8272af821bb8d692",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "La polinización consiste en…",
+        "¿Qué puede transportar polen en algunas plantas?",
+        "Polinización y fecundación…"
+      ],
+      "checked_options": [
+        "Trasladar polen hasta la parte receptora adecuada",
+        "El viento",
+        "Son procesos distintos relacionados"
+      ],
+      "misconception_examined": "No todas las plantas con flores dependen del mismo medio de polinización.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-simple-machines",
+      "lesson_sha256": "85ea889d7e63681c89e679c1b8a06e9998e141dfccc30c0b3137908db52da8ab",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Una rampa puede facilitar subir una carga porque…",
+        "Una palanca es un ejemplo de…",
+        "Una máquina simple…"
+      ],
+      "checked_options": [
+        "Permite usar menos fuerza a lo largo de más distancia",
+        "Máquina simple",
+        "No crea energía de la nada"
+      ],
+      "misconception_examined": "Que una máquina facilite una tarea no implica que haga desaparecer el trabajo o las pérdidas.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-weather-observe",
+      "lesson_sha256": "59f1e4392efaaf4666c7c09b0f879ab42d9d06a55f677f9f4d1f81dcbdc81dab",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Un registro de 18 °C esta mañana describe…",
+        "Para comparar observaciones conviene anotar…",
+        "Un día de lluvia basta para describir todo el clima de una región…"
+      ],
+      "checked_options": [
+        "El tiempo en ese lugar y momento",
+        "Lugar y momento",
+        "No"
+      ],
+      "misconception_examined": "Tiempo atmosférico y clima no son equivalentes.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-en-a-an",
+      "lesson_sha256": "5c948fea39be65254428553ee6e211892756134f176b14bd837c7d7b7aa7bc3f",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "¿Qué expresión es correcta?",
+        "En este uso elegimos a o an según…",
+        "La expresión habitual es…"
+      ],
+      "checked_options": [
+        "An apple",
+        "El sonido inicial de la palabra siguiente",
+        "An hour"
+      ],
+      "misconception_examined": "Empezar por una letra vocálica no exige siempre an si el sonido inicial es consonántico.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "p-en-possessive",
+      "lesson_sha256": "567b4059ab24dcdcff94fbe4ba2d0f2b04ca772d4205e6b547de3275083f2b85",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Ana tiene un libro. Completa: It is ___ book.",
+        "Al decir «my pencil», el posesivo se refiere a…",
+        "His o her se eligen según…"
+      ],
+      "checked_options": [
+        "Her",
+        "Quien está hablando",
+        "El referente con el que se establece la posesión o relación"
+      ],
+      "misconception_examined": "El género gramatical español del objeto no determina his o her.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-3296",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-polynomials",
+      "lesson_sha256": "73dd682b46eb5b2f52469906143044a4c800bac15e4d270cd24f0baf328e2bfa",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "3x + 2x es…",
+        "2(x + 3) equivale a…",
+        "¿Qué términos son semejantes?"
+      ],
+      "checked_options": [
+        "5x",
+        "2x + 6",
+        "5x² y −2x²"
+      ],
+      "misconception_examined": "Las reglas de multiplicación de potencias no se aplican como si una suma fuera un producto.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-identities",
+      "lesson_sha256": "add7174bd7fa6913201367529672ae44f1b067c3a5a8c04e534b005e27611dac",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "(x+3)² equivale a…",
+        "(x+2)(x−2) equivale a…",
+        "En (a−b)², el término cruzado es…"
+      ],
+      "checked_options": [
+        "x²+6x+9",
+        "x²−4",
+        "−2ab"
+      ],
+      "misconception_examined": "El cuadrado de una suma no es, en general, la suma de los cuadrados.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-slope",
+      "lesson_sha256": "3577a0aa3ed941fee4b240de6a492f478949333dc97b8c04a180ccbabbbbf724",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "La pendiente entre (1,3) y (3,7) es…",
+        "En y=3x−2, la ordenada en el origen es…",
+        "Una recta vertical tiene…"
+      ],
+      "checked_options": [
+        "2",
+        "−2",
+        "Pendiente no definida como cociente finito Δy/Δx"
+      ],
+      "misconception_examined": "La pendiente y la ordenada en el origen describen propiedades diferentes.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-circle-measures",
+      "lesson_sha256": "142a5c2453ba39f45e637b6c9d1d5543a89947006ca8b9fc5cefcf7c97220e10",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Con radio 3 cm, el área es…",
+        "Con radio 4 cm, el diámetro es…",
+        "La longitud de una circunferencia se expresa, por ejemplo, en…"
+      ],
+      "checked_options": [
+        "9π cm²",
+        "8 cm",
+        "cm"
+      ],
+      "misconception_examined": "Usar el diámetro como si fuera el radio altera el resultado.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-sampling",
+      "lesson_sha256": "363bd57e8b8856ef73f0b2bc65e1e542d6ad3403de787703f16a63fa9a96c4fc",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Preguntar solo a quienes llegan en bici para describir a todo el alumnado puede producir…",
+        "La población es…",
+        "Aumentar el tamaño de una muestra sesgada…"
+      ],
+      "checked_options": [
+        "Una muestra sesgada",
+        "El conjunto sobre el que queremos concluir",
+        "No corrige necesariamente el modo de selección"
+      ],
+      "misconception_examined": "Más respuestas no garantizan por sí solas mejores conclusiones si la selección está sesgada.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-histograms",
+      "lesson_sha256": "81c916f04e29fef0029fcf7afce53f1dda9107ceb2506e39384f7b92aa2c41f5",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Con intervalos de igual amplitud y alturas que representan frecuencias, una barra de altura 8 contiene…",
+        "Antes de comparar barras hay que revisar…",
+        "Un histograma agrupado permite conocer siempre cada dato individual exacto…"
+      ],
+      "checked_options": [
+        "8 datos",
+        "Amplitudes y significado del eje vertical",
+        "No"
+      ],
+      "misconception_examined": "En intervalos de diferente anchura, una barra más alta no implica por sí sola más observaciones.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-pressure",
+      "lesson_sha256": "fe7cf8e5627a4309f995e011e12fad7d6c47079c203be0cec22652ddd325cd9b",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "100 N repartidos uniformemente sobre 2 m² producen…",
+        "Con la misma fuerza normal, reducir el área aumenta…",
+        "Un pascal equivale a…"
+      ],
+      "checked_options": [
+        "50 Pa",
+        "La presión media",
+        "Un newton por metro cuadrado"
+      ],
+      "misconception_examined": "Una fuerza grande no determina la presión sin conocer el área sobre la que actúa.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-heat-temperature",
+      "lesson_sha256": "15447e7561ffd695ea96cc9d3878e3a5288568204b18c3ab46c9c2aaa0c09c67",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "El calor es…",
+        "Dos porciones de agua a 20 °C tienen…",
+        "La energía para elevar la temperatura depende…"
+      ],
+      "checked_options": [
+        "Energía transferida por diferencia de temperatura",
+        "La misma temperatura",
+        "También de la masa y del material"
+      ],
+      "misconception_examined": "Una masa mayor a la misma temperatura no está necesariamente a mayor temperatura.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-conservation-reaction",
+      "lesson_sha256": "fb074dfd6b5ae4cb4243f296910ffb573792bc5dc74fe825c4a8246ede5ad07b",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En 2 H₂ + O₂ → 2 H₂O hay a cada lado…",
+        "Para ajustar la ecuación modificamos…",
+        "Si un gas escapa de un recipiente abierto, la masa medida del recipiente puede…"
+      ],
+      "checked_options": [
+        "4 H y 2 O",
+        "Los coeficientes",
+        "Disminuir por la materia que salió"
+      ],
+      "misconception_examined": "Una pérdida de masa del recipiente abierto no prueba destrucción de materia.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-osmosis",
+      "lesson_sha256": "99f66c77c945444ed10c97769db81c4a3802dfdbd3087ad8b9555aaa36a919c9",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En el modelo descrito, lo que atraviesa la membrana durante la ósmosis es…",
+        "Para usar esa explicación sencilla hay que considerar…",
+        "La presión puede…"
+      ],
+      "checked_options": [
+        "Agua",
+        "La permeabilidad de la membrana y las condiciones",
+        "Contrarrestar el movimiento neto osmótico"
+      ],
+      "misconception_examined": "No toda membrana deja pasar las mismas sustancias ni toda diferencia de concentración actúa igual.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-geologic-time",
+      "lesson_sha256": "1b42d3d03621a2434c61bcbf580c2451ae44b752af84c5935a4f55ec95a271bd",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En capas sedimentarias no invertidas, A está bajo B. El depósito de A es…",
+        "Un dique que corta unas capas es…",
+        "La datación relativa proporciona principalmente…"
+      ],
+      "checked_options": [
+        "Anterior al de B",
+        "Posterior a las capas que corta",
+        "Un orden temporal"
+      ],
+      "misconception_examined": "Estar más abajo no basta si la sucesión ha sido invertida o deformada.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-argumentation",
+      "lesson_sha256": "7bd23bed9c96f526e8ebca53429f5bd8aae9088bae10494163494cb3edc3e09e",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En «Conviene ampliar el horario de la biblioteca porque existe demanda por la tarde», la tesis es…",
+        "Una evidencia pertinente debe…",
+        "Una conclusión sólida debe…"
+      ],
+      "checked_options": [
+        "Que conviene ampliar el horario",
+        "Guardar relación con la afirmación y poder examinarse",
+        "Ajustarse a las razones y evidencias disponibles"
+      ],
+      "misconception_examined": "Repetir muchas veces una afirmación no la convierte en una prueba.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-indirect-object",
+      "lesson_sha256": "cfb1a2fa20c3da98a57ca633bbaae8a7f09dea3dc3bc58fc10f898729d4ac527",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En «Ana entregó el libro a Luis», «a Luis» es…",
+        "En «Ana vio a Luis», «a Luis» funciona como…",
+        "La presencia de la preposición a…"
+      ],
+      "checked_options": [
+        "Complemento indirecto",
+        "Complemento directo",
+        "No basta por sí sola para determinar la función"
+      ],
+      "misconception_examined": "No todos los complementos introducidos por a tienen la misma función.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-relative-english",
+      "lesson_sha256": "dbbc0a00ac74677ee754dd1c2d3c397c516b1c0143574e1811e206a76bda310e",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En «The girl who lives next door», who se refiere a…",
+        "¿Qué relativo encaja en el patrón «The book ___ is on the desk»?",
+        "Las reglas de los relativos especificativos…"
+      ],
+      "checked_options": [
+        "The girl",
+        "That",
+        "No se aplican automáticamente a los explicativos"
+      ],
+      "misconception_examined": "Una regla útil para relativos sin comas no explica todos los relativos del inglés.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-past-continuous",
+      "lesson_sha256": "f6206a891831709352c3b886ee08c8e619798e16fc7e630e034fc71e0758bc10",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Completa: They ___ playing at six.",
+        "«I was reading at eight» presenta la lectura como…",
+        "Para formar past continuous se usa…"
+      ],
+      "checked_options": [
+        "Were",
+        "Una acción en desarrollo en ese momento pasado",
+        "Was o were + verbo en -ing"
+      ],
+      "misconception_examined": "Past continuous no exige que la frase contenga siempre una interrupción.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "e-program-loops",
+      "lesson_sha256": "cd6f8db1cb5e20a14ef1b36bdf55feed32341df48bc9b5b0971eacf50194b12d",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Un contador empieza en 0 y suma 1 exactamente tres veces. Termina en…",
+        "Para comprobar un bucle conviene…",
+        "Un error en el límite puede provocar…"
+      ],
+      "checked_options": [
+        "3",
+        "Seguir sus estados y condición de salida",
+        "Una repetición de más o de menos"
+      ],
+      "misconception_examined": "Contar estados mostrados no equivale siempre a contar vueltas del bucle.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-4975",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-continuity",
+      "lesson_sha256": "a00e5dbd9fada7180fc8183fe5422f45fb1a635605750502a61b7016f2f03424",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Para continuidad en un punto interior necesitamos…",
+        "El límite de (x²−1)/(x−1) cuando x tiende a 1 es…",
+        "Para una función cuyo límite cuando x tiende a 1 es 2, definir f(1)=5 produce…"
+      ],
+      "checked_options": [
+        "Que el límite exista y coincida con f(a)",
+        "2",
+        "Falta de continuidad en 1"
+      ],
+      "misconception_examined": "Un límite existente no implica que la función esté definida en el punto ni que tome ese valor.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-optimization",
+      "lesson_sha256": "bfa74ae7bde428840c6fa2c42bb396b2aae186dc1d4fd62f4d56915ea92a6a5b",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "El máximo de x² en [−1,2] es…",
+        "Una derivada nula…",
+        "En un intervalo cerrado conviene examinar también…"
+      ],
+      "checked_options": [
+        "4, en x=2",
+        "Identifica un candidato que debe estudiarse",
+        "Los extremos del intervalo"
+      ],
+      "misconception_examined": "Ignorar los extremos puede hacer perder el máximo o mínimo global.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-primitive",
+      "lesson_sha256": "de4687af64aec84f90e5016a1866b3b854c11107f5168bcd88354ab095457fe3",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Una primitiva de 2x es…",
+        "Si F(x)=x²+C y F(1)=4, C vale…",
+        "Para comprobar una primitiva conviene…"
+      ],
+      "checked_options": [
+        "x²+5",
+        "3",
+        "Derivarla y recuperar la función original"
+      ],
+      "misconception_examined": "La constante no es decorativa: recoge funciones distintas con la misma derivada.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-matrix-product",
+      "lesson_sha256": "4f1d638d1dd126a68761b19c7510c611e3c0919e0e270c4026fd0dab419cdb45",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Una matriz 2×3 multiplicada por una 3×4 produce…",
+        "La fila (1,2) por la columna (3,4) da…",
+        "En general, cambiar AB por BA…"
+      ],
+      "checked_options": [
+        "Una matriz 2×4",
+        "11",
+        "Puede cambiar el resultado o impedir que el producto esté definido"
+      ],
+      "misconception_examined": "El producto matricial no se obtiene multiplicando siempre casillas de la misma posición.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-bayes",
+      "lesson_sha256": "ccad7d252f9b8c7617c6211506cbe6ed359ab712127fad9508c0282a4ac78bee",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Matemáticas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Con 60 % de piezas de A, 40 % de B y defectos del 2 % y 5 %, la probabilidad total de defecto es…",
+        "Una fábrica recibe 60 % de piezas de A y 40 % de B; son defectuosas 2 % de A y 5 % de B. Entre las defectuosas, la probabilidad de proceder de B es…",
+        "P(A dado B) y P(B dado A)…"
+      ],
+      "checked_options": [
+        "3,2 %",
+        "62,5 %",
+        "No son intercambiables en general"
+      ],
+      "misconception_examined": "Una tasa condicionada no puede invertirse ignorando las probabilidades previas.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-coulomb",
+      "lesson_sha256": "9fe3debd0858dff5e8eef39f265e69cc5f7b27a0325ebb56bb856a0504354d2b",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Al duplicar la distancia entre las mismas cargas, la fuerza en magnitud pasa a…",
+        "Dos cargas del mismo signo…",
+        "La ley descrita supone…"
+      ],
+      "checked_options": [
+        "Un cuarto",
+        "Se repelen en este modelo",
+        "Cargas puntuales y condiciones electrostáticas"
+      ],
+      "misconception_examined": "Duplicar la distancia no reduce la fuerza solo a la mitad.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-electric-potential",
+      "lesson_sha256": "3aca34c5d4e640380f2d0e9d6a85dfa52eee8d49309d3a082409f8065930d449",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Con q=+2 C y ΔV=+3 V, ΔU es…",
+        "Un voltio equivale a…",
+        "Si cambia el signo de q y se mantiene ΔV, ΔU…"
+      ],
+      "checked_options": [
+        "+6 J",
+        "Un julio por culombio",
+        "Cambia de signo"
+      ],
+      "misconception_examined": "Una diferencia de potencial no es por sí sola una cantidad de energía para cualquier carga.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-induction",
+      "lesson_sha256": "051d97b4d90998815597f7b467ea7651005b8d150ccd8060c00409192b2174b4",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "La inducción se relaciona con…",
+        "El flujo puede variar al cambiar…",
+        "La respuesta descrita por Lenz se opone…"
+      ],
+      "checked_options": [
+        "Un cambio de flujo magnético",
+        "La orientación de la espira respecto al campo",
+        "Al cambio de flujo que la origina"
+      ],
+      "misconception_examined": "Un campo magnético constante puede producir un flujo variable si cambia la orientación o el área del circuito.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-acid-base",
+      "lesson_sha256": "92b4ed462de6d3f38d90e2fed771f215c8e495df88e7950ba514679a2acff429",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En NH₃ + H₂O ⇌ NH₄⁺ + OH⁻, NH₃ actúa como…",
+        "La base conjugada de H₂O al donar un protón es…",
+        "Para clasificar una especie como ácido o base de Brønsted conviene…"
+      ],
+      "checked_options": [
+        "Base aceptora",
+        "OH⁻",
+        "Examinar su papel en la transferencia de protones"
+      ],
+      "misconception_examined": "El papel ácido o básico de algunas especies depende de la reacción concreta.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-enthalpy",
+      "lesson_sha256": "551cd6af024a5db64456831d46473170f75017e0146ec24a55f27b154586b39e",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Para una reacción exotérmica, el convenio habitual asigna…",
+        "Si invertimos una reacción con ΔH=−100 kJ, la inversa tiene…",
+        "Una reacción tiene ΔH=−100 kJ. Al duplicar toda su ecuación en las mismas condiciones, ΔH es…"
+      ],
+      "checked_options": [
+        "ΔH negativa",
+        "+100 kJ",
+        "−200 kJ"
+      ],
+      "misconception_examined": "El signo de ΔH no demuestra por sí solo que una reacción sea espontánea a cualquier temperatura.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-enzymes",
+      "lesson_sha256": "ade35196ca6dcd71fc7fe5932225582785b3dd55d5a17b3360621931fdd09913",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Las enzimas suelen acelerar una reacción al…",
+        "Un catalizador cambia por sí solo la posición del equilibrio…",
+        "El valor óptimo de pH para las enzimas…"
+      ],
+      "checked_options": [
+        "Reducir la barrera de activación por otra vía",
+        "No",
+        "Depende de la enzima y de las condiciones"
+      ],
+      "misconception_examined": "Acelerar una reacción no equivale a modificar su energía libre global.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-transcription",
+      "lesson_sha256": "d9b2892a0c61010bfe616555965251f14929b9fe8bc18c0ccdec899e54bfd07b",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Frente al ADN molde 3′-TAC-5′, el ARN complementario es…",
+        "El ARN se sintetiza en sentido…",
+        "La transcripción produce directamente…"
+      ],
+      "checked_options": [
+        "5′-AUG-3′",
+        "5′ a 3′",
+        "ARN"
+      ],
+      "misconception_examined": "Transcripción y traducción no son el mismo proceso.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-translation",
+      "lesson_sha256": "eb0759d86ca06c12bfad536a211baa24951df420eac896c35b9f6056be355d70",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Ciencias y tecnología",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Un codón contiene…",
+        "En el código estándar, UAA es…",
+        "Que el código sea degenerado significa que…"
+      ],
+      "checked_options": [
+        "Tres nucleótidos",
+        "Una señal de terminación",
+        "Varios codones pueden corresponder al mismo aminoácido"
+      ],
+      "misconception_examined": "No todo triplete añade un aminoácido a la cadena.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-aristotle",
+      "lesson_sha256": "cac82ee6aa49a4aa03322883a8d3c584f2431d99739ff839f7c6988dcc455328",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Humanidades",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "En esta teoría, las virtudes éticas se desarrollan mediante…",
+        "El término medio aristotélico es…",
+        "Al explicar esta ética debemos…"
+      ],
+      "checked_options": [
+        "Hábitos y elección razonada",
+        "Una respuesta adecuada juzgada con prudencia",
+        "Situarla como una propuesta filosófica argumentada"
+      ],
+      "misconception_examined": "No actuar o escoger siempre una cantidad intermedia no equivale a ser virtuoso en esta teoría.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-marx",
+      "lesson_sha256": "f5ba7c24e9b4d4d5a100ebd5f02636e30d30611f44516ca8d33b249fab690875",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Humanidades",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "La alienación marxiana aquí estudiada analiza principalmente…",
+        "Sentirse aburrido en una tarea…",
+        "Para evaluar esta propuesta conviene…"
+      ],
+      "checked_options": [
+        "Relaciones del trabajador con producto, actividad y vida social",
+        "No basta por sí solo para describir toda esa teoría",
+        "Examinar sus conceptos, razones y contexto histórico"
+      ],
+      "misconception_examined": "Alienación no es simplemente un sinónimo de aburrimiento o fatiga.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    },
+    {
+      "lesson_id": "b-reported-speech",
+      "lesson_sha256": "f588a6539e01ef89b0cd9312fafe24098bf7bc60875c626e2e5dbd5a9d5f652a",
+      "reviewer_kind": "single_AI_emulating_disciplinary_lenses",
+      "primary_lens": "Lenguas",
+      "review_dimensions": [
+        "factual scope and assumptions",
+        "age and clarity",
+        "self-contained questions",
+        "answer keys",
+        "misconceptions and scaffolding",
+        "safety and inclusion"
+      ],
+      "questions_checked": [
+        "Al informar después de «I am tired», dicho ayer por Ana sobre aquel momento, una forma adecuada es…",
+        "Los pronombres se ajustan según…",
+        "El retroceso temporal en estilo indirecto…"
+      ],
+      "checked_options": [
+        "Ana said that she was tired",
+        "Quién habla y a quién se refiere el mensaje",
+        "Depende también del contexto y la vigencia de lo dicho"
+      ],
+      "misconception_examined": "Aplicar cambios mecánicos puede modificar el sentido o producir una referencia incorrecta.",
+      "curriculum_reference": "https://www.boe.es/buscar/act.php?id=BOE-A-2022-5521",
+      "full_criterion_alignment_verified": false,
+      "human_teacher_reviewed": false,
+      "classroom_efficacy_tested": false
+    }
+  ]
+}
