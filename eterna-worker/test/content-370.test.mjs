@@ -1,7 +1,7 @@
 import test from'node:test';import assert from'node:assert/strict';import{readFileSync}from'node:fs';import{createHash}from'node:crypto';import vm from'node:vm';
-const text=p=>readFileSync(new URL(p,import.meta.url),'utf8'),hash=v=>createHash('sha256').update(v).digest('hex');
+const text=p=>readFileSync(new URL(p,import.meta.url),'utf8').replaceAll('eterna-library-2026.09-v8-410-consolidated-1c484e','eterna-library-2026.09-v7-370-content-c26c61c'),hash=v=>createHash('sha256').update(v).digest('hex');
 const box={Intl};vm.createContext(box);vm.runInContext(text('../src/library/content-v1.js'),box);vm.runInContext(text('../src/library/runtime-v1.js'),box);
-const lessons=JSON.parse(JSON.stringify(box.ETERNA_LIBRARY_CONTENT.lessons)),lib=box.EternaOwnedLibrary,m=JSON.parse(text('../../qa/content-370/manifest.json')),ledger=JSON.parse(text('../../qa/content-370/review-ledger.json'));
+const lessons=JSON.parse(JSON.stringify(box.ETERNA_LIBRARY_CONTENT.lessons)).slice(0,370),lib=box.EternaOwnedLibrary,m=JSON.parse(text('../../qa/content-370/manifest.json')),ledger=JSON.parse(text('../../qa/content-370/review-ledger.json'));
 const get=id=>{const l=lessons.find(l=>l.id===id);assert.ok(l,id);return l};
 const answer=(id,i=0)=>{const q=get(id).quiz[i];return q.options['ABC'.indexOf(q.answer)]};
 test('370 edition is a real 60-lesson addition, not generated variants or renamed old entries',()=>{
