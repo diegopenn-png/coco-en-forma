@@ -1,14 +1,14 @@
-/* Coco en Forma · Reto Coco 2026 · v160.99.6
+/* Coco en Forma · Reto Coco 2026 · v160.99.8
  * Desktop: promo above existing Coco brand card, visually integrated.
  * Mobile/PWA: promo before games; existing brand card after games, with clear section spacing.
  */
 (function(){
   'use strict';
-  if(window.__COCO_RETO_2026_V160996__) return;
-  window.__COCO_RETO_2026_V160996__=true;
+  if(window.__COCO_RETO_2026_V160998__) return;
+  window.__COCO_RETO_2026_V160998__=true;
 
   var style=document.createElement('style');
-  style.id='coco-reto-2026-v160996-style';
+  style.id='coco-reto-2026-v160998-style';
   style.textContent=`
   #cocoReto2026{box-sizing:border-box;width:100%;margin:0;padding:7px;background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(248,251,255,.98));border:1px solid rgba(111,178,210,.28);border-radius:26px;box-shadow:0 8px 22px rgba(22,56,78,.09);position:relative}
   #cocoReto2026 img{display:block;width:100%;height:auto;object-fit:contain;border-radius:20px;box-shadow:none;image-rendering:auto;background:transparent}
@@ -31,7 +31,7 @@
     el.id='cocoReto2026';
     el.setAttribute('aria-label','Reto Coco en Forma 2026');
     var img=document.createElement('img');
-    img.src='./reto-coco-2026-v160912.webp?v=160996';
+    img.src='./reto-coco-2026-v160912.jpg?v=160998';
     img.alt='Reto Coco en Forma 2026. Los 3 jugadores con mayor puntuación acumulada al 31 de diciembre de 2026 recibirán un llavero 3D exclusivo de Coco en Forma, impreso con nuestra impresora 3D, y un diploma personalizado de Campeón Coco en Forma 2026.';
     img.decoding='async';
     img.loading='eager';
