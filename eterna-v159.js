@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.98.0-human-teacher";
+  var VERSION="160.98.1-relational-continuity";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -56,7 +56,7 @@
   function opaqueId(prefix){var c=stateContract(),id="";try{if(window.crypto&&typeof window.crypto.randomUUID==="function")id=window.crypto.randomUUID()}catch(e){}if(!id)id=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2)+"-"+Math.random().toString(36).slice(2);id=String(prefix||"id")+":"+id;return!c||c.validOpaqueId(id)?id:String(prefix||"id")+":"+Date.now().toString(36)+Math.random().toString(36).slice(2)}
   function freshModeState(){return{question_number:1,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null}}
   function freshConversationState(){return{current_topic:null,subject:null,concept:null,student_intent:null,tutor_act:null,expected_student_act:null,explained_points:[],known_points:[],unresolved_question:null,confusion_level:0,help_level:1,last_question_type:null,strategy_used:null,next_teaching_goal:null,last_user_intent:null}}
-  function freshPedagogicalState(mode){return{active_topic:null,active_subject:null,active_concept:null,current_mode:mode||state.mode||"homework",pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:1,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"starting",turn_index:0,last_tutor_act:"none",explained_points:[],known_points:[],unresolved_question:null,expected_student_act:"none",last_question_type:"none",next_teaching_goal:null,confusion_count:0,simplification_level:0,last_student_intent:"none",suspended_topic:null}}
+  function freshPedagogicalState(mode){return{active_topic:null,active_subject:null,active_concept:null,current_mode:mode||state.mode||"homework",pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:1,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"starting",turn_index:0,last_tutor_act:"none",explained_points:[],known_points:[],unresolved_question:null,expected_student_act:"none",last_question_type:"none",next_teaching_goal:null,confusion_count:0,simplification_level:0,last_student_intent:"none",suspended_topic:null,relational_thread:null}}
   function sessionUserId(){return state.session&&state.session.user&&state.session.user.id?String(state.session.user.id):""}
   function currentActivity(){return state.activities[state.mode]||null}
   function activityModeState(activity){activity=activity||currentActivity()||{};return{question_number:Number(activity.question_number||1),correct_count:Number(activity.correct_count||0),partial_count:Number(activity.partial_count||0),incorrect_count:Number(activity.incorrect_count||0),difficulty:Number(activity.difficulty||2),focus:activity.practice_target&&activity.practice_target.label||null}}
@@ -77,7 +77,7 @@
   function topicReturnWords(value){var ignored={volvamos:1,retomemos:1,retoma:1,retomar:1,vuelve:1,regresemos:1,regresa:1,sigamos:1,continuemos:1,continua:1,continuar:1,tema:1,anterior:1,antes:1,donde:1,dejamos:1,estabamos:1,viendo:1,con:1,los:1,las:1,una:1,uno:1,unos:1,unas:1,del:1,por:1,para:1,que:1};return conversationNorm(value).split(" ").filter(function(word){return word.length>=5&&!ignored[word]})}
   function namedReturnToSuspended(raw){var target=state.pedagogicalState&&state.pedagogicalState.suspended_topic,n=conversationNorm(raw);if(!target||!/\b(?:volvamos|retomemos|retoma|retomar|vuelve|regresemos|regresa|sigamos|continuemos|continua|continuar)\b/.test(n))return false;var asked=topicReturnWords(n),known=topicReturnWords([target.topic,target.subject,target.concept].filter(Boolean).join(" "));return asked.some(function(a){return known.some(function(k){return a===k||a.length>=5&&k.length>=5&&a.slice(0,5)===k.slice(0,5)})})}
   function resolveContextualTurn(raw){
-    var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question);
+    var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question),relationalActive=Boolean(state.pedagogicalState&&state.pedagogicalState.relational_thread);
     var result={text:raw,intent:"question_or_new_topic",directive:null};
     var returnTopic=/\b(?:volvamos|retomemos|retoma|retomar|vuelve|regresemos|regresa|sigamos)\b.{0,45}\b(?:lo\s+anterior|lo\s+de\s+antes|tema\s+anterior|tema\s+de\s+antes|estabamos\s+viendo|dejamos)\b/.test(n)||/^(?:continuemos|sigamos)\s+con\s+(?:lo\s+)?(?:anterior|de\s+antes)$/.test(n)||namedReturnToSuspended(raw);
     var explicitSwitch=/^(?:(?:vale|ok)\s+)?(?:ahora|otra pregunta|cambiando de tema|cambio de tema)\b/.test(n);
@@ -86,6 +86,8 @@
       result.text=raw;result.intent="return_topic";result.directive="RETURN_TOPIC"
     }else if(explicitNewTopic){
       state.conversationState=freshConversationState();cs=state.conversationState;result.intent="new_topic";result.directive="EXPLAIN"
+    }else if(relationalActive){
+      result.text=raw;result.intent="relational_followup";result.directive=null
     }else if(n==="si"){
       if(isCheck){result.text="Mi respuesta a tu última comprobación es sí. Evalúala usando exactamente la pregunta anterior: "+check;result.intent="answer_check"}
       else{result.text="Sí. Continúa con la explicación que acababas de ofrecer sobre "+topic+" y resuelve lo que quedó pendiente.";result.intent="continue_pending";result.directive="ADVANCE"}
@@ -775,7 +777,7 @@
     var o=overlay(),input=o.querySelector("[data-et-input]"),rawText=String(options.text==null?input.value||"":options.text).trim();if(!rawText&&!state.imageData){setStatus("Escribe una pregunta o adjunta una foto","warn");input.focus();syncSendAvailability();return}
     var turn=rawText?resolveContextualTurn(rawText):{text:"",intent:"image_homework",directive:null};
     var activity=ensureActivity(state.mode,false);if(!activity){setStatus("Falta cargar el contrato de actividad","warn");return}
-    var inferredAction=options.studentAction||(turn.intent==="new_topic"?"new_topic":turn.intent==="return_topic"?"return_topic":activity.phase==="WAIT"?"answer":activity.phase==="NEXT"?"continue":"continue"),answeredQuestionId=activity.phase==="WAIT"&&inferredAction==="answer"?activity.question_id:(options.questionId||null),requestId=opaqueId("request"),clientTurnId=opaqueId("turn"),controller=typeof AbortController!=="undefined"?new AbortController():null,epoch=state.activityEpoch;
+    var inferredAction=options.studentAction||(turn.intent==="new_topic"?"new_topic":turn.intent==="return_topic"?"return_topic":turn.intent==="relational_followup"?"continue":activity.phase==="WAIT"?"answer":activity.phase==="NEXT"?"continue":"continue"),answeredQuestionId=activity.phase==="WAIT"&&inferredAction==="answer"?activity.question_id:(options.questionId||null),requestId=opaqueId("request"),clientTurnId=opaqueId("turn"),controller=typeof AbortController!=="undefined"?new AbortController():null,epoch=state.activityEpoch;
     state.busy=true;input.disabled=true;o.querySelector("[data-et-send]").disabled=true;setThinking(true);
     var apiHistory=historyForApi(),shown=options.displayText||rawText||"He adjuntado una foto de mi tarea.",userEntry={role:"user",text:shown,api_text:turn.text||shown,meta:{student_intent:turn.intent,student_action:inferredAction,answered_question_id:answeredQuestionId}};appendMessage("user",shown,null,true,false);input.value="";setStatus("Eterna está pensando y comprobando…","warn");
     var context={uid:sessionUserId(),mode:state.mode,session_id:activity.session_id,activity:activity,epoch:epoch,request_id:requestId,client_turn_id:clientTurnId,answered_question_id:answeredQuestionId,student_action:inferredAction,turn:turn,userEntry:userEntry,controller:controller};state.activeRequest=context;
