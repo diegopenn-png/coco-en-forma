@@ -575,7 +575,7 @@
     window.__cocoPwaV142Registered = true;
     var hadController = Boolean(navigator.serviceWorker.controller), reloading = false, reloadKey = "coco_pwa_controller_reload_v160100";
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register(new URL("sw.js?v=160101-r2",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
+      navigator.serviceWorker.register(new URL("sw.js?v=160102-r3",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
         function offerUpdate(worker) {
           if (!worker || !hadController || document.querySelector(".cocoV134Update")) return;
           var app = document.getElementById("cocoApp") || document.body, button = document.createElement("button");

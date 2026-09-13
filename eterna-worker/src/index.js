@@ -5,7 +5,7 @@ import "./library/procedural-v1.js";
 import "./library/compass-data-v1.js";
 import "./library/curricular-compass-v1.js";
 
-/* ETERNA v160.98.1 · tutora humana, identidad explícita y apoyo escolar empático
+/* ETERNA v160.98.2 · tutora humana, identidad explícita y apoyo escolar empático
  * Release Candidate construido exclusivamente sobre el Worker desplegado 160.9-scope-tutor3.
  * Mantiene Scope Gate + tutor + verifier + vision + speech + transcription + Stripe.
  * Conserva legal, pagos, scope, safety, memoria, límites y pedagogía adaptativa.
@@ -18,7 +18,7 @@ import "./library/curricular-compass-v1.js";
  */
 const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.98.1-relational-continuity";
+const VERSION="160.98.2-greeting-timing";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -98,6 +98,7 @@ function teacherCoreInstruction(policy){return`NÚCLEO DOCENTE ETERNA:
 - Primacía relacional: si el mensaje expresa preocupación, frustración, vergüenza, conflicto o malestar escolar, atiende primero esa vivencia de forma concreta y después ofrece un siguiente paso útil. No contestes a una situación humana con una advertencia genérica de alcance.
 - Continuidad relacional: cuando el alumno abre una situación humana, permanece en ese hilo mientras siga hablando de ella. Responde a lo último que dijo, profundiza o ayuda a actuar y no vuelvas al tema académico anterior ni lo ofrezcas como salida automática. Solo retómalo cuando el alumno lo pida o cambie claramente de tema.
 - Voz natural: habla como una gran docente que está presente en la conversación. Varía los inicios, usa frases directas y cercanas y formula como máximo una pregunta útil cada vez. Evita plantillas burocráticas, sermones, halagos automáticos y repeticiones como «este espacio está centrado…».
+- Ritmo de saludo: saluda solo al comenzar la conversación. Si el historial ya contiene diálogo, continúa directamente y nunca vuelvas a abrir una respuesta con «hola», el nombre del alumno ni una nueva presentación. Un nuevo «buenos días», «buenas tardes» o «buenas noches» solo corresponde cuando el alumno inicia esa franja o en un nuevo día; la capa temporal del sistema aplicará la decisión final.
 - Dignidad y valores: protege libertad, igualdad, honestidad, responsabilidad, convivencia, pensamiento crítico, inclusión y derechos de la infancia. No adoctrines ni impongas creencias. Distingue hechos, interpretaciones y opiniones; presenta controversias con neutralidad y evidencia apropiada al curso.
 - Atención situacional: lee primero y de forma aislada el MENSAJE ACTUAL. El historial ayuda a entender referencias, pero no puede sustituir ni contradecir lo que el alumno acaba de decir. Una pregunta pendiente es solo una hipótesis de contexto: evalúala únicamente si el mensaje actual encaja realmente como respuesta. Un cambio de tema no es un error académico.
 - Criterio profesional: enseña para que el alumno comprenda y gane autonomía. Da la ayuda mínima útil, corrige con precisión y amabilidad, admite incertidumbre y no inventa. Respeta privacidad y límites; no fomentes dependencia emocional ni secretos con el alumno.
@@ -337,6 +338,31 @@ function courtesyNorm(t){return normalizeDetectionText(t).replace(/[¿?¡!.,;:]+
 function pureCourtesy(t){const x=courtesyNorm(t),withoutName=x.replace(/\beterna\b/g," ").replace(/\s+/g," ").trim()||(/^eterna$/.test(x)?"hola":"");return!!withoutName&&x.length<=90&&!clearSafetySignal(t)&&/^(hola|buenos dias|buenas tardes|buenas noches|hey|ey|que tal|como estas|hola como estas|gracias|muchas gracias|de nada|adios|hasta luego|nos vemos|chao|chau)$/.test(withoutName)}
 function displayStudentName(v){const n=cleanChildText(v||"").split(/\s+/)[0].slice(0,32);return n?n.charAt(0).toLocaleUpperCase("es-ES")+n.slice(1):""}
 function courtesyReply(t,name){const x=courtesyNorm(t),n=displayStudentName(name),h=n?`¡Hola, ${n}!`:`¡Hola!`,named=/\beterna\b/.test(x);if(/gracias/.test(x))return n?`¡De nada, ${n}! 😊 Cuando quieras, seguimos aprendiendo.`:"¡De nada! 😊 Cuando quieras, seguimos aprendiendo.";if(/adios|hasta luego|nos vemos|chao|chau/.test(x))return n?`¡Hasta luego, ${n}! 👋 Cuando quieras, seguimos con el cole.`:"¡Hasta luego! 👋 Cuando quieras, seguimos con el cole.";if(/buenos dias/.test(x))return`${n?`¡Buenos días, ${n}!`:`¡Buenos días!`} 😊 ${named?"Sí, soy Eterna. ":""}¿Qué te gustaría entender o resolver hoy?`;if(/buenas tardes/.test(x))return`${n?`¡Buenas tardes, ${n}!`:`¡Buenas tardes!`} 😊 ${named?"Sí, soy Eterna. ":""}¿Qué te gustaría entender o resolver hoy?`;if(/buenas noches/.test(x))return`${n?`¡Buenas noches, ${n}!`:`¡Buenas noches!`} 😊 ${named?"Sí, soy Eterna. ":""}¿Qué te gustaría entender o resolver hoy?`;if(/como estas|que tal/.test(x))return`${h} 😊 ${named?"Sí, soy Eterna. ":""}Estoy lista para escucharte y ayudarte con calma.`;return`${h} 😊 ${named?"Sí, soy Eterna. ":""}¿Qué te gustaría entender o resolver hoy?`}
+const GREETING_PERIODS=["morning","afternoon","night"];
+function greetingPeriodForHour(value){const hour=Math.max(0,Math.min(23,Number(value)||0));return hour>=5&&hour<12?"morning":hour>=12&&hour<20?"afternoon":"night"}
+function validLocalDate(value){const match=String(value||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!match)return null;const year=Number(match[1]),month=Number(match[2]),day=Number(match[3]),date=new Date(Date.UTC(year,month-1,day));return date.getUTCFullYear()===year&&date.getUTCMonth()===month-1&&date.getUTCDate()===day?match[0]:null}
+function sanitizeClientClock(value){const x=value&&typeof value==="object"?value:{},localDate=validLocalDate(x.local_date),hour=Number(x.local_hour),sentAt=Number(x.sent_at_ms),timezone=Number(x.timezone_offset_minutes);return{local_date:localDate||new Date().toISOString().slice(0,10),local_hour:Number.isFinite(hour)?Math.max(0,Math.min(23,Math.floor(hour))):new Date().getUTCHours(),timezone_offset_minutes:Number.isFinite(timezone)?Math.max(-840,Math.min(840,Math.round(timezone))):0,sent_at_ms:Number.isFinite(sentAt)&&sentAt>0?Math.floor(sentAt):Date.now()}}
+function sanitizeGreetingState(value){const x=value&&typeof value==="object"?value:{},localDate=validLocalDate(x.local_date),period=GREETING_PERIODS.includes(x.period)?x.period:null,at=Number(x.greeted_at_ms);return localDate&&period&&Number.isFinite(at)&&at>0?{local_date:localDate,period,greeted_at_ms:Math.floor(at)}:null}
+function greetingKindFromText(value){const text=normalizeDetectionText(value).trim();if(/^buenos dias\b/.test(text))return"morning";if(/^buenas tardes\b/.test(text))return"afternoon";if(/^buenas noches\b/.test(text))return"night";if(/^(?:hola|hey|ey)\b/.test(text))return"generic";return null}
+const LEADING_GREETING_PATTERNS=[
+  ["morning",/^\s*[¡!]*(?:Buenos|buenos|BUENOS)\s+(?:días|Días|dias|Dias|DÍAS|DIAS)(?:\s*,?\s*\p{Lu}[\p{L}'’.-]{0,31})?\s*(?:[!¡.,;:—-]+|\n+)\s*(?:(?:😊|🙂|👋|🌞|🌤️|🌙|✨|☀️|☺️)\s*)*/u],
+  ["afternoon",/^\s*[¡!]*(?:Buenas|buenas|BUENAS)\s+(?:tardes|Tardes|TARDES)(?:\s*,?\s*\p{Lu}[\p{L}'’.-]{0,31})?\s*(?:[!¡.,;:—-]+|\n+)\s*(?:(?:😊|🙂|👋|🌞|🌤️|🌙|✨|☀️|☺️)\s*)*/u],
+  ["night",/^\s*[¡!]*(?:Buenas|buenas|BUENAS)\s+(?:noches|Noches|NOCHES)(?:\s*,?\s*\p{Lu}[\p{L}'’.-]{0,31})?\s*(?:[!¡.,;:—-]+|\n+)\s*(?:(?:😊|🙂|👋|🌞|🌤️|🌙|✨|☀️|☺️)\s*)*/u],
+  ["generic",/^\s*[¡!]*(?:Hola|hola|HOLA)(?:\s*,?\s*\p{Lu}[\p{L}'’.-]{0,31})?\s*(?:[!¡.,;:—-]+|\n+)\s*(?:(?:😊|🙂|👋|🌞|🌤️|🌙|✨|☀️|☺️)\s*)*/u]
+];
+function leadingReplyGreeting(value){const reply=String(value||"");for(const [kind,pattern] of LEADING_GREETING_PATTERNS){const match=reply.match(pattern);if(match)return{kind,length:match[0].length}}return null}
+function stripLeadingGreeting(value){const reply=String(value||""),prefix=leadingReplyGreeting(reply);return prefix?reply.slice(prefix.length).trimStart():reply}
+function greetingLabel(kind){return kind==="morning"?"¡Buenos días!":kind==="afternoon"?"¡Buenas tardes!":kind==="night"?"¡Buenas noches!":"¡Hola!"}
+function enforceGreetingPolicy(payload,body){
+  if(!payload||typeof payload!=="object"||typeof payload.reply!=="string")return payload;
+  const clock=sanitizeClientClock(body?.client_clock),clockPeriod=greetingPeriodForHour(clock.local_hour),previous=sanitizeGreetingState(body?.client_greeting_state),history=Array.isArray(body?.history)?body.history:[],pedTurn=Math.max(0,Number(body?.pedagogical_state?.turn_index||0)),started=pedTurn>0||history.some(item=>item&&item.role==="assistant"),explicit=greetingKindFromText(body?.text),prefix=leadingReplyGreeting(payload.reply),safeInterrupt=payload.verification_status==="blocked_safety",newDay=Boolean(previous&&previous.local_date!==clock.local_date),explicitPeriod=GREETING_PERIODS.includes(explicit)?explicit:null,periodChanged=Boolean(previous&&explicitPeriod&&previous.period!==explicitPeriod),first=!previous&&!started,allowed=!safeInterrupt&&(first||newDay||periodChanged),shouldGreet=allowed&&Boolean(prefix||explicit||newDay),desired=explicit||clockPeriod;
+  let reply=payload.reply,nextState=previous;
+  if(!allowed&&prefix)reply=stripLeadingGreeting(reply)||"Dime, ¿en qué te ayudo?";
+  else if(shouldGreet){if(!prefix)reply=`${greetingLabel(desired)} ${reply}`;else if(prefix.kind!==desired)reply=`${greetingLabel(desired)} ${stripLeadingGreeting(reply)}`.trim();nextState={local_date:clock.local_date,period:explicitPeriod||clockPeriod,greeted_at_ms:clock.sent_at_ms}}
+  else if(!nextState&&started)nextState={local_date:clock.local_date,period:clockPeriod,greeted_at_ms:clock.sent_at_ms};
+  return{...payload,reply,greeting_state:nextState,greeting_policy:{version:"v1",greeting_allowed:allowed,greeting_emitted:Boolean(leadingReplyGreeting(reply)),local_period:clockPeriod}}
+}
+async function applyGreetingContinuity(response,body){if(!response||!body||response.status>=500||!/application\/json/i.test(response.headers.get("Content-Type")||""))return response;let payload;try{payload=await response.clone().json()}catch(_e){return response}const guarded=enforceGreetingPolicy(payload,body);if(guarded===payload)return response;const headers=new Headers(response.headers);headers.delete("Content-Length");return new Response(JSON.stringify(guarded),{status:response.status,statusText:response.statusText,headers})}
 function eternaIdentityReply(){return"Me llamo Eterna. Soy una IA tutora escolar de Coco en Forma; no soy una persona. Mi misión es ayudarte a comprender de verdad, pensar por tu cuenta y ganar confianza: adapto las explicaciones a tu curso, doy pistas, reviso contigo y compruebo lo importante. Puedo equivocarme, así que te diré cuando no esté segura."}
 const RELATIONAL_KINDS=["classroom_embarrassment","academic_integrity","school_peer_problem","school_emotion","learning_readiness","classroom_reflection","student_wellbeing"];
 const RELATIONAL_STAGES=["opening","exploring","planning","checking_in"];
@@ -1379,9 +1405,10 @@ function ownedLibraryDecision(env,{text,image,ctx,mode,incomingPedState,incoming
   return library.decision({text:canonicalText,profile:ctx.profile,pedState:incomingPedState,modeState:incomingModeState,mode,image,newTopic:startsNewTopic})
 }
 
-async function handleChat(request,env,auth,event){
+async function handleChat(request,env,auth,event,greetingBody=null){
   const timings=createChatTimings();
-  try{return withChatTimings(await handleChatCore(request,env,auth,event,timings),timings)}catch(error){timings.mark("failed");throw error}
+  let policyBody=greetingBody;if(!policyBody)try{policyBody=await request.clone().json()}catch(_e){policyBody={}};
+  try{return withChatTimings(await applyGreetingContinuity(await handleChatCore(request,env,auth,event,timings),policyBody),timings)}catch(error){timings.mark("failed");throw error}
 }
 async function handleChatCore(request,env,auth,event,timings){
   const body=await request.json(),text=String(body.text||"").slice(0,6000),rawImage=typeof body.image_data_url==="string"?body.image_data_url:null,imageValidation=validateImageDataUrl(rawImage),image=imageValidation.ok?rawImage:null,history=Array.isArray(body.history)?body.history.slice(-8):[],mode=MODE_PROFILES[body.mode]?String(body.mode):"homework",inputSource=["text","voice","image"].includes(body.input_source)?body.input_source:(image?"image":"text"),incomingModeState=sanitizeModeState(body.mode_state),incomingPedState=sanitizePedagogicalState(body.pedagogical_state,mode),clientStudentIntent=["answer_check","return_topic","confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen","relational_followup"].includes(String(body.student_intent||""))?String(body.student_intent):null,clientTutorDirective=["RETURN_TOPIC","CHANGE_STRATEGY","SIMPLIFY","ADVANCE","EXPLAIN_CAUSE","EXPLAIN_MECHANISM"].includes(String(body.tutor_directive||""))?String(body.tutor_directive):null,clientRepetitionGuard=typeof body.repetition_guard==="string"?body.repetition_guard.slice(0,700):null;
@@ -1632,7 +1659,7 @@ async function handleChatJob(request,env,auth,event){
   if(!stored)return json({error:"BACKGROUND_JOB_UNAVAILABLE"},503);
   const headers=new Headers(request.headers);headers.set("Content-Type","application/json");
   const internal=new Request(new URL("/v1/chat",request.url).toString(),{method:"POST",headers,body:JSON.stringify(body)});
-  event.waitUntil((async()=>{const deferred=[];try{const deferredEvent={waitUntil(promise){deferred.push(Promise.resolve(promise))}};let response=await handleChat(internal,env,auth,deferredEvent);if(contractMeta.enabled)response=await addContractEnvelope(response,contractMeta,mode);const responseBody=await response.text(),responseId=(await sha256(responseBody)).slice(0,32),completedAt=Date.now(),payload={status:"complete",http_status:response.status,body:responseBody,response_id:responseId,content_type:response.headers.get("Content-Type")||"application/json; charset=utf-8",server_timing:response.headers.get("Server-Timing")||"",latency_ms:response.headers.get("X-Eterna-Latency-Ms")||String(completedAt-createdAt),created_at:createdAt,completed_at:completedAt,expires_in:CHAT_JOB_TTL_SECONDS};await putChatJob(uid,id,payload)}catch(e){await putChatJob(uid,id,{status:"failed",http_status:500,body:JSON.stringify({error:"ETERNA_BACKEND_ERROR"}),response_id:null,content_type:"application/json; charset=utf-8",created_at:createdAt,completed_at:Date.now(),expires_in:CHAT_JOB_TTL_SECONDS})}finally{await Promise.allSettled(deferred)}})());
+  event.waitUntil((async()=>{const deferred=[];try{const deferredEvent={waitUntil(promise){deferred.push(Promise.resolve(promise))}};let response=await handleChat(internal,env,auth,deferredEvent,body);if(contractMeta.enabled)response=await addContractEnvelope(response,contractMeta,mode);const responseBody=await response.text(),responseId=(await sha256(responseBody)).slice(0,32),completedAt=Date.now(),payload={status:"complete",http_status:response.status,body:responseBody,response_id:responseId,content_type:response.headers.get("Content-Type")||"application/json; charset=utf-8",server_timing:response.headers.get("Server-Timing")||"",latency_ms:response.headers.get("X-Eterna-Latency-Ms")||String(completedAt-createdAt),created_at:createdAt,completed_at:completedAt,expires_in:CHAT_JOB_TTL_SECONDS};await putChatJob(uid,id,payload)}catch(e){await putChatJob(uid,id,{status:"failed",http_status:500,body:JSON.stringify({error:"ETERNA_BACKEND_ERROR"}),response_id:null,content_type:"application/json; charset=utf-8",created_at:createdAt,completed_at:Date.now(),expires_in:CHAT_JOB_TTL_SECONDS})}finally{await Promise.allSettled(deferred)}})());
   return json({ok:true,job_id:id,status:"processing",expires_in:CHAT_JOB_TTL_SECONDS,...(contractMeta.enabled?{client_state_contract:CONTRACT_V3,request_id:contractMeta.requestId,client_turn_id:contractMeta.clientTurnId,activity_state:contractMeta.activityState}:{})},202)
 }
 async function handleChatJobResult(request,env,auth){
@@ -1704,7 +1731,7 @@ function healthFeatures(env){return {
   pedagogical_state_contract_v3:true,question_id_stale_guard:true,transient_request_replay:true,
   feedback_entitlement_gate:true,explicit_understood_signal:true,
   teacher_core_v1:true,situational_core_v1:true,current_message_priority_v1:true,answer_contract_engine_v1:true,coherence_progression_v1:true,
-  explicit_identity_and_mission_v1:true,named_greeting_v1:true,empathetic_school_peer_support_v1:true,anti_robotic_tone_v1:true,
+  explicit_identity_and_mission_v1:true,named_greeting_v1:true,greeting_timing_v1:true,repeated_greeting_guard_v1:true,client_local_clock_v1:true,empathetic_school_peer_support_v1:true,anti_robotic_tone_v1:true,
   relational_continuity_v1:true,adaptive_teacher_presence_v1:true,transient_relational_thread_v1:true,
   child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,pedagogical_simplification_guard_v1:true,non_trivial_microcheck_v1:true,deterministic_fraction_simplification_v1:true,priority_fraction_simplification_v1:true,
   full_intelligence_child_safety_v1:true,helpful_safe_completion_v1:true,suspended_topic_resume_v1:true,mode_contracts_v2:true,
@@ -1773,7 +1800,7 @@ async function handleFetch(request,env,event){
     else if(url.pathname==="/v1/legal-consent"&&["GET","POST"].includes(request.method))response=await handleLegalConsent(request,env,auth);
     else if(url.pathname==="/v1/chat-job"&&request.method==="POST")response=await handleChatJob(request,env,auth,event);
     else if(url.pathname==="/v1/chat-result"&&request.method==="GET")response=await handleChatJobResult(request,env,auth);
-    else if(url.pathname==="/v1/chat"&&request.method==="POST")response=await handleChat(request,env,auth,event);
+    else if(url.pathname==="/v1/chat"&&request.method==="POST")response=await handleChat(request,env,auth,event,bodyCopy);
     else if(url.pathname==="/v1/transcribe"&&request.method==="POST")response=await handleTranscribe(request,env,auth);
     else if(url.pathname==="/v1/speak"&&request.method==="POST")response=await handleSpeak(request,env,auth);
     else if(url.pathname==="/v1/feedback"&&request.method==="POST")response=await handleFeedback(request,env,auth);

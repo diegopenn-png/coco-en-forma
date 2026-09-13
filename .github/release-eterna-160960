@@ -1,4 +1,4 @@
-version=160.98.1-relational-continuity
-reason=relational-continuity-human-teacher
+version=160.98.2-greeting-timing
+reason=time-aware-single-greeting
 client_mic_release=v160.98.8-mic-only-v2-r1
-requested_at=2026-09-13T00:34:06Z
+requested_at=2026-09-13T01:14:26Z
