@@ -147,12 +147,12 @@ jobs:
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
-          grep -F '160.98.1-relational-continuity' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.98.2-greeting-timing' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.98.1-relational-continuity' eterna-worker/src/index.js >/dev/null
+          grep -F '160.98.2-greeting-timing' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -186,10 +186,10 @@ jobs:
         run: |
           ready=0
           for attempt in {1..12}; do
-            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160101&verify=${GITHUB_SHA}-${attempt}"
+            verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160102&verify=${GITHUB_SHA}-${attempt}"
             index_url="${PREVIEW_ORIGIN}/?verify=${GITHUB_SHA}-${attempt}"
             if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
-              && grep -F '160.98.1-relational-continuity' /tmp/eterna-preview.js >/dev/null \
+              && grep -F '160.98.2-greeting-timing' /tmp/eterna-preview.js >/dev/null \
               && curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$index_url" -o /tmp/eterna-preview-index.html \
               && grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null \
               && grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null \
@@ -252,7 +252,7 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.98.1-relational-continuity"
+              && payload.version === "160.98.2-greeting-timing"
               && payload.ai_provider === "cloudflare"
               && payload.cloudflare_ai_configured === true
               && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
@@ -291,6 +291,9 @@ jobs:
               && payload.features?.relational_continuity_v1 === true
               && payload.features?.adaptive_teacher_presence_v1 === true
               && payload.features?.transient_relational_thread_v1 === true
+              && payload.features?.greeting_timing_v1 === true
+              && payload.features?.repeated_greeting_guard_v1 === true
+              && payload.features?.client_local_clock_v1 === true
               && payload.features?.anti_robotic_tone_v1 === true;
             if (!valid) {
               console.error("Unexpected Eterna model configuration", payload);
@@ -302,7 +305,7 @@ jobs:
           echo "Sanitized Cloudflare AI dependency probe: ${dependency_payload}"
           node -e '
             const payload = JSON.parse(process.argv[1]);
-            if (payload.ok !== true || payload.version !== "160.98.1-relational-continuity" || payload.provider !== "cloudflare") process.exit(1);
+            if (payload.ok !== true || payload.version !== "160.98.2-greeting-timing" || payload.provider !== "cloudflare") process.exit(1);
             for (const name of ["moderation", "structured_tutor"]) {
               const item = payload[name] || {};
               if (item.ok !== true) process.exit(1);
@@ -315,7 +318,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.98.1-relational-continuity · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.98.1-relational-continuity"
+            echo "- Expected versions: frontend 160.98.2-greeting-timing · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.98.2-greeting-timing"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents

@@ -16,7 +16,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.98\.1-relational-continuity/);
+  assert.match(worker, /160\.98\.2-greeting-timing/);
   assert.match(worker, /explicit_identity_and_mission_v1:true/);
   assert.match(worker, /empathetic_school_peer_support_v1:true/);
   assert.match(worker, /relational_continuity_v1:true/);
@@ -44,10 +44,10 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
 
-test("the 160.98.1 production gate verifies the resilient human tutor route before release", () => {
+test("the 160.98.2 production gate verifies the resilient human tutor route before release", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-160960.yml", "utf8");
   assert.match(production, /\.github\/release-eterna-160960/);
-  assert.match(production, /EXPECTED_VERSION: 160\.98\.1-relational-continuity/);
+  assert.match(production, /EXPECTED_VERSION: 160\.98\.2-greeting-timing/);
   assert.match(production, /--var "AI_PROVIDER:cloudflare"/);
   assert.match(production, /--var "TUTOR_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(production, /--var "ENABLE_OPENAI_FALLBACK:true"/);
@@ -105,7 +105,7 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.100\.1-relational-continuity-r2/);
+  assert.match(serviceWorker, /160\.100\.2-greeting-timing-r3/);
   assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160100/);
 });

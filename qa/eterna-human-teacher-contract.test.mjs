@@ -9,7 +9,7 @@ test("the bottom composer exposes an accessible Pensando indicator", () => {
   const css = read("eterna-v159.css");
   const composer = core.slice(core.indexOf('<div class="eternaV159Composer"'), core.indexOf("</main>"));
 
-  assert.match(core, /160\.98\.1-relational-continuity/);
+  assert.match(core, /160\.98\.2-greeting-timing/);
   assert.match(composer, /data-et-thinking role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(composer, /<span>Pensando…<\/span>/);
   assert.ok(composer.indexOf("data-et-thinking") < composer.indexOf("eternaV159InputRow"));
@@ -44,9 +44,9 @@ test("the PWA invalidates the human-teacher assets as one release", () => {
   const serviceWorker = read("sw.js");
 
   assert.match(index, /eterna-v159\.css\?v=160980/);
-  assert.match(index, /eterna-v159\.js\?v=160101/);
-  assert.match(index, /sw\.js\?v=160101-r2/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.1-relational-continuity-r2"/);
+  assert.match(index, /eterna-v159\.js\?v=160102/);
+  assert.match(index, /sw\.js\?v=160102-r3/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.2-greeting-timing-r3"/);
 });
 
 test("relational turns stay human, transient and separate from the suspended lesson", () => {
@@ -66,4 +66,27 @@ test("relational turns stay human, transient and separate from the suspended les
   assert.match(relationalTutor, /No fuerces el regreso a los deberes/i);
   assert.match(relationalTutor, /como máximo UNA pregunta natural/i);
   assert.match(relationalTutor, /no fomentes dependencia/i);
+});
+
+test("greetings use local time once per conversational window", () => {
+  const client = read("eterna-v159.js");
+  const worker = read("eterna-worker/src/index.js");
+  const greetingGuard = worker.slice(worker.indexOf("const GREETING_PERIODS"), worker.indexOf("function eternaIdentityReply"));
+  const chatWrapper = worker.slice(worker.indexOf("async function handleChat("), worker.indexOf("async function handleChatCore"));
+
+  assert.match(client, /GREETING_KEY_PREFIX="coco_eterna_greeting_v1:"/);
+  assert.match(client, /function clientClock\(\)/);
+  assert.match(client, /client_clock:clientClock\(\)/);
+  assert.match(client, /client_greeting_state:clientGreetingState\(\)/);
+  assert.match(client, /saveGreetingState\(data\.greeting_state\)/);
+  assert.match(client, /startTitle=openingGreeting\(studentName\)\+p\.title/);
+  assert.match(greetingGuard, /first\|\|newDay\|\|periodChanged/);
+  assert.match(greetingGuard, /if\(!allowed&&prefix\)reply=stripLeadingGreeting/);
+  assert.match(greetingGuard, /"¡Buenos días!"/);
+  assert.match(greetingGuard, /"¡Buenas tardes!"/);
+  assert.match(greetingGuard, /"¡Buenas noches!"/);
+  assert.match(chatWrapper, /applyGreetingContinuity/);
+  assert.match(worker, /greeting_timing_v1:true/);
+  assert.match(worker, /repeated_greeting_guard_v1:true/);
+  assert.match(worker, /no_raw_chat_persistence:true/);
 });

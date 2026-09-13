@@ -73,14 +73,14 @@ test("failed Eterna requests keep the student's input ready to retry",()=>{
 test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   const html=read("index.html"),sw=read("sw.js"),workflow=read(".github/workflows/eterna-authenticated-preview.yml"),core=read("coco-v144-core.js");
   assert.match(html,/coco-excellence-v160934\.js\?v=160960/);
-  assert.match(html,/eterna-v159\.js\?v=160101/);
+  assert.match(html,/eterna-v159\.js\?v=160102/);
   assert.match(html,/coco-v144-core\.js\?v=15001/);
-  assert.match(sw,/coco-en-forma-v160\.100\.1-relational-continuity-r2/);
+  assert.match(sw,/coco-en-forma-v160\.100\.2-greeting-timing-r3/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión para abrir /);
   assert.match(core,/#cocoApp input\[type='email'\]/);
-  assert.match(workflow,/frontend 160\.98\.1-relational-continuity/);
+  assert.match(workflow,/frontend 160\.98\.2-greeting-timing/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
   assert.match(workflow,/coco-excellence-v160934\.js\?v=160960&verify=\$\{GITHUB_SHA\}/);
   assert.match(workflow,/grep -F '160\.96\.0-dynamic-daily-missions'/);
