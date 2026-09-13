@@ -1,0 +1,51 @@
+name: Diagnose Eterna existing tests
+
+on:
+  push:
+    branches:
+      - feat/eterna-conversation-director-160103
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply conversation director patch
+        run: node tools/apply-conversation-director-160103.mjs
+      - name: Diagnose tests individually
+        shell: bash
+        run: |
+          set +e
+          mkdir -p qa/eterna
+          REPORT="qa/eterna/existing-tests-diagnostic.txt"
+          : > "$REPORT"
+          cd eterna-worker
+          npm install --ignore-scripts >/dev/null 2>&1
+          for f in test/*.test.mjs; do
+            echo "=== $f ===" >> "../$REPORT"
+            node --test "$f" > /tmp/eterna-test.log 2>&1
+            code=$?
+            if [ $code -eq 0 ]; then
+              echo "PASS" >> "../$REPORT"
+            else
+              echo "FAIL exit=$code" >> "../$REPORT"
+              tail -n 120 /tmp/eterna-test.log >> "../$REPORT"
+            fi
+            echo >> "../$REPORT"
+          done
+      - name: Commit diagnostic report
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add qa/eterna/existing-tests-diagnostic.txt
+          git commit -m 'ci: record Eterna existing test diagnostics' || exit 0
+          git push origin HEAD:feat/eterna-conversation-director-160103
