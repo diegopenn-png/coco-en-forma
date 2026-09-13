@@ -32,7 +32,7 @@ function conversationDirector({text,history=[],ctx,pedState={},scope,currentSitu
   return{version:CONVERSATION_DIRECTOR_VERSION,route:scope?.scope==="school"?"academic":"general",recent_interventions:recentInterventionTags(history)}
 }
 function profileAgePayload(age,pedState,mode,modeState){
-  const reply=age==null?"No tengo tu edad confirmada en el perfil. Pide a un adulto que la complete en Zona Familiar; no voy a inventarla.":\`Tienes \\${age} años.\`;
+  const reply=age==null?"No tengo tu edad confirmada en el perfil. Pide a un adulto que la complete en Zona Familiar; no voy a inventarla.":\`Tienes \${age} años.\`;
   return{reply,verification_status:"verified",subject:null,concept:null,help_level:0,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:null,mode_label:MODE_PROFILES[mode].label,mode_state:modeState,pedagogical_state:pedState,auto_speak:true,conversation_director:CONVERSATION_DIRECTOR_VERSION}
 }
 `;
@@ -51,7 +51,7 @@ once('async function relationalTutor(env,{text,history,ctx,situation,pedState}){
 'async function relationalTutor(env,{text,history,ctx,situation,pedState}){const policy=ageTeachingProfile(ctx),thread=sanitizeRelationalThread(pedState?.relational_thread),studentName=displayStudentName(ctx?.base?.apodo||ctx?.profile?.apodo||""),recentInterventions=recentInterventionTags(history);const prompt=`Devuelve JSON. Eres Eterna en una conversación de acompañamiento docente con un menor.','relational context');
 
 once('OBJETIVO: escucha y acompaña como una gran profesora, sin convertirte en terapeuta, amiga exclusiva ni sustituta de la familia o del centro.\nREGLAS:',
-'OBJETIVO: escucha y acompaña como una gran profesora, sin convertirte en terapeuta, amiga exclusiva ni sustituta de la familia o del centro.\nINTERVENCIONES YA UTILIZADAS RECIENTEMENTE=${JSON.stringify(recentInterventions)}. No repitas una intervención ya utilizada salvo que aparezca información nueva que la haga necesaria; el siguiente turno debe avanzar de escuchar→comprender→aclarar→ayudar→comprobar→cerrar.\nREGLAS:','semantic repetition');
+'OBJETIVO: escucha y acompaña como una gran profesora, sin convertirte en terapeuta, amiga exclusiva ni sustituta de la familia o del centro.\nINTERVENCIONES YA UTILIZADAS RECIENTEMENTE=\${JSON.stringify(recentInterventions)}. No repitas una intervención ya utilizada salvo que aparezca información nueva que la haga necesaria; el siguiente turno debe avanzar de escuchar→comprender→aclarar→ayudar→comprobar→cerrar.\nREGLAS:','semantic repetition');
 
 once('  relational_continuity_v1:true,adaptive_teacher_presence_v1:true,transient_relational_thread_v1:true,',
 '  relational_continuity_v1:true,adaptive_teacher_presence_v1:true,transient_relational_thread_v1:true,conversation_director_v1:true,semantic_repetition_guard_v1:true,profile_age_resolution_v1:true,','health flags');
