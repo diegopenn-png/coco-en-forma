@@ -11,7 +11,7 @@ test('410 actual lessons, 1230 questions and only forty non-overlapping new topi
 test('all 370 published objects are preserved and the current Worker revision stays pinned',()=>{
  assert.equal(hash(JSON.stringify(ls.slice(0,370))),m.baseline_canonical_sha256);
  for(const[path,want]of Object.entries(m.preserved_sha256))assert.equal(hash(readFileSync(new URL('../../'+path,import.meta.url))),want,path);
- assert.equal(hash(text('../src/index.js').replaceAll(m.release_id,m.baseline_release)),'56e1c27c91c27661d5116074b2443c61cdba4892f9037a18fadc4c962c01b5fd');
+ assert.equal(hash(text('../src/index.js').replaceAll(m.release_id,m.baseline_release)),'349e28ce36002cba8dab42e664c0c84b6c46f82cc1161c84c651339c4711d08e');
  assert.equal(hash(text('../src/library/runtime-v1.js').replaceAll(m.release_id,m.baseline_release)),'94529100f9cea9412e53910075edc366c6b05ee1c3b60e233717e06a4ddf5568');
 });
 for(const id of m.new_ids)test('new unique topic all scoped courses and six modes: '+id,()=>{

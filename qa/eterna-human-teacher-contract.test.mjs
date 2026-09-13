@@ -9,7 +9,7 @@ test("the bottom composer exposes an accessible Pensando indicator", () => {
   const css = read("eterna-v159.css");
   const composer = core.slice(core.indexOf('<div class="eternaV159Composer"'), core.indexOf("</main>"));
 
-  assert.match(core, /160\.98\.0-human-teacher/);
+  assert.match(core, /160\.98\.1-relational-continuity/);
   assert.match(composer, /data-et-thinking role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(composer, /<span>Pensando…<\/span>/);
   assert.ok(composer.indexOf("data-et-thinking") < composer.indexOf("eternaV159InputRow"));
@@ -44,7 +44,26 @@ test("the PWA invalidates the human-teacher assets as one release", () => {
   const serviceWorker = read("sw.js");
 
   assert.match(index, /eterna-v159\.css\?v=160980/);
-  assert.match(index, /eterna-v159\.js\?v=160100/);
-  assert.match(index, /sw\.js\?v=160100-r1/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.0-family-profile-reports-r1"/);
+  assert.match(index, /eterna-v159\.js\?v=160101/);
+  assert.match(index, /sw\.js\?v=160101-r2/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.1-relational-continuity-r2"/);
+});
+
+test("relational turns stay human, transient and separate from the suspended lesson", () => {
+  const client = read("eterna-v159.js");
+  const worker = read("eterna-worker/src/index.js");
+  const resolver = client.slice(client.indexOf("function resolveContextualTurn"), client.indexOf("function inferTutorAct"));
+  const relationalTutor = worker.slice(worker.indexOf("async function relationalTutor"), worker.indexOf("async function currentWeatherLookup"));
+
+  assert.match(client, /relational_thread:null/);
+  assert.match(resolver, /relationalActive=Boolean/);
+  assert.match(resolver, /intent="relational_followup"/);
+  assert.match(client, /turn\.intent==="relational_followup"\?"continue"/);
+  assert.match(worker, /relational_continuity_v1:true/);
+  assert.match(worker, /transient_relational_thread_v1:true/);
+  assert.match(worker, /no_raw_chat_persistence:true/);
+  assert.match(relationalTutor, /No repitas el mismo aviso/i);
+  assert.match(relationalTutor, /No fuerces el regreso a los deberes/i);
+  assert.match(relationalTutor, /como máximo UNA pregunta natural/i);
+  assert.match(relationalTutor, /no fomentes dependencia/i);
 });

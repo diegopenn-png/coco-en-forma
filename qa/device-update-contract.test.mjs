@@ -39,13 +39,13 @@ test("first visits load every production presentation layer without depending on
 
 test("PWA clients request and activate the current release instead of retaining an old device cache", () => {
   assert.match(index, /manifest\.webmanifest\?v=160100/);
-  assert.match(index, /sw\.js\?v=160100-r1/);
+  assert.match(index, /sw\.js\?v=160101-r2/);
   assert.match(index, /updateViaCache:"none"/);
   assert.match(index, /registration\.update\(\)/);
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.0-family-profile-reports-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.1-relational-continuity-r2"/);
   for (const asset of [
     "coco-variety-director-v160960.js",
     "coco-release-v160903.js",
@@ -70,9 +70,9 @@ test("current and legacy PWA entry points share one owner and one canonical work
   assert.match(legacyRuntime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-legacy-v160100"/);
   assert.match(pwaManager, /__COCO_PWA_REGISTRATION_OWNER__="manager-v160100"/);
   assert.match(index, /coco-v142-runtime\.js\?v=160100/);
-  assert.match(runtime, /sw\.js\?v=160100-r1/);
-  assert.match(legacyRuntime, /sw\.js\?v=160100-r1/);
-  assert.match(pwaManager, /SW_TAG="160100-r1"/);
+  assert.match(runtime, /sw\.js\?v=160101-r2/);
+  assert.match(legacyRuntime, /sw\.js\?v=160101-r2/);
+  assert.match(pwaManager, /SW_TAG="160101-r2"/);
   assert.doesNotMatch(runtime, /new URL\("sw\.js",document\.baseURI\)/);
   assert.doesNotMatch(legacyRuntime, /new URL\("sw\.js",document\.baseURI\)/);
   assert.ok(index.indexOf('__COCO_PWA_REGISTRATION_OWNER__ = "index-v160100"') < index.indexOf('coco-v142-runtime.js?v=160100'));
@@ -113,7 +113,7 @@ test("loading the production index and runtime schedules exactly one worker regi
   loadListeners[0]();
   await Promise.resolve();
   assert.equal(registrations.length, 1);
-  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160100-r1");
+  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160101-r2");
   assert.equal(registrations[0].options.updateViaCache, "none");
 });
 

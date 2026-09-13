@@ -39,6 +39,11 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   independentQuestionSignal,
   classroomSituation,
   situationalReply,
+  relationalContinuationSignal,
+  relationalFallbackReply,
+  relationalPayload,
+  sanitizeRelationalThread,
+  preservedSituationalState,
   outOfScopeReply,
   ageTeachingProfile,
   reasoningEffort,
@@ -93,6 +98,8 @@ const pendingState = {
   confusion_count: 0,
   simplification_level: 0,
   last_student_intent: "new_topic",
+  suspended_topic: null,
+  relational_thread: null,
 };
 
 const modeState = {
@@ -446,6 +453,8 @@ test("teacher core adapts all Spanish school stages and forbids human impersonat
   for (const profile of profiles) {
     const instruction = api.teacherCoreInstruction(profile);
     assert.match(instruction, /MENSAJE ACTUAL/);
+    assert.match(instruction, /Continuidad relacional/i);
+    assert.match(instruction, /no vuelvas al tema académico anterior/i);
     assert.match(instruction, /no puede sustituir/i);
     assert.match(instruction, /nunca inventes cuerpo/i);
     assert.match(instruction, /No adoctrines/i);
@@ -642,7 +651,122 @@ test("an ordinary school peer problem receives empathy instead of a scope reject
   assert.doesNotMatch(reply, /solo responde|este espacio está centrado|reformula la pregunta/i);
 });
 
+test("relational continuity follows the student's concern instead of the suspended lesson", () => {
+  const opened = api.preservedSituationalState(pendingState, "explain", { kind: "school_peer_problem" });
+  assert.deepEqual(JSON.parse(JSON.stringify(opened.relational_thread)), {
+    kind: "school_peer_problem",
+    stage: "opening",
+    turn_count: 1,
+  });
+  assert.equal(opened.suspended_topic.concept, "eclipse solar");
+  assert.equal(opened.pending_question, pendingState.pending_question);
+
+  for (const message of ["¿Cómo abordo la situación?", "No sé qué decirle", "Sí", "Y después, ¿qué hago?"]) {
+    const situation = api.classroomSituation(message, [], opened);
+    assert.equal(situation?.kind, "school_peer_problem", message);
+    assert.equal(situation?.follow_up, true, message);
+  }
+
+  assert.equal(api.relationalContinuationSignal("Volvamos a los eclipses.", opened), null);
+  assert.equal(api.relationalContinuationSignal("¿Cómo funciona la fotosíntesis?", opened), null);
+  assert.equal(api.relationalContinuationSignal("Quiero estudiar matemáticas.", opened), null);
+  const closing = api.classroomSituation("Gracias", [], opened);
+  assert.equal(closing?.follow_up, true);
+  assert.equal(closing?.closure_hint, true);
+  assert.doesNotMatch(api.relationalFallbackReply(closing, "Gracias"), /pregunta|volvamos|tema anterior/i);
+});
+
+test("personal situations affecting learning open the same general relational mechanism", () => {
+  for (const message of [
+    "Mis padres se están separando y no consigo concentrarme en clase.",
+    "Ha muerto mi abuela y no tengo ganas de estudiar.",
+    "No tengo amigos en el colegio y me siento solo.",
+    "Mi perro ha muerto y estoy triste.",
+  ]) {
+    const situation = api.classroomSituation(message, []);
+    assert.equal(situation?.kind, "student_wellbeing", message);
+    assert.match(api.situationalReply(situation, message, ""), /Te escucho/i, message);
+  }
+
+  const guarded = api.scopeV3Guard("Mi perro ha muerto y estoy triste.", {
+    scope: "school",
+    subject: "Tutoría",
+    concept: "emociones",
+    domain: "social",
+    intent: "personal_help",
+    request_type: "personal_help",
+    unsafe_action: false,
+  }, pendingState, []);
+  assert.equal(guarded.scope, "school");
+  assert.equal(guarded.domain, "student_wellbeing");
+  assert.equal(guarded.subject, null);
+  assert.equal(guarded.concept, null);
+  assert.equal(api.classroomSituation("Estoy estudiando el miedo en literatura.", []), null);
+});
+
+test("a relational reply advances naturally and keeps academic state recoverable", () => {
+  const opened = api.preservedSituationalState(pendingState, "explain", { kind: "school_peer_problem" });
+  const payload = api.relationalPayload({ data: {
+    reply: "Empieza por contárselo hoy a tu profesora con una frase sencilla: «Necesito ayuda con algo que se repite en el recreo». ¿Ocurre también cuando hay adultos cerca?",
+    thread_stage: "planning",
+    continue_thread: true,
+    adult_support: "important",
+    safety_category: "none",
+  } }, {
+    situation: { kind: "school_peer_problem", follow_up: true },
+    text: "¿Cómo abordo la situación?",
+    pedState: opened,
+    mode: "explain",
+    modeState,
+  });
+
+  assert.equal(payload.subject, null);
+  assert.equal(payload.concept, null);
+  assert.equal(payload.student_answer_assessment, "not_applicable");
+  assert.equal(payload.pedagogical_state.pending_question, pendingState.pending_question);
+  assert.equal(payload.pedagogical_state.suspended_topic.concept, "eclipse solar");
+  assert.equal(payload.pedagogical_state.relational_thread.stage, "planning");
+  assert.equal(payload.pedagogical_state.relational_thread.turn_count, 2);
+  assert.equal(payload.pedagogical_state.last_student_intent, "relational_followup");
+  assert.doesNotMatch(payload.reply, /volvamos|retomamos|eclipse|impresión 3D/i);
+  assert.match(api.relationalFallbackReply({ kind: "school_peer_problem", follow_up: true }, "cómo abordarlo"), /Necesito ayuda porque un compañero me está molestando/i);
+
+  const closed = api.relationalPayload({ data: {
+    reply: "De nada. Si vuelve a preocuparte, puedes contárselo a un adulto de confianza.",
+    thread_stage: "checking_in",
+    continue_thread: false,
+    adult_support: "helpful",
+    safety_category: "none",
+  } }, {
+    situation: { kind: "school_peer_problem", follow_up: true, closure_hint: true },
+    text: "Gracias",
+    pedState: payload.pedagogical_state,
+    mode: "explain",
+    modeState,
+  });
+  assert.equal(closed.pedagogical_state.relational_thread, null);
+});
+
 test("full chat routing preserves the lesson while responding to the exact peer concern", async () => {
+  const originalStructured = sandbox.structured;
+  sandbox.moderate = async () => ({ flagged: false, moderation_error: false });
+  sandbox.markChatRequest = async () => {};
+  sandbox.bumpUsage = async () => {};
+  sandbox.logInteraction = async () => {};
+  sandbox.structured = async (_env, args) => {
+    assert.equal(args.name, "eterna_relational_tutor_v1");
+    return {
+      data: {
+        reply: "Siento que estés pasando por eso. Para ayudarte bien, cuéntame qué hace exactamente y desde cuándo.",
+        thread_stage: "opening",
+        continue_thread: true,
+        adult_support: "important",
+        safety_category: "none",
+      },
+      usage: {},
+      model_route: "relational-tutor-test",
+    };
+  };
   sandbox.getChatPreflight = async () => ({
     ctx: {
       base: { edad: 10, apodo: "Lucía" },
@@ -653,26 +777,100 @@ test("full chat routing preserves the lesson while responding to the exact peer 
     quota: { ok: true, settings: { allow_image_input: true } },
   });
 
-  const request = new Request("https://eterna.test/v1/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      text: "Un compañero de colegio me molesta",
-      mode: "explain",
-      mode_state: modeState,
-      pedagogical_state: pendingState,
-    }),
-  });
-  const response = await api.handleChat(request, {}, { user: { id: "student-1", email: "adult@example.test" } });
-  const payload = await response.json();
+  try {
+    const request = new Request("https://eterna.test/v1/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: "Un compañero de colegio me molesta",
+        mode: "explain",
+        mode_state: modeState,
+        pedagogical_state: pendingState,
+      }),
+    });
+    const response = await api.handleChat(request, {}, { user: { id: "student-1", email: "adult@example.test" } });
+    const payload = await response.json();
 
-  assert.equal(response.status, 200);
-  assert.equal(payload.situational, true);
-  assert.equal(payload.situational_kind, "school_peer_problem");
-  assert.match(payload.reply, /Siento que estés pasando por eso/i);
-  assert.equal(payload.student_answer_assessment, "not_applicable");
-  assert.equal(payload.pedagogical_state.pending_question, pendingState.pending_question);
-  assert.equal(payload.resume_available, true);
+    assert.equal(response.status, 200);
+    assert.equal(payload.situational, true);
+    assert.equal(payload.situational_kind, "school_peer_problem");
+    assert.match(payload.reply, /Siento que estés pasando por eso/i);
+    assert.equal(payload.student_answer_assessment, "not_applicable");
+    assert.equal(payload.pedagogical_state.pending_question, pendingState.pending_question);
+    assert.equal(payload.pedagogical_state.suspended_topic.concept, pendingState.active_concept);
+    assert.equal(payload.pedagogical_state.relational_thread.kind, "school_peer_problem");
+    assert.equal(payload.relational, true);
+    assert.equal(payload.resume_available, true);
+  } finally {
+    sandbox.structured = originalStructured;
+  }
+});
+
+test("full chat routing answers a relational follow-up without returning to the old subject", async () => {
+  const originalStructured = sandbox.structured;
+  sandbox.moderate = async () => ({ flagged: false, moderation_error: false });
+  sandbox.markChatRequest = async () => {};
+  sandbox.bumpUsage = async () => {};
+  sandbox.logInteraction = async () => {};
+  sandbox.getChatPreflight = async () => ({
+    ctx: {
+      base: { edad: 10, apodo: "Lucía" },
+      profile: { school_year: "5.º de Primaria", stage: "Primaria" },
+    },
+    subscription: { status: "active" },
+    legal: { accepted: true },
+    quota: { ok: true, settings: { allow_image_input: true } },
+  });
+  sandbox.structured = async (_env, args) => {
+    assert.equal(args.name, "eterna_relational_tutor_v1");
+    assert.match(args.input[0].content[0].text, /MENSAJE ACTUAL="¿Cómo abordo la situación\?"/);
+    return {
+      data: {
+        reply: "Empieza por explicárselo hoy a tu profesora con un ejemplo concreto de lo que ocurre. Puedes decirle: «Necesito ayuda porque esto se está repitiendo». ¿Sucede sobre todo en clase o en el recreo?",
+        thread_stage: "planning",
+        continue_thread: true,
+        adult_support: "important",
+        safety_category: "none",
+      },
+      usage: { input_tokens: 10, output_tokens: 20 },
+      model_route: "relational-tutor-test",
+    };
+  };
+
+  try {
+    const relationalState = api.preservedSituationalState(pendingState, "explain", { kind: "school_peer_problem" });
+    assert.equal(api.classroomSituation("¿Cómo abordo la situación?", [
+      { role: "user", text: "Un compañero del colegio me está molestando" },
+      { role: "assistant", text: "Cuéntame qué hace exactamente y desde cuándo." },
+    ], relationalState)?.follow_up, true);
+    const request = new Request("https://eterna.test/v1/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: "¿Cómo abordo la situación?",
+        mode: "explain",
+        student_intent: "relational_followup",
+        mode_state: modeState,
+        pedagogical_state: relationalState,
+        history: [
+          { role: "user", text: "Un compañero del colegio me está molestando" },
+          { role: "assistant", text: "Cuéntame qué hace exactamente y desde cuándo." },
+        ],
+      }),
+    });
+    const response = await api.handleChat(request, {}, { user: { id: "student-1", email: "adult@example.test" } });
+    const payload = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.equal(payload.relational, true);
+    assert.equal(payload.relational_stage, "planning");
+    assert.equal(payload.subject, null);
+    assert.equal(payload.pedagogical_state.relational_thread.turn_count, 2);
+    assert.equal(payload.pedagogical_state.suspended_topic.concept, "eclipse solar");
+    assert.doesNotMatch(payload.reply, /eclipse|impresión 3D|volvamos|retomamos/i);
+  } finally {
+    sandbox.structured = originalStructured;
+  }
 });
 
 

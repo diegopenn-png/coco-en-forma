@@ -1,4 +1,4 @@
-name: Deploy Eterna Worker 160.98.0
+name: Deploy Eterna Worker 160.98.1
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.98.0-human-teacher
+      EXPECTED_VERSION: 160.98.1-relational-continuity
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -171,6 +171,9 @@ jobs:
               && payload.features?.explicit_identity_and_mission_v1 === true
               && payload.features?.named_greeting_v1 === true
               && payload.features?.empathetic_school_peer_support_v1 === true
+              && payload.features?.relational_continuity_v1 === true
+              && payload.features?.adaptive_teacher_presence_v1 === true
+              && payload.features?.transient_relational_thread_v1 === true
               && payload.features?.anti_robotic_tone_v1 === true
               && payload.features?.account_birth_date_profile === true;
             if (!valid) {
@@ -197,7 +200,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.98.0 human teacher" \
+            --message "Eterna 160.98.1 relational continuity" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -250,6 +253,9 @@ jobs:
                   && payload.features?.explicit_identity_and_mission_v1 === true
                   && payload.features?.named_greeting_v1 === true
                   && payload.features?.empathetic_school_peer_support_v1 === true
+                  && payload.features?.relational_continuity_v1 === true
+                  && payload.features?.adaptive_teacher_presence_v1 === true
+                  && payload.features?.transient_relational_thread_v1 === true
                   && payload.features?.anti_robotic_tone_v1 === true
                   && payload.features?.account_birth_date_profile === true;
                 process.exit(valid ? 0 : 1);
@@ -267,7 +273,7 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.98.0 health check" \
+              --message "Automatic rollback after failed Eterna 160.98.1 relational continuity health check" \
               --yes
             exit 1
           fi
