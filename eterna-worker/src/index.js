@@ -18,7 +18,7 @@ import "./library/curricular-compass-v1.js";
  */
 const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.99.3-image-ocr-grounding";
+const VERSION="160.99.4-fast-image-safety";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -200,9 +200,9 @@ const DEFAULT_CLOUDFLARE_VISION_MODEL="@cf/moondream/moondream3.1-9B-A2B";
 const CLOUDFLARE_LEGACY_VISION_MODEL="@cf/llava-hf/llava-1.5-7b-hf";
 const CLOUDFLARE_OCR_GROUNDING_SERVICE="workers-ai-moondream-ocr";
 async function cloudflareVisionEvidence(env,{text,image,instructions,name,max_output_tokens=1200}){
-  const models=[...new Set([env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL,env.VISION_FALLBACK_MODEL||CLOUDFLARE_LEGACY_VISION_MODEL].filter(Boolean))],budgets=[Math.min(2600,Math.max(700,Number(max_output_tokens)||1200)),Math.min(3600,Math.max(1400,Number(max_output_tokens)||1200))];let lastErr=null;
+  const requestedTokens=Math.max(1,Number(max_output_tokens)||1200),models=[...new Set([env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL,env.VISION_FALLBACK_MODEL||CLOUDFLARE_LEGACY_VISION_MODEL].filter(Boolean))],budgets=[Math.min(2600,Math.max(700,requestedTokens)),Math.min(3600,Math.max(1400,requestedTokens))],moondreamBudget=Math.min(640,Math.max(256,Math.ceil(requestedTokens/6)));let lastErr=null;
   for(const model of models){const moondream=/\/moondream\//i.test(model),attempts=moondream?1:budgets.length;for(let attempt=0;attempt<attempts;attempt++){
-    const retryNote=attempt?" El intento anterior no produjo una descripción utilizable; vuelve a observar desde el principio.":"",prompt=`Observa la imagen escolar con máxima fidelidad.${retryNote}\nTranscribe todos los textos, números, símbolos y huecos visibles en su orden y posición. Distingue estrictamente contenido impreso, escritura del alumno y casillas vacías. No resuelvas ni completes los huecos, no inventes lo borroso y declara cualquier incertidumbre.\nObjetivo de la lectura: ${String(instructions||"").slice(0,2000)}\nSolicitud acompañante: ${String(text||"").slice(0,6000)}`,payload=moondream?{task:"query",image,question:prompt,reasoning:false,stream:false,max_tokens:budgets[attempt],temperature:.1}:{prompt,image:dataUrlBytes(image),max_tokens:budgets[attempt],temperature:.1};
+    const retryNote=attempt?" El intento anterior no produjo una descripción utilizable; vuelve a observar desde el principio.":"",prompt=`Observa la imagen escolar con máxima fidelidad.${retryNote}\nTranscribe todos los textos, números, símbolos y huecos visibles en su orden y posición. Distingue estrictamente contenido impreso, escritura del alumno y casillas vacías. No resuelvas ni completes los huecos, no inventes lo borroso y declara cualquier incertidumbre.\nObjetivo de la lectura: ${String(instructions||"").slice(0,2000)}\nSolicitud acompañante: ${String(text||"").slice(0,6000)}`,payload=moondream?{task:"query",image,question:prompt,reasoning:false,stream:false,max_tokens:moondreamBudget,temperature:.1}:{prompt,image:dataUrlBytes(image),max_tokens:budgets[attempt],temperature:.1};
     try{const result=await env.AI.run(model,payload),evidence=cloudflareResultText(result).trim(),usage=normalizeTokenUsage(result?.usage);if(!evidence||evidence==="{}"||evidence==="null")throw new Error("empty visual evidence");return{text:evidence,usage,model}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE VISION",name,"attempt",attempt+1,"model",model,cloudflareErrorDiagnostic(error,"VISION"));if(cloudflareQuotaError(error))break}
     if(attempt+1<attempts)await waitForMilliseconds(180*(attempt+1))
   }
@@ -376,12 +376,15 @@ async function moderate(env,text,image){
   let lastError=null;
   for(let attempt=0;attempt<2;attempt++){
     try{
-      let result;
-      if(image)result=await env.AI.run(env.VISION_SAFETY_MODEL||env.VISION_FALLBACK_MODEL||CLOUDFLARE_LEGACY_VISION_MODEL,{prompt:`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,image:dataUrlBytes(image),max_tokens:12,temperature:0});
+      let result,safetyModel=null;
+      if(image){
+        safetyModel=env.VISION_SAFETY_MODEL||env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL;const prompt=`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,payload=/\/moondream\//i.test(safetyModel)?{task:"query",image,question:prompt,reasoning:false,stream:false,max_tokens:8,temperature:0}:{prompt,image:dataUrlBytes(image),max_tokens:12,temperature:0};
+        result=await env.AI.run(safetyModel,payload)
+      }
       else result=await env.AI.run(env.MODERATION_MODEL||"@cf/meta/llama-guard-3-8b",{messages:[{role:"user",content:String(text).slice(0,5000)}]});
       const verdict=cloudflareResultText(result).trim(),flagged=/^unsafe\b/i.test(verdict);
       if(!/^(?:safe|unsafe)\b/i.test(verdict))throw new Error("invalid moderation verdict");
-      return{flagged,categories:{cloudflare_guard:flagged},provider:"cloudflare"}
+      return{flagged,categories:{cloudflare_guard:flagged},provider:"cloudflare",model:safetyModel||env.MODERATION_MODEL||"@cf/meta/llama-guard-3-8b"}
     }catch(error){
       lastError=error;console.error("ETERNA CLOUDFLARE MODERATION",attempt+1,cloudflareErrorDiagnostic(error,"MODERATION"));
       if(cloudflareQuotaError(error))break;
@@ -1802,7 +1805,7 @@ function healthFeatures(env){return {
   background_result_long_poll_v1:true,server_timing_v1:true,prompt_cache_routing_v1:true,
   deterministic_arithmetic_guidance_v1:true,deterministic_pending_numeric_v1:true,adaptive_sync_verification_v1:true,asynchronous_verifier_audit_v1:true,
   deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,moderation_diagnostics_v1:true,degraded_safe_academic_moderation_v1:true,
-  cloudflare_ai_primary_v1:aiProvider(env)==="cloudflare",cloudflare_guard_v1:true,cloudflare_vision_v1:true,cloudflare_license_free_vision_v1:true,cloudflare_visual_grounding_v1:true,cloudflare_moondream_ocr_grounding_v1:true,cloudflare_speech_v1:true,openai_optional_fallback_v1:true,
+  cloudflare_ai_primary_v1:aiProvider(env)==="cloudflare",cloudflare_guard_v1:true,cloudflare_vision_v1:true,cloudflare_license_free_vision_v1:true,cloudflare_visual_grounding_v1:true,cloudflare_moondream_ocr_grounding_v1:true,cloudflare_moondream_image_safety_v1:true,bounded_visual_output_v1:true,cloudflare_speech_v1:true,openai_optional_fallback_v1:true,
   openai_automatic_fallback_v2:openaiFallbackEnabled(env),openai_visual_fallback_v1:true,normalized_provider_usage_v1:true,fallback_aware_dependency_probe_v1:true,visual_dependency_probe_v1:true,
   payments_code_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET)
 }}
@@ -1813,7 +1816,7 @@ function modelConfiguration(env){return{
   tutor:{model:env.TUTOR_MODEL||"gpt-5.6-sol",fallback_model:env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibility_model:env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",reasoning_effort:reasoningEffort(env.TUTOR_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_tutor_v163_flagship")||"default"},
   verifier:{model:env.VERIFIER_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.VERIFIER_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_verify_v32")||"default"},
   vision:{grounding_service:aiProvider(env)==="cloudflare"?CLOUDFLARE_OCR_GROUNDING_SERVICE:null,model:env.VISION_MODEL||(aiProvider(env)==="cloudflare"?DEFAULT_CLOUDFLARE_VISION_MODEL:"gpt-5.6-sol"),cloudflare_fallback_model:env.VISION_FALLBACK_MODEL||CLOUDFLARE_LEGACY_VISION_MODEL,structuring_model:env.VISION_STRUCTURING_MODEL||env.TUTOR_MODEL||(aiProvider(env)==="cloudflare"?"@cf/qwen/qwen3-30b-a3b-fp8":"gpt-5.6-sol"),fallback_model:env.OPENAI_VISION_MODEL||"gpt-5.6-sol",reasoning_effort:reasoningEffort(env.VISION_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_intake")||"default"},
-  moderation:{model:env.MODERATION_MODEL||"omni-moderation-latest"},
+  moderation:{model:env.MODERATION_MODEL||"omni-moderation-latest",image_model:env.VISION_SAFETY_MODEL||env.VISION_MODEL||(aiProvider(env)==="cloudflare"?DEFAULT_CLOUDFLARE_VISION_MODEL:"omni-moderation-latest")},
   speech:{transcribe_model:env.TRANSCRIBE_MODEL||"gpt-4o-mini-transcribe",tts_model:env.TTS_MODEL||"gpt-4o-mini-tts"},
   web_search:{enabled:String(env.ENABLE_ACADEMIC_WEB_SEARCH||"true").toLowerCase()!=="false",model:env.WEB_SEARCH_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.WEB_SEARCH_REASONING_EFFORT,"low"),service_tier:openaiServiceTier(env,"eterna_web")||"default"}
 }}
@@ -1823,9 +1826,9 @@ const DEPENDENCY_PROBE_IMAGE_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUh
 const DEPENDENCY_VISION_SCHEMA={type:"object",additionalProperties:false,properties:{visible:{type:"boolean"},content:{type:"string"}},required:["visible","content"]};
 async function dependencyProbe(request,env){
   if(!protectedProbeRequest(request,env))return json({error:"NOT_FOUND"},404);
-  const provider=aiProvider(env),result={ok:false,degraded:false,service:"eterna",version:VERSION,provider,moderation:{ok:false,provider:null,diagnostic_code:null},image_moderation:{ok:false,provider:null,diagnostic_code:null},responses:{ok:false,provider,diagnostic_code:null},structured_tutor:{ok:false,provider:null,diagnostic_code:null},structured_vision:{ok:false,provider:null,visual_model:null,diagnostic_code:null}};
+  const provider=aiProvider(env),result={ok:false,degraded:false,service:"eterna",version:VERSION,provider,moderation:{ok:false,provider:null,diagnostic_code:null},image_moderation:{ok:false,provider:null,model:null,diagnostic_code:null},responses:{ok:false,provider,diagnostic_code:null},structured_tutor:{ok:false,provider:null,diagnostic_code:null},structured_vision:{ok:false,provider:null,visual_model:null,diagnostic_code:null}};
   try{const moderation=await moderate(env,"Explica la fotosíntesis.",null);result.moderation={ok:!moderation.moderation_error,provider:moderation.provider||provider,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"MODERATION"):openaiErrorDiagnostic(error,"MODERATION")}
-  try{const moderation=await moderate(env,"Ficha escolar de multiplicaciones.",DEPENDENCY_PROBE_IMAGE_DATA_URL);result.image_moderation={ok:!moderation.moderation_error,provider:moderation.provider||provider,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.image_moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"IMAGE_MODERATION"):openaiErrorDiagnostic(error,"IMAGE_MODERATION")}
+  try{const moderation=await moderate(env,"Ficha escolar de multiplicaciones.",DEPENDENCY_PROBE_IMAGE_DATA_URL);result.image_moderation={ok:!moderation.moderation_error,provider:moderation.provider||provider,model:moderation.model||null,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.image_moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"IMAGE_MODERATION"):openaiErrorDiagnostic(error,"IMAGE_MODERATION")}
   try{
     if(provider==="cloudflare"){
       const data=await env.AI.run(env.SCOPE_MODEL||"@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"user",content:"Responde únicamente OK."}],max_tokens:12});
