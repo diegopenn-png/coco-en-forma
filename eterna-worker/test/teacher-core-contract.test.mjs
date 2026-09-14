@@ -133,7 +133,7 @@ test("full intelligence is preserved while age adapts delivery and risk boundari
     scope: { model: "gpt-5.6-luna", fallback_model: "gpt-5.6-terra", reasoning_effort: "low", service_tier: "default" },
     tutor: { model: "gpt-5.6-sol", fallback_model: "gpt-5.6-terra", compatibility_model: "gpt-5.4-mini", reasoning_effort: "high", service_tier: "default" },
     verifier: { model: "gpt-5.6-terra", reasoning_effort: "high", service_tier: "default" },
-    vision: { model: "gpt-5.6-sol", fallback_model: "gpt-5.6-sol", reasoning_effort: "high", service_tier: "default" },
+    vision: { model: "gpt-5.6-sol", structuring_model: "gpt-5.6-sol", fallback_model: "gpt-5.6-sol", reasoning_effort: "high", service_tier: "default" },
     moderation: { model: "omni-moderation-latest" },
     speech: { transcribe_model: "gpt-4o-mini-transcribe", tts_model: "gpt-4o-mini-tts" },
     web_search: { enabled: true, model: "gpt-5.6-terra", reasoning_effort: "low", service_tier: "default" },
