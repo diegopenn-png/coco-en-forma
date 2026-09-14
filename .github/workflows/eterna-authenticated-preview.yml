@@ -88,6 +88,7 @@ jobs:
             --var "AI_PROVIDER:cloudflare" \
             --var "ENABLE_OPENAI_FALLBACK:true" \
             --var "OPENAI_FALLBACK_MODEL:gpt-5.6-luna" \
+            --var "OPENAI_VISION_MODEL:gpt-5.6-sol" \
             --var "SCOPE_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "SCOPE_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct" \
             --var "SCOPE_REASONING_EFFORT:low" \
@@ -152,7 +153,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.99.0-conversation-director' eterna-worker/src/index.js >/dev/null
+          grep -F '160.99.1-image-vision-failover' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -252,7 +253,7 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.99.0-conversation-director"
+              && payload.version === "160.99.1-image-vision-failover"
               && payload.ai_provider === "cloudflare"
               && payload.cloudflare_ai_configured === true
               && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
@@ -265,6 +266,7 @@ jobs:
               && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.verifier?.reasoning_effort === "high"
               && models.vision?.model === "@cf/meta/llama-3.2-11b-vision-instruct"
+              && models.vision?.fallback_model === "gpt-5.6-sol"
               && models.moderation?.model === "@cf/meta/llama-guard-3-8b"
               && models.speech?.transcribe_model === "@cf/openai/whisper-large-v3-turbo"
               && models.speech?.tts_model === "@cf/myshell-ai/melotts"
@@ -272,6 +274,7 @@ jobs:
               && models.provider_fallback?.enabled === true
               && models.provider_fallback?.configured === true
               && models.provider_fallback?.model === "gpt-5.6-luna"
+              && models.provider_fallback?.vision_model === "gpt-5.6-sol"
               && payload.features?.structured_request_retry_v1 === true
               && payload.features?.structured_compatibility_retry_v1 === true
               && payload.features?.tutor_model_failover_v1 === true
@@ -283,8 +286,10 @@ jobs:
               && payload.features?.moderation_diagnostics_v1 === true
               && payload.features?.degraded_safe_academic_moderation_v1 === true
               && payload.features?.openai_automatic_fallback_v2 === true
+              && payload.features?.openai_visual_fallback_v1 === true
               && payload.features?.normalized_provider_usage_v1 === true
               && payload.features?.fallback_aware_dependency_probe_v1 === true
+              && payload.features?.visual_dependency_probe_v1 === true
               && payload.features?.explicit_identity_and_mission_v1 === true
               && payload.features?.named_greeting_v1 === true
               && payload.features?.empathetic_school_peer_support_v1 === true
@@ -301,12 +306,12 @@ jobs:
             }
           '
 
-          dependency_payload="$(curl --silent --show-error --max-time 45 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "${API_PREVIEW_URL}/health/dependencies" || true)"
+          dependency_payload="$(curl --silent --show-error --max-time 90 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "${API_PREVIEW_URL}/health/dependencies" || true)"
           echo "Sanitized Cloudflare AI dependency probe: ${dependency_payload}"
           node -e '
             const payload = JSON.parse(process.argv[1]);
-            if (payload.ok !== true || payload.version !== "160.99.0-conversation-director" || payload.provider !== "cloudflare") process.exit(1);
-            for (const name of ["moderation", "structured_tutor"]) {
+            if (payload.ok !== true || payload.version !== "160.99.1-image-vision-failover" || payload.provider !== "cloudflare") process.exit(1);
+            for (const name of ["moderation", "image_moderation", "structured_tutor", "structured_vision"]) {
               const item = payload[name] || {};
               if (item.ok !== true) process.exit(1);
             }
@@ -318,7 +323,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.98.2-greeting-timing · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.0-conversation-director"
+            echo "- Expected versions: frontend 160.98.2-greeting-timing · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.1-image-vision-failover"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents
