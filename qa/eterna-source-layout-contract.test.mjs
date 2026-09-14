@@ -14,14 +14,14 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"ENABLE_OPENAI_FALLBACK"\s*:\s*"true"/);
   assert.match(wrangler, /"OPENAI_FALLBACK_MODEL"\s*:\s*"gpt-5\.6-luna"/);
   assert.match(wrangler, /"OPENAI_VISION_MODEL"\s*:\s*"gpt-5\.6-sol"/);
-  assert.match(wrangler, /"VISION_MODEL"\s*:\s*"@cf\/moondream\/moondream3\.1-9B-A2B"/);
+  assert.match(wrangler, /"VISION_MODEL"\s*:\s*"@cf\/meta\/llama-4-scout-17b-16e-instruct"/);
   assert.match(wrangler, /"VISION_SAFETY_MODEL"\s*:\s*"@cf\/moondream\/moondream3\.1-9B-A2B"/);
-  assert.match(wrangler, /"VISION_FALLBACK_MODEL"\s*:\s*"@cf\/llava-hf\/llava-1\.5-7b-hf"/);
+  assert.match(wrangler, /"VISION_FALLBACK_MODEL"\s*:\s*"@cf\/moondream\/moondream3\.1-9B-A2B"/);
   assert.match(wrangler, /"VISION_STRUCTURING_MODEL"\s*:\s*"@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.5-partial-worksheet-grounding/);
+  assert.match(worker, /160\.99\.6-document-vision-quality-gate/);
   assert.match(worker, /explicit_identity_and_mission_v1:true/);
   assert.match(worker, /empathetic_school_peer_support_v1:true/);
   assert.match(worker, /relational_continuity_v1:true/);
@@ -43,9 +43,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(worker, /normalized_provider_usage_v1:true/);
   assert.match(worker, /fallback_aware_dependency_probe_v1:true/);
   assert.match(worker, /visual_dependency_probe_v1:true/);
-  assert.match(worker, /cloudflare_license_free_vision_v1:true/);
   assert.match(worker, /cloudflare_visual_grounding_v1:true/);
-  assert.match(worker, /cloudflare_moondream_ocr_grounding_v1:true/);
+  assert.match(worker, /cloudflare_llama4_document_vision_v1:true/);
+  assert.match(worker, /visual_evidence_quality_gate_v1:true/);
   assert.match(worker, /cloudflare_moondream_image_safety_v1:true/);
   assert.match(worker, /bounded_visual_output_v1:true/);
   assert.match(worker, /partial_worksheet_grounding_v1:true/);
@@ -55,15 +55,15 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /--var "TUTOR_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /--var "OPENAI_FALLBACK_MODEL:gpt-5\.6-luna"/);
   assert.match(preview, /--var "OPENAI_VISION_MODEL:gpt-5\.6-sol"/);
-  assert.match(preview, /--var "VISION_MODEL:@cf\/moondream\/moondream3\.1-9B-A2B"/);
+  assert.match(preview, /--var "VISION_MODEL:@cf\/meta\/llama-4-scout-17b-16e-instruct"/);
   assert.match(preview, /--var "VISION_SAFETY_MODEL:@cf\/moondream\/moondream3\.1-9B-A2B"/);
-  assert.match(preview, /--var "VISION_FALLBACK_MODEL:@cf\/llava-hf\/llava-1\.5-7b-hf"/);
+  assert.match(preview, /--var "VISION_FALLBACK_MODEL:@cf\/moondream\/moondream3\.1-9B-A2B"/);
   assert.match(preview, /--var "VISION_STRUCTURING_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
-  assert.match(preview, /grep -F '160\.99\.5-partial-worksheet-grounding' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.5-partial-worksheet-grounding"/);
-  assert.match(preview, /API 160\.99\.5-partial-worksheet-grounding/);
+  assert.match(preview, /grep -F '160\.99\.6-document-vision-quality-gate' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.6-document-vision-quality-gate"/);
+  assert.match(preview, /API 160\.99\.6-document-vision-quality-gate/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -122,15 +122,21 @@ test("the 160.99.4 production gate proves fast image safety before release", () 
   assert.match(production, /payload\.image_moderation\?\.model !== "@cf\/moondream\/moondream3\.1-9B-A2B"/);
 });
 
-test("the 160.99.5 production gate preserves reliable rows from partial worksheets", () => {
+test("the 160.99.6 production gate rejects generic visual evidence before release", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-160995.yml", "utf8");
   const worker = readFileSync("eterna-worker/src/index.js", "utf8");
-  assert.match(production, /\.github\/release-eterna-160995/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.5-partial-worksheet-grounding/);
+  assert.match(production, /\.github\/release-eterna-160996/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.6-document-vision-quality-gate/);
+  assert.match(production, /models\.vision\?\.model === "@cf\/meta\/llama-4-scout-17b-16e-instruct"/);
+  assert.match(production, /models\.vision\?\.grounding_service === "workers-ai-llama4-document-vision"/);
+  assert.match(production, /payload\.features\?\.cloudflare_llama4_document_vision_v1 === true/);
+  assert.match(production, /payload\.features\?\.visual_evidence_quality_gate_v1 === true/);
   assert.match(production, /payload\.features\?\.partial_worksheet_grounding_v1 === true/);
   assert.match(worker, /function reliableVisionForReasoning\(vision\)/);
   assert.match(worker, /excluded_low_confidence_items/);
   assert.match(worker, /if\(usableItems\.length\|\|usableBlanks\.length\)return false/);
+  assert.match(worker, /function visualEvidenceIsSpecific\(value\)/);
+  assert.match(worker, /generic visual evidence/);
 });
 
 
