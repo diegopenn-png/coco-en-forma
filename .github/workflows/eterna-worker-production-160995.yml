@@ -1,11 +1,11 @@
-name: Deploy Eterna Worker 160.99.5
+name: Deploy Eterna Worker 160.99.6
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/release-eterna-160995"
+      - ".github/release-eterna-160996"
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.99.5-partial-worksheet-grounding
+      EXPECTED_VERSION: 160.99.6-document-vision-quality-gate
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -95,9 +95,9 @@ jobs:
             --var "TUTOR_REASONING_EFFORT:high" \
             --var "VERIFIER_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "VERIFIER_REASONING_EFFORT:high" \
-            --var "VISION_MODEL:@cf/moondream/moondream3.1-9B-A2B" \
+            --var "VISION_MODEL:@cf/meta/llama-4-scout-17b-16e-instruct" \
             --var "VISION_SAFETY_MODEL:@cf/moondream/moondream3.1-9B-A2B" \
-            --var "VISION_FALLBACK_MODEL:@cf/llava-hf/llava-1.5-7b-hf" \
+            --var "VISION_FALLBACK_MODEL:@cf/moondream/moondream3.1-9B-A2B" \
             --var "VISION_STRUCTURING_MODEL:@cf/qwen/qwen3-30b-a3b-fp8" \
             --var "VISION_REASONING_EFFORT:high" \
             --var "MODERATION_MODEL:@cf/meta/llama-guard-3-8b" \
@@ -142,13 +142,13 @@ jobs:
               && models.tutor?.reasoning_effort === "high"
               && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.verifier?.reasoning_effort === "high"
-              && models.vision?.model === "@cf/moondream/moondream3.1-9B-A2B"
-              && models.vision?.cloudflare_fallback_model === "@cf/llava-hf/llava-1.5-7b-hf"
-              && models.vision?.grounding_service === "workers-ai-moondream-ocr"
+              && models.vision?.model === "@cf/meta/llama-4-scout-17b-16e-instruct"
+              && models.vision?.cloudflare_fallback_model === "@cf/moondream/moondream3.1-9B-A2B"
+              && models.vision?.grounding_service === "workers-ai-llama4-document-vision"
               && models.vision?.structuring_model === "@cf/qwen/qwen3-30b-a3b-fp8"
-              && payload.features?.cloudflare_license_free_vision_v1 === true
               && payload.features?.cloudflare_visual_grounding_v1 === true
-              && payload.features?.cloudflare_moondream_ocr_grounding_v1 === true
+              && payload.features?.cloudflare_llama4_document_vision_v1 === true
+              && payload.features?.visual_evidence_quality_gate_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -215,7 +215,7 @@ jobs:
               const item = payload[name] || {};
               if (item.ok !== true) process.exit(1);
             }
-            if (payload.structured_vision?.visual_model !== "@cf/moondream/moondream3.1-9B-A2B") process.exit(1);
+            if (payload.structured_vision?.visual_model !== "@cf/meta/llama-4-scout-17b-16e-instruct") process.exit(1);
             if (payload.image_moderation?.model !== "@cf/moondream/moondream3.1-9B-A2B") process.exit(1);
           ' "$dependency_payload"
 
@@ -226,7 +226,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.99.5 partial worksheet grounding" \
+            --message "Eterna 160.99.6 document vision quality gate" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -253,13 +253,13 @@ jobs:
                   && models.tutor?.reasoning_effort === "high"
                   && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
                   && models.verifier?.reasoning_effort === "high"
-                  && models.vision?.model === "@cf/moondream/moondream3.1-9B-A2B"
-              && models.vision?.cloudflare_fallback_model === "@cf/llava-hf/llava-1.5-7b-hf"
-              && models.vision?.grounding_service === "workers-ai-moondream-ocr"
+                  && models.vision?.model === "@cf/meta/llama-4-scout-17b-16e-instruct"
+              && models.vision?.cloudflare_fallback_model === "@cf/moondream/moondream3.1-9B-A2B"
+              && models.vision?.grounding_service === "workers-ai-llama4-document-vision"
                   && models.vision?.structuring_model === "@cf/qwen/qwen3-30b-a3b-fp8"
-                  && payload.features?.cloudflare_license_free_vision_v1 === true
                   && payload.features?.cloudflare_visual_grounding_v1 === true
-              && payload.features?.cloudflare_moondream_ocr_grounding_v1 === true
+              && payload.features?.cloudflare_llama4_document_vision_v1 === true
+              && payload.features?.visual_evidence_quality_gate_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -320,12 +320,10 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.99.5 partial worksheet grounding health check" \
+              --message "Automatic rollback after failed Eterna 160.99.6 document vision quality gate health check" \
               --yes
             exit 1
           fi
 
           echo "Production is healthy on ${EXPECTED_VERSION} with the verified model configuration."
-
-
 
