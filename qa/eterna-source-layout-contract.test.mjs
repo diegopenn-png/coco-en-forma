@@ -43,6 +43,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /--var "OPENAI_FALLBACK_MODEL:gpt-5\.6-luna"/);
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
+  assert.match(preview, /grep -F '160\.99\.0-conversation-director' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.0-conversation-director"/);
+  assert.match(preview, /API 160\.99\.0-conversation-director/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
