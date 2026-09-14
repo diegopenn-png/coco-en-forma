@@ -18,7 +18,7 @@ import "./library/curricular-compass-v1.js";
  */
 const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.99.1-image-vision-failover";
+const VERSION="160.99.2-image-markdown-grounding";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -193,10 +193,20 @@ function structuredValueMatchesSchema(value,schema){
   if(value&&typeof value==="object"&&!Array.isArray(value)){if((schema.required||[]).some(key=>!(key in value)))return false;for(const[key,propertySchema]of Object.entries(schema.properties||{}))if(key in value&&!structuredValueMatchesSchema(value[key],propertySchema))return false}
   return true
 }
-function dataUrlBytes(value){const match=/^data:image\/(?:png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(String(value||""));if(!match)throw new Error("Cloudflare vision image is invalid");const binary=atob(match[1]),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return[...bytes]}
+function dataUrlImage(value){const match=/^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(String(value||""));if(!match)throw new Error("Cloudflare vision image is invalid");const binary=atob(match[2]),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return{bytes,mime:`image/${match[1]}`,extension:match[1]==="jpeg"?"jpg":match[1]}}
+function dataUrlBytes(value){return[...dataUrlImage(value).bytes]}
 function cloudflareInput(input){const texts=[],images=[];for(const message of input||[]){for(const part of Array.isArray(message?.content)?message.content:[]){if(part?.type==="input_text"&&part.text)texts.push(String(part.text));else if(part?.type==="input_image"&&part.image_url)images.push(String(part.image_url))}if(typeof message?.content==="string")texts.push(message.content)}return{text:texts.join("\n"),image:images[0]||null}}
 const DEFAULT_CLOUDFLARE_VISION_MODEL="@cf/llava-hf/llava-1.5-7b-hf";
+const CLOUDFLARE_MARKDOWN_IMAGE_GROUNDING="workers-ai-markdown-conversion";
 async function cloudflareVisionEvidence(env,{text,image,instructions,name,max_output_tokens=1200}){
+  if(typeof env?.AI?.toMarkdown==="function"){
+    try{
+      const source=dataUrlImage(image),safeName=String(name||"school-image").toLowerCase().replace(/[^a-z0-9_-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"school-image",converted=await env.AI.toMarkdown({name:`eterna-${safeName}.${source.extension}`,blob:new Blob([source.bytes],{type:source.mime})}),item=Array.isArray(converted)?converted[0]:converted;
+      if(!item||item.format==="error")throw new Error(String(item?.error||"image conversion returned an error"));
+      const evidence=String(item.data||"").trim();if(!evidence)throw new Error("image conversion returned no visual evidence");
+      return{text:evidence,usage:{input_tokens:Number(item.tokens)||0,output_tokens:0},model:CLOUDFLARE_MARKDOWN_IMAGE_GROUNDING}
+    }catch(error){console.error("ETERNA CLOUDFLARE MARKDOWN VISION",name,cloudflareErrorDiagnostic(error,"MARKDOWN_VISION"))}
+  }
   const model=env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL,budgets=[Math.min(2600,Math.max(700,Number(max_output_tokens)||1200)),Math.min(3600,Math.max(1400,Number(max_output_tokens)||1200))];let lastErr=null,lastUsage={};
   for(let attempt=0;attempt<budgets.length;attempt++){
     const retryNote=attempt?" El intento anterior no produjo una descripción utilizable; vuelve a observar desde el principio.":"",prompt=`Observa la imagen escolar con máxima fidelidad.${retryNote}\nTranscribe todos los textos, números, símbolos y huecos visibles en su orden y posición. Distingue estrictamente contenido impreso, escritura del alumno y casillas vacías. No resuelvas ni completes los huecos, no inventes lo borroso y declara cualquier incertidumbre.\nObjetivo de la lectura: ${String(instructions||"").slice(0,2000)}\nSolicitud acompañante: ${String(text||"").slice(0,6000)}`;
@@ -1798,7 +1808,7 @@ function healthFeatures(env){return {
   background_result_long_poll_v1:true,server_timing_v1:true,prompt_cache_routing_v1:true,
   deterministic_arithmetic_guidance_v1:true,deterministic_pending_numeric_v1:true,adaptive_sync_verification_v1:true,asynchronous_verifier_audit_v1:true,
   deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,moderation_diagnostics_v1:true,degraded_safe_academic_moderation_v1:true,
-  cloudflare_ai_primary_v1:aiProvider(env)==="cloudflare",cloudflare_guard_v1:true,cloudflare_vision_v1:true,cloudflare_license_free_vision_v1:true,cloudflare_visual_grounding_v1:true,cloudflare_speech_v1:true,openai_optional_fallback_v1:true,
+  cloudflare_ai_primary_v1:aiProvider(env)==="cloudflare",cloudflare_guard_v1:true,cloudflare_vision_v1:true,cloudflare_license_free_vision_v1:true,cloudflare_visual_grounding_v1:true,cloudflare_markdown_image_grounding_v1:true,cloudflare_speech_v1:true,openai_optional_fallback_v1:true,
   openai_automatic_fallback_v2:openaiFallbackEnabled(env),openai_visual_fallback_v1:true,normalized_provider_usage_v1:true,fallback_aware_dependency_probe_v1:true,visual_dependency_probe_v1:true,
   payments_code_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET)
 }}
@@ -1808,7 +1818,7 @@ function modelConfiguration(env){return{
   scope:{model:env.SCOPE_MODEL||"gpt-5.6-luna",fallback_model:env.SCOPE_FALLBACK_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.SCOPE_REASONING_EFFORT,"low"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_scope_v3")||"default"},
   tutor:{model:env.TUTOR_MODEL||"gpt-5.6-sol",fallback_model:env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibility_model:env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",reasoning_effort:reasoningEffort(env.TUTOR_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_tutor_v163_flagship")||"default"},
   verifier:{model:env.VERIFIER_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.VERIFIER_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_verify_v32")||"default"},
-  vision:{model:env.VISION_MODEL||(aiProvider(env)==="cloudflare"?DEFAULT_CLOUDFLARE_VISION_MODEL:"gpt-5.6-sol"),structuring_model:env.VISION_STRUCTURING_MODEL||env.TUTOR_MODEL||(aiProvider(env)==="cloudflare"?"@cf/qwen/qwen3-30b-a3b-fp8":"gpt-5.6-sol"),fallback_model:env.OPENAI_VISION_MODEL||"gpt-5.6-sol",reasoning_effort:reasoningEffort(env.VISION_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_intake")||"default"},
+  vision:{grounding_service:typeof env?.AI?.toMarkdown==="function"?CLOUDFLARE_MARKDOWN_IMAGE_GROUNDING:null,model:env.VISION_MODEL||(aiProvider(env)==="cloudflare"?DEFAULT_CLOUDFLARE_VISION_MODEL:"gpt-5.6-sol"),structuring_model:env.VISION_STRUCTURING_MODEL||env.TUTOR_MODEL||(aiProvider(env)==="cloudflare"?"@cf/qwen/qwen3-30b-a3b-fp8":"gpt-5.6-sol"),fallback_model:env.OPENAI_VISION_MODEL||"gpt-5.6-sol",reasoning_effort:reasoningEffort(env.VISION_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_intake")||"default"},
   moderation:{model:env.MODERATION_MODEL||"omni-moderation-latest"},
   speech:{transcribe_model:env.TRANSCRIBE_MODEL||"gpt-4o-mini-transcribe",tts_model:env.TTS_MODEL||"gpt-4o-mini-tts"},
   web_search:{enabled:String(env.ENABLE_ACADEMIC_WEB_SEARCH||"true").toLowerCase()!=="false",model:env.WEB_SEARCH_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.WEB_SEARCH_REASONING_EFFORT,"low"),service_tier:openaiServiceTier(env,"eterna_web")||"default"}
@@ -1819,7 +1829,7 @@ const DEPENDENCY_PROBE_IMAGE_DATA_URL="data:image/png;base64,iVBORw0KGgoAAAANSUh
 const DEPENDENCY_VISION_SCHEMA={type:"object",additionalProperties:false,properties:{visible:{type:"boolean"},content:{type:"string"}},required:["visible","content"]};
 async function dependencyProbe(request,env){
   if(!protectedProbeRequest(request,env))return json({error:"NOT_FOUND"},404);
-  const provider=aiProvider(env),result={ok:false,degraded:false,service:"eterna",version:VERSION,provider,moderation:{ok:false,provider:null,diagnostic_code:null},image_moderation:{ok:false,provider:null,diagnostic_code:null},responses:{ok:false,provider,diagnostic_code:null},structured_tutor:{ok:false,provider:null,diagnostic_code:null},structured_vision:{ok:false,provider:null,diagnostic_code:null}};
+  const provider=aiProvider(env),result={ok:false,degraded:false,service:"eterna",version:VERSION,provider,moderation:{ok:false,provider:null,diagnostic_code:null},image_moderation:{ok:false,provider:null,diagnostic_code:null},responses:{ok:false,provider,diagnostic_code:null},structured_tutor:{ok:false,provider:null,diagnostic_code:null},structured_vision:{ok:false,provider:null,visual_model:null,diagnostic_code:null}};
   try{const moderation=await moderate(env,"Explica la fotosíntesis.",null);result.moderation={ok:!moderation.moderation_error,provider:moderation.provider||provider,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"MODERATION"):openaiErrorDiagnostic(error,"MODERATION")}
   try{const moderation=await moderate(env,"Ficha escolar de multiplicaciones.",DEPENDENCY_PROBE_IMAGE_DATA_URL);result.image_moderation={ok:!moderation.moderation_error,provider:moderation.provider||provider,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.image_moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"IMAGE_MODERATION"):openaiErrorDiagnostic(error,"IMAGE_MODERATION")}
   try{
@@ -1839,7 +1849,7 @@ async function dependencyProbe(request,env){
   try{
     const checked=await structured(env,{model:env.VISION_MODEL||(provider==="cloudflare"?DEFAULT_CLOUDFLARE_VISION_MODEL:"gpt-5.6-sol"),instructions:"Prueba técnica visual. Devuelve solo el JSON solicitado.",input:[{role:"user",content:[{type:"input_text",text:"Indica si la imagen contiene material visible y descríbelo en pocas palabras."},{type:"input_image",image_url:DEPENDENCY_PROBE_IMAGE_DATA_URL,detail:"high"}]}],name:"eterna_deploy_vision_probe",schema:DEPENDENCY_VISION_SCHEMA,max_output_tokens:160,reasoning_effort:"low"});
     const contractValid=Boolean(checked.data&&typeof checked.data.visible==="boolean"&&typeof checked.data.content==="string");
-    result.structured_vision={ok:contractValid,provider:checked.service_tier==="cloudflare"?"cloudflare":"openai",diagnostic_code:null}
+    result.structured_vision={ok:contractValid,provider:checked.service_tier==="cloudflare"?"cloudflare":"openai",visual_model:checked.visual_model||null,diagnostic_code:null}
   }catch(error){result.structured_vision.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"STRUCTURED_VISION"):openaiErrorDiagnostic(error,"STRUCTURED_VISION")}
   result.ok=result.moderation.ok&&result.image_moderation.ok&&result.structured_tutor.ok&&result.structured_vision.ok;
   result.degraded=provider==="cloudflare"&&(!result.responses.ok||result.moderation.provider!=="cloudflare"||result.image_moderation.provider!=="cloudflare"||result.structured_tutor.provider!=="cloudflare"||result.structured_vision.provider!=="cloudflare");
