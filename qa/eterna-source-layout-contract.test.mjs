@@ -19,7 +19,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.1-image-vision-failover/);
+  assert.match(worker, /160\.99\.2-image-markdown-grounding/);
   assert.match(worker, /explicit_identity_and_mission_v1:true/);
   assert.match(worker, /empathetic_school_peer_support_v1:true/);
   assert.match(worker, /relational_continuity_v1:true/);
@@ -43,6 +43,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(worker, /visual_dependency_probe_v1:true/);
   assert.match(worker, /cloudflare_license_free_vision_v1:true/);
   assert.match(worker, /cloudflare_visual_grounding_v1:true/);
+  assert.match(worker, /cloudflare_markdown_image_grounding_v1:true/);
   assert.match(worker, /!image&&!topicReturnRequest\(text,incomingPedState\)/);
   assert.match(worker, /model_configuration:modelConfiguration\(env\)/);
   assert.match(preview, /--var "AI_PROVIDER:cloudflare"/);
@@ -53,9 +54,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /--var "VISION_STRUCTURING_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
-  assert.match(preview, /grep -F '160\.99\.1-image-vision-failover' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.1-image-vision-failover"/);
-  assert.match(preview, /API 160\.99\.1-image-vision-failover/);
+  assert.match(preview, /grep -F '160\.99\.2-image-markdown-grounding' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.2-image-markdown-grounding"/);
+  assert.match(preview, /API 160\.99\.2-image-markdown-grounding/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -91,6 +92,15 @@ test("the 160.98.2 production gate verifies the resilient human tutor route befo
   assert.match(production, /for \(const name of \["moderation", "structured_tutor"\]\)/);
   assert.match(production, /wrangler versions deploy/);
   assert.match(production, /wrangler rollback/);
+});
+
+test("the 160.99.2 production gate proves image-to-Markdown grounding before release", () => {
+  const production = readFileSync(".github/workflows/eterna-worker-production-160992.yml", "utf8");
+  assert.match(production, /\.github\/release-eterna-160992/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.2-image-markdown-grounding/);
+  assert.match(production, /models\.vision\?\.grounding_service === "workers-ai-markdown-conversion"/);
+  assert.match(production, /payload\.features\?\.cloudflare_markdown_image_grounding_v1 === true/);
+  assert.match(production, /payload\.structured_vision\?\.visual_model !== "workers-ai-markdown-conversion"/);
 });
 
 

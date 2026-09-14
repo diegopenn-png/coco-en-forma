@@ -154,7 +154,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.99.1-image-vision-failover' eterna-worker/src/index.js >/dev/null
+          grep -F '160.99.2-image-markdown-grounding' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -254,7 +254,7 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.99.1-image-vision-failover"
+              && payload.version === "160.99.2-image-markdown-grounding"
               && payload.ai_provider === "cloudflare"
               && payload.cloudflare_ai_configured === true
               && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
@@ -267,9 +267,11 @@ jobs:
               && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.verifier?.reasoning_effort === "high"
               && models.vision?.model === "@cf/llava-hf/llava-1.5-7b-hf"
+              && models.vision?.grounding_service === "workers-ai-markdown-conversion"
               && models.vision?.structuring_model === "@cf/qwen/qwen3-30b-a3b-fp8"
               && payload.features?.cloudflare_license_free_vision_v1 === true
               && payload.features?.cloudflare_visual_grounding_v1 === true
+              && payload.features?.cloudflare_markdown_image_grounding_v1 === true
               && models.vision?.fallback_model === "gpt-5.6-sol"
               && models.moderation?.model === "@cf/meta/llama-guard-3-8b"
               && models.speech?.transcribe_model === "@cf/openai/whisper-large-v3-turbo"
@@ -314,11 +316,12 @@ jobs:
           echo "Sanitized Cloudflare AI dependency probe: ${dependency_payload}"
           node -e '
             const payload = JSON.parse(process.argv[1]);
-            if (payload.ok !== true || payload.version !== "160.99.1-image-vision-failover" || payload.provider !== "cloudflare") process.exit(1);
+            if (payload.ok !== true || payload.version !== "160.99.2-image-markdown-grounding" || payload.provider !== "cloudflare") process.exit(1);
             for (const name of ["moderation", "image_moderation", "structured_tutor", "structured_vision"]) {
               const item = payload[name] || {};
               if (item.ok !== true) process.exit(1);
             }
+            if (payload.structured_vision?.visual_model !== "workers-ai-markdown-conversion") process.exit(1);
           ' "$dependency_payload"
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
           grep -Fi 'x-robots-tag: noindex' authenticated-preview-headers.log >/dev/null
@@ -327,7 +330,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.98.2-greeting-timing · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.1-image-vision-failover"
+            echo "- Expected versions: frontend 160.98.2-greeting-timing · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.2-image-markdown-grounding"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents

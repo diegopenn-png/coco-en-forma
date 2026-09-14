@@ -274,8 +274,9 @@ test("Cloudflare quota exhaustion switches structured output to the low-cost Ope
   assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 7, output_tokens: 3 });
 });
 
-test("Cloudflare photographed tasks use license-free visual grounding before structured reasoning", async () => {
+test("Cloudflare photographed tasks use image-to-Markdown grounding before structured reasoning", async () => {
   const cloudflareCalls = [];
+  let markdownInput = null;
   let openaiCalls = 0;
   const api = loadApi(async () => {
     openaiCalls += 1;
@@ -291,11 +292,17 @@ test("Cloudflare photographed tasks use license-free visual grounding before str
     TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     VISION_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
-    AI: { run: async (model, payload) => {
-      cloudflareCalls.push({ model, payload });
-      if (model.includes("llava")) return { description: "Ficha: 6 × hueco = 36.", usage: { prompt_tokens: 3, completion_tokens: 4 } };
-      return { response: { visible: true, content: "multiplication worksheet" }, usage: { prompt_tokens: 5, completion_tokens: 2 } };
-    } },
+    AI: {
+      toMarkdown: async (input) => {
+        markdownInput = input;
+        return { format: "markdown", data: "Ficha: 6 × hueco = 36.", tokens: 3 };
+      },
+      run: async (model, payload) => {
+        cloudflareCalls.push({ model, payload });
+        if (model.includes("llava")) throw new Error("LLaVA should only be a fallback when Markdown conversion succeeds");
+        return { response: { visible: true, content: "multiplication worksheet" }, usage: { prompt_tokens: 5, completion_tokens: 2 } };
+      },
+    },
   }, {
     model: "@cf/llava-hf/llava-1.5-7b-hf",
     input: [{ role: "user", content: [
@@ -308,14 +315,15 @@ test("Cloudflare photographed tasks use license-free visual grounding before str
     max_output_tokens: 160,
   });
   assert.equal(openaiCalls, 0);
-  assert.deepEqual(cloudflareCalls.map((call) => call.model), [
-    "@cf/llava-hf/llava-1.5-7b-hf",
-    "@cf/qwen/qwen3-30b-a3b-fp8",
-  ]);
-  assert.equal(Array.from(cloudflareCalls[0].payload.image).join(","), "0");
-  assert.equal("image" in cloudflareCalls[1].payload, false);
-  assert.match(cloudflareCalls[1].payload.messages[1].content, /EVIDENCIA_VISUAL_FIEL/);
-  assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 8, output_tokens: 6 });
+  assert.deepEqual(cloudflareCalls.map((call) => call.model), ["@cf/qwen/qwen3-30b-a3b-fp8"]);
+  assert.equal(markdownInput.name, "eterna-vision_fallback_test.png");
+  assert.equal(markdownInput.blob.type, "image/png");
+  assert.equal(markdownInput.blob.size, 1);
+  assert.equal("image" in cloudflareCalls[0].payload, false);
+  assert.match(cloudflareCalls[0].payload.messages[1].content, /EVIDENCIA_VISUAL_FIEL/);
+  assert.match(cloudflareCalls[0].payload.messages[1].content, /6 × hueco = 36/);
+  assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 8, output_tokens: 2 });
+  assert.equal(result.visual_model, "workers-ai-markdown-conversion");
   assert.equal(result.data.visible, true);
 });
 
@@ -443,17 +451,18 @@ test("dependency health stays available through fallback and reports degraded Cl
     AI_PROVIDER: "cloudflare",
     DEPLOY_PROBE_TOKEN: "probe-secret",
     TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
-    AI: { run: async (model, request) => model.includes("llama-guard")
-      ? { response: "safe" }
-      : model.includes("llava")
-        ? request.max_tokens === 12
+    AI: {
+      toMarkdown: async () => ({ format: "markdown", data: "A multiplication worksheet shows 3 x blank = 12.", tokens: 4 }),
+      run: async (model, request) => model.includes("llama-guard")
+        ? { response: "safe" }
+        : model.includes("llava")
           ? { description: "safe" }
-          : { description: "A multiplication worksheet shows 3 x blank = 12." }
-      : model.includes("qwen")
-        ? /EVIDENCIA_VISUAL_FIEL/.test(request.messages?.[1]?.content || "")
-          ? { response: { visible: true, content: "multiplication worksheet" } }
-          : { response: { ok: true } }
-          : { response: "OK" } },
+        : model.includes("qwen")
+          ? /EVIDENCIA_VISUAL_FIEL/.test(request.messages?.[1]?.content || "")
+            ? { response: { visible: true, content: "multiplication worksheet" } }
+            : { response: { ok: true } }
+            : { response: "OK" },
+    },
   });
   const directPayload = await directResponse.json();
   assert.equal(directResponse.status, 200);
@@ -462,16 +471,20 @@ test("dependency health stays available through fallback and reports degraded Cl
   assert.equal(directPayload.structured_tutor.provider, "cloudflare");
   assert.equal(directPayload.image_moderation.provider, "cloudflare");
   assert.equal(directPayload.structured_vision.provider, "cloudflare");
+  assert.equal(directPayload.structured_vision.visual_model, "workers-ai-markdown-conversion");
 });
 
-test("Cloudflare routes every photographed task through the vision model", async () => {
+test("Cloudflare falls back to the direct vision model when image-to-Markdown conversion fails", async () => {
   const calls = [];
   const api = loadApi();
   await api.structured({
     AI_PROVIDER: "cloudflare",
     VISION_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
-    AI: { run: async (model, payload) => { calls.push({ model, payload }); return model.includes("llava") ? { description: "Visible school task" } : { response: { ok: true } }; } },
+    AI: {
+      toMarkdown: async () => { throw new Error("conversion unavailable"); },
+      run: async (model, payload) => { calls.push({ model, payload }); return model.includes("llava") ? { description: "Visible school task" } : { response: { ok: true } }; },
+    },
   }, {
     model: "@cf/qwen/qwen3-30b-a3b-fp8",
     input: [{ role: "user", content: [
