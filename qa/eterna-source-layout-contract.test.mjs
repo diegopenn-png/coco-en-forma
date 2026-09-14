@@ -14,6 +14,8 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"ENABLE_OPENAI_FALLBACK"\s*:\s*"true"/);
   assert.match(wrangler, /"OPENAI_FALLBACK_MODEL"\s*:\s*"gpt-5\.6-luna"/);
   assert.match(wrangler, /"OPENAI_VISION_MODEL"\s*:\s*"gpt-5\.6-sol"/);
+  assert.match(wrangler, /"VISION_MODEL"\s*:\s*"@cf\/llava-hf\/llava-1\.5-7b-hf"/);
+  assert.match(wrangler, /"VISION_STRUCTURING_MODEL"\s*:\s*"@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
@@ -39,12 +41,16 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(worker, /normalized_provider_usage_v1:true/);
   assert.match(worker, /fallback_aware_dependency_probe_v1:true/);
   assert.match(worker, /visual_dependency_probe_v1:true/);
+  assert.match(worker, /cloudflare_license_free_vision_v1:true/);
+  assert.match(worker, /cloudflare_visual_grounding_v1:true/);
   assert.match(worker, /!image&&!topicReturnRequest\(text,incomingPedState\)/);
   assert.match(worker, /model_configuration:modelConfiguration\(env\)/);
   assert.match(preview, /--var "AI_PROVIDER:cloudflare"/);
   assert.match(preview, /--var "TUTOR_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /--var "OPENAI_FALLBACK_MODEL:gpt-5\.6-luna"/);
   assert.match(preview, /--var "OPENAI_VISION_MODEL:gpt-5\.6-sol"/);
+  assert.match(preview, /--var "VISION_MODEL:@cf\/llava-hf\/llava-1\.5-7b-hf"/);
+  assert.match(preview, /--var "VISION_STRUCTURING_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(preview, /grep -F '160\.99\.1-image-vision-failover' eterna-worker\/src\/index\.js/);
