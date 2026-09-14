@@ -276,7 +276,7 @@ test("Cloudflare quota exhaustion switches structured output to the low-cost Ope
   assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 7, output_tokens: 3 });
 });
 
-test("Cloudflare photographed tasks use Moondream OCR grounding before structured reasoning", async () => {
+test("Cloudflare photographed tasks use Llama 4 document vision before structured reasoning", async () => {
   const cloudflareCalls = [];
   let openaiCalls = 0;
   const api = loadApi(async () => {
@@ -291,19 +291,19 @@ test("Cloudflare photographed tasks use Moondream OCR grounding before structure
     OPENAI_VISION_MODEL: "gpt-5.6-sol",
     OPENAI_API_KEY: "test-key",
     TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
-    VISION_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
-    VISION_FALLBACK_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: {
       run: async (model, payload) => {
         cloudflareCalls.push({ model, payload });
-        if (model.includes("moondream")) return { answer: "Ficha: 6 × hueco = 36." };
-        if (model.includes("llava")) throw new Error("LLaVA should only be a fallback when Moondream succeeds");
+        if (model.includes("llama-4-scout")) return { response: "Ficha, fila 1: 6 × hueco = 36." };
+        if (model.includes("moondream")) throw new Error("Moondream should only be a fallback when Llama 4 fails");
         return { response: { visible: true, content: "multiplication worksheet" }, usage: { prompt_tokens: 5, completion_tokens: 2 } };
       },
     },
   }, {
-    model: "@cf/moondream/moondream3.1-9B-A2B",
+    model: "@cf/meta/llama-4-scout-17b-16e-instruct",
     input: [{ role: "user", content: [
       { type: "input_text", text: "Analyze the worksheet." },
       { type: "input_image", image_url: image },
@@ -314,17 +314,15 @@ test("Cloudflare photographed tasks use Moondream OCR grounding before structure
     max_output_tokens: 160,
   });
   assert.equal(openaiCalls, 0);
-  assert.deepEqual(cloudflareCalls.map((call) => call.model), ["@cf/moondream/moondream3.1-9B-A2B", "@cf/qwen/qwen3-30b-a3b-fp8"]);
-  assert.equal(cloudflareCalls[0].payload.task, "query");
-  assert.equal(cloudflareCalls[0].payload.image, image);
-  assert.equal(cloudflareCalls[0].payload.reasoning, false);
-  assert.equal(cloudflareCalls[0].payload.stream, false);
-  assert.ok(cloudflareCalls[0].payload.max_tokens <= 640);
+  assert.deepEqual(cloudflareCalls.map((call) => call.model), ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8"]);
+  assert.equal(Array.from(cloudflareCalls[0].payload.image).join(","), "0");
+  assert.match(cloudflareCalls[0].payload.prompt, /una línea por ejercicio/);
+  assert.ok(cloudflareCalls[0].payload.max_tokens >= 700);
   assert.equal("image" in cloudflareCalls[1].payload, false);
   assert.match(cloudflareCalls[1].payload.messages[1].content, /EVIDENCIA_VISUAL_FIEL/);
   assert.match(cloudflareCalls[1].payload.messages[1].content, /6 × hueco = 36/);
   assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 5, output_tokens: 2 });
-  assert.equal(result.visual_model, "@cf/moondream/moondream3.1-9B-A2B");
+  assert.equal(result.visual_model, "@cf/meta/llama-4-scout-17b-16e-instruct");
   assert.equal(result.data.visible, true);
 });
 
@@ -495,6 +493,9 @@ test("dependency health stays available through fallback and reports degraded Cl
     AI_PROVIDER: "cloudflare",
     DEPLOY_PROBE_TOKEN: "probe-secret",
     TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_SAFETY_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
     AI: {
       run: async (model, request) => model.includes("llama-guard")
         ? { response: "safe" }
@@ -504,6 +505,8 @@ test("dependency health stays available through fallback and reports degraded Cl
           ? request.max_tokens === 32
             ? { answer: "safe" }
             : { answer: "A multiplication worksheet shows 3 x blank = 12." }
+        : model.includes("llama-4-scout")
+          ? { response: "A multiplication worksheet shows row 1: 3 x blank = 12." }
         : model.includes("qwen")
           ? /EVIDENCIA_VISUAL_FIEL/.test(request.messages?.[1]?.content || "")
             ? { response: { visible: true, content: "multiplication worksheet" } }
@@ -519,19 +522,19 @@ test("dependency health stays available through fallback and reports degraded Cl
   assert.equal(directPayload.image_moderation.provider, "cloudflare");
   assert.equal(directPayload.image_moderation.model, "@cf/moondream/moondream3.1-9B-A2B");
   assert.equal(directPayload.structured_vision.provider, "cloudflare");
-  assert.equal(directPayload.structured_vision.visual_model, "@cf/moondream/moondream3.1-9B-A2B");
+  assert.equal(directPayload.structured_vision.visual_model, "@cf/meta/llama-4-scout-17b-16e-instruct");
 });
 
-test("Cloudflare falls back to LLaVA when Moondream OCR is unavailable", async () => {
+test("Cloudflare rejects generic Llama 4 evidence and falls back to detailed Moondream OCR", async () => {
   const calls = [];
   const api = loadApi();
   await api.structured({
     AI_PROVIDER: "cloudflare",
-    VISION_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
-    VISION_FALLBACK_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: {
-      run: async (model, payload) => { calls.push({ model, payload }); if(model.includes("moondream"))throw new Error("OCR unavailable");return model.includes("llava") ? { description: "Visible school task" } : { response: { ok: true } }; },
+      run: async (model, payload) => { calls.push({ model, payload }); if(model.includes("llama-4-scout"))return { response: "Visible school task" };return model.includes("moondream") ? { answer: "Ficha, fila 1: 6 × hueco = 36." } : { response: { ok: true } }; },
     },
   }, {
     model: "@cf/qwen/qwen3-30b-a3b-fp8",
@@ -544,9 +547,50 @@ test("Cloudflare falls back to LLaVA when Moondream OCR is unavailable", async (
     schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"] },
     max_output_tokens: 100,
   });
-  assert.deepEqual(calls.map((call) => call.model), ["@cf/moondream/moondream3.1-9B-A2B", "@cf/llava-hf/llava-1.5-7b-hf", "@cf/qwen/qwen3-30b-a3b-fp8"]);
-  assert.equal(Array.from(calls[1].payload.image).join(","), "0");
-  assert.equal("image" in calls[2].payload, false);
+  assert.deepEqual(calls.map((call) => call.model), ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/moondream/moondream3.1-9B-A2B", "@cf/qwen/qwen3-30b-a3b-fp8"]);
+  assert.equal(calls[2].payload.task, "query");
+  assert.equal(calls[2].payload.image, "data:image/png;base64,AA==");
+  assert.equal("image" in calls[3].payload, false);
+});
+
+test("generic evidence from every Cloudflare vision model escalates to the dedicated OpenAI vision fallback", async () => {
+  const cloudflareCalls = [];
+  const openaiPayloads = [];
+  const api = loadApi(async (_input, init) => {
+    const payload = JSON.parse(init.body);
+    openaiPayloads.push(payload);
+    return new Response(JSON.stringify({
+      output_text: '{"ok":true}',
+      usage: { input_tokens: 9, output_tokens: 3 },
+      service_tier: "default",
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+  });
+  const image = "data:image/png;base64,AA==";
+  const result = await api.structured({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_VISION_MODEL: "gpt-5.6-sol",
+    OPENAI_API_KEY: "test-key",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model) => { cloudflareCalls.push(model); return model.includes("moondream") ? { answer: "A multiplication worksheet with many rows and empty spaces is visible." } : { response: "Visible school task" }; } },
+  }, {
+    model: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    input: [{ role: "user", content: [
+      { type: "input_text", text: "Analiza la ficha" },
+      { type: "input_image", image_url: image },
+    ] }],
+    instructions: "Return the schema.",
+    name: "vision_quality_gate_test",
+    schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"] },
+    max_output_tokens: 100,
+  });
+  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/moondream/moondream3.1-9B-A2B"]);
+  assert.equal(openaiPayloads.length, 1);
+  assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
+  assert.equal(openaiPayloads[0].input[0].content[1].image_url, image);
+  assert.equal(result.data.ok, true);
 });
 
 test("dinosaur explanations have a verified local recovery when every tutor model is unavailable", () => {
