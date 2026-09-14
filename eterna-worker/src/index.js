@@ -18,7 +18,7 @@ import "./library/curricular-compass-v1.js";
  */
 const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.99.2-image-markdown-grounding";
+const VERSION="160.99.3-image-ocr-grounding";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -184,7 +184,7 @@ function cloudflareQuotaError(error){return cloudflareErrorDiagnostic(error).end
 function openaiFallbackEnabled(env){return aiProvider(env)==="cloudflare"&&String(env?.ENABLE_OPENAI_FALLBACK||"false").toLowerCase()==="true"&&Boolean(String(env?.OPENAI_API_KEY||"").trim())}
 function normalizeTokenUsage(usage){const value=usage&&typeof usage==="object"?usage:{},input=Number(value.input_tokens??value.prompt_tokens??0),output=Number(value.output_tokens??value.completion_tokens??0);return{input_tokens:Number.isFinite(input)&&input>0?input:0,output_tokens:Number.isFinite(output)&&output>0?output:0}}
 function mergeTokenUsage(...values){return values.map(normalizeTokenUsage).reduce((total,value)=>({input_tokens:total.input_tokens+value.input_tokens,output_tokens:total.output_tokens+value.output_tokens}),{input_tokens:0,output_tokens:0})}
-function cloudflareResultText(result){const value=typeof result?.response==="string"?result.response:typeof result?.description==="string"?result.description:typeof result==="string"?result:null;return value==null?JSON.stringify(result??null):value}
+function cloudflareResultText(result){const value=typeof result?.response==="string"?result.response:typeof result?.answer==="string"?result.answer:typeof result?.description==="string"?result.description:typeof result?.caption==="string"?result.caption:typeof result==="string"?result:null;return value==null?JSON.stringify(result??null):value}
 function structuredValueMatchesSchema(value,schema){
   if(!schema||typeof schema!=="object")return true;
   const types=Array.isArray(schema.type)?schema.type:[schema.type].filter(Boolean),matchesType=type=>type==="null"?value===null:type==="object"?Boolean(value)&&typeof value==="object"&&!Array.isArray(value):type==="array"?Array.isArray(value):type==="string"?typeof value==="string":type==="boolean"?typeof value==="boolean":type==="integer"?Number.isInteger(value):type==="number"?typeof value==="number"&&Number.isFinite(value):true;
@@ -196,22 +196,16 @@ function structuredValueMatchesSchema(value,schema){
 function dataUrlImage(value){const match=/^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(String(value||""));if(!match)throw new Error("Cloudflare vision image is invalid");const binary=atob(match[2]),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return{bytes,mime:`image/${match[1]}`,extension:match[1]==="jpeg"?"jpg":match[1]}}
 function dataUrlBytes(value){return[...dataUrlImage(value).bytes]}
 function cloudflareInput(input){const texts=[],images=[];for(const message of input||[]){for(const part of Array.isArray(message?.content)?message.content:[]){if(part?.type==="input_text"&&part.text)texts.push(String(part.text));else if(part?.type==="input_image"&&part.image_url)images.push(String(part.image_url))}if(typeof message?.content==="string")texts.push(message.content)}return{text:texts.join("\n"),image:images[0]||null}}
-const DEFAULT_CLOUDFLARE_VISION_MODEL="@cf/llava-hf/llava-1.5-7b-hf";
-const CLOUDFLARE_MARKDOWN_IMAGE_GROUNDING="workers-ai-markdown-conversion";
+const DEFAULT_CLOUDFLARE_VISION_MODEL="@cf/moondream/moondream3.1-9B-A2B";
+const CLOUDFLARE_LEGACY_VISION_MODEL="@cf/llava-hf/llava-1.5-7b-hf";
+const CLOUDFLARE_OCR_GROUNDING_SERVICE="workers-ai-moondream-ocr";
 async function cloudflareVisionEvidence(env,{text,image,instructions,name,max_output_tokens=1200}){
-  if(typeof env?.AI?.toMarkdown==="function"){
-    try{
-      const source=dataUrlImage(image),safeName=String(name||"school-image").toLowerCase().replace(/[^a-z0-9_-]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"school-image",converted=await env.AI.toMarkdown({name:`eterna-${safeName}.${source.extension}`,blob:new Blob([source.bytes],{type:source.mime})}),item=Array.isArray(converted)?converted[0]:converted;
-      if(!item||item.format==="error")throw new Error(String(item?.error||"image conversion returned an error"));
-      const evidence=String(item.data||"").trim();if(!evidence)throw new Error("image conversion returned no visual evidence");
-      return{text:evidence,usage:{input_tokens:Number(item.tokens)||0,output_tokens:0},model:CLOUDFLARE_MARKDOWN_IMAGE_GROUNDING}
-    }catch(error){console.error("ETERNA CLOUDFLARE MARKDOWN VISION",name,cloudflareErrorDiagnostic(error,"MARKDOWN_VISION"))}
+  const models=[...new Set([env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL,env.VISION_FALLBACK_MODEL||CLOUDFLARE_LEGACY_VISION_MODEL].filter(Boolean))],budgets=[Math.min(2600,Math.max(700,Number(max_output_tokens)||1200)),Math.min(3600,Math.max(1400,Number(max_output_tokens)||1200))];let lastErr=null;
+  for(const model of models){const moondream=/\/moondream\//i.test(model),attempts=moondream?1:budgets.length;for(let attempt=0;attempt<attempts;attempt++){
+    const retryNote=attempt?" El intento anterior no produjo una descripción utilizable; vuelve a observar desde el principio.":"",prompt=`Observa la imagen escolar con máxima fidelidad.${retryNote}\nTranscribe todos los textos, números, símbolos y huecos visibles en su orden y posición. Distingue estrictamente contenido impreso, escritura del alumno y casillas vacías. No resuelvas ni completes los huecos, no inventes lo borroso y declara cualquier incertidumbre.\nObjetivo de la lectura: ${String(instructions||"").slice(0,2000)}\nSolicitud acompañante: ${String(text||"").slice(0,6000)}`,payload=moondream?{task:"query",image,question:prompt,reasoning:false,stream:false,max_tokens:budgets[attempt],temperature:.1}:{prompt,image:dataUrlBytes(image),max_tokens:budgets[attempt],temperature:.1};
+    try{const result=await env.AI.run(model,payload),evidence=cloudflareResultText(result).trim(),usage=normalizeTokenUsage(result?.usage);if(!evidence||evidence==="{}"||evidence==="null")throw new Error("empty visual evidence");return{text:evidence,usage,model}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE VISION",name,"attempt",attempt+1,"model",model,cloudflareErrorDiagnostic(error,"VISION"));if(cloudflareQuotaError(error))break}
+    if(attempt+1<attempts)await waitForMilliseconds(180*(attempt+1))
   }
-  const model=env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL,budgets=[Math.min(2600,Math.max(700,Number(max_output_tokens)||1200)),Math.min(3600,Math.max(1400,Number(max_output_tokens)||1200))];let lastErr=null,lastUsage={};
-  for(let attempt=0;attempt<budgets.length;attempt++){
-    const retryNote=attempt?" El intento anterior no produjo una descripción utilizable; vuelve a observar desde el principio.":"",prompt=`Observa la imagen escolar con máxima fidelidad.${retryNote}\nTranscribe todos los textos, números, símbolos y huecos visibles en su orden y posición. Distingue estrictamente contenido impreso, escritura del alumno y casillas vacías. No resuelvas ni completes los huecos, no inventes lo borroso y declara cualquier incertidumbre.\nObjetivo de la lectura: ${String(instructions||"").slice(0,2000)}\nSolicitud acompañante: ${String(text||"").slice(0,6000)}`;
-    try{const result=await env.AI.run(model,{prompt,image:dataUrlBytes(image),max_tokens:budgets[attempt],temperature:.1}),evidence=cloudflareResultText(result).trim();lastUsage=normalizeTokenUsage(result?.usage||lastUsage);if(!evidence||evidence==="{}"||evidence==="null")throw new Error("empty visual evidence");return{text:evidence,usage:lastUsage,model}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE VISION",name,"attempt",attempt+1,"model",model,cloudflareErrorDiagnostic(error,"VISION"));if(cloudflareQuotaError(error))break}
-    if(attempt+1<budgets.length)await waitForMilliseconds(180*(attempt+1))
   }
   throw new Error("Cloudflare visual grounding failed after retry: "+name+" · "+String(lastErr?.message||lastErr||"unknown"))
 }
@@ -383,7 +377,7 @@ async function moderate(env,text,image){
   for(let attempt=0;attempt<2;attempt++){
     try{
       let result;
-      if(image)result=await env.AI.run(env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL,{prompt:`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,image:dataUrlBytes(image),max_tokens:12,temperature:0});
+      if(image)result=await env.AI.run(env.VISION_SAFETY_MODEL||env.VISION_FALLBACK_MODEL||CLOUDFLARE_LEGACY_VISION_MODEL,{prompt:`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,image:dataUrlBytes(image),max_tokens:12,temperature:0});
       else result=await env.AI.run(env.MODERATION_MODEL||"@cf/meta/llama-guard-3-8b",{messages:[{role:"user",content:String(text).slice(0,5000)}]});
       const verdict=cloudflareResultText(result).trim(),flagged=/^unsafe\b/i.test(verdict);
       if(!/^(?:safe|unsafe)\b/i.test(verdict))throw new Error("invalid moderation verdict");
@@ -1808,7 +1802,7 @@ function healthFeatures(env){return {
   background_result_long_poll_v1:true,server_timing_v1:true,prompt_cache_routing_v1:true,
   deterministic_arithmetic_guidance_v1:true,deterministic_pending_numeric_v1:true,adaptive_sync_verification_v1:true,asynchronous_verifier_audit_v1:true,
   deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,moderation_diagnostics_v1:true,degraded_safe_academic_moderation_v1:true,
-  cloudflare_ai_primary_v1:aiProvider(env)==="cloudflare",cloudflare_guard_v1:true,cloudflare_vision_v1:true,cloudflare_license_free_vision_v1:true,cloudflare_visual_grounding_v1:true,cloudflare_markdown_image_grounding_v1:true,cloudflare_speech_v1:true,openai_optional_fallback_v1:true,
+  cloudflare_ai_primary_v1:aiProvider(env)==="cloudflare",cloudflare_guard_v1:true,cloudflare_vision_v1:true,cloudflare_license_free_vision_v1:true,cloudflare_visual_grounding_v1:true,cloudflare_moondream_ocr_grounding_v1:true,cloudflare_speech_v1:true,openai_optional_fallback_v1:true,
   openai_automatic_fallback_v2:openaiFallbackEnabled(env),openai_visual_fallback_v1:true,normalized_provider_usage_v1:true,fallback_aware_dependency_probe_v1:true,visual_dependency_probe_v1:true,
   payments_code_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET)
 }}
@@ -1818,7 +1812,7 @@ function modelConfiguration(env){return{
   scope:{model:env.SCOPE_MODEL||"gpt-5.6-luna",fallback_model:env.SCOPE_FALLBACK_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.SCOPE_REASONING_EFFORT,"low"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_scope_v3")||"default"},
   tutor:{model:env.TUTOR_MODEL||"gpt-5.6-sol",fallback_model:env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibility_model:env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",reasoning_effort:reasoningEffort(env.TUTOR_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_tutor_v163_flagship")||"default"},
   verifier:{model:env.VERIFIER_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.VERIFIER_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_verify_v32")||"default"},
-  vision:{grounding_service:typeof env?.AI?.toMarkdown==="function"?CLOUDFLARE_MARKDOWN_IMAGE_GROUNDING:null,model:env.VISION_MODEL||(aiProvider(env)==="cloudflare"?DEFAULT_CLOUDFLARE_VISION_MODEL:"gpt-5.6-sol"),structuring_model:env.VISION_STRUCTURING_MODEL||env.TUTOR_MODEL||(aiProvider(env)==="cloudflare"?"@cf/qwen/qwen3-30b-a3b-fp8":"gpt-5.6-sol"),fallback_model:env.OPENAI_VISION_MODEL||"gpt-5.6-sol",reasoning_effort:reasoningEffort(env.VISION_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_intake")||"default"},
+  vision:{grounding_service:aiProvider(env)==="cloudflare"?CLOUDFLARE_OCR_GROUNDING_SERVICE:null,model:env.VISION_MODEL||(aiProvider(env)==="cloudflare"?DEFAULT_CLOUDFLARE_VISION_MODEL:"gpt-5.6-sol"),cloudflare_fallback_model:env.VISION_FALLBACK_MODEL||CLOUDFLARE_LEGACY_VISION_MODEL,structuring_model:env.VISION_STRUCTURING_MODEL||env.TUTOR_MODEL||(aiProvider(env)==="cloudflare"?"@cf/qwen/qwen3-30b-a3b-fp8":"gpt-5.6-sol"),fallback_model:env.OPENAI_VISION_MODEL||"gpt-5.6-sol",reasoning_effort:reasoningEffort(env.VISION_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_intake")||"default"},
   moderation:{model:env.MODERATION_MODEL||"omni-moderation-latest"},
   speech:{transcribe_model:env.TRANSCRIBE_MODEL||"gpt-4o-mini-transcribe",tts_model:env.TTS_MODEL||"gpt-4o-mini-tts"},
   web_search:{enabled:String(env.ENABLE_ACADEMIC_WEB_SEARCH||"true").toLowerCase()!=="false",model:env.WEB_SEARCH_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.WEB_SEARCH_REASONING_EFFORT,"low"),service_tier:openaiServiceTier(env,"eterna_web")||"default"}
