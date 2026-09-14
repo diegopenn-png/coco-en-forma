@@ -378,12 +378,12 @@ async function moderate(env,text,image){
     try{
       let result,safetyModel=null;
       if(image){
-        safetyModel=env.VISION_SAFETY_MODEL||env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL;const prompt=`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,payload=/\/moondream\//i.test(safetyModel)?{task:"query",image,question:prompt,reasoning:false,stream:false,max_tokens:8,temperature:0}:{prompt,image:dataUrlBytes(image),max_tokens:12,temperature:0};
+        safetyModel=env.VISION_SAFETY_MODEL||env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL;const prompt=`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,payload=/\/moondream\//i.test(safetyModel)?{task:"query",image,question:prompt,reasoning:false,stream:false,max_tokens:32,temperature:0}:{prompt,image:dataUrlBytes(image),max_tokens:12,temperature:0};
         result=await env.AI.run(safetyModel,payload)
       }
       else result=await env.AI.run(env.MODERATION_MODEL||"@cf/meta/llama-guard-3-8b",{messages:[{role:"user",content:String(text).slice(0,5000)}]});
-      const verdict=cloudflareResultText(result).trim(),flagged=/^unsafe\b/i.test(verdict);
-      if(!/^(?:safe|unsafe)\b/i.test(verdict))throw new Error("invalid moderation verdict");
+      const verdict=cloudflareResultText(result).trim(),normalized=normalizeDetectionText(verdict),unsafe=/(?:\bunsafe\b|\bnot safe\b|\binsegura?\b|\bno es segura?\b)/.test(normalized),safe=/(?:\bsafe\b|\bsegura?\b)/.test(normalized),flagged=unsafe;
+      if(!unsafe&&!safe)throw new Error("invalid moderation verdict");
       return{flagged,categories:{cloudflare_guard:flagged},provider:"cloudflare",model:safetyModel||env.MODERATION_MODEL||"@cf/meta/llama-guard-3-8b"}
     }catch(error){
       lastError=error;console.error("ETERNA CLOUDFLARE MODERATION",attempt+1,cloudflareErrorDiagnostic(error,"MODERATION"));
