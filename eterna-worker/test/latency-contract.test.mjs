@@ -171,6 +171,8 @@ test("full-quality model route is unchanged and paid priority is opt-in", () => 
   assert.equal(defaults.tutor.fallback_model, "gpt-5.6-terra");
   assert.equal(defaults.tutor.compatibility_model, "gpt-5.4-mini");
   assert.equal(defaults.scope.fallback_model, "gpt-5.6-terra");
+  assert.equal(defaults.provider_fallback.vision_model, "gpt-5.6-sol");
+  assert.equal(defaults.vision.fallback_model, "gpt-5.6-sol");
   assert.equal(defaults.tutor.reasoning_effort, "high");
   assert.equal(defaults.verifier.model, "gpt-5.6-terra");
   assert.equal(defaults.verifier.reasoning_effort, "high");
@@ -272,6 +274,43 @@ test("Cloudflare quota exhaustion switches structured output to the low-cost Ope
   assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 7, output_tokens: 3 });
 });
 
+test("Cloudflare vision failure switches to the dedicated OpenAI vision model", async () => {
+  let cloudflareCalls = 0;
+  const openaiPayloads = [];
+  const api = loadApi(async (_input, init) => {
+    openaiPayloads.push(JSON.parse(init.body));
+    return new Response(JSON.stringify({
+      output_text: '{"visible":true,"content":"multiplication worksheet"}',
+      usage: { input_tokens: 11, output_tokens: 5 },
+      service_tier: "default",
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+  });
+  const image = "data:image/png;base64,AA==";
+  const result = await api.structured({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_FALLBACK_MODEL: "gpt-5.6-luna",
+    OPENAI_VISION_MODEL: "gpt-5.6-sol",
+    OPENAI_API_KEY: "test-key",
+    AI: { run: async () => { cloudflareCalls += 1; throw new Error("Meta model license agreement required"); } },
+  }, {
+    model: "@cf/meta/llama-3.2-11b-vision-instruct",
+    input: [{ role: "user", content: [
+      { type: "input_text", text: "Analyze the worksheet." },
+      { type: "input_image", image_url: image },
+    ] }],
+    instructions: "Return the schema.",
+    name: "vision_fallback_test",
+    schema: { type: "object", additionalProperties: false, properties: { visible: { type: "boolean" }, content: { type: "string" } }, required: ["visible", "content"] },
+    max_output_tokens: 160,
+  });
+  assert.equal(cloudflareCalls, 2, "A non-quota vision error is retried before provider failover");
+  assert.equal(openaiPayloads.length, 1);
+  assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
+  assert.equal(openaiPayloads[0].input[0].content[1].image_url, image);
+  assert.equal(result.data.visible, true);
+});
+
 test("Cloudflare Guard moderates ordinary school text without OpenAI", async () => {
   const calls = [];
   const api = loadApi();
@@ -306,12 +345,14 @@ test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", asy
 });
 
 test("dependency health stays available through fallback and reports degraded Cloudflare", async () => {
-  const api = loadApi(async (input) => {
+  const api = loadApi(async (input, init) => {
     if (String(input).endsWith("/moderations")) {
       return new Response(JSON.stringify({ results: [{ flagged: false }] }), { status: 200, headers: { "Content-Type": "application/json" } });
     }
+    const request = JSON.parse(init.body);
+    const visual = request.input?.some((message) => message.content?.some?.((part) => part.type === "input_image"));
     return new Response(JSON.stringify({
-      output_text: '{"ok":true}',
+      output_text: visual ? '{"visible":true,"content":"multiplication worksheet"}' : '{"ok":true}',
       usage: { input_tokens: 5, output_tokens: 2 },
       service_tier: "default",
     }), { status: 200, headers: { "Content-Type": "application/json" } });
@@ -322,6 +363,7 @@ test("dependency health stays available through fallback and reports degraded Cl
     AI_PROVIDER: "cloudflare",
     ENABLE_OPENAI_FALLBACK: "true",
     OPENAI_FALLBACK_MODEL: "gpt-5.6-luna",
+    OPENAI_VISION_MODEL: "gpt-5.6-sol",
     OPENAI_API_KEY: "test-key",
     DEPLOY_PROBE_TOKEN: "probe-secret",
     TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
@@ -333,7 +375,9 @@ test("dependency health stays available through fallback and reports degraded Cl
   assert.equal(payload.degraded, true);
   assert.equal(payload.responses.ok, false);
   assert.equal(payload.moderation.provider, "openai");
+  assert.equal(payload.image_moderation.provider, "openai");
   assert.equal(payload.structured_tutor.provider, "openai");
+  assert.equal(payload.structured_vision.provider, "openai");
 
   const directResponse = await api.dependencyProbe(new Request("https://eterna.test/health/dependencies", {
     headers: { Authorization: "Bearer probe-secret" },
@@ -341,17 +385,23 @@ test("dependency health stays available through fallback and reports degraded Cl
     AI_PROVIDER: "cloudflare",
     DEPLOY_PROBE_TOKEN: "probe-secret",
     TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
-    AI: { run: async (model) => model.includes("llama-guard")
+    AI: { run: async (model, request) => model.includes("llama-guard")
       ? { response: "safe" }
       : model.includes("qwen")
         ? { response: { acknowledged: true } }
-        : { response: "OK" } },
+        : model.includes("vision")
+          ? request.response_format
+            ? { response: { visible: true, content: "multiplication worksheet" } }
+            : { response: "safe" }
+          : { response: "OK" } },
   });
   const directPayload = await directResponse.json();
   assert.equal(directResponse.status, 200);
   assert.equal(directPayload.ok, true, "A parsed JSON object proves the structured dependency is available without trusting sample semantics");
   assert.equal(directPayload.degraded, false);
   assert.equal(directPayload.structured_tutor.provider, "cloudflare");
+  assert.equal(directPayload.image_moderation.provider, "cloudflare");
+  assert.equal(directPayload.structured_vision.provider, "cloudflare");
 });
 
 test("Cloudflare routes every photographed task through the vision model", async () => {
