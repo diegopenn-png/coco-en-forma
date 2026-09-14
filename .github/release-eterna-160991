@@ -1,0 +1,5 @@
+Eterna Worker production release 160.99.1
+
+Fixes photographed-task failover by routing visual requests to a dedicated
+OpenAI vision fallback and gates deployment on real image moderation and
+structured-vision probes.

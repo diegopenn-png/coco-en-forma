@@ -171,6 +171,8 @@ test("full-quality model route is unchanged and paid priority is opt-in", () => 
   assert.equal(defaults.tutor.fallback_model, "gpt-5.6-terra");
   assert.equal(defaults.tutor.compatibility_model, "gpt-5.4-mini");
   assert.equal(defaults.scope.fallback_model, "gpt-5.6-terra");
+  assert.equal(defaults.provider_fallback.vision_model, "gpt-5.6-sol");
+  assert.equal(defaults.vision.fallback_model, "gpt-5.6-sol");
   assert.equal(defaults.tutor.reasoning_effort, "high");
   assert.equal(defaults.verifier.model, "gpt-5.6-terra");
   assert.equal(defaults.verifier.reasoning_effort, "high");
@@ -272,6 +274,88 @@ test("Cloudflare quota exhaustion switches structured output to the low-cost Ope
   assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 7, output_tokens: 3 });
 });
 
+test("Cloudflare photographed tasks use license-free visual grounding before structured reasoning", async () => {
+  const cloudflareCalls = [];
+  let openaiCalls = 0;
+  const api = loadApi(async () => {
+    openaiCalls += 1;
+    throw new Error("OpenAI should not be needed when Cloudflare visual grounding succeeds");
+  });
+  const image = "data:image/png;base64,AA==";
+  const result = await api.structured({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_FALLBACK_MODEL: "gpt-5.6-luna",
+    OPENAI_VISION_MODEL: "gpt-5.6-sol",
+    OPENAI_API_KEY: "test-key",
+    TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    VISION_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => {
+      cloudflareCalls.push({ model, payload });
+      if (model.includes("llava")) return { description: "Ficha: 6 × hueco = 36.", usage: { prompt_tokens: 3, completion_tokens: 4 } };
+      return { response: { visible: true, content: "multiplication worksheet" }, usage: { prompt_tokens: 5, completion_tokens: 2 } };
+    } },
+  }, {
+    model: "@cf/llava-hf/llava-1.5-7b-hf",
+    input: [{ role: "user", content: [
+      { type: "input_text", text: "Analyze the worksheet." },
+      { type: "input_image", image_url: image },
+    ] }],
+    instructions: "Return the schema.",
+    name: "vision_fallback_test",
+    schema: { type: "object", additionalProperties: false, properties: { visible: { type: "boolean" }, content: { type: "string" } }, required: ["visible", "content"] },
+    max_output_tokens: 160,
+  });
+  assert.equal(openaiCalls, 0);
+  assert.deepEqual(cloudflareCalls.map((call) => call.model), [
+    "@cf/llava-hf/llava-1.5-7b-hf",
+    "@cf/qwen/qwen3-30b-a3b-fp8",
+  ]);
+  assert.equal(Array.from(cloudflareCalls[0].payload.image).join(","), "0");
+  assert.equal("image" in cloudflareCalls[1].payload, false);
+  assert.match(cloudflareCalls[1].payload.messages[1].content, /EVIDENCIA_VISUAL_FIEL/);
+  assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 8, output_tokens: 6 });
+  assert.equal(result.data.visible, true);
+});
+
+test("Cloudflare visual grounding quota switches to the dedicated OpenAI vision model", async () => {
+  let cloudflareCalls = 0;
+  const openaiPayloads = [];
+  const api = loadApi(async (_input, init) => {
+    openaiPayloads.push(JSON.parse(init.body));
+    return new Response(JSON.stringify({
+      output_text: '{"visible":true,"content":"multiplication worksheet"}',
+      usage: { input_tokens: 11, output_tokens: 5 },
+      service_tier: "default",
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+  });
+  const image = "data:image/png;base64,AA==";
+  const result = await api.structured({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_FALLBACK_MODEL: "gpt-5.6-luna",
+    OPENAI_VISION_MODEL: "gpt-5.6-sol",
+    OPENAI_API_KEY: "test-key",
+    AI: { run: async () => { cloudflareCalls += 1; throw new Error("Workers AI neuron quota exceeded"); } },
+  }, {
+    model: "@cf/llava-hf/llava-1.5-7b-hf",
+    input: [{ role: "user", content: [
+      { type: "input_text", text: "Analyze the worksheet." },
+      { type: "input_image", image_url: image },
+    ] }],
+    instructions: "Return the schema.",
+    name: "vision_fallback_test",
+    schema: { type: "object", additionalProperties: false, properties: { visible: { type: "boolean" }, content: { type: "string" } }, required: ["visible", "content"] },
+    max_output_tokens: 160,
+  });
+  assert.equal(cloudflareCalls, 1, "A known visual quota error must not be retried");
+  assert.equal(openaiPayloads.length, 1);
+  assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
+  assert.equal(openaiPayloads[0].input[0].content[1].image_url, image);
+  assert.equal(result.data.visible, true);
+});
+
 test("Cloudflare Guard moderates ordinary school text without OpenAI", async () => {
   const calls = [];
   const api = loadApi();
@@ -281,6 +365,19 @@ test("Cloudflare Guard moderates ordinary school text without OpenAI", async () 
   }, "Cuéntame sobre los dinosaurios", null);
   assert.equal(result.flagged, false);
   assert.equal(calls[0].model, "@cf/meta/llama-guard-3-8b");
+});
+
+test("Cloudflare image moderation accepts the image-to-text description response shape", async () => {
+  const calls = [];
+  const api = loadApi();
+  const result = await api.moderate({
+    AI_PROVIDER: "cloudflare",
+    VISION_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
+    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { description: "SAFE" }; } },
+  }, "Ficha escolar de multiplicaciones", "data:image/png;base64,AA==");
+  assert.equal(result.flagged, false);
+  assert.equal(result.provider, "cloudflare");
+  assert.equal(calls[0].model, "@cf/llava-hf/llava-1.5-7b-hf");
 });
 
 test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", async () => {
@@ -306,12 +403,14 @@ test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", asy
 });
 
 test("dependency health stays available through fallback and reports degraded Cloudflare", async () => {
-  const api = loadApi(async (input) => {
+  const api = loadApi(async (input, init) => {
     if (String(input).endsWith("/moderations")) {
       return new Response(JSON.stringify({ results: [{ flagged: false }] }), { status: 200, headers: { "Content-Type": "application/json" } });
     }
+    const request = JSON.parse(init.body);
+    const visual = request.input?.some((message) => message.content?.some?.((part) => part.type === "input_image"));
     return new Response(JSON.stringify({
-      output_text: '{"ok":true}',
+      output_text: visual ? '{"visible":true,"content":"multiplication worksheet"}' : '{"ok":true}',
       usage: { input_tokens: 5, output_tokens: 2 },
       service_tier: "default",
     }), { status: 200, headers: { "Content-Type": "application/json" } });
@@ -322,6 +421,7 @@ test("dependency health stays available through fallback and reports degraded Cl
     AI_PROVIDER: "cloudflare",
     ENABLE_OPENAI_FALLBACK: "true",
     OPENAI_FALLBACK_MODEL: "gpt-5.6-luna",
+    OPENAI_VISION_MODEL: "gpt-5.6-sol",
     OPENAI_API_KEY: "test-key",
     DEPLOY_PROBE_TOKEN: "probe-secret",
     TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
@@ -333,7 +433,9 @@ test("dependency health stays available through fallback and reports degraded Cl
   assert.equal(payload.degraded, true);
   assert.equal(payload.responses.ok, false);
   assert.equal(payload.moderation.provider, "openai");
+  assert.equal(payload.image_moderation.provider, "openai");
   assert.equal(payload.structured_tutor.provider, "openai");
+  assert.equal(payload.structured_vision.provider, "openai");
 
   const directResponse = await api.dependencyProbe(new Request("https://eterna.test/health/dependencies", {
     headers: { Authorization: "Bearer probe-secret" },
@@ -341,17 +443,25 @@ test("dependency health stays available through fallback and reports degraded Cl
     AI_PROVIDER: "cloudflare",
     DEPLOY_PROBE_TOKEN: "probe-secret",
     TUTOR_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
-    AI: { run: async (model) => model.includes("llama-guard")
+    AI: { run: async (model, request) => model.includes("llama-guard")
       ? { response: "safe" }
+      : model.includes("llava")
+        ? request.max_tokens === 12
+          ? { description: "safe" }
+          : { description: "A multiplication worksheet shows 3 x blank = 12." }
       : model.includes("qwen")
-        ? { response: { acknowledged: true } }
-        : { response: "OK" } },
+        ? /EVIDENCIA_VISUAL_FIEL/.test(request.messages?.[1]?.content || "")
+          ? { response: { visible: true, content: "multiplication worksheet" } }
+          : { response: { ok: true } }
+          : { response: "OK" } },
   });
   const directPayload = await directResponse.json();
   assert.equal(directResponse.status, 200);
   assert.equal(directPayload.ok, true, "A parsed JSON object proves the structured dependency is available without trusting sample semantics");
   assert.equal(directPayload.degraded, false);
   assert.equal(directPayload.structured_tutor.provider, "cloudflare");
+  assert.equal(directPayload.image_moderation.provider, "cloudflare");
+  assert.equal(directPayload.structured_vision.provider, "cloudflare");
 });
 
 test("Cloudflare routes every photographed task through the vision model", async () => {
@@ -359,8 +469,9 @@ test("Cloudflare routes every photographed task through the vision model", async
   const api = loadApi();
   await api.structured({
     AI_PROVIDER: "cloudflare",
-    VISION_MODEL: "@cf/meta/llama-3.2-11b-vision-instruct",
-    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { response: { ok: true } }; } },
+    VISION_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => { calls.push({ model, payload }); return model.includes("llava") ? { description: "Visible school task" } : { response: { ok: true } }; } },
   }, {
     model: "@cf/qwen/qwen3-30b-a3b-fp8",
     input: [{ role: "user", content: [
@@ -372,8 +483,9 @@ test("Cloudflare routes every photographed task through the vision model", async
     schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"] },
     max_output_tokens: 100,
   });
-  assert.equal(calls[0].model, "@cf/meta/llama-3.2-11b-vision-instruct");
+  assert.deepEqual(calls.map((call) => call.model), ["@cf/llava-hf/llava-1.5-7b-hf", "@cf/qwen/qwen3-30b-a3b-fp8"]);
   assert.equal(Array.from(calls[0].payload.image).join(","), "0");
+  assert.equal("image" in calls[1].payload, false);
 });
 
 test("dinosaur explanations have a verified local recovery when every tutor model is unavailable", () => {
