@@ -184,6 +184,15 @@ function cloudflareQuotaError(error){return cloudflareErrorDiagnostic(error).end
 function openaiFallbackEnabled(env){return aiProvider(env)==="cloudflare"&&String(env?.ENABLE_OPENAI_FALLBACK||"false").toLowerCase()==="true"&&Boolean(String(env?.OPENAI_API_KEY||"").trim())}
 function normalizeTokenUsage(usage){const value=usage&&typeof usage==="object"?usage:{},input=Number(value.input_tokens??value.prompt_tokens??0),output=Number(value.output_tokens??value.completion_tokens??0);return{input_tokens:Number.isFinite(input)&&input>0?input:0,output_tokens:Number.isFinite(output)&&output>0?output:0}}
 function mergeTokenUsage(...values){return values.map(normalizeTokenUsage).reduce((total,value)=>({input_tokens:total.input_tokens+value.input_tokens,output_tokens:total.output_tokens+value.output_tokens}),{input_tokens:0,output_tokens:0})}
+function cloudflareResultText(result){const value=typeof result?.response==="string"?result.response:typeof result?.description==="string"?result.description:typeof result==="string"?result:null;return value==null?JSON.stringify(result??null):value}
+function structuredValueMatchesSchema(value,schema){
+  if(!schema||typeof schema!=="object")return true;
+  const types=Array.isArray(schema.type)?schema.type:[schema.type].filter(Boolean),matchesType=type=>type==="null"?value===null:type==="object"?Boolean(value)&&typeof value==="object"&&!Array.isArray(value):type==="array"?Array.isArray(value):type==="string"?typeof value==="string":type==="boolean"?typeof value==="boolean":type==="integer"?Number.isInteger(value):type==="number"?typeof value==="number"&&Number.isFinite(value):true;
+  if(types.length&&!types.some(matchesType))return false;if(schema.enum&&!schema.enum.includes(value))return false;
+  if(Array.isArray(value)&&schema.items&&!value.every(item=>structuredValueMatchesSchema(item,schema.items)))return false;
+  if(value&&typeof value==="object"&&!Array.isArray(value)){if((schema.required||[]).some(key=>!(key in value)))return false;for(const[key,propertySchema]of Object.entries(schema.properties||{}))if(key in value&&!structuredValueMatchesSchema(value[key],propertySchema))return false}
+  return true
+}
 function dataUrlBytes(value){const match=/^data:image\/(?:png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(String(value||""));if(!match)throw new Error("Cloudflare vision image is invalid");const binary=atob(match[1]),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return[...bytes]}
 function cloudflareInput(input){const texts=[],images=[];for(const message of input||[]){for(const part of Array.isArray(message?.content)?message.content:[]){if(part?.type==="input_text"&&part.text)texts.push(String(part.text));else if(part?.type==="input_image"&&part.image_url)images.push(String(part.image_url))}if(typeof message?.content==="string")texts.push(message.content)}return{text:texts.join("\n"),image:images[0]||null}}
 const DEFAULT_CLOUDFLARE_VISION_MODEL="@cf/llava-hf/llava-1.5-7b-hf";
@@ -191,7 +200,7 @@ async function cloudflareVisionEvidence(env,{text,image,instructions,name,max_ou
   const model=env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL,budgets=[Math.min(2600,Math.max(700,Number(max_output_tokens)||1200)),Math.min(3600,Math.max(1400,Number(max_output_tokens)||1200))];let lastErr=null,lastUsage={};
   for(let attempt=0;attempt<budgets.length;attempt++){
     const retryNote=attempt?" El intento anterior no produjo una descripción utilizable; vuelve a observar desde el principio.":"",prompt=`Observa la imagen escolar con máxima fidelidad.${retryNote}\nTranscribe todos los textos, números, símbolos y huecos visibles en su orden y posición. Distingue estrictamente contenido impreso, escritura del alumno y casillas vacías. No resuelvas ni completes los huecos, no inventes lo borroso y declara cualquier incertidumbre.\nObjetivo de la lectura: ${String(instructions||"").slice(0,2000)}\nSolicitud acompañante: ${String(text||"").slice(0,6000)}`;
-    try{const result=await env.AI.run(model,{prompt,image:dataUrlBytes(image),max_tokens:budgets[attempt],temperature:.1}),raw=result?.response??result,evidence=typeof raw==="string"?raw.trim():JSON.stringify(raw);lastUsage=normalizeTokenUsage(result?.usage||lastUsage);if(!evidence||evidence==="{}"||evidence==="null")throw new Error("empty visual evidence");return{text:evidence,usage:lastUsage,model}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE VISION",name,"attempt",attempt+1,"model",model,cloudflareErrorDiagnostic(error,"VISION"));if(cloudflareQuotaError(error))break}
+    try{const result=await env.AI.run(model,{prompt,image:dataUrlBytes(image),max_tokens:budgets[attempt],temperature:.1}),evidence=cloudflareResultText(result).trim();lastUsage=normalizeTokenUsage(result?.usage||lastUsage);if(!evidence||evidence==="{}"||evidence==="null")throw new Error("empty visual evidence");return{text:evidence,usage:lastUsage,model}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE VISION",name,"attempt",attempt+1,"model",model,cloudflareErrorDiagnostic(error,"VISION"));if(cloudflareQuotaError(error))break}
     if(attempt+1<budgets.length)await waitForMilliseconds(180*(attempt+1))
   }
   throw new Error("Cloudflare visual grounding failed after retry: "+name+" · "+String(lastErr?.message||lastErr||"unknown"))
@@ -199,14 +208,16 @@ async function cloudflareVisionEvidence(env,{text,image,instructions,name,max_ou
 async function cloudflareStructured(env,{model,input,instructions,name,schema,max_output_tokens=1200}){
   const prepared=cloudflareInput(input);
   if(prepared.image){
-    const visual=await cloudflareVisionEvidence(env,{...prepared,instructions,name,max_output_tokens}),groundedInput=[{role:"user",content:[{type:"input_text",text:`${prepared.text}\n\nEVIDENCIA_VISUAL_FIEL (obtenida del modelo visual; úsala como única fuente sobre la imagen):\n${visual.text}`}]}],structuredResult=await cloudflareStructured(env,{model:env.VISION_STRUCTURING_MODEL||env.TUTOR_MODEL||"@cf/qwen/qwen3-30b-a3b-fp8",input:groundedInput,instructions,name,schema,max_output_tokens});
+    const visual=await cloudflareVisionEvidence(env,{...prepared,instructions,name,max_output_tokens}),groundedInput=[{role:"user",content:[{type:"input_text",text:`${prepared.text}\n\nEVIDENCIA_VISUAL_FIEL (obtenida del modelo visual; úsala como única fuente sobre la imagen):\n${visual.text}`}]}],models=[...new Set([env.VISION_STRUCTURING_MODEL||env.TUTOR_MODEL||"@cf/qwen/qwen3-30b-a3b-fp8",env.TUTOR_FALLBACK_MODEL,env.TUTOR_COMPATIBILITY_MODEL].filter(Boolean))];let structuredResult=null,lastError=null;
+    for(const structuringModel of models){try{structuredResult=await cloudflareStructured(env,{model:structuringModel,input:groundedInput,instructions,name,schema,max_output_tokens});break}catch(error){lastError=error;console.error("ETERNA CLOUDFLARE VISION STRUCTURING",name,"model",structuringModel,cloudflareErrorDiagnostic(error,"VISION_STRUCTURING"))}}
+    if(!structuredResult)throw lastError||new Error("Cloudflare visual structuring failed: "+name);
     return{...structuredResult,usage:mergeTokenUsage(visual.usage,structuredResult.usage),visual_model:visual.model}
   }
   const effectiveModel=model,budgets=[Math.min(3600,Number(max_output_tokens)||1200),Math.min(5200,Math.max(2400,(Number(max_output_tokens)||1200)*2))];let lastErr=null,lastUsage={};
   for(let attempt=0;attempt<budgets.length;attempt++){
     const retryNote=attempt?"\nEl intento anterior no produjo JSON válido. Devuelve únicamente el objeto completo y conciso.":"",system=String(instructions||"")+retryNote,payload={max_tokens:budgets[attempt],temperature:.2,response_format:{type:"json_schema",json_schema:schema}};
     payload.messages=[{role:"system",content:system},{role:"user",content:prepared.text}];
-    try{const result=await env.AI.run(effectiveModel,payload),raw=result?.response??result;lastUsage=normalizeTokenUsage(result?.usage||lastUsage);const data=raw&&typeof raw==="object"?raw:parseStructuredJson(raw);return{data,usage:lastUsage,service_tier:"cloudflare"}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE STRUCTURED",name,"attempt",attempt+1,"model",effectiveModel,cloudflareErrorDiagnostic(error));if(cloudflareQuotaError(error))break}
+    try{const result=await env.AI.run(effectiveModel,payload),raw=result?.response??result;lastUsage=normalizeTokenUsage(result?.usage||lastUsage);const data=raw&&typeof raw==="object"?raw:parseStructuredJson(raw);if(!structuredValueMatchesSchema(data,schema))throw new Error("structured schema mismatch");return{data,usage:lastUsage,service_tier:"cloudflare"}}catch(error){lastErr=error;console.error("ETERNA CLOUDFLARE STRUCTURED",name,"attempt",attempt+1,"model",effectiveModel,cloudflareErrorDiagnostic(error));if(cloudflareQuotaError(error))break}
     if(attempt+1<budgets.length)await waitForMilliseconds(180*(attempt+1))
   }
   throw new Error("Cloudflare structured output failed after retry: "+name+" · "+String(lastErr?.message||lastErr||"unknown"))
@@ -364,7 +375,7 @@ async function moderate(env,text,image){
       let result;
       if(image)result=await env.AI.run(env.VISION_MODEL||DEFAULT_CLOUDFLARE_VISION_MODEL,{prompt:`Clasifica esta imagen y el texto acompañante para seguridad infantil. Responde solo SAFE o UNSAFE. Texto: ${String(text||"").slice(0,2000)}`,image:dataUrlBytes(image),max_tokens:12,temperature:0});
       else result=await env.AI.run(env.MODERATION_MODEL||"@cf/meta/llama-guard-3-8b",{messages:[{role:"user",content:String(text).slice(0,5000)}]});
-      const verdict=String(result?.response??result??"").trim(),flagged=/^unsafe\b/i.test(verdict);
+      const verdict=cloudflareResultText(result).trim(),flagged=/^unsafe\b/i.test(verdict);
       if(!/^(?:safe|unsafe)\b/i.test(verdict))throw new Error("invalid moderation verdict");
       return{flagged,categories:{cloudflare_guard:flagged},provider:"cloudflare"}
     }catch(error){
