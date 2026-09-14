@@ -21,7 +21,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.4-fast-image-safety/);
+  assert.match(worker, /160\.99\.5-partial-worksheet-grounding/);
   assert.match(worker, /explicit_identity_and_mission_v1:true/);
   assert.match(worker, /empathetic_school_peer_support_v1:true/);
   assert.match(worker, /relational_continuity_v1:true/);
@@ -48,6 +48,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(worker, /cloudflare_moondream_ocr_grounding_v1:true/);
   assert.match(worker, /cloudflare_moondream_image_safety_v1:true/);
   assert.match(worker, /bounded_visual_output_v1:true/);
+  assert.match(worker, /partial_worksheet_grounding_v1:true/);
   assert.match(worker, /!image&&!topicReturnRequest\(text,incomingPedState\)/);
   assert.match(worker, /model_configuration:modelConfiguration\(env\)/);
   assert.match(preview, /--var "AI_PROVIDER:cloudflare"/);
@@ -60,9 +61,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /--var "VISION_STRUCTURING_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
-  assert.match(preview, /grep -F '160\.99\.4-fast-image-safety' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.4-fast-image-safety"/);
-  assert.match(preview, /API 160\.99\.4-fast-image-safety/);
+  assert.match(preview, /grep -F '160\.99\.5-partial-worksheet-grounding' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.5-partial-worksheet-grounding"/);
+  assert.match(preview, /API 160\.99\.5-partial-worksheet-grounding/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -119,6 +120,17 @@ test("the 160.99.4 production gate proves fast image safety before release", () 
   assert.match(production, /payload\.features\?\.cloudflare_moondream_image_safety_v1 === true/);
   assert.match(production, /payload\.features\?\.bounded_visual_output_v1 === true/);
   assert.match(production, /payload\.image_moderation\?\.model !== "@cf\/moondream\/moondream3\.1-9B-A2B"/);
+});
+
+test("the 160.99.5 production gate preserves reliable rows from partial worksheets", () => {
+  const production = readFileSync(".github/workflows/eterna-worker-production-160995.yml", "utf8");
+  const worker = readFileSync("eterna-worker/src/index.js", "utf8");
+  assert.match(production, /\.github\/release-eterna-160995/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.5-partial-worksheet-grounding/);
+  assert.match(production, /payload\.features\?\.partial_worksheet_grounding_v1 === true/);
+  assert.match(worker, /function reliableVisionForReasoning\(vision\)/);
+  assert.match(worker, /excluded_low_confidence_items/);
+  assert.match(worker, /if\(usableItems\.length\|\|usableBlanks\.length\)return false/);
 });
 
 
