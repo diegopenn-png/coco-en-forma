@@ -381,7 +381,7 @@ test("Cloudflare image moderation accepts the image-to-text description response
     AI_PROVIDER: "cloudflare",
     VISION_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
     VISION_SAFETY_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
-    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { answer: "SAFE" }; } },
+    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { answer: "The image is safe." }; } },
   }, "Ficha escolar de multiplicaciones", "data:image/png;base64,AA==");
   assert.equal(result.flagged, false);
   assert.equal(result.provider, "cloudflare");
@@ -390,7 +390,7 @@ test("Cloudflare image moderation accepts the image-to-text description response
   assert.equal(calls[0].payload.task, "query");
   assert.equal(calls[0].payload.image, "data:image/png;base64,AA==");
   assert.equal(calls[0].payload.reasoning, false);
-  assert.equal(calls[0].payload.max_tokens, 8);
+  assert.equal(calls[0].payload.max_tokens, 32);
 });
 
 test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", async () => {
@@ -462,7 +462,7 @@ test("dependency health stays available through fallback and reports degraded Cl
         : model.includes("llava")
           ? { description: "safe" }
         : model.includes("moondream")
-          ? request.max_tokens === 8
+          ? request.max_tokens === 32
             ? { answer: "safe" }
             : { answer: "A multiplication worksheet shows 3 x blank = 12." }
         : model.includes("qwen")
