@@ -52,6 +52,8 @@ function loadApi(fetchImpl = fetch) {
     stableFactTutorRecovery,
     simpleArithmeticInText,
     pendingNumericEquation,
+    reliableVisionForReasoning,
+    visionNeedsClarification,
     deterministicArithmeticGuidanceTurn,
     deterministicPendingNumericTurn,
     synchronousVerificationRequired
@@ -324,6 +326,43 @@ test("Cloudflare photographed tasks use Moondream OCR grounding before structure
   assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 5, output_tokens: 2 });
   assert.equal(result.visual_model, "@cf/moondream/moondream3.1-9B-A2B");
   assert.equal(result.data.visible, true);
+});
+
+test("a partially cropped worksheet keeps its reliable rows and drops uncertain ones", () => {
+  const api = loadApi();
+  const vision = {
+    legible: false,
+    confidence: 0.64,
+    printed_elements: ["6 × … = 36", "borroso"],
+    uncertainty: ["La última fila está cortada."],
+    blanks: [
+      { label: "…", purpose: "answer", nearby_printed_values: ["6", "36"], location: "fila 1", confidence: 0.95 },
+      { label: "…", purpose: "unknown", nearby_printed_values: [], location: "borde inferior", confidence: 0.4 },
+    ],
+    items: [
+      { id: "1", statement: "6 × … = 36", printed_values: ["6", "36"], blank_target: null, student_response: null, inferred_goal: "factor", spatial_notes: "fila 1", confidence: 0.95 },
+      { id: "2", statement: "fila cortada", printed_values: [], blank_target: null, student_response: null, inferred_goal: "unknown", spatial_notes: "borde inferior", confidence: 0.4 },
+    ],
+  };
+  const grounded = api.reliableVisionForReasoning(vision);
+  assert.equal(api.visionNeedsClarification(grounded), false);
+  assert.deepEqual(Array.from(grounded.items, (item) => item.id), ["1"]);
+  assert.equal(grounded.blanks.length, 1);
+  assert.equal(grounded.usable_partial, true);
+  assert.equal(grounded.excluded_low_confidence_items, 1);
+  assert.equal(grounded.excluded_low_confidence_blanks, 1);
+  assert.ok(grounded.printed_elements.includes("6 × … = 36"));
+});
+
+test("an image with no reliable row still asks for a clearer crop", () => {
+  const api = loadApi();
+  const vision = {
+    legible: false,
+    confidence: 0.45,
+    blanks: [{ label: "…", purpose: "unknown", nearby_printed_values: [], location: "unknown", confidence: 0.4 }],
+    items: [{ id: "1", statement: "?", printed_values: [], confidence: 0.4 }],
+  };
+  assert.equal(api.visionNeedsClarification(api.reliableVisionForReasoning(vision)), true);
 });
 
 test("Cloudflare visual grounding quota switches to the dedicated OpenAI vision model", async () => {
