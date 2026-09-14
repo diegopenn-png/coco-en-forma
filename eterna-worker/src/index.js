@@ -18,7 +18,7 @@ import "./library/curricular-compass-v1.js";
  */
 const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.98.2-greeting-timing";
+const VERSION="160.99.0-conversation-director";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -74,6 +74,33 @@ function publicTutorBenchmarkInstruction(){return`BENCHMARK DOCENTE PÚBLICO=${J
 - Seguridad proporcional: recomendar apoyo adulto puede ser apropiado; 112 y lenguaje de emergencia se reservan para peligro inmediato real.
 - Integridad académica: no facilites copiar ni hacer trampas; ofrece ayuda para comprender, practicar o hablar con honestidad.
 - Calidad: una sola pregunta activa, economía de lenguaje, sin repetir lo ya demostrado y con hechos/cálculos comprobados.`}
+
+
+const CONVERSATION_DIRECTOR_VERSION="conversation-director-v1";
+function directorNorm(value){return String(value??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("es-ES").replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
+function profileAgeFromContext(ctx){
+  const candidates=[ctx?.base?.birth_date,ctx?.base?.fecha_nacimiento,ctx?.profile?.birth_date,ctx?.profile?.fecha_nacimiento];
+  for(const candidate of candidates){const calculated=ageFromBirthDate(String(candidate||""));if(calculated!=null)return calculated}
+  const direct=Number(ctx?.base?.edad??ctx?.profile?.age);return Number.isInteger(direct)&&direct>=0&&direct<=130?direct:null
+}
+function isStudentAgeQuestion(text){const n=directorNorm(text);return /^(?:eterna )?(?:que edad tengo|cuantos anos tengo|sabes mi edad|te acuerdas de mi edad)$/.test(n)}
+function explicitAcademicSwitch(text){const n=directorNorm(text);return /^(?:(?:vale|ok) )?(?:ahora|cambiando de tema|cambio de tema|volvamos|retomemos|sigamos con|continuemos con)\b/.test(n)||/\b(?:matematicas|lengua|ingles|biologia|fisica|quimica|historia|geografia|examen|deberes|tarea|ejercicio)\b/.test(n)}
+function interventionTags(text){const n=directorNorm(text),tags=[];if(/adulto|madre|padre|profesor|familia/.test(n))tags.push("adult_support");if(/112|emergencia|peligro inmediato/.test(n))tags.push("emergency");if(/te entiendo|entiendo que|vaya|siento que/.test(n))tags.push("validation");if(/que te pasa|que ocurrio|que paso|que parte|como te sientes/.test(n))tags.push("clarify");if(/puedes|prueba|haz|dile|cuentale|habla con|anota/.test(n))tags.push("action");if(/te sirvio|ha ayudado|como estas ahora|mejor ahora/.test(n))tags.push("check");return tags}
+function recentInterventionTags(history){const seen=new Set();for(const item of Array.isArray(history)?history.slice(-8):[]){if(item?.role!=="assistant")continue;for(const tag of interventionTags(item.text||item.reply||""))seen.add(tag)}return [...seen]}
+function conversationDirector({text,history=[],ctx,pedState={},scope,currentSituation}={}){
+  const safety=childSafeguardingCategory(text);
+  if(safety)return{version:CONVERSATION_DIRECTOR_VERSION,route:"safety",safety_category:safety};
+  if(isStudentAgeQuestion(text))return{version:CONVERSATION_DIRECTOR_VERSION,route:"profile_age",age:profileAgeFromContext(ctx)};
+  const activeThread=sanitizeRelationalThread(pedState?.relational_thread);
+  if(activeThread&&!explicitAcademicSwitch(text))return{version:CONVERSATION_DIRECTOR_VERSION,route:"personal",reason:"active_relational_thread",recent_interventions:recentInterventionTags(history)};
+  if(currentSituation&&isRelationalSituation(currentSituation))return{version:CONVERSATION_DIRECTOR_VERSION,route:"personal",reason:"current_relational_signal",recent_interventions:recentInterventionTags(history)};
+  if(explicitAcademicSwitch(text))return{version:CONVERSATION_DIRECTOR_VERSION,route:"academic",reason:"explicit_switch"};
+  return{version:CONVERSATION_DIRECTOR_VERSION,route:scope?.scope==="school"?"academic":"general",recent_interventions:recentInterventionTags(history)}
+}
+function profileAgePayload(age,pedState,mode,modeState){
+  const reply=age==null?"No tengo tu edad confirmada en el perfil. Pide a un adulto que la complete en Zona Familiar; no voy a inventarla.":`Tienes ${age} años.`;
+  return{reply,verification_status:"verified",subject:null,concept:null,help_level:0,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:null,mode_label:MODE_PROFILES[mode].label,mode_state:modeState,pedagogical_state:pedState,auto_speak:true,conversation_director:CONVERSATION_DIRECTOR_VERSION}
+}
 
 const AGE_PEDAGOGY={
   foundation:{band:"3-5",label:"3–5 años",target_words:"25–70",max_ideas:2,vocabulary:"muy sencillo, concreto y cotidiano",depth:"una idea cada vez; frases cortas y ejemplos visibles",reasoning:"preguntas opcionales muy breves",check_policy:"una microcomprobación solo cuando aporte valor",older_student:false},
@@ -422,9 +449,10 @@ function situationalReply(situation,text,name){
 }
 const RELATIONAL_REPLY_SCHEMA={type:"object",additionalProperties:false,properties:{reply:{type:"string"},thread_stage:{type:"string",enum:RELATIONAL_STAGES},continue_thread:{type:"boolean"},adult_support:{type:"string",enum:["none","helpful","important","urgent"]},safety_category:{type:"string",enum:["none","bullying","personal_danger","unsafe_contact","self_harm"]}},required:["reply","thread_stage","continue_thread","adult_support","safety_category"]};
 function relationalFallbackReply(situation,text){if(situation?.closure_hint)return"De nada. Has hecho bien en hablarlo; si vuelve a preocuparte o la situación cambia, cuéntaselo también a un adulto de confianza.";if(situation?.kind==="school_peer_problem"&&situation?.follow_up)return"Vamos a hacerlo concreto. No respondas insultando ni te quedes a solas con el problema: aléjate si vuelve a ocurrir, anota qué pasó y cuéntaselo hoy a un profesor con una frase sencilla, por ejemplo: «Necesito ayuda porque un compañero me está molestando». ¿Qué hace exactamente cuando te molesta?";if(situation?.follow_up)return"Te sigo. Vamos a centrarnos en lo que acaba de pasar y pensar en un paso pequeño y seguro que puedas dar hoy. ¿Qué parte de la situación te preocupa más?";return situationalReply(situation,text,"")}
-async function relationalTutor(env,{text,history,ctx,situation,pedState}){const policy=ageTeachingProfile(ctx),thread=sanitizeRelationalThread(pedState?.relational_thread),studentName=displayStudentName(ctx?.base?.apodo||ctx?.profile?.apodo||"");const prompt=`Devuelve JSON. Eres Eterna en una conversación de acompañamiento docente con un menor.
+async function relationalTutor(env,{text,history,ctx,situation,pedState}){const policy=ageTeachingProfile(ctx),thread=sanitizeRelationalThread(pedState?.relational_thread),studentName=displayStudentName(ctx?.base?.apodo||ctx?.profile?.apodo||""),recentInterventions=recentInterventionTags(history);const prompt=`Devuelve JSON. Eres Eterna en una conversación de acompañamiento docente con un menor.
 ${teacherCoreInstruction(policy)}
 OBJETIVO: escucha y acompaña como una gran profesora, sin convertirte en terapeuta, amiga exclusiva ni sustituta de la familia o del centro.
+INTERVENCIONES YA UTILIZADAS RECIENTEMENTE=${JSON.stringify(recentInterventions)}. No repitas una intervención ya utilizada salvo que aparezca información nueva que la haga necesaria; el siguiente turno debe avanzar de escuchar→comprender→aclarar→ayudar→comprobar→cerrar.
 REGLAS:
 1) Responde primero al MENSAJE ACTUAL. El historial solo aclara referencias; no arrastres el tema académico suspendido ni lo menciones como salida automática.
 2) Si es un seguimiento, avanza: responde a la nueva información o a lo que pregunta. No repitas el mismo aviso, la misma validación ni «lo siento que estés pasando por eso».
@@ -1469,9 +1497,11 @@ async function handleChatCore(request,env,auth,event,timings){
   if(mod.moderation_error&&!moderationDegraded)return json({reply:"Ahora no puedo completar las comprobaciones de seguridad. Prueba de nuevo dentro de un momento.",verification_status:"needs_clarification",student_answer_assessment:"not_applicable",mode_state:incomingModeState,pedagogical_state:incomingPedState,diagnostic_code:mod.diagnostic_code||"MODERATION_UNKNOWN"},503);
   const requestUsagePromise=deferWork(event,"request-usage",()=>markChatRequest(env,uid,q,Boolean(image)));
   const scope=scopeV3Guard(text,academic,incomingPedState,history),vision=image?academic.vision:null;
-  if(scope.scope==="safety"){deferWork(event,"intake-safety",()=>logInteraction(env,uid,{text,image,inputSource,scope:"safety",verification:"blocked_safety",subject:scope.subject,concept:scope.concept,help:null,modelRoute:"intake-safety",mode,visionConfidence:vision?.confidence}));return json(safetyInterruptionPayload(scope.safety_category||childSafeguardingCategory(text)||"personal_danger",incomingPedState,mode,incomingModeState,text))}
+  const director=conversationDirector({text,history,ctx,pedState:incomingPedState,scope,currentSituation});
+  if(scope.scope==="safety"||director.route==="safety"){deferWork(event,"intake-safety",()=>logInteraction(env,uid,{text,image,inputSource,scope:"safety",verification:"blocked_safety",subject:scope.subject,concept:scope.concept,help:null,modelRoute:"intake-safety",mode,visionConfidence:vision?.confidence}));return json(safetyInterruptionPayload(scope.safety_category||childSafeguardingCategory(text)||"personal_danger",incomingPedState,mode,incomingModeState,text))}
+  if(director.route==="profile_age")return json(profileAgePayload(director.age,incomingPedState,mode,incomingModeState));
   const aq=scope.scope==="school"&&scope.needs_clarification&&scope.ambiguity?ambQ(scope):null;if(aq){const ps={...incomingPedState,active_topic:scope.ambiguity_term||scope.concept||incomingPedState.active_topic,active_subject:scope.subject||incomingPedState.active_subject,active_concept:scope.ambiguity_term||scope.concept||incomingPedState.active_concept,current_mode:mode,pending_question:aq,pending_question_id:crypto.randomUUID(),expected_answer_type:"open",expected_key_ideas:[],likely_misconceptions:[],conversation_stage:"clarifying",turn_index:incomingPedState.turn_index+1,last_tutor_act:"ask_open",expected_student_act:"answer",last_question_type:"open",unresolved_question:aq};return json({reply:aq,verification_status:"needs_clarification",subject:scope.subject||null,concept:scope.ambiguity_term||scope.concept||null,help_level:0,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:null,mode_label:MODE_PROFILES[mode].label,mode_state:incomingModeState,pedagogical_state:ps,auto_speak:false})}
-  if(scope.scope==="school"&&scope.intent==="personal_help"){
+  if(scope.scope==="school"&&(scope.intent==="personal_help"||director.route==="personal")){
     const activeThread=sanitizeRelationalThread(incomingPedState.relational_thread),situation=currentSituation&&isRelationalSituation(currentSituation)?currentSituation:{kind:activeThread?.kind||"student_wellbeing",follow_up:Boolean(activeThread),stage:activeThread?.stage||"opening"};let relationalResult;
     try{relationalResult=await relationalTutor(env,{text,history,ctx,situation,pedState:incomingPedState})}catch(error){console.error("ETERNA RELATIONAL FALLBACK",String(error?.message||error));relationalResult={data:{reply:relationalFallbackReply(situation,text),thread_stage:situation.follow_up?"exploring":"opening",continue_thread:!situation.closure_hint,adult_support:"helpful",safety_category:"none"},usage:{},model_route:"deterministic-relational-fallback-v1"}}
     const category=String(relationalResult?.data?.safety_category||"none");if(category!=="none"){deferWork(event,"relational-safety",()=>logInteraction(env,uid,{text,image:null,inputSource,scope:"safety",verification:"blocked_safety",subject:null,concept:null,help:null,modelRoute:"relational-safety-v1",mode}));return json(safetyInterruptionPayload(category,incomingPedState,mode,incomingModeState,text))}
@@ -1732,7 +1762,7 @@ function healthFeatures(env){return {
   feedback_entitlement_gate:true,explicit_understood_signal:true,
   teacher_core_v1:true,situational_core_v1:true,current_message_priority_v1:true,answer_contract_engine_v1:true,coherence_progression_v1:true,
   explicit_identity_and_mission_v1:true,named_greeting_v1:true,greeting_timing_v1:true,repeated_greeting_guard_v1:true,client_local_clock_v1:true,empathetic_school_peer_support_v1:true,anti_robotic_tone_v1:true,
-  relational_continuity_v1:true,adaptive_teacher_presence_v1:true,transient_relational_thread_v1:true,
+  relational_continuity_v1:true,adaptive_teacher_presence_v1:true,transient_relational_thread_v1:true,conversation_director_v1:true,semantic_repetition_guard_v1:true,profile_age_resolution_v1:true,
   child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,pedagogical_simplification_guard_v1:true,non_trivial_microcheck_v1:true,deterministic_fraction_simplification_v1:true,priority_fraction_simplification_v1:true,
   full_intelligence_child_safety_v1:true,helpful_safe_completion_v1:true,suspended_topic_resume_v1:true,mode_contracts_v2:true,
   flagship_tutor_model_v1:true,independent_balanced_verifier_v1:true,configurable_reasoning_effort_v1:true,strict_structured_outputs_v1:true,

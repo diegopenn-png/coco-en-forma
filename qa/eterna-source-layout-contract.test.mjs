@@ -16,12 +16,15 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.98\.2-greeting-timing/);
+  assert.match(worker, /160\.99\.0-conversation-director/);
   assert.match(worker, /explicit_identity_and_mission_v1:true/);
   assert.match(worker, /empathetic_school_peer_support_v1:true/);
   assert.match(worker, /relational_continuity_v1:true/);
   assert.match(worker, /adaptive_teacher_presence_v1:true/);
   assert.match(worker, /transient_relational_thread_v1:true/);
+  assert.match(worker, /conversation_director_v1:true/);
+  assert.match(worker, /semantic_repetition_guard_v1:true/);
+  assert.match(worker, /profile_age_resolution_v1:true/);
   assert.match(worker, /academic_weather_question_v1:true/);
   assert.match(worker, /combined_simplification_request_v1:true/);
   assert.match(worker, /pedagogical_simplification_guard_v1:true/);
@@ -40,6 +43,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /--var "OPENAI_FALLBACK_MODEL:gpt-5\.6-luna"/);
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
+  assert.match(preview, /grep -F '160\.99\.0-conversation-director' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.0-conversation-director"/);
+  assert.match(preview, /API 160\.99\.0-conversation-director/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
