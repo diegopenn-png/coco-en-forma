@@ -23,6 +23,7 @@
     "VERIFIER_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
     "VERIFIER_REASONING_EFFORT": "high",
     "VISION_MODEL": "@cf/moondream/moondream3.1-9B-A2B",
+    "VISION_SAFETY_MODEL": "@cf/moondream/moondream3.1-9B-A2B",
     "VISION_FALLBACK_MODEL": "@cf/llava-hf/llava-1.5-7b-hf",
     "VISION_STRUCTURING_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
     "VISION_REASONING_EFFORT": "high",
