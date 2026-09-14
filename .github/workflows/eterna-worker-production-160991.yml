@@ -95,7 +95,8 @@ jobs:
             --var "TUTOR_REASONING_EFFORT:high" \
             --var "VERIFIER_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "VERIFIER_REASONING_EFFORT:high" \
-            --var "VISION_MODEL:@cf/meta/llama-3.2-11b-vision-instruct" \
+            --var "VISION_MODEL:@cf/llava-hf/llava-1.5-7b-hf" \
+            --var "VISION_STRUCTURING_MODEL:@cf/qwen/qwen3-30b-a3b-fp8" \
             --var "VISION_REASONING_EFFORT:high" \
             --var "MODERATION_MODEL:@cf/meta/llama-guard-3-8b" \
             --var "TRANSCRIBE_MODEL:@cf/openai/whisper-large-v3-turbo" \
@@ -139,7 +140,10 @@ jobs:
               && models.tutor?.reasoning_effort === "high"
               && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.verifier?.reasoning_effort === "high"
-              && models.vision?.model === "@cf/meta/llama-3.2-11b-vision-instruct"
+              && models.vision?.model === "@cf/llava-hf/llava-1.5-7b-hf"
+              && models.vision?.structuring_model === "@cf/qwen/qwen3-30b-a3b-fp8"
+              && payload.features?.cloudflare_license_free_vision_v1 === true
+              && payload.features?.cloudflare_visual_grounding_v1 === true
               && models.vision?.fallback_model === "gpt-5.6-sol"
               && models.vision?.reasoning_effort === "high"
               && models.moderation?.model === "@cf/meta/llama-guard-3-8b"
@@ -238,7 +242,10 @@ jobs:
                   && models.tutor?.reasoning_effort === "high"
                   && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
                   && models.verifier?.reasoning_effort === "high"
-                  && models.vision?.model === "@cf/meta/llama-3.2-11b-vision-instruct"
+                  && models.vision?.model === "@cf/llava-hf/llava-1.5-7b-hf"
+                  && models.vision?.structuring_model === "@cf/qwen/qwen3-30b-a3b-fp8"
+                  && payload.features?.cloudflare_license_free_vision_v1 === true
+                  && payload.features?.cloudflare_visual_grounding_v1 === true
                   && models.vision?.fallback_model === "gpt-5.6-sol"
                   && payload.features?.full_intelligence_child_safety_v1 === true
                   && payload.features?.suspended_topic_resume_v1 === true
