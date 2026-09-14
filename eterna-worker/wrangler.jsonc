@@ -12,6 +12,7 @@
     "AI_PROVIDER": "cloudflare",
     "ENABLE_OPENAI_FALLBACK": "true",
     "OPENAI_FALLBACK_MODEL": "gpt-5.6-luna",
+    "OPENAI_VISION_MODEL": "gpt-5.6-sol",
     "SCOPE_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
     "SCOPE_FALLBACK_MODEL": "@cf/meta/llama-3.1-8b-instruct",
     "SCOPE_REASONING_EFFORT": "low",
