@@ -156,7 +156,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.99.6-document-vision-quality-gate' eterna-worker/src/index.js >/dev/null
+          grep -F '160.99.7-semantic-vision-fallback' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -256,7 +256,7 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.99.6-document-vision-quality-gate"
+              && payload.version === "160.99.7-semantic-vision-fallback"
               && payload.ai_provider === "cloudflare"
               && payload.cloudflare_ai_configured === true
               && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
@@ -275,6 +275,7 @@ jobs:
               && payload.features?.cloudflare_visual_grounding_v1 === true
               && payload.features?.cloudflare_llama4_document_vision_v1 === true
               && payload.features?.visual_evidence_quality_gate_v1 === true
+              && payload.features?.semantic_vision_fallback_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -323,7 +324,7 @@ jobs:
           echo "Sanitized Cloudflare AI dependency probe: ${dependency_payload}"
           node -e '
             const payload = JSON.parse(process.argv[1]);
-            if (payload.ok !== true || payload.version !== "160.99.6-document-vision-quality-gate" || payload.provider !== "cloudflare") process.exit(1);
+            if (payload.ok !== true || payload.version !== "160.99.7-semantic-vision-fallback" || payload.provider !== "cloudflare") process.exit(1);
             for (const name of ["moderation", "image_moderation", "structured_tutor", "structured_vision"]) {
               const item = payload[name] || {};
               if (item.ok !== true) process.exit(1);
@@ -338,7 +339,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.98.2-greeting-timing · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.6-document-vision-quality-gate"
+            echo "- Expected versions: frontend 160.98.2-greeting-timing · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.7-semantic-vision-fallback"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents
