@@ -52,6 +52,7 @@ function loadApi(fetchImpl = fetch) {
     stableFactTutorRecovery,
     simpleArithmeticInText,
     pendingNumericEquation,
+    analyzeImageIntake,
     reliableVisionForReasoning,
     visionNeedsClarification,
     deterministicArithmeticGuidanceTurn,
@@ -361,6 +362,48 @@ test("an image with no reliable row still asks for a clearer crop", () => {
     items: [{ id: "1", statement: "?", printed_values: [], confidence: 0.4 }],
   };
   assert.equal(api.visionNeedsClarification(api.reliableVisionForReasoning(vision)), true);
+});
+
+test("a semantically unusable Cloudflare worksheet result is retried with direct OpenAI vision", async () => {
+  const cloudflareCalls = [];
+  const openaiPayloads = [];
+  const lowQuality = {
+    scope: "school", subject: "Matemáticas", concept: "multiplicación", needs_clarification: true,
+    self_contained: false, reason: "No se distinguen filas fiables",
+    vision: { legible: false, confidence: 0.42, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["Texto pequeño"], suggested_focus: null },
+  };
+  const highQuality = {
+    scope: "school", subject: "Matemáticas", concept: "multiplicación", needs_clarification: false,
+    self_contained: true, reason: "La primera fila es legible",
+    vision: {
+      legible: true, confidence: 0.97, material_type: "worksheet", task_instruction: "Completa los huecos",
+      printed_elements: ["6 × … = 36"],
+      blanks: [{ label: "…", purpose: "answer", nearby_printed_values: ["6", "36"], location: "fila 1", confidence: 0.97 }],
+      items: [{ id: "1", statement: "6 × … = 36", printed_values: ["6", "36"], blank_target: null, student_response: null, inferred_goal: "hallar el factor", spatial_notes: "fila 1", confidence: 0.97 }],
+      uncertainty: [], suggested_focus: "fila 1",
+    },
+  };
+  const api = loadApi(async (_input, init) => {
+    const payload = JSON.parse(init.body);
+    openaiPayloads.push(payload);
+    return new Response(JSON.stringify({ output_text: JSON.stringify(highQuality), usage: { input_tokens: 20, output_tokens: 10 }, service_tier: "default" }), { status: 200, headers: { "Content-Type": "application/json" } });
+  });
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_VISION_MODEL: "gpt-5.6-sol",
+    OPENAI_API_KEY: "test-key",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model) => { cloudflareCalls.push(model); return model.includes("llama-4-scout") ? { response: "Ficha, fila 1: 6 × hueco = 36." } : { response: lowQuality }; } },
+  }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, []);
+  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8"]);
+  assert.equal(openaiPayloads.length, 1);
+  assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
+  assert.equal(openaiPayloads[0].input[0].content[1].image_url, "data:image/png;base64,AA==");
+  assert.equal(result.vision.items[0].statement, "6 × … = 36");
+  assert.equal(api.visionNeedsClarification(api.reliableVisionForReasoning(result.vision)), false);
 });
 
 test("Cloudflare visual grounding quota switches to the dedicated OpenAI vision model", async () => {
