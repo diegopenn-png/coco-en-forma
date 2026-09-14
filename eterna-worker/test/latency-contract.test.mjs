@@ -317,6 +317,7 @@ test("Cloudflare photographed tasks use Moondream OCR grounding before structure
   assert.equal(cloudflareCalls[0].payload.image, image);
   assert.equal(cloudflareCalls[0].payload.reasoning, false);
   assert.equal(cloudflareCalls[0].payload.stream, false);
+  assert.ok(cloudflareCalls[0].payload.max_tokens <= 640);
   assert.equal("image" in cloudflareCalls[1].payload, false);
   assert.match(cloudflareCalls[1].payload.messages[1].content, /EVIDENCIA_VISUAL_FIEL/);
   assert.match(cloudflareCalls[1].payload.messages[1].content, /6 × hueco = 36/);
@@ -378,12 +379,18 @@ test("Cloudflare image moderation accepts the image-to-text description response
   const api = loadApi();
   const result = await api.moderate({
     AI_PROVIDER: "cloudflare",
-    VISION_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
-    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { description: "SAFE" }; } },
+    VISION_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_SAFETY_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { answer: "SAFE" }; } },
   }, "Ficha escolar de multiplicaciones", "data:image/png;base64,AA==");
   assert.equal(result.flagged, false);
   assert.equal(result.provider, "cloudflare");
-  assert.equal(calls[0].model, "@cf/llava-hf/llava-1.5-7b-hf");
+  assert.equal(result.model, "@cf/moondream/moondream3.1-9B-A2B");
+  assert.equal(calls[0].model, "@cf/moondream/moondream3.1-9B-A2B");
+  assert.equal(calls[0].payload.task, "query");
+  assert.equal(calls[0].payload.image, "data:image/png;base64,AA==");
+  assert.equal(calls[0].payload.reasoning, false);
+  assert.equal(calls[0].payload.max_tokens, 8);
 });
 
 test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", async () => {
@@ -455,7 +462,9 @@ test("dependency health stays available through fallback and reports degraded Cl
         : model.includes("llava")
           ? { description: "safe" }
         : model.includes("moondream")
-          ? { answer: "A multiplication worksheet shows 3 x blank = 12." }
+          ? request.max_tokens === 8
+            ? { answer: "safe" }
+            : { answer: "A multiplication worksheet shows 3 x blank = 12." }
         : model.includes("qwen")
           ? /EVIDENCIA_VISUAL_FIEL/.test(request.messages?.[1]?.content || "")
             ? { response: { visible: true, content: "multiplication worksheet" } }
@@ -469,6 +478,7 @@ test("dependency health stays available through fallback and reports degraded Cl
   assert.equal(directPayload.degraded, false);
   assert.equal(directPayload.structured_tutor.provider, "cloudflare");
   assert.equal(directPayload.image_moderation.provider, "cloudflare");
+  assert.equal(directPayload.image_moderation.model, "@cf/moondream/moondream3.1-9B-A2B");
   assert.equal(directPayload.structured_vision.provider, "cloudflare");
   assert.equal(directPayload.structured_vision.visual_model, "@cf/moondream/moondream3.1-9B-A2B");
 });
