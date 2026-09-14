@@ -293,7 +293,7 @@ test("Cloudflare photographed tasks use license-free visual grounding before str
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model, payload) => {
       cloudflareCalls.push({ model, payload });
-      if (model.includes("llava")) return { response: "Ficha: 6 × hueco = 36.", usage: { prompt_tokens: 3, completion_tokens: 4 } };
+      if (model.includes("llava")) return { description: "Ficha: 6 × hueco = 36.", usage: { prompt_tokens: 3, completion_tokens: 4 } };
       return { response: { visible: true, content: "multiplication worksheet" }, usage: { prompt_tokens: 5, completion_tokens: 2 } };
     } },
   }, {
@@ -367,6 +367,19 @@ test("Cloudflare Guard moderates ordinary school text without OpenAI", async () 
   assert.equal(calls[0].model, "@cf/meta/llama-guard-3-8b");
 });
 
+test("Cloudflare image moderation accepts the image-to-text description response shape", async () => {
+  const calls = [];
+  const api = loadApi();
+  const result = await api.moderate({
+    AI_PROVIDER: "cloudflare",
+    VISION_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
+    AI: { run: async (model, payload) => { calls.push({ model, payload }); return { description: "SAFE" }; } },
+  }, "Ficha escolar de multiplicaciones", "data:image/png;base64,AA==");
+  assert.equal(result.flagged, false);
+  assert.equal(result.provider, "cloudflare");
+  assert.equal(calls[0].model, "@cf/llava-hf/llava-1.5-7b-hf");
+});
+
 test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", async () => {
   let cloudflareCalls = 0;
   let openaiCalls = 0;
@@ -434,12 +447,12 @@ test("dependency health stays available through fallback and reports degraded Cl
       ? { response: "safe" }
       : model.includes("llava")
         ? request.max_tokens === 12
-          ? { response: "safe" }
-          : { response: "A multiplication worksheet shows 3 x blank = 12." }
+          ? { description: "safe" }
+          : { description: "A multiplication worksheet shows 3 x blank = 12." }
       : model.includes("qwen")
         ? /EVIDENCIA_VISUAL_FIEL/.test(request.messages?.[1]?.content || "")
           ? { response: { visible: true, content: "multiplication worksheet" } }
-          : { response: { acknowledged: true } }
+          : { response: { ok: true } }
           : { response: "OK" } },
   });
   const directPayload = await directResponse.json();
@@ -458,7 +471,7 @@ test("Cloudflare routes every photographed task through the vision model", async
     AI_PROVIDER: "cloudflare",
     VISION_MODEL: "@cf/llava-hf/llava-1.5-7b-hf",
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
-    AI: { run: async (model, payload) => { calls.push({ model, payload }); return model.includes("llava") ? { response: "Visible school task" } : { response: { ok: true } }; } },
+    AI: { run: async (model, payload) => { calls.push({ model, payload }); return model.includes("llava") ? { description: "Visible school task" } : { response: { ok: true } }; } },
   }, {
     model: "@cf/qwen/qwen3-30b-a3b-fp8",
     input: [{ role: "user", content: [
