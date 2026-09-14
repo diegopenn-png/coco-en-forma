@@ -1,0 +1,3 @@
+release=160.99.0-conversation-director
+source_pr=69
+safety=isolated-candidate+health-check+dependency-probe+automatic-rollback
