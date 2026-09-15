@@ -60,6 +60,7 @@ function loadApi(fetchImpl = fetch) {
     reliableVisionForReasoning,
     visionNeedsClarification,
     deterministicArithmeticGuidanceTurn,
+    deterministicVisualArithmeticGuidanceTurn,
     deterministicPendingNumericTurn,
     synchronousVerificationRequired
   };`, sandbox);
@@ -494,6 +495,31 @@ test("a stalled Cloudflare region cannot block a clear sibling crop", async () =
   assert.equal(result.needs_clarification, false);
 });
 
+test("a stalled primary Cloudflare vision call yields to grounded regional arithmetic", async () => {
+  const regionA = "data:image/png;base64,AQ==", regionB = "data:image/png;base64,Ag==";
+  const api = loadApi();
+  const started = Date.now();
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "false",
+    CLOUDFLARE_PRIMARY_VISION_TIMEOUT_MS: "25",
+    CLOUDFLARE_REGION_OCR_TIMEOUT_MS: "25",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => {
+      if (model.includes("llama-4-scout")) return await new Promise(() => {});
+      if (payload.image === regionA) return { response: "6 × hueco = 36\n2 × hueco = 18" };
+      if (payload.image === regionB) return { response: "Fila 3: hueco × 8 = 48" };
+      throw new Error("unexpected model route");
+    } },
+  }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
+  assert.ok(Date.now() - started < 250, "regional OCR must start after the primary deadline");
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"]);
+  assert.equal(result.vision.arithmetic_transcription, true);
+  assert.equal(result.needs_clarification, false);
+});
+
 test("arithmetic transcription keeps only complete high-confidence rows with one explicit blank", () => {
   const api = loadApi();
   const result = api.arithmeticTranscriptionIntake({ is_arithmetic_worksheet: true, rows: [
@@ -513,6 +539,25 @@ test("repeated arithmetic equations are recovered from accepted visual evidence 
   assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"]);
   assert.equal(result.vision.confidence, 0.82);
   assert.equal(api.arithmeticEvidenceIntake("Solo se distingue 6 × hueco = 36"), null, "one isolated OCR row is not enough to establish the repeated worksheet pattern");
+});
+
+test("grounded visual arithmetic produces a concrete first hint without solving the blank", () => {
+  const api = loadApi();
+  const intake = api.arithmeticEvidenceIntake("6 × hueco = 36\n2 × hueco = 18\nhueco × 8 = 48");
+  const result = api.deterministicVisualArithmeticGuidanceTurn({
+    mode: "homework",
+    turnRel: "new_topic",
+    incomingModeState: { question_number: 1, correct_count: 0, partial_count: 0, incorrect_count: 0, difficulty: 2, focus: null },
+    incomingPedState: { current_mode: "homework", turn_index: 0 },
+    subject: "Matemáticas",
+    concept: "operaciones con un número desconocido",
+    vision: intake.vision,
+  });
+  assert.match(result.reply, /6 × … = 36/);
+  assert.match(result.reply, /2 × … = 18/);
+  assert.match(result.reply, /operación inversa/);
+  assert.equal(result.check_question, "¿Qué número completa 6 × □ = 36?");
+  assert.doesNotMatch(result.reply, /(?:hueco|respuesta)\s+es\s+6/i);
 });
 
 test("grounded arithmetic accepts common Cloudflare notation variants without weakening row gates", () => {
@@ -621,6 +666,21 @@ test("Cloudflare image moderation accepts the image-to-text description response
   assert.equal(calls[0].payload.image, "data:image/png;base64,AA==");
   assert.equal(calls[0].payload.reasoning, false);
   assert.equal(calls[0].payload.max_tokens, 32);
+});
+
+test("a stalled image safety model stops at the moderation deadline", async () => {
+  const api = loadApi();
+  const started = Date.now();
+  const result = await api.moderate({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "false",
+    MODERATION_INFERENCE_TIMEOUT_MS: "25",
+    VISION_SAFETY_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    AI: { run: async () => await new Promise(() => {}) },
+  }, "Ficha escolar de multiplicaciones", "data:image/png;base64,AA==");
+  assert.ok(Date.now() - started < 250, "image moderation must not wait indefinitely");
+  assert.equal(result.moderation_error, true);
+  assert.match(result.diagnostic_code, /TIMEOUT/);
 });
 
 test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", async () => {
