@@ -461,6 +461,23 @@ test("repeated arithmetic equations are recovered from accepted visual evidence 
   assert.equal(api.arithmeticEvidenceIntake("Solo se distingue 6 × hueco = 36"), null, "one isolated OCR row is not enough to establish the repeated worksheet pattern");
 });
 
+test("grounded arithmetic accepts common Cloudflare notation variants without weakening row gates", () => {
+  const api = loadApi();
+  const variants = [
+    "| 6 | × | [blank] | = | 36 |\n| 2 | x | [ ] | = | 18 |\n| [missing number] | × | 8 | = | 48 |",
+    "1. 6 multiplied by ___ equals 36\n2. 2 times three dots equals 18\n3. missing number multiplied by 8 equals 48",
+    "- \\(6 \\times \\ldots = 36\\)\n- \\(2 \\cdot ? = 18\\)\n- \\(\\dots \\times 8 = 48\\)",
+    "Fila 1: 6 veces □ es igual a 36; fila 2: 2 multiplicado por □ es igual a 18; fila 3: □ multiplicado por 8 es igual a 48",
+  ];
+  for (const evidence of variants) {
+    const result = api.arithmeticEvidenceIntake(evidence);
+    assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"], evidence);
+    assert.equal(result.vision.confidence, 0.82);
+  }
+  assert.equal(api.arithmeticEvidenceIntake("6 × [blank] = 36\nFila cortada: 2 × [blank]"), null);
+  assert.equal(api.arithmeticEvidenceIntake("6 × [blank] = 36\n2 × [blank] = unknown"), null, "every accepted row must contain exactly one blank");
+});
+
 test("grounded Cloudflare arithmetic evidence bypasses a lossy structuring result", async () => {
   let openaiCalls = 0;
   const lowQuality = {
