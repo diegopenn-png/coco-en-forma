@@ -21,7 +21,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.11-cloudflare-regional-arithmetic-ocr/);
+  assert.match(worker, /160\.99\.12-fast-regional-arithmetic-ocr/);
   assert.match(worker, /explicit_identity_and_mission_v1:true/);
   assert.match(worker, /empathetic_school_peer_support_v1:true/);
   assert.match(worker, /relational_continuity_v1:true/);
@@ -51,6 +51,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(worker, /grounded_arithmetic_ocr_v1:true/);
   assert.match(worker, /grounded_arithmetic_ocr_v2:true/);
   assert.match(worker, /cloudflare_regional_arithmetic_ocr_v1:true/);
+  assert.match(worker, /cloudflare_fast_regional_arithmetic_ocr_v1:true/);
   assert.match(worker, /cloudflare_moondream_image_safety_v1:true/);
   assert.match(worker, /bounded_visual_output_v1:true/);
   assert.match(worker, /partial_worksheet_grounding_v1:true/);
@@ -67,9 +68,10 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(preview, /payload\.features\?\.cloudflare_regional_arithmetic_ocr_v1 === true/);
-  assert.match(preview, /grep -F '160\.99\.11-cloudflare-regional-arithmetic-ocr' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.11-cloudflare-regional-arithmetic-ocr"/);
-  assert.match(preview, /API 160\.99\.11-cloudflare-regional-arithmetic-ocr/);
+  assert.match(preview, /payload\.features\?\.cloudflare_fast_regional_arithmetic_ocr_v1 === true/);
+  assert.match(preview, /grep -F '160\.99\.12-fast-regional-arithmetic-ocr' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.12-fast-regional-arithmetic-ocr"/);
+  assert.match(preview, /API 160\.99\.12-fast-regional-arithmetic-ocr/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -128,11 +130,11 @@ test("the 160.99.4 production gate proves fast image safety before release", () 
   assert.match(production, /payload\.image_moderation\?\.model !== "@cf\/moondream\/moondream3\.1-9B-A2B"/);
 });
 
-test("the 160.99.11 production gate performs focused Cloudflare regional arithmetic OCR before release", () => {
+test("the 160.99.12 production gate bounds focused Cloudflare regional arithmetic OCR before release", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-160995.yml", "utf8");
   const worker = readFileSync("eterna-worker/src/index.js", "utf8");
-  assert.match(production, /\.github\/release-eterna-1609911/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.11-cloudflare-regional-arithmetic-ocr/);
+  assert.match(production, /\.github\/release-eterna-1609912/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.12-fast-regional-arithmetic-ocr/);
   assert.match(production, /models\.vision\?\.model === "@cf\/meta\/llama-4-scout-17b-16e-instruct"/);
   assert.match(production, /models\.vision\?\.grounding_service === "workers-ai-llama4-document-vision"/);
   assert.match(production, /payload\.features\?\.cloudflare_llama4_document_vision_v1 === true/);
@@ -142,6 +144,7 @@ test("the 160.99.11 production gate performs focused Cloudflare regional arithme
   assert.match(production, /payload\.features\?\.grounded_arithmetic_ocr_v1 === true/);
   assert.match(production, /payload\.features\?\.grounded_arithmetic_ocr_v2 === true/);
   assert.match(production, /payload\.features\?\.cloudflare_regional_arithmetic_ocr_v1 === true/);
+  assert.match(production, /payload\.features\?\.cloudflare_fast_regional_arithmetic_ocr_v1 === true/);
   assert.match(production, /payload\.features\?\.partial_worksheet_grounding_v1 === true/);
   assert.match(worker, /function reliableVisionForReasoning\(vision\)/);
   assert.match(worker, /excluded_low_confidence_items/);
@@ -151,6 +154,8 @@ test("the 160.99.11 production gate performs focused Cloudflare regional arithme
   assert.match(worker, /function visionReliabilityScore\(vision\)/);
   assert.match(worker, /function mergeRegionalIntakes\(values\)/);
   assert.match(worker, /function transcribeCloudflareArithmeticRegions\(env,images\)/);
+  assert.match(worker, /function withInferenceTimeout\(promise,timeout,message\)/);
+  assert.match(worker, /max_tokens:480/);
   assert.match(worker, /ETERNA VISION CLOUDFLARE ARITHMETIC REGIONS/);
   assert.match(worker, /ETERNA VISION REGIONAL FALLBACK/);
 });
