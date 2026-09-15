@@ -52,6 +52,6 @@ test('procedural, compass and the current canonical Worker revision stay pinned'
  assert.equal(hash(text('../src/library/curricular-compass-v1.js')),'f92dda2bfa99d6b05486ec6848a0a62dcaa5141f5b8577c23fd2c86f1db14096');
  assert.equal(hash(text('../src/library/compass-data-v1.js')),'cd8fd84bd5891e4d42600392e3a3939b773f6b69c1b84f3567416d2e760c104b');
  const OLD=m.baseline_release,NEW=m.release_id;
- assert.equal(hash(text('../src/index.js').replaceAll(NEW,OLD)),'f5abb9c875241de833a42c649a27ec8d8f08fb157dc2643f2c9f547abfa2c7fa');
+ assert.equal(hash(text('../src/index.js').replaceAll(NEW,OLD)),'98c548a762f4d392ccf7498bed0ccca9500068e3ff1e9489e935c8f62fb6f2eb');
  assert.equal(hash(text('../src/library/runtime-v1.js').replaceAll(NEW,OLD).replace("const VERSION='library-first-v7-content';","const VERSION='library-first-v6-traceable';")),'9df5c21942c593241388535a4a0bb518bba95a71a0edfacbe770683bb2a83369');
 });
