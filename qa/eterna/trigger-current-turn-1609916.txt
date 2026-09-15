@@ -1,0 +1,1 @@
+Trigger validation workflow for ETERNA 160.99.16 current-turn subject/image priority.
