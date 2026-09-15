@@ -11,7 +11,7 @@ const read = file => fs.readFileSync(path.join(rootDir, file), "utf8");
 test("Eterna owns the mobile visual viewport while it is open", () => {
   const core = read("eterna-v159.js");
 
-  assert.match(core, /160\.98\.2-greeting-timing/);
+  assert.match(core, /160\.98\.3-photo-regions/);
   assert.match(core, /function lockEternaViewport\(o\)/);
   assert.match(core, /body\.style\.position="fixed"/);
   assert.match(core, /body\.style\.top=\(-eternaPageLock\.y\)\+"px"/);
@@ -41,6 +41,6 @@ test("dynamic viewport wins over the small-viewport fallback", () => {
 });
 
 test("the release invalidates both document and service-worker caches", () => {
-  assert.match(read("index.html"), /eterna-v159\.js\?v=160102/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.100\.2-greeting-timing-r3/);
+  assert.match(read("index.html"), /eterna-v159\.js\?v=160103/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.100\.3-photo-regions-r1/);
 });
