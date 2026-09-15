@@ -8,7 +8,7 @@ const css = readFileSync(new URL("../eterna-v159.css", import.meta.url), "utf8")
 const index = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const sw = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
 
-assert.match(client, /160\.98\.3-photo-regions/);
+assert.match(client, /160\.98\.4-portrait-photo-bands/);
 assert.match(client, /function trialExpired\(\)/);
 assert.match(client, /status==="expired"/);
 assert.match(client, /status==="trialing"&&\(!Number\.isFinite\(end\)\|\|end<=Date\.now\(\)\)/);
@@ -62,8 +62,8 @@ assert.match(css, /@media\(max-width:760px\).*\.eternaV160ExpiredPlans\{grid-tem
 
 assert.match(index, /eterna-v159\.css\?v=160980/);
 assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
-assert.match(index, /eterna-v159\.js\?v=160103/);
+assert.match(index, /eterna-v159\.js\?v=160104/);
 assert.match(index, /coco-v153-fixes\.js\?v=160100/);
-assert.match(sw, /coco-en-forma-v160\.100\.3-photo-regions-r1/);
+assert.match(sw, /coco-en-forma-v160\.100\.4-portrait-photo-bands-r1/);
 
 console.log("Eterna trial-expired conversion contract: OK");
