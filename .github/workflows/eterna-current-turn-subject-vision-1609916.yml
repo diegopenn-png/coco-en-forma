@@ -1,0 +1,33 @@
+name: Eterna current-turn subject vision 160.99.16
+on:
+  push:
+    branches: [fix/eterna-current-turn-subject-vision-1609916]
+permissions:
+  contents: write
+jobs:
+  apply-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/eterna-current-turn-subject-vision-1609916
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply current-turn priority patch
+        run: node qa/eterna/apply-current-turn-subject-vision-1609916.mjs
+      - name: Syntax
+        run: node --check eterna-worker/src/index.js
+      - name: Current-turn regression
+        run: node --test qa/eterna/current-turn-subject-vision-1609916.test.mjs
+      - name: Full Eterna regression
+        run: node --test eterna-worker/test/*.test.mjs qa/*.test.mjs qa/eterna/*.test.mjs
+      - name: Commit validated worker
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add eterna-worker/src/index.js
+          git diff --cached --quiet && exit 0
+          git commit -m "fix(eterna): prioritize current-turn subject and image"
+          git push origin HEAD:fix/eterna-current-turn-subject-vision-1609916
