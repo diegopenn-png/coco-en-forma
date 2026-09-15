@@ -56,6 +56,7 @@ function loadApi(fetchImpl = fetch) {
     validatedImageRegions,
     mergeRegionalIntakes,
     arithmeticTranscriptionIntake,
+    arithmeticEvidenceIntake,
     reliableVisionForReasoning,
     visionNeedsClarification,
     deterministicArithmeticGuidanceTurn,
@@ -327,6 +328,7 @@ test("Cloudflare photographed tasks use Llama 4 document vision before structure
   assert.match(cloudflareCalls[1].payload.messages[1].content, /6 × hueco = 36/);
   assert.deepEqual(JSON.parse(JSON.stringify(result.usage)), { input_tokens: 5, output_tokens: 2 });
   assert.equal(result.visual_model, "@cf/meta/llama-4-scout-17b-16e-instruct");
+  assert.equal(result.visual_evidence, "Ficha, fila 1: 6 × hueco = 36.");
   assert.equal(result.data.visible, true);
 });
 
@@ -449,6 +451,31 @@ test("arithmetic transcription keeps only complete high-confidence rows with one
   assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36"]);
   assert.equal(result.vision.confidence, 0.97);
   assert.equal(result.needs_clarification, false);
+});
+
+test("repeated arithmetic equations are recovered from accepted visual evidence without solving blanks", () => {
+  const api = loadApi();
+  const result = api.arithmeticEvidenceIntake("Ficha de multiplicaciones\nFila 1: 6 × hueco = 36\nFila 2: 2 x ... = 18\nFila 3: ... × 8 = 48\nFila cortada: 5 × ...");
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"]);
+  assert.equal(result.vision.confidence, 0.82);
+  assert.equal(api.arithmeticEvidenceIntake("Solo se distingue 6 × hueco = 36"), null, "one isolated OCR row is not enough to establish the repeated worksheet pattern");
+});
+
+test("grounded Cloudflare arithmetic evidence bypasses a lossy structuring result", async () => {
+  let openaiCalls = 0;
+  const lowQuality = {
+    scope: "school", subject: "Matemáticas", concept: "multiplicación", needs_clarification: true, self_contained: false, reason: "Estructuración conservadora",
+    vision: { legible: false, confidence: 0.4, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["Filas pequeñas"], suggested_focus: null },
+  };
+  const api = loadApi(async () => { openaiCalls += 1; throw new Error("Grounded evidence should avoid OpenAI fallback"); });
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare", ENABLE_OPENAI_FALLBACK: "true", OPENAI_VISION_MODEL: "gpt-5.6-sol", OPENAI_API_KEY: "test-key",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct", VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B", VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model) => model.includes("llama-4-scout") ? { response: "Fila 1: 6 × hueco = 36.\nFila 2: 2 × hueco = 18.\nFila 3: hueco × 8 = 48." } : { response: lowQuality } },
+  }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, []);
+  assert.equal(openaiCalls, 0);
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"]);
+  assert.equal(api.visionNeedsClarification(api.reliableVisionForReasoning(result.vision)), false);
 });
 
 test("worksheet regions are bounded, deduplicated and accepted only beside a valid full image", () => {
