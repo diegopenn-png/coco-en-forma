@@ -1,0 +1,129 @@
+name: Deploy Eterna Worker 160.99.15
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/eterna-worker-production-1609915.yml"
+      - ".github/release-eterna-1609915"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eterna-worker-production
+  cancel-in-progress: false
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      EXPECTED_VERSION: 160.99.15-general-worksheet-vision
+      WORKER_NAME: coco-eterna-v159
+      PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: eterna-worker/package-lock.json
+
+      - name: Validate Cloudflare credentials
+        shell: bash
+        run: |
+          if [[ -z "${CLOUDFLARE_API_TOKEN:-}" || -z "${CLOUDFLARE_ACCOUNT_INPUT:-}" ]]; then
+            echo "Cloudflare credentials are not configured" >&2
+            exit 1
+          fi
+          clean_token="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          echo "::add-mask::$clean_token"
+          echo "CLOUDFLARE_API_TOKEN=${clean_token}" >> "$GITHUB_ENV"
+          account_id="${CLOUDFLARE_ACCOUNT_INPUT#https://dash.cloudflare.com/}"
+          account_id="${account_id%%/*}"
+          if [[ ! "$account_id" =~ ^[0-9a-fA-F]{32}$ ]]; then
+            echo "Invalid Cloudflare account ID" >&2
+            exit 1
+          fi
+          echo "::add-mask::$account_id"
+          echo "CLOUDFLARE_ACCOUNT_ID=${account_id}" >> "$GITHUB_ENV"
+
+      - name: Install Worker tooling
+        working-directory: eterna-worker
+        run: npm ci --no-audit --no-fund
+
+      - name: Run complete regression suite
+        working-directory: eterna-worker
+        run: npm run check
+
+      - name: Upload tested version without production traffic
+        id: upload
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,https://raw.githack.com"
+          npx wrangler versions upload \
+            --name "$WORKER_NAME" \
+            --keep-vars \
+            --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
+          version_id="$(grep -Eo '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' preview-upload.log | tail -1)"
+          if [[ -z "$version_id" ]]; then
+            echo "Could not determine uploaded Worker version ID" >&2
+            exit 1
+          fi
+          echo "version_id=$version_id" >> "$GITHUB_OUTPUT"
+
+      - name: Verify uploaded preview version
+        shell: bash
+        run: |
+          version_id="${{ steps.upload.outputs.version_id }}"
+          short_id="${version_id%%-*}"
+          preview_url="https://${short_id}-${WORKER_NAME}.chatinmobiliario.workers.dev/health"
+          payload="$(curl --fail --silent --show-error --max-time 20 "$preview_url")"
+          node -e '
+            const p=JSON.parse(process.argv[1]);
+            if (!p.ok || p.version !== process.env.EXPECTED_VERSION) {
+              console.error("Unexpected preview health payload", p);
+              process.exit(1);
+            }
+          ' "$payload"
+
+      - name: Deploy tested version to production
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          npx wrangler versions deploy \
+            "${{ steps.upload.outputs.version_id }}@100%" \
+            --name "$WORKER_NAME" \
+            --message "Eterna 160.99.15 general worksheet vision" \
+            --yes
+
+      - name: Verify production or roll back automatically
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          healthy=false
+          for attempt in 1 2 3 4 5 6; do
+            payload="$(curl --silent --show-error --max-time 20 "$PRODUCTION_HEALTH_URL" || true)"
+            if node -e '
+              try {
+                const p=JSON.parse(process.argv[1]);
+                process.exit(p.ok && p.version === process.env.EXPECTED_VERSION ? 0 : 1);
+              } catch { process.exit(1); }
+            ' "$payload"; then
+              healthy=true
+              break
+            fi
+            sleep 5
+          done
+          if [[ "$healthy" != "true" ]]; then
+            echo "Production health verification failed; rolling back." >&2
+            npx wrangler rollback --name "$WORKER_NAME" --message "Automatic rollback after failed Eterna 160.99.15 health check" --yes
+            exit 1
+          fi
+          echo "Production is healthy on ${EXPECTED_VERSION}."
