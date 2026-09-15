@@ -406,7 +406,7 @@ test("a semantically unusable Cloudflare worksheet result is retried with direct
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model) => { cloudflareCalls.push(model); return model.includes("llama-4-scout") ? { response: "Ficha, fila 1: 6 × hueco = 36." } : { response: lowQuality }; } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, []);
-  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8"]);
+  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8", "@cf/meta/llama-4-scout-17b-16e-instruct"]);
   assert.equal(openaiPayloads.length, 2);
   assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
   assert.equal(openaiPayloads[0].input[0].content[1].image_url, "data:image/png;base64,AA==");
@@ -436,6 +436,33 @@ test("two validated worksheet regions are read directly and merged without inven
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
   assert.deepEqual(seenImages.sort(), [regionA, regionB].sort());
   assert.deepEqual(Array.from(result.vision.items, item => item.statement).sort(), ["2 × … = 14", "6 × … = 36"]);
+  assert.equal(result.vision.regional_analysis, true);
+  assert.equal(result.needs_clarification, false);
+});
+
+test("focused Cloudflare region OCR recovers repeated arithmetic without requiring OpenAI", async () => {
+  const lowQuality = {
+    scope: "school", subject: "Matemáticas", concept: "multiplicación", needs_clarification: true,
+    self_contained: false, reason: "La hoja completa tiene demasiadas filas pequeñas",
+    vision: { legible: false, confidence: 0.4, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["Filas pequeñas"], suggested_focus: null },
+  };
+  const regionA = "data:image/png;base64,AQ==", regionB = "data:image/png;base64,Ag==";
+  const api = loadApi(async () => { throw new Error("OpenAI must not be required for Cloudflare regional OCR"); });
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "false",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => {
+      if (model.includes("qwen")) return { response: lowQuality };
+      const firstByte = Array.isArray(payload.image) ? payload.image[0] : null;
+      if (firstByte === 1) return { response: "Fila 1: 6 × hueco = 36\nFila 2: 2 × hueco = 18" };
+      if (firstByte === 2) return { response: "Fila 3: hueco × 8 = 48\nFila cortada: 5 × hueco" };
+      return { response: "Ficha de multiplicaciones: 6 × hueco = 36" };
+    } },
+  }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"]);
   assert.equal(result.vision.regional_analysis, true);
   assert.equal(result.needs_clarification, false);
 });
