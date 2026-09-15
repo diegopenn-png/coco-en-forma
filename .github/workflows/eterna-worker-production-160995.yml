@@ -1,11 +1,11 @@
-name: Deploy Eterna Worker 160.99.13
+name: Deploy Eterna Worker 160.99.14
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/release-eterna-1609913"
+      - ".github/release-eterna-1609914"
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.99.13-bounded-image-inference
+      EXPECTED_VERSION: 160.99.14-full-image-arithmetic-ocr
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -158,6 +158,9 @@ jobs:
               && payload.features?.bounded_image_moderation_v1 === true
               && payload.features?.bounded_primary_vision_v1 === true
               && payload.features?.deterministic_visual_arithmetic_guidance_v1 === true
+              && payload.features?.full_image_arithmetic_ocr_v1 === true
+              && payload.features?.single_focused_arithmetic_ocr_v1 === true
+              && payload.features?.pwa_original_image_fallback_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -235,7 +238,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.99.13 bounded image inference" \
+            --message "Eterna 160.99.14 full image arithmetic OCR" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -278,6 +281,9 @@ jobs:
               && payload.features?.bounded_image_moderation_v1 === true
               && payload.features?.bounded_primary_vision_v1 === true
               && payload.features?.deterministic_visual_arithmetic_guidance_v1 === true
+              && payload.features?.full_image_arithmetic_ocr_v1 === true
+              && payload.features?.single_focused_arithmetic_ocr_v1 === true
+              && payload.features?.pwa_original_image_fallback_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -338,7 +344,7 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.99.13 bounded image inference health check" \
+              --message "Automatic rollback after failed Eterna 160.99.14 full image arithmetic OCR health check" \
               --yes
             exit 1
           fi

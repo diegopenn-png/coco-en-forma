@@ -57,6 +57,7 @@ function loadApi(fetchImpl = fetch) {
     mergeRegionalIntakes,
     arithmeticTranscriptionIntake,
     arithmeticEvidenceIntake,
+    arithmeticVisionImages,
     reliableVisionForReasoning,
     visionNeedsClarification,
     deterministicArithmeticGuidanceTurn,
@@ -435,7 +436,7 @@ test("two validated worksheet regions are read directly and merged without inven
     VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct", VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B", VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model) => model.includes("llama-4-scout") ? { response: "Ficha, fila 1: 6 × hueco = 36." } : { response: lowQuality } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
-  assert.deepEqual(seenImages.sort(), [regionA, regionB].sort());
+  assert.deepEqual(seenImages.sort(), ["data:image/png;base64,AA==", regionA, regionB].sort());
   assert.deepEqual(Array.from(result.vision.items, item => item.statement).sort(), ["2 × … = 14", "6 × … = 36"]);
   assert.equal(result.vision.regional_analysis, true);
   assert.equal(result.needs_clarification, false);
@@ -520,6 +521,51 @@ test("a stalled primary Cloudflare vision call yields to grounded regional arith
   assert.equal(result.needs_clarification, false);
 });
 
+test("a stale PWA without client regions falls back to the complete original image", async () => {
+  const image = "data:image/png;base64,AA==", seenImages = [];
+  const api = loadApi();
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "false",
+    CLOUDFLARE_PRIMARY_VISION_TIMEOUT_MS: "25",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => {
+      if (model.includes("llama-4-scout")) return await new Promise(() => {});
+      seenImages.push(payload.image);
+      return { response: "7 x _ = 35" };
+    } },
+  }, "He adjuntado una foto de mi tarea.", image, { school_year: "5º de Primaria" }, [], []);
+  assert.deepEqual(seenImages, [image]);
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["7 × … = 35"]);
+  assert.equal(result.vision.arithmetic_transcription, true);
+  assert.equal(result.needs_clarification, false);
+});
+
+test("the complete image remains available when horizontal client crops cut equations", async () => {
+  const image = "data:image/png;base64,AA==", left = "data:image/png;base64,AQ==", right = "data:image/png;base64,Ag==", seenImages = [];
+  const api = loadApi();
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "false",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => {
+      if (model.includes("llama-4-scout")) return { response: "Visible school task" };
+      if (model.includes("qwen")) return { response: { scope: "school", needs_clarification: true, vision: { legible: false, confidence: 0.3, material_type: "worksheet", printed_elements: [], blanks: [], items: [], uncertainty: ["fragmented"], suggested_focus: null } } };
+      seenImages.push(payload.image);
+      return payload.image === image
+        ? { response: "5 × hueco = 35\n4 × hueco = 16\n9 × hueco = 54\n3 × 6 = hueco" }
+        : { response: "fragmento cortado sin una ecuación completa" };
+    } },
+  }, "He adjuntado una foto de mi tarea.", image, { school_year: "5º de Primaria" }, [], [left, right]);
+  assert.deepEqual(seenImages.sort(), [image, image, left, right].sort());
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["5 × … = 35", "4 × … = 16", "9 × … = 54", "3 × 6 = …"]);
+  assert.equal(result.needs_clarification, false);
+});
+
 test("arithmetic transcription keeps only complete high-confidence rows with one explicit blank", () => {
   const api = loadApi();
   const result = api.arithmeticTranscriptionIntake({ is_arithmetic_worksheet: true, rows: [
@@ -558,6 +604,22 @@ test("grounded visual arithmetic produces a concrete first hint without solving 
   assert.match(result.reply, /operación inversa/);
   assert.equal(result.check_question, "¿Qué número completa 6 × □ = 36?");
   assert.doesNotMatch(result.reply, /(?:hueco|respuesta)\s+es\s+6/i);
+});
+
+test("one focused visual equation produces a concrete hint without weakening generic evidence", () => {
+  const api = loadApi();
+  const intake = api.arithmeticEvidenceIntake("7 x _ = 35", { minimumRows: 1 });
+  const result = api.deterministicVisualArithmeticGuidanceTurn({
+    mode: "homework",
+    turnRel: "new_topic",
+    incomingModeState: { question_number: 1 },
+    incomingPedState: { current_mode: "homework", turn_index: 0 },
+    vision: intake.vision,
+  });
+  assert.match(result.reply, /una operación con un hueco: 7 × … = 35/);
+  assert.equal(result.check_question, "¿Qué número completa 7 × □ = 35?");
+  assert.doesNotMatch(result.reply, /(?:hueco|respuesta)\s+es\s+5/i);
+  assert.equal(api.arithmeticEvidenceIntake("Solo se distingue 7 x _ = 35"), null);
 });
 
 test("grounded arithmetic accepts common Cloudflare notation variants without weakening row gates", () => {
