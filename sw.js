@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.100.2 · Greeting timing */
-const CACHE_VERSION="coco-en-forma-v160.100.2-greeting-timing-r3";
+/* Coco en Forma · Service Worker v160.100.3 · Photo regions */
+const CACHE_VERSION="coco-en-forma-v160.100.3-photo-regions-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

@@ -53,6 +53,9 @@ function loadApi(fetchImpl = fetch) {
     simpleArithmeticInText,
     pendingNumericEquation,
     analyzeImageIntake,
+    validatedImageRegions,
+    mergeRegionalIntakes,
+    arithmeticTranscriptionIntake,
     reliableVisionForReasoning,
     visionNeedsClarification,
     deterministicArithmeticGuidanceTurn,
@@ -386,7 +389,10 @@ test("a semantically unusable Cloudflare worksheet result is retried with direct
   const api = loadApi(async (_input, init) => {
     const payload = JSON.parse(init.body);
     openaiPayloads.push(payload);
-    return new Response(JSON.stringify({ output_text: JSON.stringify(highQuality), usage: { input_tokens: 20, output_tokens: 10 }, service_tier: "default" }), { status: 200, headers: { "Content-Type": "application/json" } });
+    const data = String(payload.text?.format?.name || "").startsWith("eterna_arithmetic_region_")
+      ? { is_arithmetic_worksheet: false, rows: [] }
+      : highQuality;
+    return new Response(JSON.stringify({ output_text: JSON.stringify(data), usage: { input_tokens: 20, output_tokens: 10 }, service_tier: "default" }), { status: 200, headers: { "Content-Type": "application/json" } });
   });
   const result = await api.analyzeImageIntake({
     AI_PROVIDER: "cloudflare",
@@ -399,11 +405,57 @@ test("a semantically unusable Cloudflare worksheet result is retried with direct
     AI: { run: async (model) => { cloudflareCalls.push(model); return model.includes("llama-4-scout") ? { response: "Ficha, fila 1: 6 × hueco = 36." } : { response: lowQuality }; } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, []);
   assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8"]);
-  assert.equal(openaiPayloads.length, 1);
+  assert.equal(openaiPayloads.length, 2);
   assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
   assert.equal(openaiPayloads[0].input[0].content[1].image_url, "data:image/png;base64,AA==");
   assert.equal(result.vision.items[0].statement, "6 × … = 36");
   assert.equal(api.visionNeedsClarification(api.reliableVisionForReasoning(result.vision)), false);
+});
+
+test("two validated worksheet regions are read directly and merged without inventing cropped content", async () => {
+  const lowQuality = {
+    scope: "school", subject: "Matemáticas", concept: "multiplicación", needs_clarification: true,
+    self_contained: false, reason: "La hoja completa tiene demasiadas filas pequeñas",
+    vision: { legible: false, confidence: 0.4, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["Filas pequeñas"], suggested_focus: null },
+  };
+  const regionA = "data:image/png;base64,AQ==", regionB = "data:image/png;base64,Ag==", seenImages = [];
+  const api = loadApi(async (_input, init) => {
+    const payload = JSON.parse(init.body), imageUrl = payload.input[0].content[1].image_url;
+    seenImages.push(imageUrl);
+    const data = imageUrl === regionA
+      ? { is_arithmetic_worksheet: true, rows: [{ left: "6", operator: "×", right: null, result: "36", blank_position: "right", confidence: 0.97 }] }
+      : { is_arithmetic_worksheet: true, rows: [{ left: "2", operator: "×", right: null, result: "14", blank_position: "right", confidence: 0.96 }] };
+    return new Response(JSON.stringify({ output_text: JSON.stringify(data), usage: { input_tokens: 20, output_tokens: 10 }, service_tier: "default" }), { status: 200, headers: { "Content-Type": "application/json" } });
+  });
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare", ENABLE_OPENAI_FALLBACK: "true", OPENAI_VISION_MODEL: "gpt-5.6-sol", OPENAI_API_KEY: "test-key",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct", VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B", VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model) => model.includes("llama-4-scout") ? { response: "Ficha, fila 1: 6 × hueco = 36." } : { response: lowQuality } },
+  }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
+  assert.deepEqual(seenImages.sort(), [regionA, regionB].sort());
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement).sort(), ["2 × … = 14", "6 × … = 36"]);
+  assert.equal(result.vision.regional_analysis, true);
+  assert.equal(result.needs_clarification, false);
+});
+
+test("arithmetic transcription keeps only complete high-confidence rows with one explicit blank", () => {
+  const api = loadApi();
+  const result = api.arithmeticTranscriptionIntake({ is_arithmetic_worksheet: true, rows: [
+    { left: "6", operator: "×", right: null, result: "36", blank_position: "right", confidence: 0.97 },
+    { left: "2", operator: "×", right: null, result: "18", blank_position: "right", confidence: 0.71 },
+    { left: "not-a-number", operator: "×", right: null, result: "9", blank_position: "right", confidence: 0.99 },
+    { left: "3", operator: "?", right: "6", result: null, blank_position: "result", confidence: 0.99 },
+  ] });
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36"]);
+  assert.equal(result.vision.confidence, 0.97);
+  assert.equal(result.needs_clarification, false);
+});
+
+test("worksheet regions are bounded, deduplicated and accepted only beside a valid full image", () => {
+  const api = loadApi(), first = "data:image/png;base64,AQ==", second = "data:image/png;base64,Ag==";
+  assert.deepEqual(Array.from(api.validatedImageRegions([first, first, second], true)), [first]);
+  assert.deepEqual(Array.from(api.validatedImageRegions([first, second], false)), []);
+  assert.deepEqual(Array.from(api.validatedImageRegions([first, "not-an-image"], true)), []);
 });
 
 test("Cloudflare visual grounding quota switches to the dedicated OpenAI vision model", async () => {

@@ -1,11 +1,11 @@
-name: Deploy Eterna Worker 160.99.7
+name: Deploy Eterna Worker 160.99.8
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/release-eterna-160997"
+      - ".github/release-eterna-160998"
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.99.7-semantic-vision-fallback
+      EXPECTED_VERSION: 160.99.8-regional-worksheet-vision
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -150,6 +150,7 @@ jobs:
               && payload.features?.cloudflare_llama4_document_vision_v1 === true
               && payload.features?.visual_evidence_quality_gate_v1 === true
               && payload.features?.semantic_vision_fallback_v1 === true
+              && payload.features?.regional_worksheet_vision_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -227,7 +228,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.99.7 semantic vision fallback" \
+            --message "Eterna 160.99.8 regional worksheet vision" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -262,6 +263,7 @@ jobs:
               && payload.features?.cloudflare_llama4_document_vision_v1 === true
               && payload.features?.visual_evidence_quality_gate_v1 === true
               && payload.features?.semantic_vision_fallback_v1 === true
+              && payload.features?.regional_worksheet_vision_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -322,7 +324,7 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.99.7 semantic vision fallback health check" \
+              --message "Automatic rollback after failed Eterna 160.99.8 regional worksheet vision health check" \
               --yes
             exit 1
           fi

@@ -9,7 +9,7 @@ test("the bottom composer exposes an accessible Pensando indicator", () => {
   const css = read("eterna-v159.css");
   const composer = core.slice(core.indexOf('<div class="eternaV159Composer"'), core.indexOf("</main>"));
 
-  assert.match(core, /160\.98\.2-greeting-timing/);
+  assert.match(core, /160\.98\.3-photo-regions/);
   assert.match(composer, /data-et-thinking role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(composer, /<span>Pensando…<\/span>/);
   assert.ok(composer.indexOf("data-et-thinking") < composer.indexOf("eternaV159InputRow"));
@@ -44,9 +44,9 @@ test("the PWA invalidates the human-teacher assets as one release", () => {
   const serviceWorker = read("sw.js");
 
   assert.match(index, /eterna-v159\.css\?v=160980/);
-  assert.match(index, /eterna-v159\.js\?v=160102/);
-  assert.match(index, /sw\.js\?v=160102-r3/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.2-greeting-timing-r3"/);
+  assert.match(index, /eterna-v159\.js\?v=160103/);
+  assert.match(index, /sw\.js\?v=160103-r1/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.3-photo-regions-r1"/);
 });
 
 test("relational turns stay human, transient and separate from the suspended lesson", () => {

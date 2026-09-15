@@ -50,16 +50,25 @@ test("Practice exposes counters while adaptive difficulty remains internal", () 
 test("web entrypoint and Service Worker invalidate the corrected assets together", () => {
   assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
   assert.match(index, /coco-v153-fixes\.js\?v=160100/);
-  assert.match(index, /eterna-v159\.js\?v=160102/);
+  assert.match(index, /eterna-v159\.js\?v=160103/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160100/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.2-greeting-timing-r3"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.3-photo-regions-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v4\.js"/);
   assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(eternaExperienceWithMicOnly\(e\)\)/);
   assert.match(serviceWorker, /ETERNA_HOTFIX_PATH="\.\/eterna-hotfix-v160902\.js"/);
   assert.match(serviceWorker, /basePromise=cachedPatch\(ETERNA_CORE_PATH\)/);
+});
+
+test("worksheet photos send two bounded overlapping regions and clear them with the original", () => {
+  assert.match(client, /imageData:null,imageRegions:\[\]/);
+  assert.match(client, /image_regions:state\.imageRegions\|\|\[\]/);
+  assert.match(client, /span=Math\.max\(1,Math\.ceil\(long\*\.62\)\)/);
+  assert.match(client, /renderImageCrop\(img,0,0,img\.width,span,1800,true\)/);
+  assert.match(client, /renderImageCrop\(img,0,offset,img\.width,span,1800,true\)/);
+  assert.match(client, /state\.imageData=null;state\.imageRegions=\[\]/);
 });
 
 test("mic-only v4 records the full utterance, auto-stops and submits through the canonical Send button", () => {
