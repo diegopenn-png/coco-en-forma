@@ -1,11 +1,11 @@
-name: Deploy Eterna Worker 160.99.11
+name: Deploy Eterna Worker 160.99.12
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/release-eterna-1609911"
+      - ".github/release-eterna-1609912"
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.99.11-cloudflare-regional-arithmetic-ocr
+      EXPECTED_VERSION: 160.99.12-fast-regional-arithmetic-ocr
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
 
@@ -154,6 +154,7 @@ jobs:
               && payload.features?.grounded_arithmetic_ocr_v1 === true
               && payload.features?.grounded_arithmetic_ocr_v2 === true
               && payload.features?.cloudflare_regional_arithmetic_ocr_v1 === true
+              && payload.features?.cloudflare_fast_regional_arithmetic_ocr_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -231,7 +232,7 @@ jobs:
           npx wrangler versions deploy \
             "${TARGET_VERSION_ID}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.99.11 Cloudflare regional arithmetic OCR" \
+            --message "Eterna 160.99.12 fast regional arithmetic OCR" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -270,6 +271,7 @@ jobs:
               && payload.features?.grounded_arithmetic_ocr_v1 === true
               && payload.features?.grounded_arithmetic_ocr_v2 === true
               && payload.features?.cloudflare_regional_arithmetic_ocr_v1 === true
+              && payload.features?.cloudflare_fast_regional_arithmetic_ocr_v1 === true
               && payload.features?.cloudflare_moondream_image_safety_v1 === true
               && payload.features?.bounded_visual_output_v1 === true
               && payload.features?.partial_worksheet_grounding_v1 === true
@@ -330,7 +332,7 @@ jobs:
             echo "Production health verification failed; rolling back." >&2
             npx wrangler rollback \
               --name "$WORKER_NAME" \
-              --message "Automatic rollback after failed Eterna 160.99.11 Cloudflare regional arithmetic OCR health check" \
+              --message "Automatic rollback after failed Eterna 160.99.12 fast regional arithmetic OCR health check" \
               --yes
             exit 1
           fi

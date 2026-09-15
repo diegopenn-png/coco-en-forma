@@ -406,7 +406,7 @@ test("a semantically unusable Cloudflare worksheet result is retried with direct
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model) => { cloudflareCalls.push(model); return model.includes("llama-4-scout") ? { response: "Ficha, fila 1: 6 × hueco = 36." } : { response: lowQuality }; } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, []);
-  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8", "@cf/meta/llama-4-scout-17b-16e-instruct"]);
+  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8", "@cf/moondream/moondream3.1-9B-A2B"]);
   assert.equal(openaiPayloads.length, 2);
   assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
   assert.equal(openaiPayloads[0].input[0].content[1].image_url, "data:image/png;base64,AA==");
@@ -456,14 +456,41 @@ test("focused Cloudflare region OCR recovers repeated arithmetic without requiri
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model, payload) => {
       if (model.includes("qwen")) return { response: lowQuality };
-      const firstByte = Array.isArray(payload.image) ? payload.image[0] : null;
-      if (firstByte === 1) return { response: "Fila 1: 6 × hueco = 36\nFila 2: 2 × hueco = 18" };
-      if (firstByte === 2) return { response: "Fila 3: hueco × 8 = 48\nFila cortada: 5 × hueco" };
+      if (payload.image === regionA) return { response: "Fila 1: 6 × hueco = 36\nFila 2: 2 × hueco = 18" };
+      if (payload.image === regionB) return { response: "Fila 3: hueco × 8 = 48\nFila cortada: 5 × hueco" };
       return { response: "Ficha de multiplicaciones: 6 × hueco = 36" };
     } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
   assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"]);
   assert.equal(result.vision.regional_analysis, true);
+  assert.equal(result.needs_clarification, false);
+});
+
+test("a stalled Cloudflare region cannot block a clear sibling crop", async () => {
+  const lowQuality = {
+    scope: "school", subject: "Matemáticas", concept: "multiplicación", needs_clarification: true,
+    self_contained: false, reason: "La hoja completa tiene demasiadas filas pequeñas",
+    vision: { legible: false, confidence: 0.4, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["Filas pequeñas"], suggested_focus: null },
+  };
+  const regionA = "data:image/png;base64,AQ==", regionB = "data:image/png;base64,Ag==";
+  const api = loadApi();
+  const started = Date.now();
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "false",
+    CLOUDFLARE_REGION_OCR_TIMEOUT_MS: "25",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => {
+      if (model.includes("qwen")) return { response: lowQuality };
+      if (model.includes("moondream") && payload.image === regionA) return await new Promise(() => {});
+      if (model.includes("moondream") && payload.image === regionB) return { response: "6 × hueco = 36\n2 × hueco = 18\nhueco × 8 = 48" };
+      return { response: "Ficha de multiplicaciones: 6 × hueco = 36" };
+    } },
+  }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
+  assert.ok(Date.now() - started < 250, "the request must stop waiting for a stalled region");
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"]);
   assert.equal(result.needs_clarification, false);
 });
 
