@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.100.4 · Portrait photo bands */
-const CACHE_VERSION="coco-en-forma-v160.100.4-portrait-photo-bands-r1";
+/* Coco en Forma · Service Worker v160.100.5 · Focused portrait photo bands */
+const CACHE_VERSION="coco-en-forma-v160.100.5-focused-portrait-bands-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

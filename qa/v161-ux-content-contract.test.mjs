@@ -126,7 +126,7 @@ test("master accounts can replay every game without adding a second daily score"
   assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
   assert.match(unified, /daily\.isUnlimited\(userId\)/);
   assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.100\.4-portrait-photo-bands-r1/);
+  assert.match(read("sw.js"), /coco-en-forma-v160\.100\.5-focused-portrait-bands-r1/);
 });
 
 test("production promotes the exact preview-tested Worker with automatic rollback", () => {
