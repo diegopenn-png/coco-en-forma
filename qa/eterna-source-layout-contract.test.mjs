@@ -149,7 +149,7 @@ test("the 160.99.14 production gate verifies complete-image and focused arithmet
   const production = readFileSync(".github/workflows/eterna-worker-production-160995.yml", "utf8");
   const worker = readFileSync("eterna-worker/src/index.js", "utf8");
   assert.match(production, /\.github\/release-eterna-1609914/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.16-current-turn-subject-vision/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.14-full-image-arithmetic-ocr/);
   assert.match(production, /models\.vision\?\.model === "@cf\/meta\/llama-4-scout-17b-16e-instruct"/);
   assert.match(production, /models\.vision\?\.grounding_service === "workers-ai-llama4-document-vision"/);
   assert.match(production, /payload\.features\?\.cloudflare_llama4_document_vision_v1 === true/);
