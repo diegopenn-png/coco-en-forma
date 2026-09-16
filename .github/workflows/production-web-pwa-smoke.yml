@@ -1,0 +1,114 @@
+name: Verify production web and PWA
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/production-web-pwa-smoke.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/production-web-pwa-smoke.yml"
+      - "index.html"
+      - "sw.js"
+      - "manifest.webmanifest"
+      - "manifest.json"
+      - "eterna-v159.js"
+      - "coco-v152-pwa.js"
+      - ".github/release-eterna-1609916"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-web-pwa-smoke
+  cancel-in-progress: true
+
+jobs:
+  live-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      APEX_URL: https://cocoenforma.com
+      WWW_URL: https://www.cocoenforma.com
+      WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
+      EXPECTED_WORKER_VERSION: 160.99.16-current-turn-subject-vision
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.5-focused-portrait-bands-r1
+    steps:
+      - name: Fetch uncached production assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          stamp="${GITHUB_SHA}-$(date +%s)"
+          fetch_live() {
+            local url="$1"
+            local output="$2"
+            curl --fail --silent --show-error --location               --max-time 45 --retry 6 --retry-delay 3 --retry-all-errors               --header "Cache-Control: no-cache"               --header "Pragma: no-cache"               "${url}${url/*\?/?&}verify=${stamp}"               --output "$output"
+          }
+          fetch_live "${APEX_URL}/?" /tmp/apex.html
+          fetch_live "${WWW_URL}/?" /tmp/www.html
+          fetch_live "${APEX_URL}/sw.js?" /tmp/sw.js
+          fetch_live "${APEX_URL}/manifest.webmanifest?" /tmp/manifest.webmanifest
+          fetch_live "${APEX_URL}/eterna-v159.js?" /tmp/eterna-v159.js
+          fetch_live "${APEX_URL}/coco-v152-pwa.js?" /tmp/coco-v152-pwa.js
+          fetch_live "${WORKER_HEALTH_URL}?" /tmp/health.json
+          test "$(wc -c < /tmp/apex.html)" -gt 100000
+          test "$(wc -c < /tmp/www.html)" -gt 100000
+
+      - name: Verify exact production Worker
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require("node:fs");
+          const p = JSON.parse(fs.readFileSync("/tmp/health.json", "utf8"));
+          const valid = p.ok === true
+            && p.version === process.env.EXPECTED_WORKER_VERSION
+            && p.ai_provider === "cloudflare"
+            && p.features?.current_turn_subject_priority_v1 === true
+            && p.features?.current_image_priority_v1 === true
+            && p.features?.image_context_reset_v1 === true
+            && p.features?.regional_worksheet_vision_v1 === true
+            && p.features?.child_safeguarding_interrupt_v1 === true
+            && p.features?.parental_authorization_gate === true;
+          if (!valid) {
+            console.error(JSON.stringify(p, null, 2));
+            process.exit(1);
+          }
+          console.log(`Worker live: ${p.version}`);
+          NODE
+
+      - name: Verify live web points to Eterna
+        shell: bash
+        run: |
+          set -euo pipefail
+          for page in /tmp/apex.html /tmp/www.html; do
+            grep -Fq "manifest.webmanifest" "$page"
+            grep -Fq "eterna-v159.js" "$page"
+            grep -Fq "coco-v152-pwa.js" "$page"
+          done
+          grep -Fq "https://coco-eterna-v159.chatinmobiliario.workers.dev" /tmp/eterna-v159.js
+          grep -Fq "serviceWorker" /tmp/coco-v152-pwa.js
+          grep -Fq "sw.js" /tmp/coco-v152-pwa.js
+
+      - name: Verify PWA update and stale-cache eviction
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq "const CACHE_VERSION=\"${EXPECTED_PWA_CACHE}\"" /tmp/sw.js
+          grep -Fq 'k.startsWith(CACHE_PREFIX)&&k!==CACHE_VERSION' /tmp/sw.js
+          grep -Fq 'caches.delete(k)' /tmp/sw.js
+          grep -Fq 'self.skipWaiting()' /tmp/sw.js
+          grep -Fq 'self.clients.claim()' /tmp/sw.js
+          grep -Fq '__coco_release' /tmp/sw.js
+          node - <<'NODE'
+          const fs = require("node:fs");
+          const m = JSON.parse(fs.readFileSync("/tmp/manifest.webmanifest", "utf8"));
+          if (m.name !== "Coco en Forma" || m.display !== "standalone") process.exit(1);
+          if (!String(m.start_url || "").includes("source=pwa-v159")) process.exit(1);
+          const sizes = new Set((m.icons || []).map(icon => icon.sizes));
+          if (!sizes.has("192x192") || !sizes.has("512x512")) process.exit(1);
+          console.log(`PWA live: ${process.env.EXPECTED_PWA_CACHE}`);
+          NODE
