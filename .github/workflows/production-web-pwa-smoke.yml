@@ -89,7 +89,7 @@ jobs:
             grep -Fq "eterna-v159.js" "$page"
             grep -Fq "coco-v152-pwa.js" "$page"
           done
-          grep -Fq "https://coco-eterna-v159.chatinmobiliario.workers.dev" /tmp/eterna-v159.js
+          grep -Fq "https://coco-eterna-v159.chatinmobiliario.workers.dev" /tmp/apex.html /tmp/www.html /tmp/eterna-v159.js
           grep -Fq "serviceWorker" /tmp/coco-v152-pwa.js
           grep -Fq "sw.js" /tmp/coco-v152-pwa.js
 
