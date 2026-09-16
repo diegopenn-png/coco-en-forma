@@ -40,8 +40,26 @@ jobs:
       - name: Full Eterna regression
         shell: bash
         run: |
+          set +e
           timeout --signal=TERM --kill-after=30s 14m \
-            node --test eterna-worker/test/*.test.mjs qa/*.test.mjs qa/eterna/*.test.mjs
+            node --test eterna-worker/test/*.test.mjs qa/*.test.mjs qa/eterna/*.test.mjs \
+            2>&1 | tee /tmp/eterna-full-regression-1609917.log
+          status=${PIPESTATUS[0]}
+          echo "REGRESSION_EXIT_STATUS=${status}"
+          exit "${status}"
+
+      - name: Persist regression diagnostics
+        if: failure()
+        shell: bash
+        run: |
+          test -f /tmp/eterna-full-regression-1609917.log || exit 0
+          cp /tmp/eterna-full-regression-1609917.log qa/eterna/regression-1609917.log
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add qa/eterna/regression-1609917.log
+          git diff --cached --quiet && exit 0
+          git commit -m "chore(ci): capture 160.99.17 regression failure [skip ci]"
+          git push origin HEAD:fix/eterna-generic-photo-general-vision-1609917
 
       - name: Commit validated worker
         run: |
