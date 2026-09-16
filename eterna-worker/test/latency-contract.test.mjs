@@ -468,6 +468,41 @@ test("focused Cloudflare region OCR recovers repeated arithmetic without requiri
   assert.equal(result.needs_clarification, false);
 });
 
+test("a current Language photograph uses general vision and ignores stale Mathematics history", async () => {
+  const lowQuality = {
+    scope: "school", subject: "Lengua Castellana y Literatura", concept: "ortografía", needs_clarification: true,
+    self_contained: false, reason: "El texto completo es pequeño",
+    vision: { legible: false, confidence: 0.45, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["Texto pequeño"], suggested_focus: null },
+  };
+  const highQuality = {
+    scope: "school", subject: "Lengua Castellana y Literatura", concept: "completar palabras con b o v", needs_clarification: false,
+    self_contained: true, reason: "La zona actual permite leer el ejercicio",
+    vision: { legible: true, confidence: 0.94, material_type: "worksheet", task_instruction: "Completa con b o v", printed_elements: ["Completa con b o v", "_aca"], blanks: [{label:"_",purpose:"word",nearby_printed_values:["aca"],location:"palabra 1",confidence:0.94}], items: [{id:"lengua-1",statement:"_aca",printed_values:["aca"],blank_target:{label:"_",purpose:"word",nearby_printed_values:["aca"],location:"palabra 1",confidence:0.94},student_response:null,inferred_goal:"completar con b o v",spatial_notes:"palabra 1",confidence:0.94}], uncertainty: [], suggested_focus: "_aca" },
+  };
+  let structuredCalls = 0;
+  const seenVisionPrompts = [];
+  const api = loadApi(async () => { throw new Error("OpenAI must not be required for current Language vision"); });
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "false",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => {
+      if (model.includes("llama-4-scout")) {
+        seenVisionPrompts.push(payload.prompt);
+        return { response: "Ficha de Lengua. Instrucción visible: Completa con b o v. Primera palabra con hueco: _aca. El hueco es una letra, no un número." };
+      }
+      if (model.includes("qwen")) return { response: ++structuredCalls === 1 ? lowQuality : highQuality };
+      throw new Error(`unexpected model route: ${model}`);
+    } },
+  }, "Esta foto nueva es de Lengua.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [{role:"assistant",text:"Seguíamos con multiplicaciones secretas"}], []);
+  assert.equal(result.subject, "Lengua Castellana y Literatura");
+  assert.equal(result.vision.items[0].statement, "_aca");
+  assert.equal(result.needs_clarification, false);
+  assert.ok(seenVisionPrompts.some(prompt => /lectura GENERAL de material escolar/.test(prompt)));
+  assert.ok(seenVisionPrompts.every(prompt => !/multiplicaciones secretas/.test(prompt)));
+});
+
 test("a stalled Cloudflare region cannot block a clear sibling crop", async () => {
   const lowQuality = {
     scope: "school", subject: "Matemáticas", concept: "multiplicación", needs_clarification: true,

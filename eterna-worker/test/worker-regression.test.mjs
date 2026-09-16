@@ -26,6 +26,11 @@ vm.runInContext(stateContractSource, sandbox);
 vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   clearNonAcademicIntent,
   turnRelation,
+  currentTurnSubjectHint,
+  currentTurnContextDecision,
+  currentTurnPriorityInstruction,
+  sameAcademicSubject,
+  preferGeneralWorksheetVision,
   isDontKnow: typeof isDontKnow === "function" ? isDontKnow : null,
   deterministicReviewGuard: typeof deterministicReviewGuard === "function" ? deterministicReviewGuard : null,
   validMicroCheck: typeof validMicroCheck === "function" ? validMicroCheck : null,
@@ -81,6 +86,83 @@ test("natural topic changes override a pending comprehension check", () => {
   };
   assert.equal(api.turnRelation("Vale, ahora dime qué fue la Edad Media.", state, []), "new_topic");
   assert.equal(api.turnRelation("Cambio de tema: explícame qué fue la Edad Media.", state, []), "new_topic");
+});
+
+test("A: a Mathematics to Language change releases the previous subject", () => {
+  const decision = api.currentTurnContextDecision({
+    text: "Ahora necesito hacer Lengua: busca los prefijos.",
+    image: null,
+    scope: { subject: "Lengua Castellana y Literatura", concept: "prefijos" },
+    pedState: { active_subject: "Matemáticas", active_concept: "fracciones" },
+  });
+  assert.equal(decision.subjectHint, "Lengua Castellana y Literatura");
+  assert.equal(decision.subjectChanged, true);
+  assert.equal(decision.newTopic, true);
+  assert.equal(decision.clearPending, true);
+});
+
+test("B: a Language to another subject change releases the previous subject", () => {
+  const decision = api.currentTurnContextDecision({
+    text: "Explícame ahora la célula en Biología.",
+    image: null,
+    scope: { subject: "Biología", concept: "la célula" },
+    pedState: { active_subject: "Lengua Castellana y Literatura", active_concept: "prefijos" },
+  });
+  assert.equal(decision.subjectHint, "Biología");
+  assert.equal(decision.subjectChanged, true);
+  assert.equal(decision.newTopic, true);
+});
+
+test("C: a new photograph from a different subject outranks stale academic state", () => {
+  const decision = api.currentTurnContextDecision({
+    text: "Esta es la nueva foto de Lengua.",
+    image: "data:image/png;base64,AA==",
+    scope: { subject: "Lengua Castellana y Literatura", concept: "completar palabras con b o v" },
+    pedState: { active_subject: "Matemáticas", active_concept: "multiplicaciones", pending_question: "¿Cuánto es 7 × 8?" },
+  });
+  assert.equal(decision.subjectChanged, true);
+  assert.equal(decision.clearPending, true);
+  assert.equal(decision.newTopic, true);
+  assert.match(api.currentTurnPriorityInstruction("Esta es la nueva foto de Lengua.", true), /imagen adjunta y el mensaje actual mandan sobre el historial/);
+});
+
+test("D: distinct consecutive photographs each start their own exercise", () => {
+  const languagePhoto = api.currentTurnContextDecision({image:"photo-1",scope:{subject:"Lengua",concept:"sinónimos"},pedState:{active_subject:"Matemáticas",active_concept:"divisiones"}});
+  const biologyPhoto = api.currentTurnContextDecision({image:"photo-2",scope:{subject:"Biología",concept:"ecosistemas"},pedState:{active_subject:"Lengua Castellana y Literatura",active_concept:"sinónimos"}});
+  assert.equal(languagePhoto.newTopic, true);
+  assert.equal(biologyPhoto.newTopic, true);
+  assert.equal(languagePhoto.clearPending, true);
+  assert.equal(biologyPhoto.clearPending, true);
+});
+
+test("E: a new textual question after a photograph can change subject", () => {
+  const decision = api.currentTurnContextDecision({text:"Ahora, en Historia, ¿qué fue la Edad Media?",image:null,scope:{subject:"Historia",concept:"Edad Media"},pedState:{active_subject:"Lengua",active_concept:"ortografía"}});
+  assert.equal(decision.subjectChanged, true);
+  assert.equal(decision.newTopic, true);
+});
+
+test("F: the same photographed exercise preserves real continuity", () => {
+  const decision = api.currentTurnContextDecision({text:"Mira este paso",image:"photo-2",scope:{subject:"Matemáticas",concept:"división con resto"},pedState:{active_subject:"Matemáticas",active_concept:"división con resto",pending_question:"¿Cuál es el resto?"}});
+  assert.equal(decision.subjectChanged, false);
+  assert.equal(decision.conceptChanged, false);
+  assert.equal(decision.newTopic, false);
+  assert.equal(decision.continuation, true);
+  assert.equal(decision.clearPending, true, "the current pixels still replace any stale pending check");
+});
+
+test("G: a different exercise in the same subject abandons the prior exercise", () => {
+  const decision = api.currentTurnContextDecision({text:"Otra foto",image:"photo-3",scope:{subject:"Matemáticas",concept:"área de triángulos"},pedState:{active_subject:"Matemáticas",active_concept:"división con resto"}});
+  assert.equal(decision.subjectChanged, false);
+  assert.equal(decision.conceptChanged, true);
+  assert.equal(decision.newTopic, true);
+});
+
+test("image routing never serializes stale history into the visual prompt", () => {
+  const imageFunction = source.slice(source.indexOf("async function analyzeImageIntake"), source.indexOf("function normalizeForSearch"));
+  assert.doesNotMatch(imageFunction, /Historial reciente=/);
+  assert.match(imageFunction, /la imagen actual es la única evidencia visual/);
+  assert.equal(api.preferGeneralWorksheetVision("Es una ficha de Lengua", { subject: "Matemáticas" }), true);
+  assert.equal(api.preferGeneralWorksheetVision("", { subject: "Matemáticas" }), false);
 });
 
 test("a short academic answer remains a continuation when the active topic exists", () => {
