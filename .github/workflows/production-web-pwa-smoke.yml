@@ -46,7 +46,7 @@ jobs:
           fetch_live() {
             local url="$1"
             local output="$2"
-            curl --fail --silent --show-error --location               --max-time 45 --retry 6 --retry-delay 3 --retry-all-errors               --header "Cache-Control: no-cache"               --header "Pragma: no-cache"               "${url}${url/*\?/?&}verify=${stamp}"               --output "$output"
+            curl --fail --silent --show-error --location               --max-time 45 --retry 6 --retry-delay 3 --retry-all-errors               --header "Cache-Control: no-cache"               --header "Pragma: no-cache"               "${url}verify=${stamp}"               --output "$output"
           }
           fetch_live "${APEX_URL}/?" /tmp/apex.html
           fetch_live "${WWW_URL}/?" /tmp/www.html
