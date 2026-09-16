@@ -86,7 +86,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git checkout "$GITHUB_SHA" -- .github/workflows
-          git add -A
+          git add .github/workflows
           tree=$(git write-tree)
           validated_commit=$(printf '%s\n' "fix(eterna): generic photo general vision 160.99.17" | git commit-tree "$tree" -p "$GITHUB_SHA")
           git reset --hard "$validated_commit"
