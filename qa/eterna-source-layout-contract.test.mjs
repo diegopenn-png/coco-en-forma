@@ -211,6 +211,9 @@ test("the 160.99.18 production gate promotes the exact language-photo release", 
   assert.match(production, /timeout --signal=TERM --kill-after=30s 14m/);
   assert.match(production, /--preview-alias "release-1609918"/);
   assert.match(production, /language_photo_grounding_v1/);
+  assert.match(production, /for attempt in 1 2 3/);
+  assert.match(production, /diagnostic_code:p\[name\]\?\.diagnostic_code/);
+  assert.match(production, /did not become healthy after three bounded probes/);
   assert.match(production, /wrangler versions deploy/);
   assert.match(production, /wrangler rollback/);
 });
