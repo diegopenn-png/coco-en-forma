@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+// Retrigger validated patch from current main after PR #86 merged before the bot commit landed.
 const path='eterna-worker/src/index.js';
 let s=fs.readFileSync(path,'utf8');
 const oldVersion='const VERSION="160.99.14-full-image-arithmetic-ocr";';
