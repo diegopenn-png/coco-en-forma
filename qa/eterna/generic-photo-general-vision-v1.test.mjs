@@ -41,7 +41,7 @@ test('explicitly detected mathematics keeps the arithmetic-specialized route',()
   assert.equal(route('He adjuntado una foto de mi tarea.',{subject:'Matemáticas'}),false);
 });
 
-test('release exposes the generic-photo routing capability',()=>{
-  assert.match(source,/const VERSION="160\.99\.17-generic-photo-general-vision";/);
+test('release preserves generic-photo routing in the language-grounding revision',()=>{
+  assert.match(source,/const VERSION="160\.99\.18-language-photo-grounding";/);
   assert.match(source,/generic_photo_general_vision_v1:true/);
 });
