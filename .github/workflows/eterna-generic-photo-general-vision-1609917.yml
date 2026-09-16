@@ -61,11 +61,11 @@ jobs:
           git commit -m "chore(ci): capture 160.99.17 regression failure [skip ci]"
           git push origin HEAD:fix/eterna-generic-photo-general-vision-1609917
 
-      - name: Commit validated worker
+      - name: Commit validated worker and regression expectations
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add eterna-worker/src/index.js
+          git add -A -- eterna-worker/src/index.js eterna-worker/test/content-370.test.mjs eterna-worker/test/content-410.test.mjs eterna-worker/test/latency-contract.test.mjs qa/eterna/regression-1609917.log
           git diff --cached --quiet && exit 0
           git commit -m "fix(eterna): route generic task photos through general vision"
           git push origin HEAD:fix/eterna-generic-photo-general-vision-1609917
