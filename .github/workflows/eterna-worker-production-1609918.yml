@@ -83,6 +83,7 @@ jobs:
             --message "Eterna 160.99.18 language photo grounding" \
             --keep-vars \
             --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
+            --var "MODERATION_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
           version_id="$(sed -n 's/^Worker Version ID: //p' preview-upload.log | tail -1)"
           preview_url="$(sed -n 's/^Version Preview Alias URL: //p' preview-upload.log | tail -1)"
@@ -116,6 +117,8 @@ jobs:
                   && p.features?.regional_worksheet_vision_v1 === true
                   && p.features?.generic_photo_general_vision_v1 === true
                   && p.features?.language_photo_grounding_v1 === true
+                  && p.features?.cloudflare_moderation_fallback_v1 === true
+                  && p.model_configuration?.moderation?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast"
                   && p.features?.child_safeguarding_interrupt_v1 === true
                   && p.features?.parental_authorization_gate === true;
                 process.exit(valid ? 0 : 1);
@@ -193,7 +196,9 @@ jobs:
                   && p.features?.current_image_priority_v1 === true
                   && p.features?.image_context_reset_v1 === true
                   && p.features?.generic_photo_general_vision_v1 === true
-                  && p.features?.language_photo_grounding_v1 === true;
+                  && p.features?.language_photo_grounding_v1 === true
+                  && p.features?.cloudflare_moderation_fallback_v1 === true
+                  && p.model_configuration?.moderation?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast";
                 process.exit(valid ? 0 : 1);
               } catch { process.exit(1); }
             ' "$payload"; then
