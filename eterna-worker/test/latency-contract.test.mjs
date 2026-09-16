@@ -57,6 +57,9 @@ function loadApi(fetchImpl = fetch) {
     mergeRegionalIntakes,
     arithmeticTranscriptionIntake,
     arithmeticEvidenceIntake,
+    orthographyEvidenceIntake,
+    sanitizeImageIntake,
+    visualEvidenceMissingImageSignal,
     arithmeticVisionImages,
     reliableVisionForReasoning,
     visionNeedsClarification,
@@ -505,9 +508,9 @@ test("a current Language photograph uses general vision and ignores stale Mathem
 
 test("a generic attached-photo message reads a b-or-v worksheet through general vision", async () => {
   const lowQuality = {
-    scope: "school", subject: null, concept: null, needs_clarification: true,
-    self_contained: false, reason: "La lectura inicial no identifica todavía la materia",
-    vision: { legible: false, confidence: 0.42, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["Materia todavía no identificada"], suggested_focus: null },
+    scope: "school", subject: "IMAGEN_NO_PROPORCIONADA", concept: null, needs_clarification: true,
+    self_contained: false, reason: "No se ha proporcionado ninguna imagen",
+    vision: { legible: false, confidence: 0.42, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["IMAGEN_NO_PROPORCIONADA"], suggested_focus: null },
   };
   const highQuality = {
     scope: "school", subject: "Lengua Castellana y Literatura", concept: "ortografía: uso de b y v", needs_clarification: false,
@@ -716,6 +719,28 @@ test("grounded arithmetic accepts common Cloudflare notation variants without we
   }
   assert.equal(api.arithmeticEvidenceIntake("6 × [blank] = 36\nFila cortada: 2 × [blank]"), null);
   assert.equal(api.arithmeticEvidenceIntake("6 × [blank] = 36\n2 × [blank] = unknown"), null, "every accepted row must contain exactly one blank");
+});
+
+test("grounded language evidence recovers a clear b/v worksheet without guessing answers", () => {
+  const api = loadApi();
+  const result = api.orthographyEvidenceIntake('3.- Completa con "b" o "v". ser_icio, perci_ir, her_ido, escri_ir, conce_ir, ser_idor');
+  assert.equal(result.subject, "Lengua Castellana y Literatura");
+  assert.equal(result.concept, "ortografía: uso de b y v");
+  assert.equal(result.vision.items.length, 6);
+  assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["ser_icio", "perci_ir", "her_ido", "escri_ir", "conce_ir", "ser_idor"]);
+  assert.equal(result.vision.items.some(item => /servicio|percibir|hervido|escribir|concebir|servidor/.test(item.statement)), false);
+  assert.equal(api.visionNeedsClarification(api.reliableVisionForReasoning(result.vision)), false);
+});
+
+test("missing-image provider diagnostics are never exposed as a school subject", () => {
+  const api = loadApi();
+  assert.equal(api.visualEvidenceMissingImageSignal("IMAGEN_NO_PROPORCIONADA"), true);
+  const result = api.sanitizeImageIntake({
+    scope: "school", subject: "IMAGEN_NO_PROPORCIONADA", concept: null, needs_clarification: true, self_contained: false, reason: "No se ha proporcionado ninguna imagen",
+    vision: { legible: false, confidence: 0, material_type: "other", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: [], suggested_focus: null },
+  });
+  assert.equal(result.subject, null);
+  assert.equal(result.vision.legible, false);
 });
 
 test("grounded Cloudflare arithmetic evidence bypasses a lossy structuring result", async () => {

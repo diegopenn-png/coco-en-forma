@@ -18,7 +18,7 @@ on:
       - "manifest.json"
       - "eterna-v159.js"
       - "coco-v152-pwa.js"
-      - ".github/release-eterna-1609917"
+      - ".github/release-eterna-1609918"
 
 permissions:
   contents: read
@@ -30,12 +30,12 @@ concurrency:
 jobs:
   live-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       APEX_URL: https://cocoenforma.com
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
-      EXPECTED_WORKER_VERSION: 160.99.17-generic-photo-general-vision
+      EXPECTED_WORKER_VERSION: ${{ github.event_name == 'pull_request' && '160.99.17-generic-photo-general-vision' || '160.99.18-language-photo-grounding' }}
       EXPECTED_PWA_CACHE: coco-en-forma-v160.100.5-focused-portrait-bands-r1
     steps:
       - name: Fetch uncached production assets
@@ -54,7 +54,26 @@ jobs:
           fetch_live "${APEX_URL}/manifest.webmanifest?" /tmp/manifest.webmanifest
           fetch_live "${APEX_URL}/eterna-v159.js?" /tmp/eterna-v159.js
           fetch_live "${APEX_URL}/coco-v152-pwa.js?" /tmp/coco-v152-pwa.js
-          fetch_live "${WORKER_HEALTH_URL}?" /tmp/health.json
+          worker_ready=0
+          for attempt in {1..30}; do
+            fetch_live "${WORKER_HEALTH_URL}?" /tmp/health.json
+            if node -e '
+              const fs = require("node:fs");
+              try {
+                const p = JSON.parse(fs.readFileSync("/tmp/health.json", "utf8"));
+                process.exit(p.ok === true && p.version === process.env.EXPECTED_WORKER_VERSION ? 0 : 1);
+              } catch { process.exit(1); }
+            '; then
+              worker_ready=1
+              break
+            fi
+            sleep 15
+          done
+          if [[ "$worker_ready" -ne 1 ]]; then
+            echo "Production Worker did not reach ${EXPECTED_WORKER_VERSION}" >&2
+            cat /tmp/health.json >&2 || true
+            exit 1
+          fi
           test "$(wc -c < /tmp/apex.html)" -gt 100000
           test "$(wc -c < /tmp/www.html)" -gt 100000
 
@@ -72,6 +91,7 @@ jobs:
             && p.features?.image_context_reset_v1 === true
             && p.features?.regional_worksheet_vision_v1 === true
             && p.features?.generic_photo_general_vision_v1 === true
+            && (!process.env.EXPECTED_WORKER_VERSION.includes("160.99.18") || p.features?.language_photo_grounding_v1 === true)
             && p.features?.child_safeguarding_interrupt_v1 === true
             && p.features?.parental_authorization_gate === true;
           if (!valid) {
