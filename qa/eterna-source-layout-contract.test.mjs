@@ -21,7 +21,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.16-current-turn-subject-vision/);
+  assert.match(worker, /160\.99\.17-generic-photo-general-vision/);
   assert.match(worker, /current_turn_subject_priority_v1:true/);
   assert.match(worker, /current_image_priority_v1:true/);
   assert.match(worker, /image_context_reset_v1:true/);
@@ -84,9 +84,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /payload\.features\?\.full_image_arithmetic_ocr_v1 === true/);
   assert.match(preview, /payload\.features\?\.single_focused_arithmetic_ocr_v1 === true/);
   assert.match(preview, /payload\.features\?\.pwa_original_image_fallback_v1 === true/);
-  assert.match(preview, /grep -F '160\.99\.16-current-turn-subject-vision' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.16-current-turn-subject-vision"/);
-  assert.match(preview, /API 160\.99\.16-current-turn-subject-vision/);
+  assert.match(preview, /grep -F '160\.99\.17-generic-photo-general-vision' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.17-generic-photo-general-vision"/);
+  assert.match(preview, /API 160\.99\.17-generic-photo-general-vision/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -187,17 +187,18 @@ test("the 160.99.14 production gate verifies complete-image and focused arithmet
 });
 
 
-test("the 160.99.16 production gate bounds regression time and promotes the exact preview", () => {
-  const production = readFileSync(".github/workflows/eterna-worker-production-1609916.yml", "utf8");
-  assert.match(production, /\.github\/release-eterna-1609916/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.16-current-turn-subject-vision/);
+test("the 160.99.17 production gate bounds regression time and promotes the exact preview", () => {
+  const production = readFileSync(".github/workflows/eterna-worker-production-1609917.yml", "utf8");
+  assert.match(production, /\.github\/release-eterna-1609917/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.17-generic-photo-general-vision/);
   assert.match(production, /timeout --signal=TERM --kill-after=30s 14m/);
   assert.match(production, /node --test eterna-worker\/test\/\*\.test\.mjs qa\/\*\.test\.mjs qa\/eterna\/\*\.test\.mjs/);
-  assert.match(production, /--preview-alias "release-1609916"/);
+  assert.match(production, /--preview-alias "release-1609917"/);
   assert.match(production, /Version Preview Alias URL/);
   assert.match(production, /current_turn_subject_priority_v1/);
   assert.match(production, /current_image_priority_v1/);
   assert.match(production, /image_context_reset_v1/);
+  assert.match(production, /generic_photo_general_vision_v1/);
   assert.match(production, /wrangler versions deploy/);
   assert.match(production, /wrangler rollback/);
   assert.doesNotMatch(production, /apply-current-turn|apply-general-worksheet/);

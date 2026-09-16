@@ -503,6 +503,49 @@ test("a current Language photograph uses general vision and ignores stale Mathem
   assert.ok(seenVisionPrompts.every(prompt => !/multiplicaciones secretas/.test(prompt)));
 });
 
+test("a generic attached-photo message reads a b-or-v worksheet through general vision", async () => {
+  const lowQuality = {
+    scope: "school", subject: null, concept: null, needs_clarification: true,
+    self_contained: false, reason: "La lectura inicial no identifica todavía la materia",
+    vision: { legible: false, confidence: 0.42, material_type: "worksheet", task_instruction: null, printed_elements: [], blanks: [], items: [], uncertainty: ["Materia todavía no identificada"], suggested_focus: null },
+  };
+  const highQuality = {
+    scope: "school", subject: "Lengua Castellana y Literatura", concept: "ortografía: uso de b y v", needs_clarification: false,
+    self_contained: true, reason: "La ficha de ortografía es legible",
+    vision: {
+      legible: true, confidence: 0.96, material_type: "worksheet", task_instruction: "Completa con b o v",
+      printed_elements: ["ser_icio", "perci_ir", "her_ido", "escri_ir", "conce_ir", "ser_idor"],
+      blanks: [{label:"_",purpose:"word",nearby_printed_values:["ser","icio"],location:"servicio",confidence:0.96}],
+      items: [{id:"bv-1",statement:"ser_icio",printed_values:["ser","icio"],blank_target:{label:"_",purpose:"word",nearby_printed_values:["ser","icio"],location:"servicio",confidence:0.96},student_response:null,inferred_goal:"completar con b o v",spatial_notes:"primera palabra",confidence:0.96}],
+      uncertainty: [], suggested_focus: "ser_icio",
+    },
+  };
+  let structuredCalls = 0;
+  const visionPrompts = [];
+  const api = loadApi(async () => { throw new Error("OpenAI must not be required for the b-or-v worksheet"); });
+  const result = await api.analyzeImageIntake({
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "false",
+    VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
+    VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
+    AI: { run: async (model, payload) => {
+      if (model.includes("llama-4-scout")) {
+        visionPrompts.push(payload.prompt);
+        return { response: "Ficha de Lengua. Instrucción: Completa con b o v. Palabras visibles: ser_icio, perci_ir, her_ido, escri_ir, conce_ir y ser_idor." };
+      }
+      if (model.includes("qwen")) return { response: ++structuredCalls === 1 ? lowQuality : highQuality };
+      throw new Error(`the arithmetic-specific route must not run: ${model}`);
+    } },
+  }, "He adjuntado una foto de mi tarea.", "data:image/jpeg;base64,AA==", { school_year: "5º de Primaria" }, [{role:"assistant",text:"Antes estábamos resolviendo multiplicaciones"}], []);
+  assert.equal(result.subject, "Lengua Castellana y Literatura");
+  assert.equal(result.concept, "ortografía: uso de b y v");
+  assert.equal(result.vision.task_instruction, "Completa con b o v");
+  assert.equal(result.vision.items[0].statement, "ser_icio");
+  assert.equal(result.needs_clarification, false);
+  assert.ok(visionPrompts.some(prompt => /lectura GENERAL de material escolar/.test(prompt)));
+});
+
 test("a stalled Cloudflare region cannot block a clear sibling crop", async () => {
   const lowQuality = {
     scope: "school", subject: "Matemáticas", concept: "multiplicación", needs_clarification: true,
@@ -596,7 +639,8 @@ test("the complete image remains available when horizontal client crops cut equa
         : { response: "fragmento cortado sin una ecuación completa" };
     } },
   }, "He adjuntado una foto de mi tarea.", image, { school_year: "5º de Primaria" }, [], [left, right]);
-  assert.deepEqual(seenImages.sort(), [image, image, left, right].sort());
+  assert.deepEqual([...new Set(seenImages)].sort(), [image, left, right].sort());
+  assert.ok(seenImages.filter(value => value === image).length >= 2, "the complete image must remain available to the fallback readers");
   assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["5 × … = 35", "4 × … = 16", "9 × … = 54", "3 × 6 = …"]);
   assert.equal(result.needs_clarification, false);
 });
