@@ -1,0 +1,71 @@
+name: Eterna generic photo general vision 160.99.17
+
+on:
+  push:
+    branches:
+      - fix/eterna-generic-photo-general-vision-1609917
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/eterna-generic-photo-general-vision-1609917
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: eterna-worker/package-lock.json
+
+      - name: Install Worker tooling
+        working-directory: eterna-worker
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
+
+      - name: Apply generic photo vision patch
+        run: node qa/eterna/apply-generic-photo-general-vision-1609917.mjs
+
+      - name: Syntax
+        run: node --check eterna-worker/src/index.js
+
+      - name: Generic attached-photo regression
+        run: node --test qa/eterna/generic-photo-general-vision-v1.test.mjs
+
+      - name: Full Eterna regression
+        shell: bash
+        run: |
+          set +e
+          timeout --signal=TERM --kill-after=30s 14m \
+            node --test eterna-worker/test/*.test.mjs qa/*.test.mjs qa/eterna/*.test.mjs \
+            2>&1 | tee /tmp/eterna-full-regression-1609917.log
+          status=${PIPESTATUS[0]}
+          echo "REGRESSION_EXIT_STATUS=${status}"
+          exit "${status}"
+
+      - name: Persist regression diagnostics
+        if: failure()
+        shell: bash
+        run: |
+          test -f /tmp/eterna-full-regression-1609917.log || exit 0
+          cp /tmp/eterna-full-regression-1609917.log qa/eterna/regression-1609917.log
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add qa/eterna/regression-1609917.log
+          git diff --cached --quiet && exit 0
+          git commit -m "chore(ci): capture 160.99.17 regression failure [skip ci]"
+          git push origin HEAD:fix/eterna-generic-photo-general-vision-1609917
+
+      - name: Commit validated worker
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add eterna-worker/src/index.js
+          git diff --cached --quiet && exit 0
+          git commit -m "fix(eterna): route generic task photos through general vision"
+          git push origin HEAD:fix/eterna-generic-photo-general-vision-1609917

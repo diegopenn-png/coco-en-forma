@@ -1,12 +1,12 @@
-name: Deploy Eterna Worker 160.99.16
+name: Deploy Eterna Worker 160.99.17
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/workflows/eterna-worker-production-1609916.yml"
-      - ".github/release-eterna-1609916"
+      - ".github/workflows/eterna-worker-production-1609917.yml"
+      - ".github/release-eterna-1609917"
 
 permissions:
   contents: read
@@ -22,7 +22,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.99.16-current-turn-subject-vision
+      EXPECTED_VERSION: 160.99.17-generic-photo-general-vision
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
     steps:
@@ -79,8 +79,8 @@ jobs:
           allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,https://raw.githack.com"
           npx --no-install wrangler versions upload \
             --name "$WORKER_NAME" \
-            --preview-alias "release-1609916" \
-            --message "Eterna 160.99.16 current-turn subject and image priority" \
+            --preview-alias "release-1609917" \
+            --message "Eterna 160.99.17 generic photo general vision" \
             --keep-vars \
             --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
@@ -114,6 +114,7 @@ jobs:
                   && p.features?.current_image_priority_v1 === true
                   && p.features?.image_context_reset_v1 === true
                   && p.features?.regional_worksheet_vision_v1 === true
+                  && p.features?.generic_photo_general_vision_v1 === true
                   && p.features?.child_safeguarding_interrupt_v1 === true
                   && p.features?.parental_authorization_gate === true;
                 process.exit(valid ? 0 : 1);
@@ -149,7 +150,7 @@ jobs:
           npx --no-install wrangler versions deploy \
             "${{ steps.upload.outputs.version_id }}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.99.16 current-turn subject and image priority" \
+            --message "Eterna 160.99.17 generic photo general vision" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -166,7 +167,8 @@ jobs:
                   && p.version === process.env.EXPECTED_VERSION
                   && p.features?.current_turn_subject_priority_v1 === true
                   && p.features?.current_image_priority_v1 === true
-                  && p.features?.image_context_reset_v1 === true;
+                  && p.features?.image_context_reset_v1 === true
+                  && p.features?.generic_photo_general_vision_v1 === true;
                 process.exit(valid ? 0 : 1);
               } catch { process.exit(1); }
             ' "$payload"; then
@@ -177,7 +179,7 @@ jobs:
           done
           if [[ "$healthy" != "true" ]]; then
             echo "Production health verification failed; rolling back." >&2
-            npx --no-install wrangler rollback --name "$WORKER_NAME" --message "Automatic rollback after failed Eterna 160.99.16 health check" --yes
+            npx --no-install wrangler rollback --name "$WORKER_NAME" --message "Automatic rollback after failed Eterna 160.99.17 health check" --yes
             exit 1
           fi
           echo "Production is healthy on ${EXPECTED_VERSION}."
