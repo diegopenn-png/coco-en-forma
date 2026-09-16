@@ -18,26 +18,50 @@ jobs:
         with:
           ref: fix/eterna-generic-photo-general-vision-1609917
 
+      - name: Import the exact locally validated release commit
+        id: import
+        shell: bash
+        run: |
+          bundle="qa/eterna/release-exact-1609917.bundle"
+          if [[ ! -f "$bundle" ]]; then
+            echo "imported=false" >> "$GITHUB_OUTPUT"
+            echo "Waiting for the validated release bundle."
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout b23142da53000216efa424e724ade62af58491aa -- .github/workflows/eterna-generic-photo-general-vision-1609917.yml
+          git add .github/workflows/eterna-generic-photo-general-vision-1609917.yml
+          git commit -m "chore(ci): restore release workflow before import"
+          git fetch "$bundle" refs/heads/transfer-eterna-1609917:refs/remotes/validated/release
+          git cherry-pick refs/remotes/validated/release
+          rm "$bundle"
+          git add -A
+          git commit -m "chore(ci): remove temporary release transfer files"
+          echo "imported=true" >> "$GITHUB_OUTPUT"
+
       - uses: actions/setup-node@v4
+        if: steps.import.outputs.imported == 'true'
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: eterna-worker/package-lock.json
 
       - name: Install Worker tooling
+        if: steps.import.outputs.imported == 'true'
         working-directory: eterna-worker
         run: npm ci --legacy-peer-deps --no-audit --no-fund
 
-      - name: Apply generic photo vision patch
-        run: node qa/eterna/apply-generic-photo-general-vision-1609917.mjs
-
       - name: Syntax
+        if: steps.import.outputs.imported == 'true'
         run: node --check eterna-worker/src/index.js
 
       - name: Generic attached-photo regression
+        if: steps.import.outputs.imported == 'true'
         run: node --test qa/eterna/generic-photo-general-vision-v1.test.mjs
 
       - name: Full Eterna regression
+        if: steps.import.outputs.imported == 'true'
         shell: bash
         run: |
           set +e
@@ -48,24 +72,16 @@ jobs:
           echo "REGRESSION_EXIT_STATUS=${status}"
           exit "${status}"
 
-      - name: Persist regression diagnostics
-        if: failure()
+      - name: Report regression diagnostics without publishing a failed candidate
+        if: failure() && steps.import.outputs.imported == 'true'
         shell: bash
         run: |
           test -f /tmp/eterna-full-regression-1609917.log || exit 0
-          cp /tmp/eterna-full-regression-1609917.log qa/eterna/regression-1609917.log
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add qa/eterna/regression-1609917.log
-          git diff --cached --quiet && exit 0
-          git commit -m "chore(ci): capture 160.99.17 regression failure [skip ci]"
-          git push origin HEAD:fix/eterna-generic-photo-general-vision-1609917
+          tail -240 /tmp/eterna-full-regression-1609917.log
 
-      - name: Commit validated worker and regression expectations
+      - name: Publish only the fully validated release branch
+        if: success() && steps.import.outputs.imported == 'true'
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -A -- eterna-worker/src/index.js eterna-worker/test/content-370.test.mjs eterna-worker/test/content-410.test.mjs eterna-worker/test/latency-contract.test.mjs qa/eterna/regression-1609917.log
-          git diff --cached --quiet && exit 0
-          git commit -m "fix(eterna): route generic task photos through general vision"
           git push origin HEAD:fix/eterna-generic-photo-general-vision-1609917
