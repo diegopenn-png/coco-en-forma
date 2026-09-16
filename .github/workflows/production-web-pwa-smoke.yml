@@ -83,15 +83,28 @@ jobs:
       - name: Verify live web points to Eterna
         shell: bash
         run: |
-          set -euo pipefail
-          for page in /tmp/apex.html /tmp/www.html; do
-            grep -Fq "manifest.webmanifest" "$page"
-            grep -Fq "eterna-v159.js" "$page"
-            grep -Fq "coco-v152-pwa.js" "$page"
-          done
-          grep -Fq "https://coco-eterna-v159.chatinmobiliario.workers.dev" /tmp/apex.html /tmp/www.html /tmp/eterna-v159.js
-          grep -Fq "serviceWorker" /tmp/coco-v152-pwa.js
-          grep -Fq "sw.js" /tmp/coco-v152-pwa.js
+          node - <<'NODE'
+          const fs = require("node:fs");
+          const read = path => fs.readFileSync(path, "utf8");
+          const apex = read("/tmp/apex.html");
+          const www = read("/tmp/www.html");
+          const eterna = read("/tmp/eterna-v159.js");
+          const pwa = read("/tmp/coco-v152-pwa.js");
+          const endpoint = "https://coco-eterna-v159.chatinmobiliario.workers.dev";
+          const checks = [
+            ["apex manifest", apex.includes("manifest.webmanifest")],
+            ["www manifest", www.includes("manifest.webmanifest")],
+            ["apex Eterna runtime", apex.includes("eterna-v159.js")],
+            ["www Eterna runtime", www.includes("eterna-v159.js")],
+            ["apex PWA manager", apex.includes("coco-v152-pwa.js")],
+            ["www PWA manager", www.includes("coco-v152-pwa.js")],
+            ["Eterna production endpoint", apex.includes(endpoint) || www.includes(endpoint) || eterna.includes(endpoint)],
+            ["Service Worker API", pwa.includes("serviceWorker")],
+            ["Service Worker URL", pwa.includes("sw.js")]
+          ];
+          for (const [name, ok] of checks) console.log(`${ok ? "OK" : "MISSING"}: ${name}`);
+          if (checks.some(([, ok]) => !ok)) process.exit(1);
+          NODE
 
       - name: Verify PWA update and stale-cache eviction
         shell: bash
