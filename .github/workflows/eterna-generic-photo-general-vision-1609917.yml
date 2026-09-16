@@ -1,0 +1,53 @@
+name: Eterna generic photo general vision 160.99.17
+
+on:
+  push:
+    branches:
+      - fix/eterna-generic-photo-general-vision-1609917
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/eterna-generic-photo-general-vision-1609917
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: eterna-worker/package-lock.json
+
+      - name: Install Worker tooling
+        working-directory: eterna-worker
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
+
+      - name: Apply generic photo vision patch
+        run: node qa/eterna/apply-generic-photo-general-vision-1609917.mjs
+
+      - name: Syntax
+        run: node --check eterna-worker/src/index.js
+
+      - name: Generic attached-photo regression
+        run: node --test qa/eterna/generic-photo-general-vision-v1.test.mjs
+
+      - name: Full Eterna regression
+        shell: bash
+        run: |
+          timeout --signal=TERM --kill-after=30s 14m \
+            node --test eterna-worker/test/*.test.mjs qa/*.test.mjs qa/eterna/*.test.mjs
+
+      - name: Commit validated worker
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add eterna-worker/src/index.js
+          git diff --cached --quiet && exit 0
+          git commit -m "fix(eterna): route generic task photos through general vision"
+          git push origin HEAD:fix/eterna-generic-photo-general-vision-1609917
