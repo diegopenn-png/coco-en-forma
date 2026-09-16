@@ -56,6 +56,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(worker, /cloudflare_regional_arithmetic_ocr_v1:true/);
   assert.match(worker, /cloudflare_fast_regional_arithmetic_ocr_v1:true/);
   assert.match(worker, /bounded_image_moderation_v1:true/);
+  assert.match(worker, /cloudflare_moderation_fallback_v1:true/);
   assert.match(worker, /bounded_primary_vision_v1:true/);
   assert.match(worker, /deterministic_visual_arithmetic_guidance_v1:true/);
   assert.match(worker, /full_image_arithmetic_ocr_v1:true/);
@@ -74,8 +75,10 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /--var "VISION_SAFETY_MODEL:@cf\/moondream\/moondream3\.1-9B-A2B"/);
   assert.match(preview, /--var "VISION_FALLBACK_MODEL:@cf\/moondream\/moondream3\.1-9B-A2B"/);
   assert.match(preview, /--var "VISION_STRUCTURING_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
+  assert.match(preview, /--var "MODERATION_FALLBACK_MODEL:@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
+  assert.match(preview, /models\.moderation\?\.fallback_model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(preview, /payload\.features\?\.cloudflare_regional_arithmetic_ocr_v1 === true/);
   assert.match(preview, /payload\.features\?\.cloudflare_fast_regional_arithmetic_ocr_v1 === true/);
   assert.match(preview, /payload\.features\?\.bounded_image_moderation_v1 === true/);
@@ -211,6 +214,11 @@ test("the 160.99.18 production gate promotes the exact language-photo release", 
   assert.match(production, /timeout --signal=TERM --kill-after=30s 14m/);
   assert.match(production, /--preview-alias "release-1609918"/);
   assert.match(production, /language_photo_grounding_v1/);
+  assert.match(production, /cloudflare_moderation_fallback_v1/);
+  assert.match(production, /MODERATION_FALLBACK_MODEL:@cf\/meta\/llama-3\.1-8b-instruct-fast/);
+  assert.match(production, /for attempt in 1 2 3/);
+  assert.match(production, /diagnostic_code:p\[name\]\?\.diagnostic_code/);
+  assert.match(production, /did not become healthy after three bounded probes/);
   assert.match(production, /wrangler versions deploy/);
   assert.match(production, /wrangler rollback/);
 });

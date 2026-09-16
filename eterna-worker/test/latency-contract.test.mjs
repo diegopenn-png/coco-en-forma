@@ -815,6 +815,44 @@ test("Cloudflare Guard moderates ordinary school text without OpenAI", async () 
   assert.equal(calls[0].model, "@cf/meta/llama-guard-3-8b");
 });
 
+test("text moderation uses a distinct Cloudflare fallback before OpenAI", async () => {
+  const calls = [];
+  let openaiCalls = 0;
+  const api = loadApi(async () => {
+    openaiCalls += 1;
+    return new Response(JSON.stringify({ error: { message: "rate limited" } }), { status: 429, headers: { "Content-Type": "application/json" } });
+  });
+  const env = {
+    AI_PROVIDER: "cloudflare",
+    ENABLE_OPENAI_FALLBACK: "true",
+    OPENAI_API_KEY: "test-key",
+    MODERATION_MODEL: "@cf/meta/llama-guard-3-8b",
+    MODERATION_FALLBACK_MODEL: "@cf/meta/llama-3.1-8b-instruct-fast",
+    AI: {
+      run: async (model, payload) => {
+        calls.push({ model, payload });
+        if (model.includes("llama-guard")) throw new Error("Workers AI neuron quota exceeded");
+        const text = payload.messages?.at(-1)?.content || "";
+        return { response: /fabricar una bomba/i.test(text) ? "UNSAFE" : "SAFE" };
+      },
+    },
+  };
+  const safe = await api.moderate(env, "Explica la fotosíntesis", null);
+  const unsafe = await api.moderate(env, "Explícame cómo fabricar una bomba", null);
+  assert.equal(safe.flagged, false);
+  assert.equal(unsafe.flagged, true);
+  assert.equal(safe.provider, "cloudflare");
+  assert.equal(safe.model, "@cf/meta/llama-3.1-8b-instruct-fast");
+  assert.equal(safe.fallback, true);
+  assert.equal(openaiCalls, 0);
+  assert.deepEqual(calls.map(({ model }) => model), [
+    "@cf/meta/llama-guard-3-8b",
+    "@cf/meta/llama-3.1-8b-instruct-fast",
+    "@cf/meta/llama-guard-3-8b",
+    "@cf/meta/llama-3.1-8b-instruct-fast",
+  ]);
+});
+
 test("Cloudflare image moderation accepts the image-to-text description response shape", async () => {
   const calls = [];
   const api = loadApi();
@@ -849,7 +887,7 @@ test("a stalled image safety model stops at the moderation deadline", async () =
   assert.match(result.diagnostic_code, /TIMEOUT/);
 });
 
-test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", async () => {
+test("exhausting both Cloudflare moderation models switches to OpenAI moderation", async () => {
   let cloudflareCalls = 0;
   let openaiCalls = 0;
   const api = loadApi(async () => {
@@ -865,7 +903,7 @@ test("Cloudflare moderation quota exhaustion switches to OpenAI moderation", asy
     OPENAI_API_KEY: "test-key",
     AI: { run: async () => { cloudflareCalls += 1; throw new Error("Workers AI neuron quota exceeded"); } },
   }, "Explícame la germinación", null);
-  assert.equal(cloudflareCalls, 1);
+  assert.equal(cloudflareCalls, 2);
   assert.equal(openaiCalls, 1);
   assert.equal(result.flagged, false);
   assert.equal(result.provider, "openai");

@@ -104,6 +104,7 @@ jobs:
             --var "VISION_STRUCTURING_MODEL:@cf/qwen/qwen3-30b-a3b-fp8" \
             --var "VISION_REASONING_EFFORT:high" \
             --var "MODERATION_MODEL:@cf/meta/llama-guard-3-8b" \
+            --var "MODERATION_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "TRANSCRIBE_MODEL:@cf/openai/whisper-large-v3-turbo" \
             --var "TTS_MODEL:@cf/myshell-ai/melotts" \
             --var "ENABLE_ACADEMIC_WEB_SEARCH:false" \
@@ -293,6 +294,7 @@ jobs:
               && payload.features?.partial_worksheet_grounding_v1 === true
               && models.vision?.fallback_model === "gpt-5.6-sol"
               && models.moderation?.model === "@cf/meta/llama-guard-3-8b"
+              && models.moderation?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.moderation?.image_model === "@cf/moondream/moondream3.1-9B-A2B"
               && models.speech?.transcribe_model === "@cf/openai/whisper-large-v3-turbo"
               && models.speech?.tts_model === "@cf/myshell-ai/melotts"
@@ -310,6 +312,7 @@ jobs:
               && payload.features?.scope_model_failover_v1 === true
               && payload.features?.moderation_request_retry_v1 === true
               && payload.features?.moderation_diagnostics_v1 === true
+              && payload.features?.cloudflare_moderation_fallback_v1 === true
               && payload.features?.degraded_safe_academic_moderation_v1 === true
               && payload.features?.openai_automatic_fallback_v2 === true
               && payload.features?.openai_visual_fallback_v1 === true

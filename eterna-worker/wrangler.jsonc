@@ -34,6 +34,7 @@
     "WEB_SEARCH_MODEL": "gpt-5.6-terra",
     "WEB_SEARCH_REASONING_EFFORT": "low",
     "MODERATION_MODEL": "@cf/meta/llama-guard-3-8b",
+    "MODERATION_FALLBACK_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
     "TRANSCRIBE_MODEL": "@cf/openai/whisper-large-v3-turbo",
     "TTS_MODEL": "@cf/myshell-ai/melotts",
     "MAX_CHAT_REQUESTS_PER_DAY": "60"

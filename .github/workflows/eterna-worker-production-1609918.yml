@@ -83,6 +83,7 @@ jobs:
             --message "Eterna 160.99.18 language photo grounding" \
             --keep-vars \
             --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
+            --var "MODERATION_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
           version_id="$(sed -n 's/^Worker Version ID: //p' preview-upload.log | tail -1)"
           preview_url="$(sed -n 's/^Version Preview Alias URL: //p' preview-upload.log | tail -1)"
@@ -116,6 +117,8 @@ jobs:
                   && p.features?.regional_worksheet_vision_v1 === true
                   && p.features?.generic_photo_general_vision_v1 === true
                   && p.features?.language_photo_grounding_v1 === true
+                  && p.features?.cloudflare_moderation_fallback_v1 === true
+                  && p.model_configuration?.moderation?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast"
                   && p.features?.child_safeguarding_interrupt_v1 === true
                   && p.features?.parental_authorization_gate === true;
                 process.exit(valid ? 0 : 1);
@@ -135,14 +138,37 @@ jobs:
         shell: bash
         run: |
           probe_url="${{ steps.upload.outputs.preview_url }}/health/dependencies"
-          payload="$(curl --silent --show-error --max-time 120 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "$probe_url")"
-          node -e '
-            const p=JSON.parse(process.argv[1]);
-            if (p.ok !== true || p.version !== process.env.EXPECTED_VERSION || p.provider !== "cloudflare") process.exit(1);
-            for (const name of ["moderation", "image_moderation", "structured_tutor", "structured_vision"]) {
-              if (p[name]?.ok !== true) process.exit(1);
-            }
-          ' "$payload"
+          probe_ready=false
+          for attempt in 1 2 3; do
+            payload="$(curl --silent --show-error --max-time 120 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "$probe_url" || true)"
+            if node -e '
+              let p;
+              try { p=JSON.parse(process.argv[1]); }
+              catch {
+                console.error(JSON.stringify({attempt:Number(process.argv[2]),parse_error:true}));
+                process.exit(1);
+              }
+              const names=["moderation", "image_moderation", "responses", "structured_tutor", "structured_vision"];
+              const dependencies=Object.fromEntries(names.map(name => [name, {
+                ok:p[name]?.ok === true,
+                provider:p[name]?.provider ?? null,
+                model:p[name]?.model ?? p[name]?.visual_model ?? null,
+                diagnostic_code:p[name]?.diagnostic_code ?? null
+              }]));
+              console.log(JSON.stringify({attempt:Number(process.argv[2]),ok:p.ok === true,version:p.version ?? null,provider:p.provider ?? null,degraded:p.degraded === true,dependencies}));
+              const valid=p.ok === true && p.version === process.env.EXPECTED_VERSION && p.provider === "cloudflare"
+                && ["moderation", "image_moderation", "structured_tutor", "structured_vision"].every(name => p[name]?.ok === true);
+              process.exit(valid ? 0 : 1);
+            ' "$payload" "$attempt"; then
+              probe_ready=true
+              break
+            fi
+            if [[ "$attempt" -lt 3 ]]; then sleep 10; fi
+          done
+          if [[ "$probe_ready" != "true" ]]; then
+            echo "The preview AI dependencies did not become healthy after three bounded probes" >&2
+            exit 1
+          fi
 
       - name: Deploy the exact preview-tested version
         working-directory: eterna-worker
@@ -170,7 +196,9 @@ jobs:
                   && p.features?.current_image_priority_v1 === true
                   && p.features?.image_context_reset_v1 === true
                   && p.features?.generic_photo_general_vision_v1 === true
-                  && p.features?.language_photo_grounding_v1 === true;
+                  && p.features?.language_photo_grounding_v1 === true
+                  && p.features?.cloudflare_moderation_fallback_v1 === true
+                  && p.model_configuration?.moderation?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast";
                 process.exit(valid ? 0 : 1);
               } catch { process.exit(1); }
             ' "$payload"; then
