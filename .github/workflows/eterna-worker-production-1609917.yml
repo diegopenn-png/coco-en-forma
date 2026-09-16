@@ -1,0 +1,185 @@
+name: Deploy Eterna Worker 160.99.17
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/eterna-worker-production-1609917.yml"
+      - ".github/release-eterna-1609917"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eterna-worker-production
+  cancel-in-progress: false
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      EXPECTED_VERSION: 160.99.17-generic-photo-general-vision
+      WORKER_NAME: coco-eterna-v159
+      PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: eterna-worker/package-lock.json
+
+      - name: Validate Cloudflare credentials
+        shell: bash
+        run: |
+          if [[ -z "${CLOUDFLARE_API_TOKEN:-}" || -z "${CLOUDFLARE_ACCOUNT_INPUT:-}" ]]; then
+            echo "Cloudflare credentials are not configured" >&2
+            exit 1
+          fi
+          clean_token="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          echo "::add-mask::$clean_token"
+          echo "CLOUDFLARE_API_TOKEN=${clean_token}" >> "$GITHUB_ENV"
+          account_id="${CLOUDFLARE_ACCOUNT_INPUT#https://dash.cloudflare.com/}"
+          account_id="${account_id%%/*}"
+          if [[ ! "$account_id" =~ ^[0-9a-fA-F]{32}$ ]]; then
+            echo "Invalid Cloudflare account ID" >&2
+            exit 1
+          fi
+          echo "::add-mask::$account_id"
+          echo "CLOUDFLARE_ACCOUNT_ID=${account_id}" >> "$GITHUB_ENV"
+          probe_token="$(openssl rand -hex 32)"
+          echo "::add-mask::$probe_token"
+          echo "DEPLOY_PROBE_TOKEN=${probe_token}" >> "$GITHUB_ENV"
+
+      - name: Install pinned Worker tooling
+        working-directory: eterna-worker
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
+
+      - name: Run full bounded Eterna regression
+        shell: bash
+        run: |
+          node --check eterna-worker/src/index.js
+          node --check eterna-v159.js
+          node --check sw.js
+          timeout --signal=TERM --kill-after=30s 14m \
+            node --test eterna-worker/test/*.test.mjs qa/*.test.mjs qa/eterna/*.test.mjs
+
+      - name: Upload tested version without production traffic
+        id: upload
+        working-directory: eterna-worker
+        shell: bash
+        env:
+          NO_COLOR: "1"
+        run: |
+          allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,https://raw.githack.com"
+          npx --no-install wrangler versions upload \
+            --name "$WORKER_NAME" \
+            --preview-alias "release-1609917" \
+            --message "Eterna 160.99.17 generic photo general vision" \
+            --keep-vars \
+            --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
+            --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
+          version_id="$(sed -n 's/^Worker Version ID: //p' preview-upload.log | tail -1)"
+          preview_url="$(sed -n 's/^Version Preview Alias URL: //p' preview-upload.log | tail -1)"
+          if [[ ! "$version_id" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
+            echo "Could not determine the exact uploaded Worker version ID" >&2
+            exit 1
+          fi
+          if [[ ! "$preview_url" =~ ^https://[a-z0-9-]+\.chatinmobiliario\.workers\.dev$ ]]; then
+            echo "Could not determine the exact version preview alias URL" >&2
+            exit 1
+          fi
+          echo "version_id=$version_id" >> "$GITHUB_OUTPUT"
+          echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+
+      - name: Verify the exact uploaded preview
+        shell: bash
+        run: |
+          preview_health_url="${{ steps.upload.outputs.preview_url }}/health"
+          healthy=false
+          for attempt in 1 2 3 4 5 6; do
+            payload="$(curl --silent --show-error --max-time 20 "$preview_health_url" || true)"
+            if node -e '
+              try {
+                const p=JSON.parse(process.argv[1]);
+                const valid=p.ok === true
+                  && p.version === process.env.EXPECTED_VERSION
+                  && p.ai_provider === "cloudflare"
+                  && p.features?.current_turn_subject_priority_v1 === true
+                  && p.features?.current_image_priority_v1 === true
+                  && p.features?.image_context_reset_v1 === true
+                  && p.features?.regional_worksheet_vision_v1 === true
+                  && p.features?.generic_photo_general_vision_v1 === true
+                  && p.features?.child_safeguarding_interrupt_v1 === true
+                  && p.features?.parental_authorization_gate === true;
+                process.exit(valid ? 0 : 1);
+              } catch { process.exit(1); }
+            ' "$payload"; then
+              healthy=true
+              break
+            fi
+            sleep 5
+          done
+          if [[ "$healthy" != "true" ]]; then
+            echo "The exact uploaded preview did not expose the expected release" >&2
+            exit 1
+          fi
+
+      - name: Probe preview AI dependencies
+        shell: bash
+        run: |
+          probe_url="${{ steps.upload.outputs.preview_url }}/health/dependencies"
+          payload="$(curl --silent --show-error --max-time 120 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "$probe_url")"
+          node -e '
+            const p=JSON.parse(process.argv[1]);
+            if (p.ok !== true || p.version !== process.env.EXPECTED_VERSION || p.provider !== "cloudflare") process.exit(1);
+            for (const name of ["moderation", "image_moderation", "structured_tutor", "structured_vision"]) {
+              if (p[name]?.ok !== true) process.exit(1);
+            }
+          ' "$payload"
+
+      - name: Deploy the exact preview-tested version
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          npx --no-install wrangler versions deploy \
+            "${{ steps.upload.outputs.version_id }}@100%" \
+            --name "$WORKER_NAME" \
+            --message "Eterna 160.99.17 generic photo general vision" \
+            --yes
+
+      - name: Verify production or roll back automatically
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          healthy=false
+          for attempt in 1 2 3 4 5 6; do
+            payload="$(curl --silent --show-error --max-time 20 "$PRODUCTION_HEALTH_URL" || true)"
+            if node -e '
+              try {
+                const p=JSON.parse(process.argv[1]);
+                const valid=p.ok === true
+                  && p.version === process.env.EXPECTED_VERSION
+                  && p.features?.current_turn_subject_priority_v1 === true
+                  && p.features?.current_image_priority_v1 === true
+                  && p.features?.image_context_reset_v1 === true
+                  && p.features?.generic_photo_general_vision_v1 === true;
+                process.exit(valid ? 0 : 1);
+              } catch { process.exit(1); }
+            ' "$payload"; then
+              healthy=true
+              break
+            fi
+            sleep 5
+          done
+          if [[ "$healthy" != "true" ]]; then
+            echo "Production health verification failed; rolling back." >&2
+            npx --no-install wrangler rollback --name "$WORKER_NAME" --message "Automatic rollback after failed Eterna 160.99.17 health check" --yes
+            exit 1
+          fi
+          echo "Production is healthy on ${EXPECTED_VERSION}."

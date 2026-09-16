@@ -18,7 +18,7 @@ on:
       - "manifest.json"
       - "eterna-v159.js"
       - "coco-v152-pwa.js"
-      - ".github/release-eterna-1609916"
+      - ".github/release-eterna-1609917"
 
 permissions:
   contents: read
@@ -35,7 +35,7 @@ jobs:
       APEX_URL: https://cocoenforma.com
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
-      EXPECTED_WORKER_VERSION: 160.99.16-current-turn-subject-vision
+      EXPECTED_WORKER_VERSION: 160.99.17-generic-photo-general-vision
       EXPECTED_PWA_CACHE: coco-en-forma-v160.100.5-focused-portrait-bands-r1
     steps:
       - name: Fetch uncached production assets
@@ -71,6 +71,7 @@ jobs:
             && p.features?.current_image_priority_v1 === true
             && p.features?.image_context_reset_v1 === true
             && p.features?.regional_worksheet_vision_v1 === true
+            && p.features?.generic_photo_general_vision_v1 === true
             && p.features?.child_safeguarding_interrupt_v1 === true
             && p.features?.parental_authorization_gate === true;
           if (!valid) {
