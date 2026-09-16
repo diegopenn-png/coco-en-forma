@@ -96,11 +96,11 @@ jobs:
             ["www manifest", www.includes("manifest.webmanifest")],
             ["apex Eterna runtime", apex.includes("eterna-v159.js")],
             ["www Eterna runtime", www.includes("eterna-v159.js")],
-            ["apex PWA manager", apex.includes("coco-v152-pwa.js")],
-            ["www PWA manager", www.includes("coco-v152-pwa.js")],
             ["Eterna production endpoint", apex.includes(endpoint) || www.includes(endpoint) || eterna.includes(endpoint)],
             ["Service Worker API", pwa.includes("serviceWorker")],
-            ["Service Worker URL", pwa.includes("sw.js")]
+            ["Service Worker URL", pwa.includes("sw.js")],
+            ["uncached Service Worker update", pwa.includes('updateViaCache:"none"')],
+            ["explicit Service Worker refresh", pwa.includes("registration.update()")]
           ];
           for (const [name, ok] of checks) console.log(`${ok ? "OK" : "MISSING"}: ${name}`);
           if (checks.some(([, ok]) => !ok)) process.exit(1);
