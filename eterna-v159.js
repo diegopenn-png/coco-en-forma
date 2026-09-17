@@ -757,6 +757,7 @@
       ETERNA_LEGAL_ACCEPTANCE_REQUIRED:{message:"Un adulto debe revisar y aceptar la autorización de Eterna en Zona familiar.",status:"Autorización familiar necesaria"},
       UNAUTHORIZED:{message:"La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.",status:"Sesión caducada"},
       ETERNA_BACKEND_ERROR:{message:"El servicio de Eterna ha tenido un fallo temporal. Tu pregunta sigue preparada para volver a intentarlo.",status:"Servicio temporalmente no disponible"},
+      ETERNA_PHOTO_TRANSPORT_FAILED:{message:"La foto no llegó completa al lector visual. Sigue preparada para que puedas enviarla otra vez.",status:"La foto no llegó al lector visual"},
       ETERNA_STALE_RESPONSE:{message:"La actividad cambió mientras llegaba la respuesta. Tu pregunta sigue preparada para enviarla otra vez.",status:"Actividad actualizada"}
     };return errors[code]||{message:"Eterna no ha podido completar la respuesta. Tu pregunta sigue preparada para volver a intentarlo.",status:"Respuesta no completada"}
   }
@@ -800,6 +801,7 @@
         if(data&&data.reply){var recovered=applyChatResponse(data,context);if(recovered.applied||recovered.duplicate)return}
         throw new Error(data&&data.error?data.error:"ETERNA_RESPONSE_FAILED")
       }
+      if(body.image_data_url&&(!data.photo_receipt||data.photo_receipt.accepted!==true))throw new Error("ETERNA_PHOTO_TRANSPORT_FAILED");
       var applied=applyChatResponse(data,context);if(!applied.applied&&!applied.duplicate)throw new Error("ETERNA_STALE_RESPONSE")
     }catch(e){
       if(e&&e.name==="AbortError"||context.epoch!==state.activityEpoch)return;

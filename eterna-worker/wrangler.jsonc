@@ -29,6 +29,7 @@
     "VISION_FALLBACK_MODEL": "@cf/moondream/moondream3.1-9B-A2B",
     "VISION_STRUCTURING_MODEL": "@cf/qwen/qwen3-30b-a3b-fp8",
     "VISION_REASONING_EFFORT": "high",
+    "CLOUDFLARE_PRIMARY_VISION_TIMEOUT_MS": "45000",
     "ENABLE_ACADEMIC_WEB_SEARCH": "false",
     "ENABLE_OFFICIAL_WEB_SEARCH": "false",
     "WEB_SEARCH_MODEL": "gpt-5.6-terra",

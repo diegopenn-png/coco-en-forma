@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   PHOTO_INTAKE_VERSION,
   cloudflareMultimodalPayload,
+  fractionWorksheetEvidenceIntake,
   normalizePhotoMode,
   orderedPhotoImages,
   readCloudflareSchoolPhoto,
@@ -60,4 +61,18 @@ test("the general reader covers text, science, humanities, arts and mathematics"
   for(const material of ["dibujos","mapas","diagramas","gráficos","tablas","respuestas manuscritas"]){
     assert.match(prompt,new RegExp(material));
   }
+});
+
+test("fraction worksheets are grounded from literal visual evidence",()=>{
+  const intake=fractionWorksheetEvidenceIntake("d) 7/5 - 2/3 = [ ]/[ ]\ne) 8/7 - 9/11 = [ ]/[ ]\nf) 11/4 - 1/9 = [ ]/[ ]");
+  assert.equal(intake.subject,"Matemáticas");
+  assert.equal(intake.needs_clarification,false);
+  assert.equal(intake.vision.items.length,3);
+  assert.deepEqual(intake.vision.items.map(item=>item.statement),["7/5 − 2/3","8/7 − 9/11","11/4 − 1/9"]);
+  assert.equal(intake.vision.confidence,.9);
+});
+
+test("fraction grounding rejects invalid denominators and unrelated text",()=>{
+  assert.equal(fractionWorksheetEvidenceIntake("La fotosíntesis ocurre en las hojas."),null);
+  assert.equal(fractionWorksheetEvidenceIntake("7/0 - 2/3"),null);
 });

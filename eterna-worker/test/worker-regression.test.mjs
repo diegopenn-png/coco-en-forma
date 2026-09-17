@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 import {
   PHOTO_INTAKE_VERSION,
+  fractionWorksheetEvidenceIntake,
   orderedPhotoImages,
   readCloudflareSchoolPhoto,
   schoolPhotoEvidenceUsable,
@@ -27,6 +28,7 @@ const sandbox = {
   clearTimeout,
   addEventListener() {},
   PHOTO_INTAKE_VERSION,
+  fractionWorksheetEvidenceIntake,
   orderedPhotoImages,
   readCloudflareSchoolPhoto,
   schoolPhotoEvidenceUsable,
