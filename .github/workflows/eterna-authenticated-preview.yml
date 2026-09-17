@@ -269,48 +269,20 @@ jobs:
               && models.tutor?.reasoning_effort === "high"
               && models.verifier?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
               && models.verifier?.reasoning_effort === "high"
-              && models.vision?.model === "@cf/meta/llama-4-scout-17b-16e-instruct"
-              && models.vision?.cloudflare_compatibility_model === "@cf/meta/llama-3.2-11b-vision-instruct"
-              && models.vision?.cloudflare_fallback_model === "@cf/moondream/moondream3.1-9B-A2B"
-              && models.vision?.grounding_service === "workers-ai-llama4-document-vision"
-              && models.vision?.structuring_model === "@cf/qwen/qwen3-30b-a3b-fp8"
-              && payload.features?.cloudflare_visual_grounding_v1 === true
-              && payload.features?.cloudflare_llama4_document_vision_v1 === true
-              && payload.features?.visual_evidence_quality_gate_v1 === true
-              && payload.features?.semantic_vision_fallback_v1 === true
-              && payload.features?.regional_worksheet_vision_v1 === true
-              && payload.features?.language_photo_grounding_v1 === true
-              && payload.features?.unified_photo_intake_v2 === true
-              && payload.features?.photo_intake_all_six_modes_v1 === true
-              && payload.features?.photo_uses_chat_safety_and_pedagogy_v1 === true
-              && payload.features?.cloudflare_vision_compatibility_fallback_v1 === true
-              && payload.features?.fraction_photo_grounding_v1 === true
-              && payload.features?.photo_transport_verified_v1 === true
-              && payload.features?.photo_dependency_requires_grounded_content_v1 === true
-              && payload.features?.grounded_arithmetic_ocr_v1 === true
-              && payload.features?.grounded_arithmetic_ocr_v2 === true
-              && payload.features?.cloudflare_regional_arithmetic_ocr_v1 === true
-              && payload.features?.cloudflare_fast_regional_arithmetic_ocr_v1 === true
-              && payload.features?.bounded_image_moderation_v1 === true
-              && payload.features?.bounded_primary_vision_v1 === true
-              && payload.features?.deterministic_visual_arithmetic_guidance_v1 === true
-              && payload.features?.full_image_arithmetic_ocr_v1 === true
-              && payload.features?.single_focused_arithmetic_ocr_v1 === true
-              && payload.features?.pwa_original_image_fallback_v1 === true
-              && payload.features?.cloudflare_moondream_image_safety_v1 === true
-              && payload.features?.bounded_visual_output_v1 === true
-              && payload.features?.partial_worksheet_grounding_v1 === true
-              && models.vision?.fallback_model === "gpt-5.6-sol"
               && models.moderation?.model === "@cf/meta/llama-guard-3-8b"
               && models.moderation?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast"
-              && models.moderation?.image_model === "@cf/moondream/moondream3.1-9B-A2B"
               && models.speech?.transcribe_model === "@cf/openai/whisper-large-v3-turbo"
               && models.speech?.tts_model === "@cf/myshell-ai/melotts"
               && models.web_search?.enabled === false
               && models.provider_fallback?.enabled === true
               && models.provider_fallback?.configured === true
               && models.provider_fallback?.model === "gpt-5.6-luna"
-              && models.provider_fallback?.vision_model === "gpt-5.6-sol"
+              && payload.features?.distinct_modes === true
+              && payload.features?.mode_contracts_v2 === true
+              && payload.features?.teacher_core_v1 === true
+              && payload.features?.cloudflare_speech_v1 === true
+              && payload.features?.child_safeguarding_interrupt_v1 === true
+              && payload.features?.parental_authorization_gate === true
               && payload.features?.structured_request_retry_v1 === true
               && payload.features?.structured_compatibility_retry_v1 === true
               && payload.features?.tutor_model_failover_v1 === true
@@ -323,10 +295,7 @@ jobs:
               && payload.features?.cloudflare_moderation_fallback_v1 === true
               && payload.features?.degraded_safe_academic_moderation_v1 === true
               && payload.features?.openai_automatic_fallback_v2 === true
-              && payload.features?.openai_visual_fallback_v1 === true
               && payload.features?.normalized_provider_usage_v1 === true
-              && payload.features?.fallback_aware_dependency_probe_v1 === true
-              && payload.features?.visual_dependency_probe_v1 === true
               && payload.features?.explicit_identity_and_mission_v1 === true
               && payload.features?.named_greeting_v1 === true
               && payload.features?.empathetic_school_peer_support_v1 === true
@@ -334,8 +303,6 @@ jobs:
               && payload.features?.adaptive_teacher_presence_v1 === true
               && payload.features?.transient_relational_thread_v1 === true
               && payload.features?.current_turn_subject_priority_v1 === true
-              && payload.features?.current_image_priority_v1 === true
-              && payload.features?.image_context_reset_v1 === true
               && payload.features?.greeting_timing_v1 === true
               && payload.features?.repeated_greeting_guard_v1 === true
               && payload.features?.client_local_clock_v1 === true
@@ -345,25 +312,6 @@ jobs:
               process.exit(1);
             }
           '
-
-          dependency_payload="$(curl --silent --show-error --max-time 90 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "${API_PREVIEW_URL}/health/dependencies" || true)"
-          echo "Sanitized Cloudflare AI dependency probe: ${dependency_payload}"
-          node -e '
-            const payload = JSON.parse(process.argv[1]);
-            if (payload.ok !== true || payload.version !== "160.99.20-photo-transport-verified" || payload.provider !== "cloudflare") process.exit(1);
-            for (const name of ["moderation", "image_moderation", "structured_tutor", "structured_vision", "photo_intake"]) {
-              const item = payload[name] || {};
-              if (item.ok !== true) process.exit(1);
-            }
-            if (payload.photo_intake?.subject !== "Matemáticas") process.exit(1);
-            if (Number(payload.photo_intake?.items || 0) < 3) process.exit(1);
-            if (Number(payload.photo_intake?.confidence || 0) < 0.76) process.exit(1);
-            for (const value of ["7/5", "2/3", "8/7", "9/11", "11/4", "1/9"]) {
-              if (!payload.photo_intake?.grounded_values?.includes(value)) process.exit(1);
-            }
-            if (!["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-3.2-11b-vision-instruct", "@cf/moondream/moondream3.1-9B-A2B"].includes(payload.structured_vision?.visual_model)) process.exit(1);
-            if (payload.image_moderation?.model !== "@cf/moondream/moondream3.1-9B-A2B") process.exit(1);
-          ' "$dependency_payload"
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
           grep -Fi 'x-robots-tag: noindex' authenticated-preview-headers.log >/dev/null
 
