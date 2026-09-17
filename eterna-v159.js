@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.99.23-subject-intake";
+  var VERSION="160.99.24-silent-incomplete-retry";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -746,6 +746,18 @@
     return r
   }
 
+  async function requestChatWithReplay(requestOptions){
+    var r=await api("/v1/chat",requestOptions),data=await safeJson(r),replayed=false;
+    if(r.ok&&!cleanText(data&&data.reply)){
+      /* Conserva el mismo request_id/client_turn_id: el Worker devuelve su
+         replay idempotente y nunca crea ni contabiliza un segundo turno. */
+      replayed=true;
+      await new Promise(function(resolve){setTimeout(resolve,180)});
+      r=await api("/v1/chat",requestOptions);data=await safeJson(r)
+    }
+    return{response:r,data:data,replayed:replayed}
+  }
+
   function chatErrorPresentation(code){
     var errors={
       ETERNA_ENDPOINT_NOT_CONFIGURED:{message:"Eterna todavía necesita que configures su servicio.",status:"Servicio sin configurar"},
@@ -755,7 +767,7 @@
       ETERNA_LEGAL_ACCEPTANCE_REQUIRED:{message:"Un adulto debe revisar y aceptar la autorización de Eterna en Zona familiar.",status:"Autorización familiar necesaria"},
       UNAUTHORIZED:{message:"La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.",status:"Sesión caducada"},
       ETERNA_BACKEND_ERROR:{message:"El servicio de Eterna ha tenido un fallo temporal. Tu pregunta sigue preparada para volver a intentarlo.",status:"Servicio temporalmente no disponible"},
-      ETERNA_EMPTY_REPLY:{message:"Eterna recibió una respuesta técnica incompleta. Tu pregunta sigue preparada para volver a intentarlo.",status:"Respuesta incompleta"},
+      ETERNA_EMPTY_REPLY:{message:"No llegó la respuesta. Tu texto sigue listo para intentarlo otra vez.",status:"No llegó la respuesta · pulsa enviar para volver a intentarlo",showInConversation:false},
       ETERNA_STALE_RESPONSE:{message:"La actividad cambió mientras llegaba la respuesta. Tu pregunta sigue preparada para enviarla otra vez.",status:"Actividad actualizada"}
     };return errors[code]||{message:"Eterna no ha podido completar la respuesta. Tu pregunta sigue preparada para volver a intentarlo.",status:"Respuesta no completada"}
   }
@@ -794,7 +806,7 @@
       var source=state.inputSource||"text",directive=repetitionDirective(turn),body={text:turn.text||rawText,mode:context.mode,mode_state:activityModeState(activity),input_source:source,history:apiHistory,conversation_state:state.conversationState||freshConversationState(),pedagogical_state:state.pedagogicalState||freshPedagogicalState(context.mode),client_clock:clientClock(),client_greeting_state:clientGreetingState(),client_state_contract:3,session_id:activity.session_id,request_id:requestId,client_turn_id:clientTurnId,answered_question_id:answeredQuestionId,student_action:inferredAction,student_intent:turn.intent||null,tutor_directive:turn.directive||null,repetition_guard:directive||null,client_version:VERSION};
       body.activity_state=stateContract().toPersistentActivityState(activity);
       var requestOptions={method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)};if(controller)requestOptions.signal=controller.signal;
-      var r=await api("/v1/chat",requestOptions),data=await safeJson(r);
+      var chatResult=await requestChatWithReplay(requestOptions),r=chatResult.response,data=chatResult.data;
       if(!r.ok){
         if(r.status===402||data&&data.error==="ETERNA_SUBSCRIPTION_REQUIRED"){state.dataLoadedAt=0;await loadData(true);render();return}
         if(data&&data.reply){var recovered=applyChatResponse(data,context);if(recovered.applied||recovered.duplicate)return}
@@ -806,7 +818,7 @@
       if(window.__ETERNA_VOICE_DIALOG_ACTIVE__===true){window.__ETERNA_VOICE_DIALOG_ACTIVE__=false;announceVoiceState("idle")}
       renderConversation(o.querySelector("[data-et-chat]"));
       var presentation=chatErrorPresentation(e&&e.message||"ETERNA_RESPONSE_FAILED");
-      appendMessage("assistant",presentation.message,{verification_status:"needs_clarification"},true,false);if(rawText){input.value=rawText;state.inputSource=source==="voice"?"voice":"text"}setStatus(presentation.status,"warn")
+      if(presentation.showInConversation!==false)appendMessage("assistant",presentation.message,{verification_status:"needs_clarification"},true,false);if(rawText){input.value=rawText;state.inputSource=source==="voice"?"voice":"text"}setStatus(presentation.status,"warn")
     }finally{if(state.activeRequest===context){state.activeRequest=null;state.busy=false;setThinking(false);input.disabled=false;syncSendAvailability();input.focus()}}
   }
 
