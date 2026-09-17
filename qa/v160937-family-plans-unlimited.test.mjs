@@ -111,7 +111,7 @@ test("the release invalidates both frontend assets and has verified rollback", (
   const workflow = read(".github/workflows/eterna-worker-production-160937.yml");
   assert.match(index, /eterna-v159\.js\?v=160108/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
-  assert.match(sw, /coco-en-forma-v160\.100\.9-restore-eterna-launcher-r1/);
+  assert.match(sw, /coco-en-forma-v160\.100\.10-balanced-scoring-r1/);
   assert.match(workflow, /EXPECTED_VERSION: 160\.93\.7-family-plans-unlimited/);
   assert.match(workflow, /wrangler versions upload/);
   assert.match(workflow, /\^\(Worker \)\?Version ID:/);
