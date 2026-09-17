@@ -361,7 +361,7 @@ jobs:
             for (const value of ["7/5", "2/3", "8/7", "9/11", "11/4", "1/9"]) {
               if (!payload.photo_intake?.grounded_values?.includes(value)) process.exit(1);
             }
-            if (!["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-3.2-11b-vision-instruct"].includes(payload.structured_vision?.visual_model)) process.exit(1);
+            if (!["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-3.2-11b-vision-instruct", "@cf/moondream/moondream3.1-9B-A2B"].includes(payload.structured_vision?.visual_model)) process.exit(1);
             if (payload.image_moderation?.model !== "@cf/moondream/moondream3.1-9B-A2B") process.exit(1);
           ' "$dependency_payload"
           curl --max-time 20 -fsS -D authenticated-preview-headers.log -o /dev/null "${PREVIEW_ORIGIN}/"
