@@ -18,7 +18,7 @@ on:
       - "manifest.json"
       - "eterna-v159.js"
       - "coco-v152-pwa.js"
-      - ".github/release-eterna-1609918"
+      - ".github/release-eterna-1609919"
 
 permissions:
   contents: read
@@ -35,8 +35,8 @@ jobs:
       APEX_URL: https://cocoenforma.com
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
-      EXPECTED_WORKER_VERSION: ${{ github.event_name == 'pull_request' && '160.99.17-generic-photo-general-vision' || '160.99.18-language-photo-grounding' }}
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.5-focused-portrait-bands-r1
+      EXPECTED_WORKER_VERSION: 160.99.19-unified-photo-intake
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.6-unified-photo-intake-r1
     steps:
       - name: Fetch uncached production assets
         shell: bash
@@ -91,7 +91,10 @@ jobs:
             && p.features?.image_context_reset_v1 === true
             && p.features?.regional_worksheet_vision_v1 === true
             && p.features?.generic_photo_general_vision_v1 === true
-            && (!process.env.EXPECTED_WORKER_VERSION.includes("160.99.18") || p.features?.language_photo_grounding_v1 === true)
+            && p.features?.language_photo_grounding_v1 === true
+            && p.features?.unified_photo_intake_v2 === true
+            && p.features?.photo_intake_all_six_modes_v1 === true
+            && p.features?.photo_uses_chat_safety_and_pedagogy_v1 === true
             && p.features?.child_safeguarding_interrupt_v1 === true
             && p.features?.parental_authorization_gate === true;
           if (!valid) {
