@@ -23,7 +23,8 @@ function buildRoute(){
     return n;
   };
   const arithmeticEvidenceIntake=evidence=>/[=×xX÷+−-]/.test(String(evidence||''))?{}:null;
-  return new Function('currentTurnSubjectHint','canonicalAcademicSubject','arithmeticEvidenceIntake',`${fragment};return allowArithmeticWorksheetRescue`)(currentTurnSubjectHint,canonicalAcademicSubject,arithmeticEvidenceIntake);
+  const fractionWorksheetEvidenceIntake=evidence=>/\d+\s*\/\s*\d+\s*[-+]\s*\d+\s*\/\s*\d+/.test(String(evidence||''))?{}:null;
+  return new Function('currentTurnSubjectHint','canonicalAcademicSubject','arithmeticEvidenceIntake','fractionWorksheetEvidenceIntake',`${fragment};return allowArithmeticWorksheetRescue`)(currentTurnSubjectHint,canonicalAcademicSubject,arithmeticEvidenceIntake,fractionWorksheetEvidenceIntake);
 }
 
 test('generic photo message defaults to general worksheet vision, not arithmetic',()=>{
@@ -43,10 +44,11 @@ test('explicitly detected mathematics keeps the arithmetic-specialized route',()
   assert.equal(route('Es una tarea de Matemáticas.',{}),true);
   assert.equal(route('He adjuntado una foto de mi tarea.',{subject:'Matemáticas'}),false);
   assert.equal(route('He adjuntado una foto de mi tarea.',{},'6 × hueco = 36'),true);
+  assert.equal(route('He adjuntado una foto de mi tarea.',{},'7/5 - 2/3'),true);
 });
 
 test('release preserves generic-photo routing in the unified intake revision',()=>{
-  assert.match(source,/const VERSION="160\.99\.19-unified-photo-intake";/);
+  assert.match(source,/const VERSION="160\.99\.20-photo-transport-verified";/);
   assert.match(source,/generic_photo_general_vision_v1:true/);
   assert.match(source,/unified_photo_intake_v2:true/);
 });

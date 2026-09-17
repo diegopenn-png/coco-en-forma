@@ -5,10 +5,12 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 import {
   PHOTO_INTAKE_VERSION,
+  fractionWorksheetEvidenceIntake,
   orderedPhotoImages,
   readCloudflareSchoolPhoto,
   schoolPhotoEvidenceUsable,
 } from "../src/photo-intake-v2.js";
+import {DEPENDENCY_FRACTION_PROBE_IMAGE_DATA_URL} from "../src/photo-dependency-fixture.js";
 
 const source = readFileSync(new URL("../src/index.js", import.meta.url), "utf8");
 const stateContractSource = readFileSync(new URL("../../eterna-state-contract-v3.js", import.meta.url), "utf8");
@@ -43,6 +45,8 @@ function loadApi(fetchImpl = fetch) {
     clearTimeout,
     atob,
     PHOTO_INTAKE_VERSION,
+    DEPENDENCY_FRACTION_PROBE_IMAGE_DATA_URL,
+    fractionWorksheetEvidenceIntake,
     orderedPhotoImages,
     readCloudflareSchoolPhoto,
     schoolPhotoEvidenceUsable,
@@ -667,6 +671,7 @@ test("the complete image remains available when horizontal client crops cut equa
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model, payload) => {
       if (model.includes("llama-4-scout")) return { response: "Visible school task" };
+      if (model.includes("llama-3.2")) return { response: "Visible school task" };
       if (model.includes("qwen")) return { response: { scope: "school", needs_clarification: true, vision: { legible: false, confidence: 0.3, material_type: "worksheet", printed_elements: [], blanks: [], items: [], uncertainty: ["fragmented"], suggested_focus: null } } };
       seenImages.push(payload.image);
       return payload.image === image
@@ -829,7 +834,7 @@ test("Cloudflare visual grounding quota switches to the dedicated OpenAI vision 
     schema: { type: "object", additionalProperties: false, properties: { visible: { type: "boolean" }, content: { type: "string" } }, required: ["visible", "content"] },
     max_output_tokens: 160,
   });
-  assert.equal(cloudflareCalls, 2, "A known visual quota error must try the distinct Cloudflare visual fallback once before OpenAI");
+  assert.equal(cloudflareCalls, 3, "A known visual quota error must try both distinct Cloudflare visual fallbacks before OpenAI");
   assert.equal(openaiPayloads.length, 1);
   assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
   assert.equal(openaiPayloads[0].input[0].content[1].image_url, image);
@@ -948,8 +953,10 @@ test("dependency health stays available through fallback and reports degraded Cl
     }
     const request = JSON.parse(init.body);
     const visual = request.input?.some((message) => message.content?.some?.((part) => part.type === "input_image"));
+    const photoIntake = request.text?.format?.name === "eterna_intake";
+    const groundedPhoto = {scope:"school",subject:"Matemáticas",concept:"resta de fracciones con distinto denominador",needs_clarification:false,self_contained:true,reason:"Ficha transcrita",vision:{legible:true,confidence:.9,material_type:"worksheet",task_instruction:"Completa las casillas",printed_elements:["7/5 − 2/3","8/7 − 9/11","11/4 − 1/9"],blanks:[{label:"casillas",purpose:"answer",nearby_printed_values:["7","5","2","3"],location:"fila 1",confidence:.9},{label:"casillas",purpose:"answer",nearby_printed_values:["8","7","9","11"],location:"fila 2",confidence:.9},{label:"casillas",purpose:"answer",nearby_printed_values:["11","4","1","9"],location:"fila 3",confidence:.9}],items:[{id:"f1",statement:"7/5 − 2/3",printed_values:["7/5","−","2/3"],blank_target:null,student_response:null,inferred_goal:"restar fracciones",spatial_notes:"fila 1",confidence:.9},{id:"f2",statement:"8/7 − 9/11",printed_values:["8/7","−","9/11"],blank_target:null,student_response:null,inferred_goal:"restar fracciones",spatial_notes:"fila 2",confidence:.9},{id:"f3",statement:"11/4 − 1/9",printed_values:["11/4","−","1/9"],blank_target:null,student_response:null,inferred_goal:"restar fracciones",spatial_notes:"fila 3",confidence:.9}],uncertainty:[],suggested_focus:"7/5 − 2/3"}};
     return new Response(JSON.stringify({
-      output_text: visual ? '{"visible":true,"content":"multiplication worksheet"}' : '{"ok":true}',
+      output_text: photoIntake ? JSON.stringify(groundedPhoto) : visual ? '{"visible":true,"content":"fraction worksheet: 7/5 - 2/3"}' : '{"ok":true}',
       usage: { input_tokens: 5, output_tokens: 2 },
       service_tier: "default",
     }), { status: 200, headers: { "Content-Type": "application/json" } });
@@ -967,7 +974,7 @@ test("dependency health stays available through fallback and reports degraded Cl
     AI: { run: async () => { throw new Error("Workers AI neuron quota exceeded"); } },
   });
   const payload = await response.json();
-  assert.equal(response.status, 200);
+  assert.equal(response.status, 200, JSON.stringify(payload));
   assert.equal(payload.ok, true);
   assert.equal(payload.degraded, true);
   assert.equal(payload.responses.ok, false);
@@ -993,18 +1000,20 @@ test("dependency health stays available through fallback and reports degraded Cl
         : model.includes("moondream")
           ? request.max_tokens === 32
             ? { answer: "safe" }
-            : { answer: "A multiplication worksheet shows 3 x blank = 12." }
+            : { answer: "Mathematics fraction worksheet. Row 1: 7/5 - 2/3; row 2: 8/7 - 9/11; row 3: 11/4 - 1/9." }
         : model.includes("llama-4-scout")
-          ? { response: "A multiplication worksheet shows row 1: 3 x blank = 12." }
+          ? { response: "Mathematics fraction worksheet. Row 1: 7/5 - 2/3; row 2: 8/7 - 9/11; row 3: 11/4 - 1/9." }
         : model.includes("qwen")
-          ? /EVIDENCIA_VISUAL_FIEL/.test(request.messages?.[1]?.content || "")
-            ? { response: { visible: true, content: "multiplication worksheet" } }
-            : { response: { ok: true } }
+          ? request.response_format?.json_schema?.properties?.scope
+            ? { response: {scope:"school",subject:"Matemáticas",concept:"resta de fracciones",needs_clarification:false,self_contained:true,reason:"Ficha transcrita",vision:{legible:true,confidence:.9,material_type:"worksheet",task_instruction:"Completa",printed_elements:["7/5 − 2/3","8/7 − 9/11","11/4 − 1/9"],blanks:[],items:[{id:"f1",statement:"7/5 − 2/3",printed_values:["7/5","2/3"],blank_target:null,student_response:null,inferred_goal:"restar",spatial_notes:"fila 1",confidence:.9},{id:"f2",statement:"8/7 − 9/11",printed_values:["8/7","9/11"],blank_target:null,student_response:null,inferred_goal:"restar",spatial_notes:"fila 2",confidence:.9},{id:"f3",statement:"11/4 − 1/9",printed_values:["11/4","1/9"],blank_target:null,student_response:null,inferred_goal:"restar",spatial_notes:"fila 3",confidence:.9}],uncertainty:[],suggested_focus:"7/5 − 2/3"}} }
+            : request.response_format?.json_schema?.properties?.visible
+              ? { response: { visible: true, content: "fraction worksheet: 7/5 - 2/3" } }
+              : { response: { ok: true } }
             : { response: "OK" },
     },
   });
   const directPayload = await directResponse.json();
-  assert.equal(directResponse.status, 200);
+  assert.equal(directResponse.status, 200, JSON.stringify(directPayload));
   assert.equal(directPayload.ok, true, "A parsed JSON object proves the structured dependency is available without trusting sample semantics");
   assert.equal(directPayload.degraded, false);
   assert.equal(directPayload.structured_tutor.provider, "cloudflare");
@@ -1036,10 +1045,10 @@ test("Cloudflare rejects generic Llama 4 evidence and falls back to detailed Moo
     schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"] },
     max_output_tokens: 100,
   });
-  assert.deepEqual(calls.map((call) => call.model), ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/moondream/moondream3.1-9B-A2B", "@cf/qwen/qwen3-30b-a3b-fp8"]);
-  assert.equal(calls[2].payload.task, "query");
-  assert.equal(calls[2].payload.image, "data:image/png;base64,AA==");
-  assert.equal("image" in calls[3].payload, false);
+  assert.deepEqual(calls.map((call) => call.model), ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-3.2-11b-vision-instruct", "@cf/meta/llama-3.2-11b-vision-instruct", "@cf/moondream/moondream3.1-9B-A2B", "@cf/qwen/qwen3-30b-a3b-fp8"]);
+  assert.equal(calls[4].payload.task, "query");
+  assert.equal(calls[4].payload.image, "data:image/png;base64,AA==");
+  assert.equal("image" in calls[5].payload, false);
 });
 
 test("generic evidence from every Cloudflare vision model escalates to the dedicated OpenAI vision fallback", async () => {
@@ -1075,7 +1084,7 @@ test("generic evidence from every Cloudflare vision model escalates to the dedic
     schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"] },
     max_output_tokens: 100,
   });
-  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/moondream/moondream3.1-9B-A2B"]);
+  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/meta/llama-3.2-11b-vision-instruct", "@cf/meta/llama-3.2-11b-vision-instruct", "@cf/moondream/moondream3.1-9B-A2B"]);
   assert.equal(openaiPayloads.length, 1);
   assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
   assert.equal(openaiPayloads[0].input[0].content[1].image_url, image);

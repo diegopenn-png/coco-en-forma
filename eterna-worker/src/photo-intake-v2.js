@@ -62,6 +62,20 @@ export function schoolPhotoEvidenceUsable(value){
   return concrete||/[=×xX÷+−_]/.test(text)||words.length>=14
 }
 
+export function fractionWorksheetEvidenceIntake(value){
+  const source=String(value||"").normalize("NFKC").replace(/[⁄∕]/g,"/").replace(/\\(?:frac|dfrac)\s*\{\s*(\d+)\s*\}\s*\{\s*(\d+)\s*\}/gi,"$1/$2").replace(/\b(\d+)\s+(?:sobre|over)\s+(\d+)\b/gi,"$1/$2");
+  const expression=/(\d{1,5})\s*\/\s*(\d{1,5})\s*([+−-])\s*(\d{1,5})\s*\/\s*(\d{1,5})/g,items=[],blanks=[],seen=new Set();let match;
+  while((match=expression.exec(source))){
+    const leftDen=Number(match[2]),rightDen=Number(match[5]);if(leftDen===0||rightDen===0)continue;
+    const operator=match[3]==="+"?"+":"−",statement=`${match[1]}/${match[2]} ${operator} ${match[4]}/${match[5]}`,key=statement.toLowerCase().replace(/\s+/g,"");if(seen.has(key))continue;seen.add(key);
+    const location=`operación de fracciones ${items.length+1}`,blank={label:"casillas",purpose:"answer",nearby_printed_values:[match[1],match[2],match[4],match[5],operator],location,confidence:.9};
+    items.push({id:`fraction-row-${items.length+1}`,statement,printed_values:[`${match[1]}/${match[2]}`,operator,`${match[4]}/${match[5]}`],blank_target:blank,student_response:null,inferred_goal:"transformar a denominador común y sumar o restar las fracciones",spatial_notes:location,confidence:.9});blanks.push(blank)
+  }
+  if(!items.length)return null;
+  const operations=new Set(items.map(item=>item.statement.includes(" + ")?"suma":"resta"));
+  return{scope:"school",subject:"Matemáticas",concept:`${[...operations].join(" y ")} de fracciones con distinto denominador`,needs_clarification:false,self_contained:true,reason:"Operaciones de fracciones transcritas literalmente desde la evidencia visual",vision:{legible:true,confidence:.9,material_type:"worksheet",task_instruction:"Completa las casillas usando un denominador común",printed_elements:items.map(item=>item.statement),blanks,items,uncertainty:[],suggested_focus:items[0].statement,fraction_transcription:true}}
+}
+
 export async function readCloudflareSchoolPhoto({run,model,imageDataUrl,mode,text,profile,regionIndex=0,regionTotal=1,maxTokens=2600}={}){
   if(typeof run!=="function")throw new Error("Cloudflare AI binding is unavailable");
   const prompt=schoolPhotoPrompt({mode,text,profile,regionIndex,regionTotal}),payload=cloudflareMultimodalPayload({imageDataUrl,prompt,maxTokens}),result=await run(model,payload),evidence=cloudflareResponseText(result);

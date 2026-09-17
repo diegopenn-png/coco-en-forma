@@ -21,7 +21,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.19-unified-photo-intake/);
+  assert.match(worker, /160\.99\.20-photo-transport-verified/);
   assert.match(worker, /current_turn_subject_priority_v1:true/);
   assert.match(worker, /current_image_priority_v1:true/);
   assert.match(worker, /image_context_reset_v1:true/);
@@ -87,9 +87,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /payload\.features\?\.full_image_arithmetic_ocr_v1 === true/);
   assert.match(preview, /payload\.features\?\.single_focused_arithmetic_ocr_v1 === true/);
   assert.match(preview, /payload\.features\?\.pwa_original_image_fallback_v1 === true/);
-  assert.match(preview, /grep -F '160\.99\.19-unified-photo-intake' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.19-unified-photo-intake"/);
-  assert.match(preview, /API 160\.99\.19-unified-photo-intake/);
+  assert.match(preview, /grep -F '160\.99\.20-photo-transport-verified' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.20-photo-transport-verified"/);
+  assert.match(preview, /API 160\.99\.20-photo-transport-verified/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -223,14 +223,19 @@ test("the 160.99.18 production gate promotes the exact language-photo release", 
   assert.match(production, /wrangler rollback/);
 });
 
-test("the 160.99.19 production gate promotes unified photo intake for all six modes", () => {
+test("the 160.99.20 production gate requires grounded photo transport", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-1609919.yml", "utf8");
-  assert.match(production, /\.github\/release-eterna-1609919/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.19-unified-photo-intake/);
-  assert.match(production, /--preview-alias "release-1609919"/);
+  assert.match(production, /\.github\/release-eterna-1609920/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.20-photo-transport-verified/);
+  assert.match(production, /--preview-alias "release-1609920"/);
   assert.match(production, /unified_photo_intake_v2/);
   assert.match(production, /photo_intake_all_six_modes_v1/);
   assert.match(production, /photo_uses_chat_safety_and_pedagogy_v1/);
+  assert.match(production, /photo_intake/);
+  assert.match(production, /p\.photo_intake\?\.subject === "Matemáticas"/);
+  assert.match(production, /Number\(p\.photo_intake\?\.items \|\| 0\) >= 3/);
+  assert.match(production, /7\/5/);
+  assert.match(production, /11\/4/);
   assert.match(production, /wrangler versions deploy/);
   assert.match(production, /wrangler rollback/);
 });
@@ -262,7 +267,7 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.100\.6-unified-photo-intake-r1/);
+  assert.match(serviceWorker, /160\.100\.7-photo-transport-verified-r1/);
   assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160100/);
 });

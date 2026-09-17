@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 const worker=fs.readFileSync('eterna-worker/src/index.js','utf8');
 
-assert.match(worker,/160\.99\.19-unified-photo-intake/);
+assert.match(worker,/160\.99\.20-photo-transport-verified/);
 assert.match(worker,/CONVERSATION_DIRECTOR_VERSION="conversation-director-v1"/);
 assert.match(worker,/function profileAgeFromContext/);
 assert.match(worker,/function isStudentAgeQuestion/);
