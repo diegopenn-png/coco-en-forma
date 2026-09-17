@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.99.22-text-voice-coherence";
+  var VERSION="160.99.23-subject-intake";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -82,18 +82,19 @@
   function conversationNorm(v){return cleanText(v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
   function pushUnique(list,value,max){value=cleanText(value);if(!value)return list||[];var out=(list||[]).filter(function(x){return conversationNorm(x)!==conversationNorm(value)});out.push(value);return out.slice(-Math.max(1,Number(max||8)))}
   function lastAssistantTurn(){for(var i=state.history.length-1;i>=0;i--)if(state.history[i].role==="assistant")return state.history[i];return null}
+  function standaloneSchoolSubject(raw){var n=conversationNorm(raw),subjects={matematicas:"Matemáticas",mates:"Matemáticas",lengua:"Lengua Castellana y Literatura",literatura:"Lengua Castellana y Literatura",ingles:"Inglés",english:"Inglés",ciencias:"Ciencias",biologia:"Biología",fisica:"Física",quimica:"Química",historia:"Historia",geografia:"Geografía"};return subjects[n]||null}
   function pendingTopicLabel(cs){cs=cs||state.conversationState||freshConversationState();return cleanText(cs.concept||cs.current_topic||cs.subject||"el tema que estamos viendo")}
   function topicReturnWords(value){var ignored={volvamos:1,retomemos:1,retoma:1,retomar:1,vuelve:1,regresemos:1,regresa:1,sigamos:1,continuemos:1,continua:1,continuar:1,tema:1,anterior:1,antes:1,donde:1,dejamos:1,estabamos:1,viendo:1,con:1,los:1,las:1,una:1,uno:1,unos:1,unas:1,del:1,por:1,para:1,que:1};return conversationNorm(value).split(" ").filter(function(word){return word.length>=5&&!ignored[word]})}
   function namedReturnToSuspended(raw){var target=state.pedagogicalState&&state.pedagogicalState.suspended_topic,n=conversationNorm(raw);if(!target||!/\b(?:volvamos|retomemos|retoma|retomar|vuelve|regresemos|regresa|sigamos|continuemos|continua|continuar)\b/.test(n))return false;var asked=topicReturnWords(n),known=topicReturnWords([target.topic,target.subject,target.concept].filter(Boolean).join(" "));return asked.some(function(a){return known.some(function(k){return a===k||a.length>=5&&k.length>=5&&a.slice(0,5)===k.slice(0,5)})})}
   function resolveContextualTurn(raw){
-    var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question),relationalActive=Boolean(state.pedagogicalState&&state.pedagogicalState.relational_thread);
+    var cs=state.conversationState||freshConversationState(),n=conversationNorm(raw),last=lastAssistantTurn(),check=last&&last.meta&&last.meta.check_question?cleanText(last.meta.check_question):cleanText(cs.unresolved_question),topic=pendingTopicLabel(cs),isCheck=cs.expected_student_act==="answer_check"||Boolean(check&&last&&last.meta&&last.meta.check_question),relationalActive=Boolean(state.pedagogicalState&&state.pedagogicalState.relational_thread),standaloneSubject=standaloneSchoolSubject(raw);
     var result={text:raw,intent:"question_or_new_topic",directive:null};
     var returnTopic=/\b(?:volvamos|retomemos|retoma|retomar|vuelve|regresemos|regresa|sigamos)\b.{0,45}\b(?:lo\s+anterior|lo\s+de\s+antes|tema\s+anterior|tema\s+de\s+antes|estabamos\s+viendo|dejamos)\b/.test(n)||/^(?:continuemos|sigamos)\s+con\s+(?:lo\s+)?(?:anterior|de\s+antes)$/.test(n)||namedReturnToSuspended(raw);
     var explicitSwitch=/^(?:(?:vale|ok)\s+)?(?:ahora|otra pregunta|cambiando de tema|cambio de tema)\b/.test(n);
     var explicitNewTopic=explicitSwitch||/^(?:y\s+)?(?:(?:quien|quienes|que|cual|cuales|cuanto|cuantos|donde|cuando)\s+.{3,}|(?:por que|como)\s+.{4,}|define\s+.{3,}|explicame\s+que\s+es\s+.{3,})$/.test(n)&&!/\b(?:eso|esto|aquello|esa|ese|lo anterior|lo de antes|cada cosa|los dos|ambos|el primero|el segundo|el otro)\b/.test(n);
     if(returnTopic){
       result.text=raw;result.intent="return_topic";result.directive="RETURN_TOPIC"
-    }else if(explicitNewTopic){
+    }else if(explicitNewTopic||standaloneSubject){
       state.conversationState=freshConversationState();cs=state.conversationState;result.intent="new_topic";result.directive="EXPLAIN"
     }else if(relationalActive){
       result.text=raw;result.intent="relational_followup";result.directive=null

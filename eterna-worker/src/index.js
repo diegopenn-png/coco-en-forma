@@ -20,7 +20,7 @@ import {DEPENDENCY_FRACTION_PROBE_IMAGE_DATA_URL} from "./photo-dependency-fixtu
  */
 const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.99.22-text-voice-coherence";
+const VERSION="160.99.23-subject-intake";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -807,12 +807,21 @@ function broadExamSubject(text){
   for(const [pattern,fixed] of patterns){const match=s.match(pattern);if(match)return fixed||curricularSubject(null,null,match[0],null,null)||match[0]}
   return null
 }
-function broadExamIntakePayload(text,pedState,modeState){
+function broadSubjectIntakePayload(text,mode,pedState,modeState){
   const subject=broadExamSubject(text);if(!subject)return null;
-  const options=subject==="Matemáticas"?"operaciones, fracciones, decimales, geometría u otro":subject==="Lengua Castellana y Literatura"?"gramática, ortografía, lectura, literatura u otro":"qué unidad o tema concreto";
-  const reply=subject==="Matemáticas"||subject==="Lengua Castellana y Literatura"?`Perfecto: ${subject}. ¿Qué tema entra en el examen: ${options}?`:`Perfecto: ${subject}. Dime ${options} entra en el examen y empezamos con una pregunta cada vez.`;
-  const pedagogical_state={...sanitizePedagogicalState(pedState,"exam"),active_topic:null,active_subject:subject,active_concept:null,current_mode:"exam",pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:0,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"clarifying",turn_index:Math.min(500,Number(pedState?.turn_index||0)+1),last_tutor_act:"ask_open",unresolved_question:reply,expected_student_act:"clarify",last_question_type:"none",next_teaching_goal:"concretar el tema del examen",last_student_intent:"new_topic"};
-  return{reply,verification_status:"needs_clarification",ui_status:{label:"Dime el tema concreto",tone:"info",kind:"exam_topic"},subject,concept:null,help_level:0,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:null,mode_label:MODE_PROFILES.exam.label,mode_state:sanitizeModeState(modeState),pedagogical_state,auto_speak:false,deterministic_exam_intake:true}
+  const resolvedMode=MODE_PROFILES[mode]?mode:"ask",options=subject==="Matemáticas"?"operaciones, fracciones, decimales, geometría u otro tema":subject==="Lengua Castellana y Literatura"?"gramática, ortografía, lectura, literatura u otro tema":null;
+  let reply;
+  if(resolvedMode==="exam")reply=options?`Perfecto: ${subject}. ¿Qué tema entra en el examen: ${options}?`:`Perfecto: ${subject}. ¿Qué unidad o tema concreto entra en el examen?`;
+  else if(resolvedMode==="homework")reply=`Perfecto: ${subject}. Escribe el ejercicio completo y dime en qué parte te has bloqueado.`;
+  else if(resolvedMode==="review")reply=`Perfecto: ${subject}. Escribe el ejercicio y la respuesta que quieres que revise.`;
+  else if(resolvedMode==="explain")reply=options?`Perfecto: ${subject}. ¿Qué tema quieres que te explique: ${options}?`:`Perfecto: ${subject}. ¿Qué tema concreto quieres que te explique?`;
+  else if(resolvedMode==="practice")reply=options?`Perfecto: ${subject}. ¿Qué tema quieres practicar: ${options}?`:`Perfecto: ${subject}. ¿Qué tema concreto quieres practicar?`;
+  else reply=options?`Perfecto: ${subject}. ¿Qué tema o ejercicio necesitas: ${options}?`:`Perfecto: ${subject}. ¿Qué tema o ejercicio necesitas entender?`;
+  const pedagogical_state={...sanitizePedagogicalState(pedState,resolvedMode),active_topic:null,active_subject:subject,active_concept:null,current_mode:resolvedMode,pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:0,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"clarifying",turn_index:Math.min(500,Number(pedState?.turn_index||0)+1),last_tutor_act:"ask_open",unresolved_question:reply,expected_student_act:"clarify",last_question_type:"none",next_teaching_goal:"concretar el tema",last_student_intent:"new_topic",relational_thread:null};
+  return{reply,verification_status:"needs_clarification",ui_status:{label:"Dime el tema concreto",tone:"info",kind:`${resolvedMode}_topic`},subject,concept:null,help_level:0,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:null,mode_label:MODE_PROFILES[resolvedMode].label,mode_state:sanitizeModeState(modeState),pedagogical_state,auto_speak:false,deterministic_subject_intake:true,...(resolvedMode==="exam"?{deterministic_exam_intake:true}:{})}
+}
+function broadExamIntakePayload(text,pedState,modeState){
+  return broadSubjectIntakePayload(text,"exam",pedState,modeState)
 }
 function progressiveGenericHint(pedState,pending,help){
   const subject=String(pedState?.active_subject||"").toLowerCase(),concept=cleanChildText(pedState?.active_concept||pedState?.active_topic||"el tema"),expected=String(pedState?.expected_answer_type||"open");
@@ -1611,6 +1620,8 @@ async function handleChatCore(request,env,auth,event,timings){
   // All identity, parental, subscription, profile, quota, image and safeguarding checks above remain in force.
   // Only whole utterances from a finite educational grammar use this deterministic safety policy.
   // Any extra clause, unsupported answer or image falls through to the original moderation/scope/tutor path.
+  const broadIntake=!image&&(startsNewTopic||!incomingPedState.pending_question)?broadSubjectIntakePayload(text,mode,incomingPedState,incomingModeState):null;
+  if(broadIntake){const modelRoute=mode==="exam"?"deterministic-exam-intake-v1":"deterministic-subject-intake-v1";deferWork(event,"subject-topic-intake",()=>Promise.all([markChatRequest(env,uid,q,false),logInteraction(env,uid,{text,image:null,inputSource,scope:"school",verification:"needs_clarification",subject:broadIntake.subject,concept:null,help:0,modelRoute,mode})]));return json(broadIntake)}
   const ownedDecision=ownedLibraryDecision(env,{text,image,ctx,mode,incomingPedState,incomingModeState:libraryModeState,startsNewTopic});
   if(ownedDecision){
     const payload=ownedLibraryPayload(ownedDecision,{incomingPedState,incomingModeState,mode});timings?.mark("owned_library");
@@ -1619,9 +1630,6 @@ async function handleChatCore(request,env,auth,event,timings){
       if(["correct","incorrect","partial"].includes(payload.student_answer_assessment))try{await applyStudentMemory(env,uid,{subject:payload.subject,concept:payload.concept,conceptId:null,outcome:payload.student_answer_assessment,help:payload.help_level})}catch(e){}
     });
     return json(payload)
-  }
-  if(mode==="exam"&&!image&&(startsNewTopic||incomingPedState.turn_index===0)){
-    const broadIntake=broadExamIntakePayload(text,incomingPedState,incomingModeState);if(broadIntake){deferWork(event,"exam-topic-intake",()=>Promise.all([markChatRequest(env,uid,q,false),logInteraction(env,uid,{text,image:null,inputSource,scope:"school",verification:"needs_clarification",subject:broadIntake.subject,concept:null,help:0,modelRoute:"deterministic-exam-intake-v1",mode})]));return json(broadIntake)}
   }
   if(currentSituation?.kind==="weather_query"&&currentSituation.location){const weather=await currentWeatherLookup(env,currentSituation.location),reply=weather?.reply||`No he podido comprobar ahora el tiempo de ${currentSituation.location} con una fuente oficial. Puedes intentarlo de nuevo dentro de un momento.`;deferWork(event,"weather-persistence",()=>Promise.all([markChatRequest(env,uid,q,false),logInteraction(env,uid,{text,image:null,inputSource,scope:"school",verification:weather?"verified":"needs_clarification",subject:"Conocimiento del entorno",concept:"tiempo de hoy",help:null,modelRoute:"teacher-core-weather-v1",mode}),weather?bumpUsage(env,uid,weather.usage,false):Promise.resolve()]));return json({reply,verification_status:weather?"verified":"needs_clarification",subject:"Conocimiento del entorno",concept:"tiempo de hoy",help_level:null,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:null,mode_label:MODE_PROFILES[mode].label,mode_state:incomingModeState,pedagogical_state:preservedInterruptionState(incomingPedState,mode),source_links:weather?.sources||[],auto_speak:false,situational:true,situational_kind:"weather_query",resume_available:Boolean(incomingPedState.pending_question)})}
   const explicitRequested=requestedModeFromText(text);let turnRel=turnRelation(text,incomingPedState,history),da=!image?detAmb(text,incomingPedState,history):null,practiceTarget=mode==="practice"?practiceTargetForSession(ctx,incomingModeState.focus||incomingPedState.active_concept):null;
@@ -1920,7 +1928,7 @@ function healthFeatures(env){return {
   parallel_chat_preflight_v1:true,deferred_chat_persistence_v1:true,curriculum_warm_cache_v1:true,
   background_result_long_poll_v1:true,server_timing_v1:true,prompt_cache_routing_v1:true,
   deterministic_arithmetic_guidance_v1:true,deterministic_pending_numeric_v1:true,adaptive_sync_verification_v1:true,asynchronous_verifier_audit_v1:true,
-  deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,moderation_diagnostics_v1:true,degraded_safe_academic_moderation_v1:true,
+  deterministic_subject_intake_v1:true,deterministic_exam_intake_v1:true,exam_tutor_recovery_v1:true,structured_request_retry_v1:true,structured_compatibility_retry_v1:true,tutor_model_failover_v1:true,tutor_compatibility_model_v1:true,stable_fact_tutor_recovery_v1:true,transparent_client_errors_v1:true,scope_model_failover_v1:true,moderation_request_retry_v1:true,moderation_diagnostics_v1:true,degraded_safe_academic_moderation_v1:true,
   cloudflare_ai_primary_v1:aiProvider(env)==="cloudflare",cloudflare_guard_v1:true,cloudflare_moderation_fallback_v1:true,cloudflare_vision_v1:true,cloudflare_visual_grounding_v1:true,cloudflare_llama4_document_vision_v1:true,cloudflare_vision_compatibility_fallback_v1:true,visual_evidence_quality_gate_v1:true,semantic_vision_fallback_v1:true,regional_worksheet_vision_v1:true,generic_photo_general_vision_v1:true,language_photo_grounding_v1:true,fraction_photo_grounding_v1:true,unified_photo_intake_v2:true,photo_intake_all_six_modes_v1:true,photo_uses_chat_safety_and_pedagogy_v1:true,photo_transport_verified_v1:true,photo_dependency_requires_grounded_content_v1:true,grounded_arithmetic_ocr_v1:true,grounded_arithmetic_ocr_v2:true,cloudflare_regional_arithmetic_ocr_v1:true,cloudflare_fast_regional_arithmetic_ocr_v1:true,bounded_image_moderation_v1:true,bounded_primary_vision_v1:true,deterministic_visual_arithmetic_guidance_v1:true,full_image_arithmetic_ocr_v1:true,single_focused_arithmetic_ocr_v1:true,pwa_original_image_fallback_v1:true,cloudflare_moondream_image_safety_v1:true,bounded_visual_output_v1:true,partial_worksheet_grounding_v1:true,cloudflare_speech_v1:true,openai_optional_fallback_v1:true,
   openai_automatic_fallback_v2:openaiFallbackEnabled(env),openai_visual_fallback_v1:true,normalized_provider_usage_v1:true,fallback_aware_dependency_probe_v1:true,visual_dependency_probe_v1:true,
   payments_code_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET)

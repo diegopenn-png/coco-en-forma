@@ -41,6 +41,7 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   independentQuestionSignal,
   clientTurnRelationHint,
   resolvedTurnRelation,
+  broadSubjectIntakePayload,
   classroomSituation,
   situationalReply,
   greetingPeriodForHour,
@@ -381,6 +382,51 @@ test("an exact pending-answer hint outranks the generic new-topic heuristic", ()
     hasPending: true,
   });
   assert.equal(explicit, "new_topic");
+});
+
+test("a standalone school subject after a greeting asks for the concrete topic without a fake check", async () => {
+  sandbox.getChatPreflight = async () => ({
+    ctx: {
+      base: { edad: 10, apodo: "Francesco" },
+      profile: { school_year: "5.º de Primaria", stage: "Primaria" },
+    },
+    subscription: { status: "active" },
+    legal: { accepted: true },
+    quota: { ok: true, settings: { allow_image_input: false } },
+  });
+  sandbox.markChatRequest = async () => {};
+  sandbox.logInteraction = async () => {};
+  sandbox.moderate = async () => { throw new Error("moderation must not run for a finite subject-only intake"); };
+  sandbox.tutor = async () => { throw new Error("the tutor model must not run for a finite subject-only intake"); };
+
+  const request = new Request("https://eterna.test/v1/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: "Matemáticas",
+      mode: "ask",
+      student_intent: "question_or_new_topic",
+      history: [
+        { role: "user", text: "Hola eterna" },
+        { role: "assistant", text: "Sí, soy Eterna. ¿Qué te gustaría entender o resolver hoy?" },
+      ],
+      pedagogical_state: { current_mode: "ask", turn_index: 1 },
+      mode_state: modeState,
+    }),
+  });
+  const response = await api.handleChat(request, {}, { user: { id: "student-1", email: "adult@example.test" } });
+  const payload = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(payload.deterministic_subject_intake, true);
+  assert.equal(payload.verification_status, "needs_clarification");
+  assert.equal(payload.subject, "Matemáticas");
+  assert.equal(payload.check_question, null);
+  assert.equal(payload.pedagogical_state.pending_question, null);
+  assert.equal(payload.pedagogical_state.conversation_stage, "clarifying");
+  assert.match(payload.reply, /^Perfecto: Matemáticas\./);
+  assert.match(payload.reply, /operaciones, fracciones, decimales, geometría/i);
+  assert.doesNotMatch(payload.reply, /soy Eterna|qué te gustaría entender o resolver hoy/i);
 });
 
 test("classroom small talk is recognised without being graded as science", () => {
