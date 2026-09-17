@@ -66,21 +66,21 @@ test("failed Eterna requests keep the student's input ready to retry",()=>{
   assert.match(core,/if\(rawText\)\{input\.value=rawText/);
   assert.match(core,/Tu pregunta sigue preparada para volver a intentarlo/);
   assert.match(core,/function chatErrorPresentation\(code\)/);
-  assert.match(core,/Preparando la foto…/);
-  assert.match(core,/No pude preparar la foto · prueba con otra imagen/);
+  assert.match(core,/Escribe una pregunta o usa el micrófono/);
+  assert.doesNotMatch(core,/Preparando la foto|No pude preparar la foto|data-et-camera|data-et-file/);
 });
 
 test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   const html=read("index.html"),sw=read("sw.js"),workflow=read(".github/workflows/eterna-authenticated-preview.yml"),core=read("coco-v144-core.js");
   assert.match(html,/coco-excellence-v160934\.js\?v=160960/);
-  assert.match(html,/eterna-v159\.js\?v=160107/);
+  assert.match(html,/eterna-v159\.js\?v=160108/);
   assert.match(html,/coco-v144-core\.js\?v=15001/);
-  assert.match(sw,/coco-en-forma-v160\.100\.7-photo-transport-verified-r1/);
+  assert.match(sw,/coco-en-forma-v160\.100\.8-text-voice-only-r1/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión para abrir /);
   assert.match(core,/#cocoApp input\[type='email'\]/);
-  assert.match(workflow,/frontend 160\.98\.5-focused-portrait-bands/);
+  assert.match(workflow,/frontend 160\.99\.21-text-voice-only/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
   assert.match(workflow,/coco-excellence-v160934\.js\?v=160960&verify=\$\{GITHUB_SHA\}/);
   assert.match(workflow,/grep -F '160\.96\.0-dynamic-daily-missions'/);

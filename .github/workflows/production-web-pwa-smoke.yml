@@ -17,7 +17,15 @@ on:
       - "manifest.webmanifest"
       - "manifest.json"
       - "eterna-v159.js"
+      - "eterna-experience-v160.js"
+      - "eterna.html"
+      - "eterna-captacion.html"
+      - "eterna-landing-captacion-v1.html"
+      - "coco-v141-runtime.js"
+      - "coco-v142-runtime.js"
       - "coco-v152-pwa.js"
+      - "coco-v153-fixes.js"
+      - "coco-v155-identity.js"
       - ".github/release-eterna-1609920"
 
 permissions:
@@ -29,6 +37,7 @@ concurrency:
 
 jobs:
   live-smoke:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -36,7 +45,7 @@ jobs:
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.99.20-photo-transport-verified
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.7-photo-transport-verified-r1
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.8-text-voice-only-r1
     steps:
       - name: Fetch uncached production assets
         shell: bash
@@ -48,12 +57,6 @@ jobs:
             local output="$2"
             curl --fail --silent --show-error --location               --max-time 45 --retry 6 --retry-delay 3 --retry-all-errors               --header "Cache-Control: no-cache"               --header "Pragma: no-cache"               "${url}verify=${stamp}"               --output "$output"
           }
-          fetch_live "${APEX_URL}/?" /tmp/apex.html
-          fetch_live "${WWW_URL}/?" /tmp/www.html
-          fetch_live "${APEX_URL}/sw.js?" /tmp/sw.js
-          fetch_live "${APEX_URL}/manifest.webmanifest?" /tmp/manifest.webmanifest
-          fetch_live "${APEX_URL}/eterna-v159.js?" /tmp/eterna-v159.js
-          fetch_live "${APEX_URL}/coco-v152-pwa.js?" /tmp/coco-v152-pwa.js
           worker_ready=0
           for attempt in {1..30}; do
             fetch_live "${WORKER_HEALTH_URL}?" /tmp/health.json
@@ -74,6 +77,32 @@ jobs:
             cat /tmp/health.json >&2 || true
             exit 1
           fi
+          web_ready=0
+          for attempt in {1..40}; do
+            fetch_live "${APEX_URL}/?" /tmp/apex.html
+            fetch_live "${WWW_URL}/?" /tmp/www.html
+            fetch_live "${APEX_URL}/sw.js?" /tmp/sw.js
+            fetch_live "${APEX_URL}/manifest.webmanifest?" /tmp/manifest.webmanifest
+            fetch_live "${APEX_URL}/eterna-v159.js?" /tmp/eterna-v159.js
+            fetch_live "${APEX_URL}/eterna-experience-v160.js?" /tmp/eterna-experience-v160.js
+            fetch_live "${APEX_URL}/coco-v152-pwa.js?" /tmp/coco-v152-pwa.js
+            fetch_live "${APEX_URL}/coco-v155-identity.js?" /tmp/coco-v155-identity.js
+            fetch_live "${APEX_URL}/eterna.html?" /tmp/eterna.html
+            fetch_live "${APEX_URL}/eterna-captacion.html?" /tmp/eterna-captacion.html
+            fetch_live "${APEX_URL}/eterna-landing-captacion-v1.html?" /tmp/eterna-landing-captacion-v1.html
+            if grep -Fq "const CACHE_VERSION=\"${EXPECTED_PWA_CACHE}\"" /tmp/sw.js \
+              && grep -Fq '160.99.21-text-voice-only' /tmp/eterna-v159.js \
+              && grep -Fq 'eterna-v159.js?v=160108' /tmp/apex.html; then
+              web_ready=1
+              break
+            fi
+            sleep 15
+          done
+          if [[ "$web_ready" -ne 1 ]]; then
+            echo "Production web did not reach ${EXPECTED_PWA_CACHE}" >&2
+            head -n 3 /tmp/sw.js >&2 || true
+            exit 1
+          fi
           test "$(wc -c < /tmp/apex.html)" -gt 100000
           test "$(wc -c < /tmp/www.html)" -gt 100000
 
@@ -86,18 +115,11 @@ jobs:
           const valid = p.ok === true
             && p.version === process.env.EXPECTED_WORKER_VERSION
             && p.ai_provider === "cloudflare"
-            && p.features?.current_turn_subject_priority_v1 === true
-            && p.features?.current_image_priority_v1 === true
-            && p.features?.image_context_reset_v1 === true
-            && p.features?.regional_worksheet_vision_v1 === true
-            && p.features?.generic_photo_general_vision_v1 === true
-            && p.features?.language_photo_grounding_v1 === true
-            && p.features?.unified_photo_intake_v2 === true
-            && p.features?.photo_intake_all_six_modes_v1 === true
-            && p.features?.photo_uses_chat_safety_and_pedagogy_v1 === true
-            && p.features?.photo_transport_verified_v1 === true
-            && p.features?.photo_dependency_requires_grounded_content_v1 === true
-            && p.features?.fraction_photo_grounding_v1 === true
+            && p.features?.distinct_modes === true
+            && p.features?.mode_contracts_v2 === true
+            && p.features?.teacher_core_v1 === true
+            && p.features?.cloudflare_speech_v1 === true
+            && p.features?.cloudflare_moderation_fallback_v1 === true
             && p.features?.child_safeguarding_interrupt_v1 === true
             && p.features?.parental_authorization_gate === true;
           if (!valid) {
@@ -117,7 +139,19 @@ jobs:
           const www = read("/tmp/www.html");
           const eterna = read("/tmp/eterna-v159.js");
           const pwa = read("/tmp/coco-v152-pwa.js");
+          const experience = read("/tmp/eterna-experience-v160.js");
+          const identity = read("/tmp/coco-v155-identity.js");
+          const publicPages = [
+            read("/tmp/eterna.html"),
+            read("/tmp/eterna-captacion.html"),
+            read("/tmp/eterna-landing-captacion-v1.html")
+          ].join("\n");
           const endpoint = "https://coco-eterna-v159.chatinmobiliario.workers.dev";
+          const retiredPhotoSurface = [
+            "data-et-camera", "data-et-file", 'accept="image/*"',
+            "Haz una foto", "Foto, voz", "adjunta una foto",
+            "Las fotos se procesan", "Permitir fotos de tareas", "📷", "📸"
+          ];
           const checks = [
             ["apex manifest", apex.includes("manifest.webmanifest")],
             ["www manifest", www.includes("manifest.webmanifest")],
@@ -127,7 +161,13 @@ jobs:
             ["Service Worker API", pwa.includes("serviceWorker")],
             ["Service Worker URL", pwa.includes("sw.js")],
             ["uncached Service Worker update", pwa.includes('updateViaCache:"none"')],
-            ["explicit Service Worker refresh", pwa.includes("registration.update()")]
+            ["explicit Service Worker refresh", pwa.includes("registration.update()")],
+            ["six Eterna modes", ["homework", "ask", "review", "explain", "exam", "practice"].every(mode => eterna.includes(`${mode}:{`))],
+            ["text composer", eterna.includes("data-et-input")],
+            ["voice composer", eterna.includes("data-et-mic")],
+            ["text and voice release", eterna.includes("160.99.21-text-voice-only")],
+            ["photo controls retired", retiredPhotoSurface.every(token => !eterna.includes(token))],
+            ["photo claims retired", retiredPhotoSurface.every(token => !experience.includes(token) && !identity.includes(token) && !publicPages.includes(token))]
           ];
           for (const [name, ok] of checks) console.log(`${ok ? "OK" : "MISSING"}: ${name}`);
           if (checks.some(([, ok]) => !ok)) process.exit(1);

@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.98.5-focused-portrait-bands";
+  var VERSION="160.99.21-text-voice-only";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -18,9 +18,9 @@
   var OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 
   var MODE_CONFIG={
-    homework:{label:"Ayúdame con mi tarea",icon:"📸",description:"Entiendo primero el ejercicio y te doy una pista cada vez.",placeholder:"Escribe qué parte de la tarea no entiendes…"},
+    homework:{label:"Ayúdame con mi tarea",icon:"📝",description:"Entiendo primero el ejercicio y te doy una pista cada vez.",placeholder:"Escribe qué parte de la tarea no entiendes…"},
     ask:{label:"Pregunta del cole",icon:"✏️",description:"Respondo una duda académica concreta y compruebo que la entendiste.",placeholder:"Escribe tu pregunta del cole…"},
-    review:{label:"Revisa lo que hice",icon:"✅",description:"Parto de tu respuesta, marco lo que está bien y te ayudo a encontrar el primer error.",placeholder:"Cuéntame qué hiciste o adjunta una foto…"},
+    review:{label:"Revisa lo que hice",icon:"✅",description:"Parto de tu respuesta, marco lo que está bien y te ayudo a encontrar el primer error.",placeholder:"Cuéntame qué hiciste paso a paso…"},
     explain:{label:"Explícame un tema",icon:"🧠",description:"Te lo enseño desde cero con un ejemplo o analogía y una comprobación breve.",placeholder:"¿Qué tema quieres entender mejor?"},
     exam:{label:"Prepárame para un examen",icon:"📚",description:"Te hago una pregunta cada vez, espero tu respuesta y adapto la dificultad.",placeholder:"¿Qué asignatura y tema entra en el examen?"},
     practice:{label:"Practicar lo que me cuesta",icon:"🎯",description:"Uso tu progreso para practicar primero lo que más necesitas reforzar.",placeholder:"¿Qué quieres practicar hoy? Puedes dejarlo en blanco y decir: Empezamos."}
@@ -28,7 +28,7 @@
 
   var state={
     client:null,session:null,profile:null,baseProfile:null,subscription:null,parentSettings:null,
-    learningMemory:[],strategyMemory:[],history:[],imageData:null,imageRegions:[],imageName:"",mode:"homework",
+    learningMemory:[],strategyMemory:[],history:[],mode:"homework",
     modeState:{question_number:0,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null},
     conversationState:null,pedagogicalState:null,learningSessionUser:null,activities:{},activityEpoch:0,
     activeRequest:null,appliedResponses:new Set(),submittedFeedback:new Set(),
@@ -270,7 +270,8 @@
     state.baseProfile=dataAt(0)||null;
     state.profile=dataAt(1)||null;
     state.subscription=dataAt(2)||null;
-    state.parentSettings=dataAt(3)||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:paidFamilySubscription(state.subscription)?100:20};
+    state.parentSettings=dataAt(3)||{voice_enabled:true,allow_image_input:false,allow_audio_input:true,max_sessions_per_day:paidFamilySubscription(state.subscription)?100:20};
+    state.parentSettings.allow_image_input=false;
     state.dataLoadedAt=Date.now();
     perfMark("eterna_critical_data_ready");
     perfMeasure("eterna_open_to_critical","eterna_open_click","eterna_critical_data_ready");
@@ -315,9 +316,9 @@
       '<div class="eternaLauncherCopyFinal3">'+
         '<span class="eternaLauncherEyebrowV159">✨ ETERNA · APOYO ESCOLAR</span>'+
         '<h2>Tu ayuda escolar personalizada</h2>'+
-        '<p>Haz una foto, escribe o habla. Eterna te guía paso a paso y se adapta al curso y al progreso.</p>'+
-        '<div class="eternaLauncherActionsV159"><span class="eternaLauncherPillV159">📷 Foto</span><span class="eternaLauncherPillV159">🎙️ Voz</span><span class="eternaLauncherPillV159">✏️ Texto</span><span class="eternaLauncherPillV159">📚 Exámenes</span></div>'+
-        '<div class="eternaLauncherTrialFinal3"><strong>⭐ Prueba gratuita · 7 días</strong><span>Sin tarjeta para empezar · después, 7,99 €/mes si la familia decide continuar.</span><small>Foto, voz o texto → una pista cada vez → comprobación final.</small></div>'+
+        '<p>Escribe o habla. Eterna te guía paso a paso y se adapta al curso y al progreso.</p>'+
+        '<div class="eternaLauncherActionsV159"><span class="eternaLauncherPillV159">✏️ Escritura</span><span class="eternaLauncherPillV159">🎙️ Voz</span><span class="eternaLauncherPillV159">📚 Tareas</span><span class="eternaLauncherPillV159">✅ Revisión</span></div>'+
+        '<div class="eternaLauncherTrialFinal3"><strong>⭐ Prueba gratuita · 7 días</strong><span>Sin tarjeta para empezar · después, 7,99 €/mes si la familia decide continuar.</span><small>Escritura o voz → una pista cada vez → comprobación final.</small></div>'+
         '<span class="eternaLauncherCtaFinal3">Probar Eterna</span>'+
       '</div>'+
       '<div class="eternaLauncherVisualFinal3" aria-hidden="true">'+
@@ -327,10 +328,10 @@
             '<div class="eternaTabletBrandV160"><span>✦</span><b>Eterna</b></div>'+
             '<strong>Tu ayuda escolar<br>personalizada</strong>'+
             '<small>¿Qué necesitas entender hoy?</small>'+
-            '<div class="eternaTabletChoiceV160">📷 Resolver una tarea</div>'+
+            '<div class="eternaTabletChoiceV160">📝 Resolver una tarea</div>'+
             '<div class="eternaTabletChoiceV160">🧠 Explícame un tema</div>'+
             '<div class="eternaTabletChoiceV160">📚 Preparar un examen</div>'+
-            '<div class="eternaTabletInputV160">Escribe, habla o haz una foto <i>→</i></div>'+
+            '<div class="eternaTabletInputV160">Escribe o habla <i>→</i></div>'+
           '</div>'+
         '</div>'+
       '</div>'+
@@ -375,13 +376,13 @@
     var launcherEyebrow=launcher.querySelector(".eternaLauncherEyebrowV159"),launcherPills=launcher.querySelectorAll(".eternaLauncherPillV159");
     if(launcherCta)launcherCta.textContent=loggedOut?"Probar Eterna":"Abrir Eterna";
     if(launcherTitle)launcherTitle.textContent=loggedOut?"Tu ayuda escolar personalizada":"Eterna · tu ayuda escolar";
-    if(launcherText)launcherText.textContent=loggedOut?"Haz una foto, escribe o habla. Eterna te guía paso a paso y se adapta al curso y al progreso.":"Continúa una tarea, resuelve una duda o practica lo que más te cuesta.";
+    if(launcherText)launcherText.textContent=loggedOut?"Escribe o habla. Eterna te guía paso a paso y se adapta al curso y al progreso.":"Continúa una tarea, resuelve una duda o practica lo que más te cuesta.";
     if(launcherEyebrow)launcherEyebrow.textContent=loggedOut?"✨ ETERNA · APOYO ESCOLAR":"✨ ETERNA · LISTA PARA AYUDARTE";
     if(launcherPills.length>=4){
-      launcherPills[0].textContent=loggedOut?"📷 Foto":"📚 Tareas";
+      launcherPills[0].textContent=loggedOut?"✏️ Escritura":"📚 Tareas";
       launcherPills[1].textContent=loggedOut?"🎙️ Voz":"🎯 Practicar";
-      launcherPills[2].textContent=loggedOut?"✏️ Texto":"🧠 Explicar";
-      launcherPills[3].textContent=loggedOut?"📚 Exámenes":"✅ Revisar";
+      launcherPills[2].textContent=loggedOut?"📚 Tareas":"🧠 Explicar";
+      launcherPills[3].textContent=loggedOut?"✅ Revisión":"✅ Revisar";
     }
     var left=loggedOut?login:(visible(carnet)?carnet:(login||carnet));
     var retos=root.querySelector("#retosCard,.retosCard");
@@ -590,7 +591,7 @@
       '<div class="eternaV159Body">'+
         '<aside class="eternaV159Menu"><div class="eternaV159Identity"><b data-et-name>Alumno Coco</b><span data-et-course>Configura tu curso</span></div><nav class="eternaV159Actions" aria-label="Modos de ayuda">'+Object.keys(MODE_CONFIG).map(function(k){var m=MODE_CONFIG[k];return '<button class="eternaV159Action '+(k==="homework"?"is-active":"")+'" data-et-mode="'+k+'"><i>'+m.icon+'</i><span>'+esc(m.label)+'</span></button>'}).join("")+'</nav><div class="eternaV159Scope">🔒 Soy una IA, no una persona. Puedo ayudarte con toda la profundidad que necesites en temas de aprendizaje: adapto la explicación a tu curso y aplico límites de seguridad sin rebajar el razonamiento.</div></aside>'+
         '<main class="eternaV159Main"><div class="eternaV159Status"><span class="eternaV159Dot" data-et-dot></span><span data-et-status>Preparando Eterna…</span></div><div class="eternaV160ModeBar" data-et-modebar></div><div class="eternaV159Chat" data-et-chat></div>'+
-          '<div class="eternaV159Composer" data-et-composer><div class="eternaV159Preview" data-et-preview><img alt="Vista previa de la tarea"><span></span><button type="button" aria-label="Quitar imagen">×</button></div><div class="eternaV160Thinking" data-et-thinking role="status" aria-live="polite" aria-atomic="true" aria-hidden="true" hidden><span class="eternaV160ThinkingSpark" aria-hidden="true">✦</span><span>Pensando…</span></div><div class="eternaV159InputRow"><button type="button" class="eternaV159IconBtn" data-et-camera aria-label="Hacer o elegir una foto">📷</button><button type="button" class="eternaV159IconBtn" data-et-mic aria-label="Hablar con Eterna">🎙️</button><textarea data-et-input rows="1" maxlength="1800" placeholder="Escribe algo del cole…" aria-label="Pregunta para Eterna"></textarea><button type="button" class="eternaV159Send" data-et-send aria-label="Enviar">➤</button></div><input data-et-file type="file" accept="image/*" hidden><p class="eternaV159Fine">Eterna guía y verifica. Las fotos se procesan temporalmente y no se guardan por defecto.</p></div>'+
+          '<div class="eternaV159Composer" data-et-composer><div class="eternaV160Thinking" data-et-thinking role="status" aria-live="polite" aria-atomic="true" aria-hidden="true" hidden><span class="eternaV160ThinkingSpark" aria-hidden="true">✦</span><span>Pensando…</span></div><div class="eternaV159InputRow"><button type="button" class="eternaV159IconBtn" data-et-mic aria-label="Hablar con Eterna">🎙️</button><textarea data-et-input rows="1" maxlength="1800" placeholder="Escribe algo del cole…" aria-label="Pregunta para Eterna"></textarea><button type="button" class="eternaV159Send" data-et-send aria-label="Enviar">➤</button></div><p class="eternaV159Fine">Eterna guía y verifica. Puedes escribir o hablar; la voz se transcribe para ayudarte.</p></div>'+
         '</main>'+
       '</div>'+
       '<div class="eternaV160ModeSheet" data-et-modesheet aria-hidden="true"><div class="eternaV160ModePanel" role="dialog" aria-modal="true" aria-label="Elegir modo de Eterna"><div class="eternaV160ModePanelHead"><b>¿Cómo quieres que te ayude?</b><button type="button" class="eternaV160ModePanelClose" data-et-modeclose aria-label="Cerrar selector">×</button></div><div class="eternaV160ModeChoices" data-et-modechoices></div></div></div>'+
@@ -599,7 +600,7 @@
   }
 
   function syncModeButtons(){var o=overlay();o.querySelectorAll("[data-et-mode]").forEach(function(x){x.classList.toggle("is-active",x.dataset.etMode===state.mode)});o.querySelectorAll("[data-et-modechoice]").forEach(function(x){x.classList.toggle("is-active",x.dataset.etModechoice===state.mode)})}
-  function syncSendAvailability(){var o=document.getElementById("eternaOverlayV159");if(!o)return;var input=o.querySelector("[data-et-input]"),button=o.querySelector("[data-et-send]"),hasContent=Boolean(input&&input.value.trim()||state.imageData);if(button&&!state.busy)button.disabled=!hasContent}
+  function syncSendAvailability(){var o=document.getElementById("eternaOverlayV159");if(!o)return;var input=o.querySelector("[data-et-input]"),button=o.querySelector("[data-et-send]"),hasContent=Boolean(input&&input.value.trim());if(button&&!state.busy)button.disabled=!hasContent}
   function announceUiReset(reason){try{window.dispatchEvent(new CustomEvent("coco:eterna-ui-reset",{detail:{reason:reason||"activity-reset",mode:state.mode}}))}catch(e){}}
   function resetVisibleSession(replaceActivity){invalidateInFlight("activity-reset");state.history=[];if(replaceActivity!==false)ensureActivity(state.mode,true);state.modeState=activityModeState();state.conversationState=freshConversationState();state.pedagogicalState=freshPedagogicalState(state.mode);state.lastReply="";state.inputSource="text";clearImage();stopAudio();persistLearningSession();var o=overlay(),i=o.querySelector("[data-et-input]"),composer=o.querySelector("[data-et-composer]");if(i)i.value="";if(composer)composer.classList.remove("is-complete");renderConversation(o.querySelector("[data-et-chat]"));syncSendAvailability();announceUiReset("activity-reset")}
   function setMode(mode,focusInput){if(!MODE_CONFIG[mode])mode="homework";var previous=state.mode,changed=mode!==previous;if(changed){invalidateInFlight("mode-switch");closeActivity(previous)}state.mode=mode;try{localStorage.setItem("coco_eterna_mode_v160",mode)}catch(e){}if(changed)resetVisibleSession(true);else ensureActivity(mode,false);syncModeButtons();renderModeBar();setPlaceholder();setStatus((changed?"Nueva actividad · ":"")+MODE_CONFIG[state.mode].label,"ok");if(focusInput!==false){var i=overlay().querySelector("[data-et-input]");if(i)i.focus()}}
@@ -611,10 +612,6 @@
     o.addEventListener("click",function(e){if(e.target===o)close();var sheet=o.querySelector("[data-et-modesheet]");if(e.target===sheet)hideModePicker()});
     o.querySelectorAll("[data-et-mode]").forEach(function(b){b.onclick=function(){setMode(b.dataset.etMode,true)}});
     o.querySelector("[data-et-modeclose]").onclick=hideModePicker;
-    var file=o.querySelector("[data-et-file]");
-    o.querySelector("[data-et-camera]").onclick=function(){file.removeAttribute("capture");file.click()};
-    file.onchange=function(){if(file.files&&file.files[0])prepareImage(file.files[0]);file.value=""};
-    o.querySelector("[data-et-preview] button").onclick=clearImage;
     o.querySelector("[data-et-send]").onclick=send;
     o.querySelector("[data-et-input]").addEventListener("input",function(){if(this.value.trim())state.inputSource="text";syncSendAvailability()});
     o.querySelector("[data-et-input]").addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});
@@ -667,7 +664,7 @@
         chat.innerHTML=expiredConversionMarkup(true);
         bindCheckoutPlans(chat);chat.querySelector("[data-et-close]").onclick=close;setStatus("La prueba gratuita ha terminado","warn");return
       }
-      chat.innerHTML='<div class="eternaV159Gate"><h3>Prueba Eterna gratis durante 7 días</h3><p>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</p><div class="eternaV159GateList"><div>📸 Ayuda con tareas por foto</div><div>🎙️ Preguntas por voz</div><div>🧠 Memoria pedagógica</div><div>🔒 Solo apoyo escolar</div></div><div class="eternaV159Buttons"><button type="button" class="eternaV159Primary" data-et-family>Pedir a un adulto que la active</button><button type="button" class="eternaV159Secondary" data-et-close>Ahora no</button></div></div>';
+      chat.innerHTML='<div class="eternaV159Gate"><h3>Prueba Eterna gratis durante 7 días</h3><p>Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.</p><div class="eternaV159GateList"><div>📝 Ayuda con tareas por escritura</div><div>🎙️ Preguntas por voz</div><div>🧠 Memoria pedagógica</div><div>🔒 Solo apoyo escolar</div></div><div class="eternaV159Buttons"><button type="button" class="eternaV159Primary" data-et-family>Pedir a un adulto que la active</button><button type="button" class="eternaV159Secondary" data-et-close>Ahora no</button></div></div>';
       chat.querySelector("[data-et-family]").onclick=function(){close();var b=document.querySelector("#cocoApp .cocoFamiliaBtn");if(b)b.click()};chat.querySelector("[data-et-close]").onclick=close;setStatus("Activación familiar necesaria","warn");return
     }
     if(!state.profile||!state.profile.school_year||!state.profile.autonomous_community){composer.style.display="none";renderSetup(chat);setStatus("Falta configurar el curso","warn");return}
@@ -688,9 +685,9 @@
 
   function startPanelForMode(){
     var panels={
-      homework:{icon:"📸",title:"Empieza por tu tarea",text:"Enséñame el ejercicio o cuéntame exactamente dónde te has bloqueado.",actions:[["photo","📷 Adjuntar una tarea","Foto o carrete"],["text","✏️ Escribir el ejercicio","Usa el cuadro de texto"],["voice","Contármelo por voz","Yo lo transcribo"]]},
+      homework:{icon:"📝",title:"Empieza por tu tarea",text:"Escribe el ejercicio o cuéntame exactamente dónde te has bloqueado.",actions:[["text","✏️ Escribir el ejercicio","Usa el cuadro de texto"],["voice","Contármelo por voz","Yo lo transcribo"]]},
       ask:{icon:"✏️",title:"Haz tu pregunta del cole",text:"Pregunta directamente lo que necesitas entender y comprobaré que la explicación quede clara.",actions:[["text","✏️ Escribir mi pregunta","Pregunta concreta"],["voice","Preguntarlo por voz","Yo lo transcribo"]]},
-      review:{icon:"✅",title:"Enséñame lo que hiciste",text:"Partiré de tu respuesta para ayudarte a localizar el primer error sin darte la solución de entrada.",actions:[["photo","📷 Adjuntar mi respuesta","Foto o carrete"],["text","✏️ Escribir lo que hice","Incluye tu resultado"],["voice","Explicarlo por voz","Cuéntame tus pasos"]]},
+      review:{icon:"✅",title:"Cuéntame lo que hiciste",text:"Partiré de tu respuesta para ayudarte a localizar el primer error sin darte la solución de entrada.",actions:[["text","✏️ Escribir lo que hice","Incluye tu resultado"],["voice","Explicarlo por voz","Cuéntame tus pasos"]]},
       explain:{icon:"🧠",title:"Dime qué tema quieres entender",text:"Lo construiremos desde cero con una explicación adecuada a tu curso y una comprobación breve.",actions:[["text","✏️ Escribir el tema","Por ejemplo: números primos"],["voice","Decir el tema por voz","Yo lo transcribo"]]},
       exam:{icon:"📚",title:"¿Qué entra en el examen?",text:"Dime asignatura y tema. Te haré una pregunta cada vez y adaptaré la dificultad según tus respuestas.",actions:[["text","✏️ Indicar asignatura y tema","Empieza aquí"],["voice","Contármelo por voz","Yo lo transcribo"]]},
       practice:{icon:"🎯",title:"Vamos a reforzar lo que más necesitas",text:"Puedo empezar usando tu progreso guardado o puedes decirme qué quieres practicar hoy.",actions:[["auto","🎯 Empezar con mi progreso","Eterna elige qué reforzar"],["text","✏️ Elegir qué practicar","Escribe un tema"]]}
@@ -712,7 +709,7 @@
     if(state.history.length){chat.innerHTML="";state.history.forEach(function(m,index){appendMessage(m.role,m.text,m.meta,false,index===state.history.length-1)});return}
     var p=startPanelForMode(),studentName=preferredStudentName(),startTitle=openingGreeting(studentName)+p.title;
     chat.innerHTML='<div class="eternaV160Start"><div class="eternaV160StartIcon">'+p.icon+'</div><h3>'+esc(startTitle)+'</h3><p>'+esc(p.text)+'</p><div class="eternaV160StartActions">'+p.actions.map(function(a){return '<button type="button" class="eternaV160StartAction" data-et-startaction="'+a[0]+'"><strong>'+startActionLabel(a)+'</strong><small>'+a[2]+'</small></button>'}).join("")+'</div></div>';
-    chat.querySelectorAll("[data-et-startaction]").forEach(function(b){b.onclick=function(){var action=b.dataset.etStartaction,o=overlay(),i=o.querySelector("[data-et-input]");if(action==="photo"){o.querySelector("[data-et-camera]").click();return}if(action==="voice"){o.querySelector("[data-et-mic]").click();return}if(action==="auto"){i.value="Empezamos.";state.inputSource="text";send();return}i.focus()}})
+    chat.querySelectorAll("[data-et-startaction]").forEach(function(b){b.onclick=function(){var action=b.dataset.etStartaction,o=overlay(),i=o.querySelector("[data-et-input]");if(action==="voice"){o.querySelector("[data-et-mic]").click();return}if(action==="auto"){i.value="Empezamos.";state.inputSource="text";send();return}i.focus()}})
   }
 
   function cocoGameFor(subject){var s=String(subject||"").toLowerCase();if(/matem|físic|químic/.test(s))return"calculo";if(/lengua|literatura|idioma|francés/.test(s))return"palabras";if(/historia|geograf|ciencia|biolog/.test(s))return"verdadero";return"memoria"}
@@ -757,7 +754,6 @@
       ETERNA_LEGAL_ACCEPTANCE_REQUIRED:{message:"Un adulto debe revisar y aceptar la autorización de Eterna en Zona familiar.",status:"Autorización familiar necesaria"},
       UNAUTHORIZED:{message:"La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.",status:"Sesión caducada"},
       ETERNA_BACKEND_ERROR:{message:"El servicio de Eterna ha tenido un fallo temporal. Tu pregunta sigue preparada para volver a intentarlo.",status:"Servicio temporalmente no disponible"},
-      ETERNA_PHOTO_TRANSPORT_FAILED:{message:"La foto no llegó completa al lector visual. Sigue preparada para que puedas enviarla otra vez.",status:"La foto no llegó al lector visual"},
       ETERNA_STALE_RESPONSE:{message:"La actividad cambió mientras llegaba la respuesta. Tu pregunta sigue preparada para enviarla otra vez.",status:"Actividad actualizada"}
     };return errors[code]||{message:"Eterna no ha podido completar la respuesta. Tu pregunta sigue preparada para volver a intentarlo.",status:"Respuesta no completada"}
   }
@@ -784,15 +780,15 @@
   async function send(options){
     options=options&&typeof options==="object"?options:{};
     if(state.busy)return;
-    var o=overlay(),input=o.querySelector("[data-et-input]"),rawText=String(options.text==null?input.value||"":options.text).trim();if(!rawText&&!state.imageData){setStatus("Escribe una pregunta o adjunta una foto","warn");input.focus();syncSendAvailability();return}
-    var turn=rawText?resolveContextualTurn(rawText):{text:"",intent:"image_homework",directive:null};
+    var o=overlay(),input=o.querySelector("[data-et-input]"),rawText=String(options.text==null?input.value||"":options.text).trim();if(!rawText){setStatus("Escribe una pregunta o usa el micrófono","warn");input.focus();syncSendAvailability();return}
+    var turn=resolveContextualTurn(rawText);
     var activity=ensureActivity(state.mode,false);if(!activity){setStatus("Falta cargar el contrato de actividad","warn");return}
     var inferredAction=options.studentAction||(turn.intent==="new_topic"?"new_topic":turn.intent==="return_topic"?"return_topic":turn.intent==="relational_followup"?"continue":activity.phase==="WAIT"?"answer":activity.phase==="NEXT"?"continue":"continue"),answeredQuestionId=activity.phase==="WAIT"&&inferredAction==="answer"?activity.question_id:(options.questionId||null),requestId=opaqueId("request"),clientTurnId=opaqueId("turn"),controller=typeof AbortController!=="undefined"?new AbortController():null,epoch=state.activityEpoch;
     state.busy=true;input.disabled=true;o.querySelector("[data-et-send]").disabled=true;setThinking(true);
-    var apiHistory=historyForApi(),shown=options.displayText||rawText||"He adjuntado una foto de mi tarea.",userEntry={role:"user",text:shown,api_text:turn.text||shown,meta:{student_intent:turn.intent,student_action:inferredAction,answered_question_id:answeredQuestionId}};appendMessage("user",shown,null,true,false);input.value="";setStatus("Eterna está pensando y comprobando…","warn");
+    var apiHistory=historyForApi(),shown=options.displayText||rawText,userEntry={role:"user",text:shown,api_text:turn.text||shown,meta:{student_intent:turn.intent,student_action:inferredAction,answered_question_id:answeredQuestionId}};appendMessage("user",shown,null,true,false);input.value="";setStatus("Eterna está pensando y comprobando…","warn");
     var context={uid:sessionUserId(),mode:state.mode,session_id:activity.session_id,activity:activity,epoch:epoch,request_id:requestId,client_turn_id:clientTurnId,answered_question_id:answeredQuestionId,student_action:inferredAction,turn:turn,userEntry:userEntry,controller:controller};state.activeRequest=context;
     try{
-      var source=state.imageData&&!rawText?"image":state.inputSource||"text",directive=repetitionDirective(turn),body={text:(turn.text||rawText)||"Interpreta exclusivamente la fotografía actual como material escolar y después ayúdame según el modo elegido.",mode:context.mode,mode_state:activityModeState(activity),input_source:source,image_data_url:state.imageData||null,image_regions:state.imageRegions||[],photo_contract_version:state.imageData?2:null,image_name:state.imageData?String(state.imageName||"tarea.jpg").slice(0,120):null,history:apiHistory,conversation_state:state.conversationState||freshConversationState(),pedagogical_state:state.pedagogicalState||freshPedagogicalState(context.mode),client_clock:clientClock(),client_greeting_state:clientGreetingState(),client_state_contract:3,session_id:activity.session_id,request_id:requestId,client_turn_id:clientTurnId,answered_question_id:answeredQuestionId,student_action:inferredAction,student_intent:turn.intent||null,tutor_directive:turn.directive||null,repetition_guard:directive||null,client_version:VERSION};
+      var source=state.inputSource||"text",directive=repetitionDirective(turn),body={text:turn.text||rawText,mode:context.mode,mode_state:activityModeState(activity),input_source:source,history:apiHistory,conversation_state:state.conversationState||freshConversationState(),pedagogical_state:state.pedagogicalState||freshPedagogicalState(context.mode),client_clock:clientClock(),client_greeting_state:clientGreetingState(),client_state_contract:3,session_id:activity.session_id,request_id:requestId,client_turn_id:clientTurnId,answered_question_id:answeredQuestionId,student_action:inferredAction,student_intent:turn.intent||null,tutor_directive:turn.directive||null,repetition_guard:directive||null,client_version:VERSION};
       body.activity_state=stateContract().toPersistentActivityState(activity);
       var requestOptions={method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)};if(controller)requestOptions.signal=controller.signal;
       var r=await api("/v1/chat",requestOptions),data=await safeJson(r);
@@ -801,7 +797,6 @@
         if(data&&data.reply){var recovered=applyChatResponse(data,context);if(recovered.applied||recovered.duplicate)return}
         throw new Error(data&&data.error?data.error:"ETERNA_RESPONSE_FAILED")
       }
-      if(body.image_data_url&&(!data.photo_receipt||data.photo_receipt.accepted!==true))throw new Error("ETERNA_PHOTO_TRANSPORT_FAILED");
       var applied=applyChatResponse(data,context);if(!applied.applied&&!applied.duplicate)throw new Error("ETERNA_STALE_RESPONSE")
     }catch(e){
       if(e&&e.name==="AbortError"||context.epoch!==state.activityEpoch)return;
@@ -816,15 +811,7 @@
   function completeActivity(meta,quick){var activity=currentActivity(),chat=overlay().querySelector("[data-et-chat]"),composer=overlay().querySelector("[data-et-composer]");if(!activity||activity.phase!=="WAIT")return;removeStaleQuickActions();closeActivity(state.mode);persistLearningSession();if(composer)composer.classList.add("is-complete");var card=document.createElement("section");card.className="eternaV160Completion";card.setAttribute("role","status");card.innerHTML='<span class="eternaV160CompletionIcon" aria-hidden="true">✓</span><div><small>ACTIVIDAD TERMINADA</small><h3>Buen trabajo: has decidido que ya lo entiendes.</h3><p>Puedes parar aquí sin perder nada, empezar otra actividad o practicar algo parecido.</p><div><button type="button" data-et-complete-close>Terminar</button><button type="button" data-et-complete-new>Nueva actividad</button><button type="button" data-et-complete-practice>Practicar algo parecido</button></div></div>';chat.appendChild(card);card.querySelector("[data-et-complete-close]").onclick=close;card.querySelector("[data-et-complete-new]").onclick=function(){resetVisibleSession(true);renderModeBar();setStatus("Nueva actividad · "+MODE_CONFIG[state.mode].label,"ok")};card.querySelector("[data-et-complete-practice]").onclick=function(){setMode("practice",false);var i=overlay().querySelector("[data-et-input]");i.value="Quiero practicar un ejercicio parecido al que acabo de entender.";i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()};setStatus("Actividad terminada · puedes parar aquí","ok");requestAnimationFrame(function(){card.scrollIntoView({behavior:"smooth",block:"nearest"})})}
   function sendStudentAction(action,meta,quick){var activity=currentActivity();if(state.busy||!activity||activity.phase!=="WAIT"||!meta||meta.question_id!==activity.question_id)return;var eventId=opaqueId("event"),buttons=quick&&quick.querySelectorAll("button");if(buttons)buttons.forEach(function(button){button.disabled=true});feedback(action,meta,eventId);if(action==="understood"){completeActivity(meta,quick);return}send({studentAction:"hint_request",questionId:activity.question_id,text:"Necesito otra pista distinta y concreta. No me des todavía la respuesta final.",displayText:"Otra pista"})}
 
-  async function prepareImage(file){
-    if(state.parentSettings&&state.parentSettings.allow_image_input===false){setStatus("Las fotos están desactivadas desde Zona Familiar","warn");alert("Las fotos están desactivadas desde Zona familiar.");return}
-    if(!/^image\//i.test(file.type||"")){setStatus("El archivo no es una imagen · elige una foto","warn");alert("Selecciona una imagen.");return}
-    if(file.size>15*1024*1024){setStatus("La foto supera 15 MB · elige una más pequeña","warn");alert("La imagen es demasiado grande. Usa una foto de menos de 15 MB.");return}
-    try{setStatus("Preparando la foto…","warn");var prepared=await compressImage(file);state.imageData=prepared.full;state.imageRegions=prepared.regions;state.imageName=file.name||"tarea.jpg";state.inputSource="image";var p=overlay().querySelector("[data-et-preview]");p.querySelector("img").src=prepared.full;p.querySelector("span").textContent="Imagen lista. Eterna distinguirá lo impreso de los huecos antes de ayudarte.";p.classList.add("show");syncSendAvailability();setStatus("Imagen lista para analizar","ok")}catch(e){setStatus("No pude preparar la foto · prueba con otra imagen","warn");alert("No se pudo preparar la imagen.")}
-  }
-  function renderImageCrop(img,sx,sy,sw,sh,max,upscale){var base=max/Math.max(sw,sh),scale=upscale?Math.min(2.25,Math.max(1,base)):Math.min(1,base),w=Math.max(1,Math.round(sw*scale)),h=Math.max(1,Math.round(sh*scale)),canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;var ctx=canvas.getContext("2d",{alpha:false});ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.drawImage(img,sx,sy,sw,sh,0,0,w,h);return canvas.toDataURL("image/jpeg",.92)}
-  function compressImage(file){return new Promise(function(resolve,reject){var reader=new FileReader();reader.onerror=reject;reader.onload=function(){var img=new Image();img.onerror=reject;img.onload=function(){var full=renderImageCrop(img,0,0,img.width,img.height,2200,false),portrait=img.height>=img.width,long=portrait?img.height:img.width,span=Math.max(1,Math.ceil(long*(portrait?0.30:0.62))),offset=Math.max(0,long-span),regions=portrait?[renderImageCrop(img,0,0,img.width,span,1800,true),renderImageCrop(img,0,offset,img.width,span,1800,true)]:[renderImageCrop(img,0,0,span,img.height,1800,true),renderImageCrop(img,offset,0,span,img.height,1800,true)];resolve({full:full,regions:regions})};img.src=reader.result};reader.readAsDataURL(file)})}
-  function clearImage(){state.imageData=null;state.imageRegions=[];state.imageName="";var p=document.querySelector("#eternaOverlayV159 [data-et-preview]");if(p){p.classList.remove("show");p.querySelector("img").removeAttribute("src")}syncSendAvailability()}
+  function clearImage(){syncSendAvailability()}
   function recorderMime(){if(typeof MediaRecorder==="undefined")return"";var candidates=["audio/mp4","audio/webm;codecs=opus","audio/webm","audio/ogg;codecs=opus","audio/ogg"];if(typeof MediaRecorder.isTypeSupported!=="function")return"";for(var i=0;i<candidates.length;i++)if(MediaRecorder.isTypeSupported(candidates[i]))return candidates[i];return""}
   function audioFilename(type){var t=String(type||"").toLowerCase();if(t.indexOf("mp4")>=0||t.indexOf("m4a")>=0)return"pregunta.m4a";if(t.indexOf("ogg")>=0)return"pregunta.ogg";if(t.indexOf("wav")>=0)return"pregunta.wav";if(t.indexOf("mpeg")>=0||t.indexOf("mp3")>=0)return"pregunta.mp3";return"pregunta.webm"}
 
@@ -867,7 +854,7 @@
   async function saveParentSettings(card,button){
     button.disabled=true;
     var selectedLimit=String(card.querySelector("[data-et-limit]").value||"20"),expectedLimit=selectedLimit==="unlimited"?100:Number(selectedLimit||20);
-    var expected={voice_enabled:card.querySelector("[data-et-voice]").checked,allow_image_input:card.querySelector("[data-et-images]").checked,allow_audio_input:card.querySelector("[data-et-audio]").checked,max_sessions_per_day:expectedLimit};
+    var expected={voice_enabled:card.querySelector("[data-et-voice]").checked,allow_image_input:false,allow_audio_input:card.querySelector("[data-et-audio]").checked,max_sessions_per_day:expectedLimit};
     var payload=Object.assign({},expected,{max_sessions_per_day:selectedLimit==="unlimited"?"unlimited":expectedLimit});
     try{
       var r=await api("/v1/parent-settings",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"SETTINGS");
@@ -914,7 +901,7 @@
     var rows=model&&Array.isArray(model.academicMemory)?model.academicMemory:[];
     if(!rows.length)return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Memoria de aprendizaje</b></div><p class="eternaV160ProgressIntro">Aquí aparecerán los temas que Eterna vaya recordando para poder retomarlos en futuras sesiones.</p></section>';
     var items=rows.slice(0,8).map(function(x){var topic=esc(x.topic_label||"Tema"),meaning=x.resolved_meaning?' · '+esc(x.resolved_meaning):'',subject=x.subject?' · '+esc(x.subject):'',summary=cleanText(x.summary_text||'');return '<div class="eternaV160ProgressBox"><b>'+topic+meaning+subject+'</b><span>'+esc(summary||'Tema trabajado y disponible para retomarlo.')+'</span></div>'}).join('');
-    return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Temas que Eterna recuerda</b></div><p class="eternaV160ProgressIntro">Eterna conserva resúmenes académicos de lo que ella explicó para continuar el aprendizaje entre días. No guarda el audio, las fotos, los documentos ni el texto bruto del chat del menor en esta memoria.</p><div class="eternaV160ProgressGrid">'+items+'</div></section>'
+    return '<section class="eternaV160ProgressPanel"><div class="eternaV160ProgressHead"><b>Temas que Eterna recuerda</b></div><p class="eternaV160ProgressIntro">Eterna conserva resúmenes académicos de lo que ella explicó para continuar el aprendizaje entre días. No guarda el audio ni el texto bruto del chat del menor en esta memoria.</p><div class="eternaV160ProgressGrid">'+items+'</div></section>'
   }
 
   async function exportEterna(button){
@@ -933,7 +920,7 @@
       try{await cli.from("eterna_student_profiles").upsert(p,{onConflict:"user_id"})}catch(e){}
     }
     if(settings){
-      var s={user_id:uid,voice_enabled:settings.voice_enabled!==false,allow_image_input:settings.allow_image_input!==false,allow_audio_input:settings.allow_audio_input!==false,max_sessions_per_day:Number(settings.max_sessions_per_day||20),updated_at:new Date().toISOString()};
+      var s={user_id:uid,voice_enabled:settings.voice_enabled!==false,allow_image_input:false,allow_audio_input:settings.allow_audio_input!==false,max_sessions_per_day:Number(settings.max_sessions_per_day||20),updated_at:new Date().toISOString()};
       try{await cli.from("eterna_parent_settings").upsert(s,{onConflict:"user_id"})}catch(e){}
     }
   }
@@ -1188,7 +1175,7 @@
       if(headerTitle)headerTitle.textContent="";
       if(headerCopy)headerCopy.textContent="";
 
-      var active=activeSubscription(),sub=state.subscription||{},expired=trialExpired(),paidFamilyPlan=paidFamilySubscription(sub),ps=state.parentSettings||{voice_enabled:true,allow_image_input:true,allow_audio_input:true,max_sessions_per_day:paidFamilyPlan?100:20};
+      var active=activeSubscription(),sub=state.subscription||{},expired=trialExpired(),paidFamilyPlan=paidFamilySubscription(sub),ps=state.parentSettings||{voice_enabled:true,allow_image_input:false,allow_audio_input:true,max_sessions_per_day:paidFamilyPlan?100:20};
       var activeText=trialLabel(sub)||(String(sub.status||"").toLowerCase()==="active"?"suscripción activa":String(sub.status||"activa")),paidActive=String(sub.status||"")==="active"||masterAccess(),trialActive=String(sub.status||"")==="trialing"&&active,plans="";
       var currentParentLimit=Number(ps.max_sessions_per_day||20);
       if(paidActive){
@@ -1207,10 +1194,9 @@
       var promo='<div class="eternaV160FamilyPromo"><span>Enlace directo para compartir Eterna en redes o con otras familias.</span><button type="button" class="eternaV160ShareBtn" data-et-share>🔗 Compartir Eterna</button></div>',commercial=expired?plans+promo:promo+plans;
       var settings='<details class="eternaV159ParentSettings"><summary>Privacidad y controles de Eterna</summary><div class="eternaV159ParentGrid">'+
         '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir voz de Eterna</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-voice '+(ps.voice_enabled!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
-        '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir fotos de tareas</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-images '+(ps.allow_image_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
         '<label class="eternaV160Toggle"><span class="eternaV160ToggleCopy"><strong>Permitir preguntas por micrófono</strong><small data-et-toggle-state></small></span><input type="checkbox" data-et-audio '+(ps.allow_audio_input!==false?"checked":"")+'><span class="eternaV160Switch" aria-hidden="true"></span></label>'+
         '<label>Consultas máximas al día <select data-et-limit>'+[10,20,30,50].map(function(x){return'<option value="'+x+'" '+(currentParentLimit===x?"selected":"")+'>'+x+"</option>"}).join("")+(paidFamilyPlan?'<option value="unlimited" '+(currentParentLimit===100?"selected":"")+'>Ilimitadas</option>':"")+'</select></label>'+
-        '</div><p>Estos controles afectan únicamente a Eterna y a la ayuda escolar. Las fotos se procesan temporalmente y no se guardan por defecto.</p><div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-save-settings>Guardar ajustes</button><button type="button" class="eternaV159Danger" data-et-delete>Borrar memoria de Eterna</button></div></details>';
+        '</div><p>Estos controles afectan únicamente a Eterna y a la ayuda escolar.</p><div class="eternaV159Buttons"><button type="button" class="eternaV159Secondary" data-et-save-settings>Guardar ajustes</button><button type="button" class="eternaV159Danger" data-et-delete>Borrar memoria de Eterna</button></div></details>';
 
       var legal=preserveLegalAndClearFamilyCard(card);
       insertFamilyMarkup(card,
@@ -1314,7 +1300,7 @@
     isRequestPending:function(){return Boolean(state.busy)},
     isMaster:function(){return masterAccess()},
     invalidateActivity:function(reason){invalidateInFlight(reason||"external-boundary")},
-    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,photoTemporary:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true,ageAccessGate:false,agePedagogyOnly:true,criticalSecondaryDataSplit:true,familyLifecycleV2:true,sharedFamilyRenderPromise:true,canonicalFamilyBeforeAwait:true,tutorConversationalV3:true,conversationStateEphemeral:true,contextualReferenceResolutionV3:true,noRawConversationPersistence:true,responsiveDesktopV16072:true,mobileFixedViewportV160941:true}}
+    audit:function(){return{isolatedModule:true,cocoMedEndpointUntouched:true,textVoiceOnly:true,scopeGateRequired:true,studentModel:true,distinctModes:true,adaptiveStrategies:true,responsiveTablet:true,familyControls:true,humanProgressReport:true,safeMemoryDelete:true,directSocialLink:true,rootScopedObserver:true,homeLayoutFinal3:true,familyPinFirst:true,familyPinAccountSync:true,familySectionsSeparated:true,trialPlansAlwaysVisible:true,tabletLauncher:true,trialCtaOpensSignup:true,ageAccessGate:false,agePedagogyOnly:true,criticalSecondaryDataSplit:true,familyLifecycleV2:true,sharedFamilyRenderPromise:true,canonicalFamilyBeforeAwait:true,tutorConversationalV3:true,conversationStateEphemeral:true,contextualReferenceResolutionV3:true,noRawConversationPersistence:true,responsiveDesktopV16072:true,mobileFixedViewportV160941:true}}
   });
   window.CocoPerformanceV160=Object.freeze({snapshot:function(){
     var nav=(performance.getEntriesByType&&performance.getEntriesByType("navigation")[0])||null;

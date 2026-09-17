@@ -617,7 +617,7 @@
     starter.className="eternaV160NeedCourse";
     starter.innerHTML=
       '<h3>Primero configura el curso</h3>'+
-      '<p>Eterna necesita saber el curso y la comunidad autónoma para adaptar correctamente el nivel y el currículo. Después podrás escribir, hablar o enviar una foto.</p>'+
+      '<p>Eterna necesita saber el curso y la comunidad autónoma para adaptar correctamente el nivel y el currículo. Después podrás escribir o hablar.</p>'+
       '<button type="button" data-et-reopen-setup>Configurar curso ahora</button>';
     var b=starter.querySelector("[data-et-reopen-setup]");
     if(b)b.onclick=function(){
@@ -720,7 +720,7 @@
     var o=overlay(),input=o&&o.querySelector("[data-et-input]");if(!input)return;
     var active=o.querySelector("[data-et-mode].is-active"),mode=active&&active.dataset?active.dataset.etMode:"";
     if(!mode){var choice=o.querySelector("[data-et-modechoice].is-active");mode=choice&&choice.dataset?choice.dataset.etModechoice:""}
-    var map={homework:"Escribe qué parte de la tarea no entiendes…",ask:"Escribe tu pregunta del cole…",review:"Cuéntame qué hiciste o adjunta una foto…",explain:"¿Qué tema quieres entender mejor?",exam:"¿Qué asignatura y tema entra en el examen?",practice:"¿Qué quieres practicar hoy?"};
+    var map={homework:"Escribe qué parte de la tarea no entiendes…",ask:"Escribe tu pregunta del cole…",review:"Cuéntame qué hiciste paso a paso…",explain:"¿Qué tema quieres entender mejor?",exam:"¿Qué asignatura y tema entra en el examen?",practice:"¿Qué quieres practicar hoy?"};
     if(map[mode])input.placeholder=map[mode]
   }
 
@@ -738,7 +738,7 @@
     if(window.matchMedia&&window.matchMedia('(max-width: 620px)').matches){
       if(/parte de la tarea no entiendes/i.test(original))compact='Escribe qué parte no entiendes…';
       else if(/pregunta del cole/i.test(original))compact='Escribe tu pregunta…';
-      else if(/cuéntame qué hiciste|adjunta una foto/i.test(original))compact='Escribe lo que hiciste…';
+      else if(/cuéntame qué hiciste/i.test(original))compact='Escribe lo que hiciste…';
       else if(/tema quieres entender/i.test(original))compact='¿Qué tema quieres entender?';
       else if(/asignatura y tema entra/i.test(original))compact='¿Qué tema entra en el examen?';
       else if(/quieres practicar hoy/i.test(original))compact='¿Qué quieres practicar?';

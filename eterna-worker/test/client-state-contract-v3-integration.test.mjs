@@ -71,7 +71,7 @@ test("client trials fail closed when the end timestamp is absent or invalid", ()
 });
 
 test("hint stays canonical while understood closes the UX activity without grading", () => {
-  const actions = functionBody(client, "sendStudentAction", "prepareImage");
+  const actions = functionBody(client, "sendStudentAction", "clearImage");
   assert.match(actions, /activity\.phase!=="WAIT"/);
   assert.match(actions, /meta\.question_id!==activity\.question_id/);
   assert.match(actions, /studentAction:"hint_request"/);

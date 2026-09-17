@@ -6,10 +6,26 @@ on:
       - "eterna-*.js"
       - "eterna-worker/**"
       - "coco-v153-fixes.js"
+      - "coco-v155-identity.js"
+      - "coco-v152-pwa.js"
       - "coco-v142-runtime.js"
+      - "coco-v141-runtime.js"
       - "coco-v142-unified.js"
       - "index.html"
+      - "eterna.html"
+      - "eterna-captacion.html"
+      - "eterna-landing-captacion-v1.html"
+      - "eterna-marketing-landing-v1.js"
+      - "informacion-ia-eterna.html"
+      - "centro-de-confianza.html"
+      - "politica-de-cookies.html"
+      - "politica-de-privacidad.html"
+      - "privacidad-menores.html"
+      - "proteccion-de-datos.html"
+      - "manifest.json"
+      - "manifest.webmanifest"
       - "sw.js"
+      - "qa/eterna-text-voice-only-v1.test.mjs"
       - "qa/v161-*.test.mjs"
       - ".github/workflows/eterna-regression.yml"
   workflow_dispatch:
@@ -47,6 +63,8 @@ jobs:
         run: node --test qa/eterna-report-export-contract.test.mjs
       - name: Check canonical Worker source layout
         run: node --test qa/eterna-source-layout-contract.test.mjs
+      - name: Check text-and-voice-only Eterna surface
+        run: node --test qa/eterna-text-voice-only-v1.test.mjs
       - name: Check first-visit and responsive update contracts
         run: node --test qa/eterna-preview-parity.test.mjs qa/device-update-contract.test.mjs
       - name: Check 48-conversation Eterna matrix
