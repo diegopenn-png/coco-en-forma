@@ -5,8 +5,10 @@ import fs from 'node:fs';
 const source=fs.readFileSync('eterna-worker/src/index.js','utf8');
 
 function buildRoute(){
-  const match=source.match(/function preferGeneralWorksheetVision\(text,intake\)\{([^}]*)\}/);
-  assert.ok(match,'preferGeneralWorksheetVision must exist');
+  const start=source.indexOf('function allowArithmeticWorksheetRescue');
+  const end=source.indexOf('function generalRegionPrompt',start);
+  assert.ok(start>=0&&end>start,'allowArithmeticWorksheetRescue must exist');
+  const fragment=source.slice(start,end);
   const currentTurnSubjectHint=text=>{
     const n=String(text||'').toLowerCase();
     if(n.includes('matemáticas')||n.includes('matematicas')||n.includes('mates')) return 'Matemáticas';
@@ -20,28 +22,31 @@ function buildRoute(){
     if(n.includes('lengua')||n.includes('ortograf')||n.includes('literat')) return 'language';
     return n;
   };
-  return new Function('currentTurnSubjectHint','canonicalAcademicSubject',`return function preferGeneralWorksheetVision(text,intake){${match[1]}}`)(currentTurnSubjectHint,canonicalAcademicSubject);
+  const arithmeticEvidenceIntake=evidence=>/[=×xX÷+−-]/.test(String(evidence||''))?{}:null;
+  return new Function('currentTurnSubjectHint','canonicalAcademicSubject','arithmeticEvidenceIntake',`${fragment};return allowArithmeticWorksheetRescue`)(currentTurnSubjectHint,canonicalAcademicSubject,arithmeticEvidenceIntake);
 }
 
 test('generic photo message defaults to general worksheet vision, not arithmetic',()=>{
   const route=buildRoute();
-  assert.equal(route('He adjuntado una foto de mi tarea.',{}),true);
-  assert.equal(route('He adjuntado una foto de mi tarea.',{subject:null}),true);
+  assert.equal(route('He adjuntado una foto de mi tarea.',{}),false);
+  assert.equal(route('He adjuntado una foto de mi tarea.',{subject:null}),false);
 });
 
 test('language worksheets use general worksheet vision',()=>{
   const route=buildRoute();
-  assert.equal(route('Es una tarea de Lengua.',{}),true);
-  assert.equal(route('He adjuntado una foto de mi tarea.',{subject:'Lengua Castellana y Literatura'}),true);
+  assert.equal(route('Es una tarea de Lengua.',{}),false);
+  assert.equal(route('He adjuntado una foto de mi tarea.',{subject:'Lengua Castellana y Literatura'}),false);
 });
 
 test('explicitly detected mathematics keeps the arithmetic-specialized route',()=>{
   const route=buildRoute();
-  assert.equal(route('Es una tarea de Matemáticas.',{}),false);
+  assert.equal(route('Es una tarea de Matemáticas.',{}),true);
   assert.equal(route('He adjuntado una foto de mi tarea.',{subject:'Matemáticas'}),false);
+  assert.equal(route('He adjuntado una foto de mi tarea.',{},'6 × hueco = 36'),true);
 });
 
-test('release preserves generic-photo routing in the language-grounding revision',()=>{
-  assert.match(source,/const VERSION="160\.99\.18-language-photo-grounding";/);
+test('release preserves generic-photo routing in the unified intake revision',()=>{
+  assert.match(source,/const VERSION="160\.99\.19-unified-photo-intake";/);
   assert.match(source,/generic_photo_general_vision_v1:true/);
+  assert.match(source,/unified_photo_intake_v2:true/);
 });

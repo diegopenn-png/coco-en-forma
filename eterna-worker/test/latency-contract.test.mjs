@@ -3,6 +3,12 @@ import assert from "node:assert/strict";
 import vm from "node:vm";
 import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
+import {
+  PHOTO_INTAKE_VERSION,
+  orderedPhotoImages,
+  readCloudflareSchoolPhoto,
+  schoolPhotoEvidenceUsable,
+} from "../src/photo-intake-v2.js";
 
 const source = readFileSync(new URL("../src/index.js", import.meta.url), "utf8");
 const stateContractSource = readFileSync(new URL("../../eterna-state-contract-v3.js", import.meta.url), "utf8");
@@ -36,6 +42,10 @@ function loadApi(fetchImpl = fetch) {
     setTimeout,
     clearTimeout,
     atob,
+    PHOTO_INTAKE_VERSION,
+    orderedPhotoImages,
+    readCloudflareSchoolPhoto,
+    schoolPhotoEvidenceUsable,
   };
   vm.createContext(sandbox);
   vm.runInContext(stateContractSource, sandbox);
@@ -69,6 +79,21 @@ function loadApi(fetchImpl = fetch) {
     synchronousVerificationRequired
   };`, sandbox);
   return sandbox.__latencyApi;
+}
+
+function imageFromCloudflarePayload(payload) {
+  if (typeof payload?.image === "string") return payload.image;
+  const parts = (payload?.messages || []).flatMap((message) => Array.isArray(message?.content) ? message.content : []);
+  return parts.find((part) => part?.type === "image_url")?.image_url?.url || null;
+}
+
+function promptFromCloudflarePayload(payload) {
+  if (typeof payload?.prompt === "string") return payload.prompt;
+  return (payload?.messages || [])
+    .flatMap((message) => Array.isArray(message?.content) ? message.content : [])
+    .filter((part) => part?.type === "text")
+    .map((part) => part.text)
+    .join("\n");
 }
 
 test("chat preflight fans out access, profile, legal and quota reads together", async () => {
@@ -325,8 +350,8 @@ test("Cloudflare photographed tasks use Llama 4 document vision before structure
   });
   assert.equal(openaiCalls, 0);
   assert.deepEqual(cloudflareCalls.map((call) => call.model), ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8"]);
-  assert.equal(Array.from(cloudflareCalls[0].payload.image).join(","), "0");
-  assert.match(cloudflareCalls[0].payload.prompt, /una línea por ejercicio/);
+  assert.equal(cloudflareCalls[0].payload.messages[0].content[1].image_url.url, image);
+  assert.match(cloudflareCalls[0].payload.messages[0].content[0].text, /fotografía escolar/);
   assert.ok(cloudflareCalls[0].payload.max_tokens >= 700);
   assert.equal("image" in cloudflareCalls[1].payload, false);
   assert.match(cloudflareCalls[1].payload.messages[1].content, /EVIDENCIA_VISUAL_FIEL/);
@@ -411,8 +436,14 @@ test("a semantically unusable Cloudflare worksheet result is retried with direct
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model) => { cloudflareCalls.push(model); return model.includes("llama-4-scout") ? { response: "Ficha, fila 1: 6 × hueco = 36." } : { response: lowQuality }; } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, []);
-  assert.deepEqual(cloudflareCalls, ["@cf/meta/llama-4-scout-17b-16e-instruct", "@cf/qwen/qwen3-30b-a3b-fp8", "@cf/moondream/moondream3.1-9B-A2B"]);
-  assert.equal(openaiPayloads.length, 2);
+  assert.deepEqual(cloudflareCalls, [
+    "@cf/meta/llama-4-scout-17b-16e-instruct",
+    "@cf/qwen/qwen3-30b-a3b-fp8",
+    "@cf/meta/llama-4-scout-17b-16e-instruct",
+    "@cf/qwen/qwen3-30b-a3b-fp8",
+    "@cf/moondream/moondream3.1-9B-A2B",
+  ]);
+  assert.equal(openaiPayloads.length, 1);
   assert.equal(openaiPayloads[0].model, "gpt-5.6-sol");
   assert.equal(openaiPayloads[0].input[0].content[1].image_url, "data:image/png;base64,AA==");
   assert.equal(result.vision.items[0].statement, "6 × … = 36");
@@ -439,7 +470,7 @@ test("two validated worksheet regions are read directly and merged without inven
     VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct", VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B", VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model) => model.includes("llama-4-scout") ? { response: "Ficha, fila 1: 6 × hueco = 36." } : { response: lowQuality } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
-  assert.deepEqual(seenImages.sort(), ["data:image/png;base64,AA==", regionA, regionB].sort());
+  assert.deepEqual([...new Set(seenImages)].sort(), ["data:image/png;base64,AA==", regionA, regionB].sort());
   assert.deepEqual(Array.from(result.vision.items, item => item.statement).sort(), ["2 × … = 14", "6 × … = 36"]);
   assert.equal(result.vision.regional_analysis, true);
   assert.equal(result.needs_clarification, false);
@@ -461,8 +492,8 @@ test("focused Cloudflare region OCR recovers repeated arithmetic without requiri
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model, payload) => {
       if (model.includes("qwen")) return { response: lowQuality };
-      if (payload.image === regionA) return { response: "Fila 1: 6 × hueco = 36\nFila 2: 2 × hueco = 18" };
-      if (payload.image === regionB) return { response: "Fila 3: hueco × 8 = 48\nFila cortada: 5 × hueco" };
+      if (imageFromCloudflarePayload(payload) === regionA) return { response: "Fila 1: 6 × hueco = 36\nFila 2: 2 × hueco = 18" };
+      if (imageFromCloudflarePayload(payload) === regionB) return { response: "Fila 3: hueco × 8 = 48\nFila cortada: 5 × hueco" };
       return { response: "Ficha de multiplicaciones: 6 × hueco = 36" };
     } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
@@ -492,7 +523,7 @@ test("a current Language photograph uses general vision and ignores stale Mathem
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model, payload) => {
       if (model.includes("llama-4-scout")) {
-        seenVisionPrompts.push(payload.prompt);
+        seenVisionPrompts.push(promptFromCloudflarePayload(payload));
         return { response: "Ficha de Lengua. Instrucción visible: Completa con b o v. Primera palabra con hueco: _aca. El hueco es una letra, no un número." };
       }
       if (model.includes("qwen")) return { response: ++structuredCalls === 1 ? lowQuality : highQuality };
@@ -502,7 +533,7 @@ test("a current Language photograph uses general vision and ignores stale Mathem
   assert.equal(result.subject, "Lengua Castellana y Literatura");
   assert.equal(result.vision.items[0].statement, "_aca");
   assert.equal(result.needs_clarification, false);
-  assert.ok(seenVisionPrompts.some(prompt => /lectura GENERAL de material escolar/.test(prompt)));
+  assert.ok(seenVisionPrompts.some(prompt => /No presupongas Matemáticas/.test(prompt)));
   assert.ok(seenVisionPrompts.every(prompt => !/multiplicaciones secretas/.test(prompt)));
 });
 
@@ -534,7 +565,7 @@ test("a generic attached-photo message reads a b-or-v worksheet through general 
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model, payload) => {
       if (model.includes("llama-4-scout")) {
-        visionPrompts.push(payload.prompt);
+        visionPrompts.push(promptFromCloudflarePayload(payload));
         return { response: "Ficha de Lengua. Instrucción: Completa con b o v. Palabras visibles: ser_icio, perci_ir, her_ido, escri_ir, conce_ir y ser_idor." };
       }
       if (model.includes("qwen")) return { response: ++structuredCalls === 1 ? lowQuality : highQuality };
@@ -546,7 +577,7 @@ test("a generic attached-photo message reads a b-or-v worksheet through general 
   assert.equal(result.vision.task_instruction, "Completa con b o v");
   assert.equal(result.vision.items[0].statement, "ser_icio");
   assert.equal(result.needs_clarification, false);
-  assert.ok(visionPrompts.some(prompt => /lectura GENERAL de material escolar/.test(prompt)));
+  assert.ok(visionPrompts.some(prompt => /No presupongas Matemáticas/.test(prompt)));
 });
 
 test("a stalled Cloudflare region cannot block a clear sibling crop", async () => {
@@ -561,14 +592,15 @@ test("a stalled Cloudflare region cannot block a clear sibling crop", async () =
   const result = await api.analyzeImageIntake({
     AI_PROVIDER: "cloudflare",
     ENABLE_OPENAI_FALLBACK: "false",
+    CLOUDFLARE_PRIMARY_VISION_TIMEOUT_MS: "25",
     CLOUDFLARE_REGION_OCR_TIMEOUT_MS: "25",
     VISION_MODEL: "@cf/meta/llama-4-scout-17b-16e-instruct",
     VISION_FALLBACK_MODEL: "@cf/moondream/moondream3.1-9B-A2B",
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model, payload) => {
       if (model.includes("qwen")) return { response: lowQuality };
-      if (model.includes("moondream") && payload.image === regionA) return await new Promise(() => {});
-      if (model.includes("moondream") && payload.image === regionB) return { response: "6 × hueco = 36\n2 × hueco = 18\nhueco × 8 = 48" };
+      if (imageFromCloudflarePayload(payload) === regionA) return await new Promise(() => {});
+      if (imageFromCloudflarePayload(payload) === regionB) return { response: "6 × hueco = 36\n2 × hueco = 18\nhueco × 8 = 48" };
       return { response: "Ficha de multiplicaciones: 6 × hueco = 36" };
     } },
   }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
@@ -591,11 +623,11 @@ test("a stalled primary Cloudflare vision call yields to grounded regional arith
     VISION_STRUCTURING_MODEL: "@cf/qwen/qwen3-30b-a3b-fp8",
     AI: { run: async (model, payload) => {
       if (model.includes("llama-4-scout")) return await new Promise(() => {});
-      if (payload.image === regionA) return { response: "6 × hueco = 36\n2 × hueco = 18" };
-      if (payload.image === regionB) return { response: "Fila 3: hueco × 8 = 48" };
+      if (imageFromCloudflarePayload(payload) === regionA) return { response: "6 × hueco = 36\n2 × hueco = 18" };
+      if (imageFromCloudflarePayload(payload) === regionB) return { response: "Fila 3: hueco × 8 = 48" };
       throw new Error("unexpected model route");
     } },
-  }, "He adjuntado una foto de mi tarea.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
+  }, "Esta foto es de Matemáticas.", "data:image/png;base64,AA==", { school_year: "5º de Primaria" }, [], [regionA, regionB]);
   assert.ok(Date.now() - started < 250, "regional OCR must start after the primary deadline");
   assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["6 × … = 36", "2 × … = 18", "… × 8 = 48"]);
   assert.equal(result.vision.arithmetic_transcription, true);
@@ -617,7 +649,7 @@ test("a stale PWA without client regions falls back to the complete original ima
       seenImages.push(payload.image);
       return { response: "7 x _ = 35" };
     } },
-  }, "He adjuntado una foto de mi tarea.", image, { school_year: "5º de Primaria" }, [], []);
+  }, "Esta foto es de Matemáticas.", image, { school_year: "5º de Primaria" }, [], []);
   assert.deepEqual(seenImages, [image]);
   assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["7 × … = 35"]);
   assert.equal(result.vision.arithmetic_transcription, true);
@@ -641,7 +673,7 @@ test("the complete image remains available when horizontal client crops cut equa
         ? { response: "5 × hueco = 35\n4 × hueco = 16\n9 × hueco = 54\n3 × 6 = hueco" }
         : { response: "fragmento cortado sin una ecuación completa" };
     } },
-  }, "He adjuntado una foto de mi tarea.", image, { school_year: "5º de Primaria" }, [], [left, right]);
+  }, "Esta foto es de Matemáticas.", image, { school_year: "5º de Primaria" }, [], [left, right]);
   assert.deepEqual([...new Set(seenImages)].sort(), [image, left, right].sort());
   assert.ok(seenImages.filter(value => value === image).length >= 2, "the complete image must remain available to the fallback readers");
   assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["5 × … = 35", "4 × … = 16", "9 × … = 54", "3 × 6 = …"]);

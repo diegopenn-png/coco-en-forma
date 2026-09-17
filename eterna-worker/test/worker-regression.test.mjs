@@ -3,6 +3,12 @@ import assert from "node:assert/strict";
 import vm from "node:vm";
 import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
+import {
+  PHOTO_INTAKE_VERSION,
+  orderedPhotoImages,
+  readCloudflareSchoolPhoto,
+  schoolPhotoEvidenceUsable,
+} from "../src/photo-intake-v2.js";
 
 const source = readFileSync(new URL("../src/index.js", import.meta.url), "utf8");
 const stateContractSource = readFileSync(new URL("../../eterna-state-contract-v3.js", import.meta.url), "utf8");
@@ -20,6 +26,10 @@ const sandbox = {
   setTimeout,
   clearTimeout,
   addEventListener() {},
+  PHOTO_INTAKE_VERSION,
+  orderedPhotoImages,
+  readCloudflareSchoolPhoto,
+  schoolPhotoEvidenceUsable,
 };
 vm.createContext(sandbox);
 vm.runInContext(stateContractSource, sandbox);
@@ -30,7 +40,7 @@ vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   currentTurnContextDecision,
   currentTurnPriorityInstruction,
   sameAcademicSubject,
-  preferGeneralWorksheetVision,
+  allowArithmeticWorksheetRescue,
   isDontKnow: typeof isDontKnow === "function" ? isDontKnow : null,
   deterministicReviewGuard: typeof deterministicReviewGuard === "function" ? deterministicReviewGuard : null,
   validMicroCheck: typeof validMicroCheck === "function" ? validMicroCheck : null,
@@ -161,8 +171,9 @@ test("image routing never serializes stale history into the visual prompt", () =
   const imageFunction = source.slice(source.indexOf("async function analyzeImageIntake"), source.indexOf("function normalizeForSearch"));
   assert.doesNotMatch(imageFunction, /Historial reciente=/);
   assert.match(imageFunction, /la imagen actual es la única evidencia visual/);
-  assert.equal(api.preferGeneralWorksheetVision("Es una ficha de Lengua", { subject: "Matemáticas" }), true);
-  assert.equal(api.preferGeneralWorksheetVision("", { subject: "Matemáticas" }), false);
+  assert.equal(api.allowArithmeticWorksheetRescue("Es una ficha de Lengua", { subject: "Matemáticas" }), false);
+  assert.equal(api.allowArithmeticWorksheetRescue("Esta foto es de Matemáticas", { subject: null }), true);
+  assert.equal(api.allowArithmeticWorksheetRescue("", { subject: "Matemáticas" }, "6 × hueco = 36"), true);
 });
 
 test("a short academic answer remains a continuation when the active topic exists", () => {
