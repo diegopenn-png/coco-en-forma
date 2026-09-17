@@ -12,7 +12,7 @@ test("an empty composer disables Send without pretending that a request is pendi
   const core = read("eterna-v159.js");
   const experience = read("eterna-experience-v160.js");
 
-  assert.match(core, /hasContent=Boolean\(input&&input\.value\.trim\(\)\|\|state\.imageData\)/);
+  assert.match(core, /hasContent=Boolean\(input&&input\.value\.trim\(\)\)/);
   assert.match(core, /button\.disabled=!hasContent/);
   assert.match(core, /isRequestPending:function\(\)\{return Boolean\(state\.busy\)\}/);
   assert.match(experience, /function chatRequestIsPending\(\)/);
@@ -41,8 +41,8 @@ test("the fixed microphone assets invalidate browser and PWA caches together", (
   const serviceWorker = read("sw.js");
   const previewWorkflow = read(".github/workflows/eterna-authenticated-preview.yml");
 
-  assert.match(serviceWorker, /coco-en-forma-v160\.100\.7-photo-transport-verified-r1/);
+  assert.match(serviceWorker, /coco-en-forma-v160\.100\.8-text-voice-only-r1/);
   assert.match(serviceWorker, /const ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(eternaExperienceWithMicOnly\(e\)\)/);
-  assert.match(previewWorkflow, /frontend 160\.98\.5-focused-portrait-bands/);
+  assert.match(previewWorkflow, /frontend 160\.99\.21-text-voice-only/);
 });

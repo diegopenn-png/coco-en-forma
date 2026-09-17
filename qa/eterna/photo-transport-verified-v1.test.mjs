@@ -6,9 +6,9 @@ const worker=readFileSync("eterna-worker/src/index.js","utf8");
 const client=readFileSync("eterna-v159.js","utf8");
 const fixture=readFileSync("eterna-worker/src/photo-dependency-fixture.js","utf8");
 
-test("the client requires an acknowledged photo transport",()=>{
-  assert.match(client,/data\.photo_receipt\.accepted!==true/);
-  assert.match(client,/ETERNA_PHOTO_TRANSPORT_FAILED/);
+test("the public client retires photo transport while the dormant backend remains intact",()=>{
+  assert.doesNotMatch(client,/data\.photo_receipt|ETERNA_PHOTO_TRANSPORT_FAILED/);
+  assert.doesNotMatch(client,/image_data_url|image_regions|data-et-camera|data-et-file/);
   assert.match(worker,/photo_receipt:meta\.photoReceipt/);
   assert.match(worker,/X-Eterna-Photo-Received/);
   assert.match(worker,/X-Eterna-Photo-Bytes/);
