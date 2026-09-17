@@ -47,7 +47,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.99.23-subject-intake
       EXPECTED_FRONTEND_VERSION: 160.99.24-silent-incomplete-retry
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.14-reto-tiempo-advance-r1
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.16-eterna-no-photo-visual-r1
     steps:
       - name: Fetch uncached production assets
         shell: bash
@@ -171,7 +171,7 @@ jobs:
             ["text composer", eterna.includes("data-et-input")],
             ["voice composer", eterna.includes("data-et-mic")],
             ["silent incomplete-response retry release", eterna.includes(process.env.EXPECTED_FRONTEND_VERSION)],
-            ["restored Eterna launcher visual", identity.includes("share/eterna.png?v=16047")],
+            ["restored Eterna launcher visual", identity.includes("share/eterna.png?v=160116")],
             ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=160111") && scoring.includes('var VERSION = "balanced-v1"')],
             ["balanced score ceiling", scoring.includes("var MAX_SCORE = 115")],
             ["eleven comparable games", scoring.includes('"verdadero", "futbol"')],

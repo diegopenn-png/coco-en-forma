@@ -87,7 +87,7 @@ test("the release loads the director after rotation and caches it offline", () =
   const serviceWorker = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
   assert.ok(index.indexOf("coco-v142-runtime.js?v=160100") < index.indexOf("coco-variety-director-v160960.js?v=160960"));
   assert.match(serviceWorker, /"\.\/coco-variety-director-v160960\.js"/);
-  assert.match(serviceWorker, /v160\.100\.15-card-thumbnails-r1/);
+  assert.match(serviceWorker, /v160\.100\.16-eterna-no-photo-visual-r1/);
 });
 
 test("every active experience exposes three deterministic daily focus variants", () => {
