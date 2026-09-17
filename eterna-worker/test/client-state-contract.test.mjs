@@ -55,7 +55,7 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
   assert.match(index, /eterna-v159\.js\?v=160113/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.15-card-thumbnails-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.16-eterna-no-photo-visual-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v4\.js"/);
