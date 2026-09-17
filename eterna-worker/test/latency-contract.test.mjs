@@ -660,7 +660,7 @@ test("a stale PWA without client regions falls back to the complete original ima
   assert.equal(result.needs_clarification, false);
 });
 
-test("the complete image remains available when horizontal client crops cut equations", async () => {
+test("grounded full-image evidence survives a later structuring failure", async () => {
   const image = "data:image/png;base64,AA==", left = "data:image/png;base64,AQ==", right = "data:image/png;base64,Ag==", seenImages = [];
   const api = loadApi();
   const result = await api.analyzeImageIntake({
@@ -679,8 +679,8 @@ test("the complete image remains available when horizontal client crops cut equa
         : { response: "fragmento cortado sin una ecuación completa" };
     } },
   }, "Esta foto es de Matemáticas.", image, { school_year: "5º de Primaria" }, [], [left, right]);
-  assert.deepEqual([...new Set(seenImages)].sort(), [image, left, right].sort());
-  assert.ok(seenImages.filter(value => value === image).length >= 2, "the complete image must remain available to the fallback readers");
+  assert.deepEqual([...new Set(seenImages)], [image]);
+  assert.ok(seenImages.filter(value => value === image).length >= 1, "the complete image must remain the grounding source");
   assert.deepEqual(Array.from(result.vision.items, item => item.statement), ["5 × … = 35", "4 × … = 16", "9 × … = 54", "3 × 6 = …"]);
   assert.equal(result.needs_clarification, false);
 });
