@@ -112,6 +112,43 @@
     return clamp(points / Math.max(1, Number(LEGACY_CAPS[row.juego]) || points || 1), 0, 1);
   }
 
+  // Mantiene visible el histórico sin volver a mezclar las antiguas escalas
+  // (320, 1.000, 1.300...) con la escala común actual. Las filas antiguas se
+  // proyectan al nivel intermedio; las filas balanced-v1 conservan el valor
+  // validado por el servidor.
+  function rowPoints(row) {
+    row = row || {};
+    var points = Math.max(0, Number(row.puntos) || 0);
+    if (!isGeneral(row.juego)) return Math.round(points);
+    if (row.puntuacion_version === VERSION) return Math.round(clamp(points, 0, MAX_SCORE));
+    return score(row.juego, 2, rowQuality(row));
+  }
+
+  function waitFor(operation, timeoutMs) {
+    timeoutMs = Math.max(1000, Number(timeoutMs) || 15000);
+    return new Promise(function (resolve, reject) {
+      var settled = false;
+      var timer = setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        var error = new Error("El guardado ha tardado demasiado. Comprueba la conexión y vuelve a intentarlo.");
+        error.code = "COCO_SAVE_TIMEOUT";
+        reject(error);
+      }, timeoutMs);
+      Promise.resolve(operation).then(function (value) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      }, function (error) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        reject(error);
+      });
+    });
+  }
+
   function audit() {
     var advancedCaps = GENERAL_IDS.map(function (gameId) {
       return cap(gameId, gameId === "futbol" ? 4 : 3);
@@ -144,6 +181,8 @@
     fromRaw: fromRaw,
     metadata: metadata,
     rowQuality: rowQuality,
+    rowPoints: rowPoints,
+    waitFor: waitFor,
     audit: audit
   });
 })(window);

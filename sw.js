@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.100.10 · Balanced game scoring */
-const CACHE_VERSION="coco-en-forma-v160.100.10-balanced-scoring-r1";
+/* Coco en Forma · Service Worker v160.100.11 · Ranking and score-save recovery */
+const CACHE_VERSION="coco-en-forma-v160.100.11-ranking-save-eterna-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;

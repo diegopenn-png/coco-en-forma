@@ -8,8 +8,10 @@ const source = read("coco-scoring-v160110.js");
 const html = read("index.html");
 const sql = read("supabase-coco-v160110-balanced-scoring.sql");
 const rollback = read("supabase-coco-v160110-balanced-scoring-rollback.sql");
+const recoverySql = read("supabase-coco-v160111-ranking-recovery.sql");
+const recoveryRollback = read("supabase-coco-v160111-ranking-recovery-rollback.sql");
 const sw = read("sw.js");
-const context = { window: {} };
+const context = { window: {}, setTimeout, clearTimeout, Promise, Error };
 vm.runInNewContext(source, context);
 const scoring = context.window.CocoScoringV160110;
 
@@ -59,6 +61,24 @@ test("Zona Familiar compara correctamente resultados nuevos e históricos", () =
   }), 0.8);
   assert.equal(scoring.rowQuality({ juego: "sudoku", puntos: 1075 }), 1);
   assert.equal(scoring.rowQuality({ juego: "verdadero", puntos: 160 }), 0.5);
+  assert.equal(scoring.rowPoints({ juego: "sudoku", puntos: 1075 }), 103);
+  assert.equal(scoring.rowPoints({ juego: "futbol", puntos: 650 }), 51);
+  assert.equal(scoring.rowPoints({
+    juego: "calculo",
+    puntos: 83,
+    puntuacion_version: "balanced-v1"
+  }), 83);
+});
+
+test("el guardado admite objetos PromiseLike y propaga fallos sin quedarse esperando", async () => {
+  const thenable = { then(resolve) { resolve({ data: { ok: true }, error: null }); } };
+  assert.deepEqual(await scoring.waitFor(thenable, 1000), {
+    data: { ok: true }, error: null
+  });
+  await assert.rejects(
+    scoring.waitFor(Promise.reject(new Error("sin red")), 1000),
+    /sin red/
+  );
 });
 
 test("web y PWA usan el motor común antes de abrir cualquier juego", () => {
@@ -69,15 +89,19 @@ test("web y PWA usan el motor común antes de abrir cualquier juego", () => {
   assert.match(html, /registrar_partida_equilibrada_v160110/);
   assert.equal((html.match(/registrar_partida_coco/g) || []).length, 1,
     "la ruta general no puede degradarse al guardado antiguo sin metadatos");
-  assert.match(html, /\(!general\|\|ranked\)&&\(e\.porJuego/,
+  assert.match(html, /e\.porJuego\[a\.juego\]=\(e\.porJuego\[a\.juego\]\|\|0\)\+points/,
     "los juegos ajenos al ranking conservan su acumulado histórico");
-  assert.match(html, /catch\(function\(error\)\{return\{data:null,error:error\}\}\)/,
-    "un fallo de guardado debe terminar en una respuesta recuperable");
+  assert.match(html, /api\.waitFor\(d\.rpc\("registrar_partida_equilibrada_v160110"/,
+    "el núcleo clásico debe asimilar el PromiseLike de Supabase");
+  assert.match(html, /api\.waitFor\(cli\.rpc\("registrar_partida_equilibrada_v160110"/,
+    "el arcade debe asimilar el PromiseLike de Supabase");
+  assert.doesNotMatch(html, /\.rpc\([^\n]+\)\.catch\(/,
+    "un builder PromiseLike de PostgREST no expone .catch directamente");
   assert.match(html, /function currentQuizPerformance\(\)/);
   assert.match(html, /balancedScore\(active\.id,active\.level,performance\)/);
   assert.match(html, /promedio por partida/);
   assert.doesNotMatch(html, /var scoreLimit=id==="futbol"\?1300:1000/);
-  assert.match(sw, /coco-en-forma-v160\.100\.10-balanced-scoring-r1/);
+  assert.match(sw, /coco-en-forma-v160\.100\.11-ranking-save-eterna-r1/);
   assert.match(sw, /\.\/coco-scoring-v160110\.js/);
 });
 
@@ -100,4 +124,18 @@ test("la migración inicia temporada sin borrar el histórico", () => {
   assert.match(rollback, /Reactiva la lectura histórica v153/);
   assert.doesNotMatch(rollback, /delete\s+from\s+public\.partidas/i);
   assert.doesNotMatch(rollback, /drop\s+column/i);
+});
+
+test("la recuperación vuelve a incluir el histórico sin reescribir partidas", () => {
+  assert.match(recoverySql, /create or replace view public\.coco_clasificacion_fuente_v153/);
+  assert.match(recoverySql, /p\.puntuacion_version = 'balanced-v1' or p\.puntuacion_version is null/);
+  assert.match(recoverySql, /when 'sudoku' then 1075/);
+  assert.match(recoverySql, /when 'futbol' then 1300/);
+  assert.match(recoverySql, /pv\.numeros \+ pv\.calculo \+ pv\.palabras/);
+  assert.doesNotMatch(recoverySql, /delete\s+from\s+public\.partidas/i);
+  assert.doesNotMatch(recoverySql, /update\s+public\.partidas/i);
+  assert.doesNotMatch(recoverySql, /alter\s+table\s+public\.partidas/i);
+  assert.match(recoveryRollback, /create or replace view public\.coco_clasificacion_fuente_v153/);
+  assert.doesNotMatch(recoveryRollback, /delete\s+from\s+public\.partidas/i);
+  assert.doesNotMatch(recoveryRollback, /update\s+public\.partidas/i);
 });
