@@ -46,7 +46,8 @@ jobs:
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.99.23-subject-intake
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.12-eterna-subject-intake-r1
+      EXPECTED_FRONTEND_VERSION: 160.99.24-silent-incomplete-retry
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.13-eterna-incomplete-retry-r1
     steps:
       - name: Fetch uncached production assets
         shell: bash
@@ -93,8 +94,8 @@ jobs:
             fetch_live "${APEX_URL}/eterna-captacion.html?" /tmp/eterna-captacion.html
             fetch_live "${APEX_URL}/eterna-landing-captacion-v1.html?" /tmp/eterna-landing-captacion-v1.html
             if grep -Fq "const CACHE_VERSION=\"${EXPECTED_PWA_CACHE}\"" /tmp/sw.js \
-              && grep -Fq '160.99.23-subject-intake' /tmp/eterna-v159.js \
-              && grep -Fq 'eterna-v159.js?v=160112' /tmp/apex.html; then
+              && grep -Fq "${EXPECTED_FRONTEND_VERSION}" /tmp/eterna-v159.js \
+              && grep -Fq 'eterna-v159.js?v=160113' /tmp/apex.html; then
               web_ready=1
               break
             fi
@@ -169,7 +170,7 @@ jobs:
             ["six Eterna modes", ["homework", "ask", "review", "explain", "exam", "practice"].every(mode => eterna.includes(`${mode}:{`))],
             ["text composer", eterna.includes("data-et-input")],
             ["voice composer", eterna.includes("data-et-mic")],
-            ["subject intake release", eterna.includes("160.99.23-subject-intake")],
+            ["silent incomplete-response retry release", eterna.includes(process.env.EXPECTED_FRONTEND_VERSION)],
             ["restored Eterna launcher visual", identity.includes("share/eterna.png?v=16047")],
             ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=160111") && scoring.includes('var VERSION = "balanced-v1"')],
             ["balanced score ceiling", scoring.includes("var MAX_SCORE = 115")],
