@@ -14,6 +14,7 @@ on:
       - ".github/workflows/production-web-pwa-smoke.yml"
       - "index.html"
       - "sw.js"
+      - "coco-scoring-v160110.js"
       - "manifest.webmanifest"
       - "manifest.json"
       - "eterna-v159.js"
@@ -45,7 +46,7 @@ jobs:
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.99.20-photo-transport-verified
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.9-restore-eterna-launcher-r1
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.10-balanced-scoring-r1
     steps:
       - name: Fetch uncached production assets
         shell: bash
@@ -87,6 +88,7 @@ jobs:
             fetch_live "${APEX_URL}/eterna-experience-v160.js?" /tmp/eterna-experience-v160.js
             fetch_live "${APEX_URL}/coco-v152-pwa.js?" /tmp/coco-v152-pwa.js
             fetch_live "${APEX_URL}/coco-v155-identity.js?" /tmp/coco-v155-identity.js
+            fetch_live "${APEX_URL}/coco-scoring-v160110.js?" /tmp/coco-scoring-v160110.js
             fetch_live "${APEX_URL}/eterna.html?" /tmp/eterna.html
             fetch_live "${APEX_URL}/eterna-captacion.html?" /tmp/eterna-captacion.html
             fetch_live "${APEX_URL}/eterna-landing-captacion-v1.html?" /tmp/eterna-landing-captacion-v1.html
@@ -141,6 +143,7 @@ jobs:
           const pwa = read("/tmp/coco-v152-pwa.js");
           const experience = read("/tmp/eterna-experience-v160.js");
           const identity = read("/tmp/coco-v155-identity.js");
+          const scoring = read("/tmp/coco-scoring-v160110.js");
           const publicPages = [
             read("/tmp/eterna.html"),
             read("/tmp/eterna-captacion.html"),
@@ -167,6 +170,9 @@ jobs:
             ["voice composer", eterna.includes("data-et-mic")],
             ["text and voice release", eterna.includes("160.99.21-text-voice-only")],
             ["restored Eterna launcher visual", identity.includes("share/eterna.png?v=16047")],
+            ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=160110") && scoring.includes('var VERSION = "balanced-v1"')],
+            ["balanced score ceiling", scoring.includes("var MAX_SCORE = 115")],
+            ["eleven comparable games", scoring.includes('"verdadero", "futbol"')],
             ["photo controls retired", retiredPhotoSurface.every(token => !eterna.includes(token))],
             ["photo claims retired", retiredPhotoSurface.every(token => !experience.includes(token) && !identity.includes(token) && !publicPages.includes(token))]
           ];
@@ -184,6 +190,7 @@ jobs:
           grep -Fq 'self.skipWaiting()' /tmp/sw.js
           grep -Fq 'self.clients.claim()' /tmp/sw.js
           grep -Fq '__coco_release' /tmp/sw.js
+          grep -Fq './coco-scoring-v160110.js' /tmp/sw.js
           node - <<'NODE'
           const fs = require("node:fs");
           const m = JSON.parse(fs.readFileSync("/tmp/manifest.webmanifest", "utf8"));
