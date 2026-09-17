@@ -1,0 +1,158 @@
+name: Deploy Eterna Worker 160.99.22
+
+on:
+  push:
+    branches:
+      - "release/eterna-1609922-production"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eterna-worker-production
+  cancel-in-progress: false
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      EXPECTED_VERSION: 160.99.22-text-voice-coherence
+      WORKER_NAME: coco-eterna-v159
+      PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: eterna-worker/package-lock.json
+
+      - name: Validate Cloudflare credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${CLOUDFLARE_API_TOKEN:-}" || -z "${CLOUDFLARE_ACCOUNT_INPUT:-}" ]]; then
+            echo "Cloudflare credentials are not configured" >&2
+            exit 1
+          fi
+          clean_token="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          echo "::add-mask::$clean_token"
+          echo "CLOUDFLARE_API_TOKEN=$clean_token" >> "$GITHUB_ENV"
+          account_id="${CLOUDFLARE_ACCOUNT_INPUT#https://dash.cloudflare.com/}"
+          account_id="${account_id%%/*}"
+          if [[ ! "$account_id" =~ ^[0-9a-fA-F]{32}$ ]]; then
+            echo "Invalid Cloudflare account ID" >&2
+            exit 1
+          fi
+          echo "::add-mask::$account_id"
+          echo "CLOUDFLARE_ACCOUNT_ID=$account_id" >> "$GITHUB_ENV"
+
+      - name: Install pinned Worker tooling
+        working-directory: eterna-worker
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
+
+      - name: Recheck validated release
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run check --prefix eterna-worker
+          node --test qa/balanced-game-scoring-v160110.test.mjs qa/device-update-contract.test.mjs qa/eterna-human-teacher-contract.test.mjs
+
+      - name: Upload without production traffic
+        id: upload
+        working-directory: eterna-worker
+        shell: bash
+        env:
+          NO_COLOR: "1"
+        run: |
+          set -euo pipefail
+          allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com"
+          npx --no-install wrangler versions upload             --name "$WORKER_NAME"             --preview-alias "release-1609922"             --message "Eterna 160.99.22 text and voice coherence"             --keep-vars             --var "MODERATION_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast"             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
+          version_id="$(sed -n 's/^Worker Version ID: //p' preview-upload.log | tail -1)"
+          preview_url="$(sed -n 's/^Version Preview Alias URL: //p' preview-upload.log | tail -1)"
+          if [[ ! "$version_id" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]]; then
+            echo "Could not determine uploaded Worker version ID" >&2
+            exit 1
+          fi
+          if [[ ! "$preview_url" =~ ^https://[a-z0-9-]+\.chatinmobiliario\.workers\.dev$ ]]; then
+            echo "Could not determine preview alias URL" >&2
+            exit 1
+          fi
+          echo "version_id=$version_id" >> "$GITHUB_OUTPUT"
+          echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+
+      - name: Verify exact uploaded preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          preview_health_url="${{ steps.upload.outputs.preview_url }}/health"
+          healthy=false
+          for attempt in 1 2 3 4 5 6; do
+            payload="$(curl --silent --show-error --max-time 20 "$preview_health_url" || true)"
+            if node -e '
+              try {
+                const p=JSON.parse(process.argv[1]);
+                const valid=p.ok === true
+                  && p.version === process.env.EXPECTED_VERSION
+                  && p.ai_provider === "cloudflare"
+                  && p.features?.distinct_modes === true
+                  && p.features?.teacher_core_v1 === true
+                  && p.features?.conversation_director_v1 === true
+                  && p.features?.cloudflare_speech_v1 === true
+                  && p.features?.cloudflare_moderation_fallback_v1 === true
+                  && p.features?.child_safeguarding_interrupt_v1 === true
+                  && p.features?.parental_authorization_gate === true;
+                process.exit(valid ? 0 : 1);
+              } catch { process.exit(1); }
+            ' "$payload"; then
+              healthy=true
+              break
+            fi
+            sleep 5
+          done
+          test "$healthy" = "true"
+
+      - name: Deploy exact preview-tested version
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          npx --no-install wrangler versions deploy             "${{ steps.upload.outputs.version_id }}@100%"             --name "$WORKER_NAME"             --message "Eterna 160.99.22 text and voice coherence"             --yes
+
+      - name: Verify production or roll back
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          healthy=false
+          for attempt in 1 2 3 4 5 6; do
+            payload="$(curl --silent --show-error --max-time 20 "$PRODUCTION_HEALTH_URL" || true)"
+            if node -e '
+              try {
+                const p=JSON.parse(process.argv[1]);
+                const valid=p.ok === true
+                  && p.version === process.env.EXPECTED_VERSION
+                  && p.ai_provider === "cloudflare"
+                  && p.features?.distinct_modes === true
+                  && p.features?.teacher_core_v1 === true
+                  && p.features?.conversation_director_v1 === true
+                  && p.features?.cloudflare_speech_v1 === true
+                  && p.features?.cloudflare_moderation_fallback_v1 === true
+                  && p.features?.child_safeguarding_interrupt_v1 === true
+                  && p.features?.parental_authorization_gate === true;
+                process.exit(valid ? 0 : 1);
+              } catch { process.exit(1); }
+            ' "$payload"; then
+              healthy=true
+              break
+            fi
+            sleep 5
+          done
+          if [[ "$healthy" != "true" ]]; then
+            npx --no-install wrangler rollback               --name "$WORKER_NAME"               --message "Automatic rollback after failed Eterna 160.99.22 health check"               --yes
+            exit 1
+          fi
+          echo "Production is healthy on ${EXPECTED_VERSION}."
