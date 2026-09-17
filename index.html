@@ -1103,7 +1103,7 @@ body{min-height:100dvh}
     window.__cocoPwaV135Registered = true;
     var hadController = Boolean(navigator.serviceWorker.controller), reloading = false, reloadKey = "coco_pwa_controller_reload_v160100";
     window.addEventListener("load", function () {
-      navigator.serviceWorker.register(new URL("sw.js?v=160113-r1",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
+      navigator.serviceWorker.register(new URL("sw.js?v=160114-r1",document.baseURI).href,{scope:new URL("./",document.baseURI).pathname,updateViaCache:"none"}).then(function (registration) {
         function offerUpdate(worker) {
           if (!worker || !hadController || document.querySelector(".cocoV134Update")) return;
           var app = document.getElementById("cocoApp") || document.body, button = document.createElement("button");
@@ -7135,7 +7135,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     if(correct){active.correct++;active.streak++;active.maxStreak=Math.max(active.maxStreak,active.streak);active.timeScore+=70+30*ratio;vibrate(14)}else{active.streak=0;vibrate([20,30,20])}window.CocoResponseV135&&window.CocoResponseV135.show(correct?"correct":"incorrect",correct?{}:{answer:q.options[q.answer]})
     body.querySelectorAll("[data-time-option]").forEach(function(btn){btn.disabled=true;var value=Number(btn.dataset.timeOption);if(value===q.answer)btn.classList.add("correct");else if(value===choice)btn.classList.add("wrong")});
     var feedback=body.querySelector(".cocoArcadeFeedback");feedback.classList.add("visible");feedback.querySelector(".cocoArcadeFeedbackIcon").textContent=correct?"✓":"×";feedback.querySelector("b").textContent=correct?"¡Rápido y preciso!":timedOut?"Se acabó el tiempo":"Casi";feedback.querySelector("p").textContent=q.explanation;announce((correct?"Correcto. ":"Incorrecto. ")+q.explanation);
-    var performance=clamp(active.timeScore/1000,0,1);setHud((active.index+1)+"/"+active.total,balancedScore(active.id,active.level,performance),"PUNTOS");setTimer(function(){active.index++;if(active.index>=active.total)finishGame(balancedScore(active.id,active.level,performance),{correct:active.correct,total:active.total,maxStreak:active.maxStreak,duration:Date.now()-active.startedAt,difficulty:active.level,performance:performance});else renderTimeRound()},950);
+    var performanceRatio=clamp(active.timeScore/1000,0,1);setHud((active.index+1)+"/"+active.total,balancedScore(active.id,active.level,performanceRatio),"PUNTOS");setTimer(function(){active.index++;if(active.index>=active.total)finishGame(balancedScore(active.id,active.level,performanceRatio),{correct:active.correct,total:active.total,maxStreak:active.maxStreak,duration:Date.now()-active.startedAt,difficulty:active.level,performance:performanceRatio});else renderTimeRound()},950);
   }
 
   var FOOTBALL_ZONES=["Arriba izquierda","Arriba centro","Arriba derecha","Abajo izquierda","Abajo centro","Abajo derecha"];

@@ -45,8 +45,8 @@ test("the PWA invalidates the human-teacher assets as one release", () => {
 
   assert.match(index, /eterna-v159\.css\?v=160980/);
   assert.match(index, /eterna-v159\.js\?v=160113/);
-  assert.match(index, /sw\.js\?v=160113-r1/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.13-eterna-incomplete-retry-r1"/);
+  assert.match(index, /sw\.js\?v=160114-r1/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.14-reto-tiempo-advance-r1"/);
 });
 
 test("relational turns stay human, transient and separate from the suspended lesson", () => {

@@ -1,5 +1,5 @@
-/* Coco en Forma · Service Worker v160.100.13 · Eterna silent incomplete-response retry */
-const CACHE_VERSION="coco-en-forma-v160.100.13-eterna-incomplete-retry-r1";
+/* Coco en Forma · Service Worker v160.100.14 · Reto Tiempo round advance */
+const CACHE_VERSION="coco-en-forma-v160.100.14-reto-tiempo-advance-r1";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
