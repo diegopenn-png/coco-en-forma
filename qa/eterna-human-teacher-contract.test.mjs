@@ -9,7 +9,7 @@ test("the bottom composer exposes an accessible Pensando indicator", () => {
   const css = read("eterna-v159.css");
   const composer = core.slice(core.indexOf('<div class="eternaV159Composer"'), core.indexOf("</main>"));
 
-  assert.match(core, /160\.99\.21-text-voice-only/);
+  assert.match(core, /160\.99\.22-text-voice-coherence/);
   assert.match(composer, /data-et-thinking role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(composer, /<span>Pensando…<\/span>/);
   assert.ok(composer.indexOf("data-et-thinking") < composer.indexOf("eternaV159InputRow"));
@@ -44,9 +44,9 @@ test("the PWA invalidates the human-teacher assets as one release", () => {
   const serviceWorker = read("sw.js");
 
   assert.match(index, /eterna-v159\.css\?v=160980/);
-  assert.match(index, /eterna-v159\.js\?v=160108/);
-  assert.match(index, /sw\.js\?v=160110-r1/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.10-balanced-scoring-r1"/);
+  assert.match(index, /eterna-v159\.js\?v=160111/);
+  assert.match(index, /sw\.js\?v=160111-r1/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.11-ranking-save-eterna-r1"/);
 });
 
 test("relational turns stay human, transient and separate from the suspended lesson", () => {
@@ -66,6 +66,30 @@ test("relational turns stay human, transient and separate from the suspended les
   assert.match(relationalTutor, /No fuerces el regreso a los deberes/i);
   assert.match(relationalTutor, /como máximo UNA pregunta natural/i);
   assert.match(relationalTutor, /no fomentes dependencia/i);
+});
+
+test("pending checks cannot be completed early and malformed replies stay retryable", () => {
+  const client = read("eterna-v159.js");
+  const worker = read("eterna-worker/src/index.js");
+  const append = client.slice(client.indexOf("function appendMessage"), client.indexOf("async function api"));
+  const apply = client.slice(client.indexOf("function applyChatResponse"), client.indexOf("async function send(options)"));
+
+  assert.match(append, /canAct&&!meta\.check_question&&!\(state\.pedagogicalState&&state\.pedagogicalState\.pending_question\)/);
+  assert.match(apply, /if\(!reply\)return\{applied:false,reason:"EMPTY_REPLY"\}/);
+  assert.doesNotMatch(client, /data\.reply\|\|"Necesito que me enseñes mejor el enunciado/);
+  assert.match(client, /ETERNA_EMPTY_REPLY/);
+  assert.match(worker, /reply:\{type:"string",minLength:1\}/);
+  assert.match(worker, /ETERNA_TUTOR_EMPTY_REPLY/);
+});
+
+test("safeguarding keeps a transient confirmation without storing the disclosure", () => {
+  const client = read("eterna-v159.js");
+  const worker = read("eterna-worker/src/index.js");
+  assert.match(client, /safety_follow_up:null/);
+  assert.match(worker, /SAFETY_FOLLOW_UP_CATEGORIES/);
+  assert.match(worker, /teacher-core-safety-follow-up-v1/);
+  assert.match(worker, /text:"\[safety follow-up\]"/);
+  assert.match(worker, /Antes de cambiar de tema necesito comprobar algo importante/);
 });
 
 test("greetings use local time once per conversational window", () => {

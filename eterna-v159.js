@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.99.21-text-voice-only";
+  var VERSION="160.99.22-text-voice-coherence";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
   var LEARNING_SESSION_KEY="coco_eterna_learning_session_v16091";
@@ -57,7 +57,7 @@
   function opaqueId(prefix){var c=stateContract(),id="";try{if(window.crypto&&typeof window.crypto.randomUUID==="function")id=window.crypto.randomUUID()}catch(e){}if(!id)id=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2)+"-"+Math.random().toString(36).slice(2);id=String(prefix||"id")+":"+id;return!c||c.validOpaqueId(id)?id:String(prefix||"id")+":"+Date.now().toString(36)+Math.random().toString(36).slice(2)}
   function freshModeState(){return{question_number:1,correct_count:0,partial_count:0,incorrect_count:0,difficulty:2,focus:null}}
   function freshConversationState(){return{current_topic:null,subject:null,concept:null,student_intent:null,tutor_act:null,expected_student_act:null,explained_points:[],known_points:[],unresolved_question:null,confusion_level:0,help_level:1,last_question_type:null,strategy_used:null,next_teaching_goal:null,last_user_intent:null}}
-  function freshPedagogicalState(mode){return{active_topic:null,active_subject:null,active_concept:null,current_mode:mode||state.mode||"homework",pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:1,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"starting",turn_index:0,last_tutor_act:"none",explained_points:[],known_points:[],unresolved_question:null,expected_student_act:"none",last_question_type:"none",next_teaching_goal:null,confusion_count:0,simplification_level:0,last_student_intent:"none",suspended_topic:null,relational_thread:null}}
+  function freshPedagogicalState(mode){return{active_topic:null,active_subject:null,active_concept:null,current_mode:mode||state.mode||"homework",pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],current_help_level:1,last_strategy:null,student_answer_assessment:"not_applicable",conversation_stage:"starting",turn_index:0,last_tutor_act:"none",explained_points:[],known_points:[],unresolved_question:null,expected_student_act:"none",last_question_type:"none",next_teaching_goal:null,confusion_count:0,simplification_level:0,last_student_intent:"none",suspended_topic:null,relational_thread:null,safety_follow_up:null}}
   function sessionUserId(){return state.session&&state.session.user&&state.session.user.id?String(state.session.user.id):""}
   function localDateKey(date){date=date instanceof Date?date:new Date();return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0")}
   function greetingPeriod(hour){hour=Number(hour);return hour>=5&&hour<12?"morning":hour>=12&&hour<20?"afternoon":"night"}
@@ -730,7 +730,7 @@
       if(meta.check_question){var check=document.createElement("div");check.className="eternaV159Check";if(canAct)check.setAttribute("data-et-actionable","1");check.innerHTML='<b>Comprueba que lo entendiste</b><p>'+esc(cleanText(meta.check_question))+'</p>'+(canAct?'<button type="button" data-et-answer>Responder</button>':"");var answer=check.querySelector("[data-et-answer]");if(answer)answer.onclick=function(){var i=overlay().querySelector("[data-et-input]");i.placeholder="Escribe tu respuesta…";i.focus()};chat.appendChild(check)}
       if(meta.practice_suggestion){var mission=document.createElement("div");mission.className="eternaV159Mission";mission.innerHTML='<span>🎯 MISIÓN ETERNA</span><p>'+esc(cleanText(meta.practice_suggestion))+'</p><div><button type="button" data-et-practice>Practicar ahora</button><button type="button" data-et-coco>Entrenar en Coco</button></div>';mission.querySelector("[data-et-practice]").onclick=function(){setMode("practice",false);var i=overlay().querySelector("[data-et-input]");i.value="Quiero practicar ahora esta recomendación. Hazme una sola pregunta cada vez y espera mi respuesta.";state.inputSource="text";send()};mission.querySelector("[data-et-coco]").onclick=function(){goCocoTraining(meta)};chat.appendChild(mission)}
       // Reply actions 160.99.4: remove Pista/Escuchar/Más lento; keep the existing completion action outside exam/practice.
-      if(canAct&&state.mode!=="exam"&&state.mode!=="practice"){var q=document.createElement("div");q.className="eternaV159Quick";q.setAttribute("data-et-question-id",meta.question_id);q.innerHTML='<button type="button" data-et-understood>✅ Lo entendí</button>';q.querySelector("[data-et-understood]").onclick=function(){sendStudentAction("understood",meta,q)};chat.appendChild(q)}
+      if(canAct&&!meta.check_question&&!(state.pedagogicalState&&state.pedagogicalState.pending_question)&&state.mode!=="exam"&&state.mode!=="practice"){var q=document.createElement("div");q.className="eternaV159Quick";q.setAttribute("data-et-question-id",meta.question_id);q.innerHTML='<button type="button" data-et-understood>✅ Lo entendí</button>';q.querySelector("[data-et-understood]").onclick=function(){sendStudentAction("understood",meta,q)};chat.appendChild(q)}
     }
     if(scroll!==false)chat.scrollTop=chat.scrollHeight
   }
@@ -754,6 +754,7 @@
       ETERNA_LEGAL_ACCEPTANCE_REQUIRED:{message:"Un adulto debe revisar y aceptar la autorización de Eterna en Zona familiar.",status:"Autorización familiar necesaria"},
       UNAUTHORIZED:{message:"La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.",status:"Sesión caducada"},
       ETERNA_BACKEND_ERROR:{message:"El servicio de Eterna ha tenido un fallo temporal. Tu pregunta sigue preparada para volver a intentarlo.",status:"Servicio temporalmente no disponible"},
+      ETERNA_EMPTY_REPLY:{message:"Eterna recibió una respuesta técnica incompleta. Tu pregunta sigue preparada para volver a intentarlo.",status:"Respuesta incompleta"},
       ETERNA_STALE_RESPONSE:{message:"La actividad cambió mientras llegaba la respuesta. Tu pregunta sigue preparada para enviarla otra vez.",status:"Actividad actualizada"}
     };return errors[code]||{message:"Eterna no ha podido completar la respuesta. Tu pregunta sigue preparada para volver a intentarlo.",status:"Respuesta no completada"}
   }
@@ -765,12 +766,13 @@
   function responseDedupeKey(data,context){return String(data&&data.event_id||data&&data.response_id||data&&data.request_id||context&&context.request_id||"")}
   function applyChatResponse(data,context){
     var c=stateContract();if(!c||!data||typeof data!=="object"||!responseContextValid(data,context))return{applied:false,reason:"STALE_CONTEXT"};
+    var reply=cleanText(data.reply||"");if(!reply)return{applied:false,reason:"EMPTY_REPLY"};
     var key=responseDedupeKey(data,context);if(key&&state.appliedResponses.has(key))return{applied:false,duplicate:true};
     context.activity=context.activity||currentActivity();var activity=data.activity_state&&typeof data.activity_state==="object"?c.sanitizeActivityState(data.activity_state,{mode:context.mode,session_id:context.session_id}):legacyActivityFromResponse(data,context),valid=c.validateActivityRequest(activity,{expected_mode:context.mode,expected_session_id:context.session_id});
     if(!valid.ok)return{applied:false,reason:"INVALID_ACTIVITY_STATE",errors:valid.errors};
     if(key){state.appliedResponses.add(key);if(state.appliedResponses.size>100)state.appliedResponses.delete(state.appliedResponses.values().next().value)}
     state.activities[state.mode]=valid.state;state.modeState=activityModeState(valid.state);
-    var reply=cleanText(data.reply||"Necesito que me enseñes mejor el enunciado para poder ayudarte sin inventar nada."),meta={verification_status:data.verification_status||"needs_clarification",subject:cleanMetaText(data.subject),concept:cleanMetaText(data.concept),help_level:data.help_level,check_question:data.check_question||null,practice_suggestion:data.practice_suggestion||null,student_answer_assessment:data.student_answer_assessment||"not_applicable",strategy_used:data.strategy_used||null,mode_label:data.mode_label||null,event_id:data.event_id||key||null,session_id:valid.state.session_id,question_id:valid.state.question_id,request_id:context.request_id,client_turn_id:context.client_turn_id};
+    var meta={verification_status:data.verification_status||"needs_clarification",subject:cleanMetaText(data.subject),concept:cleanMetaText(data.concept),help_level:data.help_level,check_question:data.check_question||null,practice_suggestion:data.practice_suggestion||null,student_answer_assessment:data.student_answer_assessment||"not_applicable",strategy_used:data.strategy_used||null,mode_label:data.mode_label||null,event_id:data.event_id||key||null,session_id:valid.state.session_id,question_id:valid.state.question_id,request_id:context.request_id,client_turn_id:context.client_turn_id};
     var turn=context.turn||{intent:context.student_action||null},conv=updateConversationState(data,reply,turn,meta);meta.tutor_act=conv.tutor_act;meta.expected_student_act=conv.expected_student_act;meta.student_intent=turn.intent||context.student_action||null;
     if(data.pedagogical_state&&typeof data.pedagogical_state==="object")state.pedagogicalState=data.pedagogical_state;if(data.greeting_state&&typeof data.greeting_state==="object")saveGreetingState(data.greeting_state);
     if(context.userEntry)state.history.push(context.userEntry);
@@ -797,7 +799,7 @@
         if(data&&data.reply){var recovered=applyChatResponse(data,context);if(recovered.applied||recovered.duplicate)return}
         throw new Error(data&&data.error?data.error:"ETERNA_RESPONSE_FAILED")
       }
-      var applied=applyChatResponse(data,context);if(!applied.applied&&!applied.duplicate)throw new Error("ETERNA_STALE_RESPONSE")
+      var applied=applyChatResponse(data,context);if(!applied.applied&&!applied.duplicate)throw new Error(applied.reason==="EMPTY_REPLY"?"ETERNA_EMPTY_REPLY":"ETERNA_STALE_RESPONSE")
     }catch(e){
       if(e&&e.name==="AbortError"||context.epoch!==state.activityEpoch)return;
       if(window.__ETERNA_VOICE_DIALOG_ACTIVE__===true){window.__ETERNA_VOICE_DIALOG_ACTIVE__=false;announceVoiceState("idle")}

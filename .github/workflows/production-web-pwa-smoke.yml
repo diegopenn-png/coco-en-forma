@@ -45,8 +45,8 @@ jobs:
       APEX_URL: https://cocoenforma.com
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
-      EXPECTED_WORKER_VERSION: 160.99.20-photo-transport-verified
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.10-balanced-scoring-r1
+      EXPECTED_WORKER_VERSION: 160.99.22-text-voice-coherence
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.11-ranking-save-eterna-r1
     steps:
       - name: Fetch uncached production assets
         shell: bash
@@ -93,8 +93,8 @@ jobs:
             fetch_live "${APEX_URL}/eterna-captacion.html?" /tmp/eterna-captacion.html
             fetch_live "${APEX_URL}/eterna-landing-captacion-v1.html?" /tmp/eterna-landing-captacion-v1.html
             if grep -Fq "const CACHE_VERSION=\"${EXPECTED_PWA_CACHE}\"" /tmp/sw.js \
-              && grep -Fq '160.99.21-text-voice-only' /tmp/eterna-v159.js \
-              && grep -Fq 'eterna-v159.js?v=160108' /tmp/apex.html; then
+              && grep -Fq '160.99.22-text-voice-coherence' /tmp/eterna-v159.js \
+              && grep -Fq 'eterna-v159.js?v=160111' /tmp/apex.html; then
               web_ready=1
               break
             fi
@@ -168,9 +168,9 @@ jobs:
             ["six Eterna modes", ["homework", "ask", "review", "explain", "exam", "practice"].every(mode => eterna.includes(`${mode}:{`))],
             ["text composer", eterna.includes("data-et-input")],
             ["voice composer", eterna.includes("data-et-mic")],
-            ["text and voice release", eterna.includes("160.99.21-text-voice-only")],
+            ["text and voice release", eterna.includes("160.99.22-text-voice-coherence")],
             ["restored Eterna launcher visual", identity.includes("share/eterna.png?v=16047")],
-            ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=160110") && scoring.includes('var VERSION = "balanced-v1"')],
+            ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=160111") && scoring.includes('var VERSION = "balanced-v1"')],
             ["balanced score ceiling", scoring.includes("var MAX_SCORE = 115")],
             ["eleven comparable games", scoring.includes('"verdadero", "futbol"')],
             ["photo controls retired", retiredPhotoSurface.every(token => !eterna.includes(token))],

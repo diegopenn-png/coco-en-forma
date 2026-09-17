@@ -32,11 +32,15 @@ vm.runInContext(`${executableSource}\n;globalThis.__teacherCoreTest = {
   teacherCoreSafetySignal,
   safetyReplyFor,
   safetyInterruptionPayload,
+  safetyFollowUpPayload,
+  sanitizeSafetyFollowUp,
   scopeV3Guard,
   turnRelation,
   learningRepairRelation,
   explicitNewTopicRequest,
   independentQuestionSignal,
+  clientTurnRelationHint,
+  resolvedTurnRelation,
   classroomSituation,
   situationalReply,
   greetingPeriodForHour,
@@ -316,6 +320,34 @@ test("a safety interrupt preserves the suspended lesson without grading it", () 
   assert.match(payload.reply, /No envíes ninguna foto/i);
   assert.match(payload.reply, /no es culpa tuya/i);
   assert.match(payload.reply, /adulto de confianza/i);
+  assert.deepEqual(JSON.parse(JSON.stringify(payload.pedagogical_state.safety_follow_up)), {
+    category: "unsafe_contact",
+    turn_count: 1,
+  });
+});
+
+test("a personal danger interrupt requires one safety check before returning to schoolwork", () => {
+  const interrupted = api.safetyInterruptionPayload("personal_danger", pendingState, "explain", modeState);
+  const held = api.safetyFollowUpPayload(
+    "Ahora quiero que me enseñes a multiplicar",
+    interrupted.pedagogical_state,
+    "explain",
+    modeState
+  );
+  assert.equal(held.verification_status, "blocked_safety");
+  assert.match(held.reply, /estás ahora en un lugar seguro/i);
+  assert.equal(held.pedagogical_state.pending_question, pendingState.pending_question);
+  assert.equal(held.pedagogical_state.safety_follow_up.turn_count, 2);
+
+  const confirmed = api.safetyFollowUpPayload(
+    "Sí",
+    held.pedagogical_state,
+    "explain",
+    modeState
+  );
+  assert.equal(confirmed.verification_status, "verified");
+  assert.equal(confirmed.pedagogical_state.safety_follow_up, null);
+  assert.match(confirmed.reply, /Ahora sí podemos seguir con el cole/i);
 });
 
 test("explicit and interrogative topic changes outrank a pending check", () => {
@@ -323,6 +355,32 @@ test("explicit and interrogative topic changes outrank a pending check", () => {
   assert.equal(api.turnRelation("Quiero aprender los volcanes.", pendingState, []), "new_topic");
   assert.equal(api.independentQuestionSignal("¿Por qué flotan los barcos?"), true);
   assert.equal(api.independentQuestionSignal("¿Y por qué?"), false);
+  assert.equal(api.independentQuestionSignal("Cuando usamos más o menos aire"), false);
+  assert.equal(api.independentQuestionSignal("Que es la fotosíntesis"), true);
+});
+
+test("an exact pending-answer hint outranks the generic new-topic heuristic", () => {
+  const relation = api.resolvedTurnRelation({
+    current: "needs_scope",
+    text: "Cuando usamos más o menos aire",
+    turnContext: { newTopic: false, continuation: false },
+    scope: { scope: "school" },
+    clientStudentIntent: "answer_check",
+    clientTutorDirective: null,
+    hasPending: true,
+  });
+  assert.equal(relation, "answer_to_pending");
+
+  const explicit = api.resolvedTurnRelation({
+    current: "needs_scope",
+    text: "Ahora quiero que me enseñes a multiplicar",
+    turnContext: { newTopic: true, continuation: false },
+    scope: { scope: "school" },
+    clientStudentIntent: "answer_check",
+    clientTutorDirective: null,
+    hasPending: true,
+  });
+  assert.equal(explicit, "new_topic");
 });
 
 test("classroom small talk is recognised without being graded as science", () => {
@@ -544,7 +602,7 @@ test("handler ordering makes safety and current-turn meaning authoritative", () 
   assert.ok(safetyRoute >= 0 && safetyRoute < preflight);
   assert.ok(preflight >= 0 && preflight < quota);
   assert.ok(contextOverride >= 0 && contextOverride < modelScope);
-  assert.match(chat, /semanticNewTopic/);
+  assert.match(chat, /resolvedTurnRelation/);
   assert.match(chat, /nonEvaluable=\["new_topic"/);
 });
 

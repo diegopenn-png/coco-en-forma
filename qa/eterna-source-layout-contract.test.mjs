@@ -21,7 +21,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.20-photo-transport-verified/);
+  assert.match(worker, /160\.99\.22-text-voice-coherence/);
   assert.match(worker, /current_turn_subject_priority_v1:true/);
   assert.match(worker, /current_image_priority_v1:true/);
   assert.match(worker, /image_context_reset_v1:true/);
@@ -87,9 +87,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /payload\.features\?\.parental_authorization_gate === true/);
   assert.doesNotMatch(preview, /health\/dependencies/);
   assert.doesNotMatch(preview, /payload\.photo_intake/);
-  assert.match(preview, /grep -F '160\.99\.20-photo-transport-verified' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.20-photo-transport-verified"/);
-  assert.match(preview, /API 160\.99\.20-photo-transport-verified/);
+  assert.match(preview, /grep -F '160\.99\.22-text-voice-coherence' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.22-text-voice-coherence"/);
+  assert.match(preview, /API 160\.99\.22-text-voice-coherence/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -267,7 +267,7 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.100\.10-balanced-scoring-r1/);
+  assert.match(serviceWorker, /160\.100\.11-ranking-save-eterna-r1/);
   assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
 });
