@@ -64,6 +64,7 @@ vm.runInContext(`${executableSource}\n;globalThis.__eternaTest = {
   adaptiveCloseResponse: typeof adaptiveCloseResponse === "function" ? adaptiveCloseResponse : null,
   broadExamSubject: typeof broadExamSubject === "function" ? broadExamSubject : null,
   broadExamIntakePayload: typeof broadExamIntakePayload === "function" ? broadExamIntakePayload : null,
+  broadSubjectIntakePayload: typeof broadSubjectIntakePayload === "function" ? broadSubjectIntakePayload : null,
   sanitizePedagogicalState: typeof sanitizePedagogicalState === "function" ? sanitizePedagogicalState : null,
   buildPedagogicalState: typeof buildPedagogicalState === "function" ? buildPedagogicalState : null,
   parseContractV3Input: typeof parseContractV3Input === "function" ? parseContractV3Input : null,
@@ -307,6 +308,18 @@ test("Exam asks for a concrete topic immediately when only a broad subject is pr
   assert.equal(result?.pedagogical_state?.conversation_stage, "clarifying");
   assert.equal(result?.pedagogical_state?.pending_question, null);
   assert.match(result?.reply || "", /operaciones, fracciones, decimales, geometría/i);
+});
+
+test("Pregunta del cole asks for a concrete topic when only a broad subject is provided", () => {
+  const result = api.broadSubjectIntakePayload("Matemáticas", "ask", { turn_index: 1 }, { difficulty: 2 });
+  assert.equal(result?.deterministic_subject_intake, true);
+  assert.equal(result?.verification_status, "needs_clarification");
+  assert.equal(result?.subject, "Matemáticas");
+  assert.equal(result?.check_question, null);
+  assert.equal(result?.pedagogical_state?.pending_question, null);
+  assert.equal(result?.pedagogical_state?.conversation_stage, "clarifying");
+  assert.match(result?.reply || "", /^Perfecto: Matemáticas\./);
+  assert.doesNotMatch(result?.reply || "", /soy Eterna|qué te gustaría entender o resolver hoy/i);
 });
 
 test("Exam removes an imperative model question when a different canonical check is active", () => {

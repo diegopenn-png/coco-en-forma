@@ -189,14 +189,19 @@ test('explicit non-Spanish profile does not receive fixed Spanish lessons',()=>{
 // Exercise the exact deployed client resolver plus its existing simplify hotfix.
 function deployedClientTurn(raw,pedState){
   const client=text('../../eterna-v159.js'),hotfix=text('../../eterna-hotfix-v160902.js');
-  const a=client.indexOf('  function resolveContextualTurn(raw){'),b=client.indexOf('  function inferTutorAct(',a);
+  const subjectStart=client.indexOf('  function standaloneSchoolSubject(raw){'),subjectEnd=client.indexOf('  function pendingTopicLabel(',subjectStart),a=client.indexOf('  function resolveContextualTurn(raw){'),b=client.indexOf('  function inferTutorAct(',a);
   const x=hotfix.indexOf('  function strengthenSimplify(body){'),y=hotfix.indexOf('  function answerLeaked(',x);
-  assert.ok(a>=0&&b>a&&x>=0&&y>x);
+  assert.ok(subjectStart>=0&&subjectEnd>subjectStart&&a>=0&&b>a&&x>=0&&y>x);
   const ps=plain(pedState),state={history:[{role:'assistant',text:'Contenido sintético',meta:{check_question:ps.pending_question}}],pedagogicalState:ps,conversationState:{concept:ps.active_concept,current_topic:ps.active_topic,expected_student_act:ps.pending_question?'answer_check':'none',unresolved_question:ps.pending_question}};
   const sandbox={state,cleanText:v=>String(v||'').trim(),conversationNorm:v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[¿?¡!.,;:]+/g,' ').replace(/\s+/g,' ').trim(),lastAssistantTurn:()=>state.history.at(-1),pendingTopicLabel:cs=>cs.concept||cs.current_topic||'el tema que estamos viendo',freshConversationState:()=>({}),namedReturnToSuspended:()=>false};
-  vm.createContext(sandbox);vm.runInContext(client.slice(a,b)+hotfix.slice(x,y),sandbox);
+  vm.createContext(sandbox);vm.runInContext(client.slice(subjectStart,subjectEnd)+client.slice(a,b)+hotfix.slice(x,y),sandbox);
   const resolved=sandbox.resolveContextualTurn(raw),body={text:resolved.text,student_intent:resolved.intent,tutor_directive:resolved.directive};sandbox.strengthenSimplify(body);return body;
 }
+
+test('the deployed PWA treats a standalone subject after a greeting as a new topic',()=>{
+ const body=deployedClientTurn('Matemáticas',{current_mode:'ask',turn_index:1,pending_question:null,active_subject:null,active_concept:null,active_topic:null});
+ assert.equal(body.text,'Matemáticas');assert.equal(body.student_intent,'new_topic');assert.equal(body.tutor_directive,'EXPLAIN');
+});
 
 test('unchanged PWA rewrites simplify/confusion/why without losing the local response route',async()=>{
  for(const raw of ['más fácil','no entiendo','otra vez','por qué']){
