@@ -45,7 +45,7 @@ jobs:
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.99.20-photo-transport-verified
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.8-text-voice-only-r1
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.9-restore-eterna-launcher-r1
     steps:
       - name: Fetch uncached production assets
         shell: bash
@@ -166,6 +166,7 @@ jobs:
             ["text composer", eterna.includes("data-et-input")],
             ["voice composer", eterna.includes("data-et-mic")],
             ["text and voice release", eterna.includes("160.99.21-text-voice-only")],
+            ["restored Eterna launcher visual", identity.includes("share/eterna.png?v=16047")],
             ["photo controls retired", retiredPhotoSurface.every(token => !eterna.includes(token))],
             ["photo claims retired", retiredPhotoSurface.every(token => !experience.includes(token) && !identity.includes(token) && !publicPages.includes(token))]
           ];
