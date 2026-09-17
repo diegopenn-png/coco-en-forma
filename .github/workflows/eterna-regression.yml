@@ -26,6 +26,7 @@ on:
       - "manifest.webmanifest"
       - "sw.js"
       - "qa/eterna-text-voice-only-v1.test.mjs"
+      - "qa/root-social-thumbnail-contract.test.mjs"
       - "qa/v161-*.test.mjs"
       - ".github/workflows/eterna-regression.yml"
   workflow_dispatch:
@@ -67,6 +68,8 @@ jobs:
         run: node --test qa/eterna-text-voice-only-v1.test.mjs
       - name: Check first-visit and responsive update contracts
         run: node --test qa/eterna-preview-parity.test.mjs qa/device-update-contract.test.mjs
+      - name: Check approved root social thumbnail
+        run: node --test qa/root-social-thumbnail-contract.test.mjs
       - name: Check 48-conversation Eterna matrix
         run: |
           node --test qa/eterna/offline/*.test.mjs
