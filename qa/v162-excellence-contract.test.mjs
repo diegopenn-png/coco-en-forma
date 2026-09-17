@@ -75,7 +75,7 @@ test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   assert.match(html,/coco-excellence-v160934\.js\?v=160960/);
   assert.match(html,/eterna-v159\.js\?v=160113/);
   assert.match(html,/coco-v144-core\.js\?v=15001/);
-  assert.match(sw,/coco-en-forma-v160\.100\.14-reto-tiempo-advance-r1/);
+  assert.match(sw,/coco-en-forma-v160\.100\.15-card-thumbnails-r1/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión para abrir /);
