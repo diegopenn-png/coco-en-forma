@@ -9,7 +9,7 @@ test("the bottom composer exposes an accessible Pensando indicator", () => {
   const css = read("eterna-v159.css");
   const composer = core.slice(core.indexOf('<div class="eternaV159Composer"'), core.indexOf("</main>"));
 
-  assert.match(core, /160\.99\.24-silent-incomplete-retry/);
+  assert.match(core, /160\.99\.25-contextual-dialogue/);
   assert.match(composer, /data-et-thinking role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(composer, /<span>Pensando…<\/span>/);
   assert.ok(composer.indexOf("data-et-thinking") < composer.indexOf("eternaV159InputRow"));
@@ -44,9 +44,9 @@ test("the PWA invalidates the human-teacher assets as one release", () => {
   const serviceWorker = read("sw.js");
 
   assert.match(index, /eterna-v159\.css\?v=160980/);
-  assert.match(index, /eterna-v159\.js\?v=160113/);
-  assert.match(index, /sw\.js\?v=160116-r1/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.16-eterna-no-photo-visual-r1"/);
+  assert.match(index, /eterna-v159\.js\?v=160114/);
+  assert.match(index, /sw\.js\?v=160117-r1/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.17-eterna-contextual-dialogue-r1"/);
 });
 
 test("relational turns stay human, transient and separate from the suspended lesson", () => {
@@ -74,7 +74,10 @@ test("pending checks cannot be completed early and malformed replies stay retrya
   const append = client.slice(client.indexOf("function appendMessage"), client.indexOf("async function api"));
   const apply = client.slice(client.indexOf("function applyChatResponse"), client.indexOf("async function send(options)"));
 
-  assert.match(append, /canAct&&!meta\.check_question&&!\(state\.pedagogicalState&&state\.pedagogicalState\.pending_question\)/);
+  assert.match(append, /canAct&&understoodActionUseful\(meta,text\)&&!\(state\.pedagogicalState&&state\.pedagogicalState\.pending_question\)/);
+  assert.match(client, /show_understood:Boolean\(!data\.check_question/);
+  assert.match(client, /Comprueba esta idea/);
+  assert.doesNotMatch(client, /<b>Comprueba que lo entendiste<\/b>/);
   assert.match(apply, /if\(!reply\)return\{applied:false,reason:"EMPTY_REPLY"\}/);
   assert.doesNotMatch(client, /data\.reply\|\|"Necesito que me enseñes mejor el enunciado/);
   assert.match(client, /ETERNA_EMPTY_REPLY/);
@@ -105,10 +108,12 @@ test("greetings use local time once per conversational window", () => {
   assert.match(client, /saveGreetingState\(data\.greeting_state\)/);
   assert.match(client, /startTitle=openingGreeting\(studentName\)\+p\.title/);
   assert.match(greetingGuard, /first\|\|newDay\|\|periodChanged/);
-  assert.match(greetingGuard, /if\(!allowed&&prefix\)reply=stripLeadingGreeting/);
-  assert.match(greetingGuard, /"¡Buenos días!"/);
-  assert.match(greetingGuard, /"¡Buenas tardes!"/);
-  assert.match(greetingGuard, /"¡Buenas noches!"/);
+  assert.match(greetingGuard, /if\(!allowed&&prefix\)reply=explicit\?"Aquí estoy/);
+  assert.match(greetingGuard, /kind==="morning"\?"Buenos días"/);
+  assert.match(greetingGuard, /kind==="afternoon"\?"Buenas tardes"/);
+  assert.match(greetingGuard, /kind==="night"\?"Buenas noches"/);
+  assert.match(worker, /STANDARD_DIALOGUE_REPERTOIRE/);
+  assert.doesNotMatch(worker.slice(worker.indexOf("function courtesyReply"), worker.indexOf("const GREETING_PERIODS")), /Sí, soy Eterna/);
   assert.match(chatWrapper, /applyGreetingContinuity/);
   assert.match(worker, /greeting_timing_v1:true/);
   assert.match(worker, /repeated_greeting_guard_v1:true/);

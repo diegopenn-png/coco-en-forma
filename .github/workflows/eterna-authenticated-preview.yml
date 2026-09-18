@@ -152,12 +152,12 @@ jobs:
           cp qa/eterna/preview-no-cache-sw.js preview-dist/sw.js
 
           grep -F "${API_PREVIEW_URL}" preview-dist/index.html >/dev/null
-          grep -F '160.99.24-silent-incomplete-retry' preview-dist/eterna-v159.js >/dev/null
+          grep -F '160.99.25-contextual-dialogue' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.99.23-subject-intake' eterna-worker/src/index.js >/dev/null
+          grep -F '160.99.24-contextual-dialogue' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -194,7 +194,7 @@ jobs:
             verify_url="${PREVIEW_ORIGIN}/eterna-v159.js?v=160105&verify=${GITHUB_SHA}-${attempt}"
             index_url="${PREVIEW_ORIGIN}/?verify=${GITHUB_SHA}-${attempt}"
             if curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$verify_url" -o /tmp/eterna-preview.js \
-              && grep -F '160.99.24-silent-incomplete-retry' /tmp/eterna-preview.js >/dev/null \
+              && grep -F '160.99.25-contextual-dialogue' /tmp/eterna-preview.js >/dev/null \
               && curl --max-time 20 -fsS -H 'Cache-Control: no-cache' "$index_url" -o /tmp/eterna-preview-index.html \
               && grep -F "window.__COCO_PREVIEW_COMMIT__='${GITHUB_SHA}'" /tmp/eterna-preview-index.html >/dev/null \
               && grep -F 'id="coco-reto-2026-direct"' /tmp/eterna-preview-index.html >/dev/null \
@@ -257,7 +257,7 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.99.23-subject-intake"
+              && payload.version === "160.99.24-contextual-dialogue"
               && payload.ai_provider === "cloudflare"
               && payload.cloudflare_ai_configured === true
               && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
@@ -319,7 +319,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.99.24-silent-incomplete-retry · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.23-subject-intake"
+            echo "- Expected versions: frontend 160.99.25-contextual-dialogue · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.24-contextual-dialogue"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents

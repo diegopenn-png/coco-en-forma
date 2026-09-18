@@ -21,7 +21,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.23-subject-intake/);
+  assert.match(worker, /160\.99\.24-contextual-dialogue/);
   assert.match(worker, /deterministic_subject_intake_v1:true/);
   assert.match(worker, /current_turn_subject_priority_v1:true/);
   assert.match(worker, /current_image_priority_v1:true/);
@@ -88,9 +88,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /payload\.features\?\.parental_authorization_gate === true/);
   assert.doesNotMatch(preview, /health\/dependencies/);
   assert.doesNotMatch(preview, /payload\.photo_intake/);
-  assert.match(preview, /grep -F '160\.99\.23-subject-intake' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.23-subject-intake"/);
-  assert.match(preview, /API 160\.99\.23-subject-intake/);
+  assert.match(preview, /grep -F '160\.99\.24-contextual-dialogue' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.24-contextual-dialogue"/);
+  assert.match(preview, /API 160\.99\.24-contextual-dialogue/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -224,11 +224,13 @@ test("the 160.99.18 production gate promotes the exact language-photo release", 
   assert.match(production, /wrangler rollback/);
 });
 
-test("the 160.99.20 production gate requires grounded photo transport", () => {
+test("the 160.99.24 production gate preserves dependency checks and contextual dialogue", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-1609919.yml", "utf8");
-  assert.match(production, /\.github\/release-eterna-1609920/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.20-photo-transport-verified/);
-  assert.match(production, /--preview-alias "release-1609920"/);
+  assert.match(production, /\.github\/release-eterna-1609924/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.24-contextual-dialogue/);
+  assert.match(production, /--preview-alias "release-1609924"/);
+  assert.match(production, /standard_dialogue_repertoire_v1/);
+  assert.match(production, /contextual_comprehension_checks_v1/);
   assert.match(production, /unified_photo_intake_v2/);
   assert.match(production, /photo_intake_all_six_modes_v1/);
   assert.match(production, /photo_uses_chat_safety_and_pedagogy_v1/);
@@ -268,7 +270,7 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.100\.16-eterna-no-photo-visual-r1/);
+  assert.match(serviceWorker, /160\.100\.17-eterna-contextual-dialogue-r1/);
   assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
 });
