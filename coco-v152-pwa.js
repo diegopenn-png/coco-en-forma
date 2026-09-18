@@ -2,7 +2,7 @@
 (function(root){
   "use strict";
   var VERSION="160.100.0-family-profile-reports";
-  var SW_TAG="160116-r1";
+  var SW_TAG="160117-r1";
   var RELOAD_KEY="coco_pwa_controller_reload_v160100";
   root.__COCO_PWA_MANAGER_VERSION__=VERSION;
   function isStandalone(){try{return Boolean((root.matchMedia&&root.matchMedia("(display-mode: standalone)").matches)||root.navigator.standalone===true)}catch(_){return false}}

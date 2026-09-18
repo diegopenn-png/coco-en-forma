@@ -77,6 +77,10 @@ test("hint stays canonical while understood closes the UX activity without gradi
   assert.match(actions, /studentAction:"hint_request"/);
   assert.match(actions, /if\(action==="understood"\)\{completeActivity/);
   assert.match(client, /sendStudentAction\("understood"/);
+  assert.match(client, /understoodActionUseful\(meta,text\)/);
+  assert.match(client, /show_understood:Boolean\(!data\.check_question/);
+  assert.match(client, /Comprueba esta idea/);
+  assert.doesNotMatch(client, /<b>Comprueba que lo entendiste<\/b>/);
   assert.match(client, /remove Pista\/Escuchar\/Más lento/);
   assert.doesNotMatch(client, /data-et-hint|data-et-need-hint/);
   const feedback = functionBody(client, "feedback", "sendStudentAction");

@@ -497,15 +497,22 @@ test("homework returns to the original operation after a correct equivalent frac
   assert.match(completed.reply, /Has resuelto el ejercicio/);
 });
 
-test("Ask and Explain promote embedded checks into explicit pending questions", () => {
+test("Ask and Explain only promote checks after a useful explanation", () => {
   const initial = api.singleStudentAct({ mode: "ask", reply: "Los hemisferios reciben luz distinta. Microcomprobación: ¿qué hemisferio recibe más luz?", tutorData: { check_question: null }, turnRel: "continuation_request", incoming: { turn_index: 2 }, assessment: "not_applicable", studentText: "¿Por qué?" });
-  assert.equal(initial.display_check, "¿qué hemisferio recibe más luz?");
-  assert.equal(initial.pending_question, initial.display_check);
+  assert.equal(initial.display_check, null);
+  assert.equal(initial.pending_question, null);
   assert.doesNotMatch(initial.reply, /Microcomprobación|¿qué hemisferio/i);
 
-  const yesNo = api.singleStudentAct({ mode: "explain", reply: "1/2 y 2/4 son equivalentes. Ahora dime solo esto: ¿sí o no?", tutorData: { check_question: null }, turnRel: "confusion_request", incoming: { turn_index: 2 }, assessment: "not_applicable", studentText: "No lo entendí" });
+  const yesNo = api.singleStudentAct({ mode: "explain", reply: "Una fracción cambia de forma sin cambiar de valor cuando multiplicas arriba y abajo por el mismo número. Por eso 1/2 y 2/4 son equivalentes. Ahora dime solo esto: ¿sí o no?", tutorData: { check_question: null, new_explained_points: ["equivalencia al multiplicar numerador y denominador por el mismo número"] }, turnRel: "confusion_request", incoming: { turn_index: 2, confusion_count: 1 }, assessment: "not_applicable", studentText: "No lo entendí" });
   assert.equal(yesNo.display_check, "¿1/2 y 2/4 representan la misma cantidad?");
   assert.equal(yesNo.pending_question, yesNo.display_check);
+
+  const greeting = api.singleStudentAct({ mode: "explain", reply: "Dime, ¿en qué tema te ayudo?", tutorData: { check_question: "¿Has entendido algo?", new_explained_points: [] }, turnRel: "new_topic", incoming: { turn_index: 0 }, assessment: "not_applicable", studentText: "Hola, Eterna" });
+  assert.equal(greeting.display_check, null);
+  assert.equal(greeting.pending_question, null);
+  assert.equal(api.validMicroCheck("¿Has entendido algo?", "Hola"), false);
+  assert.equal(api.validMicroCheck("¿Lo has entendido?", "Hola"), false);
+  assert.equal(api.validMicroCheck("¿Qué cambia cuando multiplicas numerador y denominador por el mismo número?", "Hola"), true);
 });
 
 test("Ask and Explain close after a correct comprehension check", () => {

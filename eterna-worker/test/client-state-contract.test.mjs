@@ -52,10 +52,10 @@ test("Practice exposes counters while adaptive difficulty remains internal", () 
 test("web entrypoint and Service Worker invalidate the corrected assets together", () => {
   assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
   assert.match(index, /coco-v153-fixes\.js\?v=160108/);
-  assert.match(index, /eterna-v159\.js\?v=160113/);
+  assert.match(index, /eterna-v159\.js\?v=160114/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.16-eterna-no-photo-visual-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.17-eterna-contextual-dialogue-r1"/);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v4\.js"/);
@@ -65,7 +65,7 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
 });
 
 test("the canonical client accepts only text and transcribed voice", () => {
-  assert.match(client, /160\.99\.24-silent-incomplete-retry/);
+  assert.match(client, /160\.99\.25-contextual-dialogue/);
   assert.match(client, /data-et-input/);
   assert.match(client, /data-et-mic/);
   assert.match(client, /allow_image_input:false/);

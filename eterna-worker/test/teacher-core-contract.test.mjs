@@ -447,15 +447,28 @@ test("classroom small talk is recognised without being graded as science", () =>
   assert.match(api.situationalReply({ kind: "identity" }, "", ""), /no soy una persona/i);
 });
 
-test("Eterna recognises her name in greetings and answers naturally", () => {
+test("Eterna recognises her name in greetings and answers naturally without reintroducing herself", () => {
   for (const message of ["Hola Eterna", "¡Hola, Eterna!", "Buenos días, Eterna", "Eterna"]) {
     const situation = api.classroomSituation(message, []);
     assert.equal(situation?.kind, "courtesy", message);
     const reply = api.situationalReply(situation, message, "Lucía");
-    assert.match(reply, /soy Eterna/i, message);
-    assert.match(reply, /Lucía|Eterna/i, message);
+    assert.match(reply, /Lucía/i, message);
+    assert.doesNotMatch(reply, /sí, soy Eterna|soy Eterna/i, message);
     assert.doesNotMatch(reply, /este espacio está centrado/i, message);
   }
+});
+
+test("the standard repertoire answers common exchanges locally and naturally", () => {
+  for (const message of ["¿Cómo estás?", "¿Qué tal?", "¿Cómo va?", "¿Todo bien?"]) {
+    const situation = api.classroomSituation(message, []);
+    assert.equal(situation?.kind, "courtesy", message);
+    const reply = api.situationalReply(situation, message, "Francesco");
+    assert.match(reply, /Francesco/);
+    assert.match(reply, /cómo (?:estás|va|te encuentras)/i);
+    assert.doesNotMatch(reply, /soy Eterna/i);
+  }
+  assert.match(api.situationalReply({ kind: "courtesy" }, "Gracias", "Francesco"), /de nada|con gusto|para eso estoy/i);
+  assert.match(api.situationalReply({ kind: "courtesy" }, "Hasta luego", "Francesco"), /hasta luego|nos vemos|hasta pronto/i);
 });
 
 test("greetings follow the student's local time and are never repeated inside one conversational window", () => {
@@ -470,7 +483,7 @@ test("greetings follow the student's local time and are never repeated inside on
     { reply: "¡Hola, Francesco! 😊 ¿Qué te gustaría entender hoy?", verification_status: "verified" },
     { text: "Hola", history: [], pedagogical_state: { turn_index: 0 }, client_clock: morningClock, client_greeting_state: null },
   );
-  assert.match(first.reply, /^¡Hola, Francesco!/);
+  assert.match(first.reply, /^¡Buenos días, Francesco!/);
   assert.equal(first.greeting_state.period, "morning");
   assert.equal(first.greeting_policy.greeting_emitted, true);
 
@@ -492,7 +505,7 @@ test("greetings follow the student's local time and are never repeated inside on
     { reply: "¡Hola, Francesco! Dime qué necesitas.", verification_status: "verified" },
     { text: "Hola otra vez", history: [{ role: "assistant", text: identity.reply }], pedagogical_state: { turn_index: 3 }, client_clock: { ...morningClock, sent_at_ms: morningClock.sent_at_ms + 180_000 }, client_greeting_state: first.greeting_state },
   );
-  assert.equal(repeatedHello.reply, "Dime qué necesitas.");
+  assert.equal(repeatedHello.reply, "Aquí estoy. ¿En qué seguimos?");
 });
 
 test("a new explicit time period and the next local day may open with one matching greeting", () => {
@@ -501,12 +514,19 @@ test("a new explicit time period and the next local day may open with one matchi
     { reply: "¡Hola, Francesco! Vamos a continuar.", verification_status: "verified" },
     { text: "Buenas tardes", history: [{ role: "assistant", text: "Hasta ahora." }], pedagogical_state: { turn_index: 5 }, client_clock: { local_date: "2026-09-13", local_hour: 16, sent_at_ms: morning.greeted_at_ms + 7 * 3_600_000 }, client_greeting_state: morning },
   );
-  assert.equal(afternoon.reply, "¡Buenas tardes! Vamos a continuar.");
+  assert.equal(afternoon.reply, "¡Buenas tardes, Francesco! Vamos a continuar.");
   assert.equal(afternoon.greeting_state.period, "afternoon");
+
+  const eveningHello = api.enforceGreetingPolicy(
+    { reply: "¡Hola, Francesco! Qué gusto saludarte.", verification_status: "verified" },
+    { text: "Hola Eterna", history: [{ role: "assistant", text: afternoon.reply }], pedagogical_state: { turn_index: 6 }, client_clock: { local_date: "2026-09-13", local_hour: 21, sent_at_ms: morning.greeted_at_ms + 12 * 3_600_000 }, client_greeting_state: afternoon.greeting_state },
+  );
+  assert.equal(eveningHello.reply, "¡Buenas noches, Francesco! Qué gusto saludarte.");
+  assert.equal(eveningHello.greeting_state.period, "night");
 
   const nextDay = api.enforceGreetingPolicy(
     { reply: "Vamos a ver los huesos.", verification_status: "verified" },
-    { text: "Quiero seguir con los huesos", history: [{ role: "assistant", text: "Lo dejamos aquí." }], pedagogical_state: { turn_index: 8 }, client_clock: { local_date: "2026-09-14", local_hour: 8, sent_at_ms: morning.greeted_at_ms + 24 * 3_600_000 }, client_greeting_state: afternoon.greeting_state },
+    { text: "Quiero seguir con los huesos", history: [{ role: "assistant", text: "Lo dejamos aquí." }], pedagogical_state: { turn_index: 8 }, client_clock: { local_date: "2026-09-14", local_hour: 8, sent_at_ms: morning.greeted_at_ms + 24 * 3_600_000 }, client_greeting_state: eveningHello.greeting_state },
   );
   assert.equal(nextDay.reply, "¡Buenos días! Vamos a ver los huesos.");
   assert.equal(nextDay.greeting_state.local_date, "2026-09-14");
