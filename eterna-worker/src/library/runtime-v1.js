@@ -5,7 +5,7 @@
  */
 (function(root){
   'use strict';
-  const VERSION='library-first-v7-content';
+  const VERSION='library-first-v8-natural-fastpath';
   const MODES=new Set(['homework','ask','review','explain','exam','practice']);
   const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es-ES').replace(/[¿?¡!.,;:]/g,' ').replace(/\s+/g,' ').trim();
   const whole=v=>{const s=norm(v).replace(/^eterna /,'').replace(/ eterna$/,'').replace(/^(?:por favor|porfa) /,'').replace(/ (?:por favor|porfa|gracias)$/,'').trim();return s==='eterna'?'hola':s};
@@ -159,12 +159,12 @@
     let s=whole(text);
     // A grammar, not a fuzzy substring match. Every remaining word must be an alias.
     s=s.replace(/^hola(?: eterna)? /,'')
-      .replace(/^(?:me puedes|me podrias|puedes|podrias) (?:explicar|ensenar|ayudar a entender|ayudarme a entender)(?: un poco)? /,'')
-      .replace(/^(?:me explicas|podemos repasar|podemos practicar|necesito ayuda con|tengo dudas sobre) /,'')
-      .replace(/ (?:paso a paso|de forma sencilla|de manera sencilla)$/,'');
-    s=s.replace(/^(?:quiero|necesito) (?:aprender|entender|practicar|repasar|estudiar)(?: sobre)? /,'')
-      .replace(/^(?:explicame|explica|ensename|cuentame|ayudame con|ayudame a entender|repasar|practicar|repasemos|practiquemos)(?: sobre)? /,'')
-      .replace(/^(?:que es|que son|en que consiste|como funciona|como funcionan) /,'')
+      .replace(/^(?:me puedes|me podrias|puedes|podrias|quiero que me|necesito que me) (?:explicar|expliques|ensenar|ensenes|ayudar a entender|ayudarme a entender|ayudes a entender)(?: un poco)? /,'')
+      .replace(/^(?:me explicas|me cuentas|me ensenas|podemos repasar|podemos practicar|ayudame a repasar|ayudame a practicar|necesito ayuda con|tengo dudas sobre|tengo una duda sobre|no entiendo bien) /,'')
+      .replace(/ (?:paso a paso|de forma sencilla|de manera sencilla|facil|facilmente|con un ejemplo|con ejemplos)$/,'');
+    s=s.replace(/^(?:quiero|necesito|me gustaria) (?:aprender|entender|comprender|practicar|repasar|estudiar|saber)(?: sobre)? /,'')
+      .replace(/^(?:explicame|explica|ensename|cuentame|ayudame con|ayudame a entender|ayudame a comprender|repasar|practicar|repasemos|practiquemos|hablame de)(?: sobre)? /,'')
+      .replace(/^(?:que es|que son|que significa|que significan|en que consiste|en que consisten|como funciona|como funcionan) /,'')
       .replace(/^(?:el|la|los|las|un|una) /,'').trim();
     const hits=(aliasIndex().get(s)||[]).filter(l=>appropriate(l,profile));
     return hits.length===1?hits[0]:null;
