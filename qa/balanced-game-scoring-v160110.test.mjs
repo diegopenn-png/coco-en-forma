@@ -101,7 +101,7 @@ test("web y PWA usan el motor común antes de abrir cualquier juego", () => {
   assert.match(html, /balancedScore\(active\.id,active\.level,performance\)/);
   assert.match(html, /promedio por partida/);
   assert.doesNotMatch(html, /var scoreLimit=id==="futbol"\?1300:1000/);
-  assert.match(sw, /coco-en-forma-v160\.100\.17-eterna-contextual-dialogue-r1/);
+  assert.match(sw, /coco-en-forma-v160\.100\.18-eterna-desktop-composer-r1/);
   assert.match(sw, /\.\/coco-scoring-v160110\.js/);
 });
 
