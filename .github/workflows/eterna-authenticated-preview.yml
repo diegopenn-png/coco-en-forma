@@ -161,7 +161,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.99.25-definitive-candidate' eterna-worker/src/index.js >/dev/null
+          grep -F '160.99.26-systemwide-pedagogical-director-candidate' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -261,7 +261,7 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.99.25-definitive-candidate"
+              && payload.version === "160.99.26-systemwide-pedagogical-director-candidate"
               && payload.owned_library?.enabled === true
               && payload.owned_library?.lessons === 410
               && payload.owned_library?.protocols === 56
@@ -333,7 +333,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.99.25-contextual-dialogue · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.25-definitive-candidate"
+            echo "- Expected versions: frontend 160.99.25-contextual-dialogue · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.26-systemwide-pedagogical-director-candidate"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents
