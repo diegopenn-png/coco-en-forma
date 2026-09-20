@@ -45,9 +45,9 @@ jobs:
       APEX_URL: https://cocoenforma.com
       WWW_URL: https://www.cocoenforma.com
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
-      EXPECTED_WORKER_VERSION: 160.99.24-contextual-dialogue
+      EXPECTED_WORKER_VERSION: 160.99.25-definitive-candidate
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.17-eterna-contextual-dialogue-r1
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.18-eterna-desktop-composer-r1
     steps:
       - name: Fetch uncached production assets
         shell: bash

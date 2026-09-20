@@ -1,5 +1,5 @@
-/* ETERNA desktop compact header · 160.93.26
- * Scope: desktop-only compact mode/action bar + same Coco profile card shape as home screen.
+/* ETERNA desktop compact header · 160.100.18
+ * Scope: desktop-only compact mode/action bar, composer proportions + same Coco profile card shape as home screen.
  * Keeps mobile/tablet unchanged.
  */
 (function(){
@@ -61,6 +61,11 @@
     '#eternaOverlayV159 .eternaV160ModeDropdownButton{height:38px!important;font-size:11.5px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160NewActivity{height:40px!important;min-height:40px!important;border-radius:11px!important;}'+
     '#eternaOverlayV159 .eternaV160ModeActions>.eternaV160Conversation{min-height:86px!important;border-radius:13px!important;}'+
+  '}'+
+  '@media (min-width:1025px){'+
+    '#eternaOverlayV159 .eternaV159InputRow{grid-template-columns:48px minmax(0,1fr) 52px!important;align-items:center!important;}'+
+    '#eternaOverlayV159 .eternaV159InputRow textarea[data-et-input]{min-width:0!important;width:100%!important;box-sizing:border-box!important;}'+
+    '#eternaOverlayV159 .eternaV159InputRow [data-et-send]{width:52px!important;min-width:52px!important;max-width:52px!important;height:48px!important;padding:0!important;justify-self:end!important;}'+
   '}'+
   '@keyframes eternaCocoProfile1609326{0%,20%,100%{transform:translateY(0) rotate(0) scale(1)}5%{transform:translateY(-2px) rotate(-1deg) scale(1.02)}10%{transform:translateY(1px) rotate(1deg) scale(1.025)}15%{transform:translateY(-1px) rotate(-.5deg) scale(1.015)}}'+
   '@media (prefers-reduced-motion:reduce){#eternaOverlayV159 .eternaV160CocoProfileFrame{animation:none!important;}}';

@@ -12,6 +12,7 @@ const pwaManager = readFileSync("coco-v152-pwa.js", "utf8");
 const manifest = JSON.parse(readFileSync("manifest.webmanifest", "utf8"));
 const workflow = readFileSync(".github/workflows/eterna-authenticated-preview.yml", "utf8");
 const browserQa = readFileSync("qa/device-update-browser.mjs", "utf8");
+const desktopCompact = readFileSync("eterna-desktop-compact-v160907.js", "utf8");
 
 function extractPwaRegistrar(source) {
   const start = source.indexOf("  function registerPwa() {");
@@ -25,7 +26,7 @@ const directScripts = [
   '<script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160100"></script>',
   '<script id="coco-family-friendly-v160100" src="./coco-family-friendly-v160100.js?v=160100"></script>',
   '<script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960"></script>',
-  '<script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=160960"></script>',
+  '<script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=16010018"></script>',
 ];
 
 test("first visits load every production presentation layer without depending on a Service Worker", () => {
@@ -39,13 +40,13 @@ test("first visits load every production presentation layer without depending on
 
 test("PWA clients request and activate the current release instead of retaining an old device cache", () => {
   assert.match(index, /manifest\.webmanifest\?v=160108/);
-  assert.match(index, /sw\.js\?v=160117-r1/);
+  assert.match(index, /sw\.js\?v=160118-r1/);
   assert.match(index, /updateViaCache:"none"/);
   assert.match(index, /registration\.update\(\)/);
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.17-eterna-contextual-dialogue-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.18-eterna-desktop-composer-r1"/);
   for (const asset of [
     "coco-scoring-v160110.js",
     "coco-variety-director-v160960.js",
@@ -63,6 +64,16 @@ test("PWA clients request and activate the current release instead of retaining 
   assert.equal(manifest.display, "standalone");
 });
 
+test("desktop composer gives the text field the flexible column without changing iPhone", () => {
+  const start = desktopCompact.indexOf("@media (min-width:1025px)");
+  const end = desktopCompact.indexOf("@keyframes", start);
+  assert.ok(start >= 0 && end > start, "desktop-only composer media query missing");
+  const desktopRule = desktopCompact.slice(start, end);
+  assert.match(desktopRule, /grid-template-columns:48px minmax\(0,1fr\) 52px!important/);
+  assert.match(desktopRule, /\[data-et-send\]\{width:52px!important;min-width:52px!important;max-width:52px!important;height:48px!important/);
+  assert.doesNotMatch(desktopCompact.slice(0, start), /eternaV159InputRow/);
+});
+
 test("current and legacy PWA entry points share one owner and one canonical worker URL", () => {
   const owner = "__COCO_PWA_REGISTRATION_OWNER__";
   for (const source of [index, runtime, legacyRuntime, pwaManager]) assert.match(source, new RegExp(owner), owner);
@@ -71,9 +82,9 @@ test("current and legacy PWA entry points share one owner and one canonical work
   assert.match(legacyRuntime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-legacy-v160100"/);
   assert.match(pwaManager, /__COCO_PWA_REGISTRATION_OWNER__="manager-v160100"/);
   assert.match(index, /coco-v142-runtime\.js\?v=160100/);
-  assert.match(runtime, /sw\.js\?v=160117-r1/);
-  assert.match(legacyRuntime, /sw\.js\?v=160117-r1/);
-  assert.match(pwaManager, /SW_TAG="160117-r1"/);
+  assert.match(runtime, /sw\.js\?v=160118-r1/);
+  assert.match(legacyRuntime, /sw\.js\?v=160118-r1/);
+  assert.match(pwaManager, /SW_TAG="160118-r1"/);
   assert.doesNotMatch(runtime, /new URL\("sw\.js",document\.baseURI\)/);
   assert.doesNotMatch(legacyRuntime, /new URL\("sw\.js",document\.baseURI\)/);
   assert.ok(index.indexOf('__COCO_PWA_REGISTRATION_OWNER__ = "index-v160100"') < index.indexOf('coco-v142-runtime.js?v=160100'));
@@ -114,7 +125,7 @@ test("loading the production index and runtime schedules exactly one worker regi
   loadListeners[0]();
   await Promise.resolve();
   assert.equal(registrations.length, 1);
-  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160117-r1");
+  assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160118-r1");
   assert.equal(registrations[0].options.updateViaCache, "none");
 });
 
