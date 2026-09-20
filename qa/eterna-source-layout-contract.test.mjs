@@ -21,7 +21,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.24-contextual-dialogue/);
+  assert.match(worker, /160\.99\.25-definitive-candidate/);
   assert.match(worker, /deterministic_subject_intake_v1:true/);
   assert.match(worker, /current_turn_subject_priority_v1:true/);
   assert.match(worker, /current_image_priority_v1:true/);
@@ -88,9 +88,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /payload\.features\?\.parental_authorization_gate === true/);
   assert.doesNotMatch(preview, /health\/dependencies/);
   assert.doesNotMatch(preview, /payload\.photo_intake/);
-  assert.match(preview, /grep -F '160\.99\.24-contextual-dialogue' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.24-contextual-dialogue"/);
-  assert.match(preview, /API 160\.99\.24-contextual-dialogue/);
+  assert.match(preview, /grep -F '160\.99\.25-definitive-candidate' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.99\.25-definitive-candidate"/);
+  assert.match(preview, /API 160\.99\.25-definitive-candidate/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -224,11 +224,14 @@ test("the 160.99.18 production gate promotes the exact language-photo release", 
   assert.match(production, /wrangler rollback/);
 });
 
-test("the 160.99.24 production gate preserves dependency checks and contextual dialogue", () => {
+test("the 160.99.25 production gate preserves dependencies and gates the definitive candidate", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-1609919.yml", "utf8");
-  assert.match(production, /\.github\/release-eterna-1609924/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.24-contextual-dialogue/);
-  assert.match(production, /--preview-alias "release-1609924"/);
+  assert.match(production, /\.github\/release-eterna-1609925/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.25-definitive-candidate/);
+  assert.match(production, /--preview-alias "release-1609925"/);
+  assert.match(production, /--var "ENABLE_ETERNA_LIBRARY:true"/);
+  assert.match(production, /--var "ETERNA_EXERCISE_FACTORY:v1"/);
+  assert.match(production, /--var "ETERNA_CURRICULAR_COMPASS:v1"/);
   assert.match(production, /standard_dialogue_repertoire_v1/);
   assert.match(production, /contextual_comprehension_checks_v1/);
   assert.match(production, /unified_photo_intake_v2/);

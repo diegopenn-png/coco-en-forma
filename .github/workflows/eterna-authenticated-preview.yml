@@ -109,6 +109,10 @@ jobs:
             --var "TTS_MODEL:@cf/myshell-ai/melotts" \
             --var "ENABLE_ACADEMIC_WEB_SEARCH:false" \
             --var "ENABLE_OFFICIAL_WEB_SEARCH:false" \
+            --var "ENABLE_ETERNA_LIBRARY:true" \
+            --var "ETERNA_LIBRARY_RELEASE:eterna-library-2026.09-v8-410-consolidated-1c484e" \
+            --var "ETERNA_EXERCISE_FACTORY:v1" \
+            --var "ETERNA_CURRICULAR_COMPASS:v1" \
             --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee authenticated-preview-api.log
 
@@ -157,7 +161,7 @@ jobs:
           grep -F 'ETERNA Spoken Dialogue v160.94.9' preview-dist/eterna-experience-v160.js >/dev/null
           grep -F 'data-et-converse' preview-dist/eterna-v159.js >/dev/null
           grep -F '160.93.10-canonical-expired-checkout' preview-dist/coco-release-v160903.js >/dev/null
-          grep -F '160.99.24-contextual-dialogue' eterna-worker/src/index.js >/dev/null
+          grep -F '160.99.25-definitive-candidate' eterna-worker/src/index.js >/dev/null
           grep -F '160.96.0-balanced-variety' preview-dist/coco-variety-director-v160960.js >/dev/null
           grep -F 'id="coco-product-ux-v160903"' preview-dist/index.html >/dev/null
           grep -F 'id="coco-reto-2026-direct"' preview-dist/index.html >/dev/null
@@ -257,7 +261,14 @@ jobs:
             const payload = require("./authenticated-preview-health.json");
             const models = payload.model_configuration || {};
             const valid = payload.ok === true
-              && payload.version === "160.99.24-contextual-dialogue"
+              && payload.version === "160.99.25-definitive-candidate"
+              && payload.owned_library?.enabled === true
+              && payload.owned_library?.lessons === 410
+              && payload.owned_library?.protocols === 56
+              && payload.owned_library?.release === "eterna-library-2026.09-v8-410-consolidated-1c484e"
+              && payload.exercise_factory?.enabled === true
+              && payload.exercise_factory?.families === 22
+              && payload.curricular_compass?.enabled === true
               && payload.ai_provider === "cloudflare"
               && payload.cloudflare_ai_configured === true
               && models.scope?.model === "@cf/meta/llama-3.1-8b-instruct-fast"
@@ -303,6 +314,9 @@ jobs:
               && payload.features?.adaptive_teacher_presence_v1 === true
               && payload.features?.transient_relational_thread_v1 === true
               && payload.features?.current_turn_subject_priority_v1 === true
+              && payload.features?.extended_repetition_window_v1 === true
+              && payload.features?.official_subject_router_v1 === true
+              && payload.features?.verification_repair_recheck_v1 === true
               && payload.features?.greeting_timing_v1 === true
               && payload.features?.repeated_greeting_guard_v1 === true
               && payload.features?.client_local_clock_v1 === true
@@ -319,7 +333,7 @@ jobs:
             echo "## Eterna authenticated preview"
             echo "- Frontend: ${PREVIEW_ORIGIN}"
             echo "- API: ${API_PREVIEW_URL}"
-            echo "- Expected versions: frontend 160.99.25-contextual-dialogue · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.24-contextual-dialogue"
+            echo "- Expected versions: frontend 160.99.25-contextual-dialogue · UX 160.96.0-dynamic-daily-missions · games 160.96.0-balanced-variety · API 160.99.25-definitive-candidate"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify exact revision delivery for device user agents

@@ -93,6 +93,10 @@ jobs:
           npx wrangler versions upload \
             --name coco-eterna-v159 \
             --keep-vars \
+            --var "ENABLE_ETERNA_LIBRARY:true" \
+            --var "ETERNA_LIBRARY_RELEASE:eterna-library-2026.09-v8-410-consolidated-1c484e" \
+            --var "ETERNA_EXERCISE_FACTORY:v1" \
+            --var "ETERNA_CURRICULAR_COMPASS:v1" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
           {
             echo "## Eterna Worker preview"
