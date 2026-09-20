@@ -1,11 +1,11 @@
-name: Deploy Eterna Worker 160.99.25
+name: Deploy Eterna Worker 160.99.26
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/release-eterna-1609925"
+      - ".github/release-eterna-1609926"
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.99.25-definitive-candidate
+      EXPECTED_VERSION: 160.99.26-systemwide-pedagogical-director-candidate
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
     steps:
@@ -78,8 +78,8 @@ jobs:
           allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,https://raw.githack.com"
           npx --no-install wrangler versions upload \
             --name "$WORKER_NAME" \
-            --preview-alias "release-1609925" \
-            --message "Eterna 160.99.25 definitive candidate" \
+            --preview-alias "release-1609926" \
+            --message "Eterna 160.99.26 definitive candidate" \
             --keep-vars \
             --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
             --var "MODERATION_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
@@ -136,6 +136,15 @@ jobs:
                   && p.features?.verification_repair_recheck_v1 === true
                   && p.features?.extended_repetition_window_v1 === true
                   && p.features?.official_subject_router_v1 === true
+                  && p.features?.learning_activity_context_v1 === true
+                  && p.features?.glossary_sequence_v1 === true
+                  && p.features?.bilingual_subject_routing_v1 === true
+                  && p.features?.proportional_response_depth_v1 === true
+                  && p.features?.implicit_pending_question_recovery_v1 === true
+                  && p.features?.routine_closing_suppression_v1 === true
+                  && p.features?.gentle_typo_correction_v1 === true
+                  && p.features?.verified_glossary_meanings_v1 === true
+                  && p.features?.low_risk_verifier_recovery_v1 === true
                   && p.owned_library?.enabled === true
                   && p.owned_library?.lessons === 410
                   && p.owned_library?.protocols === 56
@@ -203,7 +212,7 @@ jobs:
           npx --no-install wrangler versions deploy \
             "${{ steps.upload.outputs.version_id }}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.99.25 definitive candidate" \
+            --message "Eterna 160.99.26 definitive candidate" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -236,6 +245,15 @@ jobs:
                   && p.features?.verification_repair_recheck_v1 === true
                   && p.features?.extended_repetition_window_v1 === true
                   && p.features?.official_subject_router_v1 === true
+                  && p.features?.learning_activity_context_v1 === true
+                  && p.features?.glossary_sequence_v1 === true
+                  && p.features?.bilingual_subject_routing_v1 === true
+                  && p.features?.proportional_response_depth_v1 === true
+                  && p.features?.implicit_pending_question_recovery_v1 === true
+                  && p.features?.routine_closing_suppression_v1 === true
+                  && p.features?.gentle_typo_correction_v1 === true
+                  && p.features?.verified_glossary_meanings_v1 === true
+                  && p.features?.low_risk_verifier_recovery_v1 === true
                   && p.owned_library?.enabled === true
                   && p.owned_library?.lessons === 410
                   && p.owned_library?.protocols === 56
@@ -254,7 +272,7 @@ jobs:
           done
           if [[ "$healthy" != "true" ]]; then
             echo "Production health verification failed; rolling back." >&2
-            npx --no-install wrangler rollback --name "$WORKER_NAME" --message "Automatic rollback after failed Eterna 160.99.25 health check" --yes
+            npx --no-install wrangler rollback --name "$WORKER_NAME" --message "Automatic rollback after failed Eterna 160.99.26 health check" --yes
             exit 1
           fi
           echo "Production is healthy on ${EXPECTED_VERSION}."
