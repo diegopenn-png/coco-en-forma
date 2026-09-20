@@ -224,16 +224,25 @@ test("the 160.99.18 production gate promotes the exact language-photo release", 
   assert.match(production, /wrangler rollback/);
 });
 
-test("the 160.99.25 production gate preserves dependencies and gates the definitive candidate", () => {
+test("the 160.99.26 production gate preserves dependencies and gates the systemwide pedagogical director", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-1609919.yml", "utf8");
-  assert.match(production, /\.github\/release-eterna-1609925/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.25-definitive-candidate/);
-  assert.match(production, /--preview-alias "release-1609925"/);
+  assert.match(production, /\.github\/release-eterna-1609926/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.26-systemwide-pedagogical-director-candidate/);
+  assert.match(production, /--preview-alias "release-1609926"/);
   assert.match(production, /--var "ENABLE_ETERNA_LIBRARY:true"/);
   assert.match(production, /--var "ETERNA_EXERCISE_FACTORY:v1"/);
   assert.match(production, /--var "ETERNA_CURRICULAR_COMPASS:v1"/);
   assert.match(production, /standard_dialogue_repertoire_v1/);
   assert.match(production, /contextual_comprehension_checks_v1/);
+  assert.match(production, /learning_activity_context_v1/);
+  assert.match(production, /glossary_sequence_v1/);
+  assert.match(production, /bilingual_subject_routing_v1/);
+  assert.match(production, /proportional_response_depth_v1/);
+  assert.match(production, /implicit_pending_question_recovery_v1/);
+  assert.match(production, /routine_closing_suppression_v1/);
+  assert.match(production, /gentle_typo_correction_v1/);
+  assert.match(production, /verified_glossary_meanings_v1/);
+  assert.match(production, /low_risk_verifier_recovery_v1/);
   assert.match(production, /unified_photo_intake_v2/);
   assert.match(production, /photo_intake_all_six_modes_v1/);
   assert.match(production, /photo_uses_chat_safety_and_pedagogy_v1/);
