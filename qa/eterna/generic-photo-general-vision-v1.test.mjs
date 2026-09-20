@@ -48,7 +48,7 @@ test('explicitly detected mathematics keeps the arithmetic-specialized route',()
 });
 
 test('release preserves generic-photo routing in the unified intake revision',()=>{
-  assert.match(source,/const VERSION="160\.99\.25-definitive-candidate";/);
+  assert.match(source,/const VERSION="160\.99\.26-systemwide-pedagogical-director-candidate";/);
   assert.match(source,/generic_photo_general_vision_v1:true/);
   assert.match(source,/unified_photo_intake_v2:true/);
 });
