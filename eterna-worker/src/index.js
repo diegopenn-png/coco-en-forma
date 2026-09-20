@@ -20,7 +20,7 @@ import {DEPENDENCY_FRACTION_PROBE_IMAGE_DATA_URL} from "./photo-dependency-fixtu
  */
 const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.99.24-contextual-dialogue";
+const VERSION="160.99.25-definitive-candidate";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -53,8 +53,8 @@ const FULL_INTELLIGENCE_POLICY=Object.freeze({
 const PUBLIC_TUTOR_BENCHMARK=Object.freeze({
   reference:"Khanmigo (publicly documented patterns, independently implemented)",
   max_active_questions:1,
-  recent_turns:8,
-  recent_assistant_turns:2,
+  recent_turns:12,
+  recent_assistant_turns:4,
   hint_levels:5,
   visual_confidence_threshold:.76,
   immediate_feedback:true,
@@ -80,6 +80,42 @@ function publicTutorBenchmarkInstruction(){return`BENCHMARK DOCENTE PÚBLICO=${J
 
 const CONVERSATION_DIRECTOR_VERSION="conversation-director-v1";
 function directorNorm(value){return String(value??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("es-ES").replace(/[¿?¡!.,;:]+/g," ").replace(/\s+/g," ").trim()}
+function officialCurriculumSubjects(){const groups=globalThis.ETERNA_COMPASS_DATA?.subjects||{},out=[],seen=new Set();for(const values of Object.values(groups))for(const value of Array.isArray(values)?values:[]){const key=directorNorm(value);if(key&&!seen.has(key)){seen.add(key);out.push(String(value))}}return out}
+const OFFICIAL_SUBJECT_ALIASES=Object.freeze([
+  ["Educación Plástica, Visual y Audiovisual",["plastica","educacion plastica"]],
+  ["Educación en Valores Cívicos y Éticos",["valores","valores civicos","educacion en valores"]],
+  ["Educación Física",["educacion fisica"]],
+  ["Conocimiento del Medio Natural, Social y Cultural",["conocimiento del medio"]],
+  ["Comunicación y Representación de la Realidad",["comunicacion y representacion de la realidad"]],
+  ["Crecimiento en Armonía",["crecimiento en armonia"]],
+  ["Descubrimiento y Exploración del Entorno",["descubrimiento y exploracion del entorno"]],
+  ["Tecnología y Digitalización",["tecnologia y digitalizacion"]],
+  ["Tecnología e Ingeniería",["tecnologia e ingenieria"]],
+  ["Economía y Emprendimiento",["economia y emprendimiento"]],
+  ["Formación y Orientación Personal y Profesional",["formacion y orientacion personal y profesional","fop"]],
+  ["Biología y Geología",["biologia y geologia"]],
+  ["Física y Química",["fisica y quimica"]],
+  ["Geografía e Historia",["geografia e historia"]],
+  ["Historia del Arte",["historia del arte"]],
+  ["Historia de España",["historia de espana"]],
+  ["Historia de la Filosofía",["historia de la filosofia"]],
+  ["Historia del Mundo Contemporáneo",["historia del mundo contemporaneo"]],
+  ["Matemáticas Aplicadas a las Ciencias Sociales",["matematicas aplicadas a las ciencias sociales"]],
+  ["Dibujo Técnico",["dibujo tecnico"]],
+  ["Cultura Audiovisual",["cultura audiovisual"]],
+  ["Análisis Musical",["analisis musical"]],
+  ["Artes Escénicas",["artes escenicas"]],
+  ["Literatura Universal",["literatura universal"]],
+  ["Literatura Dramática",["literatura dramatica"]]
+]);
+function explicitOfficialSubject(text,{exact=false}={}){
+  const raw=directorNorm(text);let trimmed=raw.replace(/^(?:(?:vale|ok) )?(?:ahora |cambiando de tema |cambio de tema |quiero |necesito |me gustaria )?(?:(?:estudiar|repasar|practicar|preparar|prepararme|aprender|ver|trabajar)\b\s*)?/,"").trim();
+  trimmed=trimmed.replace(/^(?:(?:sobre|de|para)\b|la asignatura de\b|la materia de\b)\s*/,"").replace(/^(?:el|la|los|las)\s+/,"").trim();
+  const labels=officialCurriculumSubjects().map(label=>[label,directorNorm(label)]).sort((a,b)=>b[1].length-a[1].length);
+  for(const[label,key]of labels)if(trimmed===key)return label;
+  for(const[label,aliases]of OFFICIAL_SUBJECT_ALIASES)for(const alias of aliases){const key=directorNorm(alias);if(trimmed===key)return label;if(!exact&&key.split(" ").length>1&&new RegExp(`(?:^| )${key.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}(?: |$)`).test(raw))return label}
+  return null
+}
 function profileAgeFromContext(ctx){
   const candidates=[ctx?.base?.birth_date,ctx?.base?.fecha_nacimiento,ctx?.profile?.birth_date,ctx?.profile?.fecha_nacimiento];
   for(const candidate of candidates){const calculated=ageFromBirthDate(String(candidate||""));if(calculated!=null)return calculated}
@@ -88,6 +124,7 @@ function profileAgeFromContext(ctx){
 function isStudentAgeQuestion(text){const n=directorNorm(text);return /^(?:eterna )?(?:que edad tengo|cuantos anos tengo|sabes mi edad|te acuerdas de mi edad)$/.test(n)}
 function explicitAcademicSwitch(text){const n=directorNorm(text);return /^(?:(?:vale|ok) )?(?:ahora|cambiando de tema|cambio de tema|volvamos|retomemos|sigamos con|continuemos con)\b/.test(n)||/\b(?:matematicas|lengua|ingles|biologia|fisica|quimica|historia|geografia|examen|deberes|tarea|ejercicio)\b/.test(n)}
 function currentTurnSubjectHint(text){
+  const official=explicitOfficialSubject(text);if(official)return official;
   const n=directorNorm(text),rules=[
     ["Matemáticas",/\b(?:matematicas|mates|aritmetica|algebra|geometria|fraccion(?:es)?|division(?:es)?|multiplicacion(?:es)?|ecuacion(?:es)?|porcentaje(?:s)?)\b/],
     ["Lengua Castellana y Literatura",/\b(?:lengua|literatura|ortografia|gramatica|prefijo|sufijo|antonimo|sinonimo|verbo|sustantivo|adjetivo|poesia|metafora|sujeto|predicado|sintaxis)\b|\bcompleta con [bvghy]\b/],
@@ -113,7 +150,7 @@ function currentTurnContextDecision({text,image,scope={},pedState={}}={}){
 function currentTurnPriorityInstruction(text,image){const subject=currentTurnSubjectHint(text);if(image){const hint=subject?` El alumno identifica o sugiere la materia actual como ${subject}.`:"";return`PRIORIDAD DEL TURNO ACTUAL: la imagen adjunta y el mensaje actual mandan sobre el historial, la materia, el ejercicio y la pregunta pendiente anteriores.${hint} Determina la materia y el ejercicio de ESTA imagen desde sus píxeles. Si contradice el hilo anterior, cambia de materia y suspende el hilo previo. Nunca describas letras, palabras o huecos ortográficos como números. No reutilices una aclaración de baja confianza de otra imagen o asignatura.`}return subject?`PRIORIDAD DEL TURNO ACTUAL: el mensaje actual indica ${subject}; si contradice la materia anterior, cambia de materia y suspende el hilo previo.`:""}
 
 function interventionTags(text){const n=directorNorm(text),tags=[];if(/adulto|madre|padre|profesor|familia/.test(n))tags.push("adult_support");if(/112|emergencia|peligro inmediato/.test(n))tags.push("emergency");if(/te entiendo|entiendo que|vaya|siento que/.test(n))tags.push("validation");if(/que te pasa|que ocurrio|que paso|que parte|como te sientes/.test(n))tags.push("clarify");if(/puedes|prueba|haz|dile|cuentale|habla con|anota/.test(n))tags.push("action");if(/te sirvio|ha ayudado|como estas ahora|mejor ahora/.test(n))tags.push("check");return tags}
-function recentInterventionTags(history){const seen=new Set();for(const item of Array.isArray(history)?history.slice(-8):[]){if(item?.role!=="assistant")continue;for(const tag of interventionTags(item.text||item.reply||""))seen.add(tag)}return [...seen]}
+function recentInterventionTags(history){const seen=new Set();for(const item of Array.isArray(history)?history.slice(-12):[]){if(item?.role!=="assistant")continue;for(const tag of interventionTags(item.text||item.reply||""))seen.add(tag)}return [...seen]}
 function conversationDirector({text,image,history=[],ctx,pedState={},scope,currentSituation}={}){
   const safety=childSafeguardingCategory(text);
   if(safety)return{version:CONVERSATION_DIRECTOR_VERSION,route:"safety",safety_category:safety};
@@ -823,6 +860,7 @@ function dontKnowResponse(pedState,mode,modeState){
 }
 function adaptiveCloseResponse(pedState,mode,modeState){const ms=sanitizeModeState(modeState),done=ms.correct_count+ms.partial_count+ms.incorrect_count,activity=mode==="exam"?"examen":"práctica",reply=`Cerramos ${activity}. Has realizado ${done} intento${done===1?"":"s"}: ${ms.correct_count} correcto${ms.correct_count===1?"":"s"}, ${ms.partial_count} parcial${ms.partial_count===1?"":"es"} y ${ms.incorrect_count} incorrecto${ms.incorrect_count===1?"":"s"}. Nivel alcanzado: ${ms.difficulty}.`;return{reply,verification_status:"verified",subject:pedState.active_subject||null,concept:pedState.active_concept||pedState.active_topic||null,help_level:0,check_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:"retrieval_practice",mode_label:(MODE_PROFILES[mode]||MODE_PROFILES.homework).label,mode_state:ms,pedagogical_state:{...pedState,current_mode:mode,pending_question:null,pending_question_id:null,expected_answer_type:"none",expected_key_ideas:[],likely_misconceptions:[],student_answer_assessment:"not_applicable",conversation_stage:"complete",turn_index:Math.min(500,Number(pedState.turn_index||0)+1),last_tutor_act:"summarize",expected_student_act:"none",last_question_type:"none",unresolved_question:null,last_student_intent:"close"},auto_speak:false,deterministic_adaptive_close:true}}
 function broadExamSubject(text){
+  const official=explicitOfficialSubject(text,{exact:true});if(official)return official;
   const s=normalizeDetectionText(text).replace(/\s+/g," ").trim(),patterns=[
     [/^(?:cuentame|hablame|quiero estudiar|quiero repasar|quiero prepararme(?: para el examen)?|preparame(?: para el examen)?|estudiemos|repasemos)?\s*(?:sobre|de|para)?\s*(?:las|la)?\s*(?:matematicas|mates)\s*$/, "Matemáticas"],
     [/^(?:cuentame|hablame|quiero estudiar|quiero repasar|quiero prepararme(?: para el examen)?|preparame(?: para el examen)?|estudiemos|repasemos)?\s*(?:sobre|de|para)?\s*(?:la)?\s*(?:lengua|literatura)\s*$/, "Lengua Castellana y Literatura"],
@@ -924,6 +962,7 @@ function normalizeForSearch(v){return String(v||"").normalize("NFD").replace(/[\
 function subjectScore(subject,row){const q=normalizeForSearch(subject),r=normalizeForSearch(row.subject||"");if(!q)return 0;if(r===q)return 8;const qa=q.split(/\s+/).filter(x=>x.length>2),ra=new Set(r.split(/\s+/));return qa.reduce((n,w)=>n+(ra.has(w)?2:r.includes(w)?1:0),0)}
 function curricularSubject(subject,concept,text,profile,domain){
   const raw=String(subject||"").trim(),q=normalizeDetectionText([domain,raw,concept,text].filter(Boolean).join(" ")),stage=normalizeDetectionText(profile?.stage||""),year=normalizeDetectionText(profile?.school_year||"");
+  const official=explicitOfficialSubject(raw||text,{exact:true});if(official)return official;
   const primary=stage.includes("primaria")||year.includes("primaria")||stage.includes("infantil")||year.includes("infantil");
   if(/\b(matematic|algebr|geometr|fraccion|porcent|ecuacion|raiz cuadrada|division|multiplicacion|aritmetic)\w*/.test(q))return"Matemáticas";
   if(/\b(fisic|gravedad|arquimed|densidad|flotacion|flotar|empuje|fuerza|energia|movimiento|orbita|velocidad|presion)\w*/.test(q))return primary?"Ciencias Naturales":"Física";
@@ -1261,7 +1300,7 @@ function visionNeedsClarification(vision){if(!vision)return false;const usableIt
 const MODE_STATE_SCHEMA={type:"object",additionalProperties:false,properties:{question_number:{type:"integer",minimum:0,maximum:100},correct_count:{type:"integer",minimum:0,maximum:100},partial_count:{type:"integer",minimum:0,maximum:100},incorrect_count:{type:"integer",minimum:0,maximum:100},difficulty:{type:"integer",minimum:1,maximum:5},focus:{type:["string","null"]}},required:["question_number","correct_count","partial_count","incorrect_count","difficulty","focus"]};
 const TUTOR_SCHEMA={type:"object",additionalProperties:false,properties:{reply:{type:"string",minLength:1},subject:{type:["string","null"]},concept:{type:["string","null"]},help_level:{type:"integer",minimum:0,maximum:5},check_question:{type:["string","null"]},practice_suggestion:{type:["string","null"]},student_answer_assessment:{type:"string",enum:["not_applicable","correct","partial","incorrect"]},used_curriculum:{type:"boolean"},needs_clarification:{type:"boolean"},strategy_used:{type:"string",enum:["socratic_question","worked_example","analogy","visual_structure","retrieval_practice","step_by_step","error_analysis","direct_explanation"]},mode_state:MODE_STATE_SCHEMA,expected_answer_type:{type:"string",enum:["none","open","choice","numeric","yes_no","short_concept"]},expected_key_ideas:{type:"array",items:{type:"string"},maxItems:8},likely_misconceptions:{type:"array",items:{type:"string"},maxItems:8},conversation_stage:{type:"string",enum:["new_topic","explaining","awaiting_student_answer","correcting_misconception","clarifying","practicing","examining","complete"]},tutor_act:{type:"string",enum:TUTOR_ACTS},new_explained_points:{type:"array",items:{type:"string"},maxItems:6}},required:["reply","subject","concept","help_level","check_question","practice_suggestion","student_answer_assessment","used_curriculum","needs_clarification","strategy_used","mode_state","expected_answer_type","expected_key_ideas","likely_misconceptions","conversation_stage","tutor_act","new_explained_points"]};
 
-async function tutor(env,{text,image,mode,history,ctx,scope,curriculum,mathCheck,vision,externalEvidence,modeState,practiceTarget,pedState,turnRel,factAnchor,directKnowledge,repetitionGuard,answerAnchor}){const profile=MODE_PROFILES[mode]||MODE_PROFILES.homework,agePolicy=ageTeachingProfile(ctx),desired=helpFromMastery(ctx,scope.concept||pedState.active_concept),metaInstruction=detectMetaInstruction(text,history),previousCheck=pedState.pending_question||latestCheckQuestion(history),evidence=curriculum.map(x=>({title:x.title,summary:x.summary,pedagogy_notes:x.pedagogy_notes||null,misconceptions:x.common_misconceptions||[],examples:x.example_templates||[],source:x.eterna_curriculum_sources?.title||null,official_url:x.eterna_curriculum_sources?.official_url||null})),strategy=strategyPreferences(ctx,scope.subject||pedState.active_subject,mode),student={age:ctx.base?.edad||null,stage:ctx.profile?.stage||null,school_year:ctx.profile?.school_year||null,autonomous_community:ctx.profile?.autonomous_community||null,weak_concepts:[...(ctx.memory||[]).map(m=>({title:m.concept_label,subject:m.subject,score:m.mastery_score,last_help:m.last_help_level,last_practiced_at:m.last_practiced_at||null})),...(ctx.mastery||[]).map(m=>({title:m.eterna_concepts?.title,subject:m.eterna_concepts?.subject,score:m.mastery_score,last_help:m.last_help_level,last_practiced_at:m.last_practiced_at||null}))].slice(0,12),student_name:cleanChildText(ctx.base?.apodo||ctx.profile?.apodo||"").split(/\s+/)[0].slice(0,32)||null,strategy_preferences:strategy,academic_memory:relMem(ctx,text,scope.subject||pedState.active_subject,scope.concept||pedState.active_concept).map(m=>({subject:m.subject,topic:m.topic_label,meaning:m.resolved_meaning,summary:m.summary_text,key_points:m.key_points,next_step:m.next_step,last_seen_at:m.last_seen_at}))},recentAssistant=(history||[]).filter(x=>x&&x.role==="assistant"&&typeof x.text==="string").slice(-2).map(x=>x.text.slice(0,1500));
+async function tutor(env,{text,image,mode,history,ctx,scope,curriculum,mathCheck,vision,externalEvidence,modeState,practiceTarget,pedState,turnRel,factAnchor,directKnowledge,repetitionGuard,answerAnchor}){const profile=MODE_PROFILES[mode]||MODE_PROFILES.homework,agePolicy=ageTeachingProfile(ctx),desired=helpFromMastery(ctx,scope.concept||pedState.active_concept),metaInstruction=detectMetaInstruction(text,history),previousCheck=pedState.pending_question||latestCheckQuestion(history),evidence=curriculum.map(x=>({title:x.title,summary:x.summary,pedagogy_notes:x.pedagogy_notes||null,misconceptions:x.common_misconceptions||[],examples:x.example_templates||[],source:x.eterna_curriculum_sources?.title||null,official_url:x.eterna_curriculum_sources?.official_url||null})),strategy=strategyPreferences(ctx,scope.subject||pedState.active_subject,mode),student={age:ctx.base?.edad||null,stage:ctx.profile?.stage||null,school_year:ctx.profile?.school_year||null,autonomous_community:ctx.profile?.autonomous_community||null,weak_concepts:[...(ctx.memory||[]).map(m=>({title:m.concept_label,subject:m.subject,score:m.mastery_score,last_help:m.last_help_level,last_practiced_at:m.last_practiced_at||null})),...(ctx.mastery||[]).map(m=>({title:m.eterna_concepts?.title,subject:m.eterna_concepts?.subject,score:m.mastery_score,last_help:m.last_help_level,last_practiced_at:m.last_practiced_at||null}))].slice(0,12),student_name:cleanChildText(ctx.base?.apodo||ctx.profile?.apodo||"").split(/\s+/)[0].slice(0,32)||null,strategy_preferences:strategy,academic_memory:relMem(ctx,text,scope.subject||pedState.active_subject,scope.concept||pedState.active_concept).map(m=>({subject:m.subject,topic:m.topic_label,meaning:m.resolved_meaning,summary:m.summary_text,key_points:m.key_points,next_step:m.next_step,last_seen_at:m.last_seen_at}))},recentAssistant=(history||[]).filter(x=>x&&x.role==="assistant"&&typeof x.text==="string").slice(-4).map(x=>x.text.slice(0,1500));
 const prompt=`Devuelve JSON. Eres Eterna, tutor escolar personalizado.
 ${fullIntelligenceInstruction()}
 ${publicTutorBenchmarkInstruction()}
@@ -1320,13 +1359,13 @@ MODO ACTIVO=${mode} (${profile.label}). CONTRATO DEL MODO=${JSON.stringify(MODE_
 GUARDIA_REPETICIÓN_CLIENTE=${JSON.stringify(repetitionGuard||null)}. Estado actividad=${JSON.stringify(modeState)}. ESTADO PEDAGÓGICO TRANSITORIO=${JSON.stringify(pedState)}. TEMA SUSPENDIDO=${JSON.stringify(pedState.suspended_topic||null)}.
 RELACIÓN DEL TURNO=${turnRel}. INTENCIÓN DEL ALUMNO=${studentIntentFromRelation(turnRel)}. Objetivo práctica=${JSON.stringify(practiceTarget||null)}. Perfil=${JSON.stringify(student)}.
 Concepto clasificado=${scope.concept}. Nivel ayuda recomendado=${desired}. ANCLA FACTUAL INTERNA=${JSON.stringify(factAnchor||stableFactAnchor(text))}. Currículo=${JSON.stringify(evidence)}. ORIENTACIÓN CURRICULAR ESTATAL, NO PRUEBA FACTUAL=${JSON.stringify(scope.curricular_compass||null)}. Evidencia académica fiable opcional=${JSON.stringify(externalEvidence?.text||null)}. Matemática=${JSON.stringify(mathCheck)}. Visión=${JSON.stringify(vision||null)}.
-Historial=${JSON.stringify((history||[]).slice(-8))}. Última pregunta pendiente=${JSON.stringify(previousCheck)}. Últimas dos respuestas de Eterna=${JSON.stringify(recentAssistant)}. PUNTOS YA EXPLICADOS=${JSON.stringify(pedState.explained_points||[])}. ÚLTIMO ACTO DEL TUTOR=${pedState.last_tutor_act||"none"}. CONFUSIONES CONSECUTIVAS=${pedState.confusion_count||0}. NIVEL DE SIMPLIFICACIÓN=${pedState.simplification_level||0}.`;
+Historial=${JSON.stringify((history||[]).slice(-12))}. Última pregunta pendiente=${JSON.stringify(previousCheck)}. Últimas cuatro respuestas de Eterna=${JSON.stringify(recentAssistant)}. PUNTOS YA EXPLICADOS=${JSON.stringify(pedState.explained_points||[])}. ÚLTIMO ACTO DEL TUTOR=${pedState.last_tutor_act||"none"}. CONFUSIONES CONSECUTIVAS=${pedState.confusion_count||0}. NIVEL DE SIMPLIFICACIÓN=${pedState.simplification_level||0}.`;
 const cacheMarker="\nCONTEXTO DEL TURNO",cacheIndex=prompt.indexOf(cacheMarker),content=cacheIndex>0?[{type:"input_text",text:prompt.slice(0,cacheIndex),prompt_cache_breakpoint:{mode:"explicit"}},{type:"input_text",text:prompt.slice(cacheIndex+1)}]:[{type:"input_text",text:prompt}];if(image&&!vision)content.push({type:"input_image",image_url:image,detail:"high"});const primaryModel=env.TUTOR_MODEL||"gpt-5.6-sol",fallbackModel=env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibilityModel=env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",args={reasoning_effort:env.TUTOR_REASONING_EFFORT||"high",instructions:"Actúas como un equipo docente especializado. Enseña progresivamente, recuerda qué ya explicaste y entiende cada intervención según el acto pedagógico anterior. No suplantes al alumno.",input:[{role:"user",content}],name:"eterna_tutor_v163_flagship",schema:TUTOR_SCHEMA,max_output_tokens:2800};try{return await structured(env,{...args,model:primaryModel})}catch(primaryError){if(fallbackModel&&fallbackModel!==primaryModel){try{console.error("ETERNA TUTOR FALLBACK",primaryModel,"to",fallbackModel,String(primaryError?.message||primaryError));return await structured(env,{...args,model:fallbackModel})}catch(fallbackError){if(!compatibilityModel||[primaryModel,fallbackModel].includes(compatibilityModel))throw fallbackError;console.error("ETERNA TUTOR COMPATIBILITY FALLBACK",fallbackModel,"to",compatibilityModel,String(fallbackError?.message||fallbackError));return await structured(env,{...args,model:compatibilityModel,reasoning_effort:"medium"})}}if(!compatibilityModel||compatibilityModel===primaryModel)throw primaryError;console.error("ETERNA TUTOR COMPATIBILITY FALLBACK",primaryModel,"to",compatibilityModel,String(primaryError?.message||primaryError));return await structured(env,{...args,model:compatibilityModel,reasoning_effort:"medium"})}}
 
 const VERIFY_VERDICTS=["verified","factual_error","contradiction","missing_information","pedagogy_improvement","verifier_uncertain"];
 const VERIFY_SCHEMA={type:"object",additionalProperties:false,properties:{verdict:{type:"string",enum:VERIFY_VERDICTS},verified:{type:"boolean"},requires_clarification:{type:"boolean"},blocking:{type:"boolean"},issues:{type:"array",items:{type:"string"},maxItems:6},corrected_reply:{type:["string","null"]}},required:["verdict","verified","requires_clarification","blocking","issues","corrected_reply"]};
 async function verify(env,{text,image,mode,scope,curriculum,mathCheck,tutorOutput,ctx,vision,externalEvidence,pedState,history,turnRel,factAnchor,directKnowledge,answerAnchor}){
-  const agePolicy=ageTeachingProfile(ctx),evidence=curriculum.map(x=>({title:x.title,summary:x.summary,source:x.eterna_curriculum_sources?.title||null})),recentAssistant=(history||[]).filter(x=>x&&x.role==="assistant"&&typeof x.text==="string").slice(-2).map(x=>x.text.slice(0,1500));
+  const agePolicy=ageTeachingProfile(ctx),evidence=curriculum.map(x=>({title:x.title,summary:x.summary,source:x.eterna_curriculum_sources?.title||null})),recentAssistant=(history||[]).filter(x=>x&&x.role==="assistant"&&typeof x.text==="string").slice(-4).map(x=>x.text.slice(0,1500));
   const prompt=`Devuelve JSON. Eres ETERNA VERIFY V3.2, segundo docente independiente.
 ${fullIntelligenceInstruction()}
 CLASIFICA EL RESULTADO EN UN ÚNICO VERDICT:
@@ -1356,7 +1395,7 @@ REGLAS:
 17) Scope.curricular_compass es orientación normativa estatal, no evidencia factual de una solución ni acreditación autonómica. Su presencia no justifica declarar verified ni sustituir una comprobación independiente.
 CONTEXTO A VERIFICAR — aplícalo después de todas las reglas anteriores:
 Mensaje=${JSON.stringify(String(text||"").slice(0,5000))}. Modo=${mode}. Contrato del modo=${JSON.stringify(MODE_CONTRACTS[mode]||MODE_CONTRACTS.homework)}. Curso=${ctx.profile?.school_year||"desconocido"}. Perfil edad=${JSON.stringify(agePolicy)}.
-Scope=${JSON.stringify(scope)}. Estado pedagógico previo=${JSON.stringify(pedState)}. Relación turno=${turnRel}. Historial=${JSON.stringify((history||[]).slice(-6))}. Últimas respuestas=${JSON.stringify(recentAssistant)}. Puntos ya explicados=${JSON.stringify(pedState?.explained_points||[])}.
+Scope=${JSON.stringify(scope)}. Estado pedagógico previo=${JSON.stringify(pedState)}. Relación turno=${turnRel}. Historial=${JSON.stringify((history||[]).slice(-12))}. Últimas cuatro respuestas=${JSON.stringify(recentAssistant)}. Puntos ya explicados=${JSON.stringify(pedState?.explained_points||[])}.
 Currículo=${JSON.stringify(evidence)}. Evidencia=${JSON.stringify(externalEvidence?.text||null)}. Math=${JSON.stringify(mathCheck)}. Visión=${JSON.stringify(vision||null)}. Respuesta propuesta=${JSON.stringify(tutorOutput)}.
 EVALUACIÓN PREVIA DE RESPUESTA=${JSON.stringify(answerAnchor||null)}. Si es correct y coincide con las ideas esperadas, no apruebes una respuesta que la niegue, la trate como consulta nueva o repita la misma pregunta. CONSULTA_FACTUAL_DIRECTA=${Boolean(directKnowledge)}. ANCLA=${JSON.stringify(factAnchor||stableFactAnchor(text))}.`;
   const cacheMarker="\nCONTEXTO A VERIFICAR",cacheIndex=prompt.indexOf(cacheMarker),content=cacheIndex>0?[{type:"input_text",text:prompt.slice(0,cacheIndex),prompt_cache_breakpoint:{mode:"explicit"}},{type:"input_text",text:prompt.slice(cacheIndex+1)}]:[{type:"input_text",text:prompt}];if(image&&!vision)content.push({type:"input_image",image_url:image,detail:"high"});
@@ -1619,7 +1658,7 @@ async function handleChat(request,env,auth,event,greetingBody=null){
   try{return withChatTimings(await applyGreetingContinuity(await handleChatCore(request,env,auth,event,timings),policyBody),timings)}catch(error){timings.mark("failed");throw error}
 }
 async function handleChatCore(request,env,auth,event,timings){
-  const body=await request.json(),text=String(body.text||"").slice(0,6000),rawImage=typeof body.image_data_url==="string"?body.image_data_url:null,imageValidation=validateImageDataUrl(rawImage),image=imageValidation.ok?rawImage:null,imageRegions=validatedImageRegions(body.image_regions,imageValidation.ok),history=Array.isArray(body.history)?body.history.slice(-8):[],mode=MODE_PROFILES[body.mode]?String(body.mode):"homework",inputSource=["text","voice","image"].includes(body.input_source)?body.input_source:(image?"image":"text"),incomingModeState=sanitizeModeState(body.mode_state),incomingPedState=sanitizePedagogicalState(body.pedagogical_state,mode),clientStudentIntent=["answer_check","return_topic","confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen","relational_followup"].includes(String(body.student_intent||""))?String(body.student_intent):null,clientTutorDirective=["RETURN_TOPIC","CHANGE_STRATEGY","SIMPLIFY","ADVANCE","EXPLAIN_CAUSE","EXPLAIN_MECHANISM"].includes(String(body.tutor_directive||""))?String(body.tutor_directive):null,clientRepetitionGuard=typeof body.repetition_guard==="string"?body.repetition_guard.slice(0,700):null;
+  const body=await request.json(),text=String(body.text||"").slice(0,6000),rawImage=typeof body.image_data_url==="string"?body.image_data_url:null,imageValidation=validateImageDataUrl(rawImage),image=imageValidation.ok?rawImage:null,imageRegions=validatedImageRegions(body.image_regions,imageValidation.ok),history=Array.isArray(body.history)?body.history.slice(-12):[],mode=MODE_PROFILES[body.mode]?String(body.mode):"homework",inputSource=["text","voice","image"].includes(body.input_source)?body.input_source:(image?"image":"text"),incomingModeState=sanitizeModeState(body.mode_state),incomingPedState=sanitizePedagogicalState(body.pedagogical_state,mode),clientStudentIntent=["answer_check","return_topic","confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen","relational_followup"].includes(String(body.student_intent||""))?String(body.student_intent):null,clientTutorDirective=["RETURN_TOPIC","CHANGE_STRATEGY","SIMPLIFY","ADVANCE","EXPLAIN_CAUSE","EXPLAIN_MECHANISM"].includes(String(body.tutor_directive||""))?String(body.tutor_directive):null,clientRepetitionGuard=typeof body.repetition_guard==="string"?body.repetition_guard.slice(0,700):null;
   timings?.mark("input");
   const currentSafetyCategory=!image?childSafeguardingCategory(text):null,currentSituation=!image?(ownedLibraryRuntime(env)?.protocol(text)||classroomSituation(text,history,incomingPedState)):null,contractMeta=parseContractV3Input(body,{mode,modeState:incomingModeState,pedState:incomingPedState});
   const startsNewTopic=contractMeta.enabled&&contractMeta.studentAction==="new_topic"&&!currentSafetyCategory&&!currentSituation&&!incomingPedState.safety_follow_up;
@@ -1787,9 +1826,14 @@ async function handleChatCore(request,env,auth,event,timings){
   const verifyArgs={text,image,mode,scope:{...scope,subject:effectiveSubject,concept:effectiveConcept},curriculum,mathCheck,tutorOutput:tutorData,ctx,vision,externalEvidence,pedState:incomingPedState,history,turnRel,factAnchor,directKnowledge,answerAnchor},syncVerification=!deterministicSimplification&&synchronousVerificationRequired({image,mode,turnRel,scope,stableSchool,externalEvidence,mathCheck,answerAnchor,tutorData,text});
   let v={data:{verdict:"verified",verified:true,requires_clarification:false,blocking:false,issues:[],corrected_reply:null},usage:{}},verificationRoute=syncVerification?"synchronous":"asynchronous_audit";
   if(syncVerification){v=await verify(env,verifyArgs);timings?.mark("verifier")}else timings?.mark("verifier_deferred");
-  const firstVerifyUsage={input_tokens:Number(v.usage?.input_tokens||0),output_tokens:Number(v.usage?.output_tokens||0)},verifyDecision=normalizeVerifyDecision(v.data,{stableSchool,factAnchor,mathCheck,curriculum,externalEvidence});
-  let verificationRepaired=false;
-  if(verifyDecision.use_correction&&v.data.corrected_reply){tutorData={...tutorData,reply:cleanChildText(v.data.corrected_reply),needs_clarification:false};verificationRepaired=true}
+  const verifyUsage={input_tokens:Number(v.usage?.input_tokens||0),output_tokens:Number(v.usage?.output_tokens||0)};
+  let verifyDecision=normalizeVerifyDecision(v.data,{stableSchool,factAnchor,mathCheck,curriculum,externalEvidence}),verificationRepaired=false,verificationRechecked=false;
+  if(syncVerification&&verifyDecision.use_correction&&v.data.corrected_reply){
+    const repairedTutorData={...tutorData,reply:cleanChildText(v.data.corrected_reply),needs_clarification:false},recheck=await verify(env,{...verifyArgs,tutorOutput:repairedTutorData}),recheckDecision=normalizeVerifyDecision(recheck.data,{stableSchool,factAnchor,mathCheck,curriculum,externalEvidence});
+    verifyUsage.input_tokens+=Number(recheck.usage?.input_tokens||0);verifyUsage.output_tokens+=Number(recheck.usage?.output_tokens||0);verificationRechecked=true;verificationRoute="synchronous_repair_recheck";timings?.mark("verifier_recheck");
+    if(!recheckDecision.blocking){tutorData=repairedTutorData;verificationRepaired=true;v=recheck;verifyDecision=recheckDecision}
+    else{v={...recheck,data:{...recheck.data,corrected_reply:null}};verifyDecision=recheckDecision}
+  }
   let reply=repairIncompleteReply(tutorData.reply),status=verifyDecision.status,practiceSuggestion=cleanChildText(tutorData.practice_suggestion||"")||null;
   if(status!=="verified"){
     reply=status==="needs_clarification"?repairIncompleteReply(v.data.corrected_reply||"Necesito un poco más de información para ayudarte bien."):repairIncompleteReply(v.data.corrected_reply||verificationFallbackForMode(mode))
@@ -1798,7 +1842,7 @@ async function handleChatCore(request,env,auth,event,timings){
   if(status==="verified"&&assessment==="incorrect")reply=enforceIncorrectOpening(reply);
   if(status==="verified"&&assessment!=="correct"&&Number(tutorData.help_level)<=2&&["review","homework","exam","practice"].includes(mode)&&mathCheck?.type==="arithmetic"&&(containsStandaloneNumber(reply,mathCheck.result)||containsStandaloneNumber(practiceSuggestion,mathCheck.result))){const safe=safeMathHint(mathCheck,mode);if(safe){reply=safe.reply;practiceSuggestion=safe.practice;status="verified"}}
   if(mode==="exam"||mode==="practice")practiceSuggestion=null;
-  const webUsage=externalEvidence?.usage||{},tokenUsage={input_tokens:Number(t.usage?.input_tokens||0)+Number(firstVerifyUsage.input_tokens||0)+Number(webUsage.input_tokens||0),output_tokens:Number(t.usage?.output_tokens||0)+Number(firstVerifyUsage.output_tokens||0)+Number(webUsage.output_tokens||0)};
+  const webUsage=externalEvidence?.usage||{},tokenUsage={input_tokens:Number(t.usage?.input_tokens||0)+Number(verifyUsage.input_tokens||0)+Number(webUsage.input_tokens||0),output_tokens:Number(t.usage?.output_tokens||0)+Number(verifyUsage.output_tokens||0)+Number(webUsage.output_tokens||0)};
   const turnAct=status==="verified"?singleStudentAct({mode,reply,tutorData,turnRel,incoming:incomingPedState,assessment,studentText:text}):{reply,display_check:null,pending_question:["exam","practice"].includes(mode)?incomingPedState.pending_question:null};reply=normalizeStudentNameCaseWorker(turnAct.reply,ctx.base?.apodo||ctx.profile?.apodo||"");
   let finalCheck=turnAct.display_check,pendingQuestion=turnAct.pending_question,questionCountsAsNew=Boolean(pendingQuestion)&&status==="verified"&&normalizeDetectionText(pendingQuestion)!==normalizeDetectionText(incomingPedState.pending_question||"");
   if(pendingQuestion&&!validMicroCheck(pendingQuestion,text)){pendingQuestion=null;finalCheck=null;questionCountsAsNew=false}
@@ -1858,7 +1902,7 @@ ${pendingQuestion}`
     }
   });
   timings?.mark("compose");
-  return json({reply,verification_status:status,subject,concept,help_level:tutorData.help_level,check_question:finalCheck,practice_suggestion:status==="verified"?practiceSuggestion:null,student_answer_assessment:assessment,strategy_used:tutorData.strategy_used,mode_label:MODE_PROFILES[mode].label,mode_state:finalModeState,pedagogical_state,practice_target:practiceTarget||null,vision_confidence:vision?.confidence||null,source_links,auto_speak:false,verification_repaired:verificationRepaired,verification_route:verificationRoute,verification_verdict:syncVerification?verifyDecision.verdict:"deferred_audit",retryable:status==="verification_conflict",error_kind:status==="verification_conflict"?"verification_temp":null})
+  return json({reply,verification_status:status,subject,concept,help_level:tutorData.help_level,check_question:finalCheck,practice_suggestion:status==="verified"?practiceSuggestion:null,student_answer_assessment:assessment,strategy_used:tutorData.strategy_used,mode_label:MODE_PROFILES[mode].label,mode_state:finalModeState,pedagogical_state,practice_target:practiceTarget||null,vision_confidence:vision?.confidence||null,source_links,auto_speak:false,verification_repaired:verificationRepaired,verification_rechecked:verificationRechecked,verification_route:verificationRoute,verification_verdict:syncVerification?verifyDecision.verdict:"deferred_audit",retryable:status==="verification_conflict",error_kind:status==="verification_conflict"?"verification_temp":null})
 }
 
 
@@ -1937,8 +1981,8 @@ function healthFeatures(env){return {
   explained_points_state:true,known_points_state:true,next_teaching_goal_state:true,smart_micro_checks:true,repetition_guard:true,
   human_reproduction_curriculum:true,no_extra_permanent_openai_calls:true,background_chat_resume_v1:true,
   background_response_identity_v2:true,background_dedupe_client_v2:true,transient_job_cache_only:true,no_raw_chat_persistence:true,
-  direct_knowledge_in_homework:true,factual_simplification_guard:true,verification_repair_retry:false,verification_verdicts_v2:true,
-  verification_false_conflict_reduction:true,single_verifier_call_path:true,older_student_source_disclosure:true,
+  direct_knowledge_in_homework:true,factual_simplification_guard:true,verification_repair_retry:true,verification_repair_recheck_v1:true,verification_verdicts_v2:true,
+  verification_false_conflict_reduction:true,single_verifier_call_path:false,bounded_verifier_recheck_v1:true,older_student_source_disclosure:true,
   legal_consent_registry:true,parental_authorization_gate:true,ai_transparency_notice:true,purchase_disclosure_log:true,
   daily_limits:true,weekly_limits:true,paid_parent_unlimited:true,
   weekly_limit_email_configured:Boolean(String(env.RESEND_API_KEY||"").trim()&&String(env.ETERNA_ALERT_FROM_EMAIL||"").trim()),
@@ -1949,7 +1993,7 @@ function healthFeatures(env){return {
   feedback_entitlement_gate:true,explicit_understood_signal:true,
   teacher_core_v1:true,situational_core_v1:true,current_message_priority_v1:true,answer_contract_engine_v1:true,coherence_progression_v1:true,
   explicit_identity_and_mission_v1:true,named_greeting_v1:true,greeting_timing_v1:true,repeated_greeting_guard_v1:true,standard_dialogue_repertoire_v1:true,contextual_comprehension_checks_v1:true,client_local_clock_v1:true,empathetic_school_peer_support_v1:true,anti_robotic_tone_v1:true,pending_answer_precedence_v1:true,nonempty_tutor_reply_v1:true,safety_follow_up_v1:true,
-  relational_continuity_v1:true,adaptive_teacher_presence_v1:true,transient_relational_thread_v1:true,conversation_director_v1:true,semantic_repetition_guard_v1:true,profile_age_resolution_v1:true,current_turn_subject_priority_v1:true,current_image_priority_v1:true,image_context_reset_v1:true,
+  relational_continuity_v1:true,adaptive_teacher_presence_v1:true,transient_relational_thread_v1:true,conversation_director_v1:true,semantic_repetition_guard_v1:true,extended_repetition_window_v1:true,official_subject_router_v1:true,profile_age_resolution_v1:true,current_turn_subject_priority_v1:true,current_image_priority_v1:true,image_context_reset_v1:true,
   child_safeguarding_interrupt_v1:true,safety_interrupt_preserves_activity:true,classroom_weather_v1:true,academic_weather_question_v1:true,combined_simplification_request_v1:true,pedagogical_simplification_guard_v1:true,non_trivial_microcheck_v1:true,deterministic_fraction_simplification_v1:true,priority_fraction_simplification_v1:true,
   full_intelligence_child_safety_v1:true,helpful_safe_completion_v1:true,suspended_topic_resume_v1:true,mode_contracts_v2:true,
   flagship_tutor_model_v1:true,independent_balanced_verifier_v1:true,configurable_reasoning_effort_v1:true,strict_structured_outputs_v1:true,

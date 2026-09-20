@@ -11,8 +11,8 @@ test('410 actual lessons, 1230 questions and only forty non-overlapping new topi
 test('all 370 published objects are preserved and the current Worker revision stays pinned',()=>{
  assert.equal(hash(JSON.stringify(ls.slice(0,370))),m.baseline_canonical_sha256);
  for(const[path,want]of Object.entries(m.preserved_sha256))assert.equal(hash(readFileSync(new URL('../../'+path,import.meta.url))),want,path);
- assert.equal(hash(text('../src/index.js').replaceAll(m.release_id,m.baseline_release)),'0a15980d783bb17e20a374db6c32e7b5a5311cc3706b2c7a00963fa2066459d8');
- assert.equal(hash(text('../src/library/runtime-v1.js').replaceAll(m.release_id,m.baseline_release)),'e2b760280cef49234ad538300ff6562f4cdfe365c31908f412f4673ea632cccf');
+ assert.equal(hash(text('../src/index.js').replaceAll(m.release_id,m.baseline_release)),'a9d7768df38107f84f7ba2e3e0d6044ccc11dbe6a32b81f5198bcdeb2f788463');
+ assert.equal(hash(text('../src/library/runtime-v1.js').replaceAll(m.release_id,m.baseline_release)),'7f12e766fb6a2bcc5791819d622a15f642cabfb7b95fc8a4b1481413ec1ae657');
 });
 for(const id of m.new_ids)test('new unique topic all scoped courses and six modes: '+id,()=>{
  const l=get(id),r=ledger.records.find(r=>r.lesson_id===id);assert.ok(r);assert.equal(r.content_sha256,hash(JSON.stringify(l)));assert.equal(r.human_teacher_reviewed,false);assert.equal(r.full_criterion_alignment_verified,false);assert.equal(r.classroom_validated,false);assert.equal(l.source_kind,'original_teaching_material');

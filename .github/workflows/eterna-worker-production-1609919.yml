@@ -1,12 +1,11 @@
-name: Deploy Eterna Worker 160.99.24
+name: Deploy Eterna Worker 160.99.25
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/workflows/eterna-worker-production-1609919.yml"
-      - ".github/release-eterna-1609924"
+      - ".github/release-eterna-1609925"
 
 permissions:
   contents: read
@@ -22,7 +21,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      EXPECTED_VERSION: 160.99.24-contextual-dialogue
+      EXPECTED_VERSION: 160.99.25-definitive-candidate
       WORKER_NAME: coco-eterna-v159
       PRODUCTION_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
     steps:
@@ -79,11 +78,15 @@ jobs:
           allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,https://raw.githack.com"
           npx --no-install wrangler versions upload \
             --name "$WORKER_NAME" \
-            --preview-alias "release-1609924" \
-            --message "Eterna 160.99.24 contextual dialogue" \
+            --preview-alias "release-1609925" \
+            --message "Eterna 160.99.25 definitive candidate" \
             --keep-vars \
             --var "DEPLOY_PROBE_TOKEN:${DEPLOY_PROBE_TOKEN}" \
             --var "MODERATION_FALLBACK_MODEL:@cf/meta/llama-3.1-8b-instruct-fast" \
+            --var "ENABLE_ETERNA_LIBRARY:true" \
+            --var "ETERNA_LIBRARY_RELEASE:eterna-library-2026.09-v8-410-consolidated-1c484e" \
+            --var "ETERNA_EXERCISE_FACTORY:v1" \
+            --var "ETERNA_CURRICULAR_COMPASS:v1" \
             --var "ALLOWED_ORIGINS:${allowed_origins}" | tee preview-upload.log
           version_id="$(sed -n 's/^Worker Version ID: //p' preview-upload.log | tail -1)"
           preview_url="$(sed -n 's/^Version Preview Alias URL: //p' preview-upload.log | tail -1)"
@@ -129,7 +132,17 @@ jobs:
                   && p.features?.child_safeguarding_interrupt_v1 === true
                   && p.features?.parental_authorization_gate === true
                   && p.features?.standard_dialogue_repertoire_v1 === true
-                  && p.features?.contextual_comprehension_checks_v1 === true;
+                  && p.features?.contextual_comprehension_checks_v1 === true
+                  && p.features?.verification_repair_recheck_v1 === true
+                  && p.features?.extended_repetition_window_v1 === true
+                  && p.features?.official_subject_router_v1 === true
+                  && p.owned_library?.enabled === true
+                  && p.owned_library?.lessons === 410
+                  && p.owned_library?.protocols === 56
+                  && p.owned_library?.release === "eterna-library-2026.09-v8-410-consolidated-1c484e"
+                  && p.exercise_factory?.enabled === true
+                  && p.exercise_factory?.families === 22
+                  && p.curricular_compass?.enabled === true;
                 process.exit(valid ? 0 : 1);
               } catch { process.exit(1); }
             ' "$payload"; then
@@ -190,7 +203,7 @@ jobs:
           npx --no-install wrangler versions deploy \
             "${{ steps.upload.outputs.version_id }}@100%" \
             --name "$WORKER_NAME" \
-            --message "Eterna 160.99.24 contextual dialogue" \
+            --message "Eterna 160.99.25 definitive candidate" \
             --yes
 
       - name: Verify production or roll back automatically
@@ -220,6 +233,16 @@ jobs:
                   && p.features?.cloudflare_moderation_fallback_v1 === true
                   && p.features?.standard_dialogue_repertoire_v1 === true
                   && p.features?.contextual_comprehension_checks_v1 === true
+                  && p.features?.verification_repair_recheck_v1 === true
+                  && p.features?.extended_repetition_window_v1 === true
+                  && p.features?.official_subject_router_v1 === true
+                  && p.owned_library?.enabled === true
+                  && p.owned_library?.lessons === 410
+                  && p.owned_library?.protocols === 56
+                  && p.owned_library?.release === "eterna-library-2026.09-v8-410-consolidated-1c484e"
+                  && p.exercise_factory?.enabled === true
+                  && p.exercise_factory?.families === 22
+                  && p.curricular_compass?.enabled === true
                   && p.model_configuration?.moderation?.fallback_model === "@cf/meta/llama-3.1-8b-instruct-fast";
                 process.exit(valid ? 0 : 1);
               } catch { process.exit(1); }
@@ -231,7 +254,7 @@ jobs:
           done
           if [[ "$healthy" != "true" ]]; then
             echo "Production health verification failed; rolling back." >&2
-            npx --no-install wrangler rollback --name "$WORKER_NAME" --message "Automatic rollback after failed Eterna 160.99.24 health check" --yes
+            npx --no-install wrangler rollback --name "$WORKER_NAME" --message "Automatic rollback after failed Eterna 160.99.25 health check" --yes
             exit 1
           fi
           echo "Production is healthy on ${EXPECTED_VERSION}."
