@@ -2251,7 +2251,11 @@ async function handleFetch(request,env,event){
     if(contractMeta?.enabled&&url.pathname==="/v1/chat")response=await addContractEnvelope(response,contractMeta,mode);
     await putReplay(auth.user.id,replayKind,replayId,response);
     return withCors(response,c)
-  }catch(e){console.error("ETERNA",e);return withCors(json({error:"ETERNA_BACKEND_ERROR",detail:env.EXPOSE_ERRORS==="true"?String(e?.message||e):undefined},500),c)}
+  }catch(e){
+    console.error("ETERNA",e);
+    if(isAiMonthlyBudgetError(e))return withCors(monthlyAiBudgetResponse(e),c);
+    return withCors(json({error:"ETERNA_BACKEND_ERROR",detail:env.EXPOSE_ERRORS==="true"?String(e?.message||e):undefined},500),c)
+  }
 }
 
 export default {
