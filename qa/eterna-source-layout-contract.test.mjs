@@ -21,7 +21,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);
-  assert.match(worker, /160\.99\.26-systemwide-pedagogical-director-candidate/);
+  assert.match(worker, /160\.100\.0-monthly-ai-budget-eur2/);
   assert.match(worker, /deterministic_subject_intake_v1:true/);
   assert.match(worker, /current_turn_subject_priority_v1:true/);
   assert.match(worker, /current_image_priority_v1:true/);
@@ -76,6 +76,7 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /--var "VISION_SAFETY_MODEL:@cf\/moondream\/moondream3\.1-9B-A2B"/);
   assert.match(preview, /--var "VISION_FALLBACK_MODEL:@cf\/moondream\/moondream3\.1-9B-A2B"/);
   assert.match(preview, /--var "VISION_STRUCTURING_MODEL:@cf\/qwen\/qwen3-30b-a3b-fp8"/);
+  assert.match(preview, /--var "AI_MONTHLY_BUDGET_EUR:2\.00"/);
   assert.match(preview, /--var "MODERATION_FALLBACK_MODEL:@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(preview, /models\.tutor\?\.model === "@cf\/qwen\/qwen3-30b-a3b-fp8"/);
   assert.match(preview, /models\.verifier\?\.model === "@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
@@ -88,9 +89,9 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(preview, /payload\.features\?\.parental_authorization_gate === true/);
   assert.doesNotMatch(preview, /health\/dependencies/);
   assert.doesNotMatch(preview, /payload\.photo_intake/);
-  assert.match(preview, /grep -F '160\.99\.26-systemwide-pedagogical-director-candidate' eterna-worker\/src\/index\.js/);
-  assert.match(preview, /payload\.version === "160\.99\.26-systemwide-pedagogical-director-candidate"/);
-  assert.match(preview, /API 160\.99\.26-systemwide-pedagogical-director-candidate/);
+  assert.match(preview, /grep -F '160\.100\.0-monthly-ai-budget-eur2' eterna-worker\/src\/index\.js/);
+  assert.match(preview, /payload\.version === "160\.100\.0-monthly-ai-budget-eur2"/);
+  assert.match(preview, /API 160\.100\.0-monthly-ai-budget-eur2/);
   assert.doesNotMatch(wrangler, /gpt-5\.4-(?:mini|nano)/);
   assert.equal(existsSync("eterna-worker/src/src/index.js"), false);
 });
@@ -227,7 +228,7 @@ test("the 160.99.18 production gate promotes the exact language-photo release", 
 test("the 160.99.26 production gate preserves dependencies and gates the systemwide pedagogical director", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-1609919.yml", "utf8");
   assert.match(production, /\.github\/release-eterna-1609926/);
-  assert.match(production, /EXPECTED_VERSION: 160\.99\.26-systemwide-pedagogical-director-candidate/);
+  assert.match(production, /EXPECTED_VERSION: 160\.100\.0-monthly-ai-budget-eur2/);
   assert.match(production, /--preview-alias "release-1609926"/);
   assert.match(production, /--var "ENABLE_ETERNA_LIBRARY:true"/);
   assert.match(production, /--var "ETERNA_EXERCISE_FACTORY:v1"/);
