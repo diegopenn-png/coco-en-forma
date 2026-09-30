@@ -42,6 +42,9 @@
     "MODERATION_FALLBACK_MODEL": "@cf/meta/llama-3.1-8b-instruct-fast",
     "TRANSCRIBE_MODEL": "@cf/openai/whisper-large-v3-turbo",
     "TTS_MODEL": "@cf/myshell-ai/melotts",
-    "MAX_CHAT_REQUESTS_PER_DAY": "60"
+    "MAX_CHAT_REQUESTS_PER_DAY": "60",
+    "AI_MONTHLY_BUDGET_EUR": "2.00",
+    "AI_BUDGET_EUR_PER_USD": "1.00",
+    "AI_BUDGET_SAFETY_MULTIPLIER": "1.15"
   }
 }
