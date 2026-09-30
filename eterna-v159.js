@@ -764,6 +764,7 @@
       ETERNA_ENDPOINT_NOT_CONFIGURED:{message:"Eterna todavía necesita que configures su servicio.",status:"Servicio sin configurar"},
       ETERNA_DAILY_LIMIT:{message:"Has alcanzado el límite familiar de consultas de Eterna por hoy. Un adulto puede revisarlo en Zona familiar.",status:"Límite diario alcanzado"},
       ETERNA_WEEKLY_LIMIT:{message:"Has alcanzado el límite familiar de consultas de esta semana. Un adulto puede revisarlo en Zona familiar.",status:"Límite semanal alcanzado"},
+      ETERNA_MONTHLY_AI_BUDGET_REACHED:{message:"Has alcanzado el límite mensual de uso de IA de esta cuenta. Se renueva automáticamente el primer día del próximo mes.",status:"Límite mensual alcanzado"},
       STUDENT_PROFILE_REQUIRED:{message:"Falta configurar el curso y la comunidad autónoma antes de continuar.",status:"Falta configurar el curso"},
       ETERNA_LEGAL_ACCEPTANCE_REQUIRED:{message:"Un adulto debe revisar y aceptar la autorización de Eterna en Zona familiar.",status:"Autorización familiar necesaria"},
       UNAUTHORIZED:{message:"La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.",status:"Sesión caducada"},
