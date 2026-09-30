@@ -273,7 +273,10 @@ function openaiErrorDiagnostic(error,prefix="OPENAI"){
 }
 async function openai(env,path,init){
   const apiKey=String(env.OPENAI_API_KEY||"").trim();if(!apiKey)throw new Error("Missing Worker environment: OPENAI_API_KEY");
-  const uid=aiBudgetUserId(env),metered=/^\/(?:responses|chat\/completions)(?:\?|$)/.test(String(path||"")),payload=(()=>{try{return typeof init?.body==="string"?JSON.parse(init.body):{}}catch(_e){return{}}})(),model=String(payload?.model||env.OPENAI_FALLBACK_MODEL||"gpt-5.6-luna"),reservation=metered&&uid?await reserveAiMonthlyBudget(env,uid,model,payload):null;
+  const uid=aiBudgetUserId(env),pathText=String(path||""),metered=/^\/(?:responses|chat\/completions|moderations|audio\/transcriptions|audio\/speech)(?:\?|$)/.test(pathText);
+  let payload=(()=>{try{return typeof init?.body==="string"?JSON.parse(init.body):{}}catch(_e){return{}}})();
+  if(/^\/audio\/transcriptions/.test(pathText)&&typeof FormData!=="undefined"&&init?.body instanceof FormData){const file=init.body.get("file");payload={model:String(init.body.get("model")||env.TRANSCRIBE_MODEL||"gpt-4o-mini-transcribe"),__budget_audio_bytes:Number(file?.size||0)}}
+  const model=String(payload?.model||(pathText.startsWith("/audio/speech")?env.TTS_MODEL:pathText.startsWith("/audio/transcriptions")?env.TRANSCRIBE_MODEL:pathText.startsWith("/moderations")?env.MODERATION_MODEL:env.OPENAI_FALLBACK_MODEL)||"gpt-5.6-luna"),reservation=metered&&uid?await reserveAiMonthlyBudget(env,uid,model,payload):null;
   const url="https://api.openai.com/v1"+path;let r;
   try{r=await fetch(url,{...init,headers:{Authorization:"Bearer "+apiKey,...(init?.headers||{})}})}
   catch(_e){if(reservation)await settleAiMonthlyBudget(env,uid,reservation,model,{}, {chargeReserve:true});console.error("ETERNA OPENAI NETWORK",path);throw new OpenAIRequestError("network")}
@@ -284,7 +287,7 @@ async function openai(env,path,init){
 function parseStructuredJson(text){let s=String(text||"").trim();if(!s)throw new Error("empty structured output");if(s.startsWith("```"))s=s.replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/i,"").trim();try{return JSON.parse(s)}catch(e){}const a=s.indexOf("{"),b=s.lastIndexOf("}");if(a>=0&&b>a)return JSON.parse(s.slice(a,b+1));throw new Error("invalid structured json")}
 function aiProvider(env){return String(env?.AI_PROVIDER||"").trim().toLowerCase()==="cloudflare"&&env?.AI&&typeof env.AI.run==="function"?"cloudflare":"openai"}
 function cloudflareErrorDiagnostic(error,prefix="CLOUDFLARE_AI"){const message=String(error?.message||error||"unknown").toUpperCase();const kind=/QUOTA|LIMIT|NEURON|429/.test(message)?"QUOTA":/TIMEOUT|TIMED OUT/.test(message)?"TIMEOUT":/JSON|SCHEMA|PARSE/.test(message)?"STRUCTURED":"REQUEST";return`${prefix}_${kind}`}
-function cloudflareQuotaError(error){return isAiMonthlyBudgetError(error)||cloudflareErrorDiagnostic(error).endsWith("_QUOTA")}
+function cloudflareQuotaError(error){if(isAiMonthlyBudgetError(error))throw error;return cloudflareErrorDiagnostic(error).endsWith("_QUOTA")}
 function openaiFallbackEnabled(env){return aiProvider(env)==="cloudflare"&&String(env?.ENABLE_OPENAI_FALLBACK||"false").toLowerCase()==="true"&&Boolean(String(env?.OPENAI_API_KEY||"").trim())}
 function normalizeTokenUsage(usage){const value=usage&&typeof usage==="object"?usage:{},input=Number(value.input_tokens??value.prompt_tokens??0),output=Number(value.output_tokens??value.completion_tokens??0);return{input_tokens:Number.isFinite(input)&&input>0?input:0,output_tokens:Number.isFinite(output)&&output>0?output:0}}
 function mergeTokenUsage(...values){return values.map(normalizeTokenUsage).reduce((total,value)=>({input_tokens:total.input_tokens+value.input_tokens,output_tokens:total.output_tokens+value.output_tokens}),{input_tokens:0,output_tokens:0})}
@@ -319,7 +322,7 @@ async function cloudflareStructured(env,{model,input,instructions,name,schema,ma
   const prepared=cloudflareInput(input);
   if(prepared.image){
     const visual=await cloudflareVisionEvidence(env,{...prepared,instructions,name,max_output_tokens,photo_mode,photo_profile}),groundedInput=[{role:"user",content:[{type:"input_text",text:`${prepared.text}\n\nEVIDENCIA_VISUAL_FIEL (obtenida del modelo visual; úsala como única fuente sobre la imagen):\n${visual.text}`}]}],models=[...new Set([env.VISION_STRUCTURING_MODEL||env.TUTOR_MODEL||"@cf/qwen/qwen3-30b-a3b-fp8",env.TUTOR_FALLBACK_MODEL,env.TUTOR_COMPATIBILITY_MODEL].filter(Boolean))];let structuredResult=null,lastError=null;
-    for(const structuringModel of models){try{structuredResult=await cloudflareStructured(env,{model:structuringModel,input:groundedInput,instructions,name,schema,max_output_tokens});break}catch(error){lastError=error;console.error("ETERNA CLOUDFLARE VISION STRUCTURING",name,"model",structuringModel,cloudflareErrorDiagnostic(error,"VISION_STRUCTURING"))}}
+    for(const structuringModel of models){try{structuredResult=await cloudflareStructured(env,{model:structuringModel,input:groundedInput,instructions,name,schema,max_output_tokens});break}catch(error){if(isAiMonthlyBudgetError(error))throw error;lastError=error;console.error("ETERNA CLOUDFLARE VISION STRUCTURING",name,"model",structuringModel,cloudflareErrorDiagnostic(error,"VISION_STRUCTURING"))}}
     if(!structuredResult){
       const error=lastError||new Error("Cloudflare visual structuring failed: "+name);
       // Preserve the already-grounded pixels when only the JSON structuring
@@ -355,7 +358,7 @@ async function openaiStructured(env,{model,input,instructions,name,schema,max_ou
     try{
       const r=await openai(env,"/responses",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),data=await r.json();lastUsage=data.usage||lastUsage;
       try{return{data:parseStructuredJson(outputText(data)),usage:normalizeTokenUsage(data.usage),service_tier:data.service_tier||serviceTier||"default"}}catch(error){lastErr=error;console.error("ETERNA STRUCTURED PARSE",name,"attempt",attempt+1,"model",model,"status",data.status||"","incomplete",JSON.stringify(data.incomplete_details||null))}
-    }catch(error){lastErr=error;console.error("ETERNA STRUCTURED REQUEST",name,"attempt",attempt+1,"model",model,String(error?.message||error))}
+    }catch(error){if(isAiMonthlyBudgetError(error))throw error;lastErr=error;console.error("ETERNA STRUCTURED REQUEST",name,"attempt",attempt+1,"model",model,String(error?.message||error))}
     if(attempt+1<budgets.length)await waitForMilliseconds(220*(attempt+1))
   }
   throw new Error("Structured output failed after retry: "+name+" · "+String(lastErr&&lastErr.message||lastErr||"unknown"))
@@ -370,6 +373,7 @@ async function supabase(env,path,{method="GET",body,service=true,headers={}}={})
 async function safeSupabaseRead(env,path){try{return await supabase(env,path)}catch(e){return[]}}
 
 const ETERNA_MONTHLY_AI_BUDGET_ERROR="ETERNA_MONTHLY_AI_BUDGET_REACHED";
+const AI_MONTHLY_BUDGET_POLICY=Object.freeze({hard_cap_eur:2,bypass_for_owner_or_tester:false,period:"calendar_month"});
 class AiMonthlyBudgetExceededError extends Error{
   constructor(state={}){
     super(ETERNA_MONTHLY_AI_BUDGET_ERROR);
@@ -379,7 +383,7 @@ class AiMonthlyBudgetExceededError extends Error{
   }
 }
 function isAiMonthlyBudgetError(error){return error instanceof AiMonthlyBudgetExceededError||String(error?.code||"")===ETERNA_MONTHLY_AI_BUDGET_ERROR||String(error?.message||error||"").includes(ETERNA_MONTHLY_AI_BUDGET_ERROR)}
-function aiMonthlyBudgetCapEur(env){const n=Number(env?.AI_MONTHLY_BUDGET_EUR??2);return Number.isFinite(n)?Math.max(.01,Math.min(100,n)):2}
+function aiMonthlyBudgetCapEur(env){const hard=AI_MONTHLY_BUDGET_POLICY.hard_cap_eur,n=Number(env?.AI_MONTHLY_BUDGET_EUR??hard);return Number.isFinite(n)?Math.max(.01,Math.min(hard,n)):hard}
 function aiBudgetMonthStart(env,date=new Date()){const day=usageDate(env,date);return day.slice(0,7)+"-01"}
 function aiBudgetNextMonth(env,date=new Date()){const start=aiBudgetMonthStart(env,date),d=new Date(start+"T12:00:00Z");d.setUTCMonth(d.getUTCMonth()+1);return d.toISOString().slice(0,10)}
 function aiBudgetUserId(env){return String(env?.__ETERNA_AI_BUDGET_UID||"")}
@@ -390,46 +394,44 @@ function aiBudgetPriceUsdPerMillion(model){
   if(m.includes("llama-3.1-8b-instruct"))return{input:.282,output:.827};
   if(m.includes("llama-guard-3-8b"))return{input:.484,output:.030};
   if(m.includes("llama-4-scout-17b-16e"))return{input:.270,output:.850};
-  if(m.includes("moondream"))return{input:1.00,output:5.00};
+  if(m.includes("moondream"))return{input:.300,output:1.000};
   if(m.includes("gpt-5.6-sol"))return{input:5.00,output:30.00};
   if(m.includes("gpt-5.6-terra"))return{input:2.50,output:15.00};
   if(m.includes("gpt-5.6-luna"))return{input:1.00,output:6.00};
   return{input:5.00,output:30.00};
 }
-function aiBudgetPayloadStats(payload){
-  let bytes=0,image=false;
-  const encoder=new TextEncoder(),seen=new Set();
-  function visit(value,key=""){
-    if(value==null)return;
-    if(typeof value==="string"){
-      if(/^data:image\//i.test(value)||key==="image"&&value.length>1000){image=true;return}
-      bytes+=encoder.encode(value).length;return
-    }
-    if(typeof value==="number"||typeof value==="boolean"){bytes+=String(value).length;return}
-    if(typeof value!=="object")return;
-    if(seen.has(value))return;seen.add(value);
-    if(Array.isArray(value)){
-      if(value.length>512&&value.every((item,index)=>index>24||typeof item==="number")){image=true;return}
-      for(const item of value)visit(item,key);return
-    }
-    for(const [k,v] of Object.entries(value)){
-      bytes+=encoder.encode(k).length;
-      if((k==="image"||k==="image_url")&&(Array.isArray(v)||typeof v==="string")){image=true;if(typeof v==="string"&&!/^data:image\//i.test(v))bytes+=encoder.encode(v).length;continue}
-      visit(v,k)
-    }
+function aiBudgetApproxAudioBytes(payload){
+  const explicit=Number(payload?.__budget_audio_bytes||0);if(Number.isFinite(explicit)&&explicit>0)return explicit;
+  const audio=payload?.audio;if(typeof audio==="string"&&audio.length>32)return Math.floor(audio.replace(/=+$/,"").length*3/4);
+  if(Array.isArray(audio))return audio.length;
+  return 0
+}
+function aiBudgetAudioReserveEur(env,model,payload){
+  const m=String(model||"").toLowerCase(),eurPerUsd=Math.max(.5,Math.min(2,Number(env?.AI_BUDGET_EUR_PER_USD||1))),safety=Math.max(1.15,Math.min(3,Number(env?.AI_BUDGET_SAFETY_MULTIPLIER||1.15)));
+  if(m.includes("whisper")||m.includes("transcribe")){
+    const bytes=aiBudgetApproxAudioBytes(payload),minutes=Math.max(.25,bytes?bytes/(2000*60):1),usdPerMinute=m.includes("gpt-4o-mini-transcribe")?.003:.000513;
+    return Math.max(.0002,Number((minutes*usdPerMinute*eurPerUsd*safety).toFixed(6)))
   }
-  visit(payload);
-  const textTokens=Math.max(1,bytes);
-  const imageTokens=image?131072:0;
-  return{input_tokens:textTokens+imageTokens,has_image:image}
+  if(m.includes("melotts")){
+    const chars=String(payload?.prompt||payload?.input||"").length,minutes=Math.max(.1,chars/600);
+    return Math.max(.0001,Number((minutes*.0002*eurPerUsd*safety).toFixed(6)))
+  }
+  if(m.includes("gpt-4o-mini-tts")){
+    const chars=String(payload?.input||"").length;
+    return Math.max(.0005,Number((Math.max(1,chars)*.00001*eurPerUsd*safety).toFixed(6)))
+  }
+  if(m.includes("moderation"))return .000001;
+  return null
 }
 function aiBudgetReserveEstimateEur(env,model,payload){
+  const audioReserve=aiBudgetAudioReserveEur(env,model,payload);
+  if(audioReserve!=null)return{reserve_eur:audioReserve,estimated_input_tokens:0,max_output_tokens:0,rates:{input:0,output:0},audio_priced:true};
   const rates=aiBudgetPriceUsdPerMillion(model),stats=aiBudgetPayloadStats(payload),maxOutput=Math.max(1,Math.min(64000,Number(payload?.max_output_tokens??payload?.max_tokens??4096)||4096)),eurPerUsd=Math.max(.5,Math.min(2,Number(env?.AI_BUDGET_EUR_PER_USD||1))),safety=Math.max(1,Math.min(3,Number(env?.AI_BUDGET_SAFETY_MULTIPLIER||1.15))),raw=((stats.input_tokens*rates.input+maxOutput*rates.output)/1e6)*eurPerUsd*safety;
   return{reserve_eur:Math.max(.000001,Number(raw.toFixed(6))),estimated_input_tokens:stats.input_tokens,max_output_tokens:maxOutput,rates}
 }
 function aiBudgetActualEur(env,model,usage,reserveEur){
   const tokens=normalizeTokenUsage(usage),rates=aiBudgetPriceUsdPerMillion(model);
-  if(tokens.input_tokens<=0&&tokens.output_tokens<=0)return{cost_eur:reserveEur,tokens};
+  if(aiBudgetAudioReserveEur(env,model,{})!=null||tokens.input_tokens<=0&&tokens.output_tokens<=0)return{cost_eur:reserveEur,tokens};
   const eurPerUsd=Math.max(.5,Math.min(2,Number(env?.AI_BUDGET_EUR_PER_USD||1))),safety=Math.max(1,Math.min(3,Number(env?.AI_BUDGET_SAFETY_MULTIPLIER||1.15))),raw=((tokens.input_tokens*rates.input+tokens.output_tokens*rates.output)/1e6)*eurPerUsd*safety;
   return{cost_eur:Math.min(reserveEur,Math.max(.000001,Number(raw.toFixed(6)))),tokens}
 }
@@ -620,7 +622,7 @@ async function moderate(env,text,image){
       try{
         const result=await withInferenceTimeout(env.AI.run(fallbackModel,cloudflareModerationFallbackPayload(text)),moderationInferenceTimeout(env),"Cloudflare moderation fallback timeout"),flagged=cloudflareModerationVerdict(result);
         return{flagged,categories:{cloudflare_guard:flagged},provider:"cloudflare",model:fallbackModel,fallback:true}
-      }catch(error){lastError=error;console.error("ETERNA CLOUDFLARE MODERATION FALLBACK",cloudflareErrorDiagnostic(error,"MODERATION_FALLBACK"))}
+      }catch(error){if(isAiMonthlyBudgetError(error))throw error;lastError=error;console.error("ETERNA CLOUDFLARE MODERATION FALLBACK",cloudflareErrorDiagnostic(error,"MODERATION_FALLBACK"))}
     }
   }
   if(openaiFallbackEnabled(env)){console.error("ETERNA MODERATION FALLBACK cloudflare to openai",cloudflareErrorDiagnostic(lastError,"MODERATION"));return openaiModerate(env,text,image)}
@@ -1091,7 +1093,7 @@ async function generalWorksheetRegions(env,args,prompt,images,{openaiOnly=false}
 async function analyzeImageIntake(env,text,image,profile,_history,imageRegions=[],mode="homework"){
   const subjectHint=currentTurnSubjectHint(text),prompt=`Devuelve JSON. Analiza ESTA imagen del turno actual como material escolar y clasifica su intención. Perfil escolar=${JSON.stringify(profile||{})}. Materia indicada expresamente en el mensaje actual=${JSON.stringify(subjectHint)}. Mensaje acompañante=${String(text||"").slice(0,2000)}. PRIORIDAD: la imagen actual es la única evidencia visual. El historial académico anterior no es evidencia de lo que aparece aquí y no puede determinar la materia, el ejercicio, los caracteres ni los huecos. Si lo visible contradice un tema previo, manda lo visible. REGLAS VISUALES: 1) Distingue estrictamente lo YA IMPRESO, lo escrito por el alumno y huecos/casillas. 2) Describe la relación espacial y los datos visibles, sean letras, palabras, números o símbolos. 3) Nunca supongas el propósito de un hueco por costumbre ni conviertas letras o huecos ortográficos en números. 4) Si una palabra, número o relación no puede leerse con confianza >=0.76, marca unknown y needs_clarification=true. Nunca completes contenido borroso por parecido o contexto; pide una foto más cercana. 5) Solo si realmente hay divisiones, diferencia dividendo, divisor, cociente ya dado y resto a completar. 6) Comprueba al menos dos ejercicios repetidos antes de inferir. 7) No resuelvas la ficha; construye una representación fiable. 8) Si hay peligro o contenido no escolar, safety/out_of_scope.`;
   const content=[{type:"input_text",text:prompt},{type:"input_image",image_url:image,detail:"high"}],args={model:env.VISION_MODEL||env.TUTOR_MODEL||"gpt-5.6-sol",reasoning_effort:env.VISION_REASONING_EFFORT||"high",instructions:"Eres ETERNA VISION, analista escolar visual extremadamente cuidadoso. Primero observa la imagen actual, después interpreta; nunca traslades contenido de otra imagen.",input:[{role:"user",content}],name:"eterna_intake",schema:INTAKE_SCHEMA,max_output_tokens:4200,photo_mode:mode,photo_profile:profile};let primary;
-  try{primary=aiProvider(env)==="cloudflare"?await withInferenceTimeout(structured(env,args),cloudflarePrimaryVisionTimeout(env),"Cloudflare primary vision timeout"):await structured(env,args)}catch(error){if(aiProvider(env)!=="cloudflare")throw error;console.error("ETERNA VISION PRIMARY",cloudflareErrorDiagnostic(error,"PRIMARY_VISION"));primary={data:uncertainImageIntake(),visual_evidence:String(error?.visualEvidence||""),visual_model:error?.visualModel||null}}
+  try{primary=aiProvider(env)==="cloudflare"?await withInferenceTimeout(structured(env,args),cloudflarePrimaryVisionTimeout(env),"Cloudflare primary vision timeout"):await structured(env,args)}catch(error){if(isAiMonthlyBudgetError(error))throw error;if(aiProvider(env)!=="cloudflare")throw error;console.error("ETERNA VISION PRIMARY",cloudflareErrorDiagnostic(error,"PRIMARY_VISION"));primary={data:uncertainImageIntake(),visual_evidence:String(error?.visualEvidence||""),visual_model:error?.visualModel||null}}
   const groundedArithmetic=arithmeticEvidenceIntake(primary.visual_evidence),groundedFractions=fractionWorksheetEvidenceIntake(primary.visual_evidence),sanitizedPrimary=sanitizeImageIntake(primary.data),groundedMerged=mergeRegionalIntakes([sanitizedPrimary,groundedArithmetic,groundedFractions]);let best=groundedMerged||sanitizedPrimary,bestScore=visionReliabilityScore(best?.vision);if(groundedArithmetic)console.error("ETERNA VISION GROUNDED ARITHMETIC",`rows=${groundedArithmetic.vision.items.length}`,`score=${bestScore}`);if(groundedFractions)console.error("ETERNA VISION GROUNDED FRACTIONS",`rows=${groundedFractions.vision.items.length}`,`score=${bestScore}`);
   const fallbackImages=orderedPhotoImages(image,imageRegions);
   if(aiProvider(env)==="cloudflare"&&visionNeedsClarification(reliableVisionForReasoning(best?.vision))){
@@ -2142,7 +2144,7 @@ function healthFeatures(env){return {
   direct_knowledge_in_homework:true,factual_simplification_guard:true,verification_repair_retry:true,verification_repair_recheck_v1:true,verification_verdicts_v2:true,
   verification_false_conflict_reduction:true,single_verifier_call_path:false,bounded_verifier_recheck_v1:true,older_student_source_disclosure:true,
   legal_consent_registry:true,parental_authorization_gate:true,ai_transparency_notice:true,purchase_disclosure_log:true,
-  daily_limits:true,weekly_limits:true,paid_parent_unlimited:true,
+  daily_limits:true,weekly_limits:true,paid_parent_unlimited:true,monthly_ai_budget_hard_cap_eur:AI_MONTHLY_BUDGET_POLICY.hard_cap_eur,monthly_ai_budget_no_bypass:AI_MONTHLY_BUDGET_POLICY.bypass_for_owner_or_tester===false,
   weekly_limit_email_configured:Boolean(String(env.RESEND_API_KEY||"").trim()&&String(env.ETERNA_ALERT_FROM_EMAIL||"").trim()),
   academic_web_fallback:String(env.ENABLE_ACADEMIC_WEB_SEARCH||"true").toLowerCase()!=="false",
   official_web_fallback:String(env.ENABLE_OFFICIAL_WEB_SEARCH||"true").toLowerCase()!=="false",
@@ -2220,6 +2222,7 @@ async function handleFetch(request,env,event){
     if(url.pathname==="/health/dependencies"&&request.method==="GET")return withCors(await dependencyProbe(request,env),c);
     if(url.pathname==="/v1/stripe/webhook"&&request.method==="POST")return await handleStripeWebhook(request,env);if(!c)return json({error:"ORIGIN_NOT_ALLOWED"},403);
     const auth=await authenticate(request,env);if(!auth)return withCors(json({error:"UNAUTHORIZED"},401),c);
+    env=withAiMonthlyBudget(env,auth.user.id);
     let bodyCopy=null,contractMeta=null,replayId=null,replayKind=null,mode="homework";
     if(request.method==="POST"&&["/v1/chat","/v1/chat-job","/v1/feedback"].includes(url.pathname)){
       try{bodyCopy=await request.clone().json()}catch(_e){bodyCopy={}}
