@@ -1,2 +1,3 @@
 release ETERNA 160.100.0 monthly AI budget hard cap
 trigger 2026-09-30T14:13+02:00
+retry 2026-09-30T14:18+02:00 after release assertion fix
