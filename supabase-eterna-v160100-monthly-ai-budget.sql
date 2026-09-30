@@ -6,7 +6,7 @@ begin;
 create table if not exists public.eterna_ai_monthly_budget (
   user_id uuid not null references auth.users(id) on delete cascade,
   month_start date not null,
-  cap_eur numeric(12,6) not null default 2.000000 check (cap_eur > 0),
+  cap_eur numeric(12,6) not null default 2.000000 check (cap_eur > 0 and cap_eur <= 2.000000),
   spent_eur numeric(12,6) not null default 0 check (spent_eur >= 0),
   reserved_eur numeric(12,6) not null default 0 check (reserved_eur >= 0),
   input_tokens bigint not null default 0 check (input_tokens >= 0),
@@ -77,12 +77,12 @@ begin
   end if;
 
   v_reserve := greatest(0.000001, round(coalesce(p_reserve_eur,0)::numeric, 6));
-  v_cap := greatest(0.010000, round(coalesce(p_cap_eur,2.000000)::numeric, 6));
+  v_cap := least(2.000000, greatest(0.010000, round(coalesce(p_cap_eur,2.000000)::numeric, 6)));
 
   insert into public.eterna_ai_monthly_budget(user_id, month_start, cap_eur)
   values (p_user_id, p_month_start, v_cap)
   on conflict (user_id, month_start)
-  do update set cap_eur = least(public.eterna_ai_monthly_budget.cap_eur, excluded.cap_eur);
+  do update set cap_eur = least(2.000000, public.eterna_ai_monthly_budget.cap_eur, excluded.cap_eur);
 
   select * into v_row
   from public.eterna_ai_monthly_budget
@@ -230,7 +230,7 @@ begin
   insert into public.eterna_ai_monthly_budget(user_id, month_start, cap_eur)
   values (p_user_id, p_month_start, v_cap)
   on conflict (user_id, month_start)
-  do update set cap_eur = least(public.eterna_ai_monthly_budget.cap_eur, excluded.cap_eur);
+  do update set cap_eur = least(2.000000, public.eterna_ai_monthly_budget.cap_eur, excluded.cap_eur);
 
   select * into v_row
   from public.eterna_ai_monthly_budget
@@ -251,7 +251,7 @@ grant execute on function public.eterna_ai_budget_settle(uuid,uuid,numeric,bigin
 grant execute on function public.eterna_ai_budget_status(uuid,date,numeric) to service_role;
 
 comment on table public.eterna_ai_monthly_budget is
-  'Tope duro mensual por usuario para gasto de inferencia IA de ETERNA. Por defecto 2 EUR/mes.';
+  'Tope duro mensual por usuario para gasto de inferencia IA de ETERNA. Nunca puede superar 2 EUR/mes.';
 comment on function public.eterna_ai_budget_reserve(uuid,date,numeric,numeric) is
   'Reserva atómica de presupuesto antes de una inferencia. No existe bypass por rol, tester o plan.';
 comment on function public.eterna_ai_budget_settle(uuid,uuid,numeric,bigint,bigint) is
