@@ -159,5 +159,5 @@ test("health and tutor contracts expose the system-wide behaviour", () => {
   for (const key of ["learning_activity_context_v1", "glossary_sequence_v1", "bilingual_subject_routing_v1", "proportional_response_depth_v1", "implicit_pending_question_recovery_v1", "routine_closing_suppression_v1", "gentle_typo_correction_v1", "verified_glossary_meanings_v1", "low_risk_verifier_recovery_v1"]) assert.equal(features[key], true, key);
   assert.match(source, /ACTIVIDAD TRANSVERSAL/);
   assert.match(source, /corrígela una sola vez con tacto/);
-  assert.match(source, /160\.99\.26-systemwide-pedagogical-director-candidate/);
+  assert.match(source, /160\.100\.0-monthly-ai-budget-eur2/);
 });
