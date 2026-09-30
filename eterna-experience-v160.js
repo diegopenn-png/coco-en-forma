@@ -1564,7 +1564,9 @@
 
     var reset=document.createElement("span");
     reset.className="eternaV160LimitReset";
-    reset.textContent=type==="weekly"
+    reset.textContent=type==="monthly"
+      ?"El límite mensual de uso de IA se renueva automáticamente el primer día del próximo mes."
+      :type==="weekly"
       ?"El límite semanal se renueva automáticamente al comenzar la próxima semana."
       :"El límite diario se renueva automáticamente al comenzar el próximo día.";
     bubble.appendChild(reset);
