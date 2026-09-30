@@ -20,7 +20,7 @@ import {DEPENDENCY_FRACTION_PROBE_IMAGE_DATA_URL} from "./photo-dependency-fixtu
  */
 const OUT_SCOPE="Puedo ayudarte con temas del cole, con algo que quieras aprender o con una situación que esté afectando a tu aprendizaje.";
 const SAFETY_REPLY="Esto parece importante y no quiero tratarlo como una tarea escolar. Busca ahora a tu madre, padre, profesor u otro adulto de confianza y cuéntale lo que ocurre. Si hay peligro inmediato, aléjate y llama al 112 con un adulto.";
-const VERSION="160.99.26-systemwide-pedagogical-director-candidate";
+const VERSION="160.100.0-monthly-ai-budget-eur2";
 const LEGAL_VERSION="2026-08-23-v1";
 const LEGAL_DOCUMENTS={terms:"2026-08-23",privacy:"2026-08-23",minors:"2026-08-23",ai:"2026-08-23",subscriptions:"2026-08-23"};
 const JSON_HEADERS={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
@@ -273,14 +273,18 @@ function openaiErrorDiagnostic(error,prefix="OPENAI"){
 }
 async function openai(env,path,init){
   const apiKey=String(env.OPENAI_API_KEY||"").trim();if(!apiKey)throw new Error("Missing Worker environment: OPENAI_API_KEY");
+  const uid=aiBudgetUserId(env),metered=/^\/(?:responses|chat\/completions)(?:\?|$)/.test(String(path||"")),payload=(()=>{try{return typeof init?.body==="string"?JSON.parse(init.body):{}}catch(_e){return{}}})(),model=String(payload?.model||env.OPENAI_FALLBACK_MODEL||"gpt-5.6-luna"),reservation=metered&&uid?await reserveAiMonthlyBudget(env,uid,model,payload):null;
   const url="https://api.openai.com/v1"+path;let r;
-  try{r=await fetch(url,{...init,headers:{Authorization:"Bearer "+apiKey,...(init?.headers||{})}})}catch(_e){console.error("ETERNA OPENAI NETWORK",path);throw new OpenAIRequestError("network")}
-  if(!r.ok){let payload=null;try{payload=await r.json()}catch(_e){}const meta={status:r.status,code:payload?.error?.code||null,type:payload?.error?.type||null,requestId:r.headers.get("x-request-id")};console.error("ETERNA OPENAI HTTP",path,meta.status,meta.type||"unknown",meta.code||"unknown",meta.requestId||"no-request-id");throw new OpenAIRequestError("http",meta)}return r
+  try{r=await fetch(url,{...init,headers:{Authorization:"Bearer "+apiKey,...(init?.headers||{})}})}
+  catch(_e){if(reservation)await settleAiMonthlyBudget(env,uid,reservation,model,{}, {chargeReserve:true});console.error("ETERNA OPENAI NETWORK",path);throw new OpenAIRequestError("network")}
+  if(!r.ok){if(reservation)await settleAiMonthlyBudget(env,uid,reservation,model,{}, {chargeReserve:true});let payloadError=null;try{payloadError=await r.clone().json()}catch(_e){}const meta={status:r.status,code:payloadError?.error?.code||null,type:payloadError?.error?.type||null,requestId:r.headers.get("x-request-id")};console.error("ETERNA OPENAI HTTP",path,meta.status,meta.type||"unknown",meta.code||"unknown",meta.requestId||"no-request-id");throw new OpenAIRequestError("http",meta)}
+  if(reservation){let responseData=null;try{responseData=await r.clone().json()}catch(_e){}await settleAiMonthlyBudget(env,uid,reservation,model,responseData?.usage||{})}
+  return r
 }
 function parseStructuredJson(text){let s=String(text||"").trim();if(!s)throw new Error("empty structured output");if(s.startsWith("```"))s=s.replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/i,"").trim();try{return JSON.parse(s)}catch(e){}const a=s.indexOf("{"),b=s.lastIndexOf("}");if(a>=0&&b>a)return JSON.parse(s.slice(a,b+1));throw new Error("invalid structured json")}
 function aiProvider(env){return String(env?.AI_PROVIDER||"").trim().toLowerCase()==="cloudflare"&&env?.AI&&typeof env.AI.run==="function"?"cloudflare":"openai"}
 function cloudflareErrorDiagnostic(error,prefix="CLOUDFLARE_AI"){const message=String(error?.message||error||"unknown").toUpperCase();const kind=/QUOTA|LIMIT|NEURON|429/.test(message)?"QUOTA":/TIMEOUT|TIMED OUT/.test(message)?"TIMEOUT":/JSON|SCHEMA|PARSE/.test(message)?"STRUCTURED":"REQUEST";return`${prefix}_${kind}`}
-function cloudflareQuotaError(error){return cloudflareErrorDiagnostic(error).endsWith("_QUOTA")}
+function cloudflareQuotaError(error){return isAiMonthlyBudgetError(error)||cloudflareErrorDiagnostic(error).endsWith("_QUOTA")}
 function openaiFallbackEnabled(env){return aiProvider(env)==="cloudflare"&&String(env?.ENABLE_OPENAI_FALLBACK||"false").toLowerCase()==="true"&&Boolean(String(env?.OPENAI_API_KEY||"").trim())}
 function normalizeTokenUsage(usage){const value=usage&&typeof usage==="object"?usage:{},input=Number(value.input_tokens??value.prompt_tokens??0),output=Number(value.output_tokens??value.completion_tokens??0);return{input_tokens:Number.isFinite(input)&&input>0?input:0,output_tokens:Number.isFinite(output)&&output>0?output:0}}
 function mergeTokenUsage(...values){return values.map(normalizeTokenUsage).reduce((total,value)=>({input_tokens:total.input_tokens+value.input_tokens,output_tokens:total.output_tokens+value.output_tokens}),{input_tokens:0,output_tokens:0})}
@@ -357,13 +361,119 @@ async function openaiStructured(env,{model,input,instructions,name,schema,max_ou
   throw new Error("Structured output failed after retry: "+name+" · "+String(lastErr&&lastErr.message||lastErr||"unknown"))
 }
 function structuredInputHasImage(input){return Boolean(cloudflareInput(input).image)}
-async function structured(env,args){if(aiProvider(env)==="cloudflare"){try{return await cloudflareStructured(env,args)}catch(error){if(!openaiFallbackEnabled(env))throw error;const visual=structuredInputHasImage(args?.input),fallbackModel=visual?(env.OPENAI_VISION_MODEL||"gpt-5.6-sol"):(env.OPENAI_FALLBACK_MODEL||"gpt-5.6-luna");console.error("ETERNA PROVIDER FALLBACK cloudflare to openai",visual?"vision":"text",cloudflareErrorDiagnostic(error));return openaiStructured(env,{...args,model:fallbackModel,reasoning_effort:visual?reasoningEffort(env.VISION_REASONING_EFFORT,"high"):"medium"})}}return openaiStructured(env,args)}
+async function structured(env,args){if(aiProvider(env)==="cloudflare"){try{return await cloudflareStructured(env,args)}catch(error){if(isAiMonthlyBudgetError(error))throw error;if(!openaiFallbackEnabled(env))throw error;const visual=structuredInputHasImage(args?.input),fallbackModel=visual?(env.OPENAI_VISION_MODEL||"gpt-5.6-sol"):(env.OPENAI_FALLBACK_MODEL||"gpt-5.6-luna");console.error("ETERNA PROVIDER FALLBACK cloudflare to openai",visual?"vision":"text",cloudflareErrorDiagnostic(error));return openaiStructured(env,{...args,model:fallbackModel,reasoning_effort:visual?reasoningEffort(env.VISION_REASONING_EFFORT,"high"):"medium"})}}return openaiStructured(env,args)}
 
 function supabasePublicKey(env){return env.SUPABASE_PUBLISHABLE_KEY||env.SUPABASE_ANON_KEY||""}
 function supabaseSecretKey(env){return env.SUPABASE_SECRET_KEY||env.SUPABASE_SERVICE_ROLE_KEY||""}
 async function authenticate(request,env){const publicKey=supabasePublicKey(env);if(!env.SUPABASE_URL||!publicKey)throw new Error("Missing environment variable: SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY");const auth=request.headers.get("Authorization")||"";if(!auth.startsWith("Bearer "))return null;const token=auth.slice(7);const r=await fetch(env.SUPABASE_URL.replace(/\/$/,"")+"/auth/v1/user",{headers:{apikey:publicKey,Authorization:"Bearer "+token}});if(!r.ok)return null;const user=await r.json();return{user,token}}
 async function supabase(env,path,{method="GET",body,service=true,headers={}}={}){const key=service?supabaseSecretKey(env):supabasePublicKey(env);if(!env.SUPABASE_URL||!key)throw new Error("Missing environment variable: SUPABASE_URL or Supabase API key");const baseHeaders={apikey:key,"Content-Type":"application/json",Prefer:"return=representation",...headers};if(!key.startsWith("sb_secret_")&&!key.startsWith("sb_publishable_"))baseHeaders.Authorization="Bearer "+key;const r=await fetch(env.SUPABASE_URL.replace(/\/$/,"")+"/rest/v1/"+path,{method,headers:baseHeaders,body:body==null?undefined:JSON.stringify(body)});if(!r.ok){const t=await r.text();throw new Error("Supabase "+r.status+": "+t.slice(0,400))}const txt=await r.text();return txt?JSON.parse(txt):null}
 async function safeSupabaseRead(env,path){try{return await supabase(env,path)}catch(e){return[]}}
+
+const ETERNA_MONTHLY_AI_BUDGET_ERROR="ETERNA_MONTHLY_AI_BUDGET_REACHED";
+class AiMonthlyBudgetExceededError extends Error{
+  constructor(state={}){
+    super(ETERNA_MONTHLY_AI_BUDGET_ERROR);
+    this.name="AiMonthlyBudgetExceededError";
+    this.code=ETERNA_MONTHLY_AI_BUDGET_ERROR;
+    this.budget=state||{};
+  }
+}
+function isAiMonthlyBudgetError(error){return error instanceof AiMonthlyBudgetExceededError||String(error?.code||"")===ETERNA_MONTHLY_AI_BUDGET_ERROR||String(error?.message||error||"").includes(ETERNA_MONTHLY_AI_BUDGET_ERROR)}
+function aiMonthlyBudgetCapEur(env){const n=Number(env?.AI_MONTHLY_BUDGET_EUR??2);return Number.isFinite(n)?Math.max(.01,Math.min(100,n)):2}
+function aiBudgetMonthStart(env,date=new Date()){const day=usageDate(env,date);return day.slice(0,7)+"-01"}
+function aiBudgetNextMonth(env,date=new Date()){const start=aiBudgetMonthStart(env,date),d=new Date(start+"T12:00:00Z");d.setUTCMonth(d.getUTCMonth()+1);return d.toISOString().slice(0,10)}
+function aiBudgetUserId(env){return String(env?.__ETERNA_AI_BUDGET_UID||"")}
+function aiBudgetPriceUsdPerMillion(model){
+  const m=String(model||"").toLowerCase();
+  if(m.includes("qwen3-30b-a3b"))return{input:.051,output:.335};
+  if(m.includes("llama-3.1-8b-instruct-fast"))return{input:.045,output:.384};
+  if(m.includes("llama-3.1-8b-instruct"))return{input:.282,output:.827};
+  if(m.includes("llama-guard-3-8b"))return{input:.484,output:.030};
+  if(m.includes("llama-4-scout-17b-16e"))return{input:.270,output:.850};
+  if(m.includes("moondream"))return{input:1.00,output:5.00};
+  if(m.includes("gpt-5.6-sol"))return{input:5.00,output:30.00};
+  if(m.includes("gpt-5.6-terra"))return{input:2.50,output:15.00};
+  if(m.includes("gpt-5.6-luna"))return{input:1.00,output:6.00};
+  return{input:5.00,output:30.00};
+}
+function aiBudgetPayloadStats(payload){
+  let bytes=0,image=false;
+  const encoder=new TextEncoder(),seen=new Set();
+  function visit(value,key=""){
+    if(value==null)return;
+    if(typeof value==="string"){
+      if(/^data:image\//i.test(value)||key==="image"&&value.length>1000){image=true;return}
+      bytes+=encoder.encode(value).length;return
+    }
+    if(typeof value==="number"||typeof value==="boolean"){bytes+=String(value).length;return}
+    if(typeof value!=="object")return;
+    if(seen.has(value))return;seen.add(value);
+    if(Array.isArray(value)){
+      if(value.length>512&&value.every((item,index)=>index>24||typeof item==="number")){image=true;return}
+      for(const item of value)visit(item,key);return
+    }
+    for(const [k,v] of Object.entries(value)){
+      bytes+=encoder.encode(k).length;
+      if((k==="image"||k==="image_url")&&(Array.isArray(v)||typeof v==="string")){image=true;if(typeof v==="string"&&!/^data:image\//i.test(v))bytes+=encoder.encode(v).length;continue}
+      visit(v,k)
+    }
+  }
+  visit(payload);
+  const textTokens=Math.max(1,bytes);
+  const imageTokens=image?Math.max(4096,Number(globalThis?.ETERNA_IMAGE_BUDGET_TOKENS||0)||32768):0;
+  return{input_tokens:textTokens+imageTokens,has_image:image}
+}
+function aiBudgetReserveEstimateEur(env,model,payload){
+  const rates=aiBudgetPriceUsdPerMillion(model),stats=aiBudgetPayloadStats(payload),maxOutput=Math.max(1,Math.min(64000,Number(payload?.max_output_tokens??payload?.max_tokens??4096)||4096)),eurPerUsd=Math.max(.5,Math.min(2,Number(env?.AI_BUDGET_EUR_PER_USD||1))),safety=Math.max(1,Math.min(3,Number(env?.AI_BUDGET_SAFETY_MULTIPLIER||1.15))),raw=((stats.input_tokens*rates.input+maxOutput*rates.output)/1e6)*eurPerUsd*safety;
+  return{reserve_eur:Math.max(.000001,Number(raw.toFixed(6))),estimated_input_tokens:stats.input_tokens,max_output_tokens:maxOutput,rates}
+}
+function aiBudgetActualEur(env,model,usage,reserveEur){
+  const tokens=normalizeTokenUsage(usage),rates=aiBudgetPriceUsdPerMillion(model);
+  if(tokens.input_tokens<=0&&tokens.output_tokens<=0)return{cost_eur:reserveEur,tokens};
+  const eurPerUsd=Math.max(.5,Math.min(2,Number(env?.AI_BUDGET_EUR_PER_USD||1))),safety=Math.max(1,Math.min(3,Number(env?.AI_BUDGET_SAFETY_MULTIPLIER||1.15))),raw=((tokens.input_tokens*rates.input+tokens.output_tokens*rates.output)/1e6)*eurPerUsd*safety;
+  return{cost_eur:Math.min(reserveEur,Math.max(.000001,Number(raw.toFixed(6)))),tokens}
+}
+async function reserveAiMonthlyBudget(env,uid,model,payload){
+  if(!uid)return null;
+  const estimate=aiBudgetReserveEstimateEur(env,model,payload),month=aiBudgetMonthStart(env),cap=aiMonthlyBudgetCapEur(env);
+  let rows;
+  try{rows=await supabase(env,"rpc/eterna_ai_budget_reserve",{method:"POST",body:{p_user_id:uid,p_month_start:month,p_reserve_eur:estimate.reserve_eur,p_cap_eur:cap}})}
+  catch(error){console.error("ETERNA AI BUDGET RESERVE",String(error?.message||error));throw new Error("ETERNA_AI_BUDGET_NOT_CONFIGURED")}
+  const row=Array.isArray(rows)?rows[0]:rows;
+  if(!row?.ok)throw new AiMonthlyBudgetExceededError({cap_eur:Number(row?.cap_eur||cap),spent_eur:Number(row?.spent_eur||0),reserved_eur:Number(row?.reserved_eur||0),remaining_eur:Number(row?.remaining_eur||0),month_start:month,reset_date:aiBudgetNextMonth(env)});
+  return{...estimate,reservation_id:String(row.reservation_id||""),month_start:month,cap_eur:Number(row.cap_eur||cap)}
+}
+async function settleAiMonthlyBudget(env,uid,reservation,model,usage,{chargeReserve=false}={}){
+  if(!uid||!reservation?.reservation_id)return;
+  const actual=chargeReserve?{cost_eur:reservation.reserve_eur,tokens:normalizeTokenUsage(usage)}:aiBudgetActualEur(env,model,usage,reservation.reserve_eur);
+  try{await supabase(env,"rpc/eterna_ai_budget_settle",{method:"POST",body:{p_user_id:uid,p_reservation_id:reservation.reservation_id,p_actual_eur:actual.cost_eur,p_input_tokens:Math.round(actual.tokens.input_tokens||0),p_output_tokens:Math.round(actual.tokens.output_tokens||0)}})}
+  catch(error){console.error("ETERNA AI BUDGET SETTLE",String(error?.message||error))}
+}
+function monthlyAiBudgetResponse(error){
+  const b=error?.budget||{},cap=Number(b.cap_eur||2),spent=Number(b.spent_eur||0),reserved=Number(b.reserved_eur||0),remaining=Math.max(0,Number(b.remaining_eur||0));
+  return json({error:ETERNA_MONTHLY_AI_BUDGET_ERROR,limit_type:"monthly_ai_cost",cap_eur:cap,spent_eur:spent,reserved_eur:reserved,remaining_eur:remaining,reset_date:b.reset_date||aiBudgetNextMonth({USAGE_TIMEZONE:"Europe/Madrid"}),message:"Se ha alcanzado el límite mensual de uso de IA para esta cuenta. Se renovará automáticamente el primer día del próximo mes."},429)
+}
+async function runBudgetedCloudflareAi(env,uid,binding,model,payload){
+  const reservation=await reserveAiMonthlyBudget(env,uid,model,payload);
+  try{
+    const result=await binding.run(model,payload);
+    await settleAiMonthlyBudget(env,uid,reservation,model,result?.usage||{});
+    return result
+  }catch(error){
+    if(isAiMonthlyBudgetError(error))throw error;
+    await settleAiMonthlyBudget(env,uid,reservation,model,{}, {chargeReserve:true});
+    throw error
+  }
+}
+function withAiMonthlyBudget(env,uid){
+  if(!uid||!env?.AI||typeof env.AI.run!=="function"){
+    return new Proxy(env,{get(target,prop,receiver){if(prop==="__ETERNA_AI_BUDGET_UID")return uid;return Reflect.get(target,prop,receiver)}})
+  }
+  if(aiBudgetUserId(env)===uid)return env;
+  const binding=env.AI,wrappedAi={run:(model,payload)=>runBudgetedCloudflareAi(env,uid,binding,model,payload)};
+  return new Proxy(env,{get(target,prop,receiver){if(prop==="__ETERNA_AI_BUDGET_UID")return uid;if(prop==="AI")return wrappedAi;return Reflect.get(target,prop,receiver)}})
+}
+
 async function getStudentContext(env,uid){const [profiles,bases,mastery,memory,strategies,signals,academicMemory]=await Promise.all([
   safeSupabaseRead(env,`eterna_student_profiles?user_id=eq.${encodeURIComponent(uid)}&select=*`),
   safeSupabaseRead(env,`perfiles?id=eq.${encodeURIComponent(uid)}&select=apodo,edad,rol`),
@@ -455,6 +565,7 @@ async function quota(env,uid,email,subscription=null){
 }
 async function getChatPreflight(env,auth){
   const uid=auth.user.id;
+  env=withAiMonthlyBudget(env,uid);
   const [ctx,subscriptionRows,legalRow,settingsRows,usage,week,explicitTester]=await Promise.all([
     getStudentContext(env,uid),
     safeSupabaseRead(env,`eterna_subscriptions?user_id=eq.${encodeURIComponent(uid)}&select=*`),
@@ -1697,7 +1808,7 @@ function ownedLibraryDecision(env,{text,image,ctx,mode,incomingPedState,incoming
 async function handleChat(request,env,auth,event,greetingBody=null){
   const timings=createChatTimings();
   let policyBody=greetingBody;if(!policyBody)try{policyBody=await request.clone().json()}catch(_e){policyBody={}};
-  try{return withChatTimings(await applyGreetingContinuity(await handleChatCore(request,env,auth,event,timings),policyBody),timings)}catch(error){timings.mark("failed");throw error}
+  try{return withChatTimings(await applyGreetingContinuity(await handleChatCore(request,env,auth,event,timings),policyBody),timings)}catch(error){timings.mark("failed");if(isAiMonthlyBudgetError(error))return monthlyAiBudgetResponse(error);throw error}
 }
 async function handleChatCore(request,env,auth,event,timings){
   const body=await request.json(),text=String(body.text||"").slice(0,6000),rawImage=typeof body.image_data_url==="string"?body.image_data_url:null,imageValidation=validateImageDataUrl(rawImage),image=imageValidation.ok?rawImage:null,imageRegions=validatedImageRegions(body.image_regions,imageValidation.ok),history=Array.isArray(body.history)?body.history.slice(-12):[],mode=MODE_PROFILES[body.mode]?String(body.mode):"homework",inputSource=["text","voice","image"].includes(body.input_source)?body.input_source:(image?"image":"text"),incomingModeState=sanitizeModeState(body.mode_state),incomingPedState=sanitizePedagogicalState(body.pedagogical_state,mode),clientStudentIntent=["answer_check","return_topic","confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen","relational_followup"].includes(String(body.student_intent||""))?String(body.student_intent):null,clientTutorDirective=["RETURN_TOPIC","CHANGE_STRATEGY","SIMPLIFY","ADVANCE","EXPLAIN_CAUSE","EXPLAIN_MECHANISM"].includes(String(body.tutor_directive||""))?String(body.tutor_directive):null,clientRepetitionGuard=typeof body.repetition_guard==="string"?body.repetition_guard.slice(0,700):null;
@@ -2054,6 +2165,7 @@ function healthFeatures(env){return {
 }}
 function modelConfiguration(env){return{
   provider:aiProvider(env),
+  monthly_ai_budget:{enabled:true,cap_eur:aiMonthlyBudgetCapEur(env),hard_per_user:true,bypass_for_owner_or_tester:false},
   provider_fallback:{enabled:openaiFallbackEnabled(env),model:env.OPENAI_FALLBACK_MODEL||"gpt-5.6-luna",vision_model:env.OPENAI_VISION_MODEL||"gpt-5.6-sol",configured:Boolean(String(env.OPENAI_API_KEY||"").trim())},
   scope:{model:env.SCOPE_MODEL||"gpt-5.6-luna",fallback_model:env.SCOPE_FALLBACK_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.SCOPE_REASONING_EFFORT,"low"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_scope_v3")||"default"},
   tutor:{model:env.TUTOR_MODEL||"gpt-5.6-sol",fallback_model:env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibility_model:env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",reasoning_effort:reasoningEffort(env.TUTOR_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_tutor_v163_flagship")||"default"},
