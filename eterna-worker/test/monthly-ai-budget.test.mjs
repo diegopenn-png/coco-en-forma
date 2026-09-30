@@ -20,7 +20,7 @@ test("monthly AI budget is a hard per-user €2 cap",async()=>{
   assert.match(worker,/env=withAiMonthlyBudget\(env,uid\)/);
   assert.match(worker,/reserveAiMonthlyBudget\(env,uid,model,payload\)/);
   assert.match(worker,/settleAiMonthlyBudget\(env,uid,reservation,model/);
-  assert.match(worker,/bypass_for_owner_or_tester:false/);
+  const reserveBody=worker.slice(worker.indexOf("async function reserveAiMonthlyBudget"),worker.indexOf("async function settleAiMonthlyBudget"));\n  assert.doesNotMatch(reserveBody,/isUnlimitedTester|isOwner|propietario|test_entitlement/i);
 
   assert.match(sql,/primary key \(user_id, month_start\)/i);
   assert.match(sql,/for update;/i);
