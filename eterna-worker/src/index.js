@@ -2165,7 +2165,6 @@ function healthFeatures(env){return {
 }}
 function modelConfiguration(env){return{
   provider:aiProvider(env),
-  monthly_ai_budget:{enabled:true,cap_eur:aiMonthlyBudgetCapEur(env),hard_per_user:true,bypass_for_owner_or_tester:false},
   provider_fallback:{enabled:openaiFallbackEnabled(env),model:env.OPENAI_FALLBACK_MODEL||"gpt-5.6-luna",vision_model:env.OPENAI_VISION_MODEL||"gpt-5.6-sol",configured:Boolean(String(env.OPENAI_API_KEY||"").trim())},
   scope:{model:env.SCOPE_MODEL||"gpt-5.6-luna",fallback_model:env.SCOPE_FALLBACK_MODEL||"gpt-5.6-terra",reasoning_effort:reasoningEffort(env.SCOPE_REASONING_EFFORT,"low"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_scope_v3")||"default"},
   tutor:{model:env.TUTOR_MODEL||"gpt-5.6-sol",fallback_model:env.TUTOR_FALLBACK_MODEL||"gpt-5.6-terra",compatibility_model:env.TUTOR_COMPATIBILITY_MODEL||"gpt-5.4-mini",reasoning_effort:reasoningEffort(env.TUTOR_REASONING_EFFORT,"high"),service_tier:aiProvider(env)==="cloudflare"?"cloudflare":openaiServiceTier(env,"eterna_tutor_v163_flagship")||"default"},
