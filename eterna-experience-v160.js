@@ -1553,7 +1553,9 @@
     bubble.textContent="";
 
     var main=document.createElement("span");
-    if(type==="weekly"){
+    if(type==="monthly"){
+      main.textContent="Has alcanzado el límite mensual de uso de IA de Eterna para esta cuenta.";
+    }else if(type==="weekly"){
       main.textContent="Has alcanzado el límite semanal de consultas de Eterna. Pide a tus padres que lo gestionen desde Zona Familiar.";
     }else{
       main.textContent="Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.";
@@ -1595,14 +1597,15 @@
   function syncLimitHeader(type){
     var o=overlay(),s=o&&o.querySelector("[data-et-status]"),d=o&&o.querySelector("[data-et-dot]");
     if(!s)return;
-    if(type==="weekly")s.textContent="Límite semanal alcanzado";
+    if(type==="monthly")s.textContent="Límite mensual alcanzado";
+    else if(type==="weekly")s.textContent="Límite semanal alcanzado";
     else if(type==="daily")s.textContent="Límite diario alcanzado";
     if(d)d.className="eternaV159Dot warn"
   }
 
   function clearStaleLimitHeader(){
     var o=overlay(),s=o&&o.querySelector("[data-et-status]"),d=o&&o.querySelector("[data-et-dot]");
-    if(!s||!/l[ií]mite\s+(diario|semanal)/i.test(String(s.textContent||"")))return;
+    if(!s||!/l[ií]mite\s+(diario|semanal|mensual)/i.test(String(s.textContent||"")))return;
     s.textContent="Eterna lista";if(d)d.className="eternaV159Dot ok"
   }
 
@@ -1621,7 +1624,10 @@
 
       try{
         var data=await response.clone().json();
-        if(data&&data.error==="ETERNA_WEEKLY_LIMIT"){
+        if(data&&data.error==="ETERNA_MONTHLY_AI_BUDGET_REACHED"){
+          lastLimitType="monthly";
+          scheduleLimit("monthly");
+        }else if(data&&data.error==="ETERNA_WEEKLY_LIMIT"){
           lastLimitType="weekly";
           scheduleLimit("weekly");
 
