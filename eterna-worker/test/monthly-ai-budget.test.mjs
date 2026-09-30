@@ -5,30 +5,52 @@ import {readFile} from "node:fs/promises";
 const workerUrl=new URL("../src/index.js",import.meta.url);
 const wranglerUrl=new URL("../wrangler.jsonc",import.meta.url);
 const sqlUrl=new URL("../../supabase-eterna-v160100-monthly-ai-budget.sql",import.meta.url);
+const hardSqlUrl=new URL("../../supabase-eterna-v160100-hard-2eur-ceiling.sql",import.meta.url);
 const uiUrl=new URL("../../eterna-v159.js",import.meta.url);
 
-test("monthly AI budget is a hard per-user €2 cap",async()=>{
-  const [worker,wrangler,sql,ui]=await Promise.all([
+test("monthly AI budget is a hard per-user €2 cap with no owner/tester bypass",async()=>{
+  const [worker,wrangler,sql,hardSql,ui]=await Promise.all([
     readFile(workerUrl,"utf8"),
     readFile(wranglerUrl,"utf8"),
     readFile(sqlUrl,"utf8"),
+    readFile(hardSqlUrl,"utf8"),
     readFile(uiUrl,"utf8")
   ]);
 
   assert.match(wrangler,/"AI_MONTHLY_BUDGET_EUR":\s*"2\.00"/);
+  assert.match(worker,/AI_MONTHLY_BUDGET_POLICY=Object\.freeze\(\{hard_cap_eur:2,bypass_for_owner_or_tester:false,period:"calendar_month"\}\)/);
+  assert.match(worker,/Math\.min\(hard,n\)/);
   assert.match(worker,/ETERNA_MONTHLY_AI_BUDGET_REACHED/);
-  assert.match(worker,/async function handleChatCore[\\s\\S]{0,7000}const uid=auth\\.user\\.id;\\s*env=withAiMonthlyBudget\\(env,uid\\)/);
+  assert.match(worker,/const auth=await authenticate\(request,env\);[\s\S]{0,250}env=withAiMonthlyBudget\(env,auth\.user\.id\)/);
+  assert.match(worker,/wrappedAi=\{run:\(model,payload\)=>runBudgetedCloudflareAi\(env,uid,binding,model,payload\)\}/);
   assert.match(worker,/reserveAiMonthlyBudget\(env,uid,model,payload\)/);
   assert.match(worker,/settleAiMonthlyBudget\(env,uid,reservation,model/);
-  const reserveBody=worker.slice(worker.indexOf("async function reserveAiMonthlyBudget"),worker.indexOf("async function settleAiMonthlyBudget"));\n  assert.doesNotMatch(reserveBody,/isUnlimitedTester|isOwner|propietario|test_entitlement/i);
 
+  const reserveBody=worker.slice(worker.indexOf("async function reserveAiMonthlyBudget"),worker.indexOf("async function settleAiMonthlyBudget"));
+  assert.doesNotMatch(reserveBody,/isUnlimitedTester|isOwner|propietario|test_entitlement/i);
+
+  assert.match(sql,/cap_eur > 0 and cap_eur <= 2\.000000/i);
   assert.match(sql,/primary key \(user_id, month_start\)/i);
   assert.match(sql,/for update;/i);
   assert.match(sql,/spent_eur \+ v_row\.reserved_eur \+ v_reserve > v_row\.cap_eur/i);
+  assert.match(sql,/least\(2\.000000, greatest\(/i);
   assert.match(sql,/revoke all on function public\.eterna_ai_budget_reserve[\s\S]*authenticated/i);
   assert.match(sql,/grant execute on function public\.eterna_ai_budget_reserve[\s\S]*to service_role/i);
 
+  assert.match(hardSql,/check \(cap_eur <= 2\.000000\)/i);
+  assert.match(hardSql,/least\(2\.000000, public\.eterna_ai_monthly_budget\.cap_eur, excluded\.cap_eur\)/i);
   assert.match(ui,/ETERNA_MONTHLY_AI_BUDGET_REACHED/);
+});
+
+test("budget covers Workers AI, OpenAI fallback, transcription and speech",async()=>{
+  const worker=await readFile(workerUrl,"utf8");
+  assert.match(worker,/responses\|chat\\\/completions\|moderations\|audio\\\/transcriptions\|audio\\\/speech/);
+  assert.match(worker,/whisper/);
+  assert.match(worker,/gpt-4o-mini-transcribe/);
+  assert.match(worker,/melotts/);
+  assert.match(worker,/gpt-4o-mini-tts/);
+  assert.match(worker,/runBudgetedCloudflareAi/);
+  assert.match(worker,/if\(isAiMonthlyBudgetError\(error\)\)throw error/);
 });
 
 test("monthly budget uses a fresh row for every natural month",async()=>{
@@ -39,5 +61,6 @@ test("monthly budget uses a fresh row for every natural month",async()=>{
 
 test("budget denial cannot fall through Cloudflare to OpenAI",async()=>{
   const worker=await readFile(workerUrl,"utf8");
-  assert.match(worker,/catch\(error\)\{if\(isAiMonthlyBudgetError\(error\)\)throw error;if\(!openaiFallbackEnabled\(env\)\)throw error;/);
+  assert.match(worker,/async function structured[\s\S]{0,900}if\(isAiMonthlyBudgetError\(error\)\)throw error/);
+  assert.match(worker,/function cloudflareQuotaError\(error\)\{if\(isAiMonthlyBudgetError\(error\)\)throw error;/);
 });
