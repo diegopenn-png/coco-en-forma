@@ -228,7 +228,7 @@ test("the 160.99.18 production gate promotes the exact language-photo release", 
 test("the 160.99.26 production gate preserves dependencies and gates the systemwide pedagogical director", () => {
   const production = readFileSync(".github/workflows/eterna-worker-production-1609919.yml", "utf8");
   assert.match(production, /\.github\/release-eterna-1609926/);
-  assert.match(production, /EXPECTED_VERSION: 160\.100\.0-monthly-ai-budget-eur2/);
+  assert.match(production, /EXPECTED_VERSION: 160\.99\.26-systemwide-pedagogical-director-candidate/);
   assert.match(production, /--preview-alias "release-1609926"/);
   assert.match(production, /--var "ENABLE_ETERNA_LIBRARY:true"/);
   assert.match(production, /--var "ETERNA_EXERCISE_FACTORY:v1"/);
@@ -252,6 +252,21 @@ test("the 160.99.26 production gate preserves dependencies and gates the systemw
   assert.match(production, /Number\(p\.photo_intake\?\.items \|\| 0\) >= 3/);
   assert.match(production, /7\/5/);
   assert.match(production, /11\/4/);
+  assert.match(production, /wrangler versions deploy/);
+  assert.match(production, /wrangler rollback/);
+});
+
+test("the 160.100.0 production gate deploys the hard monthly AI budget only after full validation", () => {
+  const production = readFileSync(".github/workflows/eterna-worker-production-160100.yml", "utf8");
+  assert.match(production, /\.github\/release-eterna-160100/);
+  assert.match(production, /EXPECTED_VERSION: 160\.100\.0-monthly-ai-budget-eur2/);
+  assert.match(production, /--preview-alias "release-160100"/);
+  assert.match(production, /--var "AI_MONTHLY_BUDGET_EUR:2\.00"/);
+  assert.match(production, /--var "AI_BUDGET_EUR_PER_USD:1\.00"/);
+  assert.match(production, /--var "AI_BUDGET_SAFETY_MULTIPLIER:1\.15"/);
+  assert.match(production, /monthly_ai_budget_hard_cap_eur === 2/);
+  assert.match(production, /monthly_ai_budget_no_bypass === true/);
+  assert.match(production, /node --test eterna-worker\/test\/\*\.test\.mjs qa\/\*\.test\.mjs qa\/eterna\/\*\.test\.mjs/);
   assert.match(production, /wrangler versions deploy/);
   assert.match(production, /wrangler rollback/);
 });
