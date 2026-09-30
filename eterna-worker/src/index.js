@@ -420,7 +420,7 @@ function aiBudgetPayloadStats(payload){
   }
   visit(payload);
   const textTokens=Math.max(1,bytes);
-  const imageTokens=image?Math.max(4096,Number(globalThis?.ETERNA_IMAGE_BUDGET_TOKENS||0)||32768):0;
+  const imageTokens=image?131072:0;
   return{input_tokens:textTokens+imageTokens,has_image:image}
 }
 function aiBudgetReserveEstimateEur(env,model,payload){
