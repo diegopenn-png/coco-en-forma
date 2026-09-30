@@ -41,7 +41,7 @@ drop policy if exists eterna_ai_budget_own_select on public.eterna_ai_monthly_bu
 create policy eterna_ai_budget_own_select
   on public.eterna_ai_monthly_budget
   for select to authenticated
-  using (user_id = auth.uid());
+  using (user_id = (select auth.uid()));
 
 revoke all on public.eterna_ai_monthly_budget from anon, authenticated;
 grant select on public.eterna_ai_monthly_budget to authenticated;
