@@ -91,27 +91,27 @@ begin
 
   -- Una reserva huérfana de más de 20 minutos se considera consumida.
   -- Es deliberadamente conservador: evita que un corte de red deje gasto real sin contabilizar.
-  select coalesce(sum(reserved_eur),0)::numeric(12,6)
+  select coalesce(sum(r.reserved_eur),0)::numeric(12,6)
     into v_stale
-  from public.eterna_ai_budget_reservations
-  where user_id = p_user_id
-    and month_start = p_month_start
-    and settled_at is null
-    and created_at < now() - interval '20 minutes';
+  from public.eterna_ai_budget_reservations r
+  where r.user_id = p_user_id
+    and r.month_start = p_month_start
+    and r.settled_at is null
+    and r.created_at < now() - interval '20 minutes';
 
   if v_stale > 0 then
-    update public.eterna_ai_budget_reservations
-      set actual_eur = reserved_eur, settled_at = now()
-    where user_id = p_user_id
-      and month_start = p_month_start
-      and settled_at is null
-      and created_at < now() - interval '20 minutes';
+    update public.eterna_ai_budget_reservations r
+      set actual_eur = r.reserved_eur, settled_at = now()
+    where r.user_id = p_user_id
+      and r.month_start = p_month_start
+      and r.settled_at is null
+      and r.created_at < now() - interval '20 minutes';
 
-    update public.eterna_ai_monthly_budget
-      set spent_eur = spent_eur + v_stale,
-          reserved_eur = greatest(0, reserved_eur - v_stale),
+    update public.eterna_ai_monthly_budget b
+      set spent_eur = b.spent_eur + v_stale,
+          reserved_eur = greatest(0, b.reserved_eur - v_stale),
           updated_at = now()
-    where user_id = p_user_id and month_start = p_month_start
+    where b.user_id = p_user_id and b.month_start = p_month_start
     returning * into v_row;
   end if;
 
@@ -126,9 +126,9 @@ begin
   values (p_user_id, p_month_start, v_reserve)
   returning id into v_id;
 
-  update public.eterna_ai_monthly_budget
-    set reserved_eur = reserved_eur + v_reserve, updated_at = now()
-  where user_id = p_user_id and month_start = p_month_start
+  update public.eterna_ai_monthly_budget b
+    set reserved_eur = b.reserved_eur + v_reserve, updated_at = now()
+  where b.user_id = p_user_id and b.month_start = p_month_start
   returning * into v_row;
 
   return query
@@ -189,13 +189,13 @@ begin
           settled_at = now()
     where id = v_res.id;
 
-    update public.eterna_ai_monthly_budget
-      set spent_eur = least(cap_eur, spent_eur + v_actual),
-          reserved_eur = greatest(0, reserved_eur - v_res.reserved_eur),
-          input_tokens = input_tokens + greatest(0, coalesce(p_input_tokens,0)),
-          output_tokens = output_tokens + greatest(0, coalesce(p_output_tokens,0)),
+    update public.eterna_ai_monthly_budget b
+      set spent_eur = least(b.cap_eur, b.spent_eur + v_actual),
+          reserved_eur = greatest(0, b.reserved_eur - v_res.reserved_eur),
+          input_tokens = b.input_tokens + greatest(0, coalesce(p_input_tokens,0)),
+          output_tokens = b.output_tokens + greatest(0, coalesce(p_output_tokens,0)),
           updated_at = now()
-    where user_id = v_res.user_id and month_start = v_res.month_start
+    where b.user_id = v_res.user_id and b.month_start = v_res.month_start
     returning * into v_budget;
   end if;
 
