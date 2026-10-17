@@ -46,7 +46,7 @@ test("the PWA invalidates the human-teacher assets as one release", () => {
   assert.match(index, /eterna-v159\.css\?v=160980/);
   assert.match(index, /eterna-v159\.js\?v=160114/);
   assert.match(index, /sw\.js\?v=160118-r1/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.18-eterna-desktop-composer-r1"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.19-eterna-six-modes-budget-fix"/);
 });
 
 test("relational turns stay human, transient and separate from the suspended lesson", () => {
@@ -108,7 +108,8 @@ test("greetings use local time once per conversational window", () => {
   assert.match(client, /saveGreetingState\(data\.greeting_state\)/);
   assert.match(client, /startTitle=openingGreeting\(studentName\)\+p\.title/);
   assert.match(greetingGuard, /first\|\|newDay\|\|periodChanged/);
-  assert.match(greetingGuard, /if\(!allowed&&prefix\)reply=explicit\?"Aquí estoy/);
+  assert.match(greetingGuard, /explicit&&onlyGreeting&&!safeInterrupt/);
+  assert.match(greetingGuard, /modeOpeningQuestion\(body\?\.mode\)/);
   assert.match(greetingGuard, /kind==="morning"\?"Buenos días"/);
   assert.match(greetingGuard, /kind==="afternoon"\?"Buenas tardes"/);
   assert.match(greetingGuard, /kind==="night"\?"Buenas noches"/);

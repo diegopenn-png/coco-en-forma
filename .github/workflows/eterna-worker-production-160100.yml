@@ -175,7 +175,7 @@ jobs:
         run: |
           probe_url="${{ steps.upload.outputs.preview_url }}/health/dependencies"
           probe_ready=false
-          for attempt in 1 2 3; do
+          for attempt in 1; do
             payload="$(curl --silent --show-error --max-time 120 -H "Authorization: Bearer ${DEPLOY_PROBE_TOKEN}" "$probe_url" || true)"
             if node -e '
               let p;
@@ -203,10 +203,10 @@ jobs:
               probe_ready=true
               break
             fi
-            if [[ "$attempt" -lt 3 ]]; then sleep 10; fi
+            if [[ "$attempt" -lt 1 ]]; then sleep 10; fi
           done
           if [[ "$probe_ready" != "true" ]]; then
-            echo "The preview AI dependencies did not become healthy after three bounded probes" >&2
+            echo "The preview AI dependencies did not become healthy after the single budget-bounded probe" >&2
             exit 1
           fi
 

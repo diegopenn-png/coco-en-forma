@@ -505,7 +505,7 @@ test("greetings follow the student's local time and are never repeated inside on
     { reply: "¡Hola, Francesco! Dime qué necesitas.", verification_status: "verified" },
     { text: "Hola otra vez", history: [{ role: "assistant", text: identity.reply }], pedagogical_state: { turn_index: 3 }, client_clock: { ...morningClock, sent_at_ms: morningClock.sent_at_ms + 180_000 }, client_greeting_state: first.greeting_state },
   );
-  assert.equal(repeatedHello.reply, "Aquí estoy. ¿En qué seguimos?");
+  assert.equal(repeatedHello.reply, "Dime, ¿en qué te ayudo?");
 });
 
 test("a new explicit time period and the next local day may open with one matching greeting", () => {
