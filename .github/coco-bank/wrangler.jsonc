@@ -1,0 +1,14 @@
+{
+  "name": "coco-bank-private",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "d1_databases": [{"binding":"DB","database_name":"coco-bank-private","database_id":"29c2a21d-917e-4b80-b416-4299ddeec359"}],
+  "vars": {
+    "SUPABASE_URL": "https://fcatttsfufjiphgohgwp.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X"
+  },
+  "triggers": {"crons":["0 12 * * *"]},
+  "observability": {"enabled":false}
+}
