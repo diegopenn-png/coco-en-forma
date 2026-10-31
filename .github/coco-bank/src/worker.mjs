@@ -1,10 +1,11 @@
 import {action,settle,summary,CATALOG} from './engine.mjs';
 import {refreshMarket} from './market.mjs';
 import {renderApp} from './ui.mjs';
+import {parentStatus,parentAction,requireParent} from './parent.mjs';
 export const ADMIN_ID='88c250d6-3f3c-4e82-95ea-951dd914949d';
 const ADMIN_EMAIL='diegopenn@icloud.com';
 const ORIGINS=new Set(['https://www.cocoenforma.com','https://cocoenforma.com']);
-const VERSION='1.0.0-private';
+const VERSION='1.6.0-private';
 export async function authenticate(request,env,fetcher=fetch){
  const auth=request.headers.get('Authorization');if(!/^Bearer [A-Za-z0-9._-]{20,8192}$/.test(auth||''))return false;
  const r=await fetcher(env.SUPABASE_URL+'/auth/v1/user',{headers:{Authorization:auth,apikey:env.SUPABASE_PUBLISHABLE_KEY},signal:AbortSignal.timeout(8000)});
@@ -19,12 +20,13 @@ async function commit(env,s,rev){
  if(!rev){const r=await env.DB.prepare('INSERT OR IGNORE INTO game_state(user_id,body,rev) VALUES(?,?,1)').bind(ADMIN_ID,JSON.stringify(s)).run();return r.meta.changes===1}
  const r=await env.DB.prepare('UPDATE game_state SET body=?,rev=rev+1 WHERE user_id=? AND rev=?').bind(JSON.stringify(s),ADMIN_ID,rev).run();return r.meta.changes===1;
 }
-async function advance(env,mutation){
+async function advance(env,mutation,parent=false){
  for(let attempt=0;attempt<4;attempt++){
   const {state,rev}=await readState(env),now=Date.now();
-  const m=await market(env,state?Math.min(now,state.config.endsAt):now);
-  const next=mutation?action(state,m,mutation,now):(state?settle(state,m,now):null);
-  if(JSON.stringify(next)===JSON.stringify(state)||await commit(env,next,rev))return {state:next,market:m,summary:next?summary(next,m,Math.min(now,next.config.endsAt)):null,serverTime:now,catalog:CATALOG,version:VERSION};
+  const m=await market(env,state?.config?Math.min(now,state.config.endsAt):now);
+  const currentMarket=mutation?.type==='challenge'?await market(env,now):m;
+  const next=mutation?action(state,m,mutation,now,{parent,currentMarket}):(state?settle(state,m,now):null);
+  if(JSON.stringify(next)===JSON.stringify(state)||await commit(env,next,rev))return {state:next,market:currentMarket,summary:next?.config?summary(next,currentMarket,now):null,serverTime:now,catalog:CATALOG,version:VERSION,parent:await parentStatus(env,ADMIN_ID)};
  }
  throw new Error('Hay otra operación en curso. Vuelve a intentarlo.');
 }
@@ -52,7 +54,10 @@ export default {
     if(!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'Formato no admitido.'},415);
     const text=await request.text();if(text.length>8192)return json({error:'Petición demasiado grande.'},413);
     let a;try{a=JSON.parse(text)}catch{return json({error:'Petición inválida.'},400)}
-    return json(await advance(env,a));
+    if(['parent_set_pin','parent_unlock','parent_lock'].includes(a?.type))return json(await parentAction(env,ADMIN_ID,ADMIN_EMAIL,request,a));
+    const parental=['setup','reset','employer','budget','challenge','profile','challenge_save','challenge_update'].includes(a?.type);
+    if(parental)await requireParent(env,ADMIN_ID,request,a.parentToken);
+    return json(await advance(env,a,parental));
    }
    return json({error:'No encontrado.'},404);
   }catch(e){return json({error:e.message?.slice(0,180)||'No se pudo completar la operación.'},e.message?.includes('fetch')?503:400)}

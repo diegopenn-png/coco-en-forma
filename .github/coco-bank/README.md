@@ -37,10 +37,19 @@ Missing/stale prices disable orders; previous successful observations keep their
 Run from the repository root:
 
 ```
-node --test .github/coco-bank/test/engine.test.mjs
+node --test .github/coco-bank/test/*.test.mjs
 node .github/coco-bank/test/browser.cjs
 ```
 
 The browser test requires Playwright and Chromium, and accepts `COCO_CHROMIUM_PATH` and `COCO_TEST_OUTPUT`. It uses local, explicitly synthetic test data and mocked authentication only. It covers Francesco's entry, configuration, bills, lesson unlocking, queued orders, mobile width, logout cleanup and hidden access for another account. Tests never impersonate Diego against the live server.
 
 The Worker is deployed separately using `wrangler.jsonc` (or Cloudflare's equivalent multipart API). GitHub Pages publishes the public loader/PWA changes from main. Anonymous direct access and forged tokens were checked against the live Worker and return 403 with no-store headers. Access with Diego's real session must occur through his normal sign-in; no tokens were minted or borrowed for testing.
+
+
+## Guided interface · 1.6.0-private
+
+Recovered all eleven modules from the running 1.5.0 private Worker before editing: the repository had lagged behind deployment. The financial engine, parental checks, school content, monthly receipts and challenge history are preserved from that running version.
+
+The home screen gives one state-dependent next step and four separate destinations: account/investments, household expenses, challenges and learning. Five navigation buttons provide direct access. Account and expense pages explain what to do in three short steps. The return-to-Coco button is sticky with safe-area spacing, remains usable during requests, and also appears in loading/error states. Each destination has a distinct color and action label. No navigation action executes a financial operation.
+
+Node tests exercise the serialized browser application with synthetic fixtures and the message bridge, plus financial and authorization behavior. Engine test fixtures now follow the already-deployed account creation, parental setup, receipt payment and organization sequence. The Cloud Browser cannot reach the local preview server; authenticated live layout review requires the owner's session. No credentials or real account state are used in test fixtures.
