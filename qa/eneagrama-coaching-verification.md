@@ -1,3 +1,14 @@
+# Landing emocional y plan comercial · 31 de octubre de 2026
+
+- Nueva propuesta en `/explora/`: «Conócete mejor. Cuida lo que más te importa». Cinco situaciones de vida adulta, ejemplo gratuito, contenido exacto del informe y pago único de 15 EUR. Se conserva el reconocimiento del acceso máster y de evaluaciones compradas.
+- Firma y límites explícitos; no se anuncia certificación, aval institucional, sesión individual ni eficacia demostrada. Sin píxeles nuevos, recogida de respuestas ni cargos.
+- Objetivo de 1.000 compradores y escenarios de conversión en `.github/coco-explora/COMERCIALIZACION.md`. Propuesta de mejora y estudio independiente en `VALIDACION.md`; no representan campañas o estudios ya iniciados.
+- Verificación previa: 12 pruebas de motor/informe correctas, ensayos de UI y navegación correctos; enlaces, recursos y variantes de CTA anónimo/máster/comprador comprobados con JSDOM.
+- Navegador: portada revisada en escritorio y marcos de 390/320 px; ancho de contenido 375/305 px respectivamente, igual al ancho disponible, sin desbordamiento horizontal. Se conserva la navegación Volver/Menú principal.
+- Alcance: se modifica la landing y documentación, no el cuestionario, el generador ni el circuito de pagos. No se realiza una compra real.
+
+---
+
 # Referencias y firma · versión 2026-10-31-coaching-3
 
 - Firma de presentación solicitada por el propietario: Diego Pennise / Coach Organizacional & Ontológico / Universidad de San Andrés. «Univ» fue aclarado como la misma universidad.
