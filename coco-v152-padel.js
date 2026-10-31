@@ -742,7 +742,19 @@
 
   function dispose() { if (controller) controller.abort(); controller = null; draft = null; mixingDraft = null; mixingSession = null; currentSessionId = null; championshipDraft = null; rankingChampionshipId = null; dateFormOpen = false; participantsOpen = false; busy = false; }
 
-  var api = {
+  function back() {
+    if (busy) return;
+    if (dateFormOpen) dateFormOpen = false;
+    else if (participantsOpen) participantsOpen = false;
+    else if (currentSessionId && view === "championship") currentSessionId = null;
+    else if (selectedPlayerId) selectedPlayerId = null;
+    else if (view === "mixing" && mixingScreen !== "home") { if (mixingStep > 1 && mixingStep < 4) mixingStep--; else mixingScreen = "home"; }
+    else if (view === "championship" && championshipScreen === "create" && championshipCreateStep > 1) championshipCreateStep--;
+    else if (view === "championship" && championshipScreen !== "home") championshipScreen = "home";
+    else { C.closeModal(); return; }
+    render();
+  }
+  var api = { back: back,
     version: "152.0.0", open: open, normalize: normalizeState, blankState: blankState, createPlayer: createPlayer,
     saveResult: saveResult, deleteResult: deleteResult, changePlayerLevel: changePlayerLevel,
     championshipStandings: championshipStandings, standingsForSessions: standingsForSessions,

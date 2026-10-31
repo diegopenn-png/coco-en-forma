@@ -52,6 +52,6 @@ export function fromEuroAction(input){
  if(a.type==='setup'){convert(a.config,['salary','initial','reserve','goalAmount','reward','house','car','other']);for(const id of Object.keys(a.config.expenses||{}))a.config.expenses[id]=Number(a.config.expenses[id])/10;}
  if(a.type==='budget'){convert(a,['reserve']);for(const id of Object.keys(a.expenses||{}))a.expenses[id]=Number(a.expenses[id])/10;}
  if(a.config&&['challenge','challenge_save','challenge_update'].includes(a.type))convert(a.config,['goalAmount']);
- if(['employer','buy','deposit'].includes(a.type))convert(a,['amount']);
+ if(['employer','buy','deposit','save','unsave'].includes(a.type))convert(a,['amount']);
  return a;
 }

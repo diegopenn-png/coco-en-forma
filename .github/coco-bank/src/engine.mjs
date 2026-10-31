@@ -1,3 +1,4 @@
+import {readDueDays,receiptDueAt} from './cashflow.mjs';
 import {REALITY,realExpensesCB} from './reality.mjs';
 import {EXPENSES,detailedExpenses,expenseName} from './budget.mjs';
 export const DAY = 86400000;
@@ -23,7 +24,7 @@ export function summary(s,m,now){
  if(!s?.config)return null;
  const value=valuation(s,m,now), bills=s.bills.filter(b=>!b.paid).reduce((v,b)=>v+b.amount,0), earmarked=s.orders.filter(o=>o.side==='buy').reduce((v,o)=>v+o.amount,0);
  const challengeReturnPct=(nav(s,m,now)/(s.config.baselineNav||100)-1)*100;
- return {paidMonths:paidChallengeMonths(s),challengeReturnPct,value,bills,earmarked,available:Math.max(0,s.cash-s.config.reserve-bills-earmarked),netWorth:s.cash+value-bills,returnPct:s.units>1e-9?(value/s.units/100-1)*100:(s.lastNav/100-1)*100,profit:value+s.withdrawn-s.contributed,contributed:s.contributed,withdrawn:s.withdrawn,daysLeft:Math.max(0,Math.ceil((s.config.endsAt-now)/DAY)),finished:now>s.config.endsAt,started:now>=s.config.startsAt};
+ return {paidMonths:paidChallengeMonths(s),challengeReturnPct,value,bills,earmarked,available:Math.max(0,s.cash-s.config.reserve-bills-earmarked),savings:s.savings||0,netWorth:s.cash+(s.savings||0)+value-bills,returnPct:s.units>1e-9?(value/s.units/100-1)*100:(s.lastNav/100-1)*100,profit:value+s.withdrawn-s.contributed,contributed:s.contributed,withdrawn:s.withdrawn,daysLeft:Math.max(0,Math.ceil((s.config.endsAt-now)/DAY)),finished:now>s.config.endsAt,started:now>=s.config.startsAt};
 }
 export function createState(input,m,now){
  const startsAt=Date.parse(input.start+'T00:00:00Z'), endsAt=Date.parse(input.end+'T23:59:59Z');
@@ -37,7 +38,7 @@ export function createState(input,m,now){
  if(!Number.isFinite(target)||target<0||target>100)fail('El objetivo debe estar entre 0 % y 100 %.');
  if(target>Math.max(1,suggested*2+0.25))fail('Ese objetivo es demasiado exigente para este plazo. Usa la referencia propuesta o amplía la fecha.');
  const title=String(input.title||'Mi bicicleta').trim().slice(0,80),reward=cents(input.reward);
- return {version:1,createdAt:now,config:{title,startsAt,endsAt,salary,expenses,reserve,initial,target,reward,referenceRate:rate??null,baselineNav:100,kind:input.kind==='saving'?'saving':'investment',goalAmount:input.kind==='saving'?positive(input.goalAmount):0,budgetReference:input.budgetReference===REALITY.id?REALITY.id:null},cash:initial,investmentCash:0,holdings:{},deposits:[],orders:[],bills:[],months:[],ledger:[],seenEvents:[],lessons:[],units:0,lastNav:100,contributed:0,withdrawn:0,recentIds:[],lastSettled:now};
+ return {version:1,createdAt:now,config:{title,startsAt,endsAt,salary,expenses,dueDays:readDueDays(input.dueDays,expenses),reserve,initial,target,reward,referenceRate:rate??null,baselineNav:100,kind:input.kind==='saving'?'saving':'investment',goalAmount:input.kind==='saving'?positive(input.goalAmount):0,budgetReference:input.budgetReference===REALITY.id?REALITY.id:null},cash:initial,savings:0,investmentCash:0,holdings:{},deposits:[],orders:[],bills:[],months:[],ledger:[],seenEvents:[],lessons:[],units:0,lastNav:100,contributed:0,withdrawn:0,recentIds:[],lastSettled:now};
 }
 function addUnits(s,amount,m,now){const n=nav(s,m,now);s.units+=amount/Math.max(0.000001,n);s.contributed+=amount}
 function removeUnits(s,amount,m,now){const n=nav(s,m,now);s.lastNav=n;s.units=Math.max(0,s.units-amount/Math.max(0.000001,n));s.withdrawn+=amount}
@@ -45,6 +46,9 @@ export function settle(original,m,now){
  if(!original.config)return clone(original);
  const s=clone(original), t=Math.min(now,s.config.endsAt);
  s.config.expenses=detailedExpenses(s.config.expenses);
+ s.savings ||= 0;
+ s.config.dueDays=readDueDays(s.config.dueDays,s.config.expenses);
+ for(const b of s.bills)if(!Number.isFinite(b.dueAt))b.dueAt=receiptDueAt(b.at,s.config.dueDays[b.kind]||15);
  s.journey ||= {funded:true,acknowledged:false,organized:false};
  s.account ||= {name:'Francesco',openedAt:s.createdAt};
  if(!s.journey.funded)return s;
@@ -56,7 +60,7 @@ export function settle(original,m,now){
    if(at>t)break;
    const key=day(at);if(s.months.includes(key))continue;s.months.push(key);s.cash+=s.config.salary;
    log(s,'salary','Sueldo mensual',s.config.salary,at);
-   for(const [kind,amount] of Object.entries(s.config.expenses))if(amount)s.bills.push({id:key+'-'+kind,kind,amount,at,paid:false});
+   for(const [kind,amount] of Object.entries(s.config.expenses))if(amount)s.bills.push({id:key+'-'+kind,kind,amount,at,dueAt:receiptDueAt(at,s.config.dueDays[kind]),paid:false});
  }
  // Apply corporate actions before today's trades; no adjusted-close double counting.
  for(const e of [...(m.events||[])].sort((a,b)=>a.at-b.at)){
@@ -169,7 +173,7 @@ export function action(original,m,a,now,{parent=false,currentMarket=m}={}){
   const expenses=readExpenses(a.expenses),reserve=cents(a.reserve),total=Object.values(expenses).reduce((x,y)=>x+y,0);
   if(total>s.config.salary)fail('El sueldo debe cubrir el presupuesto mensual.');
   if(reserve>Math.max(0,s.journey.funded?s.cash-info.bills-info.earmarked:s.config.initial+s.config.salary-total))fail('La reserva no puede superar el saldo libre de facturas y órdenes.');
-  s.config.expenses=expenses;s.config.reserve=reserve;log(s,'budget','Presupuesto actualizado para los próximos recibos. Reserva: '+reserve/1000+' CB.',0,now);
+  s.config.dueDays=readDueDays(a.dueDays||s.config.dueDays,expenses);s.config.expenses=expenses;s.config.reserve=reserve;log(s,'budget','Presupuesto actualizado para los próximos recibos. Reserva: '+reserve/1000+' CB.',0,now);
  }else if(a.type==='receive'){
   if(!s.journey.funded){s.journey.funded=true;s.journey.acknowledged=true;s.cash=s.config.initial;if(s.cash)log(s,'initial','Bienvenida: fondos iniciales',s.cash,now);s=settle(s,m,now);}
  }else if(a.type==='ack_funds'){
@@ -206,8 +210,14 @@ export function action(original,m,a,now,{parent=false,currentMarket=m}={}){
  }else if(a.type==='pay'){
   const b=s.bills.find(b=>b.id===a.billId&&!b.paid);if(!b)fail('La factura ya está pagada.');
   if(s.cash-info.earmarked<b.amount)fail('No tienes saldo disponible para esta factura.');s.cash-=b.amount;b.paid=true;b.paidAt=now;log(s,'bill','Pago de '+expenseName(b.kind),-b.amount,now);
+ }else if(a.type==='save'){
+  const amount=positive(a.amount);if(amount>info.available)fail('Solo puedes guardar el dinero que sobra después de tus gastos y reserva.');
+  s.cash-=amount;s.savings+=amount;log(s,'save','Dinero guardado en mi hucha',-amount,now);
+ }else if(a.type==='unsave'){
+  const amount=positive(a.amount);if(amount>s.savings)fail('No tienes tanto dinero en tu hucha.');
+  s.savings-=amount;s.cash+=amount;log(s,'unsave','Dinero de mi hucha a mi cuenta',amount,now);
  }else if(a.type==='buy'){
-  if(!s.journey.organized)fail('Organiza primero tu dinero y paga tus gastos.');
+  if(!s.journey.acknowledged)fail('Conoce primero tu cuenta.');
   if(!CATALOG.some(c=>c.id===a.asset))fail('Instrumento no válido.');
   if(!fresh(m.prices[a.asset],now))fail('Esperando una cotización reciente y verificada.');
   if(!s.lessons.includes(a.asset))fail('Lee y responde primero la ficha de este instrumento.');
@@ -221,7 +231,7 @@ export function action(original,m,a,now,{parent=false,currentMarket=m}={}){
  }else if(a.type==='cancel'){
   if(!s.orders.some(o=>o.id===a.orderId))fail('La orden ya no está pendiente.');s.orders=s.orders.filter(o=>o.id!==a.orderId);log(s,'cancel','Orden cancelada',0,now);
  }else if(a.type==='deposit'){
-  if(!s.journey.organized)fail('Organiza primero tu dinero y paga tus gastos.');
+  if(!s.journey.acknowledged)fail('Conoce primero tu cuenta.');
   if(!s.lessons.includes('DEPOSIT'))fail('Completa primero la ficha del plazo fijo.');
   const amount=positive(a.amount),term=Number(a.term);
   if(![30,90,180].includes(term))fail('Elige un plazo válido.');

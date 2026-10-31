@@ -245,7 +245,12 @@
     game = null;
   }
 
-  var api = {
+  function back() {
+    if (!game) { C.closeModal(); return; }
+    if (!game.finished && !game.stopped && !confirm('¿Volver al inicio del juego? Esta partida no se guardará.')) return;
+    dispose();renderIntro();
+  }
+  var api = { back: back,
     version: "152.0.0",
     open: open,
     scenes: SCENES,

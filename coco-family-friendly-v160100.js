@@ -112,3 +112,5 @@
 
 /* Public Coco Bank entry; saved games require the account session. */
 (function(){if(document.getElementById("coco-bank-private-loader"))return;var s=document.createElement("script");s.id="coco-bank-private-loader";s.src="./coco-bank-private-v1.js?v=2.0.0";s.defer=true;document.head.appendChild(s)})();
+
+(function(){var s=document.createElement("script");s.src="./coco-navigation-v1.js?v=1";s.defer=true;document.head.appendChild(s)})();

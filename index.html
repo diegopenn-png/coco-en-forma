@@ -4004,7 +4004,7 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
    boton.style.display=visible===false?"none":"inline-flex";
    boton.textContent="Cambiar Coco";
    boton.setAttribute("aria-label","Cambiar Coco");
-   boton.onclick=cerrar;
+   boton.onclick=accion||cerrar;
  }
 
  async function abrir(){
@@ -6790,6 +6790,13 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     var loaded=game.group==="tool"?await Promise.all([Promise.resolve(blankStats()),playerContext(),Promise.resolve(null)]):await Promise.all([loadStats(id),playerContext(),Promise.resolve(null)]);if(!active||active.id!==id)return;active.stats=loaded[0];active.user=loaded[1];active.leaderboard=loaded[2];active.selectedLevel=ageLevel(active.user);active.phase="intro";renderIntro();
   }
 
+  function backGame(){
+    if(!active)return;
+    if(active.phase==='intro'||active.phase==='loading'){closeGame(true);return}
+    if(active.phase==='saving')return;
+    if(active.phase==='playing'&&!active.finished&&!window.confirm('¿Volver al inicio del juego? Esta partida no se guardará.'))return;
+    var previous=active;clearActive();active={id:previous.id,game:previous.game,user:previous.user,stats:previous.stats,selectedLevel:previous.selectedLevel,phase:'intro',timers:[],frame:0,controller:new AbortController(),score:0,correct:0,total:0};renderIntro();
+  }
   function closeGame(ask){
     if(!overlay||!overlay.classList.contains("visible"))return;
     if(ask&&active&&active.phase==="playing"&&!active.finished&&!window.confirm("¿Volver a tus retos? Esta partida no se guardará."))return;
@@ -6917,7 +6924,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
 
   function classificationAudit(){return{generalIds:GENERAL_IDS.slice(),specificIds:OWN_IDS.slice(),allRankedIds:GENERAL_IDS.concat(OWN_IDS),generalCount:GENERAL_IDS.length,retiredExcluded:ALL_IDS.indexOf("baloncesto")<0}}
-  window.CocoArcadeV133={version:VERSION,open:openGame,close:closeGame,share:shareGame,games:GAMES,iconSvg:iconSvg,loadStats:loadStats,saveScore:saveScore,loadLeaderboard:loadLeaderboard,classification:{audit:classificationAudit,generalIds:GENERAL_IDS,specificIds:OWN_IDS},padel:{generateMatches:generatePadelMatches,standings:padelStandings}};
+  window.CocoArcadeV133={version:VERSION,open:openGame,close:closeGame,back:backGame,share:shareGame,games:GAMES,iconSvg:iconSvg,loadStats:loadStats,saveScore:saveScore,loadLeaderboard:loadLeaderboard,classification:{audit:classificationAudit,generalIds:GENERAL_IDS,specificIds:OWN_IDS},padel:{generateMatches:generatePadelMatches,standings:padelStandings}};
 
   function dailySerial(){return Math.floor(Date.parse(today()+"T12:00:00Z")/86400000)}
   function missionCode(index){return dailySerial().toString(36).toUpperCase()+"-"+("0"+(index+1)).slice(-2)}
