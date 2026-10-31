@@ -7,7 +7,17 @@ Versión del informe: `2026-10-31-coaching-2`. Sustituye el formato de 13 págin
 - Ejemplos marcados como ilustrativos; no se infieren respuestas individuales ni biografía. Infancia y adolescencia tienen consignas distintas y no reciben tipo dominante.
 - Agente editorial reutilizable separado del motor determinista de descarga. No se añaden llamadas de IA ni pagos por generación.
 - Pruebas locales: puntuación y PDF, todos los focos individuales, empates, edades 6/11/12/17/18/99, reflexiones largas, UI, navegación y compartir. Muestras públicas ficticias; informes personales fuera del repositorio.
-- La publicación se verifica mediante CI y el campo `eneagrama_report_version` de salud. Este registro de preparación no sustituye esa comprobación.
+- La publicación se ha verificado mediante CI y el campo `eneagrama_report_version` de salud; evidencia registrada a continuación.
+
+## Publicación verificada · 31 de octubre de 2026
+
+La actualización se publicó tras la autorización del usuario. Commit funcional: `d35952352f47d25c8b82fc0f9d7948da9dcf1de9`.
+
+- [Despliegue y verificación del generador](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41190938230): correcto. Worker `609de7c8-25d8-468e-8ce0-e89db88f322a` al 100%; salud de producción con versión de informe `2026-10-31-coaching-2`, autenticación y Stripe configurados.
+- [Publicación web](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41190937716), [cuestionario y PDF](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41190938248) y [web/PWA](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41190938131): correctos.
+- CI: 1163 pruebas del Worker y 10 pruebas de motor e informe aprobadas, sin fallos.
+- Navegador de producción: la entrada de https://cocoenforma.com/explora/ muestra «MUESTRA FICTICIA · 7 PÁGINAS», recomendaciones en ocho áreas y plan de siete días.
+- No se efectuó una compra ni se probó un nuevo recorrido autenticado real durante esta publicación. La validación de descarga y autorización combina las pruebas automatizadas y las comprobaciones del despliegue.
 
 ---
 
