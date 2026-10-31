@@ -10,6 +10,13 @@
 .cocoArcadeShell,.cocoV144Shell,.cocoMedApp{max-height:100dvh!important;min-height:0!important}
 .cocoArcadeTop,.cocoV144Header,.cocoMedTop{position:relative!important;top:auto!important}
 .cocoArcadeClose,[data-v144-close],#cocoMedVolverSuperior{display:none!important}
+#cocoApp .cocoArcadeOverlay:has(iframe[src*="games/conecta/"]){padding:0!important;overflow:hidden!important}
+#cocoApp .cocoArcadeShell:has(iframe[src*="games/conecta/"]){display:flex!important;flex-direction:column;height:100dvh!important;min-height:0!important;max-height:100dvh!important;margin:0!important;border-radius:0!important}
+#cocoApp .cocoArcadeShell:has(iframe[src*="games/conecta/"])>.cocoArcadeTop{flex-shrink:0;min-height:54px!important;padding:6px 12px!important}
+#cocoApp .cocoArcadeShell:has(iframe[src*="games/conecta/"]) .cocoArcadeTitle p{display:none}
+#cocoApp .cocoArcadeShell:has(iframe[src*="games/conecta/"]) .cocoArcadeTopIcon{width:38px!important;height:38px!important}
+#cocoApp .cocoArcadeBody:has(>iframe[src*="games/conecta/"]){flex:1;min-height:0;overflow:hidden;padding:0!important}
+#cocoApp iframe[src*="games/conecta/"]{height:100%!important;min-height:0!important;border-radius:12px!important}
 .barraVolver{position:sticky;top:0;z-index:35;background:white;flex-wrap:wrap}
 `;
   document.head.appendChild(style);

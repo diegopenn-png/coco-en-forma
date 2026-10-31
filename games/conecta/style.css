@@ -5,3 +5,33 @@
 
 /* La cabecera, identidad y perfil pertenecen a la aplicación Coco. */
 .embedded{background:transparent}.embedded main{padding:0;max-width:640px}.embedded header,.embedded aside,.embedded .accessibility{display:none}.embedded .layout{display:block;margin:0}.embedded .game{padding:14px 10px;box-shadow:none;border:0}.embedded .board-wrap{max-width:480px;margin:0 auto}.embedded #status{font-size:13px}.embedded .feedback{min-height:64px}.embedded .gamehead h2{font-size:23px}.embedded #challenge{margin-bottom:6px}
+
+/* The board and controls share the available iframe viewport; neither overlaps the other. */
+.embedded{height:100dvh;min-height:0;overflow:hidden}
+.embedded main,.embedded .layout{height:100%;min-height:0}
+.embedded .game{height:100%;min-height:0;display:flex;flex-direction:column;padding:8px 10px}
+.embedded .gamehead,.embedded .difficulty,.embedded #challenge,.embedded .game-controls{flex-shrink:0}
+.embedded .gamehead h2{font-size:20px;margin-top:3px}
+.embedded .counter{height:44px;min-width:52px;border-width:2px}
+.embedded .counter #count{font-size:16px;padding-top:2px}
+.embedded .counter small{padding-bottom:2px}
+.embedded .difficulty{margin-top:5px}
+.embedded #challenge{margin-top:4px;margin-bottom:0;font-size:11px}
+.embedded .board-wrap{flex:1;min-height:0;width:100%;max-width:none;display:grid;place-items:center;container-type:size;overflow:hidden}
+.embedded canvas{width:min(100%,calc(100dvh - 245px));height:auto;aspect-ratio:1;max-width:480px;max-height:100%;object-fit:contain}
+@supports(width:1cqh){.embedded canvas{width:min(100cqw,100cqh,480px);height:auto}}
+.embedded .game-controls{background:#f8fcff;padding:6px 0 max(6px,env(safe-area-inset-bottom));border-top:1px solid #d9e9f3}
+.embedded .feedback{min-height:34px;padding:6px 10px;margin-bottom:6px;border-radius:10px}
+.embedded #status{font-size:12px;line-height:1.3}
+.embedded .feedback-icon{font-size:18px}
+.embedded .actions button{min-height:44px;padding:7px 4px;font-size:13px}
+.embedded #next{min-height:44px;margin-top:7px;font-size:15px;padding:8px 5px}
+@media(max-height:420px){.embedded .difficulty,.embedded #challenge{display:none}.embedded .gamehead h2{font-size:17px}.embedded .feedback{min-height:28px}.embedded .game-controls{padding-top:3px}.embedded .gamehead{min-height:35px}.embedded .counter{height:35px}}
+@media(min-width:600px) and (max-height:500px){
+.embedded .game{display:grid;grid-template-columns:minmax(0,1fr) 240px;grid-template-rows:auto auto 1fr auto;column-gap:12px}
+.embedded .board-wrap{grid-column:1;grid-row:1/5;height:100%}
+.embedded .gamehead{grid-column:2;grid-row:1}
+.embedded .difficulty{grid-column:2;grid-row:2}
+.embedded #challenge{grid-column:2;grid-row:3}
+.embedded .game-controls{grid-column:2;grid-row:4}
+}
