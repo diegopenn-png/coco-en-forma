@@ -13,7 +13,7 @@ export async function stripeRequest(env,path,fields=null,key=null){
  const r=await fetch('https://api.stripe.com/v1'+path,{method:fields?'POST':'GET',headers,body:fields?new URLSearchParams(fields):undefined,signal:AbortSignal.timeout(15000)});const data=await r.json();if(!r.ok)throw Error('Payment provider rejected operation');return data;
 }
 export async function enneagramAccess(env,user,db){
- const profiles=await db('perfiles?id=eq.'+user.id+'&select=rol');const master=profiles?.[0]?.rol==='propietario';
+ const master=(await db('rpc/coco_eneagrama_is_master',{method:'POST',body:{p_user:user.id}}))===true;
  const orders=master?[]:await db('coco_eneagrama_orders?user_id=eq.'+user.id+'&status=eq.paid&run_id=is.null&select=checkout_id');
  return {master,credits:orders?.length||0,amount:1500,currency:'eur',payments_ready:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_WEBHOOK_SECRET)};
 }

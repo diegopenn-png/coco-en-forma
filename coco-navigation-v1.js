@@ -26,10 +26,10 @@
     var b=document.createElement('button'),h=document.createElement('button');b.type=h.type='button';b.textContent='← Volver';h.textContent='Menú principal';b.onclick=back;h.onclick=home;nav.append(b,h);shell.prepend(nav);
   }
   function install(){
-    add(document.querySelector('.cocoArcadeShell'),function(){root.CocoArcadeV133?.back()},function(){root.CocoArcadeV133?.close(true)});
-    var modal=document.querySelector('.cocoV144Modal');
-    add(modal?.querySelector('.cocoV144Shell'),function(){var api={padel:root.CocoPadelV152,runner:root.CocoRunnerV152,differences:root.CocoDifferencesProV152}[modal.dataset.module];if(api?.back)api.back();else root.CocoV144?.closeModal()},function(){root.CocoV144?.closeModal()});
-    add(document.querySelector('.cocoMedApp'),function(){document.getElementById('cocoMedVolverSuperior')?.click()},function(){root.CocoMedV148?.close()});
+    document.querySelectorAll('.cocoArcadeShell').forEach(function(shell){add(shell,function(){root.CocoArcadeV133?.back()},function(){root.CocoArcadeV133?.close(true)})});
+    document.querySelectorAll('.cocoV144Modal').forEach(function(modal){
+    add(modal?.querySelector('.cocoV144Shell'),function(){var api={padel:root.CocoPadelV152,runner:root.CocoRunnerV152,differences:root.CocoDifferencesProV152}[modal.dataset.module];if(api?.back)api.back();else root.CocoV144?.closeModal()},function(){root.CocoV144?.closeModal()});});
+    document.querySelectorAll('.cocoMedApp').forEach(function(shell){add(shell,function(){shell.querySelector('#cocoMedVolverSuperior')?.click()},function(){root.CocoMedV148?.close()})});
     document.querySelectorAll('.barraVolver').forEach(function(bar){var native=bar.querySelector('.volver');if(!native)return;add(bar,function(){native.click()},function(){native.click()});native.style.display='none'});
   }
   var queued=false;new MutationObserver(function(){if(queued)return;queued=true;queueMicrotask(function(){queued=false;install()})}).observe(document.documentElement,{childList:true,subtree:true});

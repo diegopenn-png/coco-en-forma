@@ -35,3 +35,5 @@
 .embedded #challenge{grid-column:2;grid-row:3}
 .embedded .game-controls{grid-column:2;grid-row:4}
 }
+
+body.standalone{display:flex;flex-direction:column}.standalone main{flex:1;min-height:0;height:auto!important}.standalone-navigation{display:flex;flex:none;gap:8px;padding:8px 12px;padding-top:max(8px,env(safe-area-inset-top));background:white}.standalone-navigation a{flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;font:700 14px system-ui;border-radius:14px;background:#173e51;color:white;text-decoration:none}.standalone-navigation a:first-child{background:#e4f2f7;color:#173e51}

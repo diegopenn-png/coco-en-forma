@@ -1,0 +1,2 @@
+import {buildItems,summarize} from '../../explora/engine.mjs';import {coachingHTML} from '../../explora/coaching-view.mjs';
+const select=document.getElementById('age');function render(){const age=Number(select.value),answers=Object.fromEntries(buildItems(age).map(q=>[q.id,[2,5].includes(q.type)?(q.reverse?1:5):3]));document.getElementById('preview').innerHTML=coachingHTML(summarize(answers,age))}select.addEventListener('change',render);render();

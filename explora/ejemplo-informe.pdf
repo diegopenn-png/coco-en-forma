@@ -3,7 +3,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R] /Count 6 >>
+<< /Type /Pages /Kids [12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R 24 0 R 26 0 R 28 0 R 30 0 R 32 0 R 34 0 R 36 0 R] /Count 13 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /TrueType /BaseFont /COCOAA+DejaVuSans /FirstChar 32 /LastChar 255 /Widths [318 401 460 838 636 950 780 275 390 390 500 838 318 361 318 337 636 636 636 636 636 636 636 636 636 636 337 337 838 838 838 531 1000 684 686 698 770 632 575 775 752 295 295 656 557 863 748 787 603 787 695 635 611 732 684 989 685 611 685 390 337 390 838 500 500 613 635 550 635 615 352 635 634 278 278 579 278 974 634 612 635 635 411 521 392 634 592 818 592 592 525 636 337 636 838 600 636 600 318 352 518 1000 500 500 500 1342 635 400 1070 600 685 600 600 318 318 518 518 590 500 1000 500 1000 521 400 1023 600 525 611 318 401 636 636 636 636 337 500 500 1000 471 612 838 361 1000 500 500 838 401 401 500 636 636 318 500 401 471 612 969 969 969 531 684 684 684 684 684 684 974 698 632 632 632 632 295 295 295 295 775 748 787 787 787 787 787 838 787 732 732 732 732 611 605 630 613 613 613 613 613 613 982 550 615 615 615 615 278 278 278 278 612 634 612 612 612 612 612 838 612 634 634 634 634 592 635 592] /Encoding /WinAnsiEncoding /FontDescriptor 6 0 R >>
@@ -54,8 +54,8 @@ stream
 0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (01) Tj ET
 0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (MUESTRA FICTICIA \267 NO ES TU RESULTADO) Tj ET
 0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Nueve formas de mirarte) Tj ET
-0.129 0.235 0.263 rg BT /F1 17 Tf 1 0 0 1 44 667 Tm (Exploraci\363n de ejemplo) Tj ET
-0.337 0.424 0.439 rg BT /F1 10 Tf 1 0 0 1 44 640 Tm (31/10/2026  /  30 a\361os  /  54 de 54 respuestas) Tj ET
+0.129 0.235 0.263 rg BT /F1 17 Tf 1 0 0 1 44 667 Tm (Exploraci\363n de muestra) Tj ET
+0.337 0.424 0.439 rg BT /F1 10 Tf 1 0 0 1 44 640 Tm (31/10/2026  /  35 a\361os  /  54 de 54 respuestas) Tj ET
 0.835 0.859 0.843 RG 1 w 386.9902653561155 557.246222036657 m 344.88282006559365 318.4430330899728 l S
 0.835 0.859 0.843 RG 1 w 344.88282006559365 318.4430330899728 m 434.8730854217091 474.31074487337025 l S
 0.835 0.859 0.843 RG 1 w 434.8730854217091 474.31074487337025 m 207.00973464388449 557.246222036657 l S
@@ -65,7 +65,7 @@ stream
 0.835 0.859 0.843 RG 1 w 418.24355652982143 380 m 175.75644347017857 380 l S
 0.835 0.859 0.843 RG 1 w 175.75644347017857 380 m 297 590 l S
 0.835 0.859 0.843 RG 1 w 297 590 m 418.24355652982143 380 l S
-0.898 0.843 0.737 rg 0.541 0.396 0.200 RG 1.8 w 346.41 508.89 m 398.56 467.91 l 363.58 411.56 l 314.31 402.43 l 261.73 353.09 l 230.42 411.56 l 247.14 458.79 l 247.59 508.89 l 297.00 526.88 l h B
+0.898 0.843 0.737 rg 0.541 0.396 0.200 RG 1.8 w 343.60 505.54 m 420.10 471.71 l 359.79 413.75 l 321.80 381.87 l 254.25 332.54 l 234.21 413.75 l 225.60 462.59 l 250.40 505.54 l 297.00 522.50 l h B
 0.678 0.475 0.369 rg 403.9902653561155 557.246222036657 m 403.9902653561155 566.6350627866569 396.3791061061155 574.246222036657 386.9902653561155 574.246222036657 c 377.60142460611553 574.246222036657 369.9902653561155 566.6350627866569 369.9902653561155 557.246222036657 c 369.9902653561155 547.857381286657 377.60142460611553 540.246222036657 386.9902653561155 540.246222036657 c 396.3791061061155 540.246222036657 403.9902653561155 547.857381286657 403.9902653561155 557.246222036657 c f
 1.000 1.000 1.000 rg BT /F2 13 Tf 1 0 0 1 382.9902653561155 552.246222036657 Tm (1) Tj ET
 0.733 0.463 0.525 rg 451.8730854217091 474.31074487337025 m 451.8730854217091 483.69958562337024 444.2619261717091 491.31074487337025 434.8730854217091 491.31074487337025 c 425.4842446717091 491.31074487337025 417.8730854217091 483.69958562337024 417.8730854217091 474.31074487337025 c 417.8730854217091 464.92190412337027 425.4842446717091 457.31074487337025 434.8730854217091 457.31074487337025 c 444.2619261717091 457.31074487337025 451.8730854217091 464.92190412337027 451.8730854217091 474.31074487337025 c f
@@ -96,7 +96,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 15 0 R >>
 endobj
 15 0 obj
-<< /Length 4165 >>
+<< /Length 4032 >>
 stream
 0.984 0.980 0.965 rg 0 0 595 842 re f
 0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
@@ -109,48 +109,48 @@ stream
 0.337 0.424 0.439 rg BT /F1 11 Tf 1 0 0 1 44 661.5 Tm (que has declarado hoy.) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 609 Tm (1  Criterio) Tj ET
 0.898 0.914 0.886 rg 213 608 216 9 re f
-0.678 0.475 0.369 rg 213 608 116.99999999999999 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 611 Tm (3.17 / 5) Tj ET
+0.678 0.475 0.369 rg 213 608 108 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 611 Tm (3.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 594 Tm (6/6) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 562 Tm (2  V\355nculo) Tj ET
 0.898 0.914 0.886 rg 213 561 216 9 re f
-0.733 0.463 0.525 rg 213 561 171.00000000000003 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 564 Tm (4.17 / 5) Tj ET
+0.733 0.463 0.525 rg 213 561 216 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 564 Tm (5.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 547 Tm (6/6) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 515 Tm (3  Logro) Tj ET
 0.898 0.914 0.886 rg 213 514 216 9 re f
-0.780 0.596 0.263 rg 213 514 116.99999999999999 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 517 Tm (3.17 / 5) Tj ET
+0.780 0.596 0.263 rg 213 514 108 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 517 Tm (3.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 500 Tm (6/6) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 468 Tm (4  Identidad) Tj ET
 0.898 0.914 0.886 rg 213 467 216 9 re f
-0.596 0.486 0.643 rg 213 467 62.99999999999999 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 470 Tm (2.17 / 5) Tj ET
+0.596 0.486 0.643 rg 213 467 108 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 470 Tm (3.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 453 Tm (6/6) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 421 Tm (5  Comprensi\363n) Tj ET
 0.898 0.914 0.886 rg 213 420 216 9 re f
-0.400 0.557 0.671 rg 213 420 171.00000000000003 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 423 Tm (4.17 / 5) Tj ET
+0.400 0.557 0.671 rg 213 420 216 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 423 Tm (5.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 406 Tm (6/6) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 374 Tm (6  Seguridad) Tj ET
 0.898 0.914 0.886 rg 213 373 216 9 re f
-0.424 0.612 0.569 rg 213 373 116.99999999999999 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 376 Tm (3.17 / 5) Tj ET
+0.424 0.612 0.569 rg 213 373 108 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 376 Tm (3.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 359 Tm (6/6) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 327 Tm (7  Posibilidades) Tj ET
 0.898 0.914 0.886 rg 213 326 216 9 re f
-0.824 0.584 0.392 rg 213 326 62.99999999999999 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 329 Tm (2.17 / 5) Tj ET
+0.824 0.584 0.392 rg 213 326 108 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 329 Tm (3.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 312 Tm (6/6) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 280 Tm (8  Autonom\355a) Tj ET
 0.898 0.914 0.886 rg 213 279 216 9 re f
-0.667 0.408 0.373 rg 213 279 116.99999999999999 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 282 Tm (3.17 / 5) Tj ET
+0.667 0.408 0.373 rg 213 279 108 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 282 Tm (3.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 265 Tm (6/6) Tj ET
 0.129 0.235 0.263 rg BT /F2 12 Tf 1 0 0 1 44 233 Tm (9  Armon\355a) Tj ET
 0.898 0.914 0.886 rg 213 232 216 9 re f
-0.557 0.608 0.420 rg 213 232 116.99999999999999 9 re f
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 235 Tm (3.17 / 5) Tj ET
+0.557 0.608 0.420 rg 213 232 108 9 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 449 235 Tm (3.00 / 5) Tj ET
 0.337 0.424 0.439 rg BT /F1 8 Tf 1 0 0 1 512 218 Tm (6/6) Tj ET
 0.337 0.424 0.439 rg BT /F1 10 Tf 1 0 0 1 44 167 Tm (C\363mo se calcula: media de las respuestas \(1-5\), invirtiendo dos frases por tendencia. Se requieren) Tj ET
 0.337 0.424 0.439 rg BT /F1 10 Tf 1 0 0 1 44 152 Tm (al menos 4 de 6 para mostrar una media, y las nueve medias para comparar. Es una regla editorial,) Tj ET
@@ -163,162 +163,592 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 17 0 R >>
 endobj
 17 0 obj
-<< /Length 2487 >>
+<< /Length 3015 >>
 stream
 0.984 0.980 0.965 rg 0 0 595 842 re f
 0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
 0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
 0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
 0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (03) Tj ET
-0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (02 / GU\315A DE OBSERVACI\323N) Tj ET
-0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (M\341s all\341 de una etiqueta) Tj ET
-0.678 0.475 0.369 rg 44 505 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 664 Tm (1 / Criterio \267 Mejorar con sentido) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 639 Tm (Procuro hacer lo correcto y cuidar los detalles.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 616.5 Tm (Recurso: La atenci\363n a la calidad puede ayudarte a actuar con coherencia.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 595.5 Tm (Para observar: Observa si revisar una y otra vez te impide dar algo por terminado.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 573.5 Tm (\277Busco mejorar algo o evitar la sensaci\363n de equivocarme?) Tj ET
-0.733 0.463 0.525 rg 44 302 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 461 Tm (2 / V\355nculo \267 Cuidar sin olvidarte) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 436 Tm (Me importa sentir cercan\355a y aportar a los dem\341s.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 413.5 Tm (Recurso: La disponibilidad puede facilitar relaciones c\341lidas.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 392.5 Tm (Para observar: Observa si ofrecer ayuda deja tus propias necesidades en segundo plano.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 370.5 Tm (\277Ayudo porque quiero o porque necesito sentirme necesario?) Tj ET
-0.780 0.596 0.263 rg 44 99 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 258 Tm (3 / Logro \267 Avanzar con autenticidad) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 233 Tm (Me motiva progresar y sentir que lo que hago tiene valor.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 210.5 Tm (Recurso: El enfoque en objetivos puede ayudarte a convertir ideas en acciones.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 189.5 Tm (Para observar: Observa si el reconocimiento pesa m\341s que tu inter\351s real.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 167.5 Tm (\277Elegir\355a este objetivo si nadie fuera a verlo?) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (02 / TU LECTURA) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Pistas para observarte) Tj ET
+0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 678 Tm (Aparecen pr\363ximas 2 \267 V\355nculo, 5 \267 Comprensi\363n. Contrasta qu\351 buscabas en una misma) Tj ET
+0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 661.5 Tm (situaci\363n; una diferencia peque\361a de puntuaci\363n no decide tu identidad.) Tj ET
+0.733 0.463 0.525 rg BT /F2 12 Tf 1 0 0 1 44 627 Tm (2 / V\355nculo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 606 Tm (Si te reconoces en V\355nculo, puede que dar y acompa\361ar te ayuden a sentir cercan\355a. El coste) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 591 Tm (aparece cuando esperas que alguien descubra tus necesidades sin nombrarlas. Practicar la) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 576 Tm (reciprocidad permite cuidar sin tener que ganarte cada relaci\363n.) Tj ET
+0.400 0.557 0.671 rg BT /F2 12 Tf 1 0 0 1 44 542 Tm (5 / Comprensi\363n) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 521 Tm (Si te reconoces en Comprensi\363n, observar y entender puede ayudarte a sentir autonom\355a. El desaf\355o) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 506 Tm (surge cuando esperar a saber m\341s te mantiene fuera de la experiencia. Puedes cuidar tu energ\355a y) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 491 Tm (participar a la vez, con compromisos peque\361os y expl\355citos.) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 454 Tm (EXPLORA UNA SITUACI\323N REAL) Tj ET
+0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 424 Tm (1. \277Qu\351 ocurri\363, sin interpretar las intenciones de los dem\341s?) Tj ET
+0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 400.5 Tm (2. \277Qu\351 quer\355as conseguir o evitar?) Tj ET
+0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 377 Tm (3. \277C\363mo te ayud\363 tu reacci\363n y qu\351 coste tuvo?) Tj ET
+0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 353.5 Tm (4. \277Qu\351 ejemplo contradice tu primera interpretaci\363n?) Tj ET
+0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 330 Tm (5. \277Qu\351 respuesta alternativa peque\361a quieres ensayar?) Tj ET
+0.918 0.941 0.925 rg 44 68 507 90 re f
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 59 133 Tm (C\363mo usar esta gu\355a: las p\341ginas siguientes recorren las nueve miradas y ocho \341reas de la) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 59 118 Tm (vida. Elige una acci\363n peque\361a. Contrasta lo que encaja y lo que no: las puntuaciones no) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 59 103 Tm (determinan tus capacidades ni tus decisiones.) Tj ET
 endstream
 endobj
 18 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 19 0 R >>
 endobj
 19 0 obj
-<< /Length 2485 >>
+<< /Length 4397 >>
 stream
 0.984 0.980 0.965 rg 0 0 595 842 re f
 0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
 0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
 0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
 0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (04) Tj ET
-0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (03 / GU\315A DE OBSERVACI\323N) Tj ET
-0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (M\341s all\341 de una etiqueta) Tj ET
-0.596 0.486 0.643 rg 44 505 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 664 Tm (4 / Identidad \267 Dar espacio a lo propio) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 639 Tm (Busco expresar lo que siento y lo que me hace singular.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 616.5 Tm (Recurso: La sensibilidad puede enriquecer tu mirada y tu expresi\363n.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 595.5 Tm (Para observar: Observa si compararte te lleva a perder de vista lo que s\355 tienes.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 573.5 Tm (\277Estoy escuchando mi experiencia o compar\341ndola con una imagen ideal?) Tj ET
-0.400 0.557 0.671 rg 44 302 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 461 Tm (5 / Comprensi\363n \267 Saber y participar) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 436 Tm (Me ayuda comprender antes de involucrarme.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 413.5 Tm (Recurso: La observaci\363n y el estudio pueden aportar claridad.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 392.5 Tm (Para observar: Observa si prepararte se convierte en una forma de posponer la experiencia.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 370.5 Tm (\277Necesito m\341s informaci\363n o me cuesta dar el primer paso?) Tj ET
-0.424 0.612 0.569 rg 44 99 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 258 Tm (6 / Seguridad \267 Confiar paso a paso) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 233 Tm (Busco apoyos y previsi\363n para sentirme seguro.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 210.5 Tm (Recurso: La prudencia puede ayudarte a anticipar dificultades reales.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 189.5 Tm (Para observar: Observa si comprobar y pedir confirmaci\363n aumenta tus dudas.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 167.5 Tm (\277Qu\351 evidencia tengo y qu\351 estoy imaginando?) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (01 / CRITERIO) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Mejorar con sentido) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en Criterio, quiz\341 busques tranquilidad haciendo las cosas bien. Esa coherencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (puede convertirse en rigidez cuando cualquier error parece inaceptable. El movimiento \372til es) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (conservar tus valores y flexibilizar la manera de llevarlos a la pr\341ctica.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 627.75 Tm (Recurso: La atenci\363n a la calidad puede ayudarte a actuar con coherencia.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 607.75 Tm (Para observar: Observa si revisar una y otra vez te impide dar algo por terminado.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 585.75 Tm (\277Busco mejorar algo o evitar la sensaci\363n de equivocarme?) Tj ET
+0.678 0.475 0.369 rg 44 553.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 557.75 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 540.25 Tm (Antes de corregir, pregunta si la otra persona quiere una idea o que la escuches. Expresa) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (tambi\351n algo que valoras.) Tj ET
+0.678 0.475 0.369 rg 44 497.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 501.25 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 483.75 Tm (Acordad un m\355nimo compartido para una tarea dom\351stica. Deja espacio para que otra) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (persona la haga a su manera.) Tj ET
+0.678 0.475 0.369 rg 44 440.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 444.75 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 427.25 Tm (Define tres criterios de terminado antes de empezar. Entrega una primera versi\363n cuando los) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (cumpla y recoge comentarios.) Tj ET
+0.678 0.475 0.369 rg 44 384.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 388.25 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 370.75 Tm (Cuando aparezca autocr\355tica, escribe el hecho sin insultarte. A\361ade una frase que dir\355as a) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (alguien a quien quieres.) Tj ET
+0.678 0.475 0.369 rg 44 327.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 331.75 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 314.25 Tm (Reserva un descanso sin condicionarlo a terminarlo todo. Observa si puedes disfrutarlo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (aunque quede algo pendiente.) Tj ET
+0.678 0.475 0.369 rg 44 271.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 275.25 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 257.75 Tm (Separa un valor importante de una preferencia personal. Negocia la preferencia sin renunciar) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (a un l\355mite que te protege.) Tj ET
+0.678 0.475 0.369 rg 44 214.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 218.75 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 201.25 Tm (Fija un tiempo breve para comparar una compra cotidiana. Decide con criterios suficientes y) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (evita revisar indefinidamente.) Tj ET
+0.678 0.475 0.369 rg 44 158.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 162.25 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 144.75 Tm (Haz una actividad creativa sin corregir el resultado. Valora la experiencia y no solo si qued\363) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (bien.) Tj ET
 endstream
 endobj
 20 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 21 0 R >>
 endobj
 21 0 obj
-<< /Length 2484 >>
+<< /Length 4380 >>
 stream
 0.984 0.980 0.965 rg 0 0 595 842 re f
 0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
 0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
 0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
 0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (05) Tj ET
-0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (04 / GU\315A DE OBSERVACI\323N) Tj ET
-0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (M\341s all\341 de una etiqueta) Tj ET
-0.824 0.584 0.392 rg 44 505 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 664 Tm (7 / Posibilidades \267 Disfrutar tambi\351n al quedarte) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 639 Tm (Me entusiasma descubrir opciones y nuevas experiencias.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 616.5 Tm (Recurso: La curiosidad puede abrir caminos creativos.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 595.5 Tm (Para observar: Observa si cambiar de plan evita una emoci\363n inc\363moda.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 573.5 Tm (\277Elijo esta novedad por inter\351s o para alejarme de algo dif\355cil?) Tj ET
-0.667 0.408 0.373 rg 44 302 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 461 Tm (8 / Autonom\355a \267 Ser firme y receptivo) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 436 Tm (Me importa poder decidir y defender lo que considero justo.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 413.5 Tm (Recurso: La firmeza puede ayudarte a poner l\355mites.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 392.5 Tm (Para observar: Observa si protegerte dificulta mostrar dudas o recibir ayuda.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 370.5 Tm (\277Estoy defendiendo un l\355mite o intentando controlar la situaci\363n?) Tj ET
-0.557 0.608 0.420 rg 44 99 5 175 re f
-0.129 0.235 0.263 rg BT /F2 15 Tf 1 0 0 1 61 258 Tm (9 / Armon\355a \267 Estar en paz y presente) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 61 233 Tm (Valoro la calma y que las personas puedan entenderse.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 210.5 Tm (Recurso: La escucha puede facilitar acuerdos y convivencia.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 61 189.5 Tm (Para observar: Observa si evitar tensiones hace que tu opini\363n quede fuera.) Tj ET
-0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 61 167.5 Tm (\277Estoy en calma o dejando para despu\351s algo que me importa?) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (02 / V\315NCULO) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Cuidar sin olvidarte) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en V\355nculo, puede que dar y acompa\361ar te ayuden a sentir cercan\355a. El coste) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (aparece cuando esperas que alguien descubra tus necesidades sin nombrarlas. Practicar la) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (reciprocidad permite cuidar sin tener que ganarte cada relaci\363n.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 627.75 Tm (Recurso: La disponibilidad puede facilitar relaciones c\341lidas.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 607.75 Tm (Para observar: Observa si ofrecer ayuda deja tus propias necesidades en segundo plano.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 585.75 Tm (\277Ayudo porque quiero o porque necesito sentirme necesario?) Tj ET
+0.733 0.463 0.525 rg 44 553.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 557.75 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 540.25 Tm (Di qu\351 necesitas sin probar primero cu\341nto has hecho por la otra persona. Deja que pueda) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (responder con libertad.) Tj ET
+0.733 0.463 0.525 rg 44 497.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 501.25 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 483.75 Tm (Pregunta antes de ayudar. Repartid una responsabilidad concreta para que cuidar no recaiga) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (siempre en quien se ofrece primero.) Tj ET
+0.733 0.463 0.525 rg 44 440.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 444.75 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 427.25 Tm (Antes de aceptar una tarea extra, revisa tu carga. Ofrece un alcance y una fecha que) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (realmente puedas cumplir.) Tj ET
+0.733 0.463 0.525 rg 44 384.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 388.25 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 370.75 Tm (Nombra una necesidad propia antes de preguntar por las ajenas. Pide apoyo directamente,) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (sin disculparte por necesitarlo.) Tj ET
+0.733 0.463 0.525 rg 44 327.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 331.75 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 314.25 Tm (Agenda un rato para ti y prot\351gelo como una cita con alguien importante. No lo canceles por) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (una petici\363n no urgente.) Tj ET
+0.733 0.463 0.525 rg 44 271.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 275.25 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 257.75 Tm (Ensaya un no amable: \253Esta vez no puedo; s\355 puedo hacer esto otro\273. Ofrece alternativa solo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (si la deseas.) Tj ET
+0.733 0.463 0.525 rg 44 214.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 218.75 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 201.25 Tm (Antes de un regalo, decide cu\341nto quieres gastar libremente. No lo uses para asegurar cari\361o) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (ni para generar una deuda.) Tj ET
+0.733 0.463 0.525 rg 44 158.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 162.25 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 144.75 Tm (Elige una actividad que te guste aunque no ayude a nadie. Descubre qu\351 disfrutas cuando no) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (eres imprescindible.) Tj ET
 endstream
 endobj
 22 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 23 0 R >>
 endobj
 23 0 obj
-<< /Length 2828 >>
+<< /Length 4395 >>
 stream
 0.984 0.980 0.965 rg 0 0 595 842 re f
 0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
 0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
 0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
 0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (06) Tj ET
-0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (05 / LLEVARLO A TU VIDA) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (03 / LOGRO) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Avanzar con autenticidad) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en Logro, ver avances puede darte energ\355a y direcci\363n. A veces esa capacidad) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (deja poco espacio para reconocer cansancio, dudas o intereses que no lucen. La propuesta es) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (vincular tus metas a valores propios y permitirte existir fuera del resultado.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 627.75 Tm (Recurso: El enfoque en objetivos puede ayudarte a convertir ideas en acciones.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 607.75 Tm (Para observar: Observa si el reconocimiento pesa m\341s que tu inter\351s real.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 585.75 Tm (\277Elegir\355a este objetivo si nadie fuera a verlo?) Tj ET
+0.780 0.596 0.263 rg 44 553.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 557.75 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 540.25 Tm (Cuenta una experiencia incluyendo c\363mo te sentiste, no solo lo que conseguiste. Escucha sin) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (intentar impresionar ni resolver.) Tj ET
+0.780 0.596 0.263 rg 44 497.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 501.25 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 483.75 Tm (Comparte un rato sin objetivos ni pantallas. No conviertas el encuentro en otra actividad que) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (deba salir perfecta.) Tj ET
+0.780 0.596 0.263 rg 44 440.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 444.75 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 427.25 Tm (Elige una meta por su sentido y otra medida de progreso distinta del reconocimiento.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (Reconoce la aportaci\363n del equipo.) Tj ET
+0.780 0.596 0.263 rg 44 384.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 388.25 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 370.75 Tm (Al terminar una tarea, nombra una emoci\363n y una necesidad antes de pasar a la siguiente.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (Deja espacio al cansancio.) Tj ET
+0.780 0.596 0.263 rg 44 327.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 331.75 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 314.25 Tm (Pon una hora de cierre a la jornada. Descansar no necesita justificarse como una estrategia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (para producir m\341s.) Tj ET
+0.780 0.596 0.263 rg 44 271.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 275.25 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 257.75 Tm (Preg\372ntate si aceptar\355as ese objetivo sin poder contarlo. Revisa qu\351 coste tiene para tus) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (relaciones y tu tiempo.) Tj ET
+0.780 0.596 0.263 rg 44 214.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 218.75 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 201.25 Tm (Separa una compra \372til de una compra para dar imagen. Espera un d\355a antes de decidir) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (sobre la segunda.) Tj ET
+0.780 0.596 0.263 rg 44 158.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 162.25 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 144.75 Tm (Aprende algo en lo que puedas ser principiante. Disfr\372talo sin publicarlo, competir ni) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (convertirlo en una nueva marca personal.) Tj ET
+endstream
+endobj
+24 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 25 0 R >>
+endobj
+25 0 obj
+<< /Length 4474 >>
+stream
+0.984 0.980 0.965 rg 0 0 595 842 re f
+0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
+0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
+0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (07) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (04 / IDENTIDAD) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Dar espacio a lo propio) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en Identidad, quiz\341 valores mucho el significado y la expresi\363n aut\351ntica.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (Compararte con una versi\363n ideal de tu vida puede eclipsar lo que ya existe. El ejercicio es dar) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (sitio a tu sensibilidad sin esperar una emoci\363n extraordinaria para actuar.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 627.75 Tm (Recurso: La sensibilidad puede enriquecer tu mirada y tu expresi\363n.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 607.75 Tm (Para observar: Observa si compararte te lleva a perder de vista lo que s\355 tienes.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 585.75 Tm (\277Estoy escuchando mi experiencia o compar\341ndola con una imagen ideal?) Tj ET
+0.596 0.486 0.643 rg 44 553.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 557.75 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 540.25 Tm (Explica una necesidad concreta en lugar de esperar que comprendan toda tu experiencia.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (Pregunta c\363mo vive la situaci\363n la otra persona.) Tj ET
+0.596 0.486 0.643 rg 44 497.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 501.25 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 483.75 Tm (Reconoce un gesto cotidiano de cuidado. No tiene que ser extraordinario para tener) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (significado en la convivencia.) Tj ET
+0.596 0.486 0.643 rg 44 440.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 444.75 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 427.25 Tm (Trabaja quince minutos en una tarea importante aunque no llegue la inspiraci\363n. Conserva) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (una idea propia en una entrega sencilla.) Tj ET
+0.596 0.486 0.643 rg 44 384.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 388.25 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 370.75 Tm (Distingue \253siento tristeza\273 de \253todo est\341 mal\273. Describe qu\351 ocurri\363 hoy y qu\351 apoyo te) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (servir\355a ahora.) Tj ET
+0.596 0.486 0.643 rg 44 327.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 331.75 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 314.25 Tm (Crea un ritual peque\361o y repetible, como leer una p\341gina. Puedes sostenerlo incluso en un) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (d\355a poco especial.) Tj ET
+0.596 0.486 0.643 rg 44 271.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 275.25 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 257.75 Tm (Compara opciones reales, con ventajas y l\355mites. No enfrentes una opci\363n posible con una) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (alternativa imaginada sin inconvenientes.) Tj ET
+0.596 0.486 0.643 rg 44 214.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 218.75 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 201.25 Tm (Anota qu\351 esperas sentir al comprar algo. Busca tambi\351n una forma sencilla de expresar esa) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (necesidad sin consumir.) Tj ET
+0.596 0.486 0.643 rg 44 158.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 162.25 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 144.75 Tm (Haz un registro de tres momentos ordinarios con sentido. La autenticidad tambi\351n puede) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (aparecer en lo repetido.) Tj ET
+endstream
+endobj
+26 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 27 0 R >>
+endobj
+27 0 obj
+<< /Length 4485 >>
+stream
+0.984 0.980 0.965 rg 0 0 595 842 re f
+0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
+0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
+0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (08) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (05 / COMPRENSI\323N) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Saber y participar) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en Comprensi\363n, observar y entender puede ayudarte a sentir autonom\355a. El) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (desaf\355o surge cuando esperar a saber m\341s te mantiene fuera de la experiencia. Puedes cuidar) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (tu energ\355a y participar a la vez, con compromisos peque\361os y expl\355citos.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 627.75 Tm (Recurso: La observaci\363n y el estudio pueden aportar claridad.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 607.75 Tm (Para observar: Observa si prepararte se convierte en una forma de posponer la experiencia.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 585.75 Tm (\277Necesito m\341s informaci\363n o me cuesta dar el primer paso?) Tj ET
+0.400 0.557 0.671 rg 44 553.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 557.75 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 540.25 Tm (Explica cu\341ndo necesitas espacio y cu\341ndo volver\341s a conversar. Un l\355mite con una hora de) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (regreso puede ofrecer claridad y cercan\355a.) Tj ET
+0.400 0.557 0.671 rg 44 497.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 501.25 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 483.75 Tm (Participa en una tarea compartida con un tiempo acordado. Expresa tus l\355mites antes de) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (retirarte por saturaci\363n.) Tj ET
+0.400 0.557 0.671 rg 44 440.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 444.75 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 427.25 Tm (Define la informaci\363n m\355nima para probar una idea. Haz una prueba breve y aprende de lo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (que ocurra en la pr\341ctica.) Tj ET
+0.400 0.557 0.671 rg 44 384.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 388.25 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 370.75 Tm (Adem\341s de explicar lo que pas\363, nombra c\363mo te afect\363. Puedes empezar con una palabra y) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (pedir tiempo para continuar.) Tj ET
+0.400 0.557 0.671 rg 44 327.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 331.75 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 314.25 Tm (Alterna un rato de concentraci\363n con una pausa fuera de la pantalla. Observa qu\351 te ayuda a) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (recuperar energ\355a.) Tj ET
+0.400 0.557 0.671 rg 44 271.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 275.25 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 257.75 Tm (Pon un plazo a una decisi\363n peque\361a. Si falta informaci\363n, identifica qu\351 dato cambiar\355a) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (realmente tu elecci\363n.) Tj ET
+0.400 0.557 0.671 rg 44 214.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 218.75 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 201.25 Tm (Limita las comparaciones de una compra sencilla a unas pocas opciones. M\341s informaci\363n no) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (siempre resuelve la incertidumbre.) Tj ET
+0.400 0.557 0.671 rg 44 158.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 162.25 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 144.75 Tm (Comparte una idea a\372n incompleta con alguien de confianza. Explora qu\351 descubres al) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (participar, adem\341s de estudiar a solas.) Tj ET
+endstream
+endobj
+28 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 29 0 R >>
+endobj
+29 0 obj
+<< /Length 4511 >>
+stream
+0.984 0.980 0.965 rg 0 0 595 842 re f
+0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
+0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
+0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (09) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (06 / SEGURIDAD) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Confiar paso a paso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en Seguridad, anticipar y buscar apoyos puede ayudarte a actuar con) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (prudencia. Cuando cada comprobaci\363n abre otra duda, quiz\341 necesites ensayar confianza en) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (un paso peque\361o. No se trata de eliminar riesgos, sino de distinguir los concretos de los) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 633.25 Tm (imaginados.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 612 Tm (Recurso: La prudencia puede ayudarte a anticipar dificultades reales.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 592 Tm (Para observar: Observa si comprobar y pedir confirmaci\363n aumenta tus dudas.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 570 Tm (\277Qu\351 evidencia tengo y qu\351 estoy imaginando?) Tj ET
+0.424 0.612 0.569 rg 44 538 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 542 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (Pregunta por una conducta concreta antes de interpretar lo que significa. Pide claridad sin) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 508.75 Tm (convertir la conversaci\363n en una prueba de lealtad.) Tj ET
+0.424 0.612 0.569 rg 44 481.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 485.5 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (Acordad un plan sencillo para un imprevisto habitual. Despu\351s volved a la actividad, sin) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 452.25 Tm (ensayar cada problema posible.) Tj ET
+0.424 0.612 0.569 rg 44 425 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 429 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (Escribe un riesgo real, una medida \372til y el siguiente paso. Evita a\361adir comprobaciones que) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 395.75 Tm (no cambiar\355an la decisi\363n.) Tj ET
+0.424 0.612 0.569 rg 44 368.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 372.5 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (Divide una hoja entre hechos y posibilidades. Elige una acci\363n sobre lo que sabes y comparte) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 339.25 Tm (lo que te preocupa.) Tj ET
+0.424 0.612 0.569 rg 44 312 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 316 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (Prueba una rutina breve sin buscar otra confirmaci\363n cada d\355a. Revisa c\363mo funcion\363) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 282.75 Tm (despu\351s de una semana.) Tj ET
+0.424 0.612 0.569 rg 44 255.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 259.5 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (Toma una decisi\363n peque\361a y reversible por tu cuenta. Anota qu\351 aprendiste, tambi\351n si el) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 226.25 Tm (resultado fue imperfecto.) Tj ET
+0.424 0.612 0.569 rg 44 199 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 203 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (Antes de una compra, contrasta datos b\341sicos y condiciones. No decidas solo por una) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 169.75 Tm (urgencia comercial o por tranquilizar una duda.) Tj ET
+0.424 0.612 0.569 rg 44 142.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 146.5 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (Recuerda una ocasi\363n en que resolviste algo inesperado. Elige una experiencia nueva) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 113.25 Tm (peque\361a con apoyo disponible, no con garant\355as totales.) Tj ET
+endstream
+endobj
+30 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 31 0 R >>
+endobj
+31 0 obj
+<< /Length 4424 >>
+stream
+0.984 0.980 0.965 rg 0 0 595 842 re f
+0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
+0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
+0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (10) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (07 / POSIBILIDADES) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Disfrutar tambi\351n al quedarte) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en Posibilidades, imaginar alternativas puede darte vitalidad y creatividad. La) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (dificultad puede aparecer cuando abrir otra opci\363n evita cerrar algo o escuchar una emoci\363n) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (inc\363moda. La pr\341ctica es combinar curiosidad con presencia y compromisos de tama\361o) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 633.25 Tm (realista.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 612 Tm (Recurso: La curiosidad puede abrir caminos creativos.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 592 Tm (Para observar: Observa si cambiar de plan evita una emoci\363n inc\363moda.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 570 Tm (\277Elijo esta novedad por inter\351s o para alejarme de algo dif\355cil?) Tj ET
+0.824 0.584 0.392 rg 44 538 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 542 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (Escucha una dificultad sin cambiar enseguida de tema ni buscar el lado positivo. Pregunta) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 508.75 Tm (qu\351 necesita la otra persona.) Tj ET
+0.824 0.584 0.392 rg 44 481.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 485.5 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (Elige un plan compartido y completa tambi\351n la parte menos entretenida. Pregunta por el) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 452.25 Tm (ritmo que necesitan los dem\341s.) Tj ET
+0.824 0.584 0.392 rg 44 425 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 429 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (Guarda las ideas nuevas en una lista y termina un paso del proyecto actual antes de abrir) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 395.75 Tm (otro.) Tj ET
+0.824 0.584 0.392 rg 44 368.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 372.5 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (Haz una pausa y nombra lo inc\363modo sin forzarte a resolverlo. Si pesa demasiado, busca) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 339.25 Tm (compa\361\355a y apoyo.) Tj ET
+0.824 0.584 0.392 rg 44 312 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 316 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (Reduce un h\341bito a diez minutos y rep\355telo antes de variar. Celebra completar, no solo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 282.75 Tm (estrenar.) Tj ET
+0.824 0.584 0.392 rg 44 255.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 259.5 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (Al decir s\355 a algo, identifica a qu\351 est\341s diciendo no. Protege un compromiso que ya hab\355as) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 226.25 Tm (elegido.) Tj ET
+0.824 0.584 0.392 rg 44 199 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 203 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (Deja una compra no necesaria en una lista hasta ma\361ana. Comprueba si sigue interes\341ndote) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 169.75 Tm (cuando pas\363 la emoci\363n inicial.) Tj ET
+0.824 0.584 0.392 rg 44 142.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 146.5 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (Elige una experiencia sencilla y pr\351stale atenci\363n hasta el final. Observa qu\351 disfrutas sin) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 113.25 Tm (a\361adir otra actividad.) Tj ET
+endstream
+endobj
+32 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 33 0 R >>
+endobj
+33 0 obj
+<< /Length 4432 >>
+stream
+0.984 0.980 0.965 rg 0 0 595 842 re f
+0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
+0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
+0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (11) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (08 / AUTONOM\315A) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Ser firme y receptivo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en Autonom\355a, la firmeza puede ayudarte a defender l\355mites y proteger lo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (importante. Puede costar m\341s escuchar o recibir ayuda cuando todo se vive como una disputa) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (por el control. La propuesta es unir claridad con curiosidad y permitir una vulnerabilidad) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 633.25 Tm (elegida.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 612 Tm (Recurso: La firmeza puede ayudarte a poner l\355mites.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 592 Tm (Para observar: Observa si protegerte dificulta mostrar dudas o recibir ayuda.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 570 Tm (\277Estoy defendiendo un l\355mite o intentando controlar la situaci\363n?) Tj ET
+0.667 0.408 0.373 rg 44 538 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 542 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (Expresa qu\351 te doli\363 antes de discutir qui\351n tiene raz\363n. Haz una pregunta y escucha la) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 508.75 Tm (respuesta completa.) Tj ET
+0.667 0.408 0.373 rg 44 481.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 485.5 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (Comparte una decisi\363n que sueles tomar por todos. Pide propuestas sin corregirlas antes de) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 452.25 Tm (haberlas entendido.) Tj ET
+0.667 0.408 0.373 rg 44 425 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 429 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (Delega una tarea acordando resultado y revisi\363n. Deja espacio real para que otra persona) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 395.75 Tm (elija c\363mo realizarla.) Tj ET
+0.667 0.408 0.373 rg 44 368.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 372.5 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (Cuando suba la intensidad, pide una pausa con hora de regreso. Nombra la necesidad que) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 339.25 Tm (quieres proteger al volver.) Tj ET
+0.667 0.408 0.373 rg 44 312 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 316 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (Incluye un momento de descanso que no sea otra prueba de resistencia. Reconoce una se\361al) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 282.75 Tm (temprana de cansancio.) Tj ET
+0.667 0.408 0.373 rg 44 255.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 259.5 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (Distingue un l\355mite propio de una orden para otra persona. Formula qu\351 har\341s t\372 si ese l\355mite) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 226.25 Tm (no se respeta.) Tj ET
+0.667 0.408 0.373 rg 44 199 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 203 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (En una compra o gasto compartido, escucha el criterio de los dem\341s. No confundas decidir) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 169.75 Tm (r\341pido con decidir por todos.) Tj ET
+0.667 0.408 0.373 rg 44 142.5 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 146.5 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (Acepta ayuda en una tarea peque\361a. Comprueba c\363mo se siente compartir responsabilidad) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 113.25 Tm (sin perder tu capacidad de elegir.) Tj ET
+endstream
+endobj
+34 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 35 0 R >>
+endobj
+35 0 obj
+<< /Length 4417 >>
+stream
+0.984 0.980 0.965 rg 0 0 595 842 re f
+0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
+0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
+0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (12) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (09 / ARMON\315A) Tj ET
+0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Estar en paz y presente) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 680.5 Tm (Si te reconoces en Armon\355a, escuchar y encontrar puntos comunes puede facilitar la) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 664.75 Tm (convivencia. El coste aparece cuando tus preferencias desaparecen para evitar tensi\363n.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 44 649 Tm (Practicar una presencia m\341s visible permite buscar acuerdos donde tambi\351n est\341s incluido.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 627.75 Tm (Recurso: La escucha puede facilitar acuerdos y convivencia.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 607.75 Tm (Para observar: Observa si evitar tensiones hace que tu opini\363n quede fuera.) Tj ET
+0.541 0.396 0.200 rg BT /F1 10 Tf 1 0 0 1 44 585.75 Tm (\277Estoy en calma o dejando para despu\351s algo que me importa?) Tj ET
+0.557 0.608 0.420 rg 44 553.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 557.75 Tm (01 / Relaciones y pareja) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 540.25 Tm (Expresa una preferencia antes de preguntar qu\351 quiere la otra persona. Un desacuerdo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 524.5 Tm (peque\361o tambi\351n puede caber en una relaci\363n cercana.) Tj ET
+0.557 0.608 0.420 rg 44 497.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 501.25 Tm (02 / Familia y convivencia) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 483.75 Tm (Prop\363n un reparto concreto de una tarea. Comprueba que tu s\355 sea una elecci\363n y no una) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 468 Tm (manera de terminar la conversaci\363n.) Tj ET
+0.557 0.608 0.420 rg 44 440.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 444.75 Tm (03 / Trabajo y aprendizaje) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 427.25 Tm (Elige una prioridad propia al empezar el d\355a y dedica diez minutos a ella antes de responder) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 411.5 Tm (a todas las demandas.) Tj ET
+0.557 0.608 0.420 rg 44 384.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 388.25 Tm (04 / Emociones y cuidado personal) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 370.75 Tm (Observa una incomodidad que sueles minimizar. Escr\355bela con tus palabras antes de decidir) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 355 Tm (si necesitas hablarla.) Tj ET
+0.557 0.608 0.420 rg 44 327.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 331.75 Tm (05 / H\341bitos y descanso) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 314.25 Tm (Prepara el primer paso de una tarea y una hora de inicio. No esperes a tener ganas de) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 298.5 Tm (hacerla completa.) Tj ET
+0.557 0.608 0.420 rg 44 271.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 275.25 Tm (06 / Decisiones y l\355mites) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 257.75 Tm (Ante una propuesta, date un momento: \253Lo pienso y te digo\273. Despu\351s responde con una) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 242 Tm (preferencia o un l\355mite claro.) Tj ET
+0.557 0.608 0.420 rg 44 214.75 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 218.75 Tm (07 / Dinero y consumo) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 201.25 Tm (Revisa un gasto recurrente que has dejado pasar por inercia. Decide conscientemente si) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 185.5 Tm (todav\355a te sirve.) Tj ET
+0.557 0.608 0.420 rg 44 158.25 3 12 re f
+0.129 0.235 0.263 rg BT /F2 10 Tf 1 0 0 1 56 162.25 Tm (08 / Prop\363sito y disfrute) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 144.75 Tm (Recupera un inter\351s que has ido posponiendo. Reserva un momento peque\361o y cu\351ntale a) Tj ET
+0.129 0.235 0.263 rg BT /F1 10.5 Tf 1 0 0 1 56 129 Tm (alguien por qu\351 te importa.) Tj ET
+endstream
+endobj
+36 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 37 0 R >>
+endobj
+37 0 obj
+<< /Length 3149 >>
+stream
+0.984 0.980 0.965 rg 0 0 595 842 re f
+0.129 0.235 0.263 rg BT /F2 11 Tf 1 0 0 1 44 796 Tm (COCO / ENEAGRAMA) Tj ET
+0.863 0.871 0.839 RG 1 w 44 787 m 551 787 l S
+0.337 0.424 0.439 rg BT /F1 9 Tf 1 0 0 1 44 24 Tm (Autoconocimiento \267 Cuestionario original no validado) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 527 23 Tm (13) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 750 Tm (TU SIGUIENTE PASO) Tj ET
 0.129 0.235 0.263 rg BT /F3 30 Tf 1 0 0 1 44 708 Tm (Un plan de siete d\355as) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 660 Tm (D\355a 1 \267 Recuerda una situaci\363n concreta y qu\351 buscabas en ella.) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 636.5 Tm (D\355a 2 \267 Distingue lo que hiciste de lo que te motiv\363.) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 613 Tm (D\355a 3 \267 Lee dos tendencias que te resulten pr\363ximas.) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 589.5 Tm (D\355a 4 \267 Busca un ejemplo que contradiga tu primera impresi\363n.) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 566 Tm (D\355a 5 \267 Prueba una acci\363n peque\361a diferente a la habitual.) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 542.5 Tm (D\355a 6 \267 Escucha otra mirada, sin pedir a nadie que te etiquete.) Tj ET
-0.129 0.235 0.263 rg BT /F1 11 Tf 1 0 0 1 44 519 Tm (D\355a 7 \267 Anota qu\351 te sirve y qu\351 no encaja contigo.) Tj ET
-0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 412 Tm (TU REFLEXI\323N) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 387 Tm (Quiero observar qu\351 me mueve cuando ofrezco ayuda: el deseo de acompa\361ar, la necesidad de) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 372 Tm (sentirme \372til o una mezcla de ambas cosas.) Tj ET
-0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 262 Tm (REFERENCIAS Y ALCANCE) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 240 Tm (Riso y Hudson: The Wisdom of the Enneagram. Helen Palmer: The Enneagram. Daniels y Price: The) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 225 Tm (Essential Enneagram. Bibliograf\355a y materiales p\372blicos consultados; no reproducci\363n de sus tests.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 210 Tm (Coco no est\341 acreditado por esas escuelas.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 169 Tm (La revisi\363n de Hook y colaboradores \(2021, DOI 10.1002/jclp.23097\) encontr\363 evidencia mixta. Este) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 154 Tm (cuestionario original no tiene validaci\363n psicom\351trica; no asigna alas, subtipos ni niveles de salud.) Tj ET
-0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 139 Tm (Para menores se usa solo como conversaci\363n acompa\361ada.) Tj ET
-0.337 0.424 0.439 rg BT /F1 10 Tf 1 0 0 1 44 79 Tm (M\351todo y enlaces: cocoenforma.com/explora/metodo.html) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 674 Tm (D\355a 1 \267 Elige un \341rea y describe una situaci\363n reciente con hechos concretos.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 652 Tm (D\355a 2 \267 Nombra tu motivaci\363n, la emoci\363n y la necesidad que quer\355as atender.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 630 Tm (D\355a 3 \267 Contrasta dos miradas: busca un ejemplo a favor y otro que no encaje.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 608 Tm (D\355a 4 \267 Elige una acci\363n del informe y ponle momento, lugar y duraci\363n de diez minutos.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 586 Tm (D\355a 5 \267 Prueba la acci\363n. Registra qu\351 hiciste y qu\351 efecto observaste, sin juzgarte.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 564 Tm (D\355a 6 \267 Pide una observaci\363n concreta a alguien de confianza, sin pedirle que te tipifique.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 542 Tm (D\355a 7 \267 Revisa qu\351 te sirvi\363, qu\351 no y qu\351 ajustar\341s. El progreso es observar y elegir.) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 513 Tm (TU REFLEXI\323N) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 489 Tm (\277Qu\351 quiero comprender mejor? Mi pr\341ctica ser\341: ____. La probar\351 el d\355a ____ durante diez minutos.) Tj ET
+0.129 0.235 0.263 rg BT /F1 10 Tf 1 0 0 1 44 474 Tm (Despu\351s observar\351 qu\351 me sirvi\363 y qu\351 quiero cambiar.) Tj ET
+0.541 0.396 0.200 rg BT /F2 10 Tf 1 0 0 1 44 439 Tm (REFERENCIAS Y ALCANCE) Tj ET
+0.129 0.235 0.263 rg BT /F1 9.5 Tf 1 0 0 1 44 416.5 Tm (Riso y Hudson: The Wisdom of the Enneagram. Helen Palmer: The Enneagram. Daniels y Price: The) Tj ET
+0.129 0.235 0.263 rg BT /F1 9.5 Tf 1 0 0 1 44 402.25 Tm (Essential Enneagram. Bibliograf\355a y materiales p\372blicos consultados; no reproducci\363n de sus tests. Las) Tj ET
+0.129 0.235 0.263 rg BT /F1 9.5 Tf 1 0 0 1 44 388 Tm (propuestas de coaching son ejercicios originales de Coco, sin acreditaci\363n de esas escuelas.) Tj ET
+0.129 0.235 0.263 rg BT /F1 9.5 Tf 1 0 0 1 44 364.75 Tm (La revisi\363n de Hook y colaboradores \(2021, DOI 10.1002/jclp.23097\) encontr\363 evidencia mixta. Este) Tj ET
+0.129 0.235 0.263 rg BT /F1 9.5 Tf 1 0 0 1 44 350.5 Tm (cuestionario no tiene validaci\363n psicom\351trica; no asigna alas, subtipos ni niveles de salud. Para menores) Tj ET
+0.129 0.235 0.263 rg BT /F1 9.5 Tf 1 0 0 1 44 336.25 Tm (se usa como conversaci\363n acompa\361ada, sin un eneatipo dominante.) Tj ET
+0.337 0.424 0.439 rg BT /F1 10 Tf 1 0 0 1 44 307.5 Tm (M\351todo y enlaces: cocoenforma.com/explora/metodo.html) Tj ET
 endstream
 endobj
 xref
-0 24
+0 38
 0000000000 65535 f 
 0000000009 00000 n 
 0000000058 00000 n 
-0000000151 00000 n 
-0000001224 00000 n 
-0000002310 00000 n 
-0000003387 00000 n 
-0000003583 00000 n 
-0000091732 00000 n 
-0000091933 00000 n 
-0000170506 00000 n 
-0000170705 00000 n 
-0000260487 00000 n 
-0000260635 00000 n 
-0000267826 00000 n 
-0000267974 00000 n 
-0000272192 00000 n 
-0000272340 00000 n 
-0000274880 00000 n 
-0000275028 00000 n 
-0000277566 00000 n 
-0000277714 00000 n 
-0000280251 00000 n 
-0000280399 00000 n 
+0000000201 00000 n 
+0000001274 00000 n 
+0000002360 00000 n 
+0000003437 00000 n 
+0000003633 00000 n 
+0000091782 00000 n 
+0000091983 00000 n 
+0000170556 00000 n 
+0000170755 00000 n 
+0000260537 00000 n 
+0000260685 00000 n 
+0000267876 00000 n 
+0000268024 00000 n 
+0000272109 00000 n 
+0000272257 00000 n 
+0000275325 00000 n 
+0000275473 00000 n 
+0000279923 00000 n 
+0000280071 00000 n 
+0000284504 00000 n 
+0000284652 00000 n 
+0000289100 00000 n 
+0000289248 00000 n 
+0000293775 00000 n 
+0000293923 00000 n 
+0000298461 00000 n 
+0000298609 00000 n 
+0000303173 00000 n 
+0000303321 00000 n 
+0000307798 00000 n 
+0000307946 00000 n 
+0000312431 00000 n 
+0000312579 00000 n 
+0000317049 00000 n 
+0000317197 00000 n 
 trailer
-<< /Size 24 /Root 1 0 R >>
+<< /Size 38 /Root 1 0 R >>
 startxref
-283280
+320399
 %%EOF
