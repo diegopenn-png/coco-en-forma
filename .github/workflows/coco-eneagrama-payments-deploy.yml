@@ -57,5 +57,11 @@ jobs:
         run: npx wrangler versions deploy "$CANDIDATE_VERSION@100%" --name coco-eterna-v159 --message 'Coco Eneagrama EUR15 single-use reports and unlimited owner' --yes
       - name: Verify production
         run: |
-          curl --fail --silent --show-error https://coco-eterna-v159.chatinmobiliario.workers.dev/health > /tmp/eneagrama-live.json
-          node -e 'const d=require("/tmp/eneagrama-live.json");if(!d.eneagrama_payments||!d.supabase_configured||!d.stripe_configured)process.exit(1)'
+          for attempt in {1..12}; do
+            curl --fail --silent --show-error --header 'Cache-Control: no-cache' "https://coco-eterna-v159.chatinmobiliario.workers.dev/health?verify=${GITHUB_SHA}-${attempt}" > /tmp/eneagrama-live.json
+            if node -e 'const d=require("/tmp/eneagrama-live.json");console.log({eneagrama:d.eneagrama_payments,auth:d.supabase_configured,stripe:d.stripe_configured});if(!d.eneagrama_payments||!d.supabase_configured||!d.stripe_configured)process.exit(1)'; then
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
