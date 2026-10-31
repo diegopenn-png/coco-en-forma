@@ -1,9 +1,9 @@
 name: Coco Eneagrama questionnaire and PDF checks
 on:
   push:
-    paths: ['explora/**', 'qa/explora/**', '.github/workflows/coco-explora-tests.yml']
+    paths: ['explora/**', 'qa/explora/**', '.github/coco-eneagrama/**', '.github/workflows/coco-explora-tests.yml']
   pull_request:
-    paths: ['explora/**', 'qa/explora/**', '.github/workflows/coco-explora-tests.yml']
+    paths: ['explora/**', 'qa/explora/**', '.github/coco-eneagrama/**', '.github/workflows/coco-explora-tests.yml']
 jobs:
   verify:
     runs-on: ubuntu-latest

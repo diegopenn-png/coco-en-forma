@@ -1,9 +1,11 @@
 # Coco Eneagrama · estado de producto
 
-Versión 2.0: autoconocimiento con 54 frases originales, nueve tendencias y PDF local de seis páginas. Sustituye el piloto cognitivo. La ruta canónica sigue siendo /explora/.
+Versión 2.1: autoconocimiento con 54 frases originales, nueve tendencias y PDF de seis páginas. Ruta /explora/. Cliente: 15 EUR por evaluación e informe, pago único sin renovación. Propietario: ilimitado mediante perfiles.rol = propietario del proyecto Coco V2, nunca por metadatos del cliente.
 
-Piloto gratuito. No hay checkout, suscripción, promesa de CI ni certificación. Los menores participan acompañados sin asignación de eneatipo. Fuentes y límites públicos en /explora/metodo.html. No reproducir RHETI ni pruebas licenciadas.
+Stripe Cocoenforma acct_1U730uBWXPNbVxJs, live. Precio price_1UWVEXBWXPNbVxJshWAVJxu2, producto prod_VXaP34NSwWFess; 1500 céntimos EUR, no recurrente, tax_behavior inclusive. No se ha configurado Stripe Tax ni realizado un cobro de prueba real.
 
-Antes de una oferta de pago: definir alcance y precio total con Diego, comprobar la cuenta comercial correcta, publicar condiciones y reembolsos, separar un informe puntual de suscripciones e implementar permisos de acceso en servidor con webhook firmado e idempotente. No declarar pagos disponibles hasta verificar el circuito real. No vender una clasificación infantil o diagnóstico implícito.
+Servidor: Worker coco-eterna-v159, /v1/eneagrama/{access,checkout,reconcile,report}. Webhook existente con firma verificada, eventos de pago inmediato/diferido, reembolso y disputa. Compra canónica validada contra precio, importe, moneda, cantidad y cuenta, independiente de las suscripciones Eterna. Idempotencia de checkout y de consumo por informe. Tabla privada public.coco_eneagrama_orders y RPC para service_role únicamente. Master ilimitado comprobado contra rol persistido, sin consumo.
 
-La descarga de esta versión genera un PDF real en el dispositivo sin enviar respuestas, fecha de nacimiento ni notas al servidor. Alias opcional y edad en años aparecen en el documento. No hay persistencia de sesión ni vínculo a la cuenta Coco.
+PDF generado en servidor tras validar respuestas y acceso. No persiste respuestas, fecha de nacimiento, alias, notas ni PDF. La fecha no sale del navegador; edad en años, respuestas y texto opcional se procesan transitoriamente. Se conserva un recibo de uso y huella del informe para reintentos sin duplicar consumo. No ofrece recuperación de respuestas después de cerrar la pestaña; se explica antes de comprar y completar. Condiciones públicas en /explora/condiciones.html, versión 2026-10-31-v1.
+
+Menores acompañados sin eneatipo. Cuestionario original sin validación psicométrica ni acreditación; no reproduce pruebas licenciadas. Fuentes y límites en /explora/metodo.html.

@@ -3,7 +3,7 @@ import {makePDF} from '../../.github/coco-eneagrama/pdf.mjs';
 export const ENNEAGRAM_PRICE='price_1UWVEXBWXPNbVxJshWAVJxu2';
 export const ENNEAGRAM_SERVICE='coco_eneagrama';
 export const ENNEAGRAM_TERMS='2026-10-31-v1';
-const base='https://cocoenforma.com/explora/';
+const origins=new Set(['https://cocoenforma.com','https://www.cocoenforma.com']);
 const uuid=/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 const json=(b,s=200)=>new Response(JSON.stringify(b),{status:s,headers:{'Content-Type':'application/json','Cache-Control':'private, no-store'}});
 export async function stripeRequest(env,path,fields=null,key=null){
@@ -56,6 +56,7 @@ export async function handleEnneagram(request,env,user,db,api=stripeRequest){
   if(access.master)return json({master:true});
   if(!access.payments_ready)return json({error:'El pago no está disponible temporalmente.'},503);
   if(b.adult!==true||b.terms!==ENNEAGRAM_TERMS||!uuid.test(b.request_id||''))return json({error:'Confirma la compra como adulto y las condiciones.'},400);
+  const origin=request.headers.get('Origin');const base=(origins.has(origin)?origin:'https://cocoenforma.com')+'/explora/';
   const fields={mode:'payment','line_items[0][price]':ENNEAGRAM_PRICE,'line_items[0][quantity]':'1',success_url:base+'jugar.html?checkout={CHECKOUT_SESSION_ID}',cancel_url:base+'jugar.html?cancelled=1',client_reference_id:user.id,'metadata[user_id]':user.id,'metadata[service]':ENNEAGRAM_SERVICE,'metadata[terms]':ENNEAGRAM_TERMS,'metadata[adult_confirmed]':'true','payment_intent_data[metadata][service]':ENNEAGRAM_SERVICE,'payment_intent_data[metadata][user_id]':user.id,'adaptive_pricing[enabled]':'false',integration_identifier:'coco_eneagrama_yvbnqkfr',locale:'es',customer_email:user.email};
   const s=await api(env,'/checkout/sessions',fields,'eneagrama-'+user.id+'-'+b.request_id);return json({url:s.url});
  }
