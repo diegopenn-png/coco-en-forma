@@ -1,4 +1,4 @@
-name: Coco Explora educational pilot checks
+name: Coco Eneagrama questionnaire and PDF checks
 on:
   push:
     paths: ['explora/**', 'qa/explora/**', '.github/workflows/coco-explora-tests.yml']

@@ -21,6 +21,8 @@ function functionBody(source, name, nextName) {
 
 function loadFamilyProfileApi() {
   const document = {
+    createElement() { return {}; },
+    head: { appendChild() {} },
     readyState: "loading",
     addEventListener() {},
     querySelectorAll() { return []; },
