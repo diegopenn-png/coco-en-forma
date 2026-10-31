@@ -1,6 +1,7 @@
 // One editorial model for the PDF and the on-screen report. No remote AI or personal data storage.
 import {buildCoaching} from './coaching.mjs';
-export const REPORT_VERSION='2026-10-31-coaching-3';
+import {buildContextReport} from './context.mjs';
+export const REPORT_VERSION='2026-10-31-context-4';
 // Presentation supplied by the owner. This is not an institutional endorsement or individual review.
 export const REPORT_SIGNATURE=Object.freeze({name:'Diego Pennise',role:'Coach Organizacional & Ontológico',education:'Universidad de San Andrés'});
 export const COACHING_APPROACH='Coaching organizacional y ontológico: valores, escucha, lenguaje, emociones y acuerdos. Integra preguntas sobre creencias, propósito y acciones observables. Las referencias de psicología y psiquiatría aportan contexto educativo; este informe no aplica psicoterapia.';
@@ -95,6 +96,7 @@ const tradeoffs=[
 ];
 const fmt=n=>Number(n).toFixed(2).replace('.',',');
 export function buildReport(result){
+ const context=buildContextReport(result.context,result.age);
  const c=buildCoaching(result),minor=result.minor,focus=c.focus;
  const ranked=result.eligible?[...result.rows].sort((a,b)=>b.score-a.score):[];
  const primary=focus.length===1?c.profiles.find(p=>p.id===focus[0]):null;
@@ -122,5 +124,18 @@ export function buildReport(result){
  ['Contrasta','Si quieres, pide a alguien de confianza una observación sobre lo que hiciste. No le pidas que defina quién eres.'],
  ['Decide','Revisa qué ayudó, qué tuvo un coste y qué repetirás. Puedes mantener, ajustar o descartar la práctica.']
  ].map(([title,text],i)=>({day:i+1,title,text:minor?c.plan[i].replace(/^Día \d · /,''):text}));
- return {version:REPORT_VERSION,signature:REPORT_SIGNATURE,approach:COACHING_APPROACH,title:primary?primary.title:minor?'Conocerte a tu ritmo':'Comprender antes de concluir',intro:primary?'La pregunta de fondo es qué intentas cuidar con tu forma habitual de actuar y qué otras opciones te permitirían hacerlo con menos coste. Esta lectura propone hipótesis para contrastar, no conclusiones sobre tu vida.':c.intro,evidence,primaryId:primary?.id??null,readings:readings.map(p=>({id:p.id,name:p.name,color:p.color,pattern:p.pattern,question:p.question,gift:p.gift})),synthesis,episode,areas,plan,glossary:c.profiles.map(p=>({id:p.id,name:p.name,color:p.color,drive:p.drive})),minor};
+ if(context){
+  const p=context.priorities[0];
+  const days=[
+   ['Elige',p.action],
+   ['Comprueba',p.observe],
+   ['Ajusta',context.priorities[1].action],
+   ['Repite','Repite el primer paso en otra ocasión; anota qué cambió y qué siguió igual.'],
+   ['Busca apoyo','Si te hace falta, explica qué has probado y formula una pregunta concreta a alguien de confianza.'],
+   ['Contrasta','Compara lo que hiciste con el cambio que querías observar. Busca también qué no funcionó.'],
+   ['Decide','Elige qué mantener, ajustar o dejar. Un resultado distinto del esperado también aporta información.']
+  ];
+  plan.splice(0,plan.length,...days.map(([title,text],i)=>({day:i+1,title,text})));
+ }
+ return {context,pages:context?5:7,version:REPORT_VERSION,signature:REPORT_SIGNATURE,approach:COACHING_APPROACH,title:primary?primary.title:minor?'Conocerte a tu ritmo':'Comprender antes de concluir',intro:primary?'La pregunta de fondo es qué intentas cuidar con tu forma habitual de actuar y qué otras opciones te permitirían hacerlo con menos coste. Esta lectura propone hipótesis para contrastar, no conclusiones sobre tu vida.':c.intro,evidence,primaryId:primary?.id??null,readings:readings.map(p=>({id:p.id,name:p.name,color:p.color,pattern:p.pattern,question:p.question,gift:p.gift})),synthesis,episode,areas,plan,glossary:c.profiles.map(p=>({id:p.id,name:p.name,color:p.color,drive:p.drive})),minor};
 }

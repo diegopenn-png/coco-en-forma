@@ -8,3 +8,18 @@ test('report requires a server claim and generates a real PDF only on success',a
 test('checkout pins one-time price, consent and idempotency; never charges owner',async()=>{const body={adult:true,terms:'2026-10-31-v1',request_id:uid};const req=()=>new Request('https://api.test/v1/eneagrama/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});let fields;const api=async(e,p,f,k)=>{fields=f;assert.match(k,/eneagrama-/);return{url:'https://checkout.stripe.com/fixture'}};await handleEnneagram(req(),env,user,async p=>p==='rpc/coco_eneagrama_is_master'?false:[],api);assert.equal(fields.mode,'payment');assert.equal(fields['line_items[0][price]'],ENNEAGRAM_PRICE);assert.equal(fields['subscription_data'],undefined);let called=false;await handleEnneagram(req(),env,user,async path=>path==='rpc/coco_eneagrama_is_master'?true:[],async()=>{called=true});assert.equal(called,false)});
 test('checkout events route separately from Eterna; refunds revoke remaining entitlement',async()=>{assert.equal(await onEnneagramEvent({type:'checkout.session.completed',data:{object:{metadata:{service:'eterna'}}}},env,()=>{}),false);const calls=[];assert.equal(await onEnneagramEvent({type:'charge.refunded',data:{object:{payment_intent:'pi_fixture123'}}},env,async(...v)=>calls.push(v)),true);assert.equal(calls[0][1].body.status,'revoked')});
 test('checkout returns to the same trusted Coco origin without accepting foreign redirects',async()=>{for(const origin of ['https://www.cocoenforma.com','https://cocoenforma.com','https://evil.test']){let fields;await handleEnneagram(new Request('https://api.test/v1/eneagrama/checkout',{method:'POST',headers:{'Content-Type':'application/json',Origin:origin},body:JSON.stringify({adult:true,terms:'2026-10-31-v1',request_id:uid})}),env,user,async p=>p==='rpc/coco_eneagrama_is_master'?false:[],async(e,p,f)=>{fields=f;return{url:'https://checkout.stripe.com/fixture'}});assert.ok(fields.success_url.startsWith((origin.includes('evil')?'https://cocoenforma.com':origin)+'/explora/'))}});
+test('optional context reaches the PDF without changing scores or repeat-download identity',async()=>{
+ const body={age:17,run_id:uid,answers:Object.fromEntries(buildItems(17).map(q=>[q.id,3]))};
+ const baseline=validateReport(body),claims=[];
+ for(const context of [undefined,{focus:'university',goal:'remember',obstacle:'distraction',scene:'Escena ficticia de estudio',minutes:10}]){
+  const data={...body,context},checked=validateReport(data);assert.deepEqual(checked.result,baseline.result);
+  const db=async(path,options)=>{if(path==='rpc/coco_eneagrama_is_master')return false;if(path==='rpc/coco_eneagrama_claim_report'){claims.push(options.body);return{ok:true}}return[]};
+  const req=new Request('https://api.test/v1/eneagrama/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const response=await handleEnneagram(req,env,user,db);assert.equal(response.status,200);const pdf=await response.text();
+  assert.equal((pdf.match(/\/Type \/Page /g)||[]).length,context?5:7);
+  if(context)assert.match(pdf,/Escena ficticia de estudio/);
+ }
+ assert.equal(claims[0].p_fingerprint,claims[1].p_fingerprint);
+ assert.deepEqual(Object.keys(claims[1]).sort(),['p_fingerprint','p_run','p_user']);
+ assert.equal(validateReport({...body,context:{focus:'partner',goal:'remember'}}).context.focus,'');
+});

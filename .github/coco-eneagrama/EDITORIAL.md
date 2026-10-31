@@ -16,7 +16,7 @@ Voz propia: cercana, precisa y orientada a la acción. Combinar conciencia de va
 
 ## Implementación y verificación
 
-`explora/report.mjs` es el modelo editorial compartido por la web y `.github/coco-eneagrama/pdf.mjs`. El PDF estándar tiene siete páginas y conserva las nueve medias. El motor es determinista; no afirmar que un LLM o un coach humano revisa cada descarga. El agente reutilizable de Codex sirve para interpretar, redactar y revisar nuevas mejoras cuando se le invoca.
+`explora/report.mjs` es el modelo editorial compartido por la web y `.github/coco-eneagrama/pdf.mjs`. El PDF conserva las nueve medias: cinco páginas con contexto opcional y tres prioridades, o siete con guía general cuando se omite. Contexto y puntuación permanecen separados. El motor es determinista; no afirmar que un LLM o un coach humano revisa cada descarga. El módulo de diez roles en `eterna-worker/src/eneagrama-team.js` está preparado, apagado por defecto y sin integración en el endpoint; ver [EQUIPO-IA.md](EQUIPO-IA.md). El agente reutilizable de Codex sirve para interpretar, redactar y revisar nuevas mejoras cuando se le invoca.
 
 Mantener puntuación, autorización, derechos máster, precio y privacidad fuera de cambios editoriales. No introducir llamadas de IA de pago, almacenamiento de resultados o publicaciones de informes personales por modificar el texto. Las muestras públicas y las pruebas usan datos ficticios.
 

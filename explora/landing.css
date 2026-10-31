@@ -1,0 +1,47 @@
+.eneagrama-landing .hero{grid-template-columns:1.15fr 1fr;gap:52px;align-items:center}
+.eneagrama-landing .hero h1{font-size:clamp(43px,5.1vw,62px);max-width:16ch}
+.eneagrama-landing .hero .hero-product{font-size:16px;color:var(--muted)}
+.eneagrama-landing .hero .purchase-note,.purchase-note{font-size:13px;line-height:1.6;margin-top:-10px;color:var(--muted)}
+.header-link{font-size:13px;text-underline-offset:4px}
+.conversation-card{padding:38px 32px;background:#e9eee6;border-radius:8px;border-top:4px solid var(--gold)}
+.conversation-card h2{font-size:34px;line-height:1.25}
+.eneagrama-landing .conversation-card p{font-size:16px}
+.conversation-turn{border-left:2px solid var(--gold);padding:5px 0 5px 20px;margin:26px 0}
+.conversation-turn span{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.conversation-turn p{font-family:Georgia,serif;font-size:23px!important;line-height:1.45}
+.eneagrama-landing .conversation-card .small-note{font-size:12px;color:var(--muted)}
+.conversation-card>a{display:inline-block;margin-top:14px;font-size:13px;text-underline-offset:4px}
+.life-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 44px;margin-top:30px}
+.life-story{border-top:1px solid var(--line);padding:28px 0 20px}
+.life-story .step{font-size:24px}
+.life-story h3{margin-top:12px;font-size:28px}
+.life-story p{font-size:15px;line-height:1.7}
+.life-story .reflection{font-size:14px;color:var(--muted)}
+.life-invitation{padding:28px;background:#eee9db;border:0;border-radius:6px;margin:20px 0}
+.life-invitation a{font-size:14px;text-underline-offset:4px}
+.deliverables{padding-left:20px;margin:24px 0}
+.deliverables li{padding-left:5px;margin:16px 0;font-size:15px;line-height:1.65}
+.trust-section{display:grid;grid-template-columns:1.1fr 1fr;gap:42px;align-items:start}
+.trust-section p{font-size:15px}
+.trust-section .dark .eyebrow{color:#e4c28e}
+.trust-section .dark a{display:inline-block;margin:15px 0;font-size:14px;text-underline-offset:4px}
+.signature{padding-top:18px;border-top:1px solid var(--line);margin-top:28px}
+.closing-offer{text-align:center;padding:48px 24px;margin:0 0 48px;background:#e9eee6;border-radius:8px}
+.closing-offer p{margin-left:auto;margin-right:auto}
+.closing-offer .actions{justify-content:center}
+.skip-link{position:absolute;top:-100px;left:20px;background:var(--ink);color:white;padding:14px;z-index:99}
+.skip-link:focus{top:10px}
+.eneagrama-landing [id]{scroll-margin-top:95px}
+.eneagrama-landing .btn{max-width:100%;text-align:center;line-height:1.5}
+@media(max-width:700px){
+ .eneagrama-landing .hero{grid-template-columns:1fr;gap:30px;padding-top:26px}
+ .eneagrama-landing .hero h1{font-size:clamp(37px,9.8vw,49px);max-width:none}
+ .conversation-card{padding:28px 24px}
+ .conversation-card h2{font-size:29px}
+ .life-grid,.trust-section{grid-template-columns:1fr;gap:8px}
+ .life-story{padding:24px 0 16px}
+ .life-invitation{padding:24px;margin-bottom:0}
+ .closing-offer{padding:34px 20px}
+ .hero .actions,.closing-offer .actions{flex-direction:column;align-items:stretch}
+ .trust-section .card{margin-top:20px}
+}
