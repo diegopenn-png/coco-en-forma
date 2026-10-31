@@ -35,3 +35,5 @@
   var queued=false;new MutationObserver(function(){if(queued)return;queued=true;queueMicrotask(function(){queued=false;install()})}).observe(document.documentElement,{childList:true,subtree:true});
   root.CocoNavigationV1={install:install};install();
 })(window);
+// Separate educational exploration; no ranking or diagnostic inference.
+import('./explora/entry.mjs').catch(()=>{});
