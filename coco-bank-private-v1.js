@@ -18,7 +18,8 @@
    if(!entry){const mini=padel.classList.contains('cocoMiniJuego');entry=document.createElement(padel.tagName);entry.className=padel.className;entry.dataset.cocoBankEntry='true';entry.dataset.cocoJuego='bank';entry.dataset.cocoExcellence='1';entry.dataset.cocoKind='tool';entry.setAttribute('aria-label','Coco Bank: aprende a invertir jugando');
     const img='<img class="cocoOfficialThumb" src="./share/bank-v2.jpg" alt="Coco Bank" loading="lazy" decoding="async">';
     entry.innerHTML=mini?'<span class="cocoMiniIcono cocoOfficialThumbBox">'+img+'</span><span class="cocoExToolLabel">Aprende a invertir</span><b>Coco Bank</b><span class="cocoBankStatus" style="grid-column:2;grid-row:3;align-self:start;width:max-content;max-width:100%;padding:2px 7px;border-radius:999px;background:#e4f8ee;color:#177655;font-size:9.5px;font-weight:900;line-height:1.35">Dinero de juego · 10+</span><div class="cocoExcellenceMeta" aria-label="Tu misión"><span>⏱ A tu ritmo</span><span>🎯 Elige, invierte y aprende</span></div>':'<div class="emoji cocoOfficialThumbBox">'+img+'</div><h3>Coco Bank</h3><p class="cocoDescripcion">Recibe tu asignación mensual y descubre 20 empresas, fondos, bonos y plazos fijos.</p><button type="button" class="btn cocoBotonJuego" data-bank-open>Jugar a Coco Bank</button>';
-    if(mini){entry.setAttribute('role','button');entry.tabIndex=0;entry.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.click()}})}
+    if(mini){entry.setAttribute('role','button');entry.tabIndex=0;entry.addEventListener('keydown',e=>{if(e.target===entry&&(e.key==='Enter'||e.key===' ')){e.preventDefault();entry.click()}})}
+    else{const share=document.createElement('button');share.type='button';share.className='cocoCardShare';share.setAttribute('aria-label','Compartir Coco Bank');share.innerHTML='↗ <span>Compartir</span>';entry.appendChild(share)}
    }
    if(padel.nextElementSibling!==entry)padel.after(entry);
   });
@@ -32,7 +33,7 @@
   catch(e){if(overlay){status.textContent=e.message;status.appendChild(back)}}finally{opening=false}
  }
  // Capture before the catalogue's legacy game handlers; Bank has its own authenticated bridge.
- window.addEventListener('click',event=>{const entry=event.target.closest?.('[data-coco-bank-entry]');if(!entry)return;event.preventDefault();event.stopImmediatePropagation();open()},true);
+ window.addEventListener('click',event=>{const entry=event.target.closest?.('[data-coco-bank-entry]');if(!entry)return;event.preventDefault();event.stopImmediatePropagation();if(event.target.closest('.cocoCardShare')){window.CocoShareToolV1?.('bank');return}open()},true);
  addEventListener('message',async event=>{
   const d=event.data;if(!allowed||!frame||event.source!==frame.contentWindow||!d?.cocoBank||d.channel!==channel)return;
   if(d.close){close();return}if(!['/state','/action'].includes(d.path)||!Number.isSafeInteger(d.id))return;

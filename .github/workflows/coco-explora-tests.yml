@@ -16,3 +16,4 @@ jobs:
       - run: npm install --prefix /tmp/explora-dom --ignore-scripts --no-audit --no-fund jsdom@26.1.0
       - run: COCO_JSDOM_PATH=/tmp/explora-dom/node_modules/jsdom node qa/explora/ui.test.cjs
       - run: COCO_JSDOM_PATH=/tmp/explora-dom/node_modules/jsdom node qa/explora/navigation.test.cjs
+      - run: COCO_JSDOM_PATH=/tmp/explora-dom/node_modules/jsdom node qa/explora/share-tools.test.cjs

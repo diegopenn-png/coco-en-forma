@@ -3,6 +3,7 @@
   "use strict";
   var VERSION="2026-08-23-v160-final4.7";
   var DATA={
+    eneagrama:{name:"Coco Eneagrama",description:"Explora tus nueve tendencias con una guía de autoconocimiento y un informe personal en PDF.",url:"https://cocoenforma.com/explora/"},
     bank:{name:"Coco Bank",description:"Recibe dinero de juego, paga tus gastos y ahorra para tu meta. Coco te guía paso a paso."},
     conecta:{name:"Conecta colores",description:"Planificá rutas y conectá parejas sin cerrar el paso a los demás colores."},
     numeros:{name:"Une los números",description:"Recorre tableros distintos sin repetir casillas: planifica, corrige el camino y entrena la atención visual."},
@@ -21,6 +22,7 @@
   };
   Object.keys(DATA).forEach(function(id){DATA[id].image="./share/colorful-v160125/"+id+".jpg"});
   DATA.bank.image="./share/bank-v2.jpg";
+  DATA.eneagrama.image="./explora/cover.jpg";
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
   var TITLE_TO_ID={};Object.keys(DATA).forEach(function(id){TITLE_TO_ID[DATA[id].name]=id});TITLE_TO_ID["Coco Fútbol"]="futbol";TITLE_TO_ID["Coco Pádel"]="padel";TITLE_TO_ID["Coco Pádel Club"]="padel";TITLE_TO_ID["Reto Tiempo"]="tiempo";
   function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String(title.textContent||"").trim()]||""}
@@ -32,7 +34,7 @@
   function upgradeShareLinks(modal,id){
     if(modal.dataset.colorfulShare===id)return;
     modal.dataset.colorfulShare=id;
-    var url="https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/?v=160125",d=DATA[id];
+    var d=DATA[id],url=d.url||"https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/?v=160125";
     var label=modal.querySelector(".cocoShareUrl"),status=modal.querySelector(".cocoShareStatus");
     if(label)label.textContent=url;
     var copy=modal.querySelector("[data-share-copy]");
@@ -50,6 +52,24 @@
     download.href=d.image;download.download="coco-"+id+".jpg";download.textContent="↓ Descargar miniatura";download.className="cocoDownloadCard";sheet.appendChild(download);
     var note=document.createElement("p");note.className="cocoShareImageNote";note.textContent="Pegá el enlace para que se pueda abrir el juego. La vista previa depende de la red social. Si publicás solo la imagen, añadí también el enlace.";sheet.appendChild(note);
   }
+
+  // Bank and Eneagrama use the catalogue's existing share controls, independently
+  // of their entry/navigation handlers and without registering them as scored games.
+  root.CocoShareToolV1=function(id){
+    if(id!=="bank"&&id!=="eneagrama")return;
+    var app=document.getElementById("cocoApp")||document.body,previous=document.activeElement;
+    app.querySelectorAll(".cocoShareModal").forEach(function(node){node.remove()});
+    var modal=document.createElement("section");modal.className="cocoShareModal";
+    modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.setAttribute("aria-labelledby","cocoShareTitle");
+    modal.innerHTML='<div class="cocoShareSheet" tabindex="-1"><button type="button" class="cocoShareClose" data-share-close aria-label="Cerrar">×</button><div class="cocoSharePreview"></div><span>COMPARTIR</span><h3 id="cocoShareTitle"></h3><p></p><div class="cocoShareUrl"></div><div class="cocoShareActions"><button type="button" class="primary" data-share-native>↗ Compartir</button><button type="button" data-share-whatsapp>💬 WhatsApp</button><button type="button" data-share-copy>🔗 Copiar enlace</button></div><div class="cocoShareStatus" role="status" aria-live="polite"></div></div>';
+    modal.querySelector("#cocoShareTitle").textContent=DATA[id].name;
+    function close(){modal.remove();if(previous&&previous.isConnected)previous.focus({preventScroll:true})}
+    modal.querySelector("[data-share-close]").onclick=close;
+    modal.onclick=function(e){if(e.target===modal)close()};
+    modal.onkeydown=function(e){if(e.key==="Escape"){e.preventDefault();close()}};
+    modal.querySelector("[data-share-native]").hidden=!navigator.share;
+    app.appendChild(modal);applyShare(modal);modal.querySelector(".cocoShareSheet").focus({preventScroll:true});
+  };
 
   function eternaShareUrlFinal47(){
     var u=new URL(location.origin+"/eterna.html");
