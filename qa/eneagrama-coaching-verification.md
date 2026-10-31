@@ -5,7 +5,10 @@
 - Informe automático de siete páginas con firma al cierre; texto explícito sobre generación automática y ausencia de revisión individual. Pie editorial breve; límites conservados en método.
 - Práctica con hechos/interpretaciones, emoción/cuerpo/valores, acuerdos y resultado observable. Plan semanal orientado por propósito y obstáculos. Se conservan la puntuación y las adaptaciones de menores.
 - Validación local: 1163 pruebas del Worker, 12 del motor/informe, UI y revisión visual del PDF. Se comprueba firma en web/PDF y espacio para notas/procedencia de longitud máxima.
-- Publicación de esta versión: pendiente de comprobación de los workflows del commit.
+- Publicación comprobada: commit funcional `d910d450608c982c73389f62171df4f6ad8a4bc9`; Pages [41192377127](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41192377127) y cuestionario/PDF [41192377259](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41192377259), correctos.
+- Generador publicado y salud verificada en [41192377121](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41192377121): Worker `4857a075-ba6d-491a-be32-7e619eb86fd9` al 100%, informe `2026-10-31-coaching-3`, autenticación y Stripe configurados. CI confirma 1163 + 12 pruebas correctas.
+- PWA comprobada en [41192549244](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41192549244). Se corrigió el valor esperado del verificador, que aún apuntaba a la caché anterior, para exigir `coco-en-forma-v160.100.43-coaching-sources` (commit `bb4d1aebeb3ea96c89474622f22738a101f8e794`).
+- Navegador: `https://cocoenforma.com/explora/metodo.html#coaching` muestra versión 3.0, los ocho grupos de referencias y la firma de tres líneas. No se realizó compra ni nuevo recorrido autenticado real en esta actualización.
 
 ---
 
