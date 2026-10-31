@@ -40,7 +40,10 @@ export function investmentAccount(original,now){
  return s;
 }
 export function createState(input,m,now){
- if(input.experience==='investing')return investmentAccount(createState({...input,experience:undefined,mode:'continuous',expenses:{},reserve:0},m,now),now);
+ if(input.experience==='investing'){
+  const s=investmentAccount(createState({...input,initial:1000,experience:undefined,mode:'continuous',expenses:{},reserve:0},m,now),now);
+  s.config.firstAllowanceNextMonth=true;return s;
+ }
  if(input.mode==='continuous'){
   const start=day(now),end=day(now+365*DAY);
   return continuousAccount(createState({...input,mode:undefined,start,end,title:'Mi cuenta corriente',kind:'investment',target:0,reward:0},m,now),now);
@@ -72,7 +75,7 @@ export function settle(original,m,now){
  if(!s.journey.funded)return s;
  // Each monthly salary/bill is issued exactly once, on the start-day anniversary (clamped in shorter months).
  const start=new Date(s.config.payrollStartsAt||s.config.startsAt);
- for(let i=0;i<1200;i++){
+ for(let i=s.config.firstAllowanceNextMonth?1:0;i<1200;i++){
    const y=start.getUTCFullYear(),mo=start.getUTCMonth()+i,last=new Date(Date.UTC(y,mo+1,0)).getUTCDate();
    const at=Date.UTC(y,mo,Math.min(start.getUTCDate(),last));
    if(at>t)break;

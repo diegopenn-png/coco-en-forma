@@ -4,7 +4,7 @@ import {renderApp} from './ui.mjs';
 import {parentStatus,parentAction,requireParent} from './parent.mjs';
 export const ADMIN_ID='88c250d6-3f3c-4e82-95ea-951dd914949d';
 const ORIGINS=new Set(['https://www.cocoenforma.com','https://cocoenforma.com']);
-const VERSION='4.0.0-investing';
+const VERSION='4.1.0-initial-10000';
 export async function authenticate(request,env,fetcher=fetch){
  const auth=request.headers.get('Authorization');if(!/^Bearer [A-Za-z0-9._-]{20,8192}$/.test(auth||''))return false;
  const r=await fetcher(env.SUPABASE_URL+'/auth/v1/user',{headers:{Authorization:auth,apikey:env.SUPABASE_PUBLISHABLE_KEY},signal:AbortSignal.timeout(8000)});
