@@ -21,3 +21,7 @@ Voz propia: cercana, precisa y orientada a la acción. Combinar conciencia de va
 Mantener puntuación, autorización, derechos máster, precio y privacidad fuera de cambios editoriales. No introducir llamadas de IA de pago, almacenamiento de resultados o publicaciones de informes personales por modificar el texto. Las muestras públicas y las pruebas usan datos ficticios.
 
 Ejecutar pruebas de puntuación, edades, empates, omisiones, contenido y PDF; revisar visualmente páginas y fuentes. Mantener el número de páginas coherente en acceso, condiciones y muestra. Verificar la versión del generador publicada antes de dar por terminada una actualización de producción.
+
+## Enfoques y presentación
+
+Aplicar [fuentes y aportes](FUENTES-COACHING.md) conservando la distinción entre coaching, divulgación y atención clínica. Establecer objetivo, hechos/interpretaciones, emoción/valor, acuerdos y una acción observable con revisión. No atribuir validez psicométrica por citar instituciones. Usar la firma de presentación del propietario sin afirmar revisión humana individual ni aval institucional. No completar titulaciones o fragmentos incompletos.

@@ -1,3 +1,14 @@
+# Referencias y firma · versión 2026-10-31-coaching-3
+
+- Firma de presentación solicitada por el propietario: Diego Pennise / Coach Organizacional & Ontológico / Universidad de San Andrés. «Univ» fue aclarado como la misma universidad.
+- Aportes de UdeSA, ICF, Kofman, Robbins, Newfield, Beck, Frankl y Rolón documentados en `explora/metodo.html#coaching` y `.github/coco-eneagrama/FUENTES-COACHING.md`. Se especifican materiales consultados y alcance; no se afirma respaldo institucional, lectura íntegra ni atención clínica.
+- Informe automático de siete páginas con firma al cierre; texto explícito sobre generación automática y ausencia de revisión individual. Pie editorial breve; límites conservados en método.
+- Práctica con hechos/interpretaciones, emoción/cuerpo/valores, acuerdos y resultado observable. Plan semanal orientado por propósito y obstáculos. Se conservan la puntuación y las adaptaciones de menores.
+- Validación local: 1163 pruebas del Worker, 12 del motor/informe, UI y revisión visual del PDF. Se comprueba firma en web/PDF y espacio para notas/procedencia de longitud máxima.
+- Publicación de esta versión: pendiente de comprobación de los workflows del commit.
+
+---
+
 # Actualización editorial · 31 de octubre de 2026
 
 Versión del informe: `2026-10-31-coaching-2`. Sustituye el formato de 13 páginas descrito en el registro histórico inferior.

@@ -1,4 +1,5 @@
 import {buildReport} from '../../explora/report.mjs';
+import {coachingHTML} from '../../explora/coaching-view.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {buildItems,summarize} from '../../explora/engine.mjs';import {buildCoaching,REPORT_PAGES} from '../../explora/coaching.mjs';import {makePDF} from '../../.github/coco-eneagrama/pdf.mjs';
 function result(age,leaders=[]){return summarize(Object.fromEntries(buildItems(age).map(q=>[q.id,leaders.includes(q.type)?(q.reverse?1:5):3])),age)}
 test('nine complete guides and eight concrete areas; tied answers never select a type',()=>{const c=buildCoaching(result(30));assert.deepEqual(c.focus,[]);assert.equal(c.profiles.length,9);assert.ok(c.profiles.every(p=>p.areas.length===8&&p.areas.every(a=>a.tip.length>45)));assert.equal(new Set(c.profiles.flatMap(p=>p.areas.map(a=>a.tip))).size,72);assert.equal(c.plan.length,7)});
@@ -23,4 +24,18 @@ test('runner-up is compared only if unique; closer means remain ambiguous',()=>{
  assert.match(c.synthesis,/qué me corresponde realmente/);
  r.rows[2].score=4.4;c=buildReport(r);assert.deepEqual(c.readings.map(p=>p.id),[2]);
  assert.match(c.evidence,/empate/);
+});
+
+test('presentation is consistent on screen and PDF without claiming individual review',()=>{
+ const r=result(35,[5]),html=coachingHTML(r),pdf=new TextDecoder().decode(makePDF(r));
+ assert.match(html,/Diego Pennise/);assert.match(html,/Coach Organizacional &amp; Ontológico/);assert.match(html,/Universidad de San Andrés/);
+ assert.match(html,/sin revisión individual del firmante/);assert.match(html,/metodo.html#coaching/);
+ assert.match(pdf,/Diego Pennise/);assert.match(pdf,/Coach Organizacional & Ontol\\363gico/);assert.match(pdf,/Universidad de San Andr\\351s/);
+ assert.match(pdf,/sin revisi\\363n individual del firmante/);
+});
+test('signature fits alongside maximum provenance and reflection without extra pages',()=>{
+ for(const age of [8,15,35]){
+  const pdf=new TextDecoder().decode(makePDF(result(age),{age,provenance:'W'.repeat(400),notes:'W'.repeat(350)}));
+  assert.equal((pdf.match(/\/Type \/Page /g)||[]).length,REPORT_PAGES);
+ }
 });
