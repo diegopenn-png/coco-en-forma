@@ -1,23 +1,37 @@
-# Fuentes revisadas · 31 octubre 2026
-Diez instrumentos de referencia adicionales a Mensa y eneagrama. La consulta de sus descripciones NO valida un instrumento nuevo ni permite copiarlo. La adecuación depende de versión, país, población, finalidad, licencias y profesional. No es una clasificación universal de «los diez más fiables».
+# Coco Eneagrama · Fuentes y método
 
-| Fuente primaria | Aporte al diseño | Límite |
-|---|---|---|
-| [WISC-V, Pearson España](https://www.pearsonclinical.es/es-es/Store/Evaluaciones-Profesionales/Inteligencia-6-Neuropsicolog%C3%ADa/Escala-de-inteligencia-de-Wechsler-para-ni%C3%B1os-V/p/P100200013) | Perfil cognitivo multidimensional infantil; 6–16:11 | Aplicación profesional; normas españolas |
-| [WPPSI-IV, Pearson España](https://www.pearsonclinical.es/es-es/Tienda/Evaluaciones-Profesionales/p/P100200005) | Adecuación de tareas a etapas tempranas | No extrapolar tareas adultas a preescolares |
-| [Raven’s 2, Pearson España](https://www.pearsonclinical.es/es-es/Tienda/Evaluaciones-Profesionales/p/P100200022) | Razonamiento con figuras y puntuaciones por edad | No confundir no verbal con ausencia de sesgos |
-| [BAS-II, Hogrefe TEA](https://www.hogrefe-tea.com/public/catalogo/producto/bas-ii-escalas-de-aptitudes-intelectuales) | Aptitudes verbales, razonamiento y espacio | No sumar tareas caseras para replicar su CI |
-| [RIAS, Hogrefe TEA](https://www.hogrefe-tea.com/public/catalogo/producto/RIAS-Escalas-de-Inteligencia-de-Reynolds) | Diferenciar inteligencia y memoria | Baremos no transferibles al producto Coco |
-| [KABC-II NU, Pearson](https://www.pearsonassessments.com/en-us/Store/Professional-Assessments/Cognition-%26-Neuro/Gifted-%26-Talented/Kaufman-Assessment-Battery-for-Children-%7C-Second-Edition-Normative-Update/p/100000088) | Procesamiento, aprendizaje y contexto lingüístico | Normas extranjeras no equivalen a adaptación española |
-| [Stanford–Binet 5, Riverside](https://store.riversideinsights.com/shop/stanford-binet-intelligence-scales) | Evaluación de capacidades a través de edades | Instrumento profesional protegido |
-| [Woodcock–Johnson V, Riverside](https://riversideinsights.com/clinical-assessments/wj-v) | Distinguir capacidades, lenguaje y rendimiento | Revisar población y normas antes de uso |
-| [TONI-4, Hogrefe](https://www.hogrefe.com/uk/shop/test-of-nonverbal-intelligence-fourth-edition.html) | Razonamiento sin respuesta verbal | Requiere condiciones estandarizadas y cualificación |
-| [BADyG v3, Habilmind](https://badyg.habilmind.com/estructura) | Aptitudes diferenciadas y estructura jerárquica | No confundir una batería escolar con un juego |
+Revisado: 31 de octubre de 2026. Versión 2.0.
 
-## Criterios complementarios
-- [Mensa International](https://www.mensa.org/mensa-iq-challenge/): el reto de práctica no acredita admisión ni sustituye un examen supervisado. No afirmar afiliación.
-- [Revisión sistemática del eneagrama](https://pubmed.ncbi.nlm.nih.gov/33332604/): 104 muestras; evidencia mixta de fiabilidad/validez de personalidad. No es prueba de inteligencia.
-- [NAGC](https://www.nagc.org/assessments-and-tests): usar múltiples medidas para identificación de altas capacidades, con contexto familiar y escolar.
-- [Gardner](https://www.howardgardner.com/faq): no respalda un test de inteligencias múltiples; no crear etiquetas psicométricas a partir de preferencias.
-- [ITC/ATP](https://conference.intestcom.org/page/16): directrices para validez, equidad, accesibilidad, seguridad y privacidad en evaluación digital; revisar versión vigente.
-- [AERA/APA/NCME](https://www.testingstandards.net/): estándares de desarrollo, interpretación y uso de pruebas. Evidencias válidas para el uso específico, no un sello de marketing.
+Alcance: fichas bibliográficas, materiales públicos y resumen de revisión científica; no lectura íntegra de libros no aportados ni certificación. Cuestionario original no validado, sin CI ni clasificación de menores.
+
+1. **The Wisdom of the Enneagram** — Don Richard Riso y Russ Hudson. https://russhudson.com/books/
+   Visión del modelo y trabajo de autoconocimiento. Ficha bibliográfica del autor.
+
+2. **Personality Types: Using the Enneagram for Self-Discovery** — Don Richard Riso y Russ Hudson. https://russhudson.com/books/
+   Descripciones y distinciones entre tipos. Ficha bibliográfica del autor.
+
+3. **Understanding the Enneagram** — Don Richard Riso y Russ Hudson. https://russhudson.com/books/
+   Marco y lenguaje del modelo. Ficha bibliográfica del autor.
+
+4. **The Enneagram: Understanding Yourself and Others in Your Life** — Helen Palmer. https://www.narrativeenneagram.org/resources/
+   Perspectiva narrativa y observación de la experiencia. Bibliografía de la escuela.
+
+5. **The Enneagram in Love and Work** — Helen Palmer. https://www.narrativeenneagram.org/resources/
+   Relaciones y contextos cotidianos. Bibliografía de la escuela.
+
+6. **The Essential Enneagram** — David Daniels y Virginia Price. https://www.narrativeenneagram.org/resources/
+   Exploración y comparación de tipos. Cualquier validación de su prueba no se traslada a Coco.
+
+7. **How the Enneagram System Works** — The Enneagram Institute. https://www.enneagraminstitute.com/how-the-enneagram-system-works/
+   Diagrama de nueve puntos, conexiones y modelo tradicional. Artículo público.
+
+8. **Common Enneagram Questions** — The Narrative Enneagram. https://www.narrativeenneagram.org/common-enneagram-questions/
+   Autobservación, motivaciones y límites de reducir a alguien a una etiqueta. Material público.
+
+9. **Acreditación y ética** — International Enneagram Association. https://www.internationalenneagram.org/about/
+   Alcance de acreditación: profesionales, escuelas y programas. No supone acreditación de Coco.
+
+10. **The Enneagram: A systematic review of the literature and directions for future research** — Hook y colaboradores, 2021. https://pubmed.ncbi.nlm.nih.gov/33332604/
+   Revisión de 104 muestras, con resultados mixtos de fiabilidad y validez y apoyo limitado para alas y movimientos. DOI: 10.1002/jclp.23097.
+
+La fórmula, mínimos, límites y privacidad están publicados en metodo.html. No se copian ítems de RHETI, WEPSS, Essential Enneagram ni otros instrumentos protegidos.

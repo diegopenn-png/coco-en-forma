@@ -1,22 +1,9 @@
-# Coco Explora · propuesta comercial para Diego
+# Coco Eneagrama · estado de producto
 
-Estado 31/10/2026: piloto educativo funcional; cobro de este producto NO habilitado.
+Versión 2.0: autoconocimiento con 54 frases originales, nueve tendencias y PDF local de seis páginas. Sustituye el piloto cognitivo. La ruta canónica sigue siendo /explora/.
 
-## Oferta propuesta
-- Muestra gratuita que explica alcance antes de empezar y entrega resultado básico sin retener información relevante.
-- Informe educativo ampliado por **9,90 € de pago único, precio final propuesto pendiente de confirmar**: explicaciones, actividades familiares organizadas para cuatro semanas y exportación. No CI, diagnóstico, probabilidad de altas capacidades ni aval de Mensa.
-- El piloto permite revisar gratuitamente el informe. Antes de vender, ampliar y revisar las actividades, probar entrega y preparar condiciones comerciales e impuestos.
-- Canal: landing Coco → muestra → adulto → vista previa del informe → precio/condiciones → Stripe → entrega autenticada. No cobrar a un menor ni usar mensajes de alarma para forzar una compra.
-- Diferenciar de los juegos gratuitos de Coco y de la suscripción de Eterna.
+Piloto gratuito. No hay checkout, suscripción, promesa de CI ni certificación. Los menores participan acompañados sin asignación de eneatipo. Fuentes y límites públicos en /explora/metodo.html. No reproducir RHETI ni pruebas licenciadas.
 
-## Cobro existente comprobado
-El Worker de Eterna tiene STRIPE_SECRET_KEY y STRIPE_WEBHOOK_SECRET configuradas, con precios mensual y anual. La ruta /v1/checkout crea mode=subscription. No reutilizarla para este producto.
-No se ha podido verificar el titular, capacidad de cobro/payouts o modo real/prueba de Stripe desde las herramientas disponibles: los secretos no son legibles y el conector Stripe fue localizado y sugerido, pero aún no está instalado/conectado en esta conversación. No desplegar rutas para extraer secretos.
-Para cerrar: confirmar precio; conectar acceso administrativo a Stripe existente; revisar titular y estado; crear producto/precio de pago único; confirmar fiscalidad/condiciones; implementar sesión autenticada con precio servidor, webhook firmado, compra idempotente y autorización por usuario/informe; probar compra cancelada, duplicados, reembolso y entrega. No afirmar ventas listas sin esa prueba.
+Antes de una oferta de pago: definir alcance y precio total con Diego, comprobar la cuenta comercial correcta, publicar condiciones y reembolsos, separar un informe puntual de suscripciones e implementar permisos de acceso en servidor con webhook firmado e idempotente. No declarar pagos disponibles hasta verificar el circuito real. No vender una clasificación infantil o diagnóstico implícito.
 
-## Economía orientativa, no previsión
-100 ventas × 9,90 € = 990 € brutos; 500 = 4.950 € brutos. Faltan impuestos, comisiones de cobro, atención, desarrollo y adquisición. No son beneficios ni una garantía de demanda.
-Empezar con tráfico propio y familias voluntarias antes de gastar en anuncios. Medir visitas y compras agregadas sin resultados cognitivos ni fecha de nacimiento en analítica.
-
-## Para ofrecer CI o identificación de altas capacidades
-Necesita un proyecto profesional distinto: licencias cuando proceda, responsable cualificado, desarrollo psicométrico, baremos locales por edad, estudios de validez y fiabilidad, evaluación de sesgo y límites de decisión. No se resuelve combinando tests de internet ni comprando informes generados por IA.
+La descarga de esta versión genera un PDF real en el dispositivo sin enviar respuestas, fecha de nacimiento ni notas al servidor. Alias opcional y edad en años aparecen en el documento. No hay persistencia de sesión ni vínculo a la cuenta Coco.
