@@ -6,13 +6,13 @@ export function nextBankStep(data){
  if(i.finished)return {kind:'challenges',title:'Tu desafío ha terminado',text:'Revisa lo que has conseguido y elige el siguiente con un adulto.',label:'Ver resultado y continuar'};
  if(!s.journey?.funded)return i.started?{kind:'receive',title:'Tu primer sueldo está listo',text:'Recíbelo y después organizaremos los gastos.',label:'Recibir mi primer sueldo'}:{kind:'waiting',title:'Tu cuenta está preparada',text:'El sueldo estará disponible en la fecha de inicio acordada.',label:'Conocer mis gastos'};
  if(!s.journey.acknowledged)return {kind:'ack',title:'Tu dinero sigue aquí',text:'Conoce tu saldo y continúa donde lo dejaste.',label:'Conocer mi cuenta'};
- if(i.bills>0)return s.cash-i.earmarked<i.bills?{kind:'parent',title:'Revisa los gastos con un adulto',text:'El saldo libre de órdenes no alcanza para todos los recibos pendientes.',label:'Pedir ayuda al adulto'}:{kind:'expenses',title:'Primero, los gastos pendientes',text:'Revisa los recibos antes de decidir qué hacer con el resto.',label:'Revisar y pagar gastos'};
- if(!s.journey.organized)return {kind:'organize',title:'¡Ya has pagado tus gastos!',text:'Tu reserva está separada. Ya puedes continuar.',label:'Continuar con mi dinero'};
- if(s.orders.length)return {kind:'orders',title:'Tu operación está en espera',text:'Esperamos una cotización posterior. Aquí puedes consultar su estado.',label:'Ver mi operación'};
+ if(i.bills>0)return s.cash-i.earmarked<i.bills?{kind:'parent',title:'Revisa los gastos con un adulto',text:'No alcanza el dinero para todos los gastos. Pide ayuda para decidir qué hacer.',label:'Pedir ayuda al adulto'}:{kind:'expenses',title:'Primero, paga tus gastos',text:'Mira qué falta por pagar. Después podrás ahorrar lo que quede.',label:'Ver mis gastos'};
+ if(!s.journey.organized)return {kind:'organize',title:'¡Ya has pagado tus gastos!',text:'Guardamos una parte por si la necesitas. El resto lo puedes ahorrar.',label:'Continuar con mi dinero'};
+ if(s.orders.length)return {kind:'orders',title:'Tu operación está en espera',text:'Tu compra o venta espera al próximo precio. Puedes ver cómo va.',label:'Ver mi operación'};
  if(i.available<=0)return {kind:'school',title:'Todo tu dinero tiene un destino',text:'Puedes seguir aprendiendo mientras llega el próximo sueldo.',label:'Aprender con Coco'};
- if(s.config.kind==='saving')return {kind:'goal',title:'Así va tu ahorro',text:'Consulta cuánto te falta para tu objetivo. Puedes conservar tu dinero en la cuenta.',label:'Ver el avance de mi meta'};
+ if(s.config.kind==='saving')return {kind:'goal',title:'¿Cómo va tu meta?',text:'Mira cuánto te falta. El dinero que dejas en tu cuenta también cuenta como ahorro.',label:'Ver mi meta'};
  if(s.config.kind==='budget')return {kind:'goal',title:'Este mes está organizado',text:'Has cubierto tus gastos. Descubre cómo se organiza una casa.',label:'Ver mi cumplimiento'};
- return {kind:'investments',title:s.contributed?'Revisa cómo va tu cartera':'Tu dinero ya está organizado',text:s.contributed?'Consulta tus inversiones y aprende antes de tomar otra decisión.':'Ahora puedes conocer las inversiones, a tu ritmo.',label:s.contributed?'Ver mi cartera':'Aprender a invertir'};
+ return {kind:'investments',title:s.contributed?'Revisa cómo va tu cartera':'Tu dinero ya está organizado',text:s.contributed?'Mira cómo va el dinero que invertiste. Puede subir o bajar.':'Ahora puedes conocer las inversiones, a tu ritmo.',label:s.contributed?'Ver mi cartera':'Aprender a invertir'};
 }
 export function nextPayday(config,now){
  if(!config)return null;const start=new Date(config.payrollStartsAt||config.startsAt),current=new Date(now);

@@ -110,5 +110,5 @@
   root.CocoFamilyFriendlyV160100=Object.freeze({version:VERSION,ageFromDob:ageFromDob,cleanInternalLevels:cleanInternalLevels,enhance:enhanceFamilyProfile});
 })(window);
 
-/* Private account feature: authenticated server decides visibility. */
-(function(){if(document.getElementById("coco-bank-private-loader"))return;var s=document.createElement("script");s.id="coco-bank-private-loader";s.src="./coco-bank-private-v1.js?v=1.0.0";s.defer=true;document.head.appendChild(s)})();
+/* Public Coco Bank entry; saved games require the account session. */
+(function(){if(document.getElementById("coco-bank-private-loader"))return;var s=document.createElement("script");s.id="coco-bank-private-loader";s.src="./coco-bank-private-v1.js?v=2.0.0";s.defer=true;document.head.appendChild(s)})();

@@ -1,35 +1,38 @@
-/* Coco Bank private loader. No private interface/data are shipped in the public shell.
- * Server authorization is mandatory; local identity checks only avoid irrelevant requests.
- */
+/* Coco Bank public catalogue entry. Every saved game and parental PIN is scoped server-side to the verified account. */
 (function(){
  'use strict';if(window.__COCO_BANK_LOADER_V1)return;window.__COCO_BANK_LOADER_V1=true;
  const API='https://coco-bank-private.chatinmobiliario.workers.dev';
- const OWNER='88c250d6-3f3c-4e82-95ea-951dd914949d';
- let client=null,allowed=false,overlay=null,frame=null,channel=null,epoch=0,checking=false,lastCheck=0,observer=null,opening=false,oldOverflow='',previousFocus=null;
+ let client=null,allowed=false,userId=null,overlay=null,frame=null,channel=null,epoch=0,checking=false,lastCheck=0,opening=false,oldOverflow='',previousFocus=null,pendingOpen=new URLSearchParams(location.search).get('coco_bank')==='1';
  function close(){if(overlay){overlay.remove();document.body.style.overflow=oldOverflow;previousFocus?.focus?.()}overlay=frame=channel=null;opening=false;}
- function revoke(){epoch++;allowed=false;close();document.querySelectorAll('[data-coco-bank-entry]').forEach(n=>n.remove())}
+ function revoke(){epoch++;allowed=false;close()}
  async function session(){try{return (await client.auth.getSession()).data.session}catch{return null}}
- async function request(path,body){const s=await session();if(!s||s.user?.id!==OWNER){revoke();throw new Error('Inicia sesión con la cuenta autorizada.')}const generation=epoch;
+ async function request(path,body){const s=await session();if(!s?.user?.id||s.user.id!==userId){revoke();throw Error('Entra con tu cuenta de Coco para guardar tu partida.')}const generation=epoch;
   const r=await fetch(API+path,{method:body?'POST':'GET',headers:{Authorization:'Bearer '+s.access_token,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,cache:'no-store',credentials:'omit',signal:AbortSignal.timeout(22000)});
-  if(r.status===401||r.status===403){revoke();throw new Error('Esta versión está reservada a la cuenta autorizada.')}if(generation!==epoch)throw new Error('La sesión ha cambiado.');
-  if(!r.ok){let d;try{d=await r.json()}catch{}throw new Error(d?.error||'No se pudo conectar con Coco Bank.')}
+  if(r.status===401||r.status===403){revoke();throw Error('Vuelve a entrar con tu cuenta de Coco.')}if(generation!==epoch)throw Error('La sesión ha cambiado.');
+  if(!r.ok){let d;try{d=await r.json()}catch{}throw Error(d?.error||'No se pudo conectar con Coco Bank.')}
   return path==='/bundle'?r.text():r.json();
  }
- function attach(){if(!allowed)return;const app=document.getElementById('cocoApp');if(!app)return;
-  const target=app.querySelector('.panelJugador[aria-label="Mis retos"]')||app.querySelector('.carnet')?.parentElement;
-  if(!target||document.querySelector('[data-coco-bank-entry]'))return;
-  const entry=document.createElement('section');entry.dataset.cocoBankEntry='true';entry.setAttribute('aria-label','Coco Bank, revisión privada');
-  entry.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:18px 0;padding:20px 22px;background:linear-gradient(110deg,#112b47,#285779);border:1px solid #cba359;border-radius:20px;color:white;box-shadow:0 9px 25px #12324b22;';
-  entry.innerHTML='<div><small style="font-size:10px;color:#f5d28a;letter-spacing:1.3px;font-weight:800">SOLO TU CUENTA · REVISIÓN PRIVADA</small><h3 style="margin:6px 0;font-size:24px;color:#fff">Coco Bank</h3><p style="font-size:13px;color:#d4e3ee;margin:0">Tu banco virtual: aprende, invierte y cumple tus metas.</p></div><button type="button" style="border:0;border-radius:12px;padding:14px 20px;background:#edc46e;color:#12304a;font-weight:800;font-size:14px;cursor:pointer">Entrar en Coco Bank →</button>';
-  entry.querySelector('button').addEventListener('click',open);target.prepend(entry);
+ function attach(){const app=document.getElementById('cocoApp');if(!app)return;
+  app.querySelectorAll('.cocoMiniJuego[data-coco-juego="padel"],.cocoGameCard[data-coco-juego="padel"]').forEach(padel=>{
+   let entry=Array.from(padel.parentElement.children).find(x=>x.dataset?.cocoBankEntry);
+   if(!entry){const mini=padel.classList.contains('cocoMiniJuego');entry=document.createElement(padel.tagName);entry.className=padel.className;entry.dataset.cocoBankEntry='true';entry.dataset.cocoJuego='bank';entry.setAttribute('aria-label','Coco Bank: aprende a ahorrar jugando');
+    const img='<img class="cocoOfficialThumb" src="./share/bank-v2.jpg" alt="Coco Bank" loading="lazy" decoding="async">';
+    entry.innerHTML=mini?'<span class="cocoMiniIcono cocoOfficialThumbBox">'+img+'</span><span class="cocoExToolLabel">Aprende a cuidar tu dinero</span><b>Coco Bank</b><span class="cocoMiniEstado">Dinero de juego · desde 10 años</span><div class="cocoExcellenceMeta" aria-label="Tu misión"><span>⏱ A tu ritmo</span><span>🎯 Ahorra para tu meta</span></div>':'<div class="emoji cocoOfficialThumbBox">'+img+'</div><h3>Coco Bank</h3><p class="cocoDescripcion">Recibe tu sueldo de juego, paga los gastos y ahorra para tu meta. Coco te guía paso a paso.</p><button type="button" class="btn cocoBotonJuego" data-bank-open>Jugar a Coco Bank</button>';
+    if(mini){entry.setAttribute('role','button');entry.tabIndex=0;entry.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();entry.click()}})}
+   }
+   if(padel.nextElementSibling!==entry)padel.after(entry);
+  });
  }
- async function open(){if(!allowed||opening||overlay)return;opening=true;const generation=epoch;
-  previousFocus=document.activeElement;oldOverflow=document.body.style.overflow;
-  overlay=document.createElement('div');overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Coco Bank');overlay.style.cssText='position:fixed;inset:0;z-index:2147483500;background:#112b47;display:grid;place-items:center;';
-  const status=document.createElement('div');status.style.cssText='color:white;text-align:center;font:15px system-ui;padding:25px';status.textContent='Abriendo Coco Bank…';overlay.appendChild(status);document.body.appendChild(overlay);document.body.style.overflow='hidden';
-  try{const html=await request('/bundle');if(generation!==epoch||!overlay)return;channel=crypto.randomUUID();frame=document.createElement('iframe');frame.title='Coco Bank · banco virtual privado';frame.setAttribute('sandbox','allow-scripts allow-forms');frame.setAttribute('referrerpolicy','no-referrer');frame.style.cssText='width:100%;height:100%;border:0;position:absolute;inset:0;background:#f5f6fa';frame.srcdoc=html.replace('__BANK_CHANNEL__',channel);overlay.replaceChildren(frame);frame.focus();}
-  catch(e){if(overlay){status.textContent=e.message;const b=document.createElement('button');b.textContent='Volver a Coco';b.style.cssText='display:block;margin:20px auto;padding:12px 20px;';b.onclick=close;status.appendChild(b)}}finally{opening=false}
+ function login(){pendingOpen=true;const email=document.querySelector('#cocoApp input[type="email"]');if(email){let note=document.getElementById('coco-bank-login-note');if(!note){note=document.createElement('p');note.id='coco-bank-login-note';note.setAttribute('role','status');email.parentElement.insertBefore(note,email)}note.textContent='Entra en Coco para jugar a Coco Bank y guardar tu progreso. Si eres menor, pide ayuda a un adulto.';email.scrollIntoView({block:'center',behavior:'smooth'});email.focus({preventScroll:true})}}
+ async function open(){if(opening||overlay)return;if(!allowed){await check(true);if(opening||overlay)return;if(!allowed){login();return}}opening=true;pendingOpen=false;const generation=epoch;
+  const u=new URL(location.href);if(u.searchParams.has('coco_bank')){u.searchParams.delete('coco_bank');history.replaceState(null,'',u)}
+  previousFocus=document.activeElement;oldOverflow=document.body.style.overflow;overlay=document.createElement('div');overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Coco Bank');overlay.style.cssText='position:fixed;inset:0;z-index:2147483500;background:#112b47;display:grid;place-items:center;';
+  const status=document.createElement('div');status.style.cssText='color:white;text-align:center;font:16px system-ui;padding:25px';status.textContent='Coco está preparando tu banco…';const back=document.createElement('button');back.textContent='Volver a Coco';back.style.cssText='display:block;margin:20px auto;padding:14px 22px;border:0;border-radius:12px';back.onclick=()=>{epoch++;close()};status.appendChild(back);overlay.appendChild(status);document.body.appendChild(overlay);document.body.style.overflow='hidden';
+  try{const html=await request('/bundle');if(generation!==epoch||!overlay)return;channel=crypto.randomUUID();frame=document.createElement('iframe');frame.title='Coco Bank · aprende con dinero de juego';frame.setAttribute('sandbox','allow-scripts allow-forms');frame.setAttribute('referrerpolicy','no-referrer');frame.style.cssText='width:100%;height:100%;border:0;position:absolute;inset:0;background:#f5f6fa';frame.srcdoc=html.replace('__BANK_CHANNEL__',channel);overlay.replaceChildren(frame);frame.focus()}
+  catch(e){if(overlay){status.textContent=e.message;status.appendChild(back)}}finally{opening=false}
  }
+ // Capture before the catalogue's legacy game handlers; Bank has its own authenticated bridge.
+ window.addEventListener('click',event=>{const entry=event.target.closest?.('[data-coco-bank-entry]');if(!entry)return;event.preventDefault();event.stopImmediatePropagation();open()},true);
  addEventListener('message',async event=>{
   const d=event.data;if(!allowed||!frame||event.source!==frame.contentWindow||!d?.cocoBank||d.channel!==channel)return;
   if(d.close){close();return}if(!['/state','/action'].includes(d.path)||!Number.isSafeInteger(d.id))return;
@@ -37,17 +40,17 @@
   try{const data=await request(d.path,d.path==='/action'?d.body:undefined);if(frame===currentFrame&&channel===currentChannel)currentFrame.contentWindow.postMessage({reply:true,channel:currentChannel,id:d.id,data},'*')}
   catch(e){if(frame===currentFrame&&channel===currentChannel)currentFrame.contentWindow.postMessage({reply:true,channel:currentChannel,id:d.id,error:e.message},'*')}
  });
- async function check(force=false){if(checking||(!force&&Date.now()-lastCheck<45000))return;checking=true;lastCheck=Date.now();
-  try{const s=await session();if(s?.user?.id!==OWNER){revoke();return}const generation=epoch;const r=await request('/access');if(generation!==epoch)return;allowed=r.allowed===true;attach();if(allowed&&new URLSearchParams(location.search).get('coco_bank')==='1'){const u=new URL(location.href);u.searchParams.delete('coco_bank');history.replaceState(null,'',u);open();}}
-  catch{revoke()}finally{checking=false}
+ async function check(force=false){if(checking)return checking;if(!force&&Date.now()-lastCheck<45000)return;lastCheck=Date.now();
+  checking=(async()=>{try{const s=await session();if(!s?.user?.id){if(userId||allowed)revoke();userId=null;return}if(userId!==s.user.id){revoke();userId=s.user.id}const generation=epoch;const r=await request('/access');if(generation===epoch)allowed=r.allowed===true;}catch{revoke()}})();
+  try{await checking}finally{checking=false}if(allowed&&pendingOpen&&!opening&&!overlay)open();
  }
- function boot(){client=window.__COCO_SUPABASE_CLIENT;
+ function boot(){attach();client=window.__COCO_SUPABASE_CLIENT;
   if(!client&&window.supabase?.createClient&&window.COCO_CONFIG?.url&&window.COCO_CONFIG?.clave){client=window.supabase.createClient(window.COCO_CONFIG.url,window.COCO_CONFIG.clave,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});window.__COCO_SUPABASE_CLIENT=client}
   if(!client){setTimeout(boot,800);return}
-  client.auth.onAuthStateChange((event,s)=>{if(!s||s.user?.id!==OWNER)revoke();setTimeout(()=>check(true),0)});
-  let scheduled=false;observer=new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;attach()})});observer.observe(document.getElementById('cocoApp')||document.body,{childList:true,subtree:true});
-  check(true);addEventListener('online',()=>check(true));addEventListener('pageshow',()=>check(true));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')check(true)});
-  setInterval(()=>{if(document.visibilityState==='visible')check()},60000);
+  client.auth.onAuthStateChange((event,s)=>{if(s?.user?.id!==userId){revoke();userId=s?.user?.id||null}setTimeout(()=>check(true),0)});
+  check(true);addEventListener('online',()=>check(true));addEventListener('pageshow',()=>check(true));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')check(true)});setInterval(()=>{if(document.visibilityState==='visible')check()},60000);
  }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+ let scheduled=false;const observer=new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;attach()})});
+ function start(){observer.observe(document.getElementById('cocoApp')||document.body,{childList:true,subtree:true});boot()}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();

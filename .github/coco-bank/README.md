@@ -1,20 +1,20 @@
-# Coco Bank — private review
+# Coco Bank — public learning game
 
-The authenticated account `diegopenn@icloud.com` has the existing player profile **Francesco**. This feature grants access only to its pinned Supabase auth UUID (see `ADMIN_ID`). It does not change the account role, ranking, Eterna subscriptions, or other players' profiles. Public launch remains disabled pending Diego's final approval.
+Public launch authorized by Diego on 31 October 2026. Every verified Coco account can play; each account owns its saved state and parental guard. Existing owner data remain under their original UUID. Catalogue entry follows Pádel and inherits its card classes.
 
 ## Integration
 
 - `coco-family-friendly-v160100.js` loads `coco-bank-private-v1.js` on web and PWA.
-- The loader validates access with the Worker before inserting a bank entry above Francesco's challenges. `?coco_bank=1` requests opening after normal authentication.
+- The loader inserts a matching card immediately after Pádel in the signed-out and signed-in catalogues. The Worker validates the session before opening a saved game. `?coco_bank=1` requests opening after normal authentication.
 - The private HTML and artwork are fetched with a bearer token and `no-store`, then rendered in an isolated, opaque-origin iframe. CSP disables network access and form navigation; an authenticated, nonce-checked parent bridge handles operations.
-- Logout/account changes destroy the iframe, entry and private state in memory. Nothing from the private app is stored in the browser cache or localStorage.
+- Logout/account changes destroy the iframe and private state in memory; the public catalogue card remains visible. Nothing from the private app is stored in the browser cache or localStorage.
 - The public service worker caches only the small loader. Private sources/assets live under `.github` (excluded from GitHub Pages), and are deployed as Worker modules. The repository's existing visibility is unchanged; source-code secrecy is not an authorization boundary.
 
 ## Server and persistence
 
 Worker: `https://coco-bank-private.chatinmobiliario.workers.dev`.
 D1: `coco-bank-private`, EU. Initialize with `schema.sql`.
-All app and data routes validate `/auth/v1/user` server-side and require the pinned UUID, confirmed email and matching address. User-supplied display names and metadata never authorize access. CORS accepts only the apex and www production origins. No service-role credential is used.
+All app and data routes validate `/auth/v1/user` server-side and require a verified UUID and confirmed account email. All state and PIN queries use that server-verified UUID, never a caller-supplied owner ID. User-supplied display names and metadata never authorize access. CORS accepts only the apex and www production origins. No service-role credential is used.
 
 State updates use optimistic revisions and operation IDs to prevent duplicate spending. Monthly salary and bills are generated once per anniversary of the challenge start; no accelerated clock. Pending purchases reserve funds. Existing bills and the family reserve are excluded from investable cash. Orders settle only after a later price observation. The daily job also advances accounts without an open browser.
 
@@ -53,3 +53,14 @@ Recovered all eleven modules from the running 1.5.0 private Worker before editin
 The home screen gives one state-dependent next step and four separate destinations: account/investments, household expenses, challenges and learning. Five navigation buttons provide direct access. Account and expense pages explain what to do in three short steps. The return-to-Coco button is sticky with safe-area spacing, remains usable during requests, and also appears in loading/error states. Each destination has a distinct color and action label. No navigation action executes a financial operation.
 
 Node tests exercise the serialized browser application with synthetic fixtures and the message bridge, plus financial and authorization behavior. Engine test fixtures now follow the already-deployed account creation, parental setup, receipt payment and organization sequence. The Cloud Browser cannot reach the local preview server; authenticated live layout review requires the owner's session. No credentials or real account state are used in test fixtures.
+
+
+## Kids release · 2.0.0-kids
+
+New accounts start with an adult-selected practice example: €100 virtual salary, €40 bills (rent 30, electricity 5, water 5), €10 reserve, €150 savings goal over three months. These are explicitly fictional learning amounts. The real-world example remains selectable before setup; existing plans are never reset or migrated. All prices and investments still use the existing market engine.
+
+The child sees receive → pay → save, a single next step, a concrete amount remaining to their goal, short instructions and large controls. Advanced investments are collapsed behind an optional learning section. No charge, subscription or AI call is introduced.
+
+The original private Worker name is retained to preserve deployment, database and cron bindings. The daily job pages through all saved accounts. The historical ADMIN_ID export is retained only for regression fixtures; it is not used for authorization or data selection.
+
+Validation: Node financial/navigation tests plus a real in-memory SQLite isolation test for two verified users, attempted owner-ID spoofing, foreign parental tickets and locking another account. Browser QA uses synthetic state at 320 and 390 CSS px. Live publication must additionally verify the catalogue placement and matching dimensions. No fabricated authenticated production sessions.
