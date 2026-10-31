@@ -47,7 +47,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.0-monthly-ai-budget-eur2
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.21-bank-private
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.22-conecta
     steps:
       - name: Fetch uncached production assets
         shell: bash
@@ -174,9 +174,9 @@ jobs:
             ["voice composer", eterna.includes("data-et-mic")],
             ["silent incomplete-response retry release", eterna.includes(process.env.EXPECTED_FRONTEND_VERSION)],
             ["restored Eterna launcher visual", identity.includes("share/eterna.png?v=160116")],
-            ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=160111") && scoring.includes('var VERSION = "balanced-v1"')],
+            ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=160122") && scoring.includes('var VERSION = "balanced-v1"')],
             ["balanced score ceiling", scoring.includes("var MAX_SCORE = 115")],
-            ["eleven comparable games", scoring.includes('"verdadero", "futbol"')],
+            ["twelve comparable games", scoring.includes('"verdadero", "futbol"')],
             ["photo controls retired", retiredPhotoSurface.every(token => !eterna.includes(token))],
             ["photo claims retired", retiredPhotoSurface.every(token => !experience.includes(token) && !identity.includes(token) && !publicPages.includes(token))]
           ];

@@ -3,6 +3,7 @@
   "use strict";
   var VERSION="2026-08-23-v160-final4.7";
   var DATA={
+    conecta:{name:"Conecta colores",description:"Planificá rutas y conectá parejas sin cerrar el paso a los demás colores."},
     numeros:{name:"Une los números",description:"Recorre tableros distintos sin repetir casillas: planifica, corrige el camino y entrena la atención visual."},
     calculo:{name:"Cálculo veloz",description:"Combina sumas, restas, tablas, divisiones, porcentajes, medias y operaciones encadenadas según tu nivel."},
     sopa:{name:"Sopa de letras",description:"Busca vocabulario de ciencia, naturaleza, deportes, tecnología y lengua en tableros que cambian cada partida."},
@@ -18,6 +19,7 @@
     padel:{name:"Pádel",description:"Crea mixings equilibrados, cambia rondas, pistas, tiempo y puntuación, y consulta clasificaciones e historial."}
   };
   Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16007"});
+  DATA.conecta.image="./share/conecta.svg?v=160122";
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
   var TITLE_TO_ID={};Object.keys(DATA).forEach(function(id){TITLE_TO_ID[DATA[id].name]=id});TITLE_TO_ID["Coco Fútbol"]="futbol";TITLE_TO_ID["Coco Pádel"]="padel";TITLE_TO_ID["Coco Pádel Club"]="padel";TITLE_TO_ID["Reto Tiempo"]="tiempo";
   function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String(title.textContent||"").trim()]||""}

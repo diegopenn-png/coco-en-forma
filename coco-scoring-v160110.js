@@ -6,7 +6,7 @@
   var MAX_SCORE = 115;
   var GENERAL_IDS = Object.freeze([
     "numeros", "calculo", "palabras", "series", "memoria", "sudoku",
-    "sopa", "crucigrama", "tiempo", "verdadero", "futbol"
+    "sopa", "crucigrama", "tiempo", "verdadero", "futbol", "conecta"
   ]);
   var GAME_FACTORS = Object.freeze({
     numeros: 0.98,
@@ -19,7 +19,8 @@
     crucigrama: 1.01,
     tiempo: 0.99,
     verdadero: 0.98,
-    futbol: 1.02
+    futbol: 1.02,
+    conecta: 1.02
   });
   var DIFFICULTY_FACTORS = Object.freeze({
     1: 0.90,
@@ -39,6 +40,7 @@
     tiempo: 320,
     verdadero: 320,
     futbol: 1300,
+    conecta: 110,
     cocomed: 1000,
     padel: 1000
   });

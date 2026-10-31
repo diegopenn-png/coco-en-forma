@@ -15,14 +15,14 @@ const context = { window: {}, setTimeout, clearTimeout, Promise, Error };
 vm.runInNewContext(source, context);
 const scoring = context.window.CocoScoringV160110;
 
-test("la clasificación general conserva exactamente once juegos comparables", () => {
+test("la clasificación general conserva exactamente doce juegos comparables", () => {
   assert.deepEqual(Array.from(scoring.generalIds), [
     "numeros", "calculo", "palabras", "series", "memoria", "sudoku",
-    "sopa", "crucigrama", "tiempo", "verdadero", "futbol"
+    "sopa", "crucigrama", "tiempo", "verdadero", "futbol", "conecta"
   ]);
   assert.equal(scoring.generalIds.includes("cocomed"), false);
   assert.equal(scoring.generalIds.includes("padel"), false);
-  assert.equal(scoring.audit().games, 11);
+  assert.equal(scoring.audit().games, 12);
 });
 
 test("ningún juego domina la escala y la dificultad crece de forma moderada", () => {
@@ -101,7 +101,7 @@ test("web y PWA usan el motor común antes de abrir cualquier juego", () => {
   assert.match(html, /balancedScore\(active\.id,active\.level,performance\)/);
   assert.match(html, /promedio por partida/);
   assert.doesNotMatch(html, /var scoreLimit=id==="futbol"\?1300:1000/);
-  assert.match(sw, /coco-en-forma-v160\.100\.19-eterna-six-modes-budget-fix/);
+  assert.match(sw, /coco-en-forma-v160\.100\.22-conecta/);
   assert.match(sw, /\.\/coco-scoring-v160110\.js/);
 });
 

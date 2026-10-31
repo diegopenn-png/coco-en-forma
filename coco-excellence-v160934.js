@@ -10,6 +10,7 @@
   var VERSION="160.96.0-dynamic-daily-missions";
   var scheduled=0,observer=null;
   var GAME={
+    conecta:{name:"Conecta colores",time:"3-6 min",goal:"Conecta las parejas sin bloquear otros colores.",focus:["Reservá una salida para cada pareja","Observá qué puntos separa tu línea","Rodeá los puntos antes de cerrar el camino"],steps:["Elegí una dificultad","Resolvé tres tableros","Finalizá para guardar tus puntos"]},
     numeros:{name:"Une los números",time:"3-5 min",goal:"Une la secuencia completa sin repetir casillas.",focus:["Mira dos pasos por delante","Recupera la ruta sin reiniciar","Detecta cruces antes de avanzar"],steps:["Empieza en el 1","Arrastra sin levantar el dedo","Usa Pista solo si te bloqueas"]},
     calculo:{name:"Cálculo veloz",time:"2-4 min",goal:"Resuelve operaciones con precisión y a tu ritmo.",focus:["Exactitud antes que velocidad","Comprueba con la operación inversa","Cambia de estrategia entre operaciones"],steps:["Elige un nivel","Escribe cada resultado","Comprueba antes de continuar"]},
     palabras:{name:"Descifra la palabra",time:"3-5 min",goal:"Ordena las letras usando el significado como pista.",focus:["Usa primero el significado","Busca prefijos y terminaciones","Forma sílabas antes de probar"],steps:["Lee la pista","Toca las letras en orden","Borra o pide una pista si hace falta"]},
@@ -24,7 +25,7 @@
     futbol:{name:"Fútbol",time:"2-4 min",goal:"Recuerda las cinco zonas y chuta a la única que faltó.",focus:["Agrupa las señales en bloques","Visualiza la zona que falta","Mantén la precisión al subir el ritmo"],steps:["Observa cada señal","Recuerda el hueco","Chuta cuando aparezca la indicación"]},
     padel:{name:"Pádel",time:"2-5 min",goal:"Organiza el grupo rápido para pasar antes a la pista.",focus:["Equilibra niveles y descansos","Evita repetir pareja y rival","Compara dos formatos antes de elegir"],steps:["Agrega jugadores y niveles","Elige pistas y rondas","Crea y comparte el mixing"],tool:true}
   };
-  var TITLE={"Une los numeros":"numeros","Calculo veloz":"calculo","Descifra la palabra":"palabras","Series logicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto tiempo":"tiempo","Reto Tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Futbol":"futbol","Coco Futbol":"futbol","Padel":"padel","Coco Padel":"padel","Coco Padel Club":"padel"};
+  var TITLE={"Conecta colores":"conecta","Une los numeros":"numeros","Calculo veloz":"calculo","Descifra la palabra":"palabras","Series logicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto tiempo":"tiempo","Reto Tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Futbol":"futbol","Coco Futbol":"futbol","Padel":"padel","Coco Padel":"padel","Coco Padel Club":"padel"};
   var MODE_EXAMPLES={
     homework:"Ejemplo: No sé cómo empezar el ejercicio 3.",
     ask:"Ejemplo: ¿Por qué hay estaciones del año?",

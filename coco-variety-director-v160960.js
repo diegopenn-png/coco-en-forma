@@ -6,7 +6,7 @@
   "use strict";
 
   var VERSION="160.96.0-balanced-variety";
-  var ACTIVE_GAMES=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol","cocomed","padel"]);
+  var ACTIVE_GAMES=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol","conecta","cocomed","padel"]);
   var lastGeneratedFamily=Object.create(null);
   var installAttempts=0;
 
