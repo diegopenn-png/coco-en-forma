@@ -2,13 +2,8 @@ import {readDueDays,receiptDueAt} from './cashflow.mjs';
 import {REALITY,realExpensesCB} from './reality.mjs';
 import {EXPENSES,detailedExpenses,expenseName} from './budget.mjs';
 export const DAY = 86400000;
-export const CATALOG = [
-  {id:'AAPL',name:'Apple',symbol:'AAPL',kind:'Acciones',risk:3,icon:'A',color:'#e9eef7',lesson:'Al comprar una fracción de una acción participas en una empresa. Su precio puede bajar aunque te gusten sus productos.'},
-  {id:'TSLA',name:'Tesla',symbol:'TSLA',kind:'Acciones',risk:4,icon:'T',color:'#ffe8e6',lesson:'Una empresa popular también puede perder valor. Las expectativas, los resultados y las noticias cambian su cotización.'},
-  {id:'SAMSUNG',name:'Samsung',symbol:'005930.KS',kind:'Acciones',risk:3,icon:'S',color:'#e5eaff',lesson:'Esta acción cotiza en wones coreanos. Tu resultado en euros también cambia con el tipo de cambio.'},
-  {id:'BONDS',name:'Bonos del Tesoro · fondo IEF',symbol:'IEF',kind:'Fondo de bonos',risk:2,icon:'B',color:'#e1f4ec',lesson:'IEF es un fondo que reúne bonos del Tesoro de EE. UU. de 7 a 10 años. No es un bono individual: no tiene una fecha de devolución de tu capital. Puede bajar si suben los tipos, y añade riesgo de cambio dólar/euro.'},
-  {id:'BTC',name:'Bitcoin',symbol:'BTC-EUR',kind:'Criptomonedas',risk:5,icon:'₿',color:'#fff0cc',lesson:'Bitcoin no es una empresa ni paga intereses por tenerlo. Su precio puede cambiar mucho. Practica con una parte pequeña y que puedas permitirte perder.'}
-];
+import {CATALOG} from './catalog.mjs';
+export {CATALOG};
 export function fail(message){throw new Error(message)}
 export const day = t => new Date(t).toISOString().slice(0,10);
 export function cents(v){const n=Number(v);if(!Number.isFinite(n)||n<0||n>1e6)fail('Introduce un importe entre 0 y 1.000.000 CB.');return Math.round(n*1000)}
@@ -16,7 +11,7 @@ const positive = v => {const n=cents(v);if(n<1)fail('El importe debe ser mayor q
 function readExpenses(input){if(!input||typeof input!=='object'||Array.isArray(input))fail('Revisa el presupuesto.');if(Object.keys(input).some(k=>!EXPENSES.some(x=>x.id===k)))fail('Gasto no reconocido.');return Object.fromEntries(EXPENSES.map(x=>[x.id,cents(input[x.id]??0)]))}
 const clone = o => structuredClone(o);
 const log=(s,type,text,amount,now)=>{s.ledger.unshift({id:crypto.randomUUID(),type,text,amount,at:now});s.ledger=s.ledger.slice(0,240)};
-export function fresh(p,now){return !!p&&Number.isFinite(p.eur)&&p.eur>0&&p.at<=now&&now-p.at<5*DAY&&now-p.fetchedAt<36*3600000}
+export function fresh(p,now){return !!p&&Number.isFinite(p.eur)&&p.eur>0&&p.at<=now&&now-p.at<5*DAY&&p.fetchedAt<=now&&now-p.fetchedAt<36*3600000}
 export function depositValue(d,now){return d.principal+Math.floor(d.principal*d.rate/100*Math.max(0,Math.min(now,d.endsAt)-d.startsAt)/DAY/365)}
 export function valuation(s,m,now){return Math.round(Object.entries(s.holdings).reduce((v,[id,h])=>v+h.qty*(m.prices[id]?.eur||h.lastEur)*100,0))+s.deposits.reduce((v,d)=>v+depositValue(d,now),0)+s.investmentCash}
 const nav=(s,m,n)=>s.units>1e-9?valuation(s,m,n)/s.units:s.lastNav;
@@ -34,7 +29,18 @@ export function continuousAccount(original,now){
  if(s.savings){s.cash+=s.savings;log(s,'transfer','Ahorro de la hucha a la cuenta corriente',s.savings,now);s.savings=0}
  return s;
 }
+export function investmentAccount(original,now){
+ if(!original?.config||original.config.experience==='investing')return original;
+ const s=clone(continuousAccount(original,now));
+ s.householdArchive={expenses:clone(s.config.expenses),reserve:s.config.reserve,bills:clone(s.bills),retiredAt:now};
+ s.config={...s.config,experience:'investing',expenses:{},dueDays:{},reserve:0};
+ s.bills=[];s.journey ||= {funded:true,acknowledged:true,organized:true};s.journey.organized=true;
+ s.investingBaseline=s.cash+s.investmentCash+(s.savings||0);s.reflections ||= [];
+ log(s,'experience','Ahora recibes una asignación mensual para aprender a invertir. Los gastos anteriores quedan archivados.',0,now);
+ return s;
+}
 export function createState(input,m,now){
+ if(input.experience==='investing')return investmentAccount(createState({...input,experience:undefined,mode:'continuous',expenses:{},reserve:0},m,now),now);
  if(input.mode==='continuous'){
   const start=day(now),end=day(now+365*DAY);
   return continuousAccount(createState({...input,mode:undefined,start,end,title:'Mi cuenta corriente',kind:'investment',target:0,reward:0},m,now),now);
@@ -57,7 +63,7 @@ function removeUnits(s,amount,m,now){const n=nav(s,m,now);s.lastNav=n;s.units=Ma
 export function settle(original,m,now){
  if(!original.config)return clone(original);
  const s=clone(original), t=s.config.mode==='continuous'?now:Math.min(now,s.config.endsAt);
- s.config.expenses=detailedExpenses(s.config.expenses);
+ s.config.expenses=s.config.experience==='investing'?{}:detailedExpenses(s.config.expenses);
  s.savings ||= 0;
  s.config.dueDays=readDueDays(s.config.dueDays,s.config.expenses);
  for(const b of s.bills)if(!Number.isFinite(b.dueAt))b.dueAt=receiptDueAt(b.at,s.config.dueDays[b.kind]||15);
@@ -71,7 +77,7 @@ export function settle(original,m,now){
    const at=Date.UTC(y,mo,Math.min(start.getUTCDate(),last));
    if(at>t)break;
    const key=day(at);if(s.months.includes(key))continue;s.months.push(key);s.cash+=s.config.salary;
-   log(s,'salary','Sueldo mensual',s.config.salary,at);
+   log(s,'salary',s.config.experience==='investing'?'Asignación mensual para invertir':'Sueldo mensual',s.config.salary,at);
    for(const [kind,amount] of Object.entries(s.config.expenses))if(amount)s.bills.push({id:key+'-'+kind,kind,amount,at,dueAt:receiptDueAt(at,s.config.dueDays[kind]),paid:false});
  }
  // Apply corporate actions before today's trades; no adjusted-close double counting.
@@ -119,6 +125,8 @@ export function action(original,m,a,now,{parent=false,currentMarket=m}={}){
  if(['setup','reset','employer','budget','challenge','profile','challenge_save','challenge_update'].includes(a.type)&&!parent)fail('Entra con el PIN parental para tomar esta decisión.');
  if(original?.config?.mode==='continuous'&&['challenge','challenge_save','challenge_update','save'].includes(a.type))fail('Tu dinero se guarda en la cuenta corriente. Ya no se usan desafíos ni una hucha separada.');
  if(original?.recentIds?.includes(a.requestId))return original;
+ if(original?.config?.experience==='investing'&&(['budget','profile','pay','pay_all','pay_month'].includes(a.type)||a.type==='employer'&&a.decision==='job'))fail('Esta versión solo usa asignaciones e inversiones.');
+ if(original?.config?.experience==='investing'&&['buy','deposit'].includes(a.type)){const reason=String(a.reason||'').trim();if(reason.length<8||reason.length>240)fail('Escribe en una frase por qué eliges esta inversión (8 a 240 letras).');}
  if(a.type==='open_account'){
   if(original)return original;
   const name=String(a.name||'').trim().slice(0,40);if(!name)fail('Escribe cómo quieres llamar a tu cuenta.');
@@ -231,7 +239,7 @@ export function action(original,m,a,now,{parent=false,currentMarket=m}={}){
   s.savings-=amount;s.cash+=amount;log(s,'unsave','Dinero de mi hucha a mi cuenta',amount,now);
  }else if(a.type==='buy'){
   if(!s.journey.acknowledged)fail('Conoce primero tu cuenta.');
-  if(!CATALOG.some(c=>c.id===a.asset))fail('Instrumento no válido.');
+  if(!CATALOG.some(c=>c.id===a.asset&&c.group!=='legacy'))fail('Instrumento no válido.');
   if(!fresh(m.prices[a.asset],now))fail('Esperando una cotización reciente y verificada.');
   if(!s.lessons.includes(a.asset))fail('Lee y responde primero la ficha de este instrumento.');
   const amount=positive(a.amount);if(amount>info.available)fail('Respeta la reserva, los gastos pendientes y las órdenes en curso.');
@@ -249,17 +257,18 @@ export function action(original,m,a,now,{parent=false,currentMarket=m}={}){
   const amount=positive(a.amount),term=Number(a.term);
   if(![30,90,180].includes(term))fail('Elige un plazo válido.');
   if(s.config.mode!=='continuous'&&now+term*DAY>s.config.endsAt)fail('El plazo fijo debe vencer antes del final del desafío.');
-  if(!m.rate||now-m.rate.fetchedAt>36*3600000||now-Date.parse(m.rate.date)>7*DAY)fail('La referencia del BCE aún no está actualizada.');
+  if(!m.rate||!Number.isFinite(m.rate.annualPct)||!Number.isFinite(m.rate.fetchedAt)||m.rate.fetchedAt>now||!Number.isFinite(Date.parse(m.rate.date))||Date.parse(m.rate.date)>now||now-m.rate.fetchedAt>36*3600000||now-Date.parse(m.rate.date)>7*DAY)fail('La referencia del BCE aún no está actualizada.');
   if(amount>info.available)fail('No hay saldo libre suficiente.');
   const rate=m.rate.annualPct;if(rate<0)fail('La referencia actual es negativa: revisa la ficha antes de abrir nuevos plazos.');
   addUnits(s,amount,m,now);s.cash-=amount;s.deposits.push({id:a.requestId,principal:amount,rate,startsAt:now,endsAt:now+term*DAY});log(s,'deposit','Plazo fijo educativo de '+term+' días',-amount,now);
  }else if(a.type==='withdraw'){
   const amount=s.investmentCash;if(!amount)fail('No hay efectivo de inversión disponible.');removeUnits(s,amount,m,now);s.investmentCash=0;s.cash+=amount;log(s,'withdraw','Traspaso de la cartera a tu cuenta',amount,now);
  }else if(a.type==='lesson'){
-  const answers={AAPL:'risk',TSLA:'risk',SAMSUNG:'currency',BONDS:'rates',BTC:'risk',DEPOSIT:'locked'};
+  const answers={...Object.fromEntries(CATALOG.map(c=>[c.id,c.answer])),DEPOSIT:'locked',COMPOUND:'reinvest',DIVERSIFY:'spread',MARKET:'expectations',PATIENCE:'plan'};
   if(!answers[a.asset]||a.answer!==answers[a.asset])fail('Prueba otra vez: revisa la explicación de Coco.');
   if(!s.lessons.includes(a.asset))s.lessons.push(a.asset);
  }else fail('Operación desconocida.');
+ if(s.config.experience==='investing'&&['buy','deposit'].includes(a.type)){s.reflections ||= [];s.reflections.unshift({id:a.requestId,asset:a.asset||'DEPOSIT',reason:String(a.reason).trim(),at:now});s.reflections=s.reflections.slice(0,80);}
  s.recentIds.push(a.requestId);s.recentIds=s.recentIds.slice(-200);return s;
 }
 

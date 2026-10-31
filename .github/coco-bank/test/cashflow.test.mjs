@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {action,summary,settle} from '../src/engine.mjs';
 import {receiptDueAt,readDueDays} from '../src/cashflow.mjs';
-const now=Date.parse('2026-10-31T12:00Z'),market={prices:{},rate:{annualPct:2.4,fetchedAt:now},events:[]};
+const now=Date.parse('2026-10-31T12:00Z'),market={prices:{},rate:{annualPct:2.4,date:'2026-10-30',fetchedAt:now},events:[]};
 const run=(s,a,t=now)=>action(s,market,{requestId:crypto.randomUUID(),...a},t,{parent:true});
 const fixture=()=>{let s=run(null,{type:'open_account',name:'Ana'});s=run(s,{type:'setup',config:{start:'2026-10-31',end:'2027-01-31',salary:10,initial:0,expenses:{rent:3,electricity:.5,water:.5},reserve:1,target:0,reward:0,title:'Mi meta'}});return run(s,{type:'receive'})};
 test('due dates follow calendar month, end of day, including year rollover',()=>{assert.equal(new Date(receiptDueAt(now,1)).toISOString(),'2026-11-01T23:59:59.999Z');assert.equal(new Date(receiptDueAt(Date.parse('2026-12-31'),5)).toISOString(),'2027-01-05T23:59:59.999Z');assert.equal(new Date(receiptDueAt(Date.parse('2026-11-05T12:00Z'),5)).toISOString(),'2026-11-05T23:59:59.999Z');assert.throws(()=>readDueDays({rent:0},{rent:3}));assert.throws(()=>readDueDays({rent:29},{rent:3}))});

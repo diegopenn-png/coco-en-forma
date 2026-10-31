@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {action,continuousAccount,settle,summary,DAY} from '../src/engine.mjs';
 import {nextPayday} from '../src/navigation.mjs';
 const now=Date.parse('2026-10-31T12:00Z');
-const market={prices:{},rate:{annualPct:2.4,fetchedAt:now},events:[]};
+const market={prices:{},rate:{annualPct:2.4,date:'2026-10-30',fetchedAt:now},events:[]};
 const run=(s,a,t=now)=>action(s,market,{requestId:crypto.randomUUID(),...a},t,{parent:true});
 const config={mode:'continuous',salary:10,initial:0,reserve:.5,expenses:{rent:3,electricity:.5,car_loan:.8,food:1.2,school:.8,health_insurance:.3}};
 const fixture=()=>run(run(run(null,{type:'open_account',name:'Test'}),{type:'setup',config}),{type:'receive'});

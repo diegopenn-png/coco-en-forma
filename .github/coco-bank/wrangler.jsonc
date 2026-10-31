@@ -9,6 +9,6 @@
     "SUPABASE_URL": "https://fcatttsfufjiphgohgwp.supabase.co",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X"
   },
-  "triggers": {"crons":["0 12 * * *"]},
+  "triggers": {"crons":["0 12 * * *","15 22 * * *"]},
   "observability": {"enabled":false}
 }

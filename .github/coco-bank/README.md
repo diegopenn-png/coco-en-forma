@@ -1,74 +1,32 @@
-# Coco Bank — public learning game
+# Coco Bank — investment learning simulator
 
-Public launch authorized by Diego on 31 October 2026. Every verified Coco account can play; each account owns its saved state and parental guard. Existing owner data remain under their original UUID. Catalogue entry follows Pádel and inherits its card classes.
+## Release 4.0.0 · 31 October 2026
 
-## Integration
+Diego requested a monthly virtual allowance for investing, with no household expenses or target. The current experience replaces the previous household bank.
 
-- `coco-family-friendly-v160100.js` loads `coco-bank-private-v1.js` on web and PWA.
-- The loader inserts a matching card immediately after Pádel in the signed-out and signed-in catalogues. The Worker validates the session before opening a saved game. `?coco_bank=1` requests opening after normal authentication.
-- The private HTML and artwork are fetched with a bearer token and `no-store`, then rendered in an isolated, opaque-origin iframe. CSP disables network access and form navigation; an authenticated, nonce-checked parent bridge handles operations.
-- Logout/account changes destroy the iframe and private state in memory; the public catalogue card remains visible. Nothing from the private app is stored in the browser cache or localStorage.
-- The public service worker caches only the small loader. Private sources/assets live under `.github` (excluded from GitHub Pages), and are deployed as Worker modules. The repository's existing visibility is unchanged; source-code secrecy is not an authorization boundary.
+- Four sections: My money, Invest, Portfolio, Learn. Existing Coco artwork and authenticated iframe bridge remain.
+- Exactly 20 listed companies, each with business description, valuation explanation, possible upside/downside drivers and issuer source. Waymo is discussed under Alphabet; no invented Waymo ticker.
+- Two equity ETFs (VT, VOO), two Treasury ETFs (IEF, SGOV), and an educational fixed-term deposit using the ECB €STR reference. Bond funds are explicitly distinguished from individual bonds and guarantees.
+- BTC prices and selling remain for legacy holdings only; no new purchases in the child catalogue.
+- A short understanding question and an investment reason precede purchases. Reasons are retained in a capped decision journal. No activity/return leaderboard or trading rewards.
+- Hypothetical compound-growth laboratory is isolated from the portfolio, with variable positive, zero or negative assumptions. No promised return.
 
-## Server and persistence
+## Money and migration
 
-Worker: `https://coco-bank-private.chatinmobiliario.workers.dev`.
-D1: `coco-bank-private`, EU. Initialize with `schema.sql`.
-All app and data routes validate `/auth/v1/user` server-side and require a verified UUID and confirmed account email. All state and PIN queries use that server-verified UUID, never a caller-supplied owner ID. User-supplied display names and metadata never authorize access. CORS accepts only the apex and www production origins. No service-role credential is used.
+UI amounts are euros; the internal action API retains the older CB unit conversion (1 CB = €10), and stored money is integer euro cents. Auth is scoped to the server-verified account UUID, with parental PIN for assignment changes. Monthly allowances are issued once per original payroll anniversary. Orders reserve cash and wait for a later observation, with freshness checks.
 
-State updates use optimistic revisions and operation IDs to prevent duplicate spending. Monthly salary and bills are generated once per anniversary of the challenge start; no accelerated clock. Pending purchases reserve funds. Existing bills and the family reserve are excluded from investable cash. Orders settle only after a later price observation. The daily job also advances accounts without an open browser.
+On authenticated access or daily settlement, previous household settings and receipts are archived once; outstanding bills no longer apply. Previously paid bills are not refunded. Cash, holdings, deposits, orders, payroll history and the ledger are retained. No account reset or user impersonation is performed.
 
-1 CB = €10; monetary values are integer euro cents. Investment performance uses portfolio units so salary, new contributions and withdrawals do not create artificial returns. Deposit interest is simple annual interest, actual days/365, credited at maturity. Challenge dates are inclusive UTC calendar dates. The final portfolio uses the last daily snapshot recorded before the deadline. The reward is a family agreement recorded in the simulation; there are no payment or redemption endpoints.
+## Market data
 
-## Market data and limits
+Snapshots are stored in the existing D1 market_snapshots table. The Worker refreshes at 12:00 and 22:15 UTC daily. Yahoo Finance daily raw closes cover the 20 equities and four ETFs, and the ECB supplies currencies and €STR. BTC legacy prices use Coinbase. Source identifiers, observation timestamps and fetch times are retained. Missing/stale data disable new operations; no synthetic market fallback. The UI labels these as reference prices, not live executions.
 
-Cron: every day at 12:00 UTC. Initial snapshot loaded on 2026-10-20 from these same sources.
+The fixed-term product is a simulation at an ECB reference rate, not a retail bank quote. Funds use real ETF prices. Fractional trades omit brokerage commissions and taxes, while fund operating costs are embedded in prices. Dividends are simplified to ex-dividend processing with available FX; full brokerage tax/record-date handling is outside the simulation. Provider endpoints remain the existing integrations; no paid feed or subscription was activated.
 
-- Apple, Tesla, Samsung and IEF: Yahoo Finance daily raw closes. Open sessions and invalid closes are skipped. The displayed timestamp is the source close, not the fetch time.
-- Bitcoin: Coinbase BTC/EUR spot reference at daily fetch time.
-- Currency conversion: ECB daily reference rates.
-- Educational deposits: the real ECB €STR reference fixed at opening, explicitly not a retail bank offer.
-- IEF is labeled as a bond fund, not an individual bond or a capital guarantee.
+## Validation
 
-Missing/stale prices disable orders; previous successful observations keep their timestamps. No synthetic fallback price. The market's working-day schedule and the snapshot delay are visible. Orders are simulated fractional purchases; no brokerage fees or taxes. Dividends are simplified to ex-dividend date with the available FX rate; splits adjust held units. Corporate-action revisions and live execution are outside this educational private review. Before a public release, review market-data licensing/provider contracts and family reward rules. No paid data plan has been started.
+Run `node --test .github/coco-bank/test/*.test.mjs`. The legacy financial tests remain regression coverage. Current UI tests cover the investing journey, 20-company catalogue, all asset groups, disabled old expenses, migration and compounding.
 
-## Verification and release
+`COCO_JSDOM_PATH=/path/to/jsdom node .github/coco-bank/test/ui-flow.cjs` exercises real serialized DOM forms with synthetic auth/state: create account, parental PIN, one-step setup, receive allowance, company quiz, buy/cancel, deposit, laboratory, previous screen and main menu. It does not prove physical-device rendering. Chromium download was unavailable in this runtime.
 
-Run from the repository root:
-
-```
-node --test .github/coco-bank/test/*.test.mjs
-node .github/coco-bank/test/browser.cjs
-```
-
-The browser test requires Playwright and Chromium, and accepts `COCO_CHROMIUM_PATH` and `COCO_TEST_OUTPUT`. It uses local, explicitly synthetic test data and mocked authentication only. It covers Francesco's entry, configuration, bills, lesson unlocking, queued orders, mobile width, logout cleanup and hidden access for another account. Tests never impersonate Diego against the live server.
-
-The Worker is deployed separately using `wrangler.jsonc` (or Cloudflare's equivalent multipart API). GitHub Pages publishes the public loader/PWA changes from main. Anonymous direct access and forged tokens were checked against the live Worker and return 403 with no-store headers. Access with Diego's real session must occur through his normal sign-in; no tokens were minted or borrowed for testing.
-
-
-## Guided interface · 1.6.0-private
-
-Recovered all eleven modules from the running 1.5.0 private Worker before editing: the repository had lagged behind deployment. The financial engine, parental checks, school content, monthly receipts and challenge history are preserved from that running version.
-
-The home screen gives one state-dependent next step and four separate destinations: account/investments, household expenses, challenges and learning. Five navigation buttons provide direct access. Account and expense pages explain what to do in three short steps. The return-to-Coco button is sticky with safe-area spacing, remains usable during requests, and also appears in loading/error states. Each destination has a distinct color and action label. No navigation action executes a financial operation.
-
-Node tests exercise the serialized browser application with synthetic fixtures and the message bridge, plus financial and authorization behavior. Engine test fixtures now follow the already-deployed account creation, parental setup, receipt payment and organization sequence. The Cloud Browser cannot reach the local preview server; authenticated live layout review requires the owner's session. No credentials or real account state are used in test fixtures.
-
-
-## Kids release · 2.0.0-kids
-
-New accounts start with an adult-selected practice example: €100 virtual salary, €40 bills (rent 30, electricity 5, water 5), €10 reserve, €150 savings goal over three months. These are explicitly fictional learning amounts. The real-world example remains selectable before setup; existing plans are never reset or migrated. All prices and investments still use the existing market engine.
-
-The child sees receive → pay → save, a single next step, a concrete amount remaining to their goal, short instructions and large controls. Advanced investments are collapsed behind an optional learning section. No charge, subscription or AI call is introduced.
-
-The original private Worker name is retained to preserve deployment, database and cron bindings. The daily job pages through all saved accounts. The historical ADMIN_ID export is retained only for regression fixtures; it is not used for authorization or data selection.
-
-Validation: Node financial/navigation tests plus a real in-memory SQLite isolation test for two verified users, attempted owner-ID spoofing, foreign parental tickets and locking another account. Browser QA uses synthetic state at 320 and 390 CSS px. Live publication must additionally verify the catalogue placement and matching dimensions. No fabricated authenticated production sessions.
-
-## Current account release · 3.0.0 · 31 October 2026
-
-Diego requested removal of goals. The UI now has income/bills setup only, monthly household payments, current-account saving (no transfer required), and visible deposit/bond-fund/stock instruments. The default practice budget includes rent, utilities, car, food, school and private health cover. Existing configured budgets and issued bills retain their values.
-
-On next authenticated access or daily settlement, old accounts migrate idempotently to continuous operation: no challenge deadline, current market snapshots, payroll preserved, savings merged into cash with a ledger entry. Old goal configuration is archived in legacyGoal; balances, positions and issued receipts are retained. New accounts require no objective or end date. Legacy engine behavior remains for regression fixtures, but live existing accounts migrate before processing actions.
-
-Verification: financial regression, account migration, continuous payroll, deposit maturity, navigation, no-transfer saving, goal removal and account isolation tests.
+Company source URLs are embedded in the catalogue. Learning sources: Investor.gov introduction to investing, diversification and compound-interest calculator; Vanguard ETF profiles; iShares fund documentation; Alphabet/Waymo issuer disclosures. Possible price drivers are educational scenarios, not current-news attribution or forecasts.
