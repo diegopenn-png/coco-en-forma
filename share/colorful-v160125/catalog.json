@@ -1,0 +1,72 @@
+[
+  {
+    "id": "conecta",
+    "title": "Conecta colores",
+    "description": "Cada color necesita su camino."
+  },
+  {
+    "id": "numeros",
+    "title": "Une los números",
+    "description": "Un camino. Todos los números."
+  },
+  {
+    "id": "calculo",
+    "title": "Cálculo veloz",
+    "description": "Pensá rápido. Calculá mejor."
+  },
+  {
+    "id": "palabras",
+    "title": "Descifra la palabra",
+    "description": "Las letras esconden un reto."
+  },
+  {
+    "id": "sopa",
+    "title": "Sopa de letras",
+    "description": "Encontrá lo que otros no ven."
+  },
+  {
+    "id": "sudoku",
+    "title": "Sudoku",
+    "description": "Cada casilla tiene su lugar."
+  },
+  {
+    "id": "memoria",
+    "title": "Memoria",
+    "description": "Mirá. Recordá. Encontrá."
+  },
+  {
+    "id": "series",
+    "title": "Series lógicas",
+    "description": "Descubrí qué viene después."
+  },
+  {
+    "id": "crucigrama",
+    "title": "Crucigrama",
+    "description": "Una pista abre otro camino."
+  },
+  {
+    "id": "tiempo",
+    "title": "Reto tiempo",
+    "description": "Un nuevo desafío a cada paso."
+  },
+  {
+    "id": "verdadero",
+    "title": "Verdadero o falso",
+    "description": "Pensá, decidí y descubrí por qué."
+  },
+  {
+    "id": "cocomed",
+    "title": "Coco Med",
+    "description": "Explorá cómo cuidarnos mejor."
+  },
+  {
+    "id": "futbol",
+    "title": "Fútbol",
+    "description": "Recordá la jugada. Marcá el gol."
+  },
+  {
+    "id": "padel",
+    "title": "Pádel",
+    "description": "Tu grupo. Tus pistas. A jugar."
+  }
+]

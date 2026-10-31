@@ -18,15 +18,37 @@
     futbol:{name:"Fútbol",description:"Memoriza secuencias con ritmos variables y chuta a la única zona libre en tres niveles."},
     padel:{name:"Pádel",description:"Crea mixings equilibrados, cambia rondas, pistas, tiempo y puntuación, y consulta clasificaciones e historial."}
   };
-  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/"+id+".jpg?v=16007"});
-  DATA.conecta.image="./share/conecta.svg?v=160122";
+  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/colorful-v160125/"+id+".jpg"});
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
   var TITLE_TO_ID={};Object.keys(DATA).forEach(function(id){TITLE_TO_ID[DATA[id].name]=id});TITLE_TO_ID["Coco Fútbol"]="futbol";TITLE_TO_ID["Coco Pádel"]="padel";TITLE_TO_ID["Coco Pádel Club"]="padel";TITLE_TO_ID["Reto Tiempo"]="tiempo";
   function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String(title.textContent||"").trim()]||""}
   function imgHtml(id,alt){var d=DATA[id];return d?'<img class="cocoOfficialThumb" src="'+d.image+'" alt="'+String(alt||d.name).replace(/&/g,"&amp;").replace(/"/g,"&quot;")+'" loading="lazy" decoding="async">':""}
   function applyCard(card){var id=idOf(card),d=DATA[id];if(!d)return;card.dataset.cocoJuego=id;var box=card.querySelector(".emoji,.cocoIconoEspecial");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&String(desc.textContent||"").trim()!==d.description)desc.textContent=d.description}
   function applyMini(node){var id=idOf(node),d=DATA[id];if(!d)return;node.dataset.cocoJuego=id;var box=node.querySelector(".cocoMiniIcono");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}}
-  function applyShare(modal){var title=modal.querySelector("#cocoShareTitle"),id=title&&TITLE_TO_ID[String(title.textContent||"").trim()]||"";if(!DATA[id])return;var box=modal.querySelector(".cocoSharePreview");if(box){box.classList.add("cocoOfficialThumbBox");box.innerHTML=imgHtml(id,DATA[id].name)}var p=modal.querySelector(".cocoShareSheet>p");if(p)p.textContent=DATA[id].description}
+  function applyShare(modal){var title=modal.querySelector("#cocoShareTitle"),id=title&&TITLE_TO_ID[String(title.textContent||"").trim()]||"";if(!DATA[id])return;var box=modal.querySelector(".cocoSharePreview");if(box){box.classList.add("cocoOfficialThumbBox");box.innerHTML=imgHtml(id,DATA[id].name)}var p=modal.querySelector(".cocoShareSheet>p");if(p)p.textContent=DATA[id].description;upgradeShareLinks(modal,id)}
+
+  function upgradeShareLinks(modal,id){
+    if(modal.dataset.colorfulShare===id)return;
+    modal.dataset.colorfulShare=id;
+    var url="https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/?v=160125",d=DATA[id];
+    var label=modal.querySelector(".cocoShareUrl"),status=modal.querySelector(".cocoShareStatus");
+    if(label)label.textContent=url;
+    var copy=modal.querySelector("[data-share-copy]");
+    if(copy)copy.onclick=async function(){
+      var ok=false;try{await navigator.clipboard.writeText(url);ok=true}catch(e){
+        var area=document.createElement("textarea");area.value=url;area.style.cssText="position:fixed;left:0;top:0;opacity:0";modal.appendChild(area);area.select();try{ok=document.execCommand("copy")}catch(e){}area.remove();
+      }
+      if(status)status.textContent=ok?"Enlace copiado. Pegalo en tu publicación o mensaje.":"Copiá el enlace que aparece arriba.";
+    };
+    var whatsapp=modal.querySelector("[data-share-whatsapp]");
+    if(whatsapp)whatsapp.onclick=function(){window.open("https://wa.me/?text="+encodeURIComponent(d.name+" · Coco en Forma\n"+url),"_blank","noopener,noreferrer")};
+    var native=modal.querySelector("[data-share-native]");
+    if(native&&navigator.share)native.onclick=async function(){try{await navigator.share({title:d.name+" · Coco en Forma",text:d.description,url:url})}catch(e){if(e.name!=="AbortError"&&status)status.textContent="Podés usar Copiar enlace."}};
+    var sheet=modal.querySelector(".cocoShareSheet"),download=document.createElement("a");
+    download.href=d.image;download.download="coco-"+id+".jpg";download.textContent="↓ Descargar miniatura";download.className="cocoDownloadCard";sheet.appendChild(download);
+    var note=document.createElement("p");note.className="cocoShareImageNote";note.textContent="Pegá el enlace para que se pueda abrir el juego. La vista previa depende de la red social. Si publicás solo la imagen, añadí también el enlace.";sheet.appendChild(note);
+  }
+
   function eternaShareUrlFinal47(){
     var u=new URL(location.origin+"/eterna.html");
     u.searchParams.set("share","16047");
@@ -194,8 +216,9 @@
   }
   function process(node){if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;enhanceFamilyPinRecovery(node);warmAchievementCardsFinal47(node);var parentCard=node.closest&&node.closest(".cocoGameCard"),parentMini=node.closest&&node.closest(".cocoMiniJuego");if(parentCard)applyCard(parentCard);if(parentMini)applyMini(parentMini);if(node.matches&&node.matches(".cocoGameCard"))applyCard(node);if(node.matches&&node.matches(".cocoMiniJuego"))applyMini(node);if(node.matches&&node.matches(".cocoShareModal"))applyShare(node);if(node.querySelectorAll){node.querySelectorAll(".cocoGameCard").forEach(applyCard);node.querySelectorAll(".cocoMiniJuego").forEach(applyMini);node.querySelectorAll(".cocoShareModal").forEach(applyShare)}}
   var style=document.getElementById("coco-v155-identity-css")||document.createElement("style");style.id="coco-v155-identity-css";style.textContent=[
+    "#cocoApp .cocoDownloadCard{display:block;margin-top:14px;padding:12px;background:#e5f6ff;border-radius:12px;color:#135f7f;font-weight:800;text-decoration:none}#cocoApp .cocoShareImageNote{font-size:12px!important;line-height:1.4;color:#587182!important}",
     "@media(max-width:1024px),(pointer:coarse){body #cocoApp .cocoArcadeOverlay,body #cocoApp .cocoMedOverlay,.cocoV144Modal{box-sizing:border-box!important;padding:calc(env(safe-area-inset-top,0px) + 12px) max(8px,env(safe-area-inset-right,0px)) max(8px,env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))!important;height:100vh;height:100dvh;overflow:hidden!important}body #cocoApp .cocoArcadeShell,body #cocoApp .cocoMedApp,.cocoV144Shell{box-sizing:border-box!important;display:flex!important;flex-direction:column!important;height:100%!important;min-height:0!important;max-height:100%!important;margin:0 auto!important;overflow:hidden!important}body #cocoApp .cocoArcadeTop,body #cocoApp .cocoMedTop,.cocoV144Header{position:relative!important;top:auto!important;flex:0 0 auto!important;z-index:10}body #cocoApp .cocoArcadeBody,body #cocoApp .cocoMedBody,.cocoV144Body{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:max(20px,env(safe-area-inset-bottom,0px))!important}body #cocoApp .cocoArcadeTop{grid-template-columns:44px minmax(0,1fr) auto!important;gap:8px!important;padding:10px!important}body #cocoApp .cocoArcadeTopIcon{grid-column:1;grid-row:1}body #cocoApp .cocoArcadeTitle{grid-column:2;grid-row:1}body #cocoApp .cocoArcadeClose{grid-column:3;grid-row:1;width:auto!important;min-width:80px!important;min-height:48px!important;height:48px!important;padding:8px 12px!important;font-size:0!important;transform:none!important}body #cocoApp .cocoArcadeClose:after{content:\"\u2190 Volver\";font-size:15px;font-weight:800;white-space:nowrap}body #cocoApp .cocoArcadeHud{grid-column:1/3;grid-row:2;justify-content:flex-start}body #cocoApp .cocoArcadeTop>[data-share-active]{grid-column:3;grid-row:2;justify-self:end;min-height:44px}body #cocoApp .cocoArcadeTop>[data-share-active] span{display:none!important}body #cocoApp .barraVolver{position:sticky!important;top:calc(env(safe-area-inset-top,0px) + 12px)!important;z-index:100!important;flex-wrap:wrap;background:#f6fbfe;padding:8px!important;border-radius:12px}body #cocoApp .barraVolver button,body #cocoApp .cocoMedVolverSuperior,.cocoV144HeaderActions button{min-width:44px!important;min-height:48px!important;touch-action:manipulation;flex-shrink:0}}",
-    "#cocoApp .juego[data-coco-juego=conecta] .emoji:after{content:none!important;display:none!important}",
+    "#cocoApp .juego .emoji.cocoOfficialThumbBox:after{content:none!important;display:none!important}",
     "#cocoApp .cocoOfficialThumbBox{padding:0!important;overflow:hidden!important;background:#fff!important;aspect-ratio:1200/630!important;min-height:0!important}",
     "#cocoApp .cocoOfficialThumb{display:block!important;width:100%!important;height:100%!important;min-height:inherit!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:inherit!important}",
     "#cocoApp .cocoMiniIcono.cocoOfficialThumbBox{width:82px!important;height:44px!important;min-width:82px!important;border-radius:10px!important;border:1px solid #d8eaf3!important}",
