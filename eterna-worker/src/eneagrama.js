@@ -1,3 +1,4 @@
+import {normalizeContext} from '../../explora/context.mjs';
 import {buildItems,summarize} from '../../explora/engine.mjs';
 import {makePDF} from '../../.github/coco-eneagrama/pdf.mjs';
 export const ENNEAGRAM_PRICE='price_1UWVEXBWXPNbVxJshWAVJxu2';
@@ -44,7 +45,7 @@ export function validateReport(body){
  const age=body.age;if(!Number.isInteger(age)||age<6||age>99||!uuid.test(body.run_id||''))return null;
  if(!body.answers||typeof body.answers!=='object'||Array.isArray(body.answers))return null;
  const answers={};for(const q of buildItems(age)){const v=body.answers[q.id];if(v!==undefined){if(!Number.isInteger(v)||v<1||v>5)return null;answers[q.id]=v}}
- const result=summarize(answers,age);return {age,answers,result,alias:String(body.alias||'Mi exploración').slice(0,40),notes:String(body.notes||'').slice(0,350),run_id:body.run_id};
+ const result=summarize(answers,age);return {age,answers,result,context:normalizeContext(body.context,age),alias:String(body.alias||'Mi exploración').slice(0,40),notes:String(body.notes||'').slice(0,350),run_id:body.run_id};
 }
 export async function handleEnneagram(request,env,user,db,api=stripeRequest){
  const path=new URL(request.url).pathname;const access=await enneagramAccess(env,user,db);
@@ -66,7 +67,7 @@ export async function handleEnneagram(request,env,user,db,api=stripeRequest){
  if(path==='/v1/eneagrama/report'){
   const data=validateReport(b);if(!data)return json({error:'Revisa los datos del informe.'},400);
   if(!data.result.eligible)return json({error:'Completa al menos cuatro frases de cada tendencia antes de generar el informe. Tu evaluación sigue disponible.'},422);
-  const bytes=makePDF(data.result,{alias:data.alias,age:data.age,notes:data.notes});
+  const bytes=makePDF(data.result,{alias:data.alias,age:data.age,notes:data.notes,context:data.context});
   const canonical=JSON.stringify({version:2,age:data.age,answers:data.answers});
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(user.id+data.run_id+canonical));const fingerprint=[...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');
   const claim=await db('rpc/coco_eneagrama_claim_report',{method:'POST',body:{p_user:user.id,p_run:data.run_id,p_fingerprint:fingerprint}});

@@ -25,7 +25,9 @@ Si se mantiene el cuestionario de Coco, desarrollar evidencia específica para s
 5. Contrastar informes con usuarios: comprensión, relevancia específica, ausencia de repeticiones y facilidad para aplicar una acción. Comparar versiones sin revelar cuál se espera que sea mejor.
 6. Evaluar voluntariamente uso y utilidad a 7/30 días; distinguir satisfacción de cambios observados. Si se afirma eficacia, diseñar un estudio comparativo apropiado antes de publicitarla.
 
-Estas mejoras no se anuncian como capacidades ya implementadas. La landing describe exclusivamente el informe vigente.
+Estado de implementación preparado en PR #110: seis preguntas opcionales (ámbito, objetivo, obstáculo, escena, cambio deseado y tiempo), independientes de la puntuación; diagnóstico de situación, hipótesis y alternativa, tres prioridades y plan de siete días. Se recomiendan prácticas según las elecciones declaradas. El relato libre se muestra como aporte literal; no recibe interpretación libre de IA. Con contexto el PDF tiene cinco páginas; sin contexto conserva la guía general de siete. No se ha hecho todavía la evaluación de comprensión/utilidad con participantes.
+
+El equipo de diez roles está preparado y probado con runners simulados, pero no conectado al endpoint ni activado. Las pruebas técnicas y la consulta de fuentes no validan el cuestionario ni demuestran eficacia. Ver [EQUIPO-IA.md](../coco-eneagrama/EQUIPO-IA.md).
 
 ## Estudio propuesto
 

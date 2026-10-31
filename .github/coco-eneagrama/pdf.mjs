@@ -1,5 +1,4 @@
 // Dependency-free, vector PDF. Text is WinAnsi, escaped as ASCII octal for byte-safe xrefs.
-import {REPORT_PAGES} from '../../explora/coaching.mjs';
 import {buildReport} from '../../explora/report.mjs';
 import {TYPES} from '../../explora/types.mjs';
 import {FONT_DATA} from './fonts.mjs';
@@ -7,8 +6,8 @@ const ink='#213c43',gold='#8a6533',muted='#566c70';
 function literal(s){return '('+String(s).replace(/[–—]/g,'-').replace(/[“”]/g,'"').replace(/[’]/g,"'").replace(/→/g,'>').replace(/…/g,'...').split('').map(c=>{const n=c.charCodeAt(0);return c==='('||c===')'||c==='\\'?'\\'+c:n>126&&n<=255?'\\'+n.toString(8).padStart(3,'0'):n>255?'?':c}).join('')+')'}
 const rgb=h=>[1,3,5].map(i=>(parseInt(h.slice(i,i+2),16)/255).toFixed(3)).join(' ');
 class Page{constructor(n){this.c=[];this.rect(0,0,595,842,'#fbfaf6');this.text('COCO / ENEAGRAMA',44,35,11,ink,true);this.line(44,55,551,55,'#dcded6');this.text('Autoconocimiento · Comprender, elegir y actuar',44,809,9,muted);this.text(String(n).padStart(2,'0'),527,809,10,ink)}text(s,x,y,size=12,color=ink,bold=false){this.c.push(`${rgb(color)} rg BT /${bold==='serif'?'F3':bold?'F2':'F1'} ${size} Tf 1 0 0 1 ${x} ${842-y-size} Tm ${literal(s)} Tj ET`)}rect(x,y,w,h,color){this.c.push(`${rgb(color)} rg ${x} ${842-y-h} ${w} ${h} re f`)}line(x,y,x2,y2,color=gold){this.c.push(`${rgb(color)} RG 1 w ${x} ${842-y} m ${x2} ${842-y2} l S`)}para(s,x,y,w=507,size=11,color=ink){const width=t=>Array.from(t).reduce((sum,c)=>{const n=c.charCodeAt(0);return sum+(FONT_DATA[0].widths[(n>=32&&n<=255?n:63)-32]||600)*size/1000},0);let line='';const flush=()=>{if(line){this.text(line,x,y,size,color);y+=size*1.5;line=''}};for(const word of String(s).split(/\s+/)){const combined=(line?line+' ':'')+word;if(width(combined)<=w){line=combined;continue}flush();for(const c of word){if(width(line+c)>w)flush();line+=c}}flush();return y}heading(k,title){this.text(k.toUpperCase(),44,82,10,gold,true);this.text(title,44,104,30,ink,'serif')}poly(points,fill,stroke=gold){this.c.push(`${rgb(fill)} rg ${rgb(stroke)} RG 1.8 w ${points.map(([x,y],i)=>`${x.toFixed(2)} ${(842-y).toFixed(2)} ${i?'l':'m'}`).join(' ')} h B`)}circle(x,y,r,color){const k=.55228475*r;const Y=842-y;this.c.push(`${rgb(color)} rg ${x+r} ${Y} m ${x+r} ${Y+k} ${x+k} ${Y+r} ${x} ${Y+r} c ${x-k} ${Y+r} ${x-r} ${Y+k} ${x-r} ${Y} c ${x-r} ${Y-k} ${x-k} ${Y-r} ${x} ${Y-r} c ${x+k} ${Y-r} ${x+r} ${Y-k} ${x+r} ${Y} c f`)} }
-export function makePDF(result,{alias='Mi exploración',age=result.age??18,date=new Date().toLocaleDateString('es-ES'),sample=false,notes='',provenance=''}={}){
- const r=buildReport({...result,age}),pages=[];
+export function makePDF(result,{alias='Mi exploración',age=result.age??18,date=new Date().toLocaleDateString('es-ES'),sample=false,notes='',provenance='',context=result.context}={}){
+ const r=buildReport({...result,age,context}),pages=[];
  const add=(k,title)=>{const p=new Page(pages.length+1);pages.push(p);p.heading(k,title);return p};
  const check=(y,label)=>{if(y>785)throw Error(`Report overflow: ${label} at ${y}`)};
  const section=(p,title,text,y,size=10.5)=>{p.text(title,44,y,11,gold,true);return p.para(text,44,y+22,507,size)+15};
@@ -25,8 +24,25 @@ export function makePDF(result,{alias='Mi exploración',age=result.age??18,date=
  p.para('Nueve medias de respuestas, en escala 1-5. No son porcentajes, probabilidades ni medidas de capacidad.',44,549,507,10,muted);
  p.rect(44,603,507,112,'#eaf0ec');p.text(r.title,60,617,15,ink,true);p.para(r.evidence,60,645,475,10.5);
  p.para('Lee una hipótesis, contrástala con tu experiencia y elige una práctica. Autoconocimiento: no es un diagnóstico ni una definición de quién eres.',44,736,507,10);
+ let y;
+ if(r.context){
+  const c=r.context;p=add('01 / DIAGNÓSTICO DE SITUACIÓN','Tu situación, en contexto');y=153;
+  y=p.para('Lectura de autoconocimiento, no un diagnóstico clínico ni una evaluación de capacidad.',44,y,507,10,muted)+15;
+  y=section(p,'Lo que has elegido trabajar',c.summary,y);
+  if(c.scene)y=section(p,'La situación que cuentas',c.scene,y,10);
+  if(c.success)y=section(p,'El cambio que quieres observar',c.success,y,10);
+  y=section(p,'Una hipótesis para contrastar',c.hypothesis,y);
+  y=p.para(c.alternative,44,y,507,10,muted)+12;
+  y=p.para(c.questions.join(' '),44,y,507,10,gold)+14;
+  y=section(p,'Contraste con tu mapa',r.minor?'Las medias no explican tu dificultad ni miden tu capacidad. Tu experiencia lleva la voz.':r.primaryId?r.readings[0].name+': '+r.readings[0].question:'No hay una tendencia única que destacar. Las medias no explican por sí solas tu situación; contrasta las posibilidades con lo que has vivido.',y,10);check(y,'context');
+  p=add('02 / TUS PRIORIDADES','Tres propuestas para empezar');y=153;
+  y=p.para('Elige primero una acción. Las otras propuestas sirven para ajustar las condiciones y revisar lo aprendido.',44,y,507,10,muted)+18;
+  c.priorities.forEach((v,i)=>{p.text(`${i+1}. ${v.title}`,44,y,13,ink,true);y+=25;y=p.para('Por qué: '+v.why,44,y,507,10,muted)+8;y=p.para(v.action,44,y,507,11)+8;y=p.para('Observa: '+v.observe,44,y,507,10)+22});
+  y=p.para(c.sourceNote,44,y,507,9,muted)+10;
+  y=p.para('Personalización mediante reglas según tus elecciones. El texto libre se conserva como aporte; no recibe interpretación libre de IA.',44,y,507,9,muted);check(y,'priorities');
+ }else{
  p=add('01 / LECTURA PERSONAL',r.minor?'Una conversación abierta':'Lo que merece tu atención');
- let y=p.para(r.intro,44,153,507,11)+18;
+ y=p.para(r.intro,44,153,507,11)+18;
  for(const v of r.readings){p.text(`${v.id} / ${v.name}`,44,y,12,v.color,true);y=p.para(v.pattern,44,y+24,507,10.5)+7;y=p.para(v.question,44,y,507,10.5,gold)+19}
  if(!r.readings.length)y=section(p,r.minor?'Tu experiencia lleva la voz':'Empezar por los hechos',r.minor?'Elige algo de casa, del colegio o de tus amistades que quieras comprender. No tienes que responder todo ni contar cosas privadas. Una persona adulta puede ayudarte a poner palabras sin decidir qué sientes.':'Antes de buscar una explicación, anota qué ocurrió, qué hiciste y qué efecto tuvo. Evita convertir un único episodio en una afirmación sobre toda tu vida.',y);
  y=section(p,r.minor?'Para quien acompaña':r.readings.length>1?'Cómo pueden convivir estas miradas':'Tu margen para elegir',r.synthesis,y);
@@ -52,12 +68,13 @@ export function makePDF(result,{alias='Mi exploración',age=result.age??18,date=
    p.line(44,y-5,551,y-5,'#dcded6');
   }check(y,'areas '+half);
  }
- p=add('05 / TU EXPERIMENTO','Siete días para probar');y=153;
+ }
+ p=add(r.context?'03 / TU EXPERIMENTO':'05 / TU EXPERIMENTO','Siete días para probar');y=153;
  y=p.para('Elige una sola práctica de las páginas anteriores. Evalúa lo que hiciste y aprendiste; no necesitas controlar la reacción de otra persona.',44,y,507,10.5)+16;
  for(const d of r.plan){y=p.para(`Día ${d.day} · ${d.title}. ${d.text}`,44,y,507,10.5)+12}
  y=section(p,'Tu reflexión',String(notes).slice(0,350)||'La situación que quiero trabajar: __________. La acción que elijo: __________. Cuándo la probaré: __________.',y,10);
- y=section(p,'Qué contará como avance',r.minor?'Que puedas contar lo que necesitas y elegir qué te ayuda. Puedes repetir, cambiar o dejar la actividad.':'Notar antes la reacción y elegir una acción coherente con tus valores. Puedes cumplir o renegociar tus acuerdos; no controlar la respuesta ajena. Aprender no exige estar siempre bien: da espacio a lo que sientes y pide apoyo cuando lo necesites.',y,10);check(y,'plan');
- p=add('06 / GUÍA BREVE Y MÉTODO','Nueve miradas, sin etiquetas');y=153;
+ y=section(p,'Qué contará como avance',r.context?r.context.priorities[0].observe+' Compara lo que observaste con el cambio que querías. Si no te sirve, ajusta la propuesta o pide apoyo.':r.minor?'Que puedas contar lo que necesitas y elegir qué te ayuda. Puedes repetir, cambiar o dejar la actividad.':'Notar antes la reacción y elegir una acción coherente con tus valores. Puedes cumplir o renegociar tus acuerdos; no controlar la respuesta ajena. Aprender no exige estar siempre bien: da espacio a lo que sientes y pide apoyo cuando lo necesites.',y,10);check(y,'plan');
+ p=add(r.context?'04 / GUÍA BREVE Y MÉTODO':'06 / GUÍA BREVE Y MÉTODO','Nueve miradas, sin etiquetas');y=153;
  for(const t of r.glossary){p.text(`${t.id} / ${t.name}`,44,y,10.5,t.color,true);y=p.para(t.drive,182,y,369,10)+5}
  y+=7;
  y=section(p,'Cómo leer las puntuaciones','Cada media resume hasta seis respuestas en escala 1-5; dos frases se puntúan en sentido inverso. Se requieren cuatro de seis por tendencia para mostrarla y las nueve medias para comparar. Las diferencias de hasta 0,25 se agrupan por una regla editorial, no estadística. No hay baremos ni comparación con otras personas.',y,9.5)-5;
@@ -65,7 +82,7 @@ export function makePDF(result,{alias='Mi exploración',age=result.age??18,date=
  y=p.para('Eneagrama: Riso/Hudson, Palmer y Daniels/Price; Hook et al. (2021), DOI 10.1002/jclp.23097, evidencia mixta. Coaching: Kofman, Robbins, UdeSA, ICF y Newfield. Contexto educativo: A. Beck, V. Frankl y G. Rolón. Materiales públicos y fichas; fuentes y aportes detallados en la web.',44,y,507,9.5)+11;
  y=p.para('Método y fuentes: cocoenforma.com/explora/metodo.html',44,y,507,9.5,muted)+8;
  if(provenance)y=p.para(String(provenance).slice(0,400),44,y,507,9,muted)+5;
- check(y,'method');y=Math.max(y+10,687);p.line(44,y,551,y,'#dcded6');p.text('PRESENTADO POR',44,y+12,8.5,gold,true);p.text(r.signature.name,44,y+30,15,ink,true);p.text(r.signature.role,44,y+53,10,ink);p.text(r.signature.education,44,y+70,10,muted);check(y+80,'signature');if(pages.length!==REPORT_PAGES)throw Error('Invalid report page count');
+ check(y,'method');y=Math.max(y+10,687);p.line(44,y,551,y,'#dcded6');p.text('PRESENTADO POR',44,y+12,8.5,gold,true);p.text(r.signature.name,44,y+30,15,ink,true);p.text(r.signature.role,44,y+53,10,ink);p.text(r.signature.education,44,y+70,10,muted);check(y+80,'signature');if(pages.length!==r.pages)throw Error('Invalid report page count');
  const objects=['<< /Type /Catalog /Pages 2 0 R >>','','','',''];
  FONT_DATA.forEach((f,i)=>{const descriptorId=objects.length+1,fileId=descriptorId+1;objects[i+2]=`<< /Type /Font /Subtype /TrueType /BaseFont /${f.name} /FirstChar 32 /LastChar 255 /Widths [${f.widths.join(' ')}] /Encoding /WinAnsiEncoding /FontDescriptor ${descriptorId} 0 R >>`;objects.push(`<< /Type /FontDescriptor /FontName /${f.name} /Flags 32 /FontBBox [${f.bbox.join(' ')}] /ItalicAngle 0 /Ascent ${f.ascent} /Descent ${f.descent} /CapHeight 730 /StemV 80 /FontFile2 ${fileId} 0 R >>`);objects.push(`<< /Length ${f.hex.length+1} /Length1 ${f.hex.length/2} /Filter /ASCIIHexDecode >>\nstream\n${f.hex}>\nendstream`)});
  const kids=[];
