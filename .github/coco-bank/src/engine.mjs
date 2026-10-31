@@ -24,9 +24,21 @@ export function summary(s,m,now){
  if(!s?.config)return null;
  const value=valuation(s,m,now), bills=s.bills.filter(b=>!b.paid).reduce((v,b)=>v+b.amount,0), earmarked=s.orders.filter(o=>o.side==='buy').reduce((v,o)=>v+o.amount,0);
  const challengeReturnPct=(nav(s,m,now)/(s.config.baselineNav||100)-1)*100;
- return {paidMonths:paidChallengeMonths(s),challengeReturnPct,value,bills,earmarked,available:Math.max(0,s.cash-s.config.reserve-bills-earmarked),savings:s.savings||0,netWorth:s.cash+(s.savings||0)+value-bills,returnPct:s.units>1e-9?(value/s.units/100-1)*100:(s.lastNav/100-1)*100,profit:value+s.withdrawn-s.contributed,contributed:s.contributed,withdrawn:s.withdrawn,daysLeft:Math.max(0,Math.ceil((s.config.endsAt-now)/DAY)),finished:now>s.config.endsAt,started:now>=s.config.startsAt};
+ return {paidMonths:paidChallengeMonths(s),challengeReturnPct,value,bills,earmarked,available:Math.max(0,s.cash-s.config.reserve-bills-earmarked),savings:s.savings||0,netWorth:s.cash+(s.savings||0)+value-bills,returnPct:s.units>1e-9?(value/s.units/100-1)*100:(s.lastNav/100-1)*100,profit:value+s.withdrawn-s.contributed,contributed:s.contributed,withdrawn:s.withdrawn,daysLeft:s.config.mode==='continuous'?null:Math.max(0,Math.ceil((s.config.endsAt-now)/DAY)),finished:s.config.mode!=='continuous'&&now>s.config.endsAt,started:now>=s.config.startsAt};
+}
+export function continuousAccount(original,now){
+ if(!original?.config||original.config.mode==='continuous')return original;
+ const s=clone(original);
+ s.legacyGoal=clone(s.config);
+ s.config={...s.config,mode:'continuous',endsAt:null,title:'Mi cuenta corriente',kind:'account',target:0,goalAmount:0,reward:0};
+ if(s.savings){s.cash+=s.savings;log(s,'transfer','Ahorro de la hucha a la cuenta corriente',s.savings,now);s.savings=0}
+ return s;
 }
 export function createState(input,m,now){
+ if(input.mode==='continuous'){
+  const start=day(now),end=day(now+365*DAY);
+  return continuousAccount(createState({...input,mode:undefined,start,end,title:'Mi cuenta corriente',kind:'investment',target:0,reward:0},m,now),now);
+ }
  const startsAt=Date.parse(input.start+'T00:00:00Z'), endsAt=Date.parse(input.end+'T23:59:59Z');
  if(!Number.isFinite(startsAt)||!Number.isFinite(endsAt)||endsAt<=startsAt||endsAt-startsAt>731*DAY||startsAt<Date.parse(day(now)+'T00:00:00Z'))fail('Elige un inicio desde hoy y un final dentro de los próximos dos años.');
  const salary=cents(input.salary), expenses=input.expenses?readExpenses(input.expenses):detailedExpenses({house:cents(input.house),car:cents(input.car),other:cents(input.other)}),reserve=cents(input.reserve),initial=cents(input.initial);
@@ -44,7 +56,7 @@ function addUnits(s,amount,m,now){const n=nav(s,m,now);s.units+=amount/Math.max(
 function removeUnits(s,amount,m,now){const n=nav(s,m,now);s.lastNav=n;s.units=Math.max(0,s.units-amount/Math.max(0.000001,n));s.withdrawn+=amount}
 export function settle(original,m,now){
  if(!original.config)return clone(original);
- const s=clone(original), t=Math.min(now,s.config.endsAt);
+ const s=clone(original), t=s.config.mode==='continuous'?now:Math.min(now,s.config.endsAt);
  s.config.expenses=detailedExpenses(s.config.expenses);
  s.savings ||= 0;
  s.config.dueDays=readDueDays(s.config.dueDays,s.config.expenses);
@@ -73,7 +85,7 @@ export function settle(original,m,now){
  // Orders expire at the challenge deadline; never execute retroactively on a known closing price.
  const pending=[];
  for(const o of s.orders){
-   if(now>s.config.endsAt){log(s,'cancel','Orden cancelada al finalizar el desafío',0,now);continue}
+   if(s.config.mode!=='continuous'&&now>s.config.endsAt){log(s,'cancel','Orden cancelada al finalizar el desafío',0,now);continue}
    const p=m.prices[o.asset];
    if(!fresh(p,now)||p.at<=o.createdAt){pending.push(o);continue}
    const unit=p.eur*100;
@@ -105,6 +117,7 @@ function challengeParameters(input,m,now,start=now){
 export function action(original,m,a,now,{parent=false,currentMarket=m}={}){
  if(!a||typeof a.requestId!=='string'||!/^[\w-]{8,80}$/.test(a.requestId))fail('Identificador de operación inválido.');
  if(['setup','reset','employer','budget','challenge','profile','challenge_save','challenge_update'].includes(a.type)&&!parent)fail('Entra con el PIN parental para tomar esta decisión.');
+ if(original?.config?.mode==='continuous'&&['challenge','challenge_save','challenge_update','save'].includes(a.type))fail('Tu dinero se guarda en la cuenta corriente. Ya no se usan desafíos ni una hucha separada.');
  if(original?.recentIds?.includes(a.requestId))return original;
  if(a.type==='open_account'){
   if(original)return original;
@@ -235,7 +248,7 @@ export function action(original,m,a,now,{parent=false,currentMarket=m}={}){
   if(!s.lessons.includes('DEPOSIT'))fail('Completa primero la ficha del plazo fijo.');
   const amount=positive(a.amount),term=Number(a.term);
   if(![30,90,180].includes(term))fail('Elige un plazo válido.');
-  if(now+term*DAY>s.config.endsAt)fail('El plazo fijo debe vencer antes del final del desafío.');
+  if(s.config.mode!=='continuous'&&now+term*DAY>s.config.endsAt)fail('El plazo fijo debe vencer antes del final del desafío.');
   if(!m.rate||now-m.rate.fetchedAt>36*3600000||now-Date.parse(m.rate.date)>7*DAY)fail('La referencia del BCE aún no está actualizada.');
   if(amount>info.available)fail('No hay saldo libre suficiente.');
   const rate=m.rate.annualPct;if(rate<0)fail('La referencia actual es negativa: revisa la ficha antes de abrir nuevos plazos.');

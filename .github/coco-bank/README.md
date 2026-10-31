@@ -64,3 +64,11 @@ The child sees receive → pay → save, a single next step, a concrete amount r
 The original private Worker name is retained to preserve deployment, database and cron bindings. The daily job pages through all saved accounts. The historical ADMIN_ID export is retained only for regression fixtures; it is not used for authorization or data selection.
 
 Validation: Node financial/navigation tests plus a real in-memory SQLite isolation test for two verified users, attempted owner-ID spoofing, foreign parental tickets and locking another account. Browser QA uses synthetic state at 320 and 390 CSS px. Live publication must additionally verify the catalogue placement and matching dimensions. No fabricated authenticated production sessions.
+
+## Current account release · 3.0.0 · 31 October 2026
+
+Diego requested removal of goals. The UI now has income/bills setup only, monthly household payments, current-account saving (no transfer required), and visible deposit/bond-fund/stock instruments. The default practice budget includes rent, utilities, car, food, school and private health cover. Existing configured budgets and issued bills retain their values.
+
+On next authenticated access or daily settlement, old accounts migrate idempotently to continuous operation: no challenge deadline, current market snapshots, payroll preserved, savings merged into cash with a ledger entry. Old goal configuration is archived in legacyGoal; balances, positions and issued receipts are retained. New accounts require no objective or end date. Legacy engine behavior remains for regression fixtures, but live existing accounts migrate before processing actions.
+
+Verification: financial regression, account migration, continuous payroll, deposit maturity, navigation, no-transfer saving, goal removal and account isolation tests.

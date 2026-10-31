@@ -1,10 +1,10 @@
-import {action,settle,summary,CATALOG} from './engine.mjs';
+import {action,settle,summary,CATALOG,continuousAccount} from './engine.mjs';
 import {refreshMarket} from './market.mjs';
 import {renderApp} from './ui.mjs';
 import {parentStatus,parentAction,requireParent} from './parent.mjs';
 export const ADMIN_ID='88c250d6-3f3c-4e82-95ea-951dd914949d';
 const ORIGINS=new Set(['https://www.cocoenforma.com','https://cocoenforma.com']);
-const VERSION='2.1.0-cashflow';
+const VERSION='3.0.0-current-account';
 export async function authenticate(request,env,fetcher=fetch){
  const auth=request.headers.get('Authorization');if(!/^Bearer [A-Za-z0-9._-]{20,8192}$/.test(auth||''))return false;
  const r=await fetcher(env.SUPABASE_URL+'/auth/v1/user',{headers:{Authorization:auth,apikey:env.SUPABASE_PUBLISHABLE_KEY},signal:AbortSignal.timeout(8000)});
@@ -22,9 +22,10 @@ async function commit(env,userId,s,rev){
 async function advance(env,userId,mutation,parent=false){
  for(let attempt=0;attempt<4;attempt++){
   const {state,rev}=await readState(env,userId),now=Date.now();
-  const m=await market(env,state?.config?Math.min(now,state.config.endsAt):now);
+  const account=continuousAccount(state,now);
+  const m=await market(env,now);
   const currentMarket=mutation?.type==='challenge'?await market(env,now):m;
-  const next=mutation?action(state,m,mutation,now,{parent,currentMarket}):(state?settle(state,m,now):null);
+  const next=mutation?action(account,m,mutation,now,{parent,currentMarket}):(account?settle(account,m,now):null);
   if(JSON.stringify(next)===JSON.stringify(state)||await commit(env,userId,next,rev))return {state:next,market:currentMarket,summary:next?.config?summary(next,currentMarket,now):null,serverTime:now,catalog:CATALOG,version:VERSION,parent:await parentStatus(env,userId)};
  }
  throw new Error('Hay otra operación en curso. Vuelve a intentarlo.');

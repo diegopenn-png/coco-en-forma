@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {action,continuousAccount,settle,summary,DAY} from '../src/engine.mjs';
+import {nextPayday} from '../src/navigation.mjs';
+const now=Date.parse('2026-10-31T12:00Z');
+const market={prices:{},rate:{annualPct:2.4,fetchedAt:now},events:[]};
+const run=(s,a,t=now)=>action(s,market,{requestId:crypto.randomUUID(),...a},t,{parent:true});
+const config={mode:'continuous',salary:10,initial:0,reserve:.5,expenses:{rent:3,electricity:.5,car_loan:.8,food:1.2,school:.8,health_insurance:.3}};
+const fixture=()=>run(run(run(null,{type:'open_account',name:'Test'}),{type:'setup',config}),{type:'receive'});
+test('no target or end date required; salaries and bills continue beyond old goal term',()=>{const s=fixture();assert.equal(s.config.endsAt,null);assert.equal(s.config.kind,'account');const later=Date.parse('2028-10-31T12:00Z');const next=settle(s,market,later);assert.equal(next.months.length,25);assert.equal(summary(next,market,later).finished,false);assert.ok(nextPayday(next.config,later)>later);assert.deepEqual(settle(next,market,later),next);});
+test('migration preserves money, issued bills, investments and payroll; hucha moves exactly once',()=>{const s=fixture();s.config.mode=undefined;s.config.endsAt=now+DAY;s.savings=200;s.cash-=200;const original=structuredClone(s),wealth=summary(s,market,now).netWorth;const migrated=continuousAccount(s,now);assert.deepEqual(s,original);assert.equal(migrated.cash,s.cash+200);assert.equal(migrated.savings,0);assert.equal(summary(migrated,market,now).netWorth,wealth);assert.deepEqual(migrated.bills,s.bills);assert.deepEqual(migrated.holdings,s.holdings);assert.equal(continuousAccount(migrated,now),migrated);assert.equal(migrated.config.startsAt,s.config.startsAt);});
+test('continuous account supports deposits without a game deadline and protects unpaid bills',()=>{let s=fixture();s=run(s,{type:'lesson',asset:'DEPOSIT',answer:'locked'});assert.throws(()=>run(s,{type:'deposit',amount:9,term:180}));s=run(s,{type:'deposit',amount:1,term:180});assert.equal(s.deposits[0].endsAt,now+180*DAY);s=settle(s,market,now+180*DAY);assert.equal(s.deposits.length,0);assert.ok(s.investmentCash>1000);assert.throws(()=>run(s,{type:'challenge_save',config:{}}),/Ya no se usan/);});
