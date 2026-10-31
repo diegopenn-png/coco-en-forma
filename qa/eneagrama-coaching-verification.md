@@ -1,3 +1,16 @@
+# Actualización editorial · 31 de octubre de 2026
+
+Versión del informe: `2026-10-31-coaching-2`. Sustituye el formato de 13 páginas descrito en el registro histórico inferior.
+
+- Siete páginas: mapa, lectura personal, ejemplo con creencia/alternativa, ocho áreas sin duplicarlas por tendencia, experimento semanal y referencia breve.
+- Modelo compartido web/PDF. Síntesis de dos perspectivas cuando la segunda media es única; los empates no asignan consejos a ámbitos arbitrarios.
+- Ejemplos marcados como ilustrativos; no se infieren respuestas individuales ni biografía. Infancia y adolescencia tienen consignas distintas y no reciben tipo dominante.
+- Agente editorial reutilizable separado del motor determinista de descarga. No se añaden llamadas de IA ni pagos por generación.
+- Pruebas locales: puntuación y PDF, todos los focos individuales, empates, edades 6/11/12/17/18/99, reflexiones largas, UI, navegación y compartir. Muestras públicas ficticias; informes personales fuera del repositorio.
+- La publicación se verifica mediante CI y el campo `eneagrama_report_version` de salud. Este registro de preparación no sustituye esa comprobación.
+
+---
+
 # Coco Eneagrama · verificación del 31 de octubre de 2026
 
 ## Resultado y alcance

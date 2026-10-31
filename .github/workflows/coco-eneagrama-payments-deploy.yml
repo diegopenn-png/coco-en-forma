@@ -38,6 +38,7 @@ jobs:
         working-directory: eterna-worker
       - run: npm run check
         working-directory: eterna-worker
+      - run: node --test qa/explora/engine.test.mjs qa/explora/coaching.test.mjs
       - name: Upload candidate preserving existing settings and secrets
         working-directory: eterna-worker
         shell: bash
@@ -49,17 +50,17 @@ jobs:
           [[ "$preview_url" =~ ^https://[0-9a-f-]+-coco-eterna-v159\.chatinmobiliario\.workers\.dev$ ]]
           echo "CANDIDATE_VERSION=$version_id" >> "$GITHUB_ENV"
           curl --fail --silent --show-error "$preview_url/health" > /tmp/eneagrama-health.json
-          node -e 'const d=require("/tmp/eneagrama-health.json");if(!d.eneagrama_payments||!d.supabase_configured||!d.stripe_configured)process.exit(1)'
+          node -e 'const d=require("/tmp/eneagrama-health.json");if(!d.eneagrama_payments||d.eneagrama_report_version!=="2026-10-31-coaching-2"||!d.supabase_configured||!d.stripe_configured)process.exit(1)'
           status="$(curl --silent --output /tmp/eneagrama-denied.json --write-out '%{http_code}' -H 'Origin: https://cocoenforma.com' "$preview_url/v1/eneagrama/access")"
           test "$status" = 401
       - name: Deploy verified candidate
         working-directory: eterna-worker
-        run: npx wrangler versions deploy "$CANDIDATE_VERSION@100%" --name coco-eterna-v159 --message 'Coco Eneagrama EUR15 single-use reports and unlimited owner' --yes
+        run: npx wrangler versions deploy "$CANDIDATE_VERSION@100%" --name coco-eterna-v159 --message 'Coco Eneagrama focused coaching report v2' --yes
       - name: Verify production
         run: |
           for attempt in {1..12}; do
             curl --fail --silent --show-error --header 'Cache-Control: no-cache' "https://coco-eterna-v159.chatinmobiliario.workers.dev/health?verify=${GITHUB_SHA}-${attempt}" > /tmp/eneagrama-live.json
-            if node -e 'const d=require("/tmp/eneagrama-live.json");console.log({eneagrama:d.eneagrama_payments,auth:d.supabase_configured,stripe:d.stripe_configured});if(!d.eneagrama_payments||!d.supabase_configured||!d.stripe_configured)process.exit(1)'; then
+            if node -e 'const d=require("/tmp/eneagrama-live.json");console.log({eneagrama:d.eneagrama_payments,auth:d.supabase_configured,stripe:d.stripe_configured});if(!d.eneagrama_payments||d.eneagrama_report_version!=="2026-10-31-coaching-2"||!d.supabase_configured||!d.stripe_configured)process.exit(1)'; then
               exit 0
             fi
             sleep 5

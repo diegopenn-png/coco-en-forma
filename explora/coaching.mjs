@@ -1,6 +1,6 @@
 // Original reflective coaching prompts, not a validated personality interpretation.
 import {TYPES} from './types.mjs';
-export const REPORT_PAGES=13;
+export const REPORT_PAGES=7;
 export const AREAS=[
  {id:'relationships',name:'Relaciones y pareja',child:'Amistades',question:'¿Qué necesito expresar y qué estoy suponiendo sin preguntar?'},
  {id:'family',name:'Familia y convivencia',child:'Familia y convivencia',question:'¿Qué acuerdo pequeño haría más fácil convivir esta semana?'},
