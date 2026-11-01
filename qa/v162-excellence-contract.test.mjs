@@ -8,9 +8,9 @@ const qaDir=path.dirname(fileURLToPath(import.meta.url));
 const rootDir=path.dirname(qaDir);
 const read=file=>fs.readFileSync(path.join(rootDir,file),"utf8");
 
-test("all 13 experiences receive a concise goal and first-use guide",()=>{
+test("all 14 experiences receive a concise goal and first-use guide",()=>{
   const layer=read("coco-excellence-v160934.js");
-  const ids=["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","cocomed","futbol","padel"];
+  const ids=["conecta","numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","cocomed","futbol","padel"];
   ids.forEach(id=>assert.match(layer,new RegExp(`\\b${id}:\\{name:`),id));
   assert.match(layer,/games:Object\.keys\(GAME\)\.length/);
   assert.match(layer,/\.cocoGameCard,#cocoApp \.cocoMiniJuego/);
@@ -18,7 +18,7 @@ test("all 13 experiences receive a concise goal and first-use guide",()=>{
   assert.match(layer,/else card\.appendChild\(box\)/);
   assert.match(layer,/\.cocoMiniJuego\[data-coco-excellence='1'\]\{grid-template-columns:82px minmax\(0,1fr\)/);
   assert.match(layer,/\.cocoMiniJuego\[data-coco-excellence='1'\]>\.cocoExcellenceMeta\{grid-column:1\/-1;grid-row:3/);
-  assert.match(layer,/\.cocoMiniJuego\[data-coco-kind='tool'\]>\.cocoExcellenceMeta\{grid-row:4\}/);
+  assert.match(layer,/\.cocoMiniJuego\[data-coco-kind='tool'\]>\.cocoExcellenceMeta\{grid-row:3\}/);
   assert.match(layer,/observer\.observe\(document\.body/);
   assert.match(layer,/\[250,700,1600,3200\]\.forEach/);
   assert.match(layer,/className="cocoExGuide"/);
@@ -75,7 +75,7 @@ test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   assert.match(html,/coco-excellence-v160934\.js\?v=160960/);
   assert.match(html,/eterna-v159\.js\?v=160114/);
   assert.match(html,/coco-v144-core\.js\?v=15001/);
-  assert.match(sw,/coco-en-forma-v160\.100\.19-eterna-six-modes-budget-fix/);
+  assert.match(sw,/coco-en-forma-v160\.100\.49-ciudad/);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión para abrir /);

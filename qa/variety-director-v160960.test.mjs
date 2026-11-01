@@ -27,10 +27,10 @@ function harness() {
   return { window, rotation, calls };
 }
 
-test("the variety director covers the 13 active experiences without touching product contracts", () => {
+test("the variety director covers the 14 active experiences without touching product contracts", () => {
   const { window } = harness();
   const audit = window.CocoVarietyDirectorV160960.audit();
-  assert.equal(audit.activeGames, 13);
+  assert.equal(audit.activeGames, 14);
   assert.equal(audit.rotationWrapped, true);
   assert.equal(audit.balancedCategories, true);
   assert.equal(audit.balancedAnswers, true);
@@ -87,7 +87,7 @@ test("the release loads the director after rotation and caches it offline", () =
   const serviceWorker = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
   assert.ok(index.indexOf("coco-v142-runtime.js?v=160100") < index.indexOf("coco-variety-director-v160960.js?v=160960"));
   assert.match(serviceWorker, /"\.\/coco-variety-director-v160960\.js"/);
-  assert.match(serviceWorker, /v160\.100\.19-eterna-six-modes-budget-fix/);
+  assert.match(serviceWorker, /v160\.100\.49-ciudad/);
 });
 
 test("every active experience exposes three deterministic daily focus variants", () => {
@@ -97,9 +97,9 @@ test("every active experience exposes three deterministic daily focus variants",
   vm.createContext(sandbox);
   vm.runInContext(excellenceSource, sandbox);
   const audit = window.CocoExcellenceV160934.audit();
-  assert.equal(audit.games, 13);
+  assert.equal(audit.games, 14);
   assert.equal(audit.dynamicDailyMissions, true);
-  assert.equal(audit.focusVariants, 39);
+  assert.equal(audit.focusVariants, 42);
   assert.equal(window.CocoExcellenceV160934.dailyFocus("calculo"), window.CocoExcellenceV160934.dailyFocus("calculo"));
   assert.notEqual(window.CocoExcellenceV160934.dailyFocus("calculo"), null);
 });
