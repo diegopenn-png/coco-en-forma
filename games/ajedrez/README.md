@@ -10,7 +10,7 @@ Static chess game at `/games/ajedrez/`, using the official Coco icon. Standard p
 - One standard PGN, local settings and tutorial/challenge completion are stored in this browser. Not account-synced, not connected to Coco's general ranking or reports. Switching learning modes preserves the saved standard game.
 - Six legal lessons; six independently verified challenges; two optional board finishes unlock after 2 and 4 challenges. Standard play never requires these.
 - Catalogue entry deliberately has its own data attribute and capture handler so the legacy daily game limiter cannot prevent standard play.
-- Assets are included in the existing Coco service worker cache, version v160.100.44-ajedrez.
+- Assets are included in the existing Coco service worker cache, version v160.100.45-ajedrez-coco.
 
 ## Validation
 
@@ -22,7 +22,9 @@ Browser QA on a local preview: standard AI reply after e4, optional hint, undo o
 
 `pieces.png`: native built-in image generation, transparent sprite sheet. Prompt: twelve futuristic metallic chess pieces in a regular six-column/two-row grid, Cybertruck-inspired folded steel; top row silver/cyan, bottom charcoal/amber; order king, queen, bishop, horse knight, rook, pawn; consistent camera and square cells; no logos or text.
 
-`cover.png`: the approved concept illustration generated earlier in the conversation, used as the social and catalogue image. Actual gameplay uses the interactive board and the separate sprites, not an image of a board. Original prompt: futuristic chess interface in Spanish, faceted brushed steel, silver/cyan and graphite/amber teams, large board, robotic horse knight, header “AJEDREZ DEL FUTURO”, navigation, optional hint and overhead view. Both originals remain unchanged.
+`cover-coco-v2.jpg`: the catalogue and social image, built from Coco’s existing native SVG card family by `scripts/build-chess-card.py`, using the exact official logo.
+
+`cover.png`: the original concept illustration, retained as a historical asset; it is no longer the catalogue or social image. Actual gameplay uses the interactive board and the separate sprites, not an image of a board. Original prompt: futuristic chess interface in Spanish, faceted brushed steel, silver/cyan and graphite/amber teams, large board, robotic horse knight, header “AJEDREZ DEL FUTURO”, navigation, optional hint and overhead view. Both originals remain unchanged.
 
 Deployment: existing GitHub Pages repository `diegopenn-png/coco-en-forma`, main. No new service or subscription.
 
@@ -53,3 +55,11 @@ Publication is pending explicit user authorization: automatic approval review re
 Recovered the implementation after the user reported a ChatGPT ConversationDetailError. Re-ran all 11 tests successfully, all first-party JavaScript syntax checks, and whitespace checks excluding the unchanged third-party chess.js distribution. Rechecked the actual UI handlers with jsdom: two-player checkmate, undo, lesson and challenge completion, preserving the standard PGN while changing modes, back navigation and resume all passed. Visual verification could not be repeated in this session because the local Playwright browser executable is unavailable; physical iPhone/PWA and authenticated-menu checks remain unverified.
 
 The automatic approval reviewer rejected publication to `main` again because it did not accept the recovered authorization as sufficient evidence for that production action. Do not retry production publication without new explicit approval. The preparation branch `codex/coco-ajedrez-ready-20261101` is for reviewing and preserving the code only; it does not make the game live on cocoenforma.com. Next step: obtain explicit permission to publish this chess implementation to `main`, then verify Pages deployment and live gameplay.
+
+## Coco visual integration and iPhone navigation · 1 November 2026
+
+Replaced the standalone dark shell with Coco’s Lilita One / Fredoka typography, light cards, blue/purple title panel and orange primary actions. The illustration follows the existing colourful game-card family and preserves the official logo. Existing metallic pieces and chess rules are unchanged.
+
+At widths up to 760 px the two navigation controls are fixed to the bottom of the viewport, with 52 px minimum targets, safe-area bottom/left/right spacing and matching content clearance. The header has a safe-area top inset. Desktop keeps a sticky header with safe-area spacing. The PWA cache and stylesheet URL were updated for the release.
+
+Validation before publication: all 11 existing tests, first-party entry syntax and diff whitespace checks pass. The local-preview browser could not access the local server; visual verification must use the published site. A physical iPhone/PWA remains outside this browser’s test coverage.
