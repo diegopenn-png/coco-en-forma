@@ -23,7 +23,10 @@ Online rooms last 30 days. Exiting the game preserves the seat. A server deadlin
 
 - `node --test qa/ciudad.test.mjs qa/ciudad-online.test.mjs`: 11 content, game and handler tests, including complete six-player matches, ties, ownership, consent, auction, deck exhaustion, simultaneous writes, authorization and timeouts.
 - `COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node qa/ciudad-ui.test.cjs`: six-player local flow, cards, purchases, save/resume, online login/lobby, turn ownership and offline guards. Auth transport here is stubbed.
+- `COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node qa/ciudad-catalogue.test.cjs`: both catalogue variants place Ciudad immediately after Coco Bank, keep the no-score marker, avoid duplicates and share the correct game link.
 - `python qa/ciudad-online-live.py /private/test-fixture.json`: actual Auth, private room/RLS, seventh-player denial, wrong turns, replay rejection, Realtime synchronization and resume using seven isolated QA accounts. Never commit the fixture.
 - `qa/ciudad-layout.html`: live responsive harness at 320×568, 390×740 and 430×820. It cannot emulate physical iPhone safe areas.
 
 The SQL setup is `supabase-coco-ciudad.sql`; production migration `coco_city_private_six_player_rooms` was applied during implementation. Do not apply it again. Function v1 was deployed using the exact engine/content in this directory. No existing table or ranking was modified.
+
+Live verification on 2026-11-01 passed with seven isolated registered QA accounts: six admitted, seventh denied, participant-only reads, direct writes denied, host-only start, 12 server dice rolls, six complete turns, 22 exact matching WebSocket states, rejected wrong turns/stale retries, and the sixth player resuming the same saved board. The QA room was then closed, all seven fixture accounts disabled and their sessions revoked. No real player account was used. Browser rendering and production web/PWA delivery still need to be checked on the published revision.
