@@ -16,7 +16,7 @@ const cards = [
 
 test("the six card thumbnails are small local WebP assets", () => {
   for (const filename of cards) {
-    const url = new URL(`../assets/tarjetas/${filename}`, import.meta.url);
+    const url = new URL(`../assets/tarjetas/premium-v160127/${filename}`, import.meta.url);
     const bytes = readFileSync(url);
     assert.equal(bytes.subarray(0, 4).toString("ascii"), "RIFF", filename);
     assert.equal(bytes.subarray(8, 12).toString("ascii"), "WEBP", filename);
@@ -24,15 +24,15 @@ test("the six card thumbnails are small local WebP assets", () => {
   }
 });
 
-test("visible cards prefer local thumbnails while preserving original downloads", () => {
+test("visible cards and downloads use the same six new reward illustrations", () => {
   const catalogStart = html.indexOf("var TARJETAS_COCO=");
   const catalogEnd = html.indexOf("];function B", catalogStart);
   const catalog = html.slice(catalogStart, catalogEnd);
   for (const filename of cards) {
-    assert.match(html, new RegExp(`mini:\"\\./assets/tarjetas/${filename.replaceAll(".", "\\.")}\"`));
-    assert.match(serviceWorker, new RegExp(`\\./assets/tarjetas/${filename.replaceAll(".", "\\.")}`));
+    assert.match(html, new RegExp(`mini:\"\\./assets/tarjetas/premium-v160127/${filename.replaceAll(".", "\\.")}\"`));
+    assert.match(serviceWorker, new RegExp(`\\./assets/tarjetas/premium-v160127/${filename.replaceAll(".", "\\.")}`));
   }
-  assert.equal((catalog.match(/https:\/\/imagecdn\.123inventatuweb\.com\//g) || []).length, 6);
+  assert.equal((catalog.match(/url:"\.\/assets\/tarjetas\/premium-v160127\/[^"\n]+\.jpg"/g) || []).length, 6);
   assert.match(html, /src="'\+\(t\.mini\|\|t\.url\)\+'"/);
   assert.match(html, /src="'\+\(b\.mini\|\|b\.url\)\+'"/);
   assert.match(html, /data-fallback-src/);
@@ -40,6 +40,6 @@ test("visible cards prefer local thumbnails while preserving original downloads"
 });
 
 test("the PWA pre-caches thumbnails under a new release key", () => {
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.50-landings"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.51-hero-ideas"/);
   assert.match(serviceWorker, /\.concat\(CARD_THUMBNAILS(?:,|\))/);
 });

@@ -39,14 +39,14 @@ test("first visits load every production presentation layer without depending on
 });
 
 test("PWA clients request and activate the current release instead of retaining an old device cache", () => {
-  assert.match(index, /manifest\.webmanifest\?v=160108/);
+  assert.match(index, /manifest\.webmanifest\?v=160127/);
   assert.match(index, /sw\.js\?v=160118-r1/);
   assert.match(index, /updateViaCache:"none"/);
   assert.match(index, /registration\.update\(\)/);
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.50-landings"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.51-hero-ideas"/);
   for (const asset of [
     "coco-scoring-v160110.js",
     "coco-variety-director-v160960.js",

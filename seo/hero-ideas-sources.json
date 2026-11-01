@@ -1,0 +1,127 @@
+{
+  "release": "v160127",
+  "created": "2026-11-01",
+  "generator": "image_gen.imagegen (native image tool)",
+  "reference_style": "Approved Coco premium-v160126 game thumbnails: navy, gold and cyan; 3D Coco with orange headband and exposed brain.",
+  "encoding": "Artwork generated as complete images, resized to 1200 × 630 JPEG and 720 × 378 WebP; no painting or retouching.",
+  "assets": [
+    {
+      "id": "hero",
+      "source_image": "exec-719cce75-7de8-4d65-ad33-1f43e1a4425f.png",
+      "copy": [
+        "COCO EN FORMA",
+        "Juegos para la mente y apoyo escolar",
+        "Con Coco y Eterna."
+      ],
+      "use": [
+        "home launcher",
+        "game catalogue"
+      ]
+    },
+    {
+      "id": "ideas",
+      "source_image": "exec-4e7252e4-e216-4a2d-9d98-6ea8630c0869.png",
+      "copy": [
+        "PARTICIPA EN COCO",
+        "Tu próxima gran idea",
+        "Puede convertirse en un juego."
+      ],
+      "use": [
+        "suggestion card",
+        "compact suggestion entry"
+      ]
+    },
+    {
+      "id": "pwa-social-icon",
+      "source_image": "exec-a9f14445-8b9f-4273-85e6-eafc3495e9b8.png",
+      "use": [
+        "PWA all platforms",
+        "root social preview: exact same icon-512.png",
+        "profile avatar"
+      ],
+      "encoding": "Generated square resized only; no retouching. Versioned PNG paths; legacy icons replaced too."
+    }
+  ],
+  "native_ui": "Montserrat fonts from assets/fonts; existing suggestion form and click handlers preserved.",
+  "reward_cards": [
+    {
+      "id": "coco",
+      "source_image": "exec-0ace2d41-78f9-4e2f-977e-615c63b47ef2.png",
+      "full": "assets/tarjetas/premium-v160127/coco.jpg",
+      "thumbnail": "assets/tarjetas/premium-v160127/coco-mini.webp"
+    },
+    {
+      "id": "coco-en-racha",
+      "source_image": "exec-5be5e10f-ba1c-4f5b-bc8e-7ed74f72b602.png",
+      "full": "assets/tarjetas/premium-v160127/coco-en-racha.jpg",
+      "thumbnail": "assets/tarjetas/premium-v160127/coco-en-racha-mini.webp"
+    },
+    {
+      "id": "coco-campeon",
+      "source_image": "exec-69adb1a9-1ce6-4a48-b849-3e6e46e7ef70.png",
+      "full": "assets/tarjetas/premium-v160127/coco-campeon.jpg",
+      "thumbnail": "assets/tarjetas/premium-v160127/coco-campeon-mini.webp"
+    },
+    {
+      "id": "coco-heroe",
+      "source_image": "exec-27a227a5-b1e7-4f3d-bbbc-714b294eeb7d.png",
+      "full": "assets/tarjetas/premium-v160127/coco-heroe.jpg",
+      "thumbnail": "assets/tarjetas/premium-v160127/coco-heroe-mini.webp"
+    },
+    {
+      "id": "coco-astronauta",
+      "source_image": "exec-b2a1d246-6dfc-4244-88fd-58618fce240d.png",
+      "full": "assets/tarjetas/premium-v160127/coco-astronauta.jpg",
+      "thumbnail": "assets/tarjetas/premium-v160127/coco-astronauta-mini.webp"
+    },
+    {
+      "id": "coco-leyenda",
+      "source_image": "exec-1e6d5d14-2017-49b3-adcf-ce5a970c5838.png",
+      "full": "assets/tarjetas/premium-v160127/coco-leyenda.jpg",
+      "thumbnail": "assets/tarjetas/premium-v160127/coco-leyenda-mini.webp"
+    }
+  ],
+  "shared_theme": "assets/styles/coco-unified-v160127.css",
+  "themed_pages": [
+    "suscripciones-y-desistimiento.html",
+    "privacidad-menores.html",
+    "politica-de-cookies.html",
+    "centro-de-confianza.html",
+    "proteccion-de-datos.html",
+    "eterna.html",
+    "terminos-y-condiciones.html",
+    "eterna-captacion.html",
+    "politica-de-privacidad.html",
+    "informacion-ia-eterna.html",
+    "index.html",
+    "aviso-legal.html",
+    "eterna-landing-captacion-v1.html",
+    "juego/calculo/index.html",
+    "juego/diferencias/index.html",
+    "juego/verdadero/index.html",
+    "juego/tiempo/index.html",
+    "juego/numeros/index.html",
+    "juego/palabras/index.html",
+    "juego/cocomed/index.html",
+    "juego/coco-corre/index.html",
+    "juego/sudoku/index.html",
+    "juego/series/index.html",
+    "juego/padel/index.html",
+    "juego/bank/index.html",
+    "juego/ajedrez/index.html",
+    "juego/crucigrama/index.html",
+    "juego/conecta/index.html",
+    "juego/memoria/index.html",
+    "juego/sopa/index.html",
+    "juego/ciudad/index.html",
+    "juego/futbol/index.html",
+    "juegos/index.html",
+    "explora/jugar.html",
+    "explora/condiciones.html",
+    "explora/metodo.html",
+    "explora/index.html",
+    "games/ajedrez/index.html",
+    "games/conecta/index.html",
+    "games/ciudad/index.html"
+  ]
+}

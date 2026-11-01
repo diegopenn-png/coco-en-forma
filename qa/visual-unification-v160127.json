@@ -1,0 +1,116 @@
+{
+  "results": [
+    {
+      "page": "public home",
+      "width": 320,
+      "overflow": false,
+      "suggestion_opens": true
+    },
+    {
+      "page": "public home",
+      "width": 390,
+      "overflow": false,
+      "suggestion_opens": true
+    },
+    {
+      "page": "public home",
+      "width": 768,
+      "overflow": false,
+      "suggestion_opens": true
+    },
+    {
+      "page": "public home",
+      "width": 1440,
+      "overflow": false,
+      "suggestion_opens": true
+    },
+    {
+      "page": "synthetic profile",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "page": "synthetic profile",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "synthetic profile",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "page": "synthetic profile",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "page": "suggestion form",
+      "mocked_failure_retry_success": true,
+      "real_messages_sent": 0
+    },
+    {
+      "page": "reward card",
+      "download": "coco.jpg"
+    },
+    {
+      "page": "isolated Bank",
+      "width": 390,
+      "overflow": false,
+      "font": "CocoMontserrat"
+    },
+    {
+      "page": "/juegos/",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "/juego/ajedrez/",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "/games/ajedrez/",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "/games/ciudad/",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "/games/conecta/",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "/explora/",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "/explora/jugar.html",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "/eterna.html",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "page": "/politica-de-privacidad.html",
+      "width": 390,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "network": "API responses mocked, no live writes",
+  "regression": {
+    "tests": 119,
+    "passed": 119,
+    "failed": 0
+  },
+  "bank_synthetic_flow": "passed: onboarding, PIN, allowance, catalogue, quiz, buy/cancel, deposit, lab, back/exit"
+}
