@@ -502,8 +502,8 @@
 <script src="./supabase-js-2.112.3.min.js?v=15000"></script>
 <link rel="stylesheet" href="./eterna-v159.css?v=160980">
 </head><body>
-<script>window.COCO_VERSION="2026-08-20-v155.0-identidad-unificada";window.COCO_GENERAL_RANKING_IDS_V153=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol","conecta"]);var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://www.cocoenforma.com/icon-512.png',correo:'info@cocoenforma.com',privacidad:'https://www.cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',eternaEndpoint:'https://coco-eterna-v159.chatinmobiliario.workers.dev'};</script>
-<script id="coco-scoring-v160110" src="./coco-scoring-v160110.js?v=160122"></script>
+<script>window.COCO_VERSION="2026-08-20-v155.0-identidad-unificada";window.COCO_GENERAL_RANKING_IDS_V153=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol","conecta","ajedrez"]);var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://www.cocoenforma.com/icon-512.png',correo:'info@cocoenforma.com',privacidad:'https://www.cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',eternaEndpoint:'https://coco-eterna-v159.chatinmobiliario.workers.dev'};</script>
+<script id="coco-scoring-v160110" src="./coco-scoring-v160110.js?v=16010048"></script>
 <style id="coco-v134-style">:root{color-scheme:light}
 html{scroll-behavior:smooth}
 body{min-height:100dvh}
@@ -1659,7 +1659,7 @@ if(respuestaGlobal.error){
 
 var JUEGOS_RANKING_V153=[
   ["numeros","Números"],["calculo","Cálculo"],["palabras","Palabras"],["series","Series"],["memoria","Memoria"],
-  ["sudoku","Sudoku"],["sopa","Sopa"],["crucigrama","Crucigrama"],["tiempo","Tiempo"],["verdadero","V/F"],["futbol","Fútbol"],["conecta","Colores"]
+  ["sudoku","Sudoku"],["sopa","Sopa"],["crucigrama","Crucigrama"],["tiempo","Tiempo"],["verdadero","V/F"],["futbol","Fútbol"],["conecta","Colores"],["ajedrez","Ajedrez"]
 ];
 var filas=(Array.isArray(respuestaGlobal.data)?respuestaGlobal.data:[]).map(function(fila){
   var salida={id:fila.jugador_id,jugador_id:fila.jugador_id,apodo:fila.apodo,racha:0};
@@ -6458,8 +6458,9 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   var TOOL_IDS=["padel"];
   var ALL_IDS=GENERAL_IDS.concat(OWN_IDS,TOOL_IDS);
   var TITLE_TO_ID={"Conecta colores":"conecta","Une los números":"numeros","Cálculo veloz":"calculo","Descifra la palabra":"palabras","Series lógicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto Tiempo":"tiempo","Reto tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Fútbol":"futbol","Coco Fútbol":"futbol","Pádel":"padel","Coco Pádel":"padel","Coco Pádel Club":"padel"};
-  var DISPLAY_NAMES={conecta:"Conecta colores",numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Fútbol",padel:"Pádel"};
+  var DISPLAY_NAMES={ajedrez:"Coco Ajedrez · Partida del día",conecta:"Conecta colores",numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Fútbol",padel:"Pádel"};
   var GAME_META={
+    ajedrez:{domain:"Estrategia y planificación",group:"general"},
     conecta:{domain:"Planificación y percepción visoespacial",group:"general"},
     numeros:{domain:"Atención y coordinación visomotora",group:"general",share:"Conecta la secuencia sin repetir casillas."},
     calculo:{domain:"Razonamiento cuantitativo",group:"general"},
@@ -7430,10 +7431,11 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     {id:"visual",label:"Percepción y coordinación visomotora",short:"Percepción, reflejos y respuesta",color:"#f1b917"}
   ];
   var COG_WEIGHTS={
+    ajedrez:{executive:.7,visual:.3},
     conecta:{executive:.6,visual:.4},
     numeros:{executive:.35,speed:.25,visual:.4},calculo:{quant:.65,speed:.25,memory:.1},palabras:{language:.65,memory:.25,speed:.1},series:{quant:.6,executive:.25,memory:.15},memoria:{memory:.8,executive:.2},sudoku:{quant:.45,executive:.4,memory:.15},sopa:{executive:.5,language:.3,visual:.2},crucigrama:{language:.55,memory:.25,quant:.2},tiempo:{speed:.4,executive:.25,quant:.2,memory:.15},verdadero:{quant:.35,language:.25,memory:.2,executive:.2},cocomed:{language:.45,quant:.35,memory:.2},futbol:{memory:.55,executive:.25,visual:.2},padel:{visual:.45,speed:.35,executive:.2}
   };
-  var SCORE_CAPS={conecta:110,numeros:106,calculo:110,palabras:107,series:109,memoria:108,sudoku:111,sopa:106,crucigrama:109,tiempo:107,verdadero:106,cocomed:1000,futbol:114,padel:1000};
+  var SCORE_CAPS={ajedrez:100,conecta:110,numeros:106,calculo:110,palabras:107,series:109,memoria:108,sudoku:111,sopa:106,crucigrama:109,tiempo:107,verdadero:106,cocomed:1000,futbol:114,padel:1000};
   var DEFAULT_WEIGHTS={executive:.4,memory:.2,speed:.2,language:.2};
 
   window.CocoCognitiveCatalog={

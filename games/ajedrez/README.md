@@ -4,7 +4,7 @@ Static chess game at `/games/ajedrez/`, using the official Coco icon. Standard p
 
 ## Short-screen flow and online play
 
-- Home offers local play, online play, learning and challenges. Only the current screen is visible; the board is never appended below setup or instructions.
+- Home offers the daily scoring match, unlimited free play, online play, learning and challenges. Only the current screen is visible; the board is never appended below setup or instructions.
 - Setup and lesson/challenge lists lead directly to the board, reset scroll and place keyboard focus at the screen heading. Back follows the current flow. The bottom mobile navigation respects safe-area insets.
 - Rules, board appearance, move history, export and resignation live in dialogs. The mobile board is sized against the viewport; hints and undo remain available for local games.
 - Online access reuses the main site's Supabase Auth session. Anonymous users sign in with their existing Coco account. Rooms use a random 16-character invitation code (also shareable as a URL fragment); no public directory or messages are sent.
@@ -18,14 +18,14 @@ Static chess game at `/games/ajedrez/`, using the official Coco icon. Standard p
 - Vendored chess.js 1.4.0 (BSD-2-Clause, license beside source) handles legal moves, castling, en passant, four promotion choices, check/mate, stalemate and draws. Source: https://jhlywa.github.io/chess.js/ ; npm tarball `chess.js@1.4.0`.
 - Casual-play convention: automatically ends on third repetition and the 50-move draw condition, explained in the rules panel.
 - Local AI uses iterative alpha-beta search in a module worker, with a bounded local fallback. No paid APIs, network inference, or certified Elo claims.
-- One local standard PGN, local settings and tutorial/challenge completion are stored in this browser. Not account-synced, not connected to Coco's general ranking or reports. Switching learning modes preserves the saved standard game.
+- One local standard PGN, local settings and tutorial/challenge completion are stored in this browser. These free modes are not account-synced and do not award points. Only the server-owned daily match contributes to Coco's general ranking and reports. Switching learning modes preserves the saved standard game.
 - Six legal lessons; six independently verified challenges; two optional board finishes unlock after 2 and 4 challenges. Standard play never requires these.
 - Catalogue entry deliberately has its own data attribute and capture handler so the legacy daily game limiter cannot prevent standard play.
-- Assets are included in the existing Coco service worker cache, version v160.100.47-ajedrez-pantallas.
+- Assets are included in the existing Coco service worker cache, version v160.100.48-ajedrez-diario.
 
 ## Validation
 
-`node --test qa/ajedrez.test.mjs qa/ajedrez-online.test.mjs` — 18 engine and server tests, including authorization, private room membership, legal turns, stale and simultaneous requests, mate, draws and resignation.
+`node --test qa/ajedrez.test.mjs qa/ajedrez-online.test.mjs qa/ajedrez-daily.test.mjs` — 24 engine and server tests, including authorization, private room membership, legal turns, stale and simultaneous requests, mate, draws and resignation.
 
 `COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node qa/ajedrez-ui.test.cjs` — navigation, a single visible screen, no inactive board on entry, start/resume, lesson completion, dialogs, login and private-room UI, ownership of turns, offline guards and preservation of local saves. Install pinned `jsdom@26.1.0` at that prefix first.
 
@@ -89,3 +89,15 @@ Validation before publication: all 11 existing tests, first-party entry syntax a
 
 - Supabase migration `coco_chess_private_online_rooms` and Edge Function `coco-chess` v1 deployed. Three isolated QA accounts verified real Auth, participant-only REST reads, denied client writes, capacity of two, ownership of turns, illegal/stale move rejection, four matching WebSocket updates, mate and resume. The QA accounts were disabled and their rooms expired after testing; no real player data was changed.
 - GitHub chess workflow passed all 18 engine/server checks plus the UI scenarios. Production browser verified the home menu, short setup, board-first entry, local AI reply, dialog controls and return navigation. The full board and bottom navigation fit at 390 × 740 and 320 × 568 in the mobile iframe harness. Native iPhone safe-area behavior remains to be verified on a physical device.
+
+## Partida del día · release completion, 1 November 2026
+
+Recovered the previously deployed `coco_ajedrez_partida_del_dia` migration (20261101190121) and `coco-chess` v2 function source, and completed their missing frontend integration. The migration is preserved as `supabase-coco-ajedrez-daily.sql` for provenance; **it is already applied to production and must not be applied again**. The recovered backend source matches the deployed code; no backend redeployment is required for this frontend release.
+
+- “Puntúa solo la partida del día” appears in both catalogue card variants and inside the chess menu.
+- One match per registered account and Europe/Madrid calendar day, against the server opponent, white pieces, fixed medium difficulty. Win 100, draw 50, loss/resignation 0. No hints, undo, repeat or user-selected scores. Exit saves the latest confirmed state and allows resuming that day; an unfinished prior day cannot be completed after Madrid midnight.
+- The server computes the legal move and its reply. Its transaction locks the daily row, checks user/day/version/status, and writes the finished result once to `partidas`. Existing private multiplayer rooms remain separate and unscored.
+- Chess is included in the site's general ranking column, total, player history and report catalogue (strategy/planning); it is not mandatory for the existing daily streak.
+- The mobile menu remains compact. Daily setup, login and board each have their own screen, with Back and Main Menu accessible.
+
+Checks for this completion: 24 engine/server tests passed; expanded DOM scenarios passed for daily account access, server-confirmed moves, resume, offline guard, completion, next day and unlimited free play. Transactional production database QA (`qa/ajedrez-daily-database.sql`) passed for 100/50/0 results, duplicate/stale rejection, both ranking RPCs, participant RLS and denied forged score inserts. All synthetic SQL records were rolled back. UI authentication and moves in DOM tests use a stubbed API; these are not a live authenticated browser match.

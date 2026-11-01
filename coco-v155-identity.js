@@ -5,6 +5,7 @@
   var DATA={
     eneagrama:{name:"Coco Eneagrama",description:"Explora tus nueve tendencias con una guía de autoconocimiento y un informe personal en PDF.",url:"https://cocoenforma.com/explora/"},
     bank:{name:"Coco Bank",description:"Recibe dinero de juego, paga tus gastos y ahorra para tu meta. Coco te guía paso a paso."},
+    ajedrez:{name:"Coco Ajedrez · Partida del día",description:"Entrena estrategia y planificación. Puntúa solo la partida del día."},
     conecta:{name:"Conecta colores",description:"Planificá rutas y conectá parejas sin cerrar el paso a los demás colores."},
     numeros:{name:"Une los números",description:"Recorre tableros distintos sin repetir casillas: planifica, corrige el camino y entrena la atención visual."},
     calculo:{name:"Cálculo veloz",description:"Combina sumas, restas, tablas, divisiones, porcentajes, medias y operaciones encadenadas según tu nivel."},

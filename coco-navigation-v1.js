@@ -39,4 +39,4 @@
 import('./explora/entry.mjs').catch(()=>{});
 
 // Standalone chess: standard play stays independent from daily missions.
-import('./games/ajedrez/entry.mjs').catch(()=>{});
+import('./games/ajedrez/entry.mjs?v=daily-v1').catch(()=>{});

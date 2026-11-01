@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#eef6fa"><title>Coco Ajedrez · La ciudad del futuro</title><meta name="description" content="Juega al ajedrez estándar sin desafíos, contra la máquina o con otra persona. Aprende y resuelve retos en un tablero futurista de Coco."><link rel="canonical" href="https://cocoenforma.com/games/ajedrez/"><meta property="og:title" content="Coco Ajedrez · La ciudad del futuro"><meta property="og:description" content="Tu próxima jugada empieza aquí. Ajedrez estándar, aprendizaje y desafíos."><meta property="og:image" content="https://cocoenforma.com/games/ajedrez/cover-coco-v2.jpg"><meta property="og:url" content="https://cocoenforma.com/games/ajedrez/"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="../../coco-v2-official-icon-source.png"><link rel="stylesheet" href="style.css?v=screens-v4"><script type="module" src="app.mjs?v=screens-v3"></script></head>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#eef6fa"><title>Coco Ajedrez · La ciudad del futuro</title><meta name="description" content="Juega al ajedrez estándar sin desafíos, contra la máquina o con otra persona. Aprende y resuelve retos en un tablero futurista de Coco."><link rel="canonical" href="https://cocoenforma.com/games/ajedrez/"><meta property="og:title" content="Coco Ajedrez · La ciudad del futuro"><meta property="og:description" content="Tu próxima jugada empieza aquí. Ajedrez estándar, aprendizaje y desafíos."><meta property="og:image" content="https://cocoenforma.com/games/ajedrez/cover-coco-v2.jpg"><meta property="og:url" content="https://cocoenforma.com/games/ajedrez/"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="../../coco-v2-official-icon-source.png"><link rel="stylesheet" href="style.css?v=daily-v1"><script type="module" src="app.mjs?v=daily-v1"></script></head>
 <body data-screen="home">
 <div class="atmosphere" aria-hidden="true"></div>
 <main class="shell">
@@ -11,8 +11,10 @@
   <section id="home" class="screen home-screen" aria-labelledby="homeTitle">
     <div class="heading"><div><h1 id="homeTitle" tabindex="-1">Coco Ajedrez</h1><p>Tu próxima gran jugada.</p></div><span class="home-knight" aria-hidden="true">♞</span></div>
     <h2 class="screen-question">¿Qué te apetece hacer?</h2>
+    <p class="daily-rule">Puntúa solo la partida del día.</p>
     <div class="mode-menu">
-      <button data-mode="standard" class="mode-card play-card"><span class="mode-icon" aria-hidden="true">♟</span><span><strong>Jugar una partida</strong><small>Contra Coco o con otra persona</small></span><span aria-hidden="true">→</span></button>
+      <button id="dailyEntry" class="mode-card daily-card"><span class="mode-icon" aria-hidden="true">★</span><span><strong>Partida del día</strong><small>La única que suma puntos · Hasta 100</small></span><span aria-hidden="true">→</span></button>
+      <button data-mode="standard" class="mode-card play-card"><span class="mode-icon" aria-hidden="true">♟</span><span><strong>Partida libre</strong><small>Sin límite · No suma puntos</small></span><span aria-hidden="true">→</span></button>
       <button id="onlineEntry" class="mode-card online-card"><span class="mode-icon" aria-hidden="true">◎</span><span><strong>Jugar en línea</strong><small>Invita a alguien con cuenta de Coco</small></span><span aria-hidden="true">→</span></button>
       <button data-mode="learn" class="mode-card"><span class="mode-icon" aria-hidden="true">✦</span><span><strong>Aprender a jugar</strong><small>Descubre cómo se mueve cada pieza</small></span><span aria-hidden="true">→</span></button>
       <button data-mode="challenge" class="mode-card"><span class="mode-icon" aria-hidden="true">◇</span><span><strong>Resolver desafíos</strong><small>Encuentra la jugada ganadora</small></span><span aria-hidden="true">→</span></button>
@@ -30,6 +32,15 @@
     <button class="primary" id="start">Empezar a jugar <span aria-hidden="true">→</span></button>
     <button class="secondary" id="resumeSetup" hidden>↶ Continuar mi partida</button>
     <p class="local-note" id="saveNote">Sin reloj. Tu partida se guarda aquí.</p>
+  </section>
+  <section id="dailyLobby" class="screen control-panel" aria-labelledby="dailyTitle" hidden>
+    <span class="eyebrow">UNA PARTIDA QUE PUNTÚA</span><h2 id="dailyTitle" tabindex="-1">Partida del día</h2>
+    <div class="daily-points"><span><b>100</b>Victoria</span><span><b>50</b>Tablas</span><span><b>0</b>Derrota</span></div>
+    <p id="dailyMessage" class="status" role="status" aria-live="polite"></p>
+    <form id="dailyLogin" hidden><label>Correo<input id="dailyEmail" type="email" autocomplete="username" required></label><label>Contraseña<input id="dailyPassword" type="password" autocomplete="current-password" required></label><button class="primary" type="submit">Entrar con mi cuenta</button><a class="text-button" href="../../">Crear cuenta o recuperar acceso →</a></form>
+    <button id="dailyStart" class="primary" hidden>Empezar partida del día</button>
+    <button id="dailyReload" class="secondary" hidden>Volver a comprobar</button>
+    <p class="local-note">Sin pistas ni deshacer. Termina antes de las 00:00, hora de Madrid. Solo el resultado de esta partida cuenta en tu clasificación e informe. Abandonar guarda 0 puntos.</p>
   </section>
   <section id="onlineLobby" class="screen control-panel" aria-labelledby="onlineTitle" hidden>
     <span class="eyebrow">CADA UNO EN SU DISPOSITIVO</span><h2 id="onlineTitle" tabindex="-1">Jugar en línea</h2>
@@ -67,6 +78,7 @@
       <div class="player"><span class="avatar silver" aria-hidden="true">♙</span><div><b id="bottomName">Equipo plata</b><span id="bottomCaption">Blancas · Luz azul</span></div><div id="bottomCaptured" class="captured" aria-label="Piezas capturadas por el equipo inferior"></div><span class="turn-marker" id="bottomTurn">TURNO</span></div>
       <p class="sr-only" id="boardHelp"></p>
       <p id="onlineNotice" class="online-notice" hidden role="status"></p><button id="reconnectRoom" class="secondary" hidden>Reconectar partida</button>
+      <button id="dailyRefresh" class="secondary" hidden>Actualizar partida</button>
       <div class="play-actions"><button id="hint" class="secondary">✦ Pista</button><button id="undo" class="secondary">↶ Deshacer</button><button id="options" class="secondary" aria-haspopup="dialog">••• Opciones</button></div>
       <div id="coach" class="coach" hidden role="status"></div>
       <button id="next" class="primary" hidden>Siguiente desafío →</button><button id="retry" class="text-button" hidden>↻ Repetir</button>
@@ -88,7 +100,7 @@
 </dialog>
 <dialog id="rulesDialog" class="utility-dialog" aria-labelledby="rulesTitle">
   <div class="dialog-heading"><h2 id="rulesTitle">Cómo jugar</h2><button class="round" data-close="rulesDialog" aria-label="Cerrar ayuda">✕</button></div>
-  <div class="dialog-body rules"><p>Toca tu pieza y luego una casilla iluminada. El objetivo es dar jaque mate: amenazar al rey rival sin que pueda escapar.</p><p>El juego permite enroque, captura al paso y coronación a dama, torre, alfil o caballo. No puedes dejar tu rey en jaque. El rey nunca se captura.</p><p>Las tablas por ahogado, material insuficiente, tercera repetición y 50 movimientos sin captura ni movimiento de peón se aplican automáticamente. Las partidas no tienen reloj.</p><p>En «Dos personas», ambos jugáis aquí, por turnos. «Contra Coco» usa un rival local con tres dificultades, sin nivel Elo certificado.</p><p>Las partidas contra Coco, las de dos personas en este dispositivo y los desafíos se guardan en este navegador. Puedes retomar las partidas en línea desde tu cuenta durante 30 días. Solo pueden verlas sus dos participantes. No suman puntos a la clasificación general.</p></div>
+  <div class="dialog-body rules"><p>Toca tu pieza y luego una casilla iluminada. El objetivo es dar jaque mate: amenazar al rey rival sin que pueda escapar.</p><p>El juego permite enroque, captura al paso y coronación a dama, torre, alfil o caballo. No puedes dejar tu rey en jaque. El rey nunca se captura.</p><p>Las tablas por ahogado, material insuficiente, tercera repetición y 50 movimientos sin captura ni movimiento de peón se aplican automáticamente. Las partidas no tienen reloj.</p><p>En «Dos personas», ambos jugáis aquí, por turnos. «Contra Coco» usa un rival local con tres dificultades, sin nivel Elo certificado.</p><p>Las partidas contra Coco, las de dos personas en este dispositivo y los desafíos se guardan en este navegador. Puedes retomar las partidas en línea desde tu cuenta durante 30 días. Solo pueden verlas sus dos participantes. Las partidas libres, en línea, lecciones y desafíos no suman puntos.</p><p><b>Puntúa solo la partida del día.</b> Juegas contra Coco con blancas y dificultad media, sin pistas ni deshacer. Victoria: 100; tablas: 50; derrota o abandono: 0. Se guarda una sola por cuenta y día, hasta las 00:00 de Madrid. Salir al menú no abandona: puedes continuar ese mismo día.</p></div>
   <button class="primary dialog-return" data-close="rulesDialog">Entendido</button>
 </dialog>
 <dialog id="dialog" aria-labelledby="dialogTitle"><form method="dialog"><h2 id="dialogTitle"></h2><p id="dialogText"></p><div id="dialogChoices"></div><button id="dialogCancel" value="cancel" class="secondary">Cancelar</button></form></dialog>

@@ -5,6 +5,7 @@ const $=id=>document.getElementById(id),KEY='coco-chess-standard-v1',PROGRESS='c
 const glyph={p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'};
 let game=new Chess(),mode='standard',screen='home',opponent='ai',human='w',level=2,flipped=false,selected=null,last=null,worker=null,requestId=0,busy=false,ended='',itemIndex=0,solved=false,highlight=null,sound=false,audio=null,theme='steel';
 let onlineApi=null,onlineRoom=null,onlineReady=false,onlineEpoch=0;
+let dailyRoom=null,dailyReady=false,dailyDay='';
 let saved=read(KEY),progress=read(PROGRESS)||{lessons:[],challenges:[]};
 progress.lessons=Array.isArray(progress.lessons)?progress.lessons.filter(x=>LESSONS.some(l=>l.id===x)):[];
 progress.challenges=Array.isArray(progress.challenges)?progress.challenges.filter(x=>CHALLENGES.some(l=>l.id===x)):[];
@@ -13,12 +14,12 @@ function write(key,value){try{localStorage.setItem(key,JSON.stringify(value));re
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('toast').classList.remove('visible'),2800)}
 function beep(capture=false){if(!sound)return;try{audio??=new(window.AudioContext||window.webkitAudioContext)();audio.resume();const osc=audio.createOscillator(),gain=audio.createGain();osc.connect(gain);gain.connect(audio.destination);osc.type='sine';osc.frequency.setValueAtTime(capture?330:640,audio.currentTime);osc.frequency.exponentialRampToValueAtTime(capture?180:840,audio.currentTime+.13);gain.gain.setValueAtTime(.06,audio.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.16);osc.start();osc.stop(audio.currentTime+.17)}catch{}}
 function cancelWork(){requestId++;worker?.terminate();worker=null;busy=false}
-function save(){if(mode!=='standard'||screen!=='play'||opponent==='online')return;saved={pgn:game.pgn(),opponent,human,level,ended,finished:complete(),flipped,updated:Date.now()};if(!write(KEY,saved))toast('No se pudo guardar. Esta partida seguirá disponible mientras mantengas la página abierta.')}
+function save(){if(mode!=='standard'||screen!=='play'||['online','daily'].includes(opponent))return;saved={pgn:game.pgn(),opponent,human,level,ended,finished:complete(),flipped,updated:Date.now()};if(!write(KEY,saved))toast('No se pudo guardar. Esta partida seguirá disponible mientras mantengas la página abierta.')}
 function modal(title,text,choices){return new Promise(resolve=>{const d=$('dialog');$('dialogTitle').textContent=title;$('dialogText').textContent=text;$('dialogChoices').replaceChildren();for(const [value,label]of choices){const b=document.createElement('button');b.value=value;b.textContent=label;b.className='primary';$('dialogChoices').append(b)}d.returnValue='cancel';d.addEventListener('close',()=>resolve(d.returnValue),{once:true});d.showModal()})}
 function selectedArt(type='n',color='w'){const el=$('piecePreview');el.dataset.type=type;el.dataset.color=color}
 function item(){return(mode==='learn'?LESSONS:CHALLENGES)[itemIndex]}
 function complete(){return Boolean(ended)||game.isGameOver()}
-function canMove(){if(opponent==='online')return screen==='play'&&onlineReady&&!busy&&onlineRoom?.status==='active'&&game.turn()===human;return screen==='play'&&!busy&&!ended&&!solved&&(mode!=='standard'||!game.isGameOver())&&(mode!=='standard'||opponent==='local'||game.turn()===human)}
+function canMove(){if(opponent==='daily')return screen==='play'&&dailyReady&&!busy&&dailyRoom?.status==='active'&&game.turn()==='w';if(opponent==='online')return screen==='play'&&onlineReady&&!busy&&onlineRoom?.status==='active'&&game.turn()===human;return screen==='play'&&!busy&&!ended&&!solved&&(mode!=='standard'||!game.isGameOver())&&(mode!=='standard'||opponent==='local'||game.turn()===human)}
 function renderBoard(arrived=''){
  const board=$('board'),focused=document.activeElement?.dataset?.square;board.replaceChildren();board.classList.toggle('inactive',screen!=='play');
  const files=flipped?'hgfedcba':'abcdefgh',ranks=flipped?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1];
@@ -40,8 +41,8 @@ function renderBoard(arrived=''){
  }
  const bottom=flipped?'b':'w',top=bottom==='w'?'b':'w';
  function label(color){return color==='w'?'Equipo plata':'Equipo grafito'}
- $('topName').textContent=screen==='play'&&mode==='standard'&&opponent==='ai'?(top===human?'Tú · '+label(top):'Coco · '+label(top)):label(top);
- $('bottomName').textContent=screen==='play'&&mode==='standard'&&opponent==='ai'?(bottom===human?'Tú · '+label(bottom):'Coco · '+label(bottom)):label(bottom);
+ $('topName').textContent=screen==='play'&&mode==='standard'&&['ai','daily'].includes(opponent)?(top===human?'Tú · '+label(top):'Coco · '+label(top)):label(top);
+ $('bottomName').textContent=screen==='play'&&mode==='standard'&&['ai','daily'].includes(opponent)?(bottom===human?'Tú · '+label(bottom):'Coco · '+label(bottom)):label(bottom);
  $('topCaption').textContent=top==='w'?'Blancas · Luz azul':'Negras · Luz ámbar';$('bottomCaption').textContent=bottom==='w'?'Blancas · Luz azul':'Negras · Luz ámbar';
  $('topTurn').hidden=screen!=='play'||game.turn()!==top||Boolean(ended)||solved||(mode==='standard'&&game.isGameOver());$('bottomTurn').hidden=screen!=='play'||game.turn()!==bottom||Boolean(ended)||solved||(mode==='standard'&&game.isGameOver());
  if(opponent==='online'&&onlineRoom){$('topName').textContent=top==='w'?onlineRoom.white_name:onlineRoom.black_name;$('bottomName').textContent=bottom==='w'?onlineRoom.white_name:onlineRoom.black_name}
@@ -51,21 +52,23 @@ function renderBoard(arrived=''){
 }
 function endMessage(){if(ended)return ended;if(game.isCheckmate())return 'Jaque mate. Gana el equipo '+(game.turn()==='b'?'plata (blancas).':'grafito (negras).');if(game.isStalemate())return 'Tablas por ahogado: no hay jugadas legales y el rey no está en jaque.';if(game.isInsufficientMaterial())return 'Tablas: no queda material suficiente para dar mate.';if(game.isThreefoldRepetition())return 'Tablas por tercera repetición de la posición.';if(game.isDrawByFiftyMoves())return 'Tablas por 50 movimientos sin mover un peón ni capturar.';if(game.isDraw())return 'La partida termina en tablas.';return ''}
 function renderStatus(){
- const isOnline=opponent==='online'&&screen==='play';
+ const isOnline=opponent==='online'&&screen==='play',isDaily=opponent==='daily'&&screen==='play';
  const isStandard=mode==='standard',isOver=isStandard&&complete();$('boardHelp').textContent=screen==='play'?(isStandard?(isOver?endMessage():busy?(isOnline?'Enviando jugada…':'Coco está pensando…'):game.isCheck()?'¡Jaque! Protege a tu rey.':'Turno de '+(game.turn()==='w'?'blancas · Equipo plata':'negras · Equipo grafito')):(solved?'¡Lo has conseguido! Puedes continuar debajo del tablero.':item().instruction)):'Elige un modo y empieza a jugar.';
- for(const [id,route]of[['home','home'],['setup','setup'],['catalog','catalog'],['playing','play'],['onlineLobby','online'],['waitingRoom','waiting']])$(id).hidden=screen!==route;document.body.dataset.screen=screen;document.body.classList.toggle('is-playing',screen==='play');
- $('modeBadge').textContent={standard:'PARTIDA ESTÁNDAR',learn:'APRENDER JUGANDO',challenge:'DESAFÍOS'}[mode];$('playingEyebrow').textContent=$('modeBadge').textContent;
- $('gameMeta').textContent=isStandard?'A tu ritmo · Sin reloj':screen==='play'?`${itemIndex+1} / ${(mode==='learn'?LESSONS:CHALLENGES).length}`:'Elige tu próximo paso';
+ for(const [id,route]of[['home','home'],['setup','setup'],['catalog','catalog'],['playing','play'],['onlineLobby','online'],['waitingRoom','waiting'],['dailyLobby','daily']])$(id).hidden=screen!==route;document.body.dataset.screen=screen;document.body.classList.toggle('is-playing',screen==='play');
+ $('modeBadge').textContent=isDaily?'PARTIDA DEL DÍA':{standard:'PARTIDA ESTÁNDAR',learn:'APRENDER JUGANDO',challenge:'DESAFÍOS'}[mode];$('playingEyebrow').textContent=$('modeBadge').textContent;
+ $('gameMeta').textContent=isDaily?'Única partida que puntúa':isStandard?'A tu ritmo · Sin reloj':screen==='play'?`${itemIndex+1} / ${(mode==='learn'?LESSONS:CHALLENGES).length}`:'Elige tu próximo paso';
  $('back').textContent=screen==='play'||screen==='waiting'?'← Partidas':screen==='home'?'← Volver':'← Inicio';
  $('onlineNotice').hidden=!isOnline;$('reconnectRoom').hidden=!isOnline||onlineReady;
  $('onlineNotice').textContent=onlineReady?'En línea · Tú juegas con '+(human==='w'?'blancas':'negras'):'Sin conexión en vivo. Reconecta para seguir jugando.';
- $('hint').hidden=isOnline;$('undo').hidden=isOnline;$('declineDraw').hidden=!isOnline||!onlineRoom?.draw_offer||onlineRoom.draw_offer===onlineApi?.user?.id;
+ $('hint').hidden=isOnline||isDaily;$('undo').hidden=isOnline;$('declineDraw').hidden=!isOnline||!onlineRoom?.draw_offer||onlineRoom.draw_offer===onlineApi?.user?.id;
  $('resume').hidden=!saved;$('resumeSetup').hidden=!saved;$('aiSettings').hidden=opponent==='local';document.querySelectorAll('[data-opponent]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.opponent===opponent)));$('standardActions').hidden=!isStandard||isOver;$('draw').hidden=opponent!=='local'&&!isOnline;$('draw').disabled=isOnline&&(!onlineReady||busy||onlineRoom?.draw_offer===onlineApi?.user?.id);$('draw').textContent=isOnline?(onlineRoom?.draw_offer===onlineApi?.user?.id?'Tablas propuestas':onlineRoom?.draw_offer?'Aceptar tablas':'Proponer tablas'):'Acordar tablas';$('historyPanel').hidden=!isStandard;
- $('hint').disabled=busy||isOver||solved;$('undo').disabled=busy||!game.history().length||!isStandard||Boolean(ended);$('undo').hidden=!isStandard||isOnline;
+ $('hint').disabled=busy||isOver||solved;$('undo').disabled=busy||!game.history().length||!isStandard||Boolean(ended);$('undo').hidden=!isStandard||isOnline||isDaily;
  $('next').hidden=!solved;$('next').textContent=itemIndex+1<(mode==='learn'?LESSONS:CHALLENGES).length?'Siguiente '+(mode==='learn'?'lección':'desafío')+' →':'Volver al recorrido →';$('retry').hidden=isStandard;
+ $('dailyRefresh').hidden=!isDaily||dailyReady;
  if(screen!=='play')return;
  if(isStandard){$('turnTitle').textContent=isOver?'Partida terminada':busy?(isOnline?'Enviando jugada…':'Coco está pensando…'):isOnline?(game.turn()===human?'Tu turno':'Turno de tu rival'):opponent==='ai'?'Tu turno':game.turn()==='w'?'Turno de las blancas':'Turno de las negras';$('status').textContent=isOver?endMessage():busy?(isOnline?'Confirmando la jugada en la sala…':'Busca la siguiente jugada. Puedes volver al menú cuando quieras.'):isOnline&&onlineRoom?.draw_offer&&onlineRoom.draw_offer!==onlineApi?.user?.id?'Tu rival propone tablas. Puedes aceptarlas en Opciones o seguir jugando.':game.isCheck()?'¡Jaque! Protege a tu rey con una jugada legal.':'Elige una pieza y toca su casilla de destino.'}
  else{$('turnTitle').textContent=solved?'¡Lo has conseguido!':item().title;$('status').textContent=solved?item().success:item().instruction;}
+ if(isDaily){$('turnTitle').textContent=isOver?'Partida del día terminada':busy?'Coco está pensando…':!dailyReady?'Reconecta para continuar':'Partida del día · Tu turno';$('status').textContent=isOver?`${endMessage()} ${dailyRoom.points} puntos guardados.`:!dailyReady?'Tu partida está guardada. Pulsa Actualizar partida.':busy?'Comprobando tu jugada y la respuesta de Coco…':game.isCheck()?'¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.':'Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.';}
  const history=game.history({verbose:true});$('moveCount').textContent=Math.ceil(history.length/2);$('history').replaceChildren();
  for(let i=0;i<history.length;i+=2){const li=document.createElement('li');for(const value of [(i/2+1)+'.',history[i].san,history[i+1]?.san||'…']){const s=document.createElement('span');s.textContent=value;li.append(s)}$('history').append(li)}
  if($('historyPanel').open)$('history').scrollTop=$('history').scrollHeight;
@@ -86,6 +89,7 @@ function chooseSquare(sq){
 }
 async function perform(moves){
  let move=moves[0];if(moves.some(m=>m.promotion)){const pick=await modal('¡Tu peón corona!','Elige la pieza que ocupará su lugar.',[['q','Dama'],['r','Torre'],['b','Alfil'],['n','Caballo']]);if(pick==='cancel')return;move=moves.find(m=>m.promotion===pick);if(!move)return}
+ if(opponent==='daily'){await dailyAction('daily_move',{from:move.from,to:move.to,...(move.promotion?{promotion:move.promotion}:{})});return}
  if(opponent==='online'){await onlineAction('move',{from:move.from,to:move.to,...(move.promotion?{promotion:move.promotion}:{})});return}
  applyMove(move);
 }
@@ -112,10 +116,10 @@ function requestEngine(purpose){
 // Only one screen is visible. Return focus and scroll to its beginning on navigation.
 function focusScreen(){
  for(const id of ['optionsDialog','rulesDialog'])if($(id).open)$(id).close();
- const id={home:'homeTitle',setup:'setupTitle',catalog:'catalogTitle',play:'turnTitle',online:'onlineTitle',waiting:'waitingTitle'}[screen];
+ const id={home:'homeTitle',setup:'setupTitle',catalog:'catalogTitle',play:'turnTitle',online:'onlineTitle',waiting:'waitingTitle',daily:'dailyTitle'}[screen];
  $(id)?.focus({preventScroll:true});window.scrollTo({top:0,left:0,behavior:'instant'});
 }
-function leaveGame(){save();cancelWork();onlineEpoch++;onlineApi?.stop();onlineRoom=null;onlineReady=false;if(opponent==='online')opponent='ai';ended='';solved=false;game=new Chess();last=null;resetSelection()}
+function leaveGame(){save();cancelWork();onlineEpoch++;onlineApi?.stop();onlineRoom=null;onlineReady=false;dailyRoom=null;dailyReady=false;if(['online','daily'].includes(opponent))opponent='ai';ended='';solved=false;game=new Chess();last=null;resetSelection()}
 function showHome(){leaveGame();screen='home';render();focusScreen()}
 function showSetup(nextMode=mode){leaveGame();mode=nextMode;screen=mode==='standard'?'setup':'catalog';if(screen==='catalog')renderCatalog();render();focusScreen()}
 async function startStandard(resume=false){
@@ -138,18 +142,18 @@ $('board').addEventListener('keydown',e=>{const el=e.target.closest('[data-squar
 document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>showSetup(b.dataset.mode));
 document.querySelectorAll('[data-opponent]').forEach(b=>b.onclick=()=>{opponent=b.dataset.opponent;document.querySelectorAll('[data-opponent]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('aiSettings').hidden=opponent==='local'});
 $('start').onclick=()=>startStandard();$('resume').onclick=$('resumeSetup').onclick=()=>startStandard(true);
-$('back').onclick=()=>{if(screen==='waiting'||(screen==='play'&&opponent==='online'))showOnline();else if(screen==='play')showSetup();else if(screen!=='home')showHome();else location.assign('../../')};$('newGame').onclick=()=>showHome();
+$('back').onclick=()=>{if(screen==='play'&&opponent==='daily'){showDaily();return}if(screen==='waiting'||(screen==='play'&&opponent==='online'))showOnline();else if(screen==='play')showSetup();else if(screen!=='home')showHome();else location.assign('../../')};$('newGame').onclick=()=>showHome();
 $('options').onclick=()=>$('optionsDialog').showModal();
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
 document.querySelectorAll('[data-rules]').forEach(b=>b.onclick=()=>$('rulesDialog').showModal());
 $('flip').onclick=()=>{flipped=!flipped;renderBoard();save()};$('view').onclick=()=>{const on=$('view').getAttribute('aria-pressed')!=='true';$('view').setAttribute('aria-pressed',String(on));document.querySelector('.arena').classList.toggle('inclined',on);$('view').textContent=on?'▦ Vista desde arriba':'◇ Vista inclinada'};
 $('legal').onchange=()=>renderBoard();$('sound').onclick=()=>{sound=!sound;$('sound').setAttribute('aria-pressed',String(sound));$('sound').setAttribute('aria-label',sound?'Desactivar sonido':'Activar sonido');toast(sound?'Sonido activado':'Sonido desactivado');if(sound)beep()};
-$('hint').onclick=()=>{if(!canMove())return;if(mode==='standard')requestEngine('hint');else{const it=item(),from=mode==='learn'?it.from:it.solution.slice(0,2),to=mode==='learn'?it.to:it.solution.slice(2,4);highlight={from,to};selected=from;renderBoard();showCoach(`Observa ${NAMES[game.get(from).type].toLowerCase()} en ${from}. Prueba llevarlo a ${to}.`)}};
-$('undo').onclick=()=>{if(mode!=='standard'||busy||ended)return;cancelWork();game.undo();if(opponent==='ai'&&game.turn()!==human&&game.history().length)game.undo();last=game.history({verbose:true}).at(-1)||null;resetSelection();render();save();if(opponent==='ai'&&game.turn()!==human&&!complete())requestEngine('play')};
+$('hint').onclick=()=>{if(['online','daily'].includes(opponent)||!canMove())return;if(mode==='standard')requestEngine('hint');else{const it=item(),from=mode==='learn'?it.from:it.solution.slice(0,2),to=mode==='learn'?it.to:it.solution.slice(2,4);highlight={from,to};selected=from;renderBoard();showCoach(`Observa ${NAMES[game.get(from).type].toLowerCase()} en ${from}. Prueba llevarlo a ${to}.`)}};
+$('undo').onclick=()=>{if(mode!=='standard'||['online','daily'].includes(opponent)||busy||ended)return;cancelWork();game.undo();if(opponent==='ai'&&game.turn()!==human&&game.history().length)game.undo();last=game.history({verbose:true}).at(-1)||null;resetSelection();render();save();if(opponent==='ai'&&game.turn()!==human&&!complete())requestEngine('play')};
 $('retry').onclick=()=>startItem(itemIndex);$('next').onclick=()=>{if(itemIndex+1<(mode==='learn'?LESSONS:CHALLENGES).length)startItem(itemIndex+1);else showSetup()};
-$('resign').onclick=async()=>{if(opponent==='online'){const ok=await modal('¿Abandonar esta partida?','Ganará tu rival.',[['yes','Abandonar']]);if(ok==='yes'){$('optionsDialog').close();await onlineAction('resign')}return}$('optionsDialog').close();const color=opponent==='ai'?human:game.turn();const ok=await modal('¿Abandonar esta partida?','Ganará el otro equipo. Puedes empezar una partida nueva después.',[['yes','Abandonar']]);if(ok!=='yes')return;cancelWork();ended='El equipo '+(color==='w'?'plata':'grafito')+' abandona. Gana el equipo '+(color==='w'?'grafito.':'plata.');render();save()};
-$('draw').onclick=async()=>{if(opponent==='online'){await onlineAction('draw');$('optionsDialog').close();return}$('optionsDialog').close();const ok=await modal('¿Ambos aceptáis las tablas?','Usad esta opción solo si los dos jugadores estáis de acuerdo en empatar.',[['yes','Ambos aceptamos']]);if(ok!=='yes')return;ended='Tablas por acuerdo de ambos jugadores.';render();save()};
-$('export').onclick=()=>{const copy=new Chess();copy.loadPgn(game.pgn());copy.header('Event','Coco Ajedrez','White',opponent==='ai'?(human==='w'?'Jugador':'Coco'):'Blancas','Black',opponent==='ai'?(human==='b'?'Jugador':'Coco'):'Negras');const result=game.isCheckmate()?(game.turn()==='w'?'0-1':'1-0'):ended.includes('abandona')?(ended.includes('plata abandona')?'0-1':'1-0'):ended||game.isDraw()?'1/2-1/2':'*';copy.header('Result',result);const url=URL.createObjectURL(new Blob([copy.pgn()],{type:'application/x-chess-pgn'}));const a=document.createElement('a');a.href=url;a.download='coco-ajedrez.pgn';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$('resign').onclick=async()=>{if(opponent==='daily'){$('optionsDialog').close();const ok=await modal('¿Abandonar la partida del día?','Se guardarán 0 puntos. Hoy podrás seguir jugando libremente, pero no repetir la partida que puntúa.',[['yes','Abandonar']]);if(ok==='yes')await dailyAction('daily_resign');return}if(opponent==='online'){const ok=await modal('¿Abandonar esta partida?','Ganará tu rival.',[['yes','Abandonar']]);if(ok==='yes'){$('optionsDialog').close();await onlineAction('resign')}return}$('optionsDialog').close();const color=opponent==='ai'?human:game.turn();const ok=await modal('¿Abandonar esta partida?','Ganará el otro equipo. Puedes empezar una partida nueva después.',[['yes','Abandonar']]);if(ok!=='yes')return;cancelWork();ended='El equipo '+(color==='w'?'plata':'grafito')+' abandona. Gana el equipo '+(color==='w'?'grafito.':'plata.');render();save()};
+$('draw').onclick=async()=>{if(opponent==='daily')return;if(opponent==='online'){await onlineAction('draw');$('optionsDialog').close();return}$('optionsDialog').close();const ok=await modal('¿Ambos aceptáis las tablas?','Usad esta opción solo si los dos jugadores estáis de acuerdo en empatar.',[['yes','Ambos aceptamos']]);if(ok!=='yes')return;ended='Tablas por acuerdo de ambos jugadores.';render();save()};
+$('export').onclick=()=>{const copy=new Chess();copy.loadPgn(game.pgn());copy.header('Event',opponent==='daily'?'Coco Ajedrez · Partida del día':'Coco Ajedrez','White',['ai','daily'].includes(opponent)?(human==='w'?'Jugador':'Coco'):'Blancas','Black',['ai','daily'].includes(opponent)?(human==='b'?'Jugador':'Coco'):'Negras');const result=opponent==='daily'?dailyRoom.result:opponent==='online'?onlineRoom.result:game.isCheckmate()?(game.turn()==='w'?'0-1':'1-0'):ended.includes('abandona')?(ended.includes('plata abandona')?'0-1':'1-0'):ended||game.isDraw()?'1/2-1/2':'*';copy.header('Result',result);const url=URL.createObjectURL(new Blob([copy.pgn()],{type:'application/x-chess-pgn'}));const a=document.createElement('a');a.href=url;a.download='coco-ajedrez.pgn';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 $('share').onclick=async()=>{const url=new URL('./',location.href).href;try{if(navigator.share){await navigator.share({title:'Coco Ajedrez · La ciudad del futuro',url});return}await navigator.clipboard.writeText(url);toast('Enlace copiado. Ya puedes compartirlo.')}catch(e){if(e.name!=='AbortError'){const choice=await modal('Comparte Coco Ajedrez',url,[['copy','Seleccionar enlace']]);if(choice==='copy'){const range=document.createRange();range.selectNodeContents($('dialogText'));$('dialog').showModal();getSelection().removeAllRanges();getSelection().addRange(range)}}}};
 window.addEventListener('pagehide',()=>{save();cancelWork();onlineApi?.stop()});window.addEventListener('pageshow',()=>{if(screen==='play'&&mode==='standard'&&!complete()&&opponent==='ai'&&game.turn()!==human&&!busy)requestEngine('play')});
 async function getOnline(){
@@ -223,10 +227,56 @@ $('copyInvite').onclick=async()=>{
 $('cancelRoom').onclick=()=>onlineAction('cancel');
 $('reconnectRoom').onclick=$('refreshWaiting').onclick=()=>{onlineReady=false;renderStatus();onlineApi?.reconnect()};
 $('declineDraw').onclick=async()=>{await onlineAction('decline');$('optionsDialog').close()};
-window.addEventListener('offline',()=>{if(opponent==='online'){onlineReady=false;renderStatus();$('waitingStatus').textContent='Sin conexión. La sala sigue guardada.'}});
-window.addEventListener('online',()=>{if(opponent==='online')onlineApi?.reconnect()});
-window.addEventListener('pageshow',()=>{if(opponent==='online')onlineApi?.reconnect()});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&opponent==='online')onlineApi?.refresh()});
+window.addEventListener('offline',()=>{if(opponent==='daily'){dailyReady=false;renderStatus()}if(opponent==='online'){onlineReady=false;renderStatus();$('waitingStatus').textContent='Sin conexión. La sala sigue guardada.'}});
+window.addEventListener('online',()=>{if(opponent==='daily')refreshDaily();if(opponent==='online')onlineApi?.reconnect()});
+window.addEventListener('pageshow',()=>{if(opponent==='daily')refreshDaily();if(opponent==='online')onlineApi?.reconnect()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&opponent==='daily')refreshDaily();if(document.visibilityState==='visible'&&opponent==='online')onlineApi?.refresh()});
+
+
+// Daily match: the server owns the board, the opponent, and the one-per-day result.
+async function showDaily(){
+ leaveGame();mode='standard';screen='daily';render();focusScreen();const epoch=onlineEpoch;
+ $('dailyLogin').hidden=true;$('dailyStart').hidden=true;$('dailyReload').hidden=true;$('dailyMessage').textContent='Comprobando tu partida de hoy…';
+ try{
+  const api=await getOnline(),user=await api.init();if(epoch!==onlineEpoch)return;
+  $('dailyLogin').hidden=Boolean(user);
+  if(!user){$('dailyMessage').textContent='Entra con tu cuenta de Coco para guardar tus puntos.';return}
+  const result=await api.call('daily_get');if(epoch!==onlineEpoch)return;
+  dailyRoom=result.daily;dailyDay=result.day;
+  $('dailyMessage').textContent=dailyRoom?.status==='finished'?`Hoy ya terminaste: ${dailyRoom.points} puntos guardados. Puedes seguir jugando partidas libres.`:dailyRoom?'Tu partida de hoy está guardada. Continúa desde tu última jugada.':'Una partida contra Coco, con blancas y dificultad media. Puedes salir y continuar durante el día.';
+  $('dailyStart').textContent=dailyRoom?.status==='finished'?'Ver mi resultado':dailyRoom?'Continuar partida del día':'Empezar partida del día';$('dailyStart').hidden=false;
+ }catch(e){if(epoch===onlineEpoch){$('dailyMessage').textContent=e.message;$('dailyReload').hidden=false}}
+}
+function openDaily(result){
+ if(!result.daily){showDaily();return}
+ const entering=screen!=='play'||opponent!=='daily'||dailyRoom?.id!==result.daily.id;
+ dailyDay=result.day;dailyRoom=result.daily;cancelWork();mode='standard';opponent='daily';human='w';if(entering)flipped=false;screen='play';dailyReady=navigator.onLine!==false;
+ game=new Chess();if(dailyRoom.pgn)game.loadPgn(dailyRoom.pgn);last=game.history({verbose:true}).at(-1)||null;
+ ended=dailyRoom.status==='finished'?dailyRoom.end_reason:'';solved=false;resetSelection();
+ onlineApi.onState=()=>{if(opponent==='daily'){dailyReady=false;renderStatus()}};
+ render();if(entering)focusScreen();
+}
+async function refreshDaily(){
+ if(opponent!=='daily'||busy)return;const epoch=onlineEpoch;
+ dailyReady=false;renderStatus();
+ try{const result=await onlineApi.call('daily_get');if(epoch===onlineEpoch)openDaily(result)}catch(e){if(epoch===onlineEpoch){toast(e.message);renderStatus()}}
+}
+async function dailyAction(action,values={}){
+ if(!dailyRoom||busy||!dailyReady||dailyRoom.status!=='active')return;
+ const epoch=onlineEpoch,room=dailyRoom;busy=true;renderStatus();
+ try{const result=await onlineApi.call(action,{id:room.id,version:room.version,...values});if(epoch===onlineEpoch)openDaily(result)}
+ catch(e){if(epoch!==onlineEpoch)return;dailyReady=false;toast(e.message);busy=false;await refreshDaily()}
+ finally{if(epoch===onlineEpoch){busy=false;renderStatus()}}
+}
+$('dailyEntry').onclick=showDaily;$('dailyReload').onclick=showDaily;$('dailyRefresh').onclick=refreshDaily;
+$('dailyStart').onclick=async()=>{
+ const epoch=onlineEpoch;$('dailyStart').disabled=true;
+ try{const result=dailyRoom?{daily:dailyRoom,day:dailyDay}:await onlineApi.call('daily_start');if(epoch===onlineEpoch)openDaily(result)}catch(e){if(epoch===onlineEpoch){$('dailyMessage').textContent=e.message;$('dailyReload').hidden=false}}finally{$('dailyStart').disabled=false}
+};
+$('dailyLogin').onsubmit=async e=>{
+ e.preventDefault();const epoch=onlineEpoch,b=$('dailyLogin').querySelector('button');b.disabled=true;
+ try{await (await getOnline()).login($('dailyEmail').value.trim(),$('dailyPassword').value);$('dailyPassword').value='';if(epoch===onlineEpoch)await showDaily()}catch(err){if(epoch===onlineEpoch)$('dailyMessage').textContent=err.message}finally{b.disabled=false}
+};
 
 selectedArt();render();
 if(new URLSearchParams(location.hash.slice(1)).has('sala'))showOnline();

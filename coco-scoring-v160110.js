@@ -6,7 +6,7 @@
   var MAX_SCORE = 115;
   var GENERAL_IDS = Object.freeze([
     "numeros", "calculo", "palabras", "series", "memoria", "sudoku",
-    "sopa", "crucigrama", "tiempo", "verdadero", "futbol", "conecta"
+    "sopa", "crucigrama", "tiempo", "verdadero", "futbol", "conecta", "ajedrez"
   ]);
   var GAME_FACTORS = Object.freeze({
     numeros: 0.98,
@@ -20,6 +20,7 @@
     tiempo: 0.99,
     verdadero: 0.98,
     futbol: 1.02,
+    ajedrez: 1.00,
     conecta: 1.02
   });
   var DIFFICULTY_FACTORS = Object.freeze({
@@ -40,6 +41,7 @@
     tiempo: 320,
     verdadero: 320,
     futbol: 1300,
+    ajedrez: 100,
     conecta: 110,
     cocomed: 1000,
     padel: 1000
@@ -56,6 +58,7 @@
   }
 
   function normalizeDifficulty(gameId, difficulty) {
+    if (String(gameId) === "ajedrez") return 2;
     var level = Math.round(Number(difficulty) || 2);
     var maximum = String(gameId) === "futbol" ? 4 : 3;
     return Math.max(1, Math.min(maximum, level));

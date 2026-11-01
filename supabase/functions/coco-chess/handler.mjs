@@ -1,4 +1,5 @@
 import {Chess} from '../../../games/ajedrez/vendor/chess.mjs';
+import {dailyAction} from './daily.mjs';
 const TABLE='coco_chess_games';
 const FIELDS='id,invite_code,white_user,black_user,white_name,black_name,status,pgn,result,end_reason,version,draw_offer,created_at,updated_at,expires_at';
 const origins=new Set(['https://cocoenforma.com','https://www.cocoenforma.com','https://diegopenn-png.github.io']);
@@ -14,7 +15,7 @@ function outcome(chess){
  if(chess.isDrawByFiftyMoves())return {result:'1/2-1/2',end_reason:'Tablas por 50 movimientos.'};
  return null;
 }
-export function createHandler({db,auth,randomUUID=()=>crypto.randomUUID(),now=()=>Date.now()}){
+export function createHandler({db,auth,randomUUID=()=>crypto.randomUUID(),now=()=>Date.now(),dailyAI}){
  return async req=>{
   const origin=req.headers.get('origin'),headers={'Content-Type':'application/json','Cache-Control':'no-store','Vary':'Origin'};
   if(origins.has(origin)){headers['Access-Control-Allow-Origin']=origin;headers['Access-Control-Allow-Headers']='authorization,apikey,content-type,x-client-info';headers['Access-Control-Allow-Methods']='POST, OPTIONS'}
@@ -33,6 +34,7 @@ export function createHandler({db,auth,randomUUID=()=>crypto.randomUUID(),now=()
    check(body&&typeof body==='object'&&!Array.isArray(body),400,'Solicitud no válida.');
    const uid=user.id,action=body.action,stamp=new Date(now()).toISOString();
    const run=async query=>{const r=await query;if(r.error)throw new HttpError(503,'No se pudo actualizar la sala. Inténtalo otra vez.');return r.data};
+   if(typeof action==='string'&&action.startsWith('daily_'))return reply(await dailyAction({db,uid,body,now,check,run,outcome,ai:dailyAI}));
    const name=async()=>{const r=await db.from('perfiles').select('apodo').eq('id',uid).maybeSingle();return nickname(r.data?.apodo)};
    if(action==='list'){
     const rooms=await run(db.from(TABLE).select(FIELDS).or(`white_user.eq.${uid},black_user.eq.${uid}`).gt('expires_at',stamp).in('status',['waiting','active','finished']).order('updated_at',{ascending:false}).limit(10));

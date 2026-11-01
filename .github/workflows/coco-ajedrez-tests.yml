@@ -1,9 +1,9 @@
 name: Coco Ajedrez rules and challenges
 on:
   push:
-    paths: ['games/ajedrez/**', 'qa/ajedrez*.mjs', 'qa/ajedrez*.cjs', 'supabase/functions/coco-chess/**', 'supabase-coco-ajedrez-online.sql', '.github/workflows/coco-ajedrez-tests.yml']
+    paths: ['games/ajedrez/**', 'qa/ajedrez*.mjs', 'qa/ajedrez*.cjs', 'supabase/functions/coco-chess/**', 'supabase-coco-ajedrez-online.sql', 'supabase-coco-ajedrez-daily.sql', '.github/workflows/coco-ajedrez-tests.yml']
   pull_request:
-    paths: ['games/ajedrez/**', 'qa/ajedrez*.mjs', 'qa/ajedrez*.cjs', 'supabase/functions/coco-chess/**', 'supabase-coco-ajedrez-online.sql', '.github/workflows/coco-ajedrez-tests.yml']
+    paths: ['games/ajedrez/**', 'qa/ajedrez*.mjs', 'qa/ajedrez*.cjs', 'supabase/functions/coco-chess/**', 'supabase-coco-ajedrez-online.sql', 'supabase-coco-ajedrez-daily.sql', '.github/workflows/coco-ajedrez-tests.yml']
 permissions:
   contents: read
 jobs:
@@ -14,6 +14,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test qa/ajedrez.test.mjs qa/ajedrez-online.test.mjs
+      - run: node --test qa/ajedrez.test.mjs qa/ajedrez-online.test.mjs qa/ajedrez-daily.test.mjs
       - run: npm install --prefix /tmp/coco-chess-dom --ignore-scripts --no-audit --no-fund jsdom@26.1.0
       - run: COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node qa/ajedrez-ui.test.cjs
