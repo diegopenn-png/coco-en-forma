@@ -1,7 +1,7 @@
 """Extend the clean Coco card family with a chess illustration."""
 from pathlib import Path
-import  subprocess, tempfile, json
-from PIL import Image
+import json
+from card_typography import render_svg
 ROOT = Path(__file__).resolve().parents[1]
 c1,c2,cta=json.loads((ROOT/'share/card-themes-v1.json').read_text())['ajedrez']
 # Same 1200x630 composition and palette source as build-colorful-cards.py.
@@ -15,18 +15,15 @@ pawn = '''<g fill="#9d8cff" stroke="#123b58" stroke-width="7" stroke-linejoin="r
 svg=f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630">
 <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="{c1}"/><stop offset="1" stop-color="{c2}"/></linearGradient><clipPath id="board"><rect x="710" y="190" width="340" height="272" rx="20"/></clipPath></defs>
 <rect width="1200" height="630" fill="url(#bg)"/><circle cx="890" cy="315" r="280" fill="white" opacity=".045"/><circle cx="890" cy="315" r="255" fill="none" stroke="white" opacity=".12" stroke-width="2"/><path d="M0 590L1200 40M0 630L1200 80" stroke="white" opacity=".035" stroke-width="22"/>
-<text x="66" y="125" font-family="DejaVu Sans,sans-serif" font-size="19" letter-spacing="3" fill="#bdefff">ESTRATEGIA · IMAGINACIÓN</text>
-<text x="64" y="245" font-family="DejaVu Sans,sans-serif" font-size="76" font-weight="bold" fill="white">Coco</text>
-<text x="64" y="333" font-family="DejaVu Sans,sans-serif" font-size="76" font-weight="bold" fill="#ffda43">Ajedrez</text>
-<text x="68" y="412" font-family="DejaVu Sans,sans-serif" font-size="24" fill="white">Pensá tu próxima gran jugada.</text>
-<rect x="66" y="461" width="235" height="64" rx="19" fill="#fff1c4"/><text x="184" y="503" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="24" font-weight="bold" fill="{c1}">{cta}</text>
+<text x="66" y="125" font-family="Montserrat,sans-serif" font-size="19" letter-spacing="3" fill="#bdefff" font-weight="500">ESTRATEGIA · IMAGINACIÓN</text>
+<text x="64" y="245" font-family="Montserrat,sans-serif" font-size="76" font-weight="900" fill="white">Coco</text>
+<text x="64" y="333" font-family="Montserrat,sans-serif" font-size="76" font-weight="900" fill="#ffda43">Ajedrez</text>
+<text x="68" y="412" font-family="Montserrat,sans-serif" font-size="24" fill="white" font-weight="500">Pensá tu próxima gran jugada.</text>
+<rect x="66" y="461" width="235" height="64" rx="19" fill="#fff1c4"/><text x="184" y="503" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="24" font-weight="bold" fill="{c1}">{cta}</text>
 <rect x="694" y="174" width="372" height="304" rx="30" fill="#fff" stroke="#123b58" stroke-width="8"/>
 <g clip-path="url(#board)">{board}</g>{knight}{pawn}
 
 
 </svg>'''
-with tempfile.TemporaryDirectory(prefix='coco-chess-card-') as folder:
-    source=Path(folder)/'card.svg'; render=Path(folder)/'card.png';source.write_text(svg)
-    subprocess.run(['inkscape',str(source),'--export-type=png',f'--export-filename={render}'],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    Image.open(render).convert('RGB').save(ROOT/'games/ajedrez/cover-coco-v2.jpg',quality=92,optimize=True)
+render_svg(svg,ROOT/'games/ajedrez/cover-coco-v2.jpg')
 print('Built games/ajedrez/cover-coco-v2.jpg')
