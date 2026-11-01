@@ -1,18 +1,39 @@
 # Coco Ajedrez · La ciudad del futuro
 
-Static chess game at `/games/ajedrez/`, using the official Coco icon. Standard play is the default and has no daily lock, mission requirement, timer, or mandatory score. Two people can play on one device, or one player can choose either color against a local opponent (three search depths). This is not network multiplayer.
+Static chess game at `/games/ajedrez/`, using the official Coco icon. Standard play is the default and has no daily lock, mission requirement, timer, or mandatory score. Two people can play on one device, or one player can choose either color against a local opponent (three search depths). Registered Coco accounts can also create a private online room and invite another registered player by code or link.
+
+## Short-screen flow and online play
+
+- Home offers local play, online play, learning and challenges. Only the current screen is visible; the board is never appended below setup or instructions.
+- Setup and lesson/challenge lists lead directly to the board, reset scroll and place keyboard focus at the screen heading. Back follows the current flow. The bottom mobile navigation respects safe-area insets.
+- Rules, board appearance, move history, export and resignation live in dialogs. The mobile board is sized against the viewport; hints and undo remain available for local games.
+- Online access reuses the main site's Supabase Auth session. Anonymous users sign in with their existing Coco account. Rooms use a random 16-character invitation code (also shareable as a URL fragment); no public directory or messages are sent.
+- `online.mjs` subscribes to Postgres Changes with participant RLS, refreshes the state after subscribing/reconnecting, blocks moves while disconnected, and lists up to 10 recent rooms. One pending room per host; rooms can be resumed for 30 days. Online play has no hints or undo.
+- `supabase/functions/coco-chess/handler.mjs` verifies every request using Auth `getUser`, rejects anonymous accounts, authorizes room membership and side/turn, and validates moves with the same vendored chess.js. Versioned compare-and-swap updates prevent simultaneous writes. Draw offers need both players' agreement; resignation and game-over rules are applied on the server.
+- `supabase-coco-ajedrez-online.sql` creates the private room table, participant-only SELECT policy and Realtime publication entry. `anon` has no access; `authenticated` cannot write directly. The Edge Function's service credential stays server-side. The gateway's legacy JWT check is disabled because the function performs explicit Auth verification and supports the existing publishable key.
+- To deploy the function, bundle its index and handler at their repository paths together with `games/ajedrez/vendor/chess.mjs` and its license. Do not duplicate the engine or put service credentials in browser code.
 
 ## Rules and persistence
 
 - Vendored chess.js 1.4.0 (BSD-2-Clause, license beside source) handles legal moves, castling, en passant, four promotion choices, check/mate, stalemate and draws. Source: https://jhlywa.github.io/chess.js/ ; npm tarball `chess.js@1.4.0`.
 - Casual-play convention: automatically ends on third repetition and the 50-move draw condition, explained in the rules panel.
 - Local AI uses iterative alpha-beta search in a module worker, with a bounded local fallback. No paid APIs, network inference, or certified Elo claims.
-- One standard PGN, local settings and tutorial/challenge completion are stored in this browser. Not account-synced, not connected to Coco's general ranking or reports. Switching learning modes preserves the saved standard game.
+- One local standard PGN, local settings and tutorial/challenge completion are stored in this browser. Not account-synced, not connected to Coco's general ranking or reports. Switching learning modes preserves the saved standard game.
 - Six legal lessons; six independently verified challenges; two optional board finishes unlock after 2 and 4 challenges. Standard play never requires these.
 - Catalogue entry deliberately has its own data attribute and capture handler so the legacy daily game limiter cannot prevent standard play.
-- Assets are included in the existing Coco service worker cache, version v160.100.45-ajedrez-coco.
+- Assets are included in the existing Coco service worker cache, version v160.100.46-ajedrez-pantallas.
 
 ## Validation
+
+`node --test qa/ajedrez.test.mjs qa/ajedrez-online.test.mjs` — 18 engine and server tests, including authorization, private room membership, legal turns, stale and simultaneous requests, mate, draws and resignation.
+
+`COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node qa/ajedrez-ui.test.cjs` — navigation, a single visible screen, no inactive board on entry, start/resume, lesson completion, dialogs, login and private-room UI, ownership of turns, offline guards and preservation of local saves. Install pinned `jsdom@26.1.0` at that prefix first.
+
+`qa/ajedrez-online-live.py <private-fixture-json>` validates Auth, server requests, RLS and actual WebSocket updates using disposable test accounts. Credentials are supplied separately and must never be committed.
+
+`qa/ajedrez-layout.html` is a visual QA harness for the actual app at 320, 390 and 430px widths; it does not emulate the native iPhone status bar.
+
+### Earlier baseline checks
 
 `node --test qa/ajedrez.test.mjs` — 11 tests: initial position, all lesson targets, all puzzle solutions, castling and attacked transit square, en passant, all four promotions, mate vs stalemate, PGN round trip with repetition, all AI levels preserve caller state and return legal moves, AI solves mates in one, and first offline navigation to the cached chess directory (with/without trailing slash and query links).
 
