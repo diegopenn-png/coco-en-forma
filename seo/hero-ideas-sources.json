@@ -1,0 +1,37 @@
+{
+  "release": "v160127",
+  "created": "2026-11-01",
+  "generator": "image_gen.imagegen (native image tool)",
+  "reference_style": "Approved Coco premium-v160126 game thumbnails: navy, gold and cyan; 3D Coco with orange headband and exposed brain.",
+  "encoding": "Artwork generated as complete images, resized to 1200 × 630 JPEG and 720 × 378 WebP; no painting or retouching.",
+  "assets": [
+    {
+      "id": "hero",
+      "source_image": "exec-719cce75-7de8-4d65-ad33-1f43e1a4425f.png",
+      "copy": [
+        "COCO EN FORMA",
+        "Juegos para la mente y apoyo escolar",
+        "Con Coco y Eterna."
+      ],
+      "use": [
+        "home launcher",
+        "home social preview",
+        "game catalogue"
+      ]
+    },
+    {
+      "id": "ideas",
+      "source_image": "exec-4e7252e4-e216-4a2d-9d98-6ea8630c0869.png",
+      "copy": [
+        "PARTICIPA EN COCO",
+        "Tu próxima gran idea",
+        "Puede convertirse en un juego."
+      ],
+      "use": [
+        "suggestion card",
+        "compact suggestion entry"
+      ]
+    }
+  ],
+  "native_ui": "Montserrat fonts from assets/fonts; existing suggestion form and click handlers preserved."
+}

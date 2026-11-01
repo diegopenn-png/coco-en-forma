@@ -40,6 +40,6 @@ test("visible cards prefer local thumbnails while preserving original downloads"
 });
 
 test("the PWA pre-caches thumbnails under a new release key", () => {
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.50-landings"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.51-hero-ideas"/);
   assert.match(serviceWorker, /\.concat\(CARD_THUMBNAILS(?:,|\))/);
 });

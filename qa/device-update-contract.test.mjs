@@ -46,7 +46,7 @@ test("PWA clients request and activate the current release instead of retaining 
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.50-landings"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.51-hero-ideas"/);
   for (const asset of [
     "coco-scoring-v160110.js",
     "coco-variety-director-v160960.js",
