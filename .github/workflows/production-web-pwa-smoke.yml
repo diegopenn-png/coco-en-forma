@@ -174,7 +174,7 @@ jobs:
             ["voice composer", eterna.includes("data-et-mic")],
             ["silent incomplete-response retry release", eterna.includes(process.env.EXPECTED_FRONTEND_VERSION)],
             ["restored Eterna launcher visual", identity.includes("share/eterna.png?v=160116")],
-            ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=160122") && scoring.includes('var VERSION = "balanced-v1"')],
+            ["balanced scoring runtime", apex.includes("coco-scoring-v160110.js?v=16010048") && scoring.includes('var VERSION = "balanced-v1"')],
             ["balanced score ceiling", scoring.includes("var MAX_SCORE = 115")],
             ["twelve comparable games", scoring.includes('"verdadero", "futbol"')],
             ["photo controls retired", retiredPhotoSurface.every(token => !eterna.includes(token))],
