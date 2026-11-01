@@ -21,7 +21,7 @@ Static chess game at `/games/ajedrez/`, using the official Coco icon. Standard p
 - One local standard PGN, local settings and tutorial/challenge completion are stored in this browser. Not account-synced, not connected to Coco's general ranking or reports. Switching learning modes preserves the saved standard game.
 - Six legal lessons; six independently verified challenges; two optional board finishes unlock after 2 and 4 challenges. Standard play never requires these.
 - Catalogue entry deliberately has its own data attribute and capture handler so the legacy daily game limiter cannot prevent standard play.
-- Assets are included in the existing Coco service worker cache, version v160.100.46-ajedrez-pantallas.
+- Assets are included in the existing Coco service worker cache, version v160.100.47-ajedrez-pantallas.
 
 ## Validation
 
@@ -84,3 +84,8 @@ Replaced the standalone dark shell with Coco’s Lilita One / Fredoka typography
 At widths up to 760 px the two navigation controls are fixed to the bottom of the viewport, with 52 px minimum targets, safe-area bottom/left/right spacing and matching content clearance. The header has a safe-area top inset. Desktop keeps a sticky header with safe-area spacing. The PWA cache and stylesheet URL were updated for the release.
 
 Validation before publication: all 11 existing tests, first-party entry syntax and diff whitespace checks pass. Production verification: chess CI 41334416454, Pages deployment 41334416155 and web/PWA smoke 41334416433 all passed for commit `64cbc76000eb3c5c001df10554d6628af8c95b18`. The published HTML, CSS, entry module, thumbnail and service worker match the source byte-for-byte. Live Chrome visually confirmed the Coco typography and light design, no horizontal overflow, starting a standard game, Back returning to setup and Main Menu returning to Coco. The public catalogue uses the new illustration. A physical iPhone/installed PWA and mobile viewport remain unverified; the mobile safe-area layout was reviewed in source.
+
+## Live verification — focused screens and online rooms (2026-11-01)
+
+- Supabase migration `coco_chess_private_online_rooms` and Edge Function `coco-chess` v1 deployed. Three isolated QA accounts verified real Auth, participant-only REST reads, denied client writes, capacity of two, ownership of turns, illegal/stale move rejection, four matching WebSocket updates, mate and resume. The QA accounts were disabled and their rooms expired after testing; no real player data was changed.
+- GitHub chess workflow passed all 18 engine/server checks plus the UI scenarios. Production browser verified the home menu, short setup, board-first entry, local AI reply, dialog controls and return navigation. The full board and bottom navigation fit at 390 × 740 and 320 × 568 in the mobile iframe harness. Native iPhone safe-area behavior remains to be verified on a physical device.
