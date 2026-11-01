@@ -26,7 +26,23 @@ Browser QA on a local preview: standard AI reply after e4, optional hint, undo o
 
 Deployment: existing GitHub Pages repository `diegopenn-png/coco-en-forma`, main. No new service or subscription.
 
-## Handoff · 1 November 2026
+## Published and verified · 1 November 2026
+
+The user asked to finish implementing the chess game. The prepared commit `ae8d547af0867575302baeca21cb68993c7d5ed7` was fast-forwarded to `main` successfully, preserving the existing Coco site. The prior publication blockers below are historical and resolved.
+
+Live URL: https://cocoenforma.com/games/ajedrez/
+
+Verified in this session:
+- All 11 local engine/content/offline tests passed; first-party syntax and whitespace checks passed.
+- GitHub chess CI [41333262966](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41333262966), Pages deployment [41333262195](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41333262195), and production web/PWA checks [41333263052](https://github.com/diegopenn-png/coco-en-forma/actions/runs/41333263052) completed successfully.
+- Eight public assets (index, app, stylesheet, piece sheet, cover, catalogue entry, navigation loader, service worker) returned HTTP 200 with SHA-256 identical to the released source.
+- Live Chrome UI: standard game e4 followed by Coco's Nc6, undo both turns, reload and resume, two-person game f3/e5/g4/Qh4 ending in checkmate, first pawn lesson, queen-and-king mate challenge, and navigation back to the main catalogue.
+- The public catalogue displays Coco Ajedrez with its artwork and unlimited standard-play label. Its copy button displayed “Copiado”, placed the exact live URL on the clipboard, and opening the card loaded the game.
+- The live board and piece artwork were visually inspected.
+
+Limits: a physical iPhone/installed PWA and the authenticated catalogue were not exercised. Progress remains browser-local and separate from the general ranking/reports, as described above.
+
+## Historical handoff · 1 November 2026
 
 Implementation saved in local commit `fefcae0aeeaffd46567c65b42ab6106c6eab0769`. All 11 engine/content/offline tests passed again. A separate jsdom 26.1.0 check also passed: two-person standard game through checkmate, undo, lesson completion, preserving the standard game while changing modes, challenge completion, and back navigation. Syntax and whitespace checks passed.
 
