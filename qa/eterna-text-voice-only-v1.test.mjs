@@ -83,5 +83,5 @@ test("web and PWA invalidate every changed text-and-voice asset together", () =>
   assert.match(index, /coco-v155-identity\.js\?v=160109/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
   assert.match(identity, /share\/eterna\.png\?v=160116/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.19-eterna-six-modes-budget-fix"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.49-ciudad"/);
 });
