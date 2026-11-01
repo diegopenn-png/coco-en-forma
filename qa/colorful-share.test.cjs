@@ -6,7 +6,7 @@ for(const item of JSON.parse(fs.readFileSync('share/colorful-v160125/catalog.jso
  let copied,shared;const nodes={},children=[];
  const modal={dataset:{},querySelector:s=>nodes[s]??=(s==='.cocoShareSheet'?{appendChild:x=>children.push(x)}:{})};
  const data={name:item.title,description:item.description,image:'./share/colorful-v160125/'+item.id+'.jpg'};
- const ctx={DATA:{[item.id]:data},document:{createElement:()=>({})},navigator:{clipboard:{writeText:async v=>{copied=v}},share:async v=>{shared=v}},window:{open(){throw Error('Unexpected external send')}}};
+ const ctx={root:{},DATA:{[item.id]:data},document:{createElement:()=>({})},navigator:{clipboard:{writeText:async v=>{copied=v}},share:async v=>{shared=v}},window:{open(){throw Error('Unexpected external send')}}};
  vm.createContext(ctx);vm.runInContext(fn,ctx);ctx.upgradeShareLinks(modal,item.id);ctx.upgradeShareLinks(modal,item.id);
  await nodes['[data-share-copy]'].onclick();assert.equal(copied,'https://cocoenforma.com/juego/'+item.id+'/?v=160125');
  await nodes['[data-share-native]'].onclick();assert.equal(shared.url,copied);

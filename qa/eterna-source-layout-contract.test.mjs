@@ -298,7 +298,7 @@ test("Eterna coherence and voice contracts stay wired into the PWA", () => {
   assert.match(experience, /__ETERNA_VOICE_DIALOG_ACTIVE__/);
   assert.match(experience, /eternaV160Conversation/);
   assert.match(experience, /grid-column:1\/-1/);
-  assert.match(serviceWorker, /160\.100\.19-eterna-six-modes-budget-fix/);
+  assert.match(serviceWorker, /160\.100\.49-ciudad/);
   assert.match(serviceWorker, /fresh\.searchParams\.set\("__coco_release",CACHE_VERSION\)/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
 });

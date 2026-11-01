@@ -1,0 +1,20 @@
+name: Coco Ciudad rules and multiplayer
+on:
+  push:
+    paths: ['games/ciudad/**', 'qa/ciudad*', 'supabase/functions/coco-city/**', 'supabase-coco-ciudad.sql', '.github/workflows/coco-ciudad-tests.yml']
+  pull_request:
+    paths: ['games/ciudad/**', 'qa/ciudad*', 'supabase/functions/coco-city/**', 'supabase-coco-ciudad.sql', '.github/workflows/coco-ciudad-tests.yml']
+permissions:
+  contents: read
+jobs:
+  city:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test qa/ciudad.test.mjs qa/ciudad-online.test.mjs
+      - run: npm install --prefix /tmp/coco-chess-dom --ignore-scripts --no-audit --no-fund jsdom@26.1.0
+      - run: COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node qa/ciudad-ui.test.cjs
+      - run: COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node qa/ciudad-catalogue.test.cjs

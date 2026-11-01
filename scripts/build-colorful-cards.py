@@ -1,11 +1,12 @@
 from pathlib import Path
-import base64,html,subprocess,json
+import html,json,re
+from card_typography import render_svg
 from PIL import Image,ImageDraw
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'share'/'colorful-v160125';OUT.mkdir(exist_ok=True)
-logo=base64.b64encode((ROOT/'coco-v2-official-icon-source.png').read_bytes()).decode()
+themes=json.loads((ROOT/'share/card-themes-v1.json').read_text())
 def text(x,y,t,size=44,fill='#123b58'):
- return f'<text x="{x}" y="{y}" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-weight="bold" font-size="{size}" fill="{fill}">{html.escape(str(t))}</text>'
+ return f'<text x="{x}" y="{y}" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="bold" font-size="{size}" fill="{fill}">{html.escape(str(t))}</text>'
 def tile(x,y,t,fill='#fff',size=88):
  return f'<rect x="{x}" y="{y}" width="{size}" height="{size}" rx="18" fill="{fill}" stroke="#123b58" stroke-width="5"/>'+text(x+size/2,y+size*.67,t,int(size*.51))
 def grid(values,colors=None,sz=88):
@@ -28,15 +29,16 @@ art['padel']='<g transform="rotate(-25 840 300)"><rect x="817" y="350" width="46
 original=(ROOT/'share/conecta.svg').read_text();art['conecta']=original[original.index('<circle cx="880"'):original.index('<text x="70"')]
 data=[('conecta',['Conecta','colores'],'Cada color necesita su camino.','LÓGICA · PLANIFICACIÓN','#082d48','#4f46b8'),('numeros',['Une los','números'],'Un camino. Todos los números.','ATENCIÓN · ESTRATEGIA','#123b75','#007e9e'),('calculo',['Cálculo','veloz'],'Pensá rápido. Calculá mejor.','NÚMEROS · AGILIDAD','#5126a5','#aa3289'),('palabras',['Descifra','la palabra'],'Las letras esconden un reto.','LENGUAJE · INGENIO','#922d50','#e06b21'),('sopa',['Sopa','de letras'],'Encontrá lo que otros no ven.','LENGUAJE · ATENCIÓN','#075f68','#08856a'),('sudoku',['Sudoku'],'Cada casilla tiene su lugar.','LÓGICA · DEDUCCIÓN','#202d83','#6650c3'),('memoria',['Memoria'],'Mirá. Recordá. Encontrá.','MEMORIA · ATENCIÓN','#73228d','#bd3b76'),('series',['Series','lógicas'],'Descubrí qué viene después.','PATRONES · RAZONAMIENTO','#123f6b','#107c86'),('crucigrama',['Crucigrama'],'Una pista abre otro camino.','PALABRAS · CONOCIMIENTO','#812945','#c85332'),('tiempo',['Reto','tiempo'],'Un nuevo desafío a cada paso.','AGILIDAD · ATENCIÓN','#183b90','#6950b3'),('verdadero',['Verdadero','o falso'],'Pensá, decidí y descubrí por qué.','CURIOSIDAD · RAZONAMIENTO','#075b71','#208e87'),('cocomed',['Coco Med'],'Explorá cómo cuidarnos mejor.','CIENCIA · CURIOSIDAD','#075b78','#138a9f'),('futbol',['Fútbol'],'Recordá la jugada. Marcá el gol.','MEMORIA · PRECISIÓN','#064f54','#148555'),('padel',['Pádel'],'Tu grupo. Tus pistas. A jugar.','FAMILIAS · CLUBES','#243e95','#5861bf')]
 for id,lines,subtitle,kicker,c1,c2 in data:
- title=''.join(f'<text x="64" y="{245+i*88}" font-family="DejaVu Sans,sans-serif" font-size="{68 if len(t)>10 else 76}" font-weight="bold" fill="{ "#ffda43" if i else "white"}">{html.escape(t)}</text>' for i,t in enumerate(lines))
- svg=f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630"><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="{c1}"/><stop offset="1" stop-color="{c2}"/></linearGradient><radialGradient id="paper"><stop stop-color="#fff"/><stop offset="1" stop-color="#d7edf6"/></radialGradient></defs><rect width="1200" height="630" fill="url(#bg)"/><circle cx="890" cy="315" r="280" fill="#ffffff" opacity=".045"/><circle cx="890" cy="315" r="255" fill="none" stroke="#ffffff" opacity=".12" stroke-width="2"/><path d="M0 590L1200 40M0 630L1200 80" stroke="#fff" opacity=".035" stroke-width="22"/><text x="66" y="125" font-family="DejaVu Sans,sans-serif" font-size="19" letter-spacing="3" fill="#bdefff">{kicker}</text>{title}<text x="68" y="412" font-family="DejaVu Sans,sans-serif" font-size="24" fill="white">{html.escape(subtitle)}</text><rect x="66" y="461" width="{295 if id=="padel" else 235}" height="64" rx="19" fill="#f87918"/><text x="{214 if id=="padel" else 184}" y="503" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="24" font-weight="bold" fill="white">{ "Organizá tu partido" if id=="padel" else "¿Te animás?"}</text>{art[id]}<image x="1102" y="532" width="78" height="78" xlink:href="data:image/png;base64,{logo}"/></svg>'
- (OUT/f'{id}.svg').write_text(svg)
- subprocess.run(['inkscape',str(OUT/f'{id}.svg'),'--export-type=png',f'--export-filename={OUT/id}.png'],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
- im=Image.open(OUT/f'{id}.png').convert('RGB');im.save(OUT/f'{id}.jpg',quality=90,optimize=True);(OUT/f'{id}.png').unlink()
+ c1,c2,cta=themes[id];button_width=max(235,len(cta)*15+48)
+ title=''.join(f'<text x="64" y="{245+i*88}" font-family="Montserrat,sans-serif" font-size="{68 if len(t)>10 else 76}" font-weight="900" fill="{ "#ffda43" if i else "white"}">{html.escape(t)}</text>' for i,t in enumerate(lines))
+ svg=f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630"><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="{c1}"/><stop offset="1" stop-color="{c2}"/></linearGradient><radialGradient id="paper"><stop stop-color="#fff"/><stop offset="1" stop-color="#d7edf6"/></radialGradient></defs><rect width="1200" height="630" fill="url(#bg)"/><circle cx="890" cy="315" r="280" fill="#ffffff" opacity=".045"/><circle cx="890" cy="315" r="255" fill="none" stroke="#ffffff" opacity=".12" stroke-width="2"/><path d="M0 590L1200 40M0 630L1200 80" stroke="#fff" opacity=".035" stroke-width="22"/><text x="66" y="125" font-family="Montserrat,sans-serif" font-size="19" letter-spacing="3" fill="#bdefff" font-weight="500">{kicker}</text>{title}<text x="68" y="412" font-family="Montserrat,sans-serif" font-size="24" fill="white" font-weight="500">{html.escape(subtitle)}</text><rect x="66" y="461" width="{button_width}" height="64" rx="19" fill="#fff1c4"/><text x="{66+button_width/2}" y="503" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="24" font-weight="bold" fill="{c1}">{html.escape(cta)}</text>{art[id]}</svg>'
+ render_svg(svg,OUT/f'{id}.jpg',quality=90)
 # Review sheet, kept outside tracked assets.
 sheet=Image.new('RGB',(1200,7*340),'#eef3f7');d=ImageDraw.Draw(sheet)
 for i,(id,*_) in enumerate(data):
  im=Image.open(OUT/f'{id}.jpg');im.thumbnail((590,310));x=(i%2)*600;y=(i//2)*340;sheet.paste(im,(x,y));d.text((x+10,y+315),id,fill='#123b58')
 sheet.save('/tmp/coco-cards-review.jpg')
-(OUT/'catalog.json').write_text(json.dumps([{'id':id,'title':' '.join(lines),'description':sub} for id,lines,sub,*_ in data],ensure_ascii=False,indent=2)+'\n')
+(OUT/'catalog.json').write_text(json.dumps([{'id':id,'title':' '.join(lines),'description':sub,'cta':themes[id][2],'colors':themes[id][:2]} for id,lines,sub,*_ in data],ensure_ascii=False,indent=2)+'\n')
+identity=ROOT/'coco-v155-identity.js'
+identity.write_text(re.sub(r'var CARD_THEMES=.*?;\n',lambda _: 'var CARD_THEMES='+json.dumps(themes,ensure_ascii=False,separators=(',',':'))+';\n',identity.read_text(),count=1))
 print('Rendered',len(data),'cards')

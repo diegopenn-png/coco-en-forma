@@ -1,0 +1,92 @@
+{
+  "conecta": [
+    "#075f65",
+    "#169996",
+    "Une los colores"
+  ],
+  "numeros": [
+    "#193a8d",
+    "#356fe3",
+    "Traza tu camino"
+  ],
+  "calculo": [
+    "#81320b",
+    "#d46316",
+    "Haz la cuenta"
+  ],
+  "palabras": [
+    "#8d174e",
+    "#cf3677",
+    "Ordena las letras"
+  ],
+  "sopa": [
+    "#145b32",
+    "#278942",
+    "Encuentra palabras"
+  ],
+  "sudoku": [
+    "#302269",
+    "#6551b8",
+    "Completa el tablero"
+  ],
+  "memoria": [
+    "#7a217b",
+    "#b638ab",
+    "Descubre las parejas"
+  ],
+  "series": [
+    "#704e0d",
+    "#b0831c",
+    "Sigue el patrón"
+  ],
+  "crucigrama": [
+    "#7a2027",
+    "#c44737",
+    "Resuelve las pistas"
+  ],
+  "tiempo": [
+    "#51307e",
+    "#9563c9",
+    "Activa el reloj"
+  ],
+  "verdadero": [
+    "#075d4a",
+    "#149e73",
+    "Elige tu respuesta"
+  ],
+  "cocomed": [
+    "#07516d",
+    "#1595ba",
+    "Explora la salud"
+  ],
+  "futbol": [
+    "#3f5520",
+    "#748e2f",
+    "Marca el gol"
+  ],
+  "padel": [
+    "#244b6e",
+    "#4e839f",
+    "Organiza tu partido"
+  ],
+  "ajedrez": [
+    "#4b2d20",
+    "#9c6841",
+    "Haz tu jugada"
+  ],
+  "bank": [
+    "#725b11",
+    "#b39532",
+    "Gestiona tu dinero"
+  ],
+  "ciudad": [
+    "#9f321f",
+    "#d66b36",
+    "Tira el dado"
+  ],
+  "eneagrama": [
+    "#203c43",
+    "#527777",
+    "Explora tus tendencias"
+  ]
+}
