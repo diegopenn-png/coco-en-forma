@@ -21,9 +21,9 @@
     futbol:{name:"Fútbol",description:"Memoriza secuencias con ritmos variables y chuta a la única zona libre en tres niveles."},
     padel:{name:"Pádel",description:"Crea mixings equilibrados, cambia rondas, pistas, tiempo y puntuación, y consulta clasificaciones e historial."}
   };
-  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/colorful-v160125/"+id+".jpg"});
-  DATA.bank.image="./share/bank-v2.jpg";
-  DATA.eneagrama.image="./explora/cover.jpg";
+  Object.keys(DATA).forEach(function(id){DATA[id].image="./share/premium-v160126/"+id+".jpg"});
+  DATA.bank.image="./share/premium-v160126/bank.jpg";
+  DATA.eneagrama.image="./share/premium-v160126/eneagrama.jpg";
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
   var TITLE_TO_ID={};Object.keys(DATA).forEach(function(id){TITLE_TO_ID[DATA[id].name]=id});TITLE_TO_ID["Coco Fútbol"]="futbol";TITLE_TO_ID["Coco Pádel"]="padel";TITLE_TO_ID["Coco Pádel Club"]="padel";TITLE_TO_ID["Reto Tiempo"]="tiempo";
   function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String(title.textContent||"").trim()]||""}
@@ -35,7 +35,7 @@
     if(card.dataset.cocoCardTheme!==id){card.dataset.cocoCardTheme=id;card.style.setProperty('background','linear-gradient(135deg,'+tint(theme[0],.84)+','+tint(theme[1],.96)+')','important');card.style.setProperty('border-color',tint(theme[0],.57),'important');card.style.setProperty('box-shadow','0 3px 0 '+tint(theme[0],.75),'important')}
     var button=card.querySelector('.cocoBotonJuego');if(button&&!button.disabled&&/^(jugar(?: .*)?|empezar|comenzar|¿?te anim[áa]s\??)$/i.test(button.textContent.trim())){button.textContent=theme[2];button.style.setProperty('background',theme[0],'important');button.style.setProperty('color','#fff','important')}
   }
-  function imgHtml(id,alt){var d=DATA[id];return d?'<img class="cocoOfficialThumb" src="'+d.image+'" alt="'+String(alt||d.name).replace(/&/g,"&amp;").replace(/"/g,"&quot;")+'" loading="lazy" decoding="async">':""}
+  function imgHtml(id,alt){var d=DATA[id];return d?'<img class="cocoOfficialThumb" src="'+d.image+'" srcset="'+d.image.replace('.jpg','-720.webp')+' 720w, '+d.image+' 1200w" sizes="(max-width:600px) 90vw, 480px" alt="'+String(alt||d.name).replace(/&/g,"&amp;").replace(/"/g,"&quot;")+'" loading="lazy" decoding="async">':""}
   function applyCard(card){themeCard(card);var id=idOf(card),d=DATA[id];if(!d)return;card.dataset.cocoJuego=id;var box=card.querySelector(".emoji,.cocoIconoEspecial");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&String(desc.textContent||"").trim()!==d.description)desc.textContent=d.description}
   function applyMini(node){themeCard(node);var id=idOf(node),d=DATA[id];if(!d)return;node.dataset.cocoJuego=id;var box=node.querySelector(".cocoMiniIcono");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}}
   function applyShare(modal){var title=modal.querySelector("#cocoShareTitle"),id=title&&TITLE_TO_ID[String(title.textContent||"").trim()]||"";if(!DATA[id])return;var box=modal.querySelector(".cocoSharePreview");if(box){box.classList.add("cocoOfficialThumbBox");box.innerHTML=imgHtml(id,DATA[id].name)}var p=modal.querySelector(".cocoShareSheet>p");if(p)p.textContent=DATA[id].description;upgradeShareLinks(modal,id)}
@@ -43,7 +43,7 @@
   function upgradeShareLinks(modal,id){
     if(modal.dataset.colorfulShare===id)return;
     modal.dataset.colorfulShare=id;
-    var d=DATA[id],url=d.url||"https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/?v=160125";
+    var d=DATA[id],url=d.url||"https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/";
     var label=modal.querySelector(".cocoShareUrl"),status=modal.querySelector(".cocoShareStatus");
     if(label)label.textContent=url;
     var copy=modal.querySelector("[data-share-copy]");

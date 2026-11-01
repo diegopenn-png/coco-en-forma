@@ -8,7 +8,7 @@ for(const item of JSON.parse(fs.readFileSync('share/colorful-v160125/catalog.jso
  const data={name:item.title,description:item.description,image:'./share/colorful-v160125/'+item.id+'.jpg'};
  const ctx={root:{},DATA:{[item.id]:data},document:{createElement:()=>({})},navigator:{clipboard:{writeText:async v=>{copied=v}},share:async v=>{shared=v}},window:{open(){throw Error('Unexpected external send')}}};
  vm.createContext(ctx);vm.runInContext(fn,ctx);ctx.upgradeShareLinks(modal,item.id);ctx.upgradeShareLinks(modal,item.id);
- await nodes['[data-share-copy]'].onclick();assert.equal(copied,'https://cocoenforma.com/juego/'+item.id+'/?v=160125');
+ await nodes['[data-share-copy]'].onclick();assert.equal(copied,'https://cocoenforma.com/juego/'+item.id+'/');
  await nodes['[data-share-native]'].onclick();assert.equal(shared.url,copied);
  assert.equal(children.length,2);assert.equal(children[0].href,data.image);assert.equal(children[0].download,'coco-'+item.id+'.jpg');
 }
