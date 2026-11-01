@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /qa/
+Disallow: /supabase/
+Disallow: /*?coco_bank=
+Disallow: /*?juego=
+Disallow: /explora/jugar.html
+
+Sitemap: https://cocoenforma.com/sitemap.xml
