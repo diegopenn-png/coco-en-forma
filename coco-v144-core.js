@@ -220,7 +220,7 @@
       node.remove();
     });
     var note = app.querySelector(".cocoRetosNota");
-    if (note) { var noteCopy = "Una partida breve por juego y día. Coco Pádel Club es una herramienta ilimitada."; if (note.textContent !== noteCopy) note.textContent = noteCopy; }
+    if (note) { var noteCopy = "Los retos diarios puntúan una vez al día. Coco Ajedrez permite partidas estándar ilimitadas; Coco Pádel Club es una herramienta ilimitada."; if (note.textContent !== noteCopy) note.textContent = noteCopy; }
   }
 
   function scheduleEnhance() {

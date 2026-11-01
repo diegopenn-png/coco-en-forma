@@ -37,3 +37,6 @@
 })(window);
 // Separate educational exploration; no ranking or diagnostic inference.
 import('./explora/entry.mjs').catch(()=>{});
+
+// Standalone chess: standard play stays independent from daily missions.
+import('./games/ajedrez/entry.mjs').catch(()=>{});
