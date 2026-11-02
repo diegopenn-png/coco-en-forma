@@ -9,7 +9,7 @@ const root=new URL('../',import.meta.url);
 const read=p=>readFileSync(new URL(p.replace(/^\//,''),root),'utf8');
 const doc=p=>new JSDOM(read(p),{url:origin+p}).window.document;
 
-test('all 17 active game routes are substantial, unique and crawlable without JS',()=>{
+test('all 18 active game routes are substantial, unique and crawlable without JS',()=>{
  const titles=new Set(),descriptions=new Set();
  for(const g of games){const html=read(g.path+'index.html'),d=doc(g.path+'index.html');
   assert.equal(d.querySelectorAll('h1').length,1,g.id);
@@ -28,10 +28,10 @@ test('all 17 active game routes are substantial, unique and crawlable without JS
   for(const a of d.querySelectorAll('a[href]')){const u=new URL(a.href);if(u.origin!==origin)continue;const p=u.pathname.endsWith('/')?u.pathname+'index.html':u.pathname;assert.ok(existsSync(new URL('.'+p,root)),g.id+' broken '+p);if(u.hash&&u.pathname===g.path)assert.ok(d.getElementById(u.hash.slice(1)),g.id+' missing anchor');}
   for(const img of d.images){assert.ok(existsSync(new URL('.'+new URL(img.src).pathname,root)));assert.ok(img.alt);assert.ok(Number(img.getAttribute('width'))>0);}
  }
- assert.equal(titles.size,17);assert.equal(descriptions.size,17);
+ assert.equal(titles.size,games.length);assert.equal(descriptions.size,games.length);
 });
 test('catalogue and sitemap include every active landing, with no login/room URLs',()=>{
- const d=doc('juegos/index.html'),xml=read('sitemap.xml');assert.equal(d.querySelectorAll('[data-game-card]').length,18);
+ const d=doc('juegos/index.html'),xml=read('sitemap.xml');assert.equal(d.querySelectorAll('[data-game-card]').length,catalogue.length);
  for(const g of catalogue){assert.ok(d.querySelector(`a[href="${g.path}"]`),g.id);assert.ok(xml.includes(origin+g.path),g.id);}
  const dom=new JSDOM(xml,{contentType:'application/xml'});assert.equal(dom.window.document.querySelector('parsererror'),null);
  for(const loc of dom.window.document.querySelectorAll('loc'))assert.ok(!/[?]|#sala|jugar.html|\/qa\//.test(loc.textContent));
@@ -40,9 +40,9 @@ test('catalogue and sitemap include every active landing, with no login/room URL
 });
 test('filter handles accents, empty state and one-result grammar; content stays visible without scripts',()=>{
  const dom=new JSDOM(read('juegos/index.html'),{url:origin+'/juegos/',runScripts:'outside-only'}),w=dom.window,d=w.document;
- assert.equal(d.querySelectorAll('[data-game-card]:not([hidden])').length,18);
+ assert.equal(d.querySelectorAll('[data-game-card]:not([hidden])').length,catalogue.length);
  w.eval(read('seo/landing.js'));const input=d.querySelector('#game-search');
- for(const [query,total] of [['ajedrez',1],['PADEL',1],['no-game-here',0],['',18]]){input.value=query;input.dispatchEvent(new w.Event('input'));assert.equal(d.querySelectorAll('[data-game-card]:not([hidden])').length,total);assert.equal(d.querySelector('#empty-results').hidden,total>0);if(total===1)assert.equal(d.querySelector('#result-count').textContent,'1 propuesta disponible');}
+ for(const [query,total] of [['ajedrez',1],['PADEL',1],['no-game-here',0],['',catalogue.length]]){input.value=query;input.dispatchEvent(new w.Event('input'));assert.equal(d.querySelectorAll('[data-game-card]:not([hidden])').length,total);assert.equal(d.querySelector('#empty-results').hidden,total>0);if(total===1)assert.equal(d.querySelector('#result-count').textContent,'1 propuesta disponible');}
  const select=d.querySelector('#game-category');select.value='En grupo';select.dispatchEvent(new w.Event('change'));assert.equal(d.querySelectorAll('[data-game-card]:not([hidden])').length,2);
 });
 test('copy uses canonical public URL and provides a selectable fallback if clipboard is blocked',async()=>{
@@ -50,7 +50,7 @@ test('copy uses canonical public URL and provides a selectable fallback if clipb
  Object.defineProperty(w.navigator,'clipboard',{value:{writeText:async t=>{copied=t}},configurable:true});w.eval(read('seo/landing.js'));d.querySelector('[data-copy]').click();await new Promise(setImmediate);assert.equal(copied,origin+'/juego/ajedrez/');
  Object.defineProperty(w.navigator,'clipboard',{value:{writeText:async()=>{throw Error('blocked')}}});d.querySelector('[data-copy]').click();await new Promise(setImmediate);assert.equal(d.querySelector('.copy-fallback').value,copied);assert.equal(d.querySelectorAll('.copy-fallback').length,1);
 });
-test('18 premium artworks, fixed aspect ratio, mobile renditions and PWA cache coverage',()=>{
+test('19 premium artworks, fixed aspect ratio, mobile renditions and PWA cache coverage',()=>{
  const sw=read('sw.js');
  for(const g of catalogue){for(const suffix of ['.jpg','-720.webp']){const path=`share/premium-v160126/${g.id}${suffix}`,buf=readFileSync(new URL(path,root));assert.ok(buf.length>15000);assert.ok(statSync(new URL(path,root)).size<(suffix==='.jpg'?220000:100000),path);assert.ok(sw.includes('./'+path),path+' missing PWA cache');}
   assert.match(g.image,/premium-v160126/);

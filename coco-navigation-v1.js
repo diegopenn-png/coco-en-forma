@@ -43,3 +43,6 @@ import('./games/ajedrez/entry.mjs?v=daily-v1').catch(()=>{});
 
 // Private social board game; independent of daily challenge scoring.
 import('./games/ciudad/entry.mjs?v=city1').catch(()=>{});
+
+// Family dice game, independent of the daily leaderboard.
+import('./games/generala/entry.mjs?v=generala1').catch(()=>{});
