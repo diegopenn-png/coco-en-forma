@@ -538,7 +538,7 @@
     app.querySelectorAll('.cocoGameCard[data-coco-juego="cocomed"]').forEach(function (card) {
       var description = card.querySelector(".cocoDescripcion,.pequeno.apagado");
       if (description) description.textContent = "Poné a prueba tus conocimientos sobre salud y aprendé con una explicación después de cada respuesta.";
-      var badge = card.querySelector(".cocoLigaBadge b"); if (badge) badge.textContent = "Misma cuenta · clasificación independiente";
+      var badge = card.querySelector(".cocoLigaBadge b"); if (badge) badge.textContent = "No puntúa para la clasificación general";
     });
     var medTab = document.querySelector("#cocoMedPestana small");
     if (medTab) medTab.textContent = "Una vez al día · liga independiente";

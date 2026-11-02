@@ -46,7 +46,7 @@ test("PWA clients request and activate the current release instead of retaining 
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.51-hero-ideas"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.52-scoring-labels"/);
   for (const asset of [
     "coco-scoring-v160110.js",
     "coco-variety-director-v160960.js",
@@ -81,13 +81,13 @@ test("current and legacy PWA entry points share one owner and one canonical work
   assert.match(runtime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-v160100"/);
   assert.match(legacyRuntime, /__COCO_PWA_REGISTRATION_OWNER__ = "runtime-legacy-v160100"/);
   assert.match(pwaManager, /__COCO_PWA_REGISTRATION_OWNER__="manager-v160100"/);
-  assert.match(index, /coco-v142-runtime\.js\?v=160100/);
+  assert.match(index, /coco-v142-runtime\.js\?v=160128/);
   assert.match(runtime, /sw\.js\?v=160118-r1/);
   assert.match(legacyRuntime, /sw\.js\?v=160118-r1/);
   assert.match(pwaManager, /SW_TAG="160118-r1"/);
   assert.doesNotMatch(runtime, /new URL\("sw\.js",document\.baseURI\)/);
   assert.doesNotMatch(legacyRuntime, /new URL\("sw\.js",document\.baseURI\)/);
-  assert.ok(index.indexOf('__COCO_PWA_REGISTRATION_OWNER__ = "index-v160100"') < index.indexOf('coco-v142-runtime.js?v=160100'));
+  assert.ok(index.indexOf('__COCO_PWA_REGISTRATION_OWNER__ = "index-v160100"') < index.indexOf('coco-v142-runtime.js?v=160128'));
   assert.match(index, /Date\.now\(\) - previousReload < 15000/);
   assert.match(runtime, /Date\.now\(\) - previousReload < 15000/);
   assert.match(legacyRuntime, /Date\.now\(\) - previousReload < 15000/);

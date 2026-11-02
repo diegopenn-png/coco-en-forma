@@ -35,6 +35,32 @@
     if(card.dataset.cocoCardTheme!==id){card.dataset.cocoCardTheme=id;card.style.setProperty('background','linear-gradient(135deg,'+tint(theme[0],.84)+','+tint(theme[1],.96)+')','important');card.style.setProperty('border-color',tint(theme[0],.57),'important');card.style.setProperty('box-shadow','0 3px 0 '+tint(theme[0],.75),'important')}
     var button=card.querySelector('.cocoBotonJuego');if(button&&!button.disabled&&/^(jugar(?: .*)?|empezar|comenzar|¿?te anim[áa]s\??)$/i.test(button.textContent.trim())){button.textContent=theme[2];button.style.setProperty('background',theme[0],'important');button.style.setProperty('color','#fff','important')}
   }
+  // Copy remains available in standalone PWAs, independently of native sharing.
+  function copyGameId(card){return card.hasAttribute("data-coco-city-entry")?"ciudad":card.hasAttribute("data-coco-chess-entry")?"ajedrez":idOf(card)}
+  function gameLink(id){return id==="eneagrama"?"https://cocoenforma.com/explora/":"https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/"}
+  async function copyGameLink(id,button){
+    if(!DATA[id]&&id!=="ciudad")return false;
+    var url=gameLink(id),ok=false,host=button.parentElement;
+    try{await navigator.clipboard.writeText(url);ok=true}catch(e){
+      var field=document.createElement("textarea");field.value=url;field.readOnly=true;field.style.cssText="position:fixed;left:0;top:0;opacity:0";host.appendChild(field);field.focus();field.select();field.setSelectionRange(0,url.length);
+      try{ok=document.execCommand("copy")}catch(e){}field.remove();button.focus({preventScroll:true});
+    }
+    var status=host.querySelector(".cocoCopyStatus");if(!status){status=document.createElement("span");status.className="cocoCopyStatus";status.setAttribute("role","status");status.setAttribute("aria-live","polite");host.appendChild(status)}
+    status.textContent=ok?"Enlace copiado. Ya puedes compartirlo.":"Mantén pulsado el enlace para copiarlo:";
+    var manual=host.querySelector(".cocoCopyManual");if(ok&&manual)manual.remove();
+    if(!ok){if(!manual){manual=document.createElement("input");manual.className="cocoCopyManual";manual.readOnly=true;manual.setAttribute("aria-label","Enlace del juego para copiar");host.appendChild(manual)}manual.value=url;manual.focus();manual.select();manual.setSelectionRange(0,url.length)}
+    return ok;
+  }
+  function ensureCardCopy(card){
+    var id=copyGameId(card);if((!DATA[id]&&id!=="ciudad")||card.querySelector("[data-coco-copy-link]"))return;
+    var button=document.createElement("button");button.type="button";button.className="cocoCardCopy";button.dataset.cocoCopyLink=id;button.textContent="Copiar enlace";button.setAttribute("aria-label","Copiar enlace de "+(DATA[id]?DATA[id].name:"Coco Ciudad"));card.appendChild(button);
+  }
+  root.addEventListener("click",function(event){
+    var button=event.target&&event.target.closest&&event.target.closest("[data-coco-copy-link]");if(!button)return;
+    event.preventDefault();event.stopImmediatePropagation();copyGameLink(button.dataset.cocoCopyLink,button);
+  },true);
+  root.CocoCopyGameLinkV160128=copyGameLink;
+
   function imgHtml(id,alt){var d=DATA[id];return d?'<img class="cocoOfficialThumb" src="'+d.image+'" srcset="'+d.image.replace('.jpg','-720.webp')+' 720w, '+d.image+' 1200w" sizes="(max-width:600px) 90vw, 480px" alt="'+String(alt||d.name).replace(/&/g,"&amp;").replace(/"/g,"&quot;")+'" loading="lazy" decoding="async">':""}
   function applySuggestion(card){
     if(!card.matches(".cocoSuggestionCard,.cocoMiniSuggestion"))return false;
@@ -47,8 +73,8 @@
     }
     return true;
   }
-  function applyCard(card){if(applySuggestion(card))return;themeCard(card);var id=idOf(card),d=DATA[id];if(!d)return;card.dataset.cocoJuego=id;var box=card.querySelector(".emoji,.cocoIconoEspecial");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&String(desc.textContent||"").trim()!==d.description)desc.textContent=d.description}
-  function applyMini(node){if(applySuggestion(node))return;themeCard(node);var id=idOf(node),d=DATA[id];if(!d)return;node.dataset.cocoJuego=id;var box=node.querySelector(".cocoMiniIcono");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}}
+  function applyCard(card){if(applySuggestion(card))return;themeCard(card);ensureCardCopy(card);var id=idOf(card),d=DATA[id];if(!d)return;card.dataset.cocoJuego=id;var box=card.querySelector(".emoji,.cocoIconoEspecial");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&String(desc.textContent||"").trim()!==d.description)desc.textContent=d.description}
+  function applyMini(node){if(applySuggestion(node))return;themeCard(node);ensureCardCopy(node);var id=idOf(node),d=DATA[id];if(!d)return;node.dataset.cocoJuego=id;var box=node.querySelector(".cocoMiniIcono");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}}
   function applyShare(modal){var title=modal.querySelector("#cocoShareTitle"),id=title&&TITLE_TO_ID[String(title.textContent||"").trim()]||"";if(!DATA[id])return;var box=modal.querySelector(".cocoSharePreview");if(box){box.classList.add("cocoOfficialThumbBox");box.innerHTML=imgHtml(id,DATA[id].name)}var p=modal.querySelector(".cocoShareSheet>p");if(p)p.textContent=DATA[id].description;upgradeShareLinks(modal,id)}
 
   function upgradeShareLinks(modal,id){
