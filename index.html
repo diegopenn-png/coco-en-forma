@@ -3299,6 +3299,22 @@ var o=t.map(function(a){return Object.assign({},a,n[a.id])}).sort(function(a,e){
 
 <!-- COCO v86: navegación legal integrada -->
 <style id="coco-v86-legal">
+/* The catalogue invitation belongs with the app content, immediately before legal links. */
+#cocoApp #coco-game-guides{width:100%;margin:22px auto 0;padding:0;box-sizing:border-box}
+#cocoApp #coco-game-guides>a{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;padding:26px 28px;box-sizing:border-box;border:1px solid #b7944b;border-radius:22px;background:radial-gradient(ellipse at 100% 0,rgba(116,220,255,.14),transparent 60%),linear-gradient(135deg,#091c3d,#142e55);box-shadow:0 6px 18px #091c3d18;color:#fff;text-align:left;text-decoration:none}
+#cocoApp #coco-game-guides .cocoGuidesCopy{display:grid;gap:9px;min-width:0}
+#cocoApp #coco-game-guides .cocoGuidesEyebrow{color:#ffd267;font-size:10px;font-weight:700;line-height:1.5;letter-spacing:.14em}
+#cocoApp #coco-game-guides strong{color:#fff;font-size:clamp(22px,3vw,30px);font-weight:900;line-height:1.2;letter-spacing:-.025em}
+#cocoApp #coco-game-guides .cocoGuidesDescription{color:#ccdef0;font-size:13px;line-height:1.6;font-weight:500}
+#cocoApp #coco-game-guides .cocoGuidesButton{display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0;min-height:48px;padding:13px 20px;box-sizing:border-box;border:1px solid #fadd8a;border-radius:13px;background:linear-gradient(#ffe195,#ffca4b);box-shadow:0 3px 0 #976d26;color:#102543;font-size:13px;font-weight:900;line-height:1.4;text-align:center}
+#cocoApp #coco-game-guides>a:hover{border-color:#ffd267;background:linear-gradient(135deg,#102749,#1b3d60)}
+#cocoApp #coco-game-guides>a:focus-visible{outline:3px solid #1685b0;outline-offset:4px}
+#cocoApp #coco-game-guides+.cocoLegalFooter{margin-top:18px}
+@media(max-width:620px){
+ #cocoApp #coco-game-guides>a{flex-direction:column;align-items:stretch;gap:18px;padding:22px 20px}
+ #cocoApp #coco-game-guides .cocoGuidesButton{width:100%}
+}
+
 #cocoApp .cocoLegalFooter{
   width:100%;
   margin:24px auto 90px;
@@ -3346,20 +3362,34 @@ var o=t.map(function(a){return Object.assign({},a,n[a.id])}).sort(function(a,e){
   function crearFooter(){
     var app=document.getElementById("cocoApp");
     if(!app)return;
-    if(app.querySelector(".cocoLegalFooter"))return;
-
-    var footer=document.createElement("footer");
-    footer.className="cocoLegalFooter";
-    footer.innerHTML=
-      '<nav aria-label="Información legal">'+
-      '<a href="/aviso-legal.html" target="_blank" rel="noopener">Aviso legal</a>'+
-      '<a href="/politica-de-privacidad.html" target="_blank" rel="noopener">Privacidad</a>'+
-      '<a href="/politica-de-cookies.html" target="_blank" rel="noopener">Cookies</a>'+
-      '<a href="/proteccion-de-datos.html" target="_blank" rel="noopener">Protección de datos</a>'+
-      '<a href="/terminos-y-condiciones.html" target="_blank" rel="noopener">Términos</a>'+
-      '</nav>'+
-      '<small>© 2026 Coco en Forma · Diego Hernán Pennise · NIE Y5404412R</small>';
-    app.appendChild(footer);
+    var footer=app.querySelector(".cocoLegalFooter");
+    if(!footer){
+      footer=document.createElement("footer");
+      footer.className="cocoLegalFooter";
+      footer.innerHTML=
+        '<nav aria-label="Información legal">'+
+        '<a href="/aviso-legal.html" target="_blank" rel="noopener">Aviso legal</a>'+
+        '<a href="/politica-de-privacidad.html" target="_blank" rel="noopener">Privacidad</a>'+
+        '<a href="/politica-de-cookies.html" target="_blank" rel="noopener">Cookies</a>'+
+        '<a href="/proteccion-de-datos.html" target="_blank" rel="noopener">Protección de datos</a>'+
+        '<a href="/terminos-y-condiciones.html" target="_blank" rel="noopener">Términos</a>'+
+        '</nav>'+
+        '<small>© 2026 Coco en Forma · Diego Hernán Pennise · NIE Y5404412R</small>';
+      app.appendChild(footer);
+    }
+    var guides=app.querySelector("#coco-game-guides");
+    if(!guides){
+      guides=document.createElement("nav");
+      guides.id="coco-game-guides";
+      guides.setAttribute("aria-label","Guías de los juegos");
+      guides.innerHTML='<a href="/juegos/">'+
+        '<span class="cocoGuidesCopy">'+
+        '<span class="cocoGuidesEyebrow">EL UNIVERSO DE COCO</span>'+
+        '<strong>Tu próximo reto te espera</strong>'+
+        '<span class="cocoGuidesDescription">Descubre todos los juegos de Coco y aprende a jugar paso a paso.</span>'+
+        '</span><span class="cocoGuidesButton">Explorar los juegos <span aria-hidden="true">→</span></span></a>';
+    }
+    if(guides.nextElementSibling!==footer)app.insertBefore(guides,footer);
   }
 
   function informarRegistro(){
@@ -7774,5 +7804,5 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 <script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960"></script>
 <script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=16010018"></script>
 <script id="eterna-marketing-attribution-v1" src="./eterna-marketing-attribution-v1.js?v=20260828"></script>
-<nav id="coco-game-guides" aria-label="Guías de los juegos" style="max-width:1100px;margin:22px auto;padding:18px;text-align:center;font:700 14px system-ui;color:#163e65"><a href="/juegos/" style="display:inline-block;padding:12px 18px;border-radius:12px;background:#fff;border:1px solid #c9dfed;color:inherit;text-decoration:none">Descubre todos los juegos de Coco y cómo se juegan →</a></nav>
+
 </body></html>
