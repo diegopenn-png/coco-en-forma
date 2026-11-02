@@ -1,0 +1,363 @@
+{
+  "navigation": [
+    {
+      "route": "/juegos/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/ajedrez/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/bank/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/calculo/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/ciudad/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/cocomed/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/conecta/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/crucigrama/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/futbol/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/memoria/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/numeros/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/padel/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/palabras/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/series/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/sopa/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/sudoku/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/tiempo/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    },
+    {
+      "route": "/juego/verdadero/",
+      "buttons": [
+        {
+          "text": "← Volver",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(22, 59, 93)",
+          "height": 44,
+          "contrast": 11.55
+        },
+        {
+          "text": "Menú principal",
+          "color": "rgb(255, 255, 255)",
+          "background": "rgb(9, 28, 61)",
+          "height": 44,
+          "contrast": 16.87
+        }
+      ]
+    }
+  ],
+  "backAndMenu": "passed",
+  "errors": [],
+  "realWrites": 0,
+  "date": "2026-11-02",
+  "release": "coco-en-forma-v160.100.53-banner-navigation",
+  "image_tool": "built-in image_gen",
+  "brain_reference": "assets/tarjetas/premium-v160127/coco.jpg",
+  "prompt_summary": "Coco explorador con chaqueta azul, tablet y lápiz; conservar texto y colores. Cerebro siempre visible con el mismo contorno, proporciones, dos hemisferios, surco central, pliegues y diadema del Coco de referencia. Mantener intacta la tarjeta de racha. Corrección final: cabeza y cerebro frontales, rectos, surco central vertical y diadema nivelada.",
+  "image_outputs": [
+    "share/premium-v160127/hero-explorer-v160129.jpg",
+    "share/premium-v160127/hero-explorer-v160129-720.webp"
+  ],
+  "browser": "Chromium at 390px; home banner also checked at 1440px",
+  "regression_checks": 39,
+  "limits": [
+    "No physical iPhone was tested."
+  ]
+}

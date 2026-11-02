@@ -56,6 +56,11 @@ html body #cocoApp .tarjetaLogro :is(.descargarTarjetaCoco,.abrirTarjetaCoco){ba
 html body>.top,html body .shell>.topbar{background:linear-gradient(135deg,#091c3d,#143757)!important;border-color:#a18b52!important;color:#fff!important}
 html body>.top :is(a,b,span,small),html body .shell>.topbar :is(a,b,span,small){color:#eef8ff!important}
 html body>.top :is(button,.button),html body .shell>.topbar button{background:#163b5d!important;color:#fff!important;border-color:#55738d!important}
+/* Landing navigation links need an explicit surface as well as readable text. */
+html body>.top .nav :is(a,button){background:#163b5d!important;color:#fff!important;border-color:#55738d!important}
+html body>.top .nav .home{background:#091c3d!important}
+html body>.top .nav :is(a,button):hover{background:#214e73!important}
+html body>.top .nav :is(a,button):focus-visible{outline:3px solid #ffd267;outline-offset:3px}
 html body :is(.hero,.hub-hero,.about-strip,.control-panel,.help-panel){border-radius:22px;border-color:#cbddea}
 html body :is(.primary,.button.primary,.button:not(.secondary),.cta-primary):not([disabled]){background:linear-gradient(#ffe195,#ffca4b);color:#102543;border-color:#dcb155;font-weight:900}
 html body :is(.brand,.brand span,.brand b){font-family:var(--coco-font)!important;font-weight:900!important}

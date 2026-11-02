@@ -40,6 +40,6 @@ test("visible cards and downloads use the same six new reward illustrations", ()
 });
 
 test("the PWA pre-caches thumbnails under a new release key", () => {
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.52-scoring-labels"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.53-banner-navigation"/);
   assert.match(serviceWorker, /\.concat\(CARD_THUMBNAILS(?:,|\))/);
 });
