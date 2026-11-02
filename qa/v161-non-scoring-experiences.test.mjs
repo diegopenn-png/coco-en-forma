@@ -23,7 +23,7 @@ function harness(cards=[]){
  vm.runInContext(section('  function cognitiveProfile(rows){','  async function loadPlayerRows'),context);
  return{context,window,writes};
 }
-const unranked=['ciudad','bank','padel','eneagrama','generala'];
+const unranked=['ciudad','bank','padel','eneagrama','generala','naval'];
 test('catalogue discovery cannot promote companion tools or unknown cards into the general league',()=>{
  const cards=[...unranked,'inventado','cocomed'].map(id=>({dataset:{cocoJuego:id,cocoKind:'tool',cocoClasificacion:'general'},classList:{contains:()=>false},querySelector:()=>({textContent:id})}));
  const {context,window}=harness(cards);context.discoverGames();

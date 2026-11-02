@@ -9,7 +9,7 @@ const root=new URL('../',import.meta.url);
 const read=p=>readFileSync(new URL(p.replace(/^\//,''),root),'utf8');
 const doc=p=>new JSDOM(read(p),{url:origin+p}).window.document;
 
-test('all 18 active game routes are substantial, unique and crawlable without JS',()=>{
+test('all 19 active game routes are substantial, unique and crawlable without JS',()=>{
  const titles=new Set(),descriptions=new Set();
  for(const g of games){const html=read(g.path+'index.html'),d=doc(g.path+'index.html');
   assert.equal(d.querySelectorAll('h1').length,1,g.id);
@@ -50,7 +50,7 @@ test('copy uses canonical public URL and provides a selectable fallback if clipb
  Object.defineProperty(w.navigator,'clipboard',{value:{writeText:async t=>{copied=t}},configurable:true});w.eval(read('seo/landing.js'));d.querySelector('[data-copy]').click();await new Promise(setImmediate);assert.equal(copied,origin+'/juego/ajedrez/');
  Object.defineProperty(w.navigator,'clipboard',{value:{writeText:async()=>{throw Error('blocked')}}});d.querySelector('[data-copy]').click();await new Promise(setImmediate);assert.equal(d.querySelector('.copy-fallback').value,copied);assert.equal(d.querySelectorAll('.copy-fallback').length,1);
 });
-test('19 premium artworks, fixed aspect ratio, mobile renditions and PWA cache coverage',()=>{
+test('20 premium artworks, fixed aspect ratio, mobile renditions and PWA cache coverage',()=>{
  const sw=read('sw.js');
  for(const g of catalogue){for(const suffix of ['.jpg','-720.webp']){const path=`share/premium-v160126/${g.id}${suffix}`,buf=readFileSync(new URL(path,root));assert.ok(buf.length>15000);assert.ok(statSync(new URL(path,root)).size<(suffix==='.jpg'?220000:100000),path);assert.ok(sw.includes('./'+path),path+' missing PWA cache');}
   assert.match(g.image,/premium-v160126/);
