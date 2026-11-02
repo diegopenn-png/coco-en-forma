@@ -14,29 +14,31 @@ const sw = read("sw.js");
 const context = { window: {}, setTimeout, clearTimeout, Promise, Error };
 vm.runInNewContext(source, context);
 const scoring = context.window.CocoScoringV160110;
+const difficultyGames = scoring.generalIds.filter(id => id !== "ajedrez");
 
-test("la clasificación general conserva exactamente doce juegos comparables", () => {
+test("la clasificación general conserva doce retos y la partida diaria de ajedrez", () => {
   assert.deepEqual(Array.from(scoring.generalIds), [
     "numeros", "calculo", "palabras", "series", "memoria", "sudoku",
-    "sopa", "crucigrama", "tiempo", "verdadero", "futbol", "conecta"
+    "sopa", "crucigrama", "tiempo", "verdadero", "futbol", "conecta", "ajedrez"
   ]);
   assert.equal(scoring.generalIds.includes("cocomed"), false);
   assert.equal(scoring.generalIds.includes("padel"), false);
-  assert.equal(scoring.audit().games, 12);
+  assert.equal(scoring.audit().games, 13);
 });
 
 test("ningún juego domina la escala y la dificultad crece de forma moderada", () => {
   for (const level of [1, 2, 3]) {
-    const scores = scoring.generalIds.map(id => scoring.cap(id, level));
+    const scores = difficultyGames.map(id => scoring.cap(id, level));
     assert.ok(Math.max(...scores) / Math.min(...scores) <= 1.08, `nivel ${level}`);
   }
-  for (const id of scoring.generalIds) {
+  for (const id of difficultyGames) {
     assert.ok(scoring.cap(id, 1) < scoring.cap(id, 2), `${id}: básico < intermedio`);
     assert.ok(scoring.cap(id, 2) < scoring.cap(id, 3), `${id}: intermedio < avanzado`);
     assert.ok(scoring.maxForGame(id) <= 115, `${id}: máximo acotado`);
   }
   assert.equal(scoring.cap("futbol", 4), 114);
-  assert.ok(scoring.audit().perfectScoreRatio < 1.08);
+  assert.ok(scoring.audit().perfectScoreRatio <= 1.15);
+  for (const level of [1, 2, 3]) assert.equal(scoring.cap("ajedrez", level), 100);
 });
 
 test("el rendimiento es monótono y permanece en la misma unidad para todos", () => {
@@ -47,7 +49,7 @@ test("el rendimiento es monótono y permanece en la misma unidad para todos", ()
     assert.ok(low < medium && medium < high, id);
     assert.ok(high < 115, id);
   }
-  const samePerformance = scoring.generalIds.map(id => scoring.score(id, 3, 0.8));
+  const samePerformance = difficultyGames.map(id => scoring.score(id, 3, 0.8));
   assert.ok(Math.max(...samePerformance) - Math.min(...samePerformance) <= 5);
 });
 
@@ -101,7 +103,7 @@ test("web y PWA usan el motor común antes de abrir cualquier juego", () => {
   assert.match(html, /balancedScore\(active\.id,active\.level,performance\)/);
   assert.match(html, /promedio por partida/);
   assert.doesNotMatch(html, /var scoreLimit=id==="futbol"\?1300:1000/);
-  assert.match(sw, /coco-en-forma-v160\.100\.22-conecta/);
+  assert.match(sw, /coco-en-forma-v160\.100\.52-scoring-labels/);
   assert.match(sw, /\.\/coco-scoring-v160110\.js/);
 });
 

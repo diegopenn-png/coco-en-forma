@@ -1,0 +1,210 @@
+{
+  "date": "2026-11-02",
+  "release": "coco-en-forma-v160.100.52-scoring-labels",
+  "local_browser": [
+    {
+      "sharing": "public",
+      "catalogue": 18,
+      "activeGameMenus": 15,
+      "standalone": true,
+      "nativeShares": 0,
+      "clipboardFallback": true,
+      "manualFallback": true
+    },
+    {
+      "sharing": "profile",
+      "catalogue": 18,
+      "activeGameMenus": 15,
+      "standalone": true,
+      "nativeShares": 0,
+      "clipboardFallback": true,
+      "manualFallback": true
+    },
+    {
+      "results": [
+        {
+          "view": "public",
+          "cards": 18,
+          "labels": [
+            {
+              "id": "conecta",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "ajedrez",
+              "label": "Puntúa para la clasificación general",
+              "scope": "Solo la partida del día"
+            },
+            {
+              "id": "numeros",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "calculo",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "sopa",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "sudoku",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "memoria",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "series",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "palabras",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "crucigrama",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "tiempo",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "verdadero",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "cocomed",
+              "label": "No puntúa para la clasificación general"
+            },
+            {
+              "id": "futbol",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "padel",
+              "label": "No puntúa para la clasificación general"
+            },
+            {
+              "id": "bank",
+              "label": "No puntúa para la clasificación general"
+            },
+            {
+              "id": "ciudad",
+              "label": "No puntúa para la clasificación general"
+            },
+            {
+              "id": "eneagrama",
+              "label": "No puntúa para la clasificación general"
+            }
+          ],
+          "blockedSaves": 6,
+          "remoteCalls": 0
+        },
+        {
+          "view": "profile",
+          "cards": 18,
+          "labels": [
+            {
+              "id": "conecta",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "ajedrez",
+              "label": "Puntúa para la clasificación general",
+              "scope": "Solo la partida del día"
+            },
+            {
+              "id": "numeros",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "calculo",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "sopa",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "sudoku",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "memoria",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "series",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "palabras",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "crucigrama",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "tiempo",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "verdadero",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "futbol",
+              "label": "Puntúa para la clasificación general"
+            },
+            {
+              "id": "cocomed",
+              "label": "No puntúa para la clasificación general"
+            },
+            {
+              "id": "padel",
+              "label": "No puntúa para la clasificación general"
+            },
+            {
+              "id": "bank",
+              "label": "No puntúa para la clasificación general"
+            },
+            {
+              "id": "ciudad",
+              "label": "No puntúa para la clasificación general"
+            },
+            {
+              "id": "eneagrama",
+              "label": "No puntúa para la clasificación general"
+            }
+          ],
+          "blockedSaves": 6,
+          "remoteCalls": 0
+        }
+      ],
+      "errors": [],
+      "realWrites": 0
+    }
+  ],
+  "regression": {
+    "passed": 73,
+    "failed": 0
+  },
+  "login": {
+    "responsive_widths": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "password_toggle": "passed"
+  },
+  "limits": [
+    "Standalone display and authenticated profile are simulated in Chromium.",
+    "Clipboard success and denied cases are mocked; no customer data is written.",
+    "Physical iPhone installation and social network preview caches are not tested here."
+  ]
+}

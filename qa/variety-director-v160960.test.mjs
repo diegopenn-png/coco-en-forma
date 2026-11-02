@@ -85,9 +85,9 @@ test("path, sequence, speed and football generators expose different mechanic fa
 test("the release loads the director after rotation and caches it offline", () => {
   const index = readFileSync(new URL("../index.html", import.meta.url), "utf8");
   const serviceWorker = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
-  assert.ok(index.indexOf("coco-v142-runtime.js?v=160100") < index.indexOf("coco-variety-director-v160960.js?v=160960"));
+  assert.ok(index.indexOf("coco-v142-runtime.js?v=160128") < index.indexOf("coco-variety-director-v160960.js?v=160960"));
   assert.match(serviceWorker, /"\.\/coco-variety-director-v160960\.js"/);
-  assert.match(serviceWorker, /v160\.100\.51-hero-ideas/);
+  assert.match(serviceWorker, /v160\.100\.52-scoring-labels/);
 });
 
 test("every active experience exposes three deterministic daily focus variants", () => {

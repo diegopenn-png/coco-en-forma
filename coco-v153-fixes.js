@@ -603,7 +603,7 @@
   }
 
   function catalogStructuralNode(node){
-    if(!node||node.nodeType!==1)return false;var selector="[data-coco-juego],.cocoGameCard,.cocoSuggestionCard,.cocoMiniSuggestion";return !!((node.matches&&node.matches(selector))||(node.querySelector&&node.querySelector(selector)))
+    if(!node||node.nodeType!==1)return false;var selector="[data-coco-juego],.cocoGameCard,.cocoMiniJuego,.cocoSuggestionCard,.cocoMiniSuggestion";return !!((node.matches&&node.matches(selector))||(node.querySelector&&node.querySelector(selector)))
   }
 
   function familySourceNode(node){
@@ -612,11 +612,11 @@
 
 
   function normalizeText(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
-  function idOf(node){return String(node&&node.dataset&&node.dataset.cocoJuego||"").toLowerCase()}
+  function idOf(node){if(node&&node.hasAttribute){if(node.hasAttribute("data-coco-city-entry"))return "ciudad";if(node.hasAttribute("data-coco-chess-entry"))return "ajedrez"}return String(node&&node.dataset&&node.dataset.cocoJuego||"").toLowerCase()}
   function cleanScoreNoise(card){card.querySelectorAll(".cocoArcadeCardScore,.cocoScoreCopy").forEach(function(n){n.remove()});card.querySelectorAll("p.pequeno").forEach(function(n){var t=normalizeText(n.textContent);if(/\b(puntos?|pts?)\b/.test(t)&&!/partida|reto|dia/.test(t))n.remove()});card.querySelectorAll(".pesas").forEach(function(n){var next=n.nextElementSibling;if(next&&/puntos?|pts?/i.test(next.textContent||""))next.remove();n.remove()})}
-  function scoreStatus(card,id){var badge=card.querySelector(".cocoLigaBadge");if(!badge){badge=document.createElement("div");var btn=card.querySelector(".btn,.cocoBotonJuego");card.insertBefore(badge,btn||null)}var general=GENERAL.has(id),html='<span aria-hidden="true">'+(general?"🏆":"•")+'</span><b>'+(general?"Puntúa para la clasificación general":"No puntúa para la clasificación general")+'</b>';stabilizeRankingBadge(badge);badge.className="cocoLigaBadge c153ScoreStatus";badge.dataset.general=general?"yes":"no";badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";if(badge.innerHTML!==html)badge.innerHTML=html}
+  function scoreStatus(card,id){var badge=card.querySelector(".cocoLigaBadge");if(!badge){badge=document.createElement(card.classList.contains("cocoMiniJuego")?"span":"div");var btn=card.querySelector(".btn,.cocoBotonJuego");card.insertBefore(badge,btn||null)}var general=GENERAL.has(id),html='<span aria-hidden="true">'+(general?"🏆":"•")+'</span><b>'+(general?"Puntúa para la clasificación general":"No puntúa para la clasificación general")+'</b>'+(id==="ajedrez"?'<small class="cocoScoringScope">Solo la partida del día</small>':'');stabilizeRankingBadge(badge);badge.className="cocoLigaBadge c153ScoreStatus";badge.dataset.general=general?"yes":"no";badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";if(badge.innerHTML!==html)badge.innerHTML=html}
   function fixPadel(card,id){if(id!=="padel")return;card.classList.remove("cocoConstruccion","proximo");card.querySelectorAll(".cocoEstadoObra,.cintaObras").forEach(function(n){n.remove()});var btn=card.querySelector(".cocoBotonJuego,.btn");if(btn){if(/construcci|pr[oó]xim/i.test(btn.textContent||""))btn.textContent="Abrir Coco Pádel";btn.disabled=false;btn.removeAttribute("aria-disabled")}}
-  function applyCard(card){var id=idOf(card);if(RETIRED.has(id)){card.remove();return}card.dataset.cocoScoringV16084=GENERAL.has(id)?"yes":"no";cleanScoreNoise(card);scoreStatus(card,id);fixPadel(card,id)}
+  function applyCard(card){var id=idOf(card);if(!id)return;if(RETIRED.has(id)){card.remove();return}card.dataset.cocoScoringV16084=GENERAL.has(id)?"yes":"no";cleanScoreNoise(card);scoreStatus(card,id);fixPadel(card,id)}
   function makePublicMiniAccessible(card){
     if(!card||!card.matches||!card.matches(".cocoMiniJuego[data-coco-juego]"))return false;
     if(card.tagName==="BUTTON")return true;
@@ -630,8 +630,8 @@
     var hasCatalog=catalogStructuralNode(node);if(hasCatalog)catalogDirty=true;
     if(node.matches&&node.matches("[data-coco-juego]")&&RETIRED.has(idOf(node))){node.remove();return}
     if(node.matches&&node.matches(".cocoMiniJuego[data-coco-juego]"))makePublicMiniAccessible(node);
-    if(node.matches&&node.matches(".cocoGameCard[data-coco-juego]"))applyCard(node);
-    if(node.querySelectorAll&&hasCatalog){node.querySelectorAll("[data-coco-juego]").forEach(function(n){if(RETIRED.has(idOf(n)))n.remove()});node.querySelectorAll(".cocoMiniJuego[data-coco-juego]").forEach(makePublicMiniAccessible);node.querySelectorAll(".cocoGameCard[data-coco-juego]").forEach(applyCard)}
+    if(node.matches&&node.matches(".cocoGameCard,.cocoMiniJuego"))applyCard(node);
+    if(node.querySelectorAll&&hasCatalog){node.querySelectorAll("[data-coco-juego]").forEach(function(n){if(RETIRED.has(idOf(n)))n.remove()});node.querySelectorAll(".cocoMiniJuego[data-coco-juego]").forEach(makePublicMiniAccessible);node.querySelectorAll(".cocoGameCard,.cocoMiniJuego").forEach(applyCard)}
     if((node.matches&&node.matches("#eternaLauncherV159,#cocoHomeFinal3"))||(node.querySelector&&node.querySelector("#eternaLauncherV159")))ensurePublicFreemiumMessage(document.getElementById("cocoApp"));
     if(node.matches&&node.matches(".eternaV159Buttons")){var owner=node.closest&&node.closest(".eternaV159FamilyCard");if(owner&&!node.closest(".eternaV16061SubscriptionTop"))node.remove();return}
     if(node.matches&&node.matches(".eternaV159FamilyStatus")){if(/^beta\s+de\s+prueba$/i.test(String(node.textContent||"").trim()))node.textContent="Versión beta";return}
@@ -642,7 +642,7 @@
   }
 
   function relevantNode(node){
-    if(!node||node.nodeType!==1)return false;var selector="[data-coco-juego],.cocoGameCard,.cocoSuggestionCard,.cocoMiniSuggestion,#retosCard,.retosCard,#eternaLauncherV159,#cocoHomeFinal3,.cocoFamilyV129,.eternaV159FamilyCard,.eternaV159FamilyStatus,.eternaV159Buttons,.eternaV160ProgressPanel,.eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games'],.cocoFamilyHero,.cocoFamilyStats,.cocoFamilyBars,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight,.cocoFamilyEvidence,.cocoV16083ReportCore,.cocoV16083InlineActions,[data-et-export],[data-report-export],[data-family-integral-report],[data-coco-family-data-source]";
+    if(!node||node.nodeType!==1)return false;var selector="[data-coco-juego],.cocoGameCard,.cocoMiniJuego,.cocoSuggestionCard,.cocoMiniSuggestion,#retosCard,.retosCard,#eternaLauncherV159,#cocoHomeFinal3,.cocoFamilyV129,.eternaV159FamilyCard,.eternaV159FamilyStatus,.eternaV159Buttons,.eternaV160ProgressPanel,.eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games'],.cocoFamilyHero,.cocoFamilyStats,.cocoFamilyBars,.cocoFamilyDomains,.cocoFamilyCoverage,.cocoFamilyInsight,.cocoFamilyEvidence,.cocoV16083ReportCore,.cocoV16083InlineActions,[data-et-export],[data-report-export],[data-family-integral-report],[data-coco-family-data-source]";
     if(node.matches&&node.matches(selector))return true;if(node.querySelector&&node.querySelector(selector))return true;return familySourceNode(node)
   }
 
@@ -796,7 +796,7 @@
   function initial(){
     var app=document.getElementById("cocoApp");try{performance.mark("coco_home_visible");performance.measure("coco_boot_to_home","coco_boot_start","coco_home_visible")}catch(e){}
     injectV16084Styles();installTrueFalseMixGuard();installDailyCanPlayGuard();
-    if(app){Array.prototype.slice.call(app.querySelectorAll(".cocoMiniJuego[data-coco-juego]")).forEach(makePublicMiniAccessible);Array.prototype.slice.call(app.querySelectorAll(".cocoGameCard[data-coco-juego]")).forEach(applyCard);ensurePublicFreemiumMessage(app);finalizeCatalog(app);var openFamily=app.querySelector(".cocoFamilyV129");if(openFamily)polishFamilyRuntime(openFamily)}
+    if(app){Array.prototype.slice.call(app.querySelectorAll(".cocoMiniJuego[data-coco-juego]")).forEach(makePublicMiniAccessible);Array.prototype.slice.call(app.querySelectorAll(".cocoGameCard,.cocoMiniJuego")).forEach(applyCard);ensurePublicFreemiumMessage(app);finalizeCatalog(app);var openFamily=app.querySelector(".cocoFamilyV129");if(openFamily)polishFamilyRuntime(openFamily)}
     scheduleEternaIdle();root.COCO_VERSION="2026-09-05-v160.94.2-audit-1-3"
   }
 

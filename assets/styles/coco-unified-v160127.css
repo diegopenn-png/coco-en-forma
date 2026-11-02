@@ -72,3 +72,49 @@ html body :is(.brand,.brand span,.brand b){font-family:var(--coco-font)!importan
 }
 @media(max-width:350px){html body #cocoApp .carnet .tanteo{grid-template-columns:minmax(0,1fr)!important}html body #cocoApp .carnet .tanteo>button{grid-column:1;grid-row:3;justify-self:stretch;margin-top:8px!important}}
 @media(prefers-reduced-motion:reduce){html body #cocoApp .carnet,html body #cocoApp .cocoPremiumSuggestion{animation:none!important}}
+
+/* One explicit scoring rule on both catalogue sizes; daily chess keeps its scope visible. */
+html body #cocoApp .cocoLigaBadge{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 6px;text-align:center;line-height:1.4}
+html body #cocoApp .cocoLigaBadge b{font-size:11px;font-weight:700}
+html body #cocoApp .cocoLigaBadge .cocoScoringScope{flex-basis:100%;font-size:10px;font-weight:700;color:#526c86}
+html body #cocoApp .cocoMiniJuego>.cocoLigaBadge{grid-column:1/-1!important;grid-row:auto!important;position:static!important;align-self:end!important;order:20;width:100%;margin:8px 0 0!important;padding:7px 6px!important;border-radius:10px;background:#ffffffc9;color:#173451;white-space:normal}
+html body #cocoApp .cocoMiniJuego>.cocoLigaBadge b{font-size:10px;line-height:1.4}
+
+/* Explicit copy action in every public and signed-in catalogue card, including PWAs. */
+html body #cocoApp .cocoCardCopy{position:static!important;grid-column:1/-1!important;grid-row:auto!important;order:30;display:block!important;width:100%!important;min-height:44px;margin:8px 0 0!important;padding:9px 12px!important;border:1px solid #acc5d9!important;border-radius:12px;background:#fff!important;color:#173451!important;font:700 12px/1.4 system-ui!important;cursor:pointer;touch-action:manipulation}
+html body #cocoApp .cocoCardCopy:focus-visible{outline:3px solid #146fa7;outline-offset:2px}
+html body #cocoApp .cocoCopyStatus,html body #cocoApp .cocoCopyManual{grid-column:1/-1!important;grid-row:auto!important;order:31;width:100%;margin-top:6px;font:600 11px/1.4 system-ui;color:#173451;text-align:center}
+html body #cocoApp .cocoCopyManual{padding:10px 6px;border:1px solid #acc5d9;border-radius:8px;user-select:text}
+
+/* Access and installation use the same navy, gold and Coco identity as the catalogue. */
+html body #cocoApp .cocoAccesoGrid>.loginCard{padding:26px!important;border:1px solid #b7944b!important;border-radius:24px!important;background:radial-gradient(ellipse at 100% 0,#184567,transparent 60%),linear-gradient(145deg,#091c3d,#112c4d)!important;box-shadow:0 10px 28px #091c3d24!important;color:#fff!important}
+html body #cocoApp .loginCard .cocoEyebrow{color:#9ce7ff!important;font-size:10px!important;letter-spacing:.12em!important;line-height:1.5;margin-bottom:14px!important}
+html body #cocoApp .loginCard>h2{display:flex;align-items:center;justify-content:space-between;gap:14px;color:#fff!important;font-size:32px!important;line-height:1.15!important;margin:0 0 14px!important;text-shadow:none!important}
+html body #cocoApp .loginCard .tituloSvg{flex:0 0 58px;width:58px!important;height:58px!important;border:1px solid #b7944b;border-radius:16px;background:#091c3d url('../brand/coco-premium-v160127/icon-192.png') center/cover no-repeat;box-shadow:0 0 20px #ffd2671a}
+html body #cocoApp .loginCard .tituloSvg>*{visibility:hidden!important}
+html body #cocoApp .loginCard>p:first-of-type{color:#ccdef0!important;font-size:14px!important;line-height:1.6!important;margin:0 0 22px!important}
+html body #cocoApp .loginCard label{color:#e9f2fa!important;font-size:13px!important;line-height:1.5;margin-top:16px!important;margin-bottom:7px!important}
+html body #cocoApp .loginCard input{height:52px!important;padding:0 14px!important;border:1px solid #94b2cb!important;border-radius:12px!important;background:#f7fbff!important;color:#173451!important;font-size:16px!important;box-shadow:none!important}
+html body #cocoApp .loginCard input::placeholder{color:#688097!important;opacity:1}
+html body #cocoApp .loginCard input:focus{border-color:#74dcff!important;box-shadow:0 0 0 3px #74dcff3b!important}
+html body #cocoApp .loginCard .cocoPasswordWrap input{padding-right:86px!important}
+html body #cocoApp .loginCard :is(.cocoPasswordToggle,.cocoPasswordMonkey){top:4px;right:4px;width:76px!important;height:44px!important;padding:0 8px!important;border:0!important;border-radius:9px!important;background:#e5eef6!important;color:#173451!important;font-size:11px!important;box-shadow:none!important}
+html body #cocoApp .loginCard>div>.btn{flex:1;min-height:48px!important;border-radius:12px!important;font-size:13px!important;padding:12px!important;box-shadow:none!important}
+html body #cocoApp .loginCard .btn.lima{background:linear-gradient(#ffe195,#ffca4b)!important;color:#102543!important;border:1px solid #e3ba61!important;box-shadow:0 3px 0 #87662f!important}
+html body #cocoApp .loginCard .btn.plano{background:#173b5a!important;color:#fff!important;border:1px solid #7195b1!important}
+html body #cocoApp .loginCard .enlaceDuenio{color:#b4eaff!important;font-size:12px!important;line-height:1.6!important;margin-top:20px!important}
+html body #cocoApp .loginCard [data-coco-minor-notice],html body #cocoApp .loginCard .cocoLegalSignupNoticeV16058{background:#183652!important;border:1px solid #3c5c77!important;color:#d1e3f1!important;border-radius:12px!important}
+html body #cocoApp .cocoInstallEntryCard{grid-template-columns:44px minmax(0,1fr) auto!important;gap:12px!important;padding:16px 42px 16px 16px!important;border:1px solid #4a7290!important;border-radius:18px!important;background:linear-gradient(120deg,#102d4c,#163e59)!important;box-shadow:0 5px 16px #091c3d15!important;transform:none!important}
+html body #cocoApp .cocoInstallEntry.instalada .cocoInstallEntryCard{padding-right:16px!important;border-color:#b7944b!important}
+html body #cocoApp .cocoInstallEntryIcon{width:44px!important;height:44px!important;border:1px solid #b7944b;border-radius:12px!important;background:#091c3d!important;color:#ffd267!important;box-shadow:none!important}
+html body #cocoApp .cocoInstallEntryText b{display:block;color:#fff!important;font-size:13px!important;line-height:1.4!important}
+html body #cocoApp .cocoInstallEntryText>span{display:block;color:#c5dfef!important;font-size:11px!important;line-height:1.5!important;margin-top:4px}
+html body #cocoApp .cocoInstallEntryMeta{padding:6px 9px!important;border:1px solid #6c886d!important;border-radius:8px!important;background:#1d4b46!important;color:#d9f5dc!important;font-size:10px!important;line-height:1.4!important;white-space:normal}
+html body #cocoApp .cocoInstallEntryDismiss{color:#d6e6f2!important;background:#173b5a!important;border-color:#5b7e99!important}
+@media(max-width:620px){html body #cocoApp .cocoAccesoGrid>.loginCard{padding:22px 20px!important;border-radius:21px!important}html body #cocoApp .cocoInstallEntryCard{grid-template-columns:40px minmax(0,1fr)!important;padding:14px 38px 14px 14px!important;gap:8px 11px!important}html body #cocoApp .cocoInstallEntryMeta{grid-column:2;justify-self:start;margin:0!important}html body #cocoApp .cocoInstallEntryIcon{width:40px!important;height:40px!important}html body #cocoApp .loginCard>h2{font-size:30px!important}}
+@media(display-mode:standalone){html{background:#f3f8fc}html body{padding-top:env(safe-area-inset-top,0px)!important;padding-bottom:env(safe-area-inset-bottom,0px)!important}}
+
+html body #cocoApp .cocoPasswordMonkey{width:76px!important;min-width:76px!important;font-size:11px!important}
+html body #cocoApp .cocoPasswordWrap input{padding-right:88px!important}
+html body #cocoApp .loginCard .cocoLegalSignupNoticeV16058{margin-top:18px!important;padding:12px!important;font-size:11px!important;line-height:1.6!important;font-weight:500!important}
+html body #cocoApp .loginCard .cocoLegalSignupNoticeV16058 a{color:#b4eaff!important}
