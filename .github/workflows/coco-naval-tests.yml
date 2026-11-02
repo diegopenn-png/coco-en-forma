@@ -1,0 +1,20 @@
+name: Coco Batalla Naval rules and integration
+on:
+  push:
+    paths: ['games/naval/**', 'qa/naval*', 'supabase/functions/coco-naval/**', 'supabase-coco-naval.sql', 'coco-v155-identity.js', 'seo/catalog.mjs', 'sw.js', '.github/workflows/coco-naval-tests.yml']
+  pull_request:
+    paths: ['games/naval/**', 'qa/naval*', 'supabase/functions/coco-naval/**', 'supabase-coco-naval.sql', 'coco-v155-identity.js', 'seo/catalog.mjs', 'sw.js', '.github/workflows/coco-naval-tests.yml']
+permissions:
+  contents: read
+jobs:
+  naval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test qa/naval*.test.mjs
+      - run: npm install --prefix /tmp/coco-naval-qa --ignore-scripts --no-audit --no-fund jsdom@26.1.0
+      - run: COCO_JSDOM_PATH=/tmp/coco-naval-qa/node_modules/jsdom node qa/naval-ui.test.cjs
+      - run: COCO_JSDOM_PATH=/tmp/coco-naval-qa/node_modules/jsdom node --test qa/game-landings.test.mjs

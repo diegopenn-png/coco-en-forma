@@ -6485,10 +6485,10 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   var READY_IDS=["conecta","crucigrama","tiempo","verdadero","futbol","padel"];
   var GENERAL_IDS=(window.COCO_GENERAL_RANKING_IDS_V153||[]).slice();
   var OWN_IDS=["cocomed"];
-  var TOOL_IDS=["padel","bank","ciudad","generala","eneagrama"];
+  var TOOL_IDS=["padel","bank","ciudad","generala","naval","eneagrama"];
   var ALL_IDS=GENERAL_IDS.concat(OWN_IDS,TOOL_IDS);
   var TITLE_TO_ID={"Conecta colores":"conecta","Une los números":"numeros","Cálculo veloz":"calculo","Descifra la palabra":"palabras","Series lógicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto Tiempo":"tiempo","Reto tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Fútbol":"futbol","Coco Fútbol":"futbol","Pádel":"padel","Coco Pádel":"padel","Coco Pádel Club":"padel"};
-  var DISPLAY_NAMES={bank:"Coco Bank",ciudad:"Coco Ciudad",generala:"Coco Generala",eneagrama:"Coco Eneagrama",ajedrez:"Coco Ajedrez · Partida del día",conecta:"Conecta colores",numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Fútbol",padel:"Pádel"};
+  var DISPLAY_NAMES={bank:"Coco Bank",ciudad:"Coco Ciudad",generala:"Coco Generala",naval:"Coco Batalla Naval",eneagrama:"Coco Eneagrama",ajedrez:"Coco Ajedrez · Partida del día",conecta:"Conecta colores",numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Fútbol",padel:"Pádel"};
   var GAME_META={
     ajedrez:{domain:"Estrategia y planificación",group:"general"},
     conecta:{domain:"Planificación y percepción visoespacial",group:"general"},
@@ -7342,7 +7342,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
 
   function idFromCard(card){
-    if(!card)return "";if(card.hasAttribute("data-coco-generala-entry"))return "generala";if(card.hasAttribute("data-coco-city-entry"))return "ciudad";if(card.hasAttribute("data-coco-chess-entry"))return "ajedrez";var id=String(card.dataset.cocoJuego||"").trim();if(id&&id!=="abaco"&&/^[a-z0-9_-]+$/i.test(id))return id;
+    if(!card)return "";if(card.hasAttribute("data-coco-naval-entry"))return "naval";if(card.hasAttribute("data-coco-generala-entry"))return "generala";if(card.hasAttribute("data-coco-city-entry"))return "ciudad";if(card.hasAttribute("data-coco-chess-entry"))return "ajedrez";var id=String(card.dataset.cocoJuego||"").trim();if(id&&id!=="abaco"&&/^[a-z0-9_-]+$/i.test(id))return id;
     var title=card.querySelector("h3");return title&&TITLE_TO_ID[title.textContent.trim()]||"";
   }
 
