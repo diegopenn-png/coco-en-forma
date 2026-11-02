@@ -6485,10 +6485,10 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   var READY_IDS=["conecta","crucigrama","tiempo","verdadero","futbol","padel"];
   var GENERAL_IDS=(window.COCO_GENERAL_RANKING_IDS_V153||[]).slice();
   var OWN_IDS=["cocomed"];
-  var TOOL_IDS=["padel","bank","ciudad","eneagrama"];
+  var TOOL_IDS=["padel","bank","ciudad","generala","eneagrama"];
   var ALL_IDS=GENERAL_IDS.concat(OWN_IDS,TOOL_IDS);
   var TITLE_TO_ID={"Conecta colores":"conecta","Une los números":"numeros","Cálculo veloz":"calculo","Descifra la palabra":"palabras","Series lógicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto Tiempo":"tiempo","Reto tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Fútbol":"futbol","Coco Fútbol":"futbol","Pádel":"padel","Coco Pádel":"padel","Coco Pádel Club":"padel"};
-  var DISPLAY_NAMES={bank:"Coco Bank",ciudad:"Coco Ciudad",eneagrama:"Coco Eneagrama",ajedrez:"Coco Ajedrez · Partida del día",conecta:"Conecta colores",numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Fútbol",padel:"Pádel"};
+  var DISPLAY_NAMES={bank:"Coco Bank",ciudad:"Coco Ciudad",generala:"Coco Generala",eneagrama:"Coco Eneagrama",ajedrez:"Coco Ajedrez · Partida del día",conecta:"Conecta colores",numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Fútbol",padel:"Pádel"};
   var GAME_META={
     ajedrez:{domain:"Estrategia y planificación",group:"general"},
     conecta:{domain:"Planificación y percepción visoespacial",group:"general"},
@@ -7342,7 +7342,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
 
   function idFromCard(card){
-    if(!card)return "";if(card.hasAttribute("data-coco-city-entry"))return "ciudad";if(card.hasAttribute("data-coco-chess-entry"))return "ajedrez";var id=String(card.dataset.cocoJuego||"").trim();if(id&&id!=="abaco"&&/^[a-z0-9_-]+$/i.test(id))return id;
+    if(!card)return "";if(card.hasAttribute("data-coco-generala-entry"))return "generala";if(card.hasAttribute("data-coco-city-entry"))return "ciudad";if(card.hasAttribute("data-coco-chess-entry"))return "ajedrez";var id=String(card.dataset.cocoJuego||"").trim();if(id&&id!=="abaco"&&/^[a-z0-9_-]+$/i.test(id))return id;
     var title=card.querySelector("h3");return title&&TITLE_TO_ID[title.textContent.trim()]||"";
   }
 
@@ -7393,7 +7393,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 
   function upgradeAccess(){
     document.querySelectorAll("#cocoApp .cocoMiniJuego").forEach(function(item){if(item.classList.contains("cocoMiniSuggestion"))return;var title=item.querySelector("b"),id=title&&(TITLE_TO_ID[title.textContent.trim()]||String(title.textContent||"").toLowerCase().replace(/[^a-z0-9]+/g,"-"));if(!id||id==="abaco")return;var state=item.querySelector(".cocoMiniEstado"),copy=isClubTool(id)?"Herramienta del club":"Una vez al día";if(state){if(state.textContent!==copy)state.textContent=copy;state.classList.remove("obra")}var icon=item.querySelector(".cocoMiniIcono");if(icon&&icon.dataset.cocoIconVersion!=="132"){icon.innerHTML=iconSvg(id);icon.dataset.cocoIconVersion="132"}item.dataset.cocoV132Ready="1"});
-    var note=document.querySelector("#cocoApp .cocoRetosNota"),noteCopy="Los retos puntuables admiten una partida diaria. Coco Ciudad, Bank, Pádel y Eneagrama no suman a la clasificación general. En ajedrez puntúa solo la partida del día; el resto es libre.";if(note&&note.textContent!==noteCopy)note.textContent=noteCopy;
+    var note=document.querySelector("#cocoApp .cocoRetosNota"),noteCopy="Los retos puntuables admiten una partida diaria. Coco Generala, Ciudad, Bank, Pádel y Eneagrama no suman a la clasificación general. En ajedrez puntúa solo la partida del día; el resto es libre.";if(note&&note.textContent!==noteCopy)note.textContent=noteCopy;
   }
 
   function questionIconSvg(){return '<svg class="cocoUnifiedIcon" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="cocoSuggestionGlow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7658d6"/><stop offset="1" stop-color="#2fa9dc"/></linearGradient></defs><rect x="4" y="4" width="112" height="112" rx="30" fill="url(#cocoSuggestionGlow)"/><circle cx="37" cy="26" r="21" fill="#fff" opacity=".14"/><path d="M44 45c1-14 11-22 26-22 16 0 27 9 27 23 0 11-6 17-15 22-8 5-11 9-11 17" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/><circle cx="70" cy="99" r="7" fill="#ffc93c"/><path d="m21 82 10-3 4-10 5 10 10 3-10 5-5 10-4-10Z" fill="#ffc93c"/></svg>'}

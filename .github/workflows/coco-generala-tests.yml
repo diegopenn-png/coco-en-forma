@@ -1,0 +1,21 @@
+name: Coco Generala rules and integration
+on:
+  push:
+    paths: ['games/generala/**', 'qa/generala*', 'supabase/functions/coco-generala/**', 'supabase-coco-generala.sql', 'seo/catalog.mjs', 'sw.js', '.github/workflows/coco-generala-tests.yml']
+  pull_request:
+    paths: ['games/generala/**', 'qa/generala*', 'supabase/functions/coco-generala/**', 'supabase-coco-generala.sql', 'seo/catalog.mjs', 'sw.js', '.github/workflows/coco-generala-tests.yml']
+permissions:
+  contents: read
+jobs:
+  generala:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test qa/generala.test.mjs qa/generala-online.test.mjs qa/generala-integration.test.mjs
+      - run: npm install --prefix /tmp/coco-generala-qa --ignore-scripts --no-audit --no-fund jsdom@26.1.0
+      - run: COCO_JSDOM_PATH=/tmp/coco-generala-qa/node_modules/jsdom node qa/generala-ui.test.cjs
+      - run: COCO_JSDOM_PATH=/tmp/coco-generala-qa/node_modules/jsdom node qa/generala-catalogue.test.cjs
+      - run: COCO_JSDOM_PATH=/tmp/coco-generala-qa/node_modules/jsdom node --test qa/game-landings.test.mjs
