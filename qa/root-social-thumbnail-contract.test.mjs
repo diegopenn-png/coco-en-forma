@@ -17,7 +17,7 @@ test("la portada comparte exactamente el icono instalado de la PWA", () => {
   assert.ok(head.includes(`<meta name="twitter:image" content="${socialImage}">`));
   assert.ok(head.includes('<meta property="og:image:width" content="512">'));
   assert.ok(head.includes('<meta property="og:image:height" content="512">'));
-  assert.match(identity, /background-image:url\('\.\/share\/premium-v160127\/hero\.jpg'\)/);
+  assert.match(identity, /background-image:url\('\.\/share\/premium-v160127\/hero-explorer-v160129\.jpg'\)/);
   assert.match(identity, /eternaLauncherLoggedOutFinal3 \.eternaLauncherVisualFinal3/);
   assert.match(identity, /eternaLauncherLoggedInFinal3 \.eternaLauncherVisualFinal3/);
   assert.match(identity, /aspect-ratio:1200\/630/);
