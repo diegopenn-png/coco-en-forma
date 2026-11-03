@@ -673,6 +673,8 @@
   }
   function processNode(node){
     if(!node)return;if(node.nodeType===3)node=node.parentElement;if(!node||node.nodeType!==1)return;
+    var familyShell=node.matches(".cocoFamilyV129")?node:node.closest(".cocoFamilyV129")||node.querySelector(".cocoFamilyV129");
+    if(familyShell)ensureFamilyNavigation(familyShell);
     var hasCatalog=catalogStructuralNode(node);if(hasCatalog)catalogDirty=true;
     if(node.matches&&node.matches("[data-coco-juego]")&&RETIRED.has(idOf(node))){node.remove();return}
     if(node.matches&&node.matches(".cocoMiniJuego[data-coco-juego]"))makePublicMiniAccessible(node);
