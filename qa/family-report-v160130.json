@@ -1,0 +1,42 @@
+{
+  "results": [
+    {
+      "width": 320,
+      "overflow": false,
+      "stickyNavigation": true,
+      "returnsToFamily": true
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "stickyNavigation": true,
+      "returnsToFamily": true
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "stickyNavigation": true,
+      "returnsToFamily": true
+    },
+    {
+      "width": 1280,
+      "overflow": false,
+      "stickyNavigation": true,
+      "returnsToFamily": true
+    }
+  ],
+  "errors": [],
+  "homeReturns": true,
+  "printAction": true,
+  "noLiveWrites": true,
+  "release": "coco-en-forma-v160.100.58-family-report",
+  "date": "2026-11-03",
+  "regression_tests_passed": 160,
+  "scope": "Chromium with synthetic family data; no production account or PIN used. Native iOS print sheet not tested.",
+  "changes": [
+    "Persistent Volver and Menú principal in PIN and family report",
+    "In-app report preview returns to the original scroll position",
+    "Official Coco assets, Montserrat, navy, gold and cyan",
+    "Print styles hide navigation and retain readable report content"
+  ]
+}

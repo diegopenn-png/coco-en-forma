@@ -1,0 +1,96 @@
+/* Family area and exported report share Coco's existing brand assets and font. */
+html body #cocoApp .cocoFamilyV129Backdrop{padding:16px;background:#06142bd9}
+html body #cocoApp .cocoFamilyV129{display:flex;flex-direction:column;min-height:0!important;height:min(940px,calc(100dvh - 32px));max-height:calc(100dvh - 32px)!important;overflow:hidden;border:1px solid #a88a48!important;border-radius:24px!important;background:#f3f8fc!important}
+html body #cocoApp .cocoFamilyV129>header{flex-shrink:0;background:linear-gradient(135deg,#091c3d,#174264)!important;padding:14px 20px!important}
+html body #cocoApp .cocoFamilyV129>header:has(h2:empty){display:none!important}
+html body #cocoApp .cocoFamilyV129>header [data-family-close]{display:none!important}
+html body #cocoApp .cocoFamilyV129Body{flex:1;min-height:0;max-height:none!important;overflow:auto;overscroll-behavior:contain;padding:20px!important;padding-bottom:max(20px,env(safe-area-inset-bottom))!important;scroll-padding-top:16px}
+.cocoFamilyNavigation,.cocoReportNavigation{display:flex;gap:10px;flex-shrink:0;padding:12px max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left));background:#091c3d;border-bottom:1px solid #907946;box-sizing:border-box}
+.cocoReportNavigation{position:sticky;top:0;z-index:10;padding-top:max(12px,env(safe-area-inset-top));justify-content:center}
+html body #cocoApp .cocoFamilyNavigation button,.cocoReportNavigation button{flex:1;min-width:0;min-height:46px;max-width:280px;padding:11px 10px;border:1px solid #6689a6;border-radius:13px;background:#173b5a;color:#fff;font:700 13px/1.3 var(--coco-font,CocoMontserrat,system-ui,sans-serif);cursor:pointer;touch-action:manipulation;box-shadow:0 3px 0 #061225}
+html body #cocoApp .cocoFamilyNavigation button:last-child,.cocoReportNavigation button.is-home{color:#102543;background:linear-gradient(#ffe195,#ffca4b);border-color:#e3ba61;box-shadow:0 3px 0 #87662f}
+html body #cocoApp .cocoFamilyNavigation button:focus-visible,.cocoReportNavigation button:focus-visible{outline:3px solid #74dcff;outline-offset:3px}
+html body #cocoApp .cocoFamilyPin .cocoFamilyBrain{width:90px;height:90px;background:#091c3d url('../brand/coco-premium-v160127/icon-192.png') center/cover no-repeat;border:1px solid #b7944b;border-radius:24px;box-shadow:0 7px 18px #091c3d20}
+html body #cocoApp .cocoFamilyPin .cocoFamilyBrain>svg{visibility:hidden}
+.cocoReportPreview{position:fixed;inset:0;z-index:1001000;background:#f3f8fc;display:flex;height:100dvh;isolation:isolate}
+.cocoReportPreview>iframe{display:block;width:100%;height:100%;border:0;background:#f3f8fc}
+html body.cocoReportDocument{margin:0;background:#edf4fa;color:#173451;font-family:var(--coco-font);padding-bottom:env(safe-area-inset-bottom)}
+html body .cocoV16083Document,html body .cocoV16083ReportCore{font-family:var(--coco-font,CocoMontserrat,system-ui,sans-serif);color:#173451}
+html body .cocoV16083Document{max-width:1040px;margin:24px auto;padding:24px;background:#f3f8fc;border:1px solid #cbddea;border-radius:24px;box-shadow:0 12px 36px #091c3d12}
+html body .cocoV16083DocTop,html body #cocoApp .cocoV16086FamilyHeader{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;padding:24px;border:1px solid #a78b4c;border-radius:22px;background:radial-gradient(ellipse at 100% 0,#184567,transparent 75%),#091c3d;color:#fff;box-shadow:0 7px 20px #091c3d18}
+html body .cocoReportBrand{display:flex;align-items:center;gap:16px;min-width:0}
+html body .cocoReportBrand>img{flex-shrink:0;width:72px;height:72px;border-radius:19px;border:1px solid #b7944b;object-fit:cover}
+html body .cocoReportBrand>div{min-width:0}
+html body .cocoV16083DocTop b,html body #cocoApp .cocoV16086FamilyHeaderCopy>span{color:#ffe3a1;font-size:10px;letter-spacing:.08em;line-height:1.5}
+html body .cocoV16083DocTop .cocoV16086DocumentTitle,html body #cocoApp .cocoV16086FamilyHeader h2{color:#fff!important;margin:7px 0;font-size:clamp(23px,3.5vw,32px);font-weight:900;line-height:1.15}
+html body .cocoV16083DocTop span,html body #cocoApp .cocoV16086FamilyHeader p{color:#d1e3f1;font-size:13px;line-height:1.6;font-weight:500}
+html body .cocoV16086ExportIdentity{align-content:center;gap:6px;min-width:0}
+html body .cocoV16086ExportIdentity b{color:#fff;font-size:16px;letter-spacing:0;overflow-wrap:anywhere}
+html body .cocoV16086ExportIdentity span{font-size:12px}
+html body .cocoV16085DocActions{grid-column:1/-1;justify-content:flex-start;padding-top:16px;border-top:1px solid #5b739160}
+html body .cocoV16085DocActions .is-print,html body #cocoApp .cocoV16086ScreenExport{min-height:46px;padding:12px 18px;border:1px solid #e3ba61;border-radius:13px;background:linear-gradient(#ffe195,#ffca4b);color:#102543;font-size:13px;font-weight:800;white-space:normal;box-shadow:0 3px 0 #87662f;cursor:pointer;align-self:center}
+html body #cocoApp .cocoV16086FamilyHeader{position:relative;padding-left:112px}
+html body #cocoApp .cocoV16086FamilyHeader:before{content:'';position:absolute;top:24px;left:24px;width:68px;height:68px;border:1px solid #b7944b;border-radius:18px;background:#091c3d url('../brand/coco-premium-v160127/icon-192.png') center/cover no-repeat}
+html body #cocoApp .cocoV16086FamilyHeaderCopy>span{background:transparent;padding:0}
+html body .cocoV16086FamilyIntegral{gap:20px;margin:20px 0}
+html body .cocoV16086Chapter{--accent:#087da5;--accent2:#3cc2ee;--soft:#ecf9ff;padding:22px;border-color:#bfd7e5;border-top:4px solid #53bfe4;border-radius:22px;background:#fff;box-shadow:0 5px 18px #091c3d08;min-width:0}
+html body .cocoV16086Chapter.games{--accent:#926014;--accent2:#eeb643;--soft:#fff8e8;border-top-color:#e7b94e}
+html body .cocoV16086ChapterHead{padding-bottom:16px;border-bottom-color:#d6e5ef}
+html body .cocoV16086ChapterHead>span{background:#091c3d;color:#a9e8ff;font-size:10px;padding:7px 11px;font-weight:700}
+html body .cocoV16086Chapter.games .cocoV16086ChapterHead>span{color:#ffe1a0}
+html body .cocoV16086ChapterHead h3{color:#173451;font-size:clamp(21px,2.8vw,26px);line-height:1.2;margin-top:12px}
+html body .cocoV16086ChapterHead p,html body .cocoV160100PlainSummary{font-size:13px;font-weight:500;line-height:1.65;color:#526c86}
+html body .cocoV160100PlainSummary{background:#f1f7fc;border-color:#cfdfec;border-radius:16px;padding:16px}
+html body .cocoV16083Hero{background:linear-gradient(130deg,#f7fbff,#eef6fc);border-color:#cbddea;padding:20px;gap:16px}
+html body .cocoV16083HeroOrb{background:#091c3d;border-color:#b7944b;color:#ffd267;box-shadow:0 6px 16px #091c3d15}
+html body .cocoV16083HeroOrb b{color:#ffd267;font-size:23px}
+html body .cocoV16083Hero h3{font-size:22px;line-height:1.3;overflow-wrap:anywhere}
+html body .cocoV16083Hero p{font-size:12px;font-weight:500;line-height:1.6;color:#526c86}
+html body .cocoV16083HeroGauge small{font-size:11px;line-height:1.5;color:#526c86}
+html body .cocoV16083Metrics article{border-color:#cbddea;border-radius:16px;background:#f8fbff;padding:16px 10px}
+html body .cocoV16083Metrics strong{color:#173451;font-size:30px;font-weight:900}
+html body .cocoV16083Metrics span{font-size:12px;line-height:1.5;color:#173451}
+html body .cocoV16083Metrics small{font-size:11px;color:#526c86}
+html body .cocoV16083SectionHead h3{font-size:20px;line-height:1.3}
+html body .cocoV16083PanelTitle h3{font-size:17px;line-height:1.35}
+html body .cocoV16083Panel p,html body .cocoV16083Next p,html body .cocoV16083SignalNote p{font-size:12px;line-height:1.65}
+html body .cocoV16083BarLabel b,html body .cocoV16083Item b,html body .cocoV16083GroupGrid b{font-size:12px;line-height:1.45}
+html body .cocoV16083BarLabel span,html body .cocoV16083Item span,html body .cocoV16083GroupGrid span,html body .cocoV16083ReportNote{font-size:11px;line-height:1.5}
+html body .cocoV16083Document>footer{border-top:1px solid #cbddea;padding:18px 4px 0;color:#526c86;font-size:11px;line-height:1.6}
+@media(max-width:700px){
+ html body #cocoApp .cocoFamilyV129Backdrop{padding:0!important}
+ html body #cocoApp .cocoFamilyV129{width:100%;height:100dvh;max-height:100dvh!important;border:0!important;border-radius:0!important}
+ html body #cocoApp .cocoFamilyNavigation{padding-top:max(12px,env(safe-area-inset-top))}
+ html body #cocoApp .cocoFamilyV129Body{padding:12px!important;padding-bottom:max(18px,env(safe-area-inset-bottom))!important}
+ html body .cocoV16083Document{margin:0;padding:14px 12px;border:0;border-radius:0;box-shadow:none}
+ html body .cocoV16083DocTop,html body #cocoApp .cocoV16086FamilyHeader{grid-template-columns:1fr;padding:20px;gap:16px}
+ html body .cocoReportBrand{gap:12px}
+ html body .cocoReportBrand>img{width:58px;height:58px;border-radius:15px}
+ html body .cocoV16083DocTop .cocoV16086DocumentTitle{font-size:24px}
+ html body .cocoV16086ExportIdentity{justify-items:start}
+ html body .cocoV16085DocActions .is-print{max-width:none;width:100%;font-size:12px}
+ html body #cocoApp .cocoV16086FamilyHeader{padding-top:100px}
+ html body #cocoApp .cocoV16086FamilyHeader:before{top:18px;left:20px}
+ html body #cocoApp .cocoV16086ScreenExport{max-width:none;width:100%}
+ html body .cocoV16086Chapter{padding:16px 12px;gap:16px}
+ html body .cocoV16083Hero{grid-template-columns:68px minmax(0,1fr);padding:14px;gap:12px}
+ html body .cocoV16083HeroOrb{width:68px;height:78px;border-radius:19px}
+ html body .cocoV16083HeroOrb b{font-size:21px}
+ html body .cocoV16083Hero h3{font-size:18px}
+ html body .cocoV16083Hero>div:nth-child(2)>span{font-size:9px;line-height:1.5}
+ html body .cocoV16083Item{grid-template-columns:minmax(0,1fr) 60px auto}
+}
+@media print{
+ @page{size:A4;margin:12mm}
+ html body.cocoReportDocument{background:#fff;padding:0}
+ .cocoReportNavigation,.cocoFamilyNavigation,.cocoV16085DocActions{display:none!important}
+ html body .cocoV16083Document{max-width:none;margin:0;padding:0;border:0;box-shadow:none;background:#fff}
+ html body .cocoV16083DocTop,html body .cocoV16086Chapter,html body .cocoV16083Hero,html body .cocoV16083Metrics article{background:#fff!important;color:#173451!important;box-shadow:none}
+ html body .cocoV16083DocTop :is(b,span,.cocoV16086DocumentTitle){color:#173451!important}
+ html body .cocoV16083DocTop{grid-template-columns:1fr auto;padding:16px;border-color:#adbfcf}
+ html body .cocoV16086Chapter{padding:16px;border-color:#adbfcf}
+ html body .cocoV16086ChapterHead>span{background:#eaf3f8!important;color:#173451!important}
+ html body .cocoV16083HeroOrb{background:#edf4fa!important;border-color:#adbfcf;color:#173451!important;box-shadow:none}
+ html body .cocoV16083HeroOrb b{color:#173451!important}
+ html body .cocoV16083Document>footer{font-size:9px}
+}

@@ -186,9 +186,26 @@
   }
 
   function reportDocumentHtml(model){
-    var core=reportCoreHtml(model,{showPerson:true,capture:false}),returnUrl="/";
-    try{returnUrl=String(location.href||"/")}catch(e){}
-    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeReportHtml(model.title||"Informe Coco en Forma")+'</title><style>body{margin:0;background:#edf6fa;color:#173f59}'+reportKitCss(true)+'.cocoV16083Document>footer{margin-top:18px;padding-top:13px;border-top:1px solid #dceaf0;color:#718692;font-size:10px;line-height:1.45}</style></head><body data-coco-return-url="'+escapeReportHtml(returnUrl)+'"><main class="cocoV16083Document"><div class="cocoV16083DocTop"><div><b>COCO EN FORMA · ZONA FAMILIAR</b><span>Informe visual para la familia · '+escapeReportHtml(reportDate())+'</span></div><div class="cocoV16085DocActions"><button type="button" class="is-back" onclick="try{var u=document.body.getAttribute(\'data-coco-return-url\')||\'/\';if(window.opener&&!window.opener.closed){window.opener.focus();window.close()}else{location.href=u}}catch(e){location.href=document.body.getAttribute(\'data-coco-return-url\')||\'/\'}">← Volver</button></div></div>'+core+'<footer>Informe orientativo. Las fortalezas y áreas para reforzar describen señales de la actividad realizada hasta ahora y no etiquetas permanentes del alumno.</footer></main></body></html>'
+    return reportDocumentShell(model.title||"Informe Coco en Forma",familyStudentHtml({name:model.personName,age:model.personMeta}),reportCoreHtml(model,{showPerson:false,capture:false}),"Informe orientativo. Las fortalezas y áreas para reforzar describen señales de la actividad realizada hasta ahora y no etiquetas permanentes del alumno.")
+  }
+
+  /* Shared screen/print document. Absolute asset URLs also work in srcdoc and saved HTML. */
+  function reportDocumentShell(title,identity,content,note){
+    var base=new URL("./",document.baseURI).href,returnUrl=String(location.href||base);
+    var actions='<nav class="cocoReportNavigation" aria-label="Navegación del informe"><button type="button" onclick="cocoReportNavigate(\'back\')">← Volver</button><button type="button" class="is-home" onclick="cocoReportNavigate(\'home\')">Menú principal</button></nav>';
+    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>'+escapeReportHtml(title)+' · Coco en Forma</title><style>'+reportKitCss(true)+'</style><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-unified-v160127.css?v=160128"><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-family-v160130.css?v=160130"></head><body class="cocoReportDocument" data-coco-return-url="'+escapeReportHtml(returnUrl)+'" data-coco-home-url="'+escapeReportHtml(base)+'">'+actions+'<main class="cocoV16083Document"><header class="cocoV16083DocTop"><div class="cocoReportBrand"><img src="'+escapeReportHtml(base)+'assets/brand/coco-premium-v160127/icon-192.png" width="72" height="72" alt="Coco en Forma"><div><b>ZONA FAMILIAR</b><h1 class="cocoV16086DocumentTitle">'+escapeReportHtml(title)+'</h1><span>'+escapeReportHtml(reportDate())+'</span></div></div>'+identity+'<div class="cocoV16085DocActions"><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></header>'+content+'<footer>'+escapeReportHtml(note)+'</footer></main><script>('+reportDocumentNavigation.toString()+')();<\/script></body></html>'
+  }
+
+  function reportDocumentNavigation(){
+    window.cocoReportNavigate=function(destination){
+      var host=window.parent!==window?window.parent:window.opener;
+      try{
+        if(host&&!host.closed&&host.CocoFamilyReportPreview){host.CocoFamilyReportPreview.close(destination);return}
+        if(host&&!host.closed){if(destination==="home"){var close=host.document.querySelector("[data-family-close]");if(close)close.click()}host.focus();window.close();if(window.closed)return}
+      }catch(e){}
+      location.href=document.body.getAttribute(destination==="home"?"data-coco-home-url":"data-coco-return-url")||"/"
+    };
+    document.addEventListener("keydown",function(event){if(event.key==="Escape"){event.preventDefault();window.cocoReportNavigate("back")}})
   }
 
   function reportKitCss(documentMode){return [
@@ -210,6 +227,9 @@
   ].join("")}
 
   function injectV16084Styles(){
+    if(!document.getElementById("coco-family-theme-v160130")){
+      var theme=document.createElement("link");theme.id="coco-family-theme-v160130";theme.rel="stylesheet";theme.href=new URL("assets/styles/coco-family-v160130.css?v=160130",document.baseURI).href;document.head.appendChild(theme)
+    }
     if(document.getElementById("coco-v16084-report-kit-css"))return;
     var style=document.createElement("style");style.id="coco-v16084-report-kit-css";style.textContent=reportKitCss(false)+
       "#cocoApp .eternaV159FamilyCard>.eternaV159Buttons{display:none!important}"+
@@ -229,9 +249,27 @@
 
   function reportFile(model){var html=reportDocumentHtml(model),name=(model.theme==="games"?"informe-juegos-coco-":"informe-aprendizaje-eterna-")+new Date().toISOString().slice(0,10)+".html",blob=new Blob([html],{type:"text/html;charset=utf-8"}),file=null;try{file=new File([blob],name,{type:"text/html"})}catch(e){}return{html:html,name:name,blob:blob,file:file}}
   function triggerReportDownload(bundle){var url=URL.createObjectURL(bundle.blob),a=document.createElement("a");a.href=url;a.download=bundle.name;document.body.appendChild(a);a.click();a.remove();queueMicrotask(function(){try{URL.revokeObjectURL(url)}catch(e){}})}
-  function writeReportPreview(preview,html){if(!preview||preview.closed)return false;preview.document.open();preview.document.write(html);preview.document.close();try{preview.focus()}catch(e){}return true}
-  function printReportWithoutPopup(html){var old=document.getElementById("cocoV16085PrintFrame");if(old)old.remove();var frame=document.createElement("iframe");frame.id="cocoV16085PrintFrame";frame.setAttribute("title","Vista de impresión del informe");frame.style.cssText="position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0;pointer-events:none";document.body.appendChild(frame);var cleaned=false;function cleanup(){if(cleaned)return;cleaned=true;try{root.removeEventListener("pagehide",cleanup)}catch(e){}try{frame.remove()}catch(e){}}try{frame.contentWindow.addEventListener("afterprint",cleanup,{once:true});root.addEventListener("pagehide",cleanup,{once:true});var doc=frame.contentWindow.document;doc.open();doc.write(html);doc.close();requestAnimationFrame(function(){requestAnimationFrame(function(){try{frame.contentWindow.focus();frame.contentWindow.print()}catch(e){cleanup();alert("No se pudo abrir la impresión. Inténtalo de nuevo.")}})})}catch(e){cleanup();throw e}return true}
-  async function exportReportModel(model,button){var original=button&&button.textContent||"Exportar PDF",modal=document.querySelector("#cocoApp .cocoFamilyV129,.cocoFamilyV129"),card=modal&&modal.querySelector(".eternaV159FamilyCard"),family=model&&model.kind==="family"?model:buildFamilyReportModel(modal,card,model),html=family&&family.learning&&family.games?familyReportDocumentHtml(family):"",preview=null;if(!html){alert("El informe integral todavía se está preparando. Inténtalo de nuevo en unos segundos.");return false}if(button){button.disabled=true;button.textContent="Preparando…"}try{try{preview=window.open("","_blank")}catch(e){}if(!writeReportPreview(preview,html))printReportWithoutPopup(html);return true}catch(e){alert("No se pudo preparar la vista de impresión.");return false}finally{if(button){button.disabled=false;button.textContent=original}}}
+  var activeReportPreview=null;
+  function closeReportPreview(destination){
+    var current=activeReportPreview;if(!current)return false;activeReportPreview=null;
+    current.overlay.remove();current.siblings.forEach(function(item){item.node.inert=item.inert});document.body.style.overflow=current.overflow;
+    if(destination==="home"){var close=document.querySelector("#cocoApp [data-family-close]");if(close)close.click();var familyButton=document.querySelector("#cocoApp .cocoFamiliaBtn");if(familyButton)familyButton.focus({preventScroll:true})}
+    else if(current.trigger&&current.trigger.isConnected)current.trigger.focus({preventScroll:true});
+    return true
+  }
+  function openReportPreview(html,trigger){
+    closeReportPreview("back");
+    var overlay=document.createElement("section"),frame=document.createElement("iframe"),siblings=Array.prototype.map.call(document.body.children,function(node){return{node:node,inert:node.inert}});
+    overlay.className="cocoReportPreview";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label","Informe de progreso de Coco");
+    frame.title="Informe familiar · Vista para imprimir o guardar";frame.srcdoc=html;overlay.appendChild(frame);
+    activeReportPreview={overlay:overlay,trigger:trigger||document.activeElement,siblings:siblings,overflow:document.body.style.overflow};
+    siblings.forEach(function(item){item.node.inert=true});document.body.style.overflow="hidden";document.body.appendChild(overlay);
+    frame.addEventListener("load",function(){try{frame.contentDocument.querySelector(".cocoReportNavigation button").focus({preventScroll:true})}catch(e){}},{once:true});
+    return true
+  }
+  root.CocoFamilyReportPreview=Object.freeze({close:closeReportPreview});
+  document.addEventListener("keydown",function(event){if(activeReportPreview&&event.key==="Escape"){event.preventDefault();event.stopImmediatePropagation();closeReportPreview("back")}},{capture:true});
+  async function exportReportModel(model,button){var original=button&&button.textContent||"Exportar PDF",modal=document.querySelector("#cocoApp .cocoFamilyV129,.cocoFamilyV129"),card=modal&&modal.querySelector(".eternaV159FamilyCard"),family=model&&model.kind==="family"?model:buildFamilyReportModel(modal,card,model),html=family&&family.learning&&family.games?familyReportDocumentHtml(family):"";if(!html){alert("El informe integral todavía se está preparando. Inténtalo de nuevo en unos segundos.");return false}if(button){button.disabled=true;button.textContent="Preparando…"}try{openReportPreview(html,button);return true}catch(e){closeReportPreview("back");alert("No se pudo preparar la vista de impresión.");return false}finally{if(button){button.disabled=false;button.textContent=original}}}
   async function shareReportModel(model,button){var original=button&&button.textContent||"Compartir por WhatsApp",bundle=reportFile(model),message="Te comparto el informe de progreso de Coco en Forma: "+model.title+".";if(button){button.disabled=true;button.textContent="Preparando…"}try{if(bundle.file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[bundle.file]}))){await navigator.share({title:model.title,text:message,files:[bundle.file]})}else{triggerReportDownload(bundle);var url="https://wa.me/?text="+encodeURIComponent(message+" El informe visual se ha descargado para que puedas adjuntarlo en este chat.");try{window.open(url,"_blank","noopener,noreferrer")}catch(e){location.href=url}}}catch(e){if(!e||e.name!=="AbortError")alert("No se pudo compartir el informe.")}finally{if(button){button.disabled=false;button.textContent=original}}}
 
   function placeReportExportAction(scope,button){if(!scope)return false;button=button||scope.querySelector("[data-report-export],[data-et-export]");var header=scope.querySelector(".cocoV16083ReportHeader"),aside=header&&header.querySelector(".cocoV16085HeaderAside");if(!button||!header)return false;if(!aside){aside=document.createElement("div");aside.className="cocoV16085HeaderAside";header.appendChild(aside)}if(button.textContent!=="Exportar PDF")button.textContent="Exportar PDF";if(!button.classList.contains("cocoV16085HeaderExport"))button.classList.add("cocoV16085HeaderExport");var actions=aside.querySelector(".cocoV16085HeaderActions");if(!actions){actions=document.createElement("div");actions.className="cocoV16085HeaderActions";aside.appendChild(actions)}if(button.parentElement!==actions)actions.appendChild(button);var inline=scope.querySelector(".cocoV16083InlineActions");if(inline&&!inline.children.length)inline.remove();return true}
@@ -298,8 +336,7 @@
   }
 
   function familyReportDocumentHtml(family){
-    var returnUrl="/";try{returnUrl=String(location.href||"/")}catch(e){}
-    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Así está avanzando · Coco en Forma</title><style>body{margin:0;background:#edf6fa;color:#173f59}'+reportKitCss(true)+'.cocoV16083Document>footer{margin-top:18px;padding-top:13px;border-top:1px solid #dceaf0;color:#718692;font-size:10px;line-height:1.45}</style></head><body data-coco-return-url="'+escapeReportHtml(returnUrl)+'"><main class="cocoV16083Document"><div class="cocoV16083DocTop"><div><b>COCO EN FORMA · ZONA FAMILIAR</b><strong class="cocoV16086DocumentTitle">Así está avanzando</strong><span>'+escapeReportHtml(reportDate())+'</span></div><div>'+familyStudentHtml(family.student)+'<div class="cocoV16085DocActions"><button type="button" class="is-back" onclick="try{var u=document.body.getAttribute(\'data-coco-return-url\')||\'/\';if(window.opener&&!window.opener.closed){window.opener.focus();window.close()}else{location.href=u}}catch(e){location.href=document.body.getAttribute(\'data-coco-return-url\')||\'/\'}">← Volver</button><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></div></div>'+familyReportHtml(family,false)+'<footer>Informe orientativo. Aprendizaje escolar y entrenamiento cognitivo se muestran por separado y no se combinan en una nota única.</footer></main></body></html>'
+    return reportDocumentShell("Así está avanzando",familyStudentHtml(family.student),familyReportHtml(family,false),"Informe orientativo. Aprendizaje escolar y entrenamiento cognitivo se muestran por separado y no se combinan en una nota única.")
   }
 
   function gamesDataBucket(modal,card){
@@ -332,6 +369,7 @@
   }
 
   function normalizeFamilyModalChrome(modal){
+    ensureFamilyNavigation(modal);
     if(!modal)return;var header=modal.querySelector(":scope > header,.cocoFamilyV129>header");if(!header)return;
     Array.prototype.slice.call(header.querySelectorAll("p,small")).forEach(function(n){var t=normalizeText(n.textContent);if(t.indexOf("dos lecturas")>=0||t.indexOf("eterna resume")>=0||t.indexOf("dos miradas complementarias")>=0||t.indexOf("dos mapas complementarios")>=0)n.remove()});
     Array.prototype.slice.call(header.querySelectorAll("span,b,strong,h1,h2,h3,h4")).forEach(function(n){if(n.closest&&n.closest("button"))return;var t=normalizeText(n.textContent);if(t==="zona familiar progreso"||t==="zona familiar · progreso")n.remove()})
@@ -418,6 +456,13 @@
     var status=card.querySelector(".eternaV159FamilyStatus");if(status&&/^beta\s+de\s+prueba$/i.test(String(status.textContent||"").trim()))status.textContent="Versión beta"
   }
 
+  function ensureFamilyNavigation(modal){
+    if(!modal||modal.querySelector(":scope > .cocoFamilyNavigation"))return;
+    var nav=document.createElement("nav");nav.className="cocoFamilyNavigation";nav.setAttribute("aria-label","Navegación de la Zona Familiar");
+    nav.innerHTML='<button type="button" data-family-back>← Volver</button><button type="button" data-family-home>Menú principal</button>';
+    nav.querySelectorAll("button").forEach(function(button){button.onclick=function(){var close=modal.querySelector("[data-family-close]");if(close)close.click()}});modal.prepend(nav)
+  }
+
   function polishFamilyRuntime(node){
     var modal=null,card=null;
     if(node&&node.matches&&node.matches(".cocoFamilyV129"))modal=node;
@@ -430,6 +475,7 @@
     if(!card&&modal)card=modal.querySelector(".eternaV159FamilyCard");
     if(!card&&!modal)return false;
     familyPolishRuns++;injectV16084Styles();
+    ensureFamilyNavigation(modal);
     if(card)normalizeFamilyCommercialBits(card);
     if(modal)renderFamilyIntegral(modal,card);
     return true

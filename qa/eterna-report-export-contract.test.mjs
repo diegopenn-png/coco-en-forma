@@ -14,11 +14,12 @@ test("the family view exposes one integral report and enables PDF only when both
   assert.match(reportKit, /Preparando informe…/);
 });
 
-test("PDF export has a print action and a popup-blocked fallback", () => {
+test("PDF export stays in the PWA with a print action and explicit return navigation", () => {
   assert.match(reportKit, /Imprimir o guardar como PDF/);
   assert.match(reportKit, /onclick="window\.print\(\)"/);
-  assert.match(reportKit, /function printReportWithoutPopup\(/);
-  assert.match(reportKit, /if\(!writeReportPreview\(preview,html\)\)printReportWithoutPopup\(html\)/);
+  assert.match(reportKit, /openReportPreview\(html,button\)/);
+  assert.match(reportKit, /Menú principal/);
+  assert.match(reportKit, /frame\.srcdoc=html/);
 });
 
 test("legacy Eterna export delegates to the canonical integral report", () => {
