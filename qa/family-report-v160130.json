@@ -4,32 +4,36 @@
       "width": 320,
       "overflow": false,
       "stickyNavigation": true,
-      "returnsToFamily": true
+      "returnsToFamily": true,
+      "whiteOnBlue": true
     },
     {
       "width": 390,
       "overflow": false,
       "stickyNavigation": true,
-      "returnsToFamily": true
+      "returnsToFamily": true,
+      "whiteOnBlue": true
     },
     {
       "width": 768,
       "overflow": false,
       "stickyNavigation": true,
-      "returnsToFamily": true
+      "returnsToFamily": true,
+      "whiteOnBlue": true
     },
     {
       "width": 1280,
       "overflow": false,
       "stickyNavigation": true,
-      "returnsToFamily": true
+      "returnsToFamily": true,
+      "whiteOnBlue": true
     }
   ],
   "errors": [],
   "homeReturns": true,
   "printAction": true,
   "noLiveWrites": true,
-  "release": "coco-en-forma-v160.100.59-family-report",
+  "release": "coco-en-forma-v160.100.60-family-contrast",
   "date": "2026-11-03",
   "regression_tests_passed": 160,
   "scope": "Chromium with synthetic family data; no production account or PIN used. Native iOS print sheet not tested.",
@@ -37,6 +41,7 @@
     "Persistent Volver and Menú principal in PIN and family report",
     "In-app report preview returns to the original scroll position",
     "Official Coco assets, Montserrat, navy, gold and cyan",
-    "Print styles hide navigation and retain readable report content"
+    "Print styles hide navigation and retain readable report content",
+    "White text on navy report headers, badges and metric orbs; legacy color overrides covered in four viewport sizes"
   ]
 }

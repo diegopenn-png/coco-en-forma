@@ -57,6 +57,13 @@ html body .cocoV16083Panel p,html body .cocoV16083Next p,html body .cocoV16083Si
 html body .cocoV16083BarLabel b,html body .cocoV16083Item b,html body .cocoV16083GroupGrid b{font-size:12px;line-height:1.45}
 html body .cocoV16083BarLabel span,html body .cocoV16083Item span,html body .cocoV16083GroupGrid span,html body .cocoV16083ReportNote{font-size:11px;line-height:1.5}
 html body .cocoV16083Document>footer{border-top:1px solid #cbddea;padding:18px 4px 0;color:#526c86;font-size:11px;line-height:1.6}
+/* Keep white copy on blue surfaces even when legacy family text rules load later. */
+@media screen{
+ html body :is(#cocoApp .cocoFamilyV129,.cocoV16083Document) :is(.cocoV16086FamilyHeaderCopy,.cocoV16083DocTop) :is(h1,h2,p,b,strong,span,small),
+ html body :is(#cocoApp .cocoFamilyV129,.cocoV16083Document) .cocoV16086ChapterHead>span,
+ html body :is(#cocoApp .cocoFamilyV129,.cocoV16083Document) .cocoV16083HeroOrb :is(span,b),
+ html body #cocoApp .cocoFamilyV129>header :is(h2,p,span){color:#fff!important}
+}
 @media(max-width:700px){
  html body #cocoApp .cocoFamilyV129Backdrop{padding:0!important}
  html body #cocoApp .cocoFamilyV129{width:100%;height:100dvh;max-height:100dvh!important;border:0!important;border-radius:0!important}
