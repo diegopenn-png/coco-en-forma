@@ -1738,14 +1738,14 @@ var cuerpo=ranking.map(function(item,posicion){
   }(posicion)+'</td>'+
   '<td class="jugadorFila">'+$(fila.racha,34)+
   '<span class="nombreJug">'+m(fila.apodo)+z(fila.racha)+'</span></td>'+
-  cats.map(function(valor){return '<td class="num cat">'+formato(valor)+'</td>'}).join("")+
-  '<td class="num total"><b>'+formato(item.total)+'</b></td></tr>'
+  '<td class="num total"><b>'+formato(item.total)+'</b></td>'+
+  cats.map(function(valor){return '<td class="num cat">'+formato(valor)+'</td>'}).join("")+'</tr>'
 }).join("")||'<tr><td colspan="14" class="apagado">Todavía no hay partidas.</td></tr>';
 
 var cabecerasV153=JUEGOS_RANKING_V153.map(function(def){return '<th class="num cat">'+def[1]+'</th>'}).join("");
 panel.appendChild(g("div","desplaza cocoRankingScrollV153",
-'<table class="tablaRanking cocoRankingTablaV153"><thead><tr><th></th><th>Jugador</th>'+cabecerasV153+
-'<th class="num total">Total</th></tr></thead><tbody>'+cuerpo+'</tbody></table>'));
+'<table class="tablaRanking cocoRankingTablaV153"><thead><tr><th></th><th>Jugador</th><th class="num total">Puntos totales</th>'+cabecerasV153+
+'</tr></thead><tbody>'+cuerpo+'</tbody></table>'));
 
 c.appendChild(panel);
 
@@ -7805,4 +7805,19 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 <script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=16010018"></script>
 <script id="eterna-marketing-attribution-v1" src="./eterna-marketing-attribution-v1.js?v=20260828"></script>
 
+<style id="coco-ranking-total-first">
+/* Keep position, player and total visible together on narrow screens. */
+@media(max-width:680px){
+#cocoApp .cocoRankingScrollV153{max-width:100%;overflow-x:auto}
+#cocoApp .cocoRankingTablaV153{width:max-content;table-layout:fixed}
+#cocoApp .cocoRankingTablaV153 th,#cocoApp .cocoRankingTablaV153 td{padding:10px 5px}
+#cocoApp .cocoRankingTablaV153 .pos{width:24px;min-width:24px}
+#cocoApp .cocoRankingTablaV153 .jugadorFila{width:115px;min-width:115px;gap:5px}
+#cocoApp .cocoRankingTablaV153 .jugadorFila img{width:28px!important;height:37px!important;flex-shrink:0}
+#cocoApp .cocoRankingTablaV153 .nombreJug{font-size:13px;max-width:82px;overflow-wrap:anywhere}
+#cocoApp .cocoRankingTablaV153 .total{width:82px;min-width:82px;padding-left:5px;font-size:16px}
+#cocoApp .cocoRankingTablaV153 th.total{font-size:12px;white-space:normal}
+#cocoApp .cocoRankingTablaV153 .cat{min-width:78px}
+}
+</style>
 </body></html>
