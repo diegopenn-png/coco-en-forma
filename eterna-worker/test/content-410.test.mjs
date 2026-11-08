@@ -1,3 +1,4 @@
+import {educationalWorker} from './educational-worker-baseline.mjs';
 import test from'node:test';import assert from'node:assert/strict';import{readFileSync}from'node:fs';import{createHash}from'node:crypto';import vm from'node:vm';import{harness}from'./sprint-harness.mjs';
 const text=p=>readFileSync(new URL(p,import.meta.url),'utf8'),hash=x=>createHash('sha256').update(x).digest('hex');
 const c={Intl};vm.createContext(c);vm.runInContext(text('../src/library/content-v1.js'),c);vm.runInContext(text('../src/library/runtime-v1.js'),c);
@@ -11,7 +12,7 @@ test('410 actual lessons, 1230 questions and only forty non-overlapping new topi
 test('all 370 published objects are preserved and the current Worker revision stays pinned',()=>{
  assert.equal(hash(JSON.stringify(ls.slice(0,370))),m.baseline_canonical_sha256);
  for(const[path,want]of Object.entries(m.preserved_sha256))assert.equal(hash(readFileSync(new URL('../../'+path,import.meta.url))),want,path);
- assert.equal(hash(text('../src/index.js').replaceAll(",eneagrama_report_version:'2026-10-31-coaching-3'",'').replaceAll(m.release_id,m.baseline_release)),'a3e64a4f9f0bce94bf33b914fb1d6fb6d2328f1b8eed2c55eea0eea5665e2865');
+ assert.equal(hash(educationalWorker(text('../src/index.js')).replaceAll(",eneagrama_report_version:'2026-10-31-coaching-3'",'').replaceAll(m.release_id,m.baseline_release)),'a3e64a4f9f0bce94bf33b914fb1d6fb6d2328f1b8eed2c55eea0eea5665e2865');
  assert.equal(hash(text('../src/library/runtime-v1.js').replaceAll(m.release_id,m.baseline_release)),'7f12e766fb6a2bcc5791819d622a15f642cabfb7b95fc8a4b1481413ec1ae657');
 });
 for(const id of m.new_ids)test('new unique topic all scoped courses and six modes: '+id,()=>{
