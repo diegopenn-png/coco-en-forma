@@ -23,3 +23,33 @@ Imagen creada con generación integrada. Prompt final: mantener fondo marfil, ti
 La portada, fichas y bolsa explican tarjeta/Stripe/pago único. La franja de servicios destaca recogida gratuita con cita y envío con porte confirmado antes de pagar. Botones Añadir y bolsa más reconocibles. No se modifica el backend, precios, tarifa de envío ni condiciones de pago.
 
 Validación de esta revisión: sintaxis de shop.mjs correcta, metadatos Open Graph/Twitter comprobados en las tres rutas, imagen JPEG 1200×628. Navegación y bolsa revisadas en 390/320 px, sin desbordamiento horizontal (305/305 px internos a 320). Catálogo mantiene 23 fichas. Captura de escritorio: docs/qa/coco-3d-pago-visible.png.
+
+## Miniatura mágica con figuras de la colección — 8 noviembre 2026
+
+Petición posterior: separar «3D» de la impresora, crear una estética de animación mágica y rodear la Flashforge con figuras realmente disponibles. Nueva imagen social versionada: `images/impresiones-3d-magia-flashforge-v3.jpg` (1200×628). Cuatro referencias del catálogo: leopardo, perrito, ranita roja y delfín. Se preservan sus colores, formas y textura impresa. La miniatura muestra pago con tarjeta y recogida en Fuengirola o envío. Open Graph, Twitter y los dos alias apuntan al nuevo recurso; Compartir utiliza `?v=magia-3d-3`. Script versionado para renovar su caché. No hay cambios en catálogo, precios ni circuito de pagos.
+
+Revisión visual: título en dos líneas despejado, modelo de impresora reconocible, cuatro figuras visibles y textos legibles. Conversión de PNG a JPEG y reducción de tamaño sin retoques de contenido.
+
+Comprobaciones locales: JPEG 1200×628 (199.371 bytes), Open Graph/Twitter correctos en las tres rutas, enlace Compartir y versión de caché del script coincidentes, sintaxis JavaScript correcta y `git diff --check` sin errores.
+
+Prompt de generación (referencias: miniatura Flashforge anterior y cuatro fotos originales del catálogo):
+
+```text
+Redesign the FIRST supplied image as an exceptional landscape social-sharing thumbnail for a Spanish 3D-printed figurine shop, 1.91:1 aspect ratio, composed for 1200 x 630 pixels. The user wants a magical Pixar-like family animated movie aesthetic: polished, richly dimensional 3D illustration, warm and charming, cinematic soft light, luminous turquoise and golden filament curls and tiny sparkles. It must still feel premium and beautifully composed, not a cluttered collage.
+
+The first reference contains the correct enclosed FLASHFORGE Adventurer 5M Pro printer. Preserve its recognizable dark graphite enclosed cubic body, glass front door, upper-right landscape touchscreen, round power button, model label upper-left and FLASHFORGE on the bottom front. Make the printer itself feel enchanted and softly stylized, not industrial-photographic. No eyes or face on the printer. Place it in the RIGHT half, slightly three-quarter view, with soft blue and gold magic coming from its nozzle and glowing chamber.
+
+The remaining four reference images show ACTUAL figurines sold by this shop. Place these FOUR recognizable figurines around the printer's base in a playful, visually balanced little gathering: the bright yellow articulated spotted leopard with white paws; the brown-and-cream articulated puppy with floppy ears; the red/orange frog with huge white eyes and splayed feet; and the turquoise-and-blue articulated dolphin. Adapt them gently to the same animated 3D illustration style, but preserve their distinctive silhouettes, colors, proportions, markings and visible printed layers/segmented construction. They should look like the supplied figurines, not generic unrelated animals. Show all four clearly, no duplicates, no extra sale products. A gentle arc of sparkles connects the figures to the printer. Do not copy any text, price badges, plants or background printers from the product reference photographs. No eagle, no awards badge.
+
+CRITICAL COMPOSITION: The LEFT 44% of the canvas is a completely clear typography zone, with generous empty space between all text and any printer/figure. No object, sparkles, shadow, glow, frame or decoration may overlap the letters. Make the title TWO LINES, exact text:
+"Impresiones"
+"3D"
+Set it in large bold clean Montserrat-like deep navy sans serif, extremely legible at WhatsApp preview size. The 3D must be fully separated from the printer, not touching it. Put the subtitle below on two shorter lines, exact wording:
+"Imaginación que"
+"puedes tocar."
+Then a restrained thin blue accent line. At the lower left, clearly readable but secondary, two exact lines:
+"Pago con tarjeta"
+"Recogida en Fuengirola o envío"
+
+All text must be spelled exactly, crisp and clean, with no extra headlines. Keep all text at least 6% away from canvas edges. Left background soft warm ivory / peach; right background a beautiful subtle pastel lavender and aqua magical halo. Colorful figurines, graphite printer, navy type, cinematic shadows, premium animated-film visual quality. No logo invented for Coco, no watermarks, no UI, no prices. This is one finished flat full-bleed thumbnail, not a mockup of a browser, card or WhatsApp screen.
+```

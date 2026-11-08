@@ -20,5 +20,5 @@ document.addEventListener('click',event=>{const button=event.target.closest('but
 document.addEventListener('change',event=>{if(event.target.id==='detail-variant'){const p=byId.get(event.target.dataset.id);selected.set(p.id,event.target.value);$('#detail-image').src='images/'+imageFor(p,event.target.value);renderProducts();}});
 for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
 $('#search').addEventListener('input',renderProducts);$('#sort').addEventListener('change',renderProducts);
-$('#share').onclick=async()=>{const url='https://cocoenforma.com/galeria/impresiones-3d/?v=flashforge-5m-pro';try{await navigator.clipboard.writeText(url);toast('Enlace copiado. Ya puedes compartirlo.')}catch{if(navigator.share){try{await navigator.share({title:'Coco · Impresiones 3D',url})}catch{}}else toast(url)}};
+$('#share').onclick=async()=>{const url='https://cocoenforma.com/galeria/impresiones-3d/?v=magia-3d-3';try{await navigator.clipboard.writeText(url);toast('Enlace copiado. Ya puedes compartirlo.')}catch{if(navigator.share){try{await navigator.share({title:'Coco · Impresiones 3D',url})}catch{}}else toast(url)}};
 save();renderProducts();
