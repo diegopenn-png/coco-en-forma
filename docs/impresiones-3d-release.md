@@ -77,3 +77,13 @@ Verificación de cierre: 23/23 pruebas aprobadas (12 de navegación/recuperació
 Navegador de producción: tras recargar la colección, «Volver a Coco» abre `https://cocoenforma.com/?coco_home=1` en la misma ventana; el inicio sin sesión completa la carga y muestra Entrar y Todos los juegos. Se probó Explorar los juegos y el regreso mediante Menú principal. El SW público contiene `coco-en-forma-v160.100.64-navigation-recovery`. No se observaron errores de la aplicación en la consola; únicamente mensajes de una extensión del navegador de pruebas.
 
 Límite: el menú con sesión y los fallos de red se comprobaron con simulaciones locales, no con una cuenta real en producción. La PWA instalada en el iPhone del usuario no es accesible desde este entorno y no se da por verificada. No quedan cambios de este arreglo pendientes de publicación; ante una incidencia específica del dispositivo, el siguiente paso es identificar su pantalla y comportamiento con esta versión. Sin pedidos, cobros, correos ni cambios de datos de usuarios.
+
+## Continuación de comprobaciones en producción — 8 noviembre 2026
+
+Fuente contrastada: main `e12d1ba08f2ded9702d46313349d5dee6b5b2cdb`. El arreglo estaba publicado; esta continuación no requiere cambios de código ni otro despliegue funcional.
+
+Comprobación HTTP directa: `index.html`, `sw.js`, `manifest.webmanifest`, `galeria/impresiones-3d/index.html`, `shop.mjs`, `condiciones.html` y `pedido.html` responden 200 con tipo de contenido apropiado y coinciden byte a byte con la fuente de main.
+
+Prueba interactiva pública en Chrome: colección → «Volver a Coco» → inicio sin sesión completamente cargado → atrás del navegador → colección operativa. Búsqueda «elefante» devuelve un diseño; selección Azul oscuro; añadir a la bolsa conserva el color y total 5 €; continuar muestra recogida; seleccionar envío muestra dirección y solicitud de porte previo; «Volver a mi bolsa», eliminar la pieza de prueba y «Explorar la colección» funcionan. Bolsa devuelta a cero y búsqueda limpiada. No se completaron formularios, no se enviaron pedidos ni correos y no se efectuaron pagos. Sin errores o avisos de la aplicación registrados por el navegador; se excluyen mensajes de la extensión de pruebas.
+
+Estado de alcance: navegación pública y controles anteriores comprobados. Se mantienen los límites ya documentados para la cuenta autenticada real y la PWA instalada en el iPhone. La siguiente comprobación requiere abrir la PWA en ese dispositivo y probar Impresiones 3D → Volver a Coco; si persiste un bloqueo, recoger la pantalla y el comportamiento exactos para poder reproducirlo. No hay cambios funcionales de este arreglo pendientes de publicación.
