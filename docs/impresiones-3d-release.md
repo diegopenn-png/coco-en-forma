@@ -59,3 +59,15 @@ Then a restrained thin blue accent line. At the lower left, clearly readable but
 
 All text must be spelled exactly, crisp and clean, with no extra headlines. Keep all text at least 6% away from canvas edges. Left background soft warm ivory / peach; right background a beautiful subtle pastel lavender and aqua magical halo. Colorful figurines, graphite printer, navy type, cinematic shadows, premium animated-film visual quality. No logo invented for Coco, no watermarks, no UI, no prices. This is one finished flat full-bleed thumbnail, not a mockup of a browser, card or WhatsApp screen.
 ```
+
+## Recuperación de navegación web/PWA — 8 noviembre 2026
+
+Solicitud: regresar a Coco desde la colección y revisar la sensación de bloqueo.
+
+Fuente: main `ffe8a1d94da6bf96caa905f21940b0859f145946`. El enlace anterior ya apuntaba a la raíz. Se comprobó públicamente la ida a Coco sin sesión y una carga inicial parcial que finalmente completó. No se ha reproducido el bloqueo específico del iPhone del usuario.
+
+Cambios: todos los accesos de regreso a Coco desde colección, condiciones y pedido usan la misma ventana y `/?coco_home=1`. La entrada selecciona Mis retos y solicita una lectura de red con recuperación desde caché. Las consultas de inicio/sesión/perfil y carga inicial de puntuaciones tienen límite de espera y permiten reintentar; un error transitorio del perfil ya no cierra la sesión. El SW limita esperas de red/precarga y no sustituye un script o recurso ausente por index.html. Caché `coco-en-forma-v160.100.64-navigation-recovery`.
+
+Verificado localmente: todos los scripts inline y SW compilan; 12 pruebas de recuperación (sesión, perfil, puntuaciones, bonos, reintentos, menú, regreso, red bloqueada y caché); 11 pruebas existentes de contrato del cliente. Simulación del menú autenticado con los scripts reales: sin errores de ejecución y un único enlace de tienda. Navegador de previsualización: Volver a Coco abre correctamente el inicio, con controles disponibles. No se han enviado pedidos, cobrado tarjetas ni cambiado datos de usuarios.
+
+Estado: preparado y probado. Siguiente acción: publicar y verificar el regreso y la versión de caché en producción. La prueba en la PWA instalada de iPhone sigue siendo una limitación del entorno.
