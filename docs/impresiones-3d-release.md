@@ -1,5 +1,11 @@
 # Coco 3D — 8 noviembre 2026
 
+## Acceso desde el menú de Coco — 8 noviembre 2026
+
+Añadida la opción «Impresiones 3D / Descubre la colección» inmediatamente después de Clasificación, con el estilo del menú y un icono de pieza 3D. Es un enlace directo en la misma ventana a `/galeria/impresiones-3d/`, accesible con teclado y sin duplicarse cuando se reconstruye el menú. La caché PWA pasa a `v160.100.63-shop-navigation` para actualizar el HTML instalado.
+
+Validación: sintaxis del script de navegación y del Service Worker; 11/11 comprobaciones existentes de estado del cliente superadas. Revisión en 390 y 320 px usando los estilos y el script de navegación de producción: una sola opción debajo de Clasificación, sin desbordamiento (374/374 y 304/304 px). Pulsación comprobada: abre la landing con las 23 fichas. Captura: `docs/qa/coco-3d-menu-mobile.png`.
+
 Solicitud: landing comercial con las 25 fotos, precios de las imágenes, cobro con Stripe de ETERNA, recogida o envío. Ruta canónica /galeria/impresiones-3d/; alias /galeria/impresiones3D/.
 
 23 productos: el perrito tiene dos vistas y el elefante dos colores. Vaquitas y estrellas se venden por parejas. No se alteraron los productos de las fotos.

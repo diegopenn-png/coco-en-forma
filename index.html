@@ -4743,6 +4743,9 @@ body{background:radial-gradient(circle at 5% 16%,rgba(255,201,60,.18) 0 72px,tra
 #cocoApp .pestanaJugador b{font-size:18px!important}
 #cocoApp .pestanaJugador small{font-size:11px!important}
 #cocoApp .cocoRankingProxy .icoPestana{background:#FFF1CD!important;color:#E39000!important}
+#cocoApp .cocoShopLink{grid-column:1/-1;text-decoration:none}
+#cocoApp .cocoShopLink .icoPestana{background:#EDE7FF!important;color:#7451B8!important}
+#cocoApp .cocoShopLink:focus-visible{outline:3px solid #7451B8;outline-offset:2px}
 #cocoApp .cocoMedBridge{display:none!important}
 #cocoApp .bRankCarnet.cocoRankOriginal{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important}
 #cocoApp .cabeceraRetos{margin:2px 0 18px!important;padding:18px 20px!important;border-radius:20px!important;background:linear-gradient(135deg,#fff 58%,#F1FAFE 100%)!important}
@@ -4873,6 +4876,11 @@ function prepararNavegacion(app){
   var original=app.querySelector(".bRankCarnet");if(original)original.classList.add("cocoRankOriginal");
   var rank=document.createElement("button");rank.type="button";rank.className="pestanaJugador cocoRankingProxy";rank.innerHTML='<span class="icoPestana" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10v3c0 4-2 7-5 7S7 11 7 7V4Zm-3 2h3m10 0h3c0 4-2 6-5 6M9 18h6m-3-4v4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><b>Clasificación</b><small>Consulta tu posición</small></span>';
   rank.onclick=function(){var b=app.querySelector(".bRankCarnet");if(b)b.click()};nav.appendChild(rank)
+ }
+ if(!nav.querySelector(".cocoShopLink")){
+  var shop=document.createElement("a");shop.className="pestanaJugador cocoShopLink";shop.href="/galeria/impresiones-3d/";
+  shop.innerHTML='<span class="icoPestana" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Zm0 9 8-4.5M12 12 4 7.5M12 12v9M8 5.25l8 4.5"/></svg></span><span><b>Impresiones 3D</b><small>Descubre la colección</small></span>';
+  nav.querySelector(".cocoRankingProxy").insertAdjacentElement("afterend",shop)
  }
 }
 function actualizarPuntosMed(app){var origen=document.querySelector("#cocoMedPestana .cocoMedPuntosMini"),destino=app.querySelector("#cocoMedPuntosTarjeta");if(origen&&destino&&destino.textContent!==origen.textContent)destino.textContent=origen.textContent}
