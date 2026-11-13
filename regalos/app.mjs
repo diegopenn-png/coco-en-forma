@@ -27,5 +27,5 @@ const recovery=$('order-recovery');recovery.hidden=false;recovery.replaceChildre
 const result=await api('/checkout',identity);if(result.url)safeCheckout(result.url);else location.assign(a.href);
 }catch(err){status.textContent=err.message||'No se pudo abrir el pago. Puedes contactar con Noelia por WhatsApp.'}finally{busy=false;$('pay').disabled=false}
 });
-$('share').addEventListener('click',async()=>{const data={title:'Regalos con flores y tarta · Flores y tarta',url:'https://www.cocoenforma.com/regalos/'};try{if(navigator.share)await navigator.share(data);else{await navigator.clipboard.writeText(data.url);$('toast').textContent='Enlace copiado';setTimeout(()=>$('toast').textContent='',3000)}}catch(e){if(e.name!=='AbortError'){$('toast').textContent='Enlace: '+data.url;setTimeout(()=>$('toast').textContent='',7000)}}});
+$('share').addEventListener('click',async()=>{const data={title:'Regalos con flores y tarta · Flores y tarta',url:'https://cocoenforma.com/regalos/'};try{if(navigator.share)await navigator.share(data);else{await navigator.clipboard.writeText(data.url);$('toast').textContent='Enlace copiado';setTimeout(()=>$('toast').textContent='',3000)}}catch(e){if(e.name!=='AbortError'){$('toast').textContent='Enlace: '+data.url;setTimeout(()=>$('toast').textContent='',7000)}}});
 }
