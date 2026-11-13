@@ -1,6 +1,6 @@
 # Landings y miniaturas de Coco
 
-El catálogo público está en `/juegos/`. Las 17 guías de juegos se generan en
+El catálogo público está en `/juegos/`. Las 19 guías de juegos se generan en
 `/juego/{id}/`; Coco Eneagrama conserva su página y condiciones en `/explora/`.
 Los botones de jugar abren las rutas originales de la aplicación. Las guías se
 pueden leer sin JavaScript ni cuenta; las condiciones de acceso al juego no cambian.
@@ -58,3 +58,28 @@ Referencias oficiales:
 - https://developers.google.com/search/docs/appearance/ai-features
 - https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview
 - https://developers.openai.com/api/docs/bots
+
+## Captación orgánica · 13 de noviembre de 2026
+
+`seo/discovery.mjs` define 10 páginas por intención de búsqueda: seis selecciones
+de juegos gratuitos y cuatro guías de Eterna. Sus contenidos y ejemplos son
+visibles sin ejecutar JavaScript. Se generan junto al catálogo al ejecutar
+`node scripts/build-game-landings.mjs`. El generador conserva además la página
+de impresiones 3D y la página comercial de Eterna dentro del sitemap.
+
+Las páginas gratuitas incluyen enlaces directos al juego y a sus reglas. Las
+de Eterna abren el modo de tarea, examen o explicación admitido por el onboarding
+y muestran prueba, precio y enlace a condiciones. Las 19 fichas de juegos enlazan
+la guía general de Eterna. El catálogo enlaza las diez nuevas guías.
+
+Oferta reflejada de `eterna-captacion.html` el 2026-11-13: prueba de 7 días sin
+tarjeta; 7,99 €/mes o 79,99 €/año. Al cambiar la oferta, revisar también
+`eternaOffer` y las menciones de precio en `seo/discovery.mjs` y el generador.
+No se han cambiado el checkout, los cobros, las cuotas ni los controles de acceso.
+No hay nuevas peticiones a modelos ni analítica añadida en estas páginas.
+
+Validación adicional: `COCO_JSDOM_PATH=/tmp/coco-seo-qa/node_modules/jsdom node
+--test qa/discovery-landings.test.mjs qa/game-landings.test.mjs`. La entrega
+se prepara en rama de revisión. La publicación requiere la autorización de Diego.
+Tras publicarla, comprobar URL y contenido en producción y enviar el sitemap en
+Search Console/Bing si hay acceso; publicación no acredita indexación.
