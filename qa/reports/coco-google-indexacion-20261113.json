@@ -1,0 +1,145 @@
+{
+  "property": "https://cocoenforma.com/",
+  "verified": true,
+  "verificationMethod": "HTML file",
+  "verificationFile": "googlee572e794d4f008ee.html",
+  "verifiedAt": "2026-11-13T11:25:10.427Z",
+  "inspections": [
+    {
+      "url": "https://cocoenforma.com/apoyo-escolar-con-ia/",
+      "checkedAt": "2026-11-13T11:26:02.763Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:26:36.488Z",
+        "message": "Añadida a una cola de rastreo prioritaria"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-gratis/",
+      "checkedAt": "2026-11-13T11:26:46.982Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:27:16.728Z"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/ayuda-con-los-deberes/",
+      "checkedAt": "2026-11-13T11:27:29.496Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:27:48.864Z"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/preparar-examenes/",
+      "checkedAt": "2026-11-13T11:28:01.918Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:28:21.264Z"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/aprender-matematicas-con-ia/",
+      "checkedAt": "2026-11-13T11:28:33.575Z",
+      "indexed": false,
+      "state": "Google no reconoce esta URL",
+      "lastCrawl": null,
+      "sitemap": null,
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:28:51.677Z"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-memoria/",
+      "checkedAt": "2026-11-13T11:29:02.828Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:29:16.109Z"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-logica/",
+      "checkedAt": "2026-11-13T11:29:27.311Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:29:41.553Z"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-matematicas/",
+      "checkedAt": "2026-11-13T11:29:55.057Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:30:15.056Z"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-palabras/",
+      "checkedAt": "2026-11-13T11:30:27.354Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:30:46.488Z"
+      }
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-en-familia/",
+      "checkedAt": "2026-11-13T11:30:59.033Z",
+      "indexed": false,
+      "state": "Descubierta: actualmente sin indexar",
+      "lastCrawl": null,
+      "sitemap": "https://cocoenforma.com/sitemap.xml",
+      "indexingRequest": {
+        "accepted": true,
+        "at": "2026-11-13T11:31:20.228Z"
+      }
+    }
+  ],
+  "sitemap": {
+    "url": "https://cocoenforma.com/sitemap.xml",
+    "submissionConfirmed": true,
+    "submittedAt": "2026-11-13T11:25:47.197Z",
+    "status": "Correcto",
+    "discoveredPages": 37,
+    "lastRead": "2026-11-13"
+  },
+  "completedAt": "2026-11-13T11:31:20.228Z",
+  "summary": {
+    "inspected": 10,
+    "indexedAtInspection": 0,
+    "notIndexedAtInspection": 10,
+    "indexingRequestsAccepted": 10
+  }
+}
