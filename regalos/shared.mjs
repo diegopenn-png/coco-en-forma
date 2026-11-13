@@ -1,0 +1,8 @@
+export const API='https://coco-eterna-v159.chatinmobiliario.workers.dev/v1/gifts';
+export const money=n=>new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:n%100?2:0}).format(n/100);
+export const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export async function api(path,body,token){const response=await fetch(API+path,{method:body?'POST':'GET',headers:{...(body?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})},body:body?JSON.stringify(body):undefined,cache:'no-store',signal:AbortSignal.timeout(25000)});let data;try{data=await response.json()}catch{throw Error('No hemos podido conectar. Tus datos se conservan; vuelve a intentarlo.')}if(!response.ok)throw Error(data?.error||'No se pudo completar la operación. Inténtalo de nuevo.');return data}
+export function safeCheckout(url){const u=new URL(url);if(u.protocol!=='https:'||u.hostname!=='checkout.stripe.com')throw Error('No se pudo abrir el pago seguro.');location.assign(u.href)}
+export function orderLink(id,key){return new URL('pedido.html',location.href).origin+new URL('pedido.html',location.href).pathname+'#id='+encodeURIComponent(id)+'&key='+encodeURIComponent(key)}
+export function randomKey(){return [...crypto.getRandomValues(new Uint8Array(32))].map(v=>v.toString(16).padStart(2,'0')).join('')}
+export const statusLabels={awaiting_quote:'Envío pendiente de confirmar',awaiting_payment:'Pendiente de pago',paid:'Pago confirmado',preparing:'En preparación',ready:'Listo para recoger',shipped:'Enviado',completed:'Entregado',cancelled:'Cancelado',refunded:'Reembolso registrado',review:'Revisión del pago'};
