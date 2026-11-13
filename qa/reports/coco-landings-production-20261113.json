@@ -1,0 +1,363 @@
+{
+  "pages": [
+    {
+      "path": "/juegos-gratis/",
+      "status": 200,
+      "url": "https://cocoenforma.com/juegos-gratis/",
+      "bytes": 17648,
+      "canonical": "https://cocoenforma.com/juegos-gratis/",
+      "errors": []
+    },
+    {
+      "path": "/juegos-de-memoria/",
+      "status": 200,
+      "url": "https://cocoenforma.com/juegos-de-memoria/",
+      "bytes": 14360,
+      "canonical": "https://cocoenforma.com/juegos-de-memoria/",
+      "errors": []
+    },
+    {
+      "path": "/juegos-de-logica/",
+      "status": 200,
+      "url": "https://cocoenforma.com/juegos-de-logica/",
+      "bytes": 15192,
+      "canonical": "https://cocoenforma.com/juegos-de-logica/",
+      "errors": []
+    },
+    {
+      "path": "/juegos-de-matematicas/",
+      "status": 200,
+      "url": "https://cocoenforma.com/juegos-de-matematicas/",
+      "bytes": 15275,
+      "canonical": "https://cocoenforma.com/juegos-de-matematicas/",
+      "errors": []
+    },
+    {
+      "path": "/juegos-de-palabras/",
+      "status": 200,
+      "url": "https://cocoenforma.com/juegos-de-palabras/",
+      "bytes": 14275,
+      "canonical": "https://cocoenforma.com/juegos-de-palabras/",
+      "errors": []
+    },
+    {
+      "path": "/juegos-en-familia/",
+      "status": 200,
+      "url": "https://cocoenforma.com/juegos-en-familia/",
+      "bytes": 15185,
+      "canonical": "https://cocoenforma.com/juegos-en-familia/",
+      "errors": []
+    },
+    {
+      "path": "/apoyo-escolar-con-ia/",
+      "status": 200,
+      "url": "https://cocoenforma.com/apoyo-escolar-con-ia/",
+      "bytes": 13306,
+      "canonical": "https://cocoenforma.com/apoyo-escolar-con-ia/",
+      "errors": []
+    },
+    {
+      "path": "/ayuda-con-los-deberes/",
+      "status": 200,
+      "url": "https://cocoenforma.com/ayuda-con-los-deberes/",
+      "bytes": 12656,
+      "canonical": "https://cocoenforma.com/ayuda-con-los-deberes/",
+      "errors": []
+    },
+    {
+      "path": "/preparar-examenes/",
+      "status": 200,
+      "url": "https://cocoenforma.com/preparar-examenes/",
+      "bytes": 12506,
+      "canonical": "https://cocoenforma.com/preparar-examenes/",
+      "errors": []
+    },
+    {
+      "path": "/aprender-matematicas-con-ia/",
+      "status": 200,
+      "url": "https://cocoenforma.com/aprender-matematicas-con-ia/",
+      "bytes": 12909,
+      "canonical": "https://cocoenforma.com/aprender-matematicas-con-ia/",
+      "errors": []
+    }
+  ],
+  "assets": [
+    {
+      "path": "/assets/brand/coco-premium-v160127/icon-192.png",
+      "status": 200
+    },
+    {
+      "path": "/assets/styles/coco-unified-v160127.css?v=160131",
+      "status": 200
+    },
+    {
+      "path": "/seo/discovery.css?v=20261113",
+      "status": 200
+    },
+    {
+      "path": "/seo/landing.css?v=1",
+      "status": 200
+    },
+    {
+      "path": "/seo/landing.js?v=1",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/ajedrez.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/calculo.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/ciudad.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/conecta.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/crucigrama.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/generala.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/memoria.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/naval.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/numeros.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/palabras.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/series.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/sopa.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160126/sudoku.jpg",
+      "status": 200
+    },
+    {
+      "path": "/share/premium-v160127/hero-explorer-v160129.jpg",
+      "status": 200
+    }
+  ],
+  "links": [
+    {
+      "url": "https://cocoenforma.com/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=calculo",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=conecta",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=crucigrama",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=memoria",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=numeros",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=palabras",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=series",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=sopa",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=sudoku",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?open=eterna&mode=exam&source=seo_preparar_examenes",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?open=eterna&mode=explain&source=seo_aprender_matematicas_con_ia",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?open=eterna&mode=homework&source=seo_apoyo_escolar_con_ia",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/?open=eterna&mode=homework&source=seo_ayuda_con_los_deberes",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/apoyo-escolar-con-ia/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/aprender-matematicas-con-ia/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/ayuda-con-los-deberes/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/centro-de-confianza.html",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/eterna-captacion.html",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/eterna.html",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/games/ajedrez/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/games/ciudad/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/games/generala/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/games/naval/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/ajedrez/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/calculo/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/ciudad/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/conecta/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/crucigrama/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/generala/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/memoria/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/naval/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/numeros/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/palabras/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/series/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/sopa/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juego/sudoku/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-logica/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-matematicas/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-memoria/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-palabras/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-en-familia/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-gratis/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/juegos/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/politica-de-privacidad.html",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/preparar-examenes/",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/suscripciones-y-desistimiento.html",
+      "status": 200
+    },
+    {
+      "url": "https://cocoenforma.com/terminos-y-condiciones.html",
+      "status": 200
+    }
+  ],
+  "sitemap": {
+    "status": 200,
+    "count": 37,
+    "missing": []
+  },
+  "catalogue_missing": [],
+  "robots_sitemap": true
+}
