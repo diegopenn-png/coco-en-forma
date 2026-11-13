@@ -33,7 +33,7 @@ mkdirSync(root+hubPath,{recursive:true});writeFileSync(root+hubPath+'index.html'
 const extra=['/regalos/','/','/explora/','/explora/metodo.html','/eterna.html','/eterna-captacion.html','/centro-de-confianza.html','/galeria/impresiones-3d/'];
 buildDiscovery();
 const paths=[...extra,hubPath,...games.map(g=>g.path),...discoveryPages.map(p=>`/${p.slug}/`)];
-writeFileSync(root+'sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+paths.map(p=>`  <url><loc>${['/galeria/impresiones-3d/','/regalos/'].includes(p)?'https://www.cocoenforma.com':origin}${p}</loc>${p==='/galeria/impresiones-3d/'?'<lastmod>2026-11-08</lastmod>':discoveryPages.some(page=>`/${page.slug}/`===p)?'<lastmod>2026-11-13</lastmod>':''}</url>`).join('\n')+'\n</urlset>\n');
+writeFileSync(root+'sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+paths.map(p=>`  <url><loc>${p==='/galeria/impresiones-3d/'?'https://www.cocoenforma.com':origin}${p}</loc>${p==='/galeria/impresiones-3d/'?'<lastmod>2026-11-08</lastmod>':p==='/regalos/'||discoveryPages.some(page=>`/${page.slug}/`===p)?'<lastmod>2026-11-13</lastmod>':''}</url>`).join('\n')+'\n</urlset>\n');
 // No crawler-specific Allow groups: the same private-path exclusions apply to all crawlers.
 writeFileSync(root+'robots.txt',`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /qa/\nDisallow: /supabase/\nDisallow: /*?coco_bank=\nDisallow: /*?juego=\nDisallow: /explora/jugar.html\n\nSitemap: ${origin}/sitemap.xml\n`);
 console.log(`Built ${games.length} game landings, catalogue, robots and sitemap (${paths.length} URLs).`);

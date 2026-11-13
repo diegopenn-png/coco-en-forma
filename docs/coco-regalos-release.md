@@ -1,3 +1,13 @@
+# Estado actual · 13 de noviembre de 2026
+
+Landing publicada y verificada: https://cocoenforma.com/regalos/ . PR #126 fusionada, Pages HTTP 200, miniatura 1200×630 accesible con metadatos para compartir, formulario a medida y configuración de Stripe comprobados. Sin cargos ni mensajes enviados.
+
+Actualización SEO: URL canónica, Open Graph, datos estructurados, botón compartir y sitemap unificados en el dominio final sin www. Robots permite indexar y mostrar imágenes grandes. Sitemap con fecha real de modificación; comprobación de indexación en Search Console y notificación IndexNow de la única landing solicitada en curso. La prueba de propiedad de IndexNow se limita a /regalos/. Los resultados de envíos se registran en la PR de esta actualización. No se afirma posición ni indexación hasta comprobarlas.
+
+Las notas siguientes conservan el historial de preparación; sus estados pendientes anteriores quedan sustituidos por este encabezado.
+
+---
+
 # Flores y tarta · 13 de noviembre de 2026
 
 Estado: publicación autorizada el 13/11/2026 mediante la petición de un enlace público para compartir la landing con miniatura. Cambio comprobado localmente y preparado para publicar. No se ha cobrado una tarjeta ni enviado un mensaje a Noelia.
