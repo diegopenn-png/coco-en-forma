@@ -28,6 +28,7 @@ on:
       - "qa/eterna-text-voice-only-v1.test.mjs"
       - "qa/root-social-thumbnail-contract.test.mjs"
       - "qa/startup-light.test.cjs"
+      - "qa/first-paint.test.cjs"
       - "qa/v161-*.test.mjs"
       - ".github/workflows/eterna-regression.yml"
   workflow_dispatch:
@@ -74,7 +75,7 @@ jobs:
       - name: Check startup loading and navigation recovery
         run: |
           npm install --prefix "$RUNNER_TEMP/coco-startup-qa" --no-audit --no-fund jsdom@26
-          COCO_JSDOM_PATH="$RUNNER_TEMP/coco-startup-qa/node_modules/jsdom" node --test qa/startup-light.test.cjs qa/navigation/recovery.test.cjs
+          COCO_JSDOM_PATH="$RUNNER_TEMP/coco-startup-qa/node_modules/jsdom" node --test qa/first-paint.test.cjs qa/startup-light.test.cjs qa/navigation/recovery.test.cjs
       - name: Check 48-conversation Eterna matrix
         run: |
           node --test qa/eterna/offline/*.test.mjs

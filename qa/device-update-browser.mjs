@@ -110,7 +110,14 @@ async function preparePage(context, profileName) {
     && window.__ETERNA_HOTFIX_160902_HF1__
     && window.__ETERNA_DESKTOP_COMPACT_1609326__
   ), null, { timeout: 20_000 });
-  await page.waitForTimeout(250);
+  await page.waitForFunction(() => document.documentElement.dataset.cocoFirstPaint === "ready", null, { timeout: 20_000 });
+  const firstPaint = await page.evaluate(() => ({
+    reason: document.documentElement.dataset.cocoFirstPaint,
+    loading: document.documentElement.classList.contains("coco-starting"),
+    inert: document.getElementById("cocoApp")?.inert,
+    placeholder: Boolean(document.getElementById("coco-startup-status")),
+  }));
+  assert.deepEqual(firstPaint, { reason: "ready", loading: false, inert: false, placeholder: false }, `${profileName}: startup did not settle`);
   return { page, pageErrors };
 }
 

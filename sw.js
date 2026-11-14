@@ -1,5 +1,5 @@
 /* Coco en Forma · Service Worker v160.100.22 · Conecta colores integrated */
-const CACHE_VERSION="coco-en-forma-v160.100.65-startup-light";
+const CACHE_VERSION="coco-en-forma-v160.100.66-stable-first-paint";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
