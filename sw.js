@@ -1,5 +1,5 @@
 /* Coco en Forma · Service Worker v160.100.22 · Conecta colores integrated */
-const CACHE_VERSION="coco-en-forma-v160.100.64-navigation-recovery";
+const CACHE_VERSION="coco-en-forma-v160.100.65-startup-light";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -22,7 +22,19 @@ function absolute(p){return new URL(p,SCOPE_URL).href}
 function releaseRequest(url){const fresh=new URL(url);fresh.searchParams.set("__coco_release",CACHE_VERSION);return new Request(fresh.href,{cache:"reload"})}
 function bounded(promise,ms,onTimeout){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>{if(onTimeout)onTimeout();reject(new Error("COCO_NETWORK_TIMEOUT"))},ms)})]).finally(()=>clearTimeout(timer))}
 function fetchTimed(request,ms=8000){const controller=new AbortController();return bounded(fetch(request,{signal:controller.signal}),ms,()=>controller.abort())}
-async function cacheCore(){const c=await caches.open(CACHE_VERSION);await Promise.allSettled(CORE.map(async p=>{const u=absolute(p);const controller=new AbortController();await bounded((async()=>{const r=await fetch(releaseRequest(u),{signal:controller.signal});if(r&&r.ok)await c.put(u,r.clone())})(),15000,()=>controller.abort())}))}
+async function cacheCore(){
+  const c=await caches.open(CACHE_VERSION);
+  // Keep offline assets, but avoid competing with the page with 100+ parallel fetches.
+  const queue=Array.from(new Set(["./index.html",...CORE]));
+  let next=0;
+  async function download(){
+    while(next<queue.length){
+      const u=absolute(queue[next++]),controller=new AbortController();
+      try{await bounded((async()=>{const r=await fetch(releaseRequest(u),{signal:controller.signal});if(r&&r.ok)await c.put(u,r.clone())})(),15000,()=>controller.abort())}catch(_e){}
+    }
+  }
+  await Promise.all(Array.from({length:4},download));
+}
 self.addEventListener("install",e=>{e.waitUntil((async()=>{await cacheCore();self.skipWaiting()})())});
 self.addEventListener("activate",e=>{e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(CACHE_PREFIX)&&k!==CACHE_VERSION).map(k=>caches.delete(k)));if(self.registration.navigationPreload){try{if(DESKTOP_SAFARI)await self.registration.navigationPreload.enable();else await self.registration.navigationPreload.disable()}catch(_e){}}await self.clients.claim()})())});
 self.addEventListener("message",e=>{if(e.data&&e.data.type==="SKIP_WAITING")self.skipWaiting()});
