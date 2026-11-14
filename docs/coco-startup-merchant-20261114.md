@@ -108,3 +108,34 @@ límite de seguridad. Versión de caché: `160.100.66-stable-first-paint`.
 
 Publicación y evidencia final de esta corrección: consultar la PR de la rama
 `fix/coco-stable-first-paint-20261114`; al redactar este punto siguen pendientes.
+
+## Recargas involuntarias durante el arranque
+
+La primera presentación se publicó en PR #129, merge
+`1f90142e7c1ccfab86303937147192d84e216344`, con regresión, matriz visual,
+GitHub Pages y smoke de producción correctos. Diego volvió a describir varias
+pantallas sucesivas antes de entrar; no se da por resuelto en su dispositivo.
+
+Se encontró otro mecanismo concreto: el Service Worker ejecutaba skipWaiting
+automáticamente al terminar de instalar y los cuatro registradores recargaban
+la página al recibir controllerchange. El gestor alternativo también aceptaba
+actualizaciones automáticamente. Una versión nueva podía interrumpir un inicio
+ya visible; esto explica un reinicio posible, pero no prueba por sí solo la
+secuencia exacta del iPhone de Diego.
+
+La instalación ahora conserva la espera normal del navegador. Una versión
+nueva entra al cerrar todos los clientes anteriores o al pulsar el botón
+existente de actualizar. Solo la pestaña que solicita explícitamente esa
+actualización se recarga una vez; cambios de controlador en segundo plano,
+primera instalación o actualización desde otra pestaña no la reinician.
+El permiso de recarga no persiste entre páginas. La URL única del worker,
+el registro único, los recursos sin conexión y la limpieza de caché al
+activar se mantienen. Caché: `160.100.67-uninterrupted-startup`.
+
+Validación local: 82 pruebas correctas, incluidos los cuatro registradores,
+actualización ya disponible o recién instalada, activación externa, doble
+evento, primer control, instalación sin activación forzada, presentación
+inicial, recuperación de sesión, recursos ligeros y contratos de juegos.
+Se conserva pendiente la comprobación física del iPhone y cuenta real.
+La PR de `fix/coco-no-startup-reload-20261114` registrará la publicación y
+verificación final de producción.

@@ -38,7 +38,7 @@ test("first visits load every production presentation layer without depending on
   assert.ok(index.indexOf(directScripts[4]) > index.indexOf(directScripts[3]));
 });
 
-test("PWA clients request and activate the current release instead of retaining an old device cache", () => {
+test("PWA clients check for the current release and support an explicit update", () => {
   assert.match(index, /manifest\.webmanifest\?v=160127/);
   assert.match(index, /sw\.js\?v=160118-r1/);
   assert.match(index, /updateViaCache:"none"/);
@@ -46,7 +46,7 @@ test("PWA clients request and activate the current release instead of retaining 
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.66-stable-first-paint"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.67-uninterrupted-startup"/);
   for (const asset of [
     "coco-scoring-v160110.js",
     "coco-variety-director-v160960.js",
@@ -88,9 +88,10 @@ test("current and legacy PWA entry points share one owner and one canonical work
   assert.doesNotMatch(runtime, /new URL\("sw\.js",document\.baseURI\)/);
   assert.doesNotMatch(legacyRuntime, /new URL\("sw\.js",document\.baseURI\)/);
   assert.ok(index.indexOf('__COCO_PWA_REGISTRATION_OWNER__ = "index-v160100"') < index.indexOf('coco-v142-runtime.js?v=160128'));
-  assert.match(index, /Date\.now\(\) - previousReload < 15000/);
-  assert.match(runtime, /Date\.now\(\) - previousReload < 15000/);
-  assert.match(legacyRuntime, /Date\.now\(\) - previousReload < 15000/);
+  for (const source of [index, runtime, legacyRuntime, pwaManager]) {
+    assert.match(source, /updateRequested/);
+    assert.doesNotMatch(source, /previousReload|controller_reload/);
+  }
 });
 
 test("loading the production index and runtime schedules exactly one worker registration", async () => {
@@ -127,6 +128,103 @@ test("loading the production index and runtime schedules exactly one worker regi
   assert.equal(registrations.length, 1);
   assert.equal(registrations[0].url, "https://www.cocoenforma.com/sw.js?v=160118-r1");
   assert.equal(registrations[0].options.updateViaCache, "none");
+});
+
+async function updateHarness(source, { controlled = true, waiting = true } = {}) {
+  const events = new Map(), buttons = [], messages = [];
+  let reloads = 0;
+  const worker = {
+    state: waiting ? "installed" : "installing",
+    postMessage(message) { messages.push(message.type); },
+    addEventListener(type, listener) { events.set(`worker:${type}`, listener); },
+  };
+  const registration = {
+    waiting: waiting ? worker : null, installing: waiting ? null : worker,
+    addEventListener(type, listener) { events.set(`registration:${type}`, listener); }, update() {},
+  };
+  const navigator = { onLine: true, serviceWorker: {
+    controller: controlled ? {} : null,
+    register: async () => registration,
+    addEventListener(type, listener) { events.set(`sw:${type}`, listener); },
+  } };
+  const context = {
+    navigator, URL, Boolean,
+    location: { protocol: "https:", reload() { reloads++; } },
+    document: {
+      baseURI: "https://cocoenforma.com/", readyState: "complete",
+      querySelector() { return buttons[0] || null; },
+      getElementById() { return { appendChild(button) { buttons.push(button); } }; },
+      createElement() { return {}; },
+    },
+    window: { navigator, addEventListener(type, listener) { events.set(`window:${type}`, listener); } },
+  };
+  vm.createContext(context);
+  vm.runInContext(source === pwaManager ? source : `${extractPwaRegistrar(source)}\nregisterPwa();`, context);
+  events.get("window:load")?.();
+  await Promise.resolve();
+  return { events, buttons, messages, registration, worker, reloads: () => reloads };
+}
+
+for (const [name, source] of [["index", index], ["current runtime", runtime], ["legacy runtime", legacyRuntime], ["fallback manager", pwaManager]]) {
+  test(`${name}: an available update never restarts the page until the user accepts it`, async () => {
+    const h = await updateHarness(source);
+    assert.equal(h.buttons.length, 1);
+    assert.deepEqual(h.messages, [], "waiting is not permission to activate");
+    h.events.get("sw:controllerchange")();
+    assert.equal(h.reloads(), 0, "another tab updating must not restart this page");
+    h.buttons[0].onclick(); h.buttons[0].onclick();
+    assert.deepEqual(h.messages, ["SKIP_WAITING"], "one explicit activation request");
+    assert.equal(h.reloads(), 0, "wait for the new worker before reloading");
+    h.events.get("sw:controllerchange")(); h.events.get("sw:controllerchange")();
+    assert.equal(h.reloads(), 1, "one reload for the accepted update");
+    const nextPage = await updateHarness(source, { waiting: false });
+    nextPage.events.get("sw:controllerchange")();
+    assert.equal(nextPage.reloads(), 0, "update permission does not survive navigation");
+  });
+
+  test(`${name}: installation and first control stay silent, and external activation remains actionable`, async () => {
+    const h = await updateHarness(source, { waiting: false });
+    assert.equal(h.buttons.length, 0);
+    h.events.get("registration:updatefound")();
+    h.worker.state = "installed"; h.registration.waiting = h.worker;
+    h.events.get("worker:statechange")(); h.events.get("worker:statechange")();
+    assert.equal(h.buttons.length, 1);
+    assert.deepEqual(h.messages, []);
+    h.worker.state = "activated"; h.registration.waiting = null;
+    h.events.get("sw:controllerchange")();
+    assert.equal(h.reloads(), 0);
+    h.buttons[0].onclick();
+    assert.equal(h.reloads(), 1, "an update activated elsewhere can be opened explicitly");
+    assert.deepEqual(h.messages, []);
+    const firstVisit = await updateHarness(source, { controlled: false, waiting: false });
+    firstVisit.events.get("sw:controllerchange")();
+    assert.equal(firstVisit.reloads(), 0);
+    assert.equal(firstVisit.buttons.length, 0);
+  });
+}
+
+test("worker installation prepares offline assets without taking over open screens", async () => {
+  const events = new Map();
+  let skipped = 0, requested = 0, installation;
+  const context = {
+    URL, Request, AbortController, setTimeout, clearTimeout,
+    fetch: async () => { requested++; return { ok: false }; },
+    caches: { open: async () => ({}) },
+    self: {
+      registration: { scope: "https://cocoenforma.com/" },
+      addEventListener(type, listener) { events.set(type, listener); },
+      skipWaiting() { skipped++; },
+    },
+  };
+  vm.createContext(context); vm.runInContext(serviceWorker, context);
+  events.get("install")({ waitUntil(promise) { installation = promise; } });
+  await installation;
+  assert.ok(requested > 100, "offline resources are still requested");
+  assert.equal(skipped, 0, "installation cannot force activation");
+  events.get("message")({ data: { type: "OTHER" } });
+  assert.equal(skipped, 0);
+  events.get("message")({ data: { type: "SKIP_WAITING" } });
+  assert.equal(skipped, 1, "the explicit update remains supported");
 });
 
 test("Reto Coco is cleanup-only and cannot reinsert the promotional card", () => {
