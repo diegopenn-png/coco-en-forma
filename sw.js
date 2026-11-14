@@ -1,5 +1,5 @@
 /* Coco en Forma · Service Worker v160.100.22 · Conecta colores integrated */
-const CACHE_VERSION="coco-en-forma-v160.100.66-stable-first-paint";
+const CACHE_VERSION="coco-en-forma-v160.100.67-uninterrupted-startup";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -35,7 +35,8 @@ async function cacheCore(){
   }
   await Promise.all(Array.from({length:4},download));
 }
-self.addEventListener("install",e=>{e.waitUntil((async()=>{await cacheCore();self.skipWaiting()})())});
+// An update waits for open clients to close, or for the explicit update button.
+self.addEventListener("install",e=>{e.waitUntil(cacheCore())});
 self.addEventListener("activate",e=>{e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(CACHE_PREFIX)&&k!==CACHE_VERSION).map(k=>caches.delete(k)));if(self.registration.navigationPreload){try{if(DESKTOP_SAFARI)await self.registration.navigationPreload.enable();else await self.registration.navigationPreload.disable()}catch(_e){}}await self.clients.claim()})())});
 self.addEventListener("message",e=>{if(e.data&&e.data.type==="SKIP_WAITING")self.skipWaiting()});
 async function offlineFallback(request){const cached=(await caches.match(request,{ignoreSearch:false}))||(await caches.match(request,{ignoreSearch:true}));if(cached)return cached;if(request.mode!=="navigate"&&request.destination!=="document")return new Response("Recurso no disponible sin conexión",{status:503,headers:{"Content-Type":"text/plain; charset=utf-8"}});const u=new URL(request.url);const navalPath=new URL("./games/naval/",SCOPE_URL).pathname;if(u.origin===SCOPE_URL.origin&&(u.pathname===navalPath||u.pathname===navalPath.slice(0,-1))){const n=await caches.match(absolute("./games/naval/index.html"));if(n)return n}const generalaPath=new URL("./games/generala/",SCOPE_URL).pathname;if(u.origin===SCOPE_URL.origin&&(u.pathname===generalaPath||u.pathname===generalaPath.slice(0,-1))){const g=await caches.match(absolute("./games/generala/index.html"));if(g)return g}const cityPath=new URL("./games/ciudad/",SCOPE_URL).pathname;if(u.origin===SCOPE_URL.origin&&(u.pathname===cityPath||u.pathname===cityPath.slice(0,-1))){const city=await caches.match(absolute("./games/ciudad/index.html"));if(city)return city}const chessPath=new URL("./games/ajedrez/",SCOPE_URL).pathname;if(u.origin===SCOPE_URL.origin&&(u.pathname===chessPath||u.pathname===chessPath.slice(0,-1))){const chess=await caches.match(absolute("./games/ajedrez/index.html"));if(chess)return chess}return(await caches.match(INDEX_URL))||new Response("Sin conexión",{status:503,headers:{"Content-Type":"text/plain; charset=utf-8"}})}
