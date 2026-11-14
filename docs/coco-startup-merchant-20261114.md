@@ -76,3 +76,35 @@ aunque el motivo del rechazo lo calificaba como privado.
 Diego respondió «Te autorizo» el 14 de noviembre de 2026 a la solicitud expresa
 de publicar estos cambios en el repositorio público de Coco y en la web/PWA.
 Continuar la publicación autorizada y verificar el resultado en producción.
+
+
+## Parpadeo inicial: corrección adicional
+
+Diego comunicó que Coco alternaba pantallas antes de estabilizarse. La revisión
+mostró que el arranque clásico inserta el acceso o menú mientras todavía se
+cargan scripts; premium sustituye los retos, Eterna mueve el acceso al diseño
+final y otros módulos añaden identidad, tarjetas e instalación en turnos
+posteriores. Se observó la secuencia de estados en el navegador público. La
+reducción de bytes anterior no sincronizaba esta presentación.
+
+Se coordina ahora la primera presentación con la resolución inicial de sesión,
+DOMContentLoaded, el catálogo, las fuentes (espera acotada) y la estabilidad de
+las tarjetas. Se muestra el icono oficial y «Preparando Coco…» hasta tener una
+pantalla utilizable. El contenido conserva su geometría mientras se prepara;
+no se usa display:none ni visibility:hidden que alterarían la detección del
+acceso. Los controles ocultos son inertes y se excluyen de accesibilidad.
+
+El coordinador se retira una sola vez, incluso en recuperación y errores de red;
+no vuelve a ocultar juegos ni navegación posterior. Si un recurso queda bloqueado,
+se libera la interfaz existente como máximo a los 12 segundos. Esa salida de
+seguridad puede mostrar un estado aún incompleto, pero evita una pantalla de
+carga permanente. Los juegos completos siguen cargándose al abrirlos.
+
+Pruebas añadidas: estados antiguos intermedios, sesión de retorno, entradas y
+fuentes tardías, aviso de instalación, recuperación/reintento, módulo bloqueado,
+funcionamiento sin JavaScript y señal de arranque en las pruebas de recuperación.
+La matriz visual de CI exige retirada normal del indicador, sin recurrir al
+límite de seguridad. Versión de caché: `160.100.66-stable-first-paint`.
+
+Publicación y evidencia final de esta corrección: consultar la PR de la rama
+`fix/coco-stable-first-paint-20261114`; al redactar este punto siguen pendientes.

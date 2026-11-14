@@ -35,16 +35,11 @@
   var queued=false;new MutationObserver(function(){if(queued)return;queued=true;queueMicrotask(function(){queued=false;install()})}).observe(document.documentElement,{childList:true,subtree:true});
   root.CocoNavigationV1={install:install};install();
 })(window);
-// Separate educational exploration; no ranking or diagnostic inference.
-import('./explora/entry.mjs').catch(()=>{});
-
-// Standalone chess: standard play stays independent from daily missions.
-import('./games/ajedrez/entry.mjs?v=daily-v1').catch(()=>{});
-
-// Private social board game; independent of daily challenge scoring.
-import('./games/ciudad/entry.mjs?v=city1').catch(()=>{});
-
-// Family dice game, independent of the daily leaderboard.
-import('./games/generala/entry.mjs?v=generala1').catch(()=>{});
-
-import('./games/naval/entry.mjs?v=naval1').catch(()=>{});
+// Wait for the entry cards before showing the initial menu. Games still load on demand.
+Promise.allSettled([
+  import('./explora/entry.mjs'),
+  import('./games/ajedrez/entry.mjs?v=daily-v1'),
+  import('./games/ciudad/entry.mjs?v=city1'),
+  import('./games/generala/entry.mjs?v=generala1'),
+  import('./games/naval/entry.mjs?v=naval1')
+]).then(function(){if(window.CocoFirstPaint)window.CocoFirstPaint.settled("catalog")});
