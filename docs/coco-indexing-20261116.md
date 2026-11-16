@@ -43,8 +43,24 @@ inicial, enlaces, noindex de pantallas internas, coherencia de galería/alias,
 contenido de guías, filtros y compartir. El cuerpo HTML de las páginas editadas
 permanece idéntico. Regeneración idempotente y `git diff --check` correctos.
 
-Pendiente al preparar este registro: publicación y comprobación de producción.
-Registrar abajo los resultados reales y la versión publicada.
+Publicado mediante PR #131, commit de integración
+`99a325d217bcc57952e8e4f0f4a6f25b5d3f14d9`. GitHub Pages completó build y
+deploy correctamente: ejecución 43830290971. Smoke de web/PWA: 43830293004,
+correcto. Regresión Eterna: 43829819467, correcta. Preview y matriz de
+dispositivos: 43829819455, correctos.
+
+Comprobación de producción terminada el 16/11/2026 a las 09:20 CET:
+60 URL con HTTP 200 y HTML idéntico byte por byte al probado localmente,
+incluidas las 38 del sitemap, páginas informativas, alias, www y parámetros.
+Canonical y noindex coinciden con lo previsto. robots.txt, sitemap.xml y el
+archivo de verificación de Google coinciden exactamente con el repositorio.
+Evidencia: `qa/reports/coco-indexing-production-20261116.json`.
+
+Incidencia previa de CI: `qa/explora/share-tools.test.cjs:6` falla al devolver
+el foco tras cerrar Compartir (body frente a botón). Reproducido también sobre
+la base eaa3ce2 en un directorio temporal; ese test solo ejecuta tres módulos
+sin cambios en esta entrega. Motor, informes, UI y navegación de Eneagrama
+pasan. No se ha modificado esa funcionalidad dentro del encargo SEO.
 
 Search Console: faltan la lista exacta de URLs afectadas, la inspección actual y
 la validación de correcciones. Que el código esté corregido no demuestra que

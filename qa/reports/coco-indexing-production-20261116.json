@@ -1,0 +1,969 @@
+{
+  "checked_at": "2026-11-16T08:20:49.568115+00:00",
+  "sitemap_urls": 38,
+  "checked_urls": 60,
+  "ok": true,
+  "pages": [
+    {
+      "url": "https://cocoenforma.com/regalos/",
+      "status": 200,
+      "final": "https://cocoenforma.com/regalos/",
+      "canonical": [
+        "https://cocoenforma.com/regalos/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/regalos/"
+      ],
+      "exact_file_match": true,
+      "sha256": "42387a07d0521dd46b8038c3ac81d48ba098163d7520fd05b819811e32222751",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/",
+      "status": 200,
+      "final": "https://cocoenforma.com/",
+      "canonical": [
+        "https://cocoenforma.com/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/"
+      ],
+      "exact_file_match": true,
+      "sha256": "c2ea0a16f43e96a90b47e3a0d776ca4c15dca9e59b37ec47ffeea14bd7ce5cb8",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/explora/",
+      "status": 200,
+      "final": "https://cocoenforma.com/explora/",
+      "canonical": [
+        "https://cocoenforma.com/explora/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/explora/"
+      ],
+      "exact_file_match": true,
+      "sha256": "977bc63020c1cbbc4ac45cfee42c90e2cc0980d875333a9248c1350e9392b9fe",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/explora/metodo.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/explora/metodo.html",
+      "canonical": [
+        "https://cocoenforma.com/explora/metodo.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "50d9dfbf722be506e81a640e811515a276bb45dcaaef911413fd98207003913d",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/eterna.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/eterna.html",
+      "canonical": [
+        "https://cocoenforma.com/eterna.html"
+      ],
+      "robots": [],
+      "og_url": [
+        "https://cocoenforma.com/eterna.html"
+      ],
+      "exact_file_match": true,
+      "sha256": "c9f2702f6f70571c3d37fc950e432cc21674ba95ba6a01238ddaf2e59d17bce1",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/eterna-captacion.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/eterna-captacion.html",
+      "canonical": [
+        "https://cocoenforma.com/eterna-captacion.html"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/eterna-captacion.html"
+      ],
+      "exact_file_match": true,
+      "sha256": "1c5867bb17760e409e604042d4ef278bf1b10e9230c3c92504dbc76005fe1c4f",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/centro-de-confianza.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/centro-de-confianza.html",
+      "canonical": [
+        "https://cocoenforma.com/centro-de-confianza.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "8a138357b130874bed1fdb308f38e89f2d9fa8b555e936dc02aea8473be3121c",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/galeria/impresiones-3d/",
+      "status": 200,
+      "final": "https://cocoenforma.com/galeria/impresiones-3d/",
+      "canonical": [
+        "https://cocoenforma.com/galeria/impresiones-3d/"
+      ],
+      "robots": [],
+      "og_url": [
+        "https://cocoenforma.com/galeria/impresiones-3d/"
+      ],
+      "exact_file_match": true,
+      "sha256": "e32eedaf28871050a2cd06b702c15d24cb5791edd8c057370a48c78a46d15969",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juegos/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juegos/",
+      "canonical": [
+        "https://cocoenforma.com/juegos/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juegos/"
+      ],
+      "exact_file_match": true,
+      "sha256": "8fb7a2a44baa984c852b2efa106c29662a573145f31263d973011b837217253a",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/conecta/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/conecta/",
+      "canonical": [
+        "https://cocoenforma.com/juego/conecta/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/conecta/"
+      ],
+      "exact_file_match": true,
+      "sha256": "6ee1934c527671e94b788ce04945c8c2f6d2f158b1f8b00e7c5191859265b0bd",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/numeros/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/numeros/",
+      "canonical": [
+        "https://cocoenforma.com/juego/numeros/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/numeros/"
+      ],
+      "exact_file_match": true,
+      "sha256": "5b737dc8b91e913ccf0574395beb317e14baea100221114df630d2777fefbc1e",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/calculo/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/calculo/",
+      "canonical": [
+        "https://cocoenforma.com/juego/calculo/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/calculo/"
+      ],
+      "exact_file_match": true,
+      "sha256": "e2b564dabc957606cb1b9e9c4b9ba0579e67bca76299a9a41b08e55610b56b33",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/palabras/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/palabras/",
+      "canonical": [
+        "https://cocoenforma.com/juego/palabras/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/palabras/"
+      ],
+      "exact_file_match": true,
+      "sha256": "52239f137ff1f6ff6431193271c5999acc2648ed8549932d4c2e3b790ded0c4b",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/sopa/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/sopa/",
+      "canonical": [
+        "https://cocoenforma.com/juego/sopa/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/sopa/"
+      ],
+      "exact_file_match": true,
+      "sha256": "7f0eadd2e2841b8326aa39b29cd75f71c2ff7c546f264f9f74065c365b84eda3",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/sudoku/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/sudoku/",
+      "canonical": [
+        "https://cocoenforma.com/juego/sudoku/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/sudoku/"
+      ],
+      "exact_file_match": true,
+      "sha256": "3b2c74cc4db207a044a6ec9ce948b6a5b06f8496966c637aa6ef4c5d4c5bed93",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/memoria/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/memoria/",
+      "canonical": [
+        "https://cocoenforma.com/juego/memoria/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/memoria/"
+      ],
+      "exact_file_match": true,
+      "sha256": "305e096e4253d421e0986e5deefbc9bd9d2ee4bdcbca17e838968f9fa18a1df7",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/series/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/series/",
+      "canonical": [
+        "https://cocoenforma.com/juego/series/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/series/"
+      ],
+      "exact_file_match": true,
+      "sha256": "16cf0ec11ee5d16964336f4958dc337317295d3e45ad32b88a42b833c5dc8dba",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/crucigrama/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/crucigrama/",
+      "canonical": [
+        "https://cocoenforma.com/juego/crucigrama/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/crucigrama/"
+      ],
+      "exact_file_match": true,
+      "sha256": "a00ec990ab1d34bff46e19dc9f3f53ab4d6e469d65573b31e82dade6d11c0b4a",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/tiempo/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/tiempo/",
+      "canonical": [
+        "https://cocoenforma.com/juego/tiempo/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/tiempo/"
+      ],
+      "exact_file_match": true,
+      "sha256": "ad373de7e467a119c49558593490159f592ef6d3e6709f7fb8ccb20e91d7bc2c",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/verdadero/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/verdadero/",
+      "canonical": [
+        "https://cocoenforma.com/juego/verdadero/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/verdadero/"
+      ],
+      "exact_file_match": true,
+      "sha256": "cd1a60eba03c9352de3cd083ea8ff0eae8d28c866293c3430e36733f3b197515",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/cocomed/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/cocomed/",
+      "canonical": [
+        "https://cocoenforma.com/juego/cocomed/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/cocomed/"
+      ],
+      "exact_file_match": true,
+      "sha256": "ca4777a8d1cce672eb0d25ee49a0b709d2eec6af08433cd32cd48cf899ede4eb",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/futbol/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/futbol/",
+      "canonical": [
+        "https://cocoenforma.com/juego/futbol/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/futbol/"
+      ],
+      "exact_file_match": true,
+      "sha256": "524a98b7c3461494219df835eebbb308a7671e5f4e44d6b71c9238e30d0c0f8d",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/padel/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/padel/",
+      "canonical": [
+        "https://cocoenforma.com/juego/padel/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/padel/"
+      ],
+      "exact_file_match": true,
+      "sha256": "c7d49e51c6c874703bd23de095841d1cc41ad33f02b388d913e5bcb6aa0b3328",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/bank/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/bank/",
+      "canonical": [
+        "https://cocoenforma.com/juego/bank/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/bank/"
+      ],
+      "exact_file_match": true,
+      "sha256": "acf0e79124f029b7dfa9f49d643f7faf7dcb8c5656897dba59012031f68bce39",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/ciudad/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/ciudad/",
+      "canonical": [
+        "https://cocoenforma.com/juego/ciudad/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/ciudad/"
+      ],
+      "exact_file_match": true,
+      "sha256": "84b41324f112738f50b52ca69ac21f298486d03e8e8e6831ee9376c099454043",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/generala/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/generala/",
+      "canonical": [
+        "https://cocoenforma.com/juego/generala/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/generala/"
+      ],
+      "exact_file_match": true,
+      "sha256": "2a990f12c645a3b3ef0db6ba9b54cca911b10ec9a1826091f50876ed08012381",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/naval/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/naval/",
+      "canonical": [
+        "https://cocoenforma.com/juego/naval/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/naval/"
+      ],
+      "exact_file_match": true,
+      "sha256": "b6c13da7b66931d2491e6b1ce56dbdea701342f64777dc754bbe522858fb371a",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juego/ajedrez/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juego/ajedrez/",
+      "canonical": [
+        "https://cocoenforma.com/juego/ajedrez/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juego/ajedrez/"
+      ],
+      "exact_file_match": true,
+      "sha256": "f3b7cfe98775352b26b45e046e6ae4bfb57aa162ca5528f481814a341b6c29c7",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-gratis/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juegos-gratis/",
+      "canonical": [
+        "https://cocoenforma.com/juegos-gratis/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juegos-gratis/"
+      ],
+      "exact_file_match": true,
+      "sha256": "5008c9e321f974c36162a31842eab93583712a4f71cd209d5e216ca6096ed1a0",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-memoria/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juegos-de-memoria/",
+      "canonical": [
+        "https://cocoenforma.com/juegos-de-memoria/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juegos-de-memoria/"
+      ],
+      "exact_file_match": true,
+      "sha256": "80ca760b4620ffee31a628606d1d8055622f8bb5fabfd38c5d07795626179b55",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-logica/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juegos-de-logica/",
+      "canonical": [
+        "https://cocoenforma.com/juegos-de-logica/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juegos-de-logica/"
+      ],
+      "exact_file_match": true,
+      "sha256": "0362b22d5f3582f24d24d0c8cdaac6c6753565a8d0fdd8cebfed9f38f532ae16",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-matematicas/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juegos-de-matematicas/",
+      "canonical": [
+        "https://cocoenforma.com/juegos-de-matematicas/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juegos-de-matematicas/"
+      ],
+      "exact_file_match": true,
+      "sha256": "35c0dd1f8324c2e2cfa2229001e25ea99eec82a8180ec085f5afc83ddae99b67",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-de-palabras/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juegos-de-palabras/",
+      "canonical": [
+        "https://cocoenforma.com/juegos-de-palabras/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juegos-de-palabras/"
+      ],
+      "exact_file_match": true,
+      "sha256": "cbb103c47d84e24fc8b0fa4b8f2b7fed01c1b366124de1a8af865563889da1c3",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/juegos-en-familia/",
+      "status": 200,
+      "final": "https://cocoenforma.com/juegos-en-familia/",
+      "canonical": [
+        "https://cocoenforma.com/juegos-en-familia/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/juegos-en-familia/"
+      ],
+      "exact_file_match": true,
+      "sha256": "776d858bd443c2ee6545ab31a49eb19a437f86498b12ec87815fb1679059fc48",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/apoyo-escolar-con-ia/",
+      "status": 200,
+      "final": "https://cocoenforma.com/apoyo-escolar-con-ia/",
+      "canonical": [
+        "https://cocoenforma.com/apoyo-escolar-con-ia/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/apoyo-escolar-con-ia/"
+      ],
+      "exact_file_match": true,
+      "sha256": "857b21787a2a7c45440fba3577ded04dd3f64f5d44c1ea3880438209a96ef5ce",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/ayuda-con-los-deberes/",
+      "status": 200,
+      "final": "https://cocoenforma.com/ayuda-con-los-deberes/",
+      "canonical": [
+        "https://cocoenforma.com/ayuda-con-los-deberes/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/ayuda-con-los-deberes/"
+      ],
+      "exact_file_match": true,
+      "sha256": "a474198e68982987f849bbf0686d9b449d0f8bda09d21208ac9ece95a3c47513",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/preparar-examenes/",
+      "status": 200,
+      "final": "https://cocoenforma.com/preparar-examenes/",
+      "canonical": [
+        "https://cocoenforma.com/preparar-examenes/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/preparar-examenes/"
+      ],
+      "exact_file_match": true,
+      "sha256": "26fc80c3da375d726299f2eb11cee7fd31740d1e2e4a736ddda71619a2eb93ff",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/aprender-matematicas-con-ia/",
+      "status": 200,
+      "final": "https://cocoenforma.com/aprender-matematicas-con-ia/",
+      "canonical": [
+        "https://cocoenforma.com/aprender-matematicas-con-ia/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/aprender-matematicas-con-ia/"
+      ],
+      "exact_file_match": true,
+      "sha256": "9da6a28598f1216ca1f13a50e4d2e82ea30cea69ee8905812626c438f73d5a03",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/aviso-legal.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/aviso-legal.html",
+      "canonical": [
+        "https://cocoenforma.com/aviso-legal.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "a079139a99ff434f10cb273a6bd770cb2ece0a3074c2120f5a254922d5588e19",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/explora/condiciones.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/explora/condiciones.html",
+      "canonical": [
+        "https://cocoenforma.com/explora/condiciones.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "6e86909a9e71b5e7a02952a705a6adbc7cd129b8c0be0b91ac06787772f2b107",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/galeria/impresiones-3d/condiciones.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/galeria/impresiones-3d/condiciones.html",
+      "canonical": [
+        "https://cocoenforma.com/galeria/impresiones-3d/condiciones.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "e8a817e3df2f6d2b74b0a706fc068f41762818f232e2f782e8af3988349ea0ce",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/galeria/impresiones3D/",
+      "status": 200,
+      "final": "https://cocoenforma.com/galeria/impresiones3D/",
+      "canonical": [
+        "https://cocoenforma.com/galeria/impresiones-3d/"
+      ],
+      "robots": [],
+      "og_url": [
+        "https://cocoenforma.com/galeria/impresiones-3d/"
+      ],
+      "exact_file_match": true,
+      "sha256": "640dbabd0817d3bc46436ce793c56d63a9369619694fa654d2e8883054d141b7",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/galeria/impresiones3d/",
+      "status": 200,
+      "final": "https://cocoenforma.com/galeria/impresiones3d/",
+      "canonical": [
+        "https://cocoenforma.com/galeria/impresiones-3d/"
+      ],
+      "robots": [],
+      "og_url": [
+        "https://cocoenforma.com/galeria/impresiones-3d/"
+      ],
+      "exact_file_match": true,
+      "sha256": "640dbabd0817d3bc46436ce793c56d63a9369619694fa654d2e8883054d141b7",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/games/conecta/",
+      "status": 200,
+      "final": "https://cocoenforma.com/games/conecta/",
+      "canonical": [
+        "https://cocoenforma.com/games/conecta/"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "429cf6b0a85f5860561703e201a0ff0c989a7b33c762927844f2d60eee9703cf",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/informacion-ia-eterna.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/informacion-ia-eterna.html",
+      "canonical": [
+        "https://cocoenforma.com/informacion-ia-eterna.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "dd332df8a318aa61b597424d361e5eac69b945cb6d08a1ce4fbdf8b743abf6c8",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/politica-de-cookies.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/politica-de-cookies.html",
+      "canonical": [
+        "https://cocoenforma.com/politica-de-cookies.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "8751f7698c2e1a2428291ac482ca8f587b4658c7cf00fc706a482c323a234c3b",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/politica-de-privacidad.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/politica-de-privacidad.html",
+      "canonical": [
+        "https://cocoenforma.com/politica-de-privacidad.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "ae00e8fcc620b996ff57461a38cae92d1b68e083015ae0131d78942fa7c101fb",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/privacidad-menores.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/privacidad-menores.html",
+      "canonical": [
+        "https://cocoenforma.com/privacidad-menores.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "43314f84c45ef75b882e9ce7353e425e9d4041672d1970226b145e5af7fb5063",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/proteccion-de-datos.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/proteccion-de-datos.html",
+      "canonical": [
+        "https://cocoenforma.com/proteccion-de-datos.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "a758d52ba80ae0f54b1c9c440011b73dba9ff9251d84f91373ca6cebee2787af",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/suscripciones-y-desistimiento.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/suscripciones-y-desistimiento.html",
+      "canonical": [
+        "https://cocoenforma.com/suscripciones-y-desistimiento.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "35393b0b7e096be01210c00cd3db51c800ce336bcee6365571c5663255dbd112",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/terminos-y-condiciones.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/terminos-y-condiciones.html",
+      "canonical": [
+        "https://cocoenforma.com/terminos-y-condiciones.html"
+      ],
+      "robots": [],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "d6c9573eff9cf772acc8ad6700ff8f54eddc09e28e6fb3af47c3738fe2036615",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/index.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/index.html",
+      "canonical": [
+        "https://cocoenforma.com/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/"
+      ],
+      "exact_file_match": true,
+      "sha256": "c2ea0a16f43e96a90b47e3a0d776ca4c15dca9e59b37ec47ffeea14bd7ce5cb8",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/?juego=memoria",
+      "status": 200,
+      "final": "https://cocoenforma.com/?juego=memoria",
+      "canonical": [
+        "https://cocoenforma.com/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/"
+      ],
+      "exact_file_match": true,
+      "sha256": "c2ea0a16f43e96a90b47e3a0d776ca4c15dca9e59b37ec47ffeea14bd7ce5cb8",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/?coco_bank=1",
+      "status": 200,
+      "final": "https://cocoenforma.com/?coco_bank=1",
+      "canonical": [
+        "https://cocoenforma.com/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/"
+      ],
+      "exact_file_match": true,
+      "sha256": "c2ea0a16f43e96a90b47e3a0d776ca4c15dca9e59b37ec47ffeea14bd7ce5cb8",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/?utm_source=seo-check",
+      "status": 200,
+      "final": "https://cocoenforma.com/?utm_source=seo-check",
+      "canonical": [
+        "https://cocoenforma.com/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/"
+      ],
+      "exact_file_match": true,
+      "sha256": "c2ea0a16f43e96a90b47e3a0d776ca4c15dca9e59b37ec47ffeea14bd7ce5cb8",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/explora/jugar.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/explora/jugar.html",
+      "canonical": [],
+      "robots": [
+        "noindex"
+      ],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "2e1e18844d2c14c0440bb0d249a45d15703614c901a3581e5ccbdea02c9df0ab",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/regalos/admin.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/regalos/admin.html",
+      "canonical": [],
+      "robots": [
+        "noindex,nofollow"
+      ],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "a93cd35c3ece094a64d7512c88141b59eb5f401d580ec79a8e13f24273cc66e4",
+      "ok": true
+    },
+    {
+      "url": "https://cocoenforma.com/regalos/pedido.html",
+      "status": 200,
+      "final": "https://cocoenforma.com/regalos/pedido.html",
+      "canonical": [],
+      "robots": [
+        "noindex,nofollow"
+      ],
+      "og_url": [],
+      "exact_file_match": true,
+      "sha256": "cd36582c28922600848b4cb300b834aca1f125021ed3fc944fa0c5f7c0ff59f9",
+      "ok": true
+    },
+    {
+      "url": "https://www.cocoenforma.com/",
+      "status": 200,
+      "final": "https://cocoenforma.com/",
+      "canonical": [
+        "https://cocoenforma.com/"
+      ],
+      "robots": [
+        "index,follow,max-image-preview:large"
+      ],
+      "og_url": [
+        "https://cocoenforma.com/"
+      ],
+      "exact_file_match": true,
+      "sha256": "c2ea0a16f43e96a90b47e3a0d776ca4c15dca9e59b37ec47ffeea14bd7ce5cb8",
+      "ok": true
+    },
+    {
+      "url": "https://www.cocoenforma.com/galeria/impresiones-3d/",
+      "status": 200,
+      "final": "https://cocoenforma.com/galeria/impresiones-3d/",
+      "canonical": [
+        "https://cocoenforma.com/galeria/impresiones-3d/"
+      ],
+      "robots": [],
+      "og_url": [
+        "https://cocoenforma.com/galeria/impresiones-3d/"
+      ],
+      "exact_file_match": true,
+      "sha256": "e32eedaf28871050a2cd06b702c15d24cb5791edd8c057370a48c78a46d15969",
+      "ok": true
+    }
+  ],
+  "files": [
+    {
+      "path": "robots.txt",
+      "exact_file_match": true
+    },
+    {
+      "path": "sitemap.xml",
+      "exact_file_match": true
+    },
+    {
+      "path": "googlee572e794d4f008ee.html",
+      "exact_file_match": true
+    }
+  ],
+  "google_search_console": "Session signed out; private coverage list and validation not checked."
+}
