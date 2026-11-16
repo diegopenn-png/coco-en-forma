@@ -56,7 +56,7 @@ test('free-game CTAs use existing game routes and Eterna modes survive the login
 test('sitemap preserves existing public content and new pages are linked from the catalogue',()=>{
  const xml=new JSDOM(read('sitemap.xml'),{contentType:'application/xml'}).window.document;
  const urls=[...xml.querySelectorAll('loc')].map(n=>n.textContent);assert.equal(new Set(urls).size,urls.length);
- assert.ok(urls.includes('https://www.cocoenforma.com/galeria/impresiones-3d/'));assert.ok(urls.includes(origin+'/eterna-captacion.html'));
+ assert.ok(urls.includes(origin+'/galeria/impresiones-3d/'));assert.ok(urls.includes(origin+'/eterna-captacion.html'));
  const hub=page('/juegos/index.html');
  for(const p of discoveryPages){assert.ok(urls.includes(origin+`/${p.slug}/`));assert.ok(hub.querySelector(`a[href="/${p.slug}/"]`));}
  for(const g of games){const d=page(g.path+'index.html');assert.ok(d.querySelector('a[href="/apoyo-escolar-con-ia/"]'));}
