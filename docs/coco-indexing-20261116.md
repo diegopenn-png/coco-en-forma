@@ -17,8 +17,8 @@ Repositorio canónico: diegopenn-png/coco-en-forma. Base: eaa3ce2.
   `/explora/jugar.html`. Este último documento ya contiene `noindex`, que Google
   no puede leer si se impide el rastreo.
 - Auditoría inicial: 42 URL públicas consultadas, 38 del sitemap y cuatro
-  variantes. No se ha podido consultar el listado privado de URLs del aviso:
-  Search Console muestra la cuenta guardada con sesión cerrada.
+  variantes. El acceso inicial a Search Console estaba cerrado; Diego completó
+  el acceso y se revisó el listado privado en la continuación descrita abajo.
 
 ## Corrección
 
@@ -62,10 +62,45 @@ la base eaa3ce2 en un directorio temporal; ese test solo ejecuta tres módulos
 sin cambios en esta entrega. Motor, informes, UI y navegación de Eneagrama
 pasan. No se ha modificado esa funcionalidad dentro del encargo SEO.
 
-Search Console: faltan la lista exacta de URLs afectadas, la inspección actual y
-la validación de correcciones. Que el código esté corregido no demuestra que
-Google haya vuelto a rastrearlo ni que haya actualizado el informe. Las rutas
-técnicas bloqueadas y las páginas con noindex siguen excluidas intencionalmente.
+## Cierre de Search Console — 16 noviembre 2026
+
+Acceso completado por Diego. Propiedad comprobada: `https://cocoenforma.com/`.
+El informe, con última actualización indicada 13/11/26, muestra 52 páginas
+indexadas y 10 excluidas. No se atribuye ese total a la corrección de hoy.
+
+- Cinco bloqueadas por robots.txt: entradas `?juego=crucigrama`, `?juego=padel`,
+  `?juego=sopa`, `?juego=sudoku` y `?juego=conecta`. La regla eliminada cubre
+  estos cinco casos. Se pulsó VALIDAR CORRECCIÓN: estado **Iniciada**, inicio
+  **16/11/26**.
+- Cuatro duplicadas sin canónica: variantes de portada con `open=eterna`
+  (modos explain/homework y fuentes SEO/social) y `password_actualizada=1`.
+  Dos incluyen un identificador de sesión de marketing que no se reproduce.
+  El canonical estático de portada cubre las cuatro variantes. Se pulsó
+  VALIDAR CORRECCIÓN: estado **Iniciada**, inicio **16/11/26**.
+- Una rastreada sin indexar: la entrada de portada con `open=eterna`,
+  `mode=homework` y `source=seo_apoyo_escolar_con_ia`. Es otra variante de la
+  portada, consolidada mediante canonical. No se solicita que esta variante
+  aparezca como página independiente ni se fuerza la validación de ese estado.
+
+Ambas validaciones se confirmaron también en el informe general tras abrirlo
+de nuevo: robots.txt **Iniciada (5)** y duplicadas **Iniciada (4)**.
+
+Inspección individual de la portada: **La URL está en Google / La página está
+indexada**. Último rastreo guardado: 15/11/2026 14:56:17; entonces aún no había
+canonical declarada. La prueba en tiempo real de 16/11/2026 08:39:31 confirma
+obtención correcta, rastreo e indexación permitidos y canonical declarada
+`https://cocoenforma.com/`. Se solicitó indexación de la versión corregida y
+Google confirmó que la URL se añadió a la cola de rastreo prioritaria.
+
+Sitemap: `/sitemap.xml`, **Correcto**, **38 páginas descubiertas**, última
+lectura indicada 15/11/2026. Se volvió a enviar para recoger los cambios de
+canonical; Google confirmó **Se ha enviado el sitemap correctamente**.
+
+Pendiente externo: Google debe completar las dos validaciones y actualizar
+sus informes. No se afirma que hayan terminado ni que las variantes deban
+indexarse por separado. Las exclusiones técnicas y los noindex intencionales
+se conservan. La evidencia de producción anterior refleja el estado de acceso
+en el momento de aquella auditoría; este cierre la complementa.
 
 Referencias oficiales consultadas:
 - https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls
