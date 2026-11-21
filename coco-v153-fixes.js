@@ -358,12 +358,12 @@
     function gone(n){if(!n||n===modal||n===body||(n.closest&&n.closest("[data-family-integral-report='1'],[data-coco-family-data-source='games']")))return false;n.remove();removed++;return true}
     Array.prototype.slice.call(modal.querySelectorAll(".cocoV16083GamesReport,.eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games']")).forEach(gone);
     Array.prototype.slice.call(modal.querySelectorAll("p,small")).forEach(function(copy){
-      if(normalizeText(copy.textContent).indexOf("este apartado se calcula a partir")!==0)return;
+      if(normalizeText(reportSourceText(copy)).indexOf("este apartado se calcula a partir")!==0)return;
       var node=copy,steps=0;while(node.parentElement&&node.parentElement!==body&&node.parentElement!==modal&&steps<6){node=node.parentElement;steps++}gone(node)
     });
     Array.prototype.slice.call(body.children||[]).forEach(function(n){
       if(!n||n===card||n.matches&&n.matches("[data-family-integral-report='1'],[data-coco-family-data-source='games']"))return;
-      var t=normalizeText(n.textContent);if(t.indexOf("juegos para la mente")>=0&&t.indexOf("mapa de fortalezas")>=0&&t.length<2200)gone(n)
+      var t=normalizeText(reportSourceText(n));if(t.indexOf("juegos para la mente")>=0&&t.indexOf("mapa de fortalezas")>=0&&t.length<2200)gone(n)
     });
     return removed
   }
@@ -375,8 +375,8 @@
   function normalizeFamilyModalChrome(modal){
     ensureFamilyNavigation(modal);
     if(!modal)return;var header=modal.querySelector(":scope > header,.cocoFamilyV129>header");if(!header)return;
-    Array.prototype.slice.call(header.querySelectorAll("p,small")).forEach(function(n){var t=normalizeText(n.textContent);if(t.indexOf("dos lecturas")>=0||t.indexOf("eterna resume")>=0||t.indexOf("dos miradas complementarias")>=0||t.indexOf("dos mapas complementarios")>=0)n.remove()});
-    Array.prototype.slice.call(header.querySelectorAll("span,b,strong,h1,h2,h3,h4")).forEach(function(n){if(n.closest&&n.closest("button"))return;var t=normalizeText(n.textContent);if(t==="zona familiar progreso"||t==="zona familiar · progreso")n.remove()})
+    Array.prototype.slice.call(header.querySelectorAll("p,small")).forEach(function(n){var t=normalizeText(reportSourceText(n));if(t.indexOf("dos lecturas")>=0||t.indexOf("eterna resume")>=0||t.indexOf("dos miradas complementarias")>=0||t.indexOf("dos mapas complementarios")>=0)n.remove()});
+    Array.prototype.slice.call(header.querySelectorAll("span,b,strong,h1,h2,h3,h4")).forEach(function(n){if(n.closest&&n.closest("button"))return;var t=normalizeText(reportSourceText(n));if(t==="zona familiar progreso"||t==="zona familiar · progreso")n.remove()})
   }
 
   function ensureSingleFamilyIntegralReport(modal,card){
@@ -663,7 +663,7 @@
 
   function normalizeText(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
   function idOf(node){if(node&&node.hasAttribute){if(node.hasAttribute("data-coco-naval-entry"))return "naval";if(node.hasAttribute("data-coco-generala-entry"))return "generala";if(node.hasAttribute("data-coco-city-entry"))return "ciudad";if(node.hasAttribute("data-coco-chess-entry"))return "ajedrez"}return String(node&&node.dataset&&node.dataset.cocoJuego||"").toLowerCase()}
-  function cleanScoreNoise(card){card.querySelectorAll(".cocoArcadeCardScore,.cocoScoreCopy").forEach(function(n){n.remove()});card.querySelectorAll("p.pequeno").forEach(function(n){var t=normalizeText(n.textContent);if(/\b(puntos?|pts?)\b/.test(t)&&!/partida|reto|dia/.test(t))n.remove()});card.querySelectorAll(".pesas").forEach(function(n){var next=n.nextElementSibling;if(next&&/puntos?|pts?/i.test(next.textContent||""))next.remove();n.remove()})}
+  function cleanScoreNoise(card){card.querySelectorAll(".cocoArcadeCardScore,.cocoScoreCopy").forEach(function(n){n.remove()});card.querySelectorAll("p.pequeno").forEach(function(n){var t=normalizeText(reportSourceText(n));if(/\b(puntos?|pts?)\b/.test(t)&&!/partida|reto|dia/.test(t))n.remove()});card.querySelectorAll(".pesas").forEach(function(n){var next=n.nextElementSibling;if(next&&/puntos?|pts?/i.test(next.textContent||""))next.remove();n.remove()})}
   function scoreStatus(card,id){var badge=card.querySelector(".cocoLigaBadge");if(!badge){badge=document.createElement(card.classList.contains("cocoMiniJuego")?"span":"div");var btn=card.querySelector(".btn,.cocoBotonJuego");card.insertBefore(badge,btn||null)}var general=GENERAL.has(id),html='<span aria-hidden="true">'+(general?"🏆":"•")+'</span><b>'+(general?"Puntúa para la clasificación general":"No puntúa para la clasificación general")+'</b>'+(id==="ajedrez"?'<small class="cocoScoringScope">Solo la partida del día</small>':'');stabilizeRankingBadge(badge);badge.className="cocoLigaBadge c153ScoreStatus";badge.dataset.general=general?"yes":"no";badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";if(badge.innerHTML!==html)badge.innerHTML=html}
   function fixPadel(card,id){if(id!=="padel")return;card.classList.remove("cocoConstruccion","proximo");card.querySelectorAll(".cocoEstadoObra,.cintaObras").forEach(function(n){n.remove()});var btn=card.querySelector(".cocoBotonJuego,.btn");if(btn){if(/construcci|pr[oó]xim/i.test(btn.textContent||""))btn.textContent="Abrir Coco Pádel";btn.disabled=false;btn.removeAttribute("aria-disabled")}}
   function applyCard(card){var id=idOf(card);if(!id)return;if(RETIRED.has(id)){card.remove();return}card.dataset.cocoScoringV16084=GENERAL.has(id)?"yes":"no";cleanScoreNoise(card);scoreStatus(card,id);fixPadel(card,id)}

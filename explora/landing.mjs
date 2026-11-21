@@ -1,6 +1,6 @@
 import {currentAccess} from './access.mjs';
 async function personalize(){
- const links=[...document.querySelectorAll('a[href="jugar.html"]')];
+ const links=[...document.querySelectorAll('a[data-open-questionnaire]')];
  try{const access=await currentAccess();
   for(const a of links){a.dataset.defaultLabel ||= a.textContent;a.textContent=access?.master?'Entrar · máster gratis →':access?.credits>0?'Entrar a mi evaluación →':a.dataset.defaultLabel}
   const badge=document.querySelector('.hero .meta span:last-child');

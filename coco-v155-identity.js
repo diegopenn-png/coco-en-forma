@@ -112,13 +112,13 @@
   // of their entry/navigation handlers and without registering them as scored games.
   root.CocoShareToolV1=function(id){
     if(id!=="bank"&&id!=="eneagrama")return;
-    var app=document.getElementById("cocoApp")||document.body,previous=document.activeElement;
+    var app=document.getElementById("cocoApp")||document.body,previous=document.activeElement,originCard=previous?.closest?.('[data-coco-juego]');
     app.querySelectorAll(".cocoShareModal").forEach(function(node){node.remove()});
     var modal=document.createElement("section");modal.className="cocoShareModal";
     modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.setAttribute("aria-labelledby","cocoShareTitle");
     modal.innerHTML='<div class="cocoShareSheet" tabindex="-1"><button type="button" class="cocoShareClose" data-share-close aria-label="Cerrar">×</button><div class="cocoSharePreview"></div><span>COMPARTIR</span><h3 id="cocoShareTitle"></h3><p></p><div class="cocoShareUrl"></div><div class="cocoShareActions"><button type="button" class="primary" data-share-native>↗ Compartir</button><button type="button" data-share-whatsapp>💬 WhatsApp</button><button type="button" data-share-copy>🔗 Copiar enlace</button></div><div class="cocoShareStatus" role="status" aria-live="polite"></div></div>';
     modal.querySelector("#cocoShareTitle").textContent=DATA[id].name;
-    function close(){modal.remove();if(previous&&previous.isConnected)previous.focus({preventScroll:true})}
+    function close(){modal.remove();var target=previous?.isConnected?previous:originCard?.querySelector('[data-coco-copy-link]');target?.focus({preventScroll:true})}
     modal.querySelector("[data-share-close]").onclick=close;
     modal.onclick=function(e){if(e.target===modal)close()};
     modal.onkeydown=function(e){if(e.key==="Escape"){e.preventDefault();close()}};

@@ -532,10 +532,13 @@
 
   function normalizedUiText160904(v){return String(v==null?"":v).replace(/\s+/g," ").trim()}
 
+  function originalUiText(el){
+    return normalizedUiText160904(window.CocoLocale?.sourceText(el) ?? el?.textContent);
+  }
   function findInteractiveByText160904(pattern){
     var all=document.querySelectorAll("#cocoApp button,#cocoApp a,#cocoApp [role='button']");
     for(var i=0;i<all.length;i++){
-      var text=normalizedUiText160904(all[i].textContent);
+      var text=originalUiText(all[i]);
       if(pattern.test(text))return all[i]
     }
     return null
@@ -567,13 +570,13 @@
   function familyModernReady160904(modal){
     if(!modal)return false;
     if(modal.querySelector(".cocoV16083ReportCore,[data-family-integral-report],.cocoV16083InlineActions"))return true;
-    var t=normalizedUiText160904(modal.textContent);
+    var t=originalUiText(modal);
     return /Acceso y planes/i.test(t)&&/Informe integral de progreso/i.test(t)
   }
 
   function familyPinScreen160904(modal){
     if(!modal)return false;
-    var t=normalizedUiText160904(modal.textContent);
+    var t=originalUiText(modal);
     return /(?:introduce|crea|nuevo)\s+(?:tu\s+)?PIN|PIN familiar de cuatro cifras|Guardar nuevo PIN/i.test(t)
   }
 
@@ -589,7 +592,7 @@
     if(!modal){removeFamilyMask160904();return false}
     if(familyPinScreen160904(modal)){removeFamilyMask160904();return false}
     if(familyModernReady160904(modal)){removeFamilyMask160904();return true}
-    var t=normalizedUiText160904(modal.textContent);
+    var t=originalUiText(modal);
     if(!/Mapa de fortalezas|Perfil cognitivo|puntos de clasificación|Fortalezas cognitivas/i.test(t))return false;
 
     if(!familyMask160904){
@@ -636,7 +639,7 @@
 
   function configuredStudentName160904(){
     var el=document.querySelector("#eternaOverlayV159 [data-et-name],#cocoApp .carnet .quien strong");
-    var raw=normalizedUiText160904(el&&el.textContent).split(/\s+/)[0]||"";
+    var raw=originalUiText(el).split(/\s+/)[0]||"";
     if(!raw||/alumno|coco/i.test(raw))return "";
     return raw.charAt(0).toLocaleUpperCase("es-ES")+raw.slice(1).toLocaleLowerCase("es-ES")
   }
@@ -659,7 +662,7 @@
 
   function normalizeExamUi160904(){
     var o=document.getElementById("eternaOverlayV159");if(!o)return false;
-    var bar=o.querySelector("[data-et-modebar]"),isExam=/Prepárame para un examen/i.test(normalizedUiText160904(bar&&bar.textContent));
+    var bar=o.querySelector("[data-et-modebar]"),isExam=/Prepárame para un examen/i.test(originalUiText(bar));
     o.dataset.cocoExamMode=isExam?"1":"0";
     if(isExam)o.querySelectorAll("[data-et-hint]").forEach(function(b){if(!b.dataset.cocoExamLabel160904){b.dataset.cocoExamLabel160904="1";b.textContent="💡 Pista"}});
     return isExam

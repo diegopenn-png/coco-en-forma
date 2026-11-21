@@ -1831,7 +1831,7 @@ ranking.slice(0,3).forEach(function(item,posicion){
     '<span class="podioNumero">'+(posicion+1)+'</span>'+
     '<div class="podioAvatar">'+$(Number(fila.racha)||0,94)+'</div>'+
     '<b data-coco-verbatim>'+m(fila.apodo)+'</b>'+
-    '<strong>'+formato(item.total)+' pts</strong>');
+    '<strong><span data-coco-number="'+numero(item.total)+'">'+formato(item.total)+'</span> <span data-coco-copy>pts</span></strong>');
   podio.appendChild(puesto)
 });
 ranking.length&&panel.appendChild(podio);
@@ -1850,7 +1850,7 @@ var cuerpo=ranking.map(function(item,posicion){
   '<span class="nombreJug" data-coco-verbatim>'+m(fila.apodo)+z(fila.racha)+'</span></td>'+
   '<td class="num total"><b data-coco-number="'+numero(item.total)+'">'+formato(item.total)+'</b></td>'+
   cats.map(function(valor){return '<td class="num cat" data-coco-number="'+numero(valor)+'">'+formato(valor)+'</td>'}).join("")+'</tr>'
-}).join("")||'<tr><td colspan="14" class="apagado">Todavía no hay partidas.</td></tr>';
+}).join("")||'<tr><td colspan="14" class="apagado" data-coco-copy>Todavía no hay partidas.</td></tr>';
 
 var cabecerasV153=JUEGOS_RANKING_V153.map(function(def){return '<th class="num cat">'+def[1]+'</th>'}).join("");
 panel.appendChild(g("div","desplaza cocoRankingScrollV153",
@@ -3148,13 +3148,13 @@ var o=t.map(function(a){return Object.assign({},a,n[a.id])}).sort(function(a,e){
     if(!caja||caja.querySelector(".cocoRankingCabeceraV82"))return;
 
     var titulo=[].slice.call(caja.querySelectorAll("h2,h3")).find(function(el){
-      return /clasificaci|ranking/i.test(el.textContent||"");
+      return /clasificaci|ranking/i.test(window.CocoLocale?.sourceText(el) ?? el.textContent ?? "");
     });
     if(!titulo)return;
 
     var botones=[].slice.call(caja.querySelectorAll("button,.btn"));
     var volver=botones.find(function(el){
-      return /volver/i.test(el.textContent||"");
+      return /volver/i.test(window.CocoLocale?.sourceText(el) ?? el.textContent ?? "");
     });
 
     var estrella=[].slice.call(caja.querySelectorAll("button,.btn,span,div")).find(function(el){

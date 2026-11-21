@@ -42,7 +42,7 @@ test('all QH locales keep the original account fields, scores and PWA identity',
       for (const icon of manifest.icons) assert.ok(fs.existsSync(path.join(root,new URL(icon.src,'https://coco.test'+manifestPath).pathname)));
     }
     await api.setLanguage('es');
-    assert.equal(doc.querySelector('button').textContent,'Entrar');
+    assert.equal(doc.querySelector('.loginCard button').textContent,'Entrar');
   } finally {dom.window.close();}
 });
 
@@ -151,4 +151,39 @@ test('dynamic game rounds and report scores update in place without translating 
     }
     await api.setLanguage('es');assert.equal(round.textContent,'RONDA 2 DE 11');
   }finally{dom.window.close();}
+});
+
+test('language arrows wrap around and the native menu stays in sync',async()=>{
+  const {api,doc,w,dom}=page();
+  try {
+    await api.ready;
+    const changed=()=>new Promise(resolve=>w.addEventListener('coco:language',resolve,{once:true}));
+    const prev=doc.querySelector('[data-coco-language-menu] button');
+    const next=doc.querySelector('[data-coco-language-menu] button:last-child');
+    let update=changed();prev.click();await update;
+    assert.equal(api.tag,'da');assert.equal(next.getAttribute('aria-label'),readPack('da').strings['Idioma siguiente']);
+    update=changed();next.click();await update;assert.equal(doc.querySelector('select').value,'es');
+  }finally{dom.window.close();}
+});
+
+test('every published game landing and the catalogue have translated headings and actions in each pack',()=>{
+  const paths=['juegos/index.html',...fs.readdirSync(path.join(root,'juego')).map(id=>'juego/'+id+'/index.html')];
+  const headings=new Set();
+  for(const file of paths){
+    const dom=new JSDOM(fs.readFileSync(path.join(root,file),'utf8'));
+    try {
+      const doc=dom.window.document;
+      assert.ok(doc.querySelector('[data-coco-language-menu]'),file);
+      for(const el of doc.querySelectorAll('h1,h2,.actions a,.actions button,nav a')){
+        for(const node of el.childNodes){
+          const key=node.textContent.trim().replace(/\s+/g,' ');
+          if(node.nodeType===3 && /[a-z]/i.test(key))headings.add(key);
+        }
+      }
+    } finally {dom.window.close();}
+  }
+  for(const language of locales.filter(l=>l!=='es')){
+    const pack=readPack(language);
+    for(const key of headings)assert.ok(pack.strings[key],language+' / '+key);
+  }
 });

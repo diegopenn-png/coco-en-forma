@@ -31,6 +31,10 @@
     return args ? template.replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(args, key) ? String(args[key]) : match) : template;
   }
   const reportScope = '[data-family-integral-report],.cocoV16083ReportBody,.cocoReportDocument';
+  const reportSkills = ['Cálculo y patrones','Memoria','Atención y estrategia','Rapidez con precisión','Lenguaje','Percepción y coordinación'];
+  function reportSkill(value) {
+    return message(reportSkills.find(s => s.toLowerCase() === value) || value);
+  }
   function reportPhrase(key) {
     const templates = [
       ['Más avance en: ', 'Más avance en: {topic}'],
@@ -42,6 +46,24 @@
     }
     const score = key.match(/^Señal observada · (\d+)\/100$/);
     if (score) return message('Señal observada · {score}/100',{score:Number(score[1]).toLocaleString(current)});
+    const training = key.match(/^Con Coco ha entrenado (.+?)\.(?: (.*))?$/);
+    if (training) {
+      // Some skill names contain “y”, so recognise the full names before reading separators.
+      let remaining = training[1];
+      const skills = [];
+      while (remaining) {
+        const skill = reportSkills.find(name => remaining.startsWith(name.toLowerCase()));
+        if (!skill) break;
+        skills.push(message(skill));
+        remaining = remaining.slice(skill.length).replace(/^(?:, | y )/,'');
+      }
+      if (!remaining && skills.length) {
+        const sentence = message('Habilidades practicadas: {skills}.',{skills:new Intl.ListFormat(current).format(skills)});
+        return training[2] ? sentence+' '+message(training[2]) : sentence;
+      }
+    }
+    const alternate = key.match(/^Puede alternar (.+?) con (.+?) en días distintos\.$/);
+    if (alternate) return message('Practicar en días distintos: {a} / {b}.',{a:reportSkill(alternate[1]),b:reportSkill(alternate[2])});
     const summary = key.match(/^Ha trabajado (.+?)(?:\. Solo valoramos los conceptos con al menos dos interacciones; el resto se muestra como actividad, sin inventar conclusiones\.|, pero todavía necesitamos más de una interacción sobre un mismo concepto antes de sacar conclusiones\.)$/);
     if (summary) {
       const topics = summary[1].split(', ').map(topic => message(topic));
@@ -51,6 +73,10 @@
   }
   function gamePhrase(key) {
     const number = value => Number(value).toLocaleString(current);
+    const question = key.match(/^Frase (\d+) de (\d+)$/);
+    if (question) return message('Frase {n} de {total}',{n:number(question[1]),total:number(question[2])});
+    const answered = key.match(/^(\d+) respondidas$/);
+    if (answered) return message('Respuestas: {n}',{n:number(answered[1])});
     const round = key.match(/^(Ronda|Tirada) (\d+) de (\d+)$/i);
     if (round) return message(round[1].toLowerCase() === 'ronda' ? 'Ronda {n} de {total}' : 'Tirada {n} de {total}',{n:number(round[2]),total:number(round[3])});
     const roll = key.match(/^Volver a tirar (\d+) dados?$/);
@@ -93,6 +119,7 @@
   }
   function sourceText(node) {
     if (!node) return '';
+    if (current === 'es') return node.textContent || '';
     if (node.nodeType === Node.TEXT_NODE) {
       const saved = sources.get(node)?.get('text');
       return saved && node.data === saved.output ? saved.source : node.data;
@@ -104,8 +131,8 @@
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
-  const privateAreas = '.cocoMedOverlay,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
-  const publicElements = '[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
+  const privateAreas = '.cocoMedOverlay,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-name],[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
+  const publicElements = '.note,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamilyLoading,#coco-startup-status p';
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
@@ -135,6 +162,10 @@
       return pack;
     }
     try {
+      const exact = await cache?.match(url);
+      if (exact) return validate(await exact.json());
+    } catch { /* Invalid or evicted entry: load it again. */ }
+    try {
       const response = await fetch(url);
       if (!response.ok) throw Error('locale unavailable');
       const cached = cache && response.clone();
@@ -142,7 +173,7 @@
       if (cache) try { await cache.put(url,cached); } catch {}
       return pack;
     } catch (error) {
-      const response = await cache?.match(url);
+      const response = await cache?.match(url,{ignoreSearch:true});
       if (!response) throw error;
       return validate(await response.json());
     }
@@ -168,7 +199,7 @@
   function refresh(root = document) {
     if (!document.body) return;
     const page = document.body.dataset.cocoLanguagePage;
-    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy].join(',');
+    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,'.cocoV16086Pending,.rankingNota'].join(',');
     each(root,query,el => {
       if (el.tagName === 'CANVAS' && el.hasAttribute('aria-label')) render(el,'aria-label',()=>el.getAttribute('aria-label'),v=>el.setAttribute('aria-label',v));
       if (el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
@@ -194,6 +225,13 @@
         link.setAttribute('href',url.pathname+url.search+url.hash);
       }
     });
+    each(root,'time[data-coco-date]',el => {
+      const date = new Date(Number(el.dataset.cocoDate));
+      if (Number.isFinite(date.getTime())) {
+        const value = date.toLocaleDateString(current);
+        if (el.textContent !== value) el.textContent = value;
+      }
+    });
     each(root,'[data-coco-number]',el => {
       const n=Number(el.dataset.cocoNumber);
       if (Number.isFinite(n)) {
@@ -203,6 +241,12 @@
     });
     each(root,'.cocoMedOverlay',el=>{el.lang='es';el.dir='ltr';});
     each(root,'[data-coco-juego],[data-game-card]',card => markGame(card,gameId(card)));
+    each(root,'[data-eterna-language-note],[data-questionnaire-language]',el => {
+      el.hidden = current === 'es';
+      const source = el.hasAttribute('data-questionnaire-language') ? 'Cuestionario en español' : 'Las sesiones de Eterna se realizan en español.';
+      const note = el.hidden ? '' : message(source);
+      if (el.textContent !== note) el.textContent = note;
+    });
     each(root,'.loginDecorTitle',el => {
       const text = current === 'es' ? '¡Activa tu supercerebro!' : message('Activa tu supercerebro');
       if (el.textContent !== text) {
@@ -272,6 +316,8 @@
     document.documentElement.lang = tag;
     document.documentElement.dir = tag === 'ar' ? 'rtl' : 'ltr';
     select.value = tag; select.setAttribute('aria-label',label[tag]); status.textContent = '';
+    previous.setAttribute('aria-label',message('Idioma anterior'));
+    next.setAttribute('aria-label',message('Idioma siguiente'));
     const manifest = document.querySelector('link[rel="manifest"]');
     if (manifest) manifest.href = tag === 'es' ? new URL('../manifest.webmanifest',base) : new URL('manifests/'+tag+'.webmanifest',base);
     if (tag === 'es') { watching?.disconnect(); watching = null; } else observe();
@@ -285,7 +331,21 @@
   Object.entries(languages).forEach(([id,name]) => { const option = new Option(name,id); option.lang = id; select.add(option); });
   select.setAttribute('aria-label',label.es);
   select.addEventListener('change',() => { status.textContent = ''; void setLanguage(select.value); });
-  bar.append(status,icon,select);
+  function languageStep(direction,symbol,description) {
+    const button = document.createElement('button');
+    button.type = 'button'; button.textContent = symbol;
+    button.setAttribute('aria-label',description);
+    button.addEventListener('click',() => {
+      const tags = Object.keys(languages);
+      const target = (select.selectedIndex + direction + tags.length) % tags.length;
+      select.selectedIndex = target;
+      void setLanguage(tags[target]);
+    });
+    return button;
+  }
+  const previous = languageStep(-1,'‹','Idioma anterior');
+  const next = languageStep(1,'›','Idioma siguiente');
+  bar.append(status,icon,previous,select,next);
   function mount() {
     const slot = document.querySelector('[data-coco-language-menu]');
     if (slot) slot.append(bar);
