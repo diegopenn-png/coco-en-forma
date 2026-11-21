@@ -46,7 +46,28 @@ async function verify(page, origin) {
   await page.locator('#rulesDialog .dialog-return').tap();
   await page.locator('#optionsDialog .coco-language-bar select').waitFor({state:'visible'});
   await page.locator('#optionsDialog .dialog-return').tap();
-  await page.locator('.topbar nav a').tap();
+  const menuLink = page.locator('.topbar nav a');
+  await menuLink.waitFor({state:'visible'});
+  try {
+    await menuLink.tap({timeout:7000});
+  } catch (error) {
+    const geometry = await menuLink.evaluate(link => {
+      function rect(el) {
+        const {x,y,width,height}=el.getBoundingClientRect();
+        return {x,y,width,height};
+      }
+      const {x,y,width,height}=rect(link);
+      const hit=document.elementFromPoint(x+width/2,y+height/2);
+      const view=window.visualViewport;
+      return {link:rect(link),nav:rect(link.parentElement),hit:hit?.outerHTML.slice(0,350),
+        hitStyle:getComputedStyle(link).pointerEvents,active:document.activeElement?.id,
+        openDialogs:[...document.querySelectorAll('dialog[open]')].map(d=>d.id),
+        scroll:[window.scrollX,window.scrollY],viewport:[innerWidth,innerHeight],
+        visual:[view.width,view.height,view.offsetLeft,view.offsetTop,view.scale]};
+    });
+    console.error('Mobile menu geometry',JSON.stringify(geometry));
+    throw error;
+  }
   await page.waitForFunction(() => document.documentElement.lang === 'fr');
   assert.equal(new URL(page.url()).pathname,'/');
   assert.equal(await picker.inputValue(),'fr');

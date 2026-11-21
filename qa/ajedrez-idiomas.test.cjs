@@ -128,6 +128,9 @@ test('check and the four promotion choices change language without dismissing th
   board.move('e7','e8');
   await board.languages((expected, tag) => {
     assert.ok(board.find('#dialog').open, tag);
+    assert.equal(board.find('#dialogTitle').textContent,expected('¡Tu peón corona!'),tag);
+    assert.equal(board.find('#dialogText').textContent,expected('Elige la pieza que ocupará su lugar.'),tag);
+    assert.ok(board.find('#dialog .coco-language-bar select'),tag);
     for (const [value, piece] of Object.entries({q:'Dama',r:'Torre',b:'Alfil',n:'Caballo'})) {
       assert.equal(board.find('#dialogChoices [value="' + value + '"]').textContent, expected(piece), tag);
     }

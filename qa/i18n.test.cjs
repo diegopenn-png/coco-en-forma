@@ -368,7 +368,10 @@ test('play buttons identify the same game in every locale and Generala keeps its
     assert.equal(strings.Generala,'Generala',tag);
     for(const game of ['Ajedrez','Generala','Reto tiempo','Crucigrama','Sopa de letras']){
       const button=strings['Jugar a '+game];
-      assert.ok(button.includes(strings[game]),tag+' / '+game);
+      // A translated noun may be lower-case or inflected inside the action.
+      // Dutch uses "schaken" for the activity and "schaak" in "Speel schaak".
+      const noun = game==='Ajedrez' && tag==='nl' ? 'schaak' : strings[game];
+      assert.ok(button.toLocaleLowerCase(tag).includes(noun.toLocaleLowerCase(tag)),tag+' / '+game);
       assert.equal(strings['Jugar a '+game+' →'],button+' →',tag+' / '+game);
     }
   }
