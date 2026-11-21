@@ -6022,7 +6022,7 @@
   "¡Jaque! Protege a tu rey con una jugada legal.": "Schach! Wehre das Schach mit einem legalen Zug ab.",
   "Victoria 100 · Tablas 50 · Derrota 0.": "Sieg 100 · Remis 50 · Niederlage 0.",
   "Juegas con blancas.": "Du spielst Weiß.",
-  "Este peón puede coronar.": "Dieser Bauer kann sich umwandeln.",
+  "Este peón puede coronar.": "Dieser Bauer kann umgewandelt werden.",
   "Turno de blancas · Equipo plata": "Weiß am Zug · Team Silber",
   "Jaque mate. Gana el equipo plata (blancas).": "Schachmatt. Weiß gewinnt.",
   "El equipo grafito abandona. Gana el equipo plata.": "Schwarz gibt auf. Weiß gewinnt.",
@@ -6047,6 +6047,11 @@
   "Tu próxima gran jugada.": "Dein nächster großer Zug.",
   "En este dispositivo": "Auf diesem Gerät",
   "La única que suma puntos · Hasta 100": "Nur diese Partie bringt Punkte · Bis zu 100",
-  "Coco en Forma, menú principal": "Coco en Forma, Hauptmenü"
+  "Coco en Forma, menú principal": "Coco en Forma, Hauptmenü",
+  "¡Tu peón corona!": "Wandle deinen Bauern um!",
+  "Elige la pieza que ocupará su lugar.": "Wähle die Figur, in die sich dein Bauer verwandeln soll.",
+  "Empezar a jugar": "Partie starten",
+  "Rival del ordenador": "Computergegner",
+  "↶ Continuar mi partida": "↶ Meine Partie fortsetzen"
  }
 }

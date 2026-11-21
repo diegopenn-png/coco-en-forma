@@ -5893,7 +5893,7 @@
   "¡Jaque! Protege a tu rey con una jugada legal.": "Шах! Захисти короля дозволеним ходом.",
   "Victoria 100 · Tablas 50 · Derrota 0.": "Перемога 100 · Нічия 50 · Поразка 0.",
   "Juegas con blancas.": "Ти граєш білими.",
-  "Este peón puede coronar.": "Цей пішак може перетворитися.",
+  "Este peón puede coronar.": "Цей пішак може перетворитися на фігуру.",
   "Turno de blancas · Equipo plata": "Хід білих · Срібна команда",
   "Jaque mate. Gana el equipo plata (blancas).": "Мат. Білі виграли.",
   "El equipo grafito abandona. Gana el equipo plata.": "Чорні здалися. Білі виграли.",
@@ -5918,6 +5918,11 @@
   "Tu próxima gran jugada.": "Твій наступний блискучий хід.",
   "En este dispositivo": "На цьому пристрої",
   "La única que suma puntos · Hasta 100": "Лише ця партія приносить бали · До 100",
-  "Coco en Forma, menú principal": "Coco en Forma, головне меню"
+  "Coco en Forma, menú principal": "Coco en Forma, головне меню",
+  "¡Tu peón corona!": "Перетворення пішака!",
+  "Elige la pieza que ocupará su lugar.": "Обери фігуру, на яку перетвориться твій пішак.",
+  "Empezar a jugar": "Почати партію",
+  "Rival del ordenador": "Комп’ютерний суперник",
+  "↶ Continuar mi partida": "↶ Продовжити мою партію"
  }
 }

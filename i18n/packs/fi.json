@@ -5970,7 +5970,7 @@
   "¡Jaque! Protege a tu rey con una jugada legal.": "Shakki! Torju shakki laillisella siirrolla.",
   "Victoria 100 · Tablas 50 · Derrota 0.": "Voitto 100 · Tasapeli 50 · Tappio 0.",
   "Juegas con blancas.": "Pelaat valkeilla.",
-  "Este peón puede coronar.": "Tämä sotilas voi korottua.",
+  "Este peón puede coronar.": "Tämä sotilas voidaan korottaa.",
   "Turno de blancas · Equipo plata": "Valkean siirto · Hopeajoukkue",
   "Jaque mate. Gana el equipo plata (blancas).": "Shakkimatti. Valkea voittaa.",
   "El equipo grafito abandona. Gana el equipo plata.": "Musta luovuttaa. Valkea voittaa.",
@@ -5995,6 +5995,11 @@
   "Tu próxima gran jugada.": "Seuraava hieno siirtosi.",
   "En este dispositivo": "Tällä laitteella",
   "La única que suma puntos · Hasta 100": "Vain tästä pelistä saa pisteitä · Enintään 100",
-  "Coco en Forma, menú principal": "Coco en Forma, päävalikko"
+  "Coco en Forma, menú principal": "Coco en Forma, päävalikko",
+  "¡Tu peón corona!": "Korota sotilaasi!",
+  "Elige la pieza que ocupará su lugar.": "Valitse nappula, joksi sotilaasi korotetaan.",
+  "Empezar a jugar": "Aloita peli",
+  "Rival del ordenador": "Tietokonevastustaja",
+  "↶ Continuar mi partida": "↶ Jatka peliäni"
  }
 }

@@ -44,12 +44,27 @@ async function verify(page, origin) {
   await choose('fr');
   assert.ok(await page.locator('#rulesDialog').isVisible());
   await page.locator('#rulesDialog .dialog-return').tap();
-  assert.ok(await page.locator('#optionsDialog .coco-language-bar select').isVisible());
+  await page.locator('#optionsDialog .coco-language-bar select').waitFor({state:'visible'});
   await page.locator('#optionsDialog .dialog-return').tap();
   await page.locator('.topbar nav a').tap();
   await page.waitForFunction(() => document.documentElement.lang === 'fr');
   assert.equal(new URL(page.url()).pathname,'/');
   assert.equal(await picker.inputValue(),'fr');
+  await page.goto(new URL('/games/ajedrez/?lang=es',origin).href);
+  await page.locator('[data-mode="standard"]').tap();
+  await page.locator('[data-opponent="local"]').tap();
+  await page.locator('#start').tap();
+  for (const name of ['a2','a4','h7','h5','a4','a5','h5','h4','a5','a6','h4','h3','a6','b7','h3','g2','b7','a8']) {
+    await square(name).tap();
+  }
+  const promotion = page.locator('#dialog[open]');
+  await promotion.locator('select').waitFor({state:'visible'});
+  await choose('en');
+  assert.equal(await promotion.locator('h2').innerText(),'Promote your pawn!');
+  await promotion.getByRole('button',{name:'Knight',exact:true}).tap();
+  await square('a8').locator('[data-type="n"]').waitFor({state:'visible'});
+  await page.locator('body > [data-coco-language-menu] select').waitFor({state:'visible'});
+  console.log('Promotion dialog changes language and the chosen knight appears on a8.');
   console.log('15 checkmate messages verified, board orientation preserved in Arabic, French retained through nested dialogs and return to the main menu.');
 }
 (async()=>{

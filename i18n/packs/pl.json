@@ -6009,7 +6009,7 @@
   "¡Jaque! Protege a tu rey con una jugada legal.": "Szach! Wykonaj legalny ruch, który ochroni króla.",
   "Victoria 100 · Tablas 50 · Derrota 0.": "Wygrana 100 · Remis 50 · Przegrana 0.",
   "Juegas con blancas.": "Grasz białymi.",
-  "Este peón puede coronar.": "Ten pion może awansować.",
+  "Este peón puede coronar.": "Ten pion może zostać promowany.",
   "Turno de blancas · Equipo plata": "Ruch białych · Drużyna srebrna",
   "Jaque mate. Gana el equipo plata (blancas).": "Mat. Wygrywają białe.",
   "El equipo grafito abandona. Gana el equipo plata.": "Czarne poddają partię. Wygrywają białe.",
@@ -6034,6 +6034,11 @@
   "Tu próxima gran jugada.": "Twój następny świetny ruch.",
   "En este dispositivo": "Na tym urządzeniu",
   "La única que suma puntos · Hasta 100": "Tylko ta partia daje punkty · Do 100",
-  "Coco en Forma, menú principal": "Coco en Forma, menu główne"
+  "Coco en Forma, menú principal": "Coco en Forma, menu główne",
+  "¡Tu peón corona!": "Promocja piona!",
+  "Elige la pieza que ocupará su lugar.": "Wybierz figurę, w którą zmieni się twój pion.",
+  "Empezar a jugar": "Rozpocznij partię",
+  "Rival del ordenador": "Przeciwnik komputerowy",
+  "↶ Continuar mi partida": "↶ Wznów moją partię"
  }
 }
