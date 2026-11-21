@@ -1,0 +1,97 @@
+{{ $lang := "es" }}
+{{ with .Data }}{{ with .locale }}{{ $lang = . }}{{ end }}{{ end }}
+{{ $url := .RedirectTo }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=es" $.SiteURL) (printf "%s?coco_recuperar=1&lang=es" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=es" "https://www.cocoenforma.com/?coco_recuperar=1&lang=es" (printf "%s/?coco_recuperar=1" $.SiteURL) (printf "%s?coco_recuperar=1" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1" "https://www.cocoenforma.com/?coco_recuperar=1" }}{{ $lang = "es" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=en" $.SiteURL) (printf "%s?coco_recuperar=1&lang=en" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=en" "https://www.cocoenforma.com/?coco_recuperar=1&lang=en" }}{{ $lang = "en" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=fr" $.SiteURL) (printf "%s?coco_recuperar=1&lang=fr" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=fr" "https://www.cocoenforma.com/?coco_recuperar=1&lang=fr" }}{{ $lang = "fr" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=de" $.SiteURL) (printf "%s?coco_recuperar=1&lang=de" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=de" "https://www.cocoenforma.com/?coco_recuperar=1&lang=de" }}{{ $lang = "de" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=nl" $.SiteURL) (printf "%s?coco_recuperar=1&lang=nl" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=nl" "https://www.cocoenforma.com/?coco_recuperar=1&lang=nl" }}{{ $lang = "nl" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=it" $.SiteURL) (printf "%s?coco_recuperar=1&lang=it" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=it" "https://www.cocoenforma.com/?coco_recuperar=1&lang=it" }}{{ $lang = "it" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=pl" $.SiteURL) (printf "%s?coco_recuperar=1&lang=pl" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=pl" "https://www.cocoenforma.com/?coco_recuperar=1&lang=pl" }}{{ $lang = "pl" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=uk" $.SiteURL) (printf "%s?coco_recuperar=1&lang=uk" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=uk" "https://www.cocoenforma.com/?coco_recuperar=1&lang=uk" }}{{ $lang = "uk" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=ru" $.SiteURL) (printf "%s?coco_recuperar=1&lang=ru" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=ru" "https://www.cocoenforma.com/?coco_recuperar=1&lang=ru" }}{{ $lang = "ru" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=zh-Hans" $.SiteURL) (printf "%s?coco_recuperar=1&lang=zh-Hans" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=zh-Hans" "https://www.cocoenforma.com/?coco_recuperar=1&lang=zh-Hans" }}{{ $lang = "zh-Hans" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=ar" $.SiteURL) (printf "%s?coco_recuperar=1&lang=ar" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=ar" "https://www.cocoenforma.com/?coco_recuperar=1&lang=ar" }}{{ $lang = "ar" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=sv" $.SiteURL) (printf "%s?coco_recuperar=1&lang=sv" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=sv" "https://www.cocoenforma.com/?coco_recuperar=1&lang=sv" }}{{ $lang = "sv" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=fi" $.SiteURL) (printf "%s?coco_recuperar=1&lang=fi" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=fi" "https://www.cocoenforma.com/?coco_recuperar=1&lang=fi" }}{{ $lang = "fi" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=nb" $.SiteURL) (printf "%s?coco_recuperar=1&lang=nb" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=nb" "https://www.cocoenforma.com/?coco_recuperar=1&lang=nb" }}{{ $lang = "nb" }}{{ end }}
+{{ if eq $url (printf "%s/?coco_recuperar=1&lang=da" $.SiteURL) (printf "%s?coco_recuperar=1&lang=da" $.SiteURL) "https://cocoenforma.com/?coco_recuperar=1&lang=da" "https://www.cocoenforma.com/?coco_recuperar=1&lang=da" }}{{ $lang = "da" }}{{ end }}
+{{ $title := "" }}{{ $body := "" }}{{ $cta := "" }}{{ $ignore := "" }}
+{{ if eq $lang "en" }}
+{{ $title = "Reset your password" }}
+{{ $body = "You requested a new password for Coco en Forma." }}
+{{ $cta = "Choose a new password" }}
+{{ $ignore = "If you did not request this email, you can ignore it." }}
+{{ else if eq $lang "fr" }}
+{{ $title = "Réinitialise ton mot de passe" }}
+{{ $body = "Tu as demandé un nouveau mot de passe pour Coco en Forma." }}
+{{ $cta = "Choisir un nouveau mot de passe" }}
+{{ $ignore = "Si tu n’as pas demandé cet e-mail, tu peux l’ignorer." }}
+{{ else if eq $lang "de" }}
+{{ $title = "Setze dein Passwort zurück" }}
+{{ $body = "Du hast ein neues Passwort für Coco en Forma angefordert." }}
+{{ $cta = "Neues Passwort wählen" }}
+{{ $ignore = "Wenn du diese E-Mail nicht angefordert hast, kannst du sie ignorieren." }}
+{{ else if eq $lang "nl" }}
+{{ $title = "Stel je wachtwoord opnieuw in" }}
+{{ $body = "Je hebt een nieuw wachtwoord voor Coco en Forma aangevraagd." }}
+{{ $cta = "Een nieuw wachtwoord kiezen" }}
+{{ $ignore = "Heb je deze e-mail niet aangevraagd? Dan kun je hem negeren." }}
+{{ else if eq $lang "it" }}
+{{ $title = "Reimposta la tua password" }}
+{{ $body = "Hai richiesto una nuova password per Coco en Forma." }}
+{{ $cta = "Scegli una nuova password" }}
+{{ $ignore = "Se non hai richiesto questa email, puoi ignorarla." }}
+{{ else if eq $lang "pl" }}
+{{ $title = "Zresetuj hasło" }}
+{{ $body = "Otrzymaliśmy prośbę o nowe hasło do Twojego konta w Coco en Forma." }}
+{{ $cta = "Wybierz nowe hasło" }}
+{{ $ignore = "Jeśli ta wiadomość trafiła do Ciebie przez pomyłkę, możesz ją zignorować." }}
+{{ else if eq $lang "uk" }}
+{{ $title = "Скидання пароля" }}
+{{ $body = "Ми отримали запит на зміну пароля вашого облікового запису в Coco en Forma." }}
+{{ $cta = "Вибрати новий пароль" }}
+{{ $ignore = "Якщо ви не надсилали запит, просто проігноруйте цей лист." }}
+{{ else if eq $lang "ru" }}
+{{ $title = "Сброс пароля" }}
+{{ $body = "Мы получили запрос на смену пароля вашей учётной записи в Coco en Forma." }}
+{{ $cta = "Выбрать новый пароль" }}
+{{ $ignore = "Если вы не отправляли запрос, просто проигнорируйте это письмо." }}
+{{ else if eq $lang "zh-Hans" }}
+{{ $title = "重置密码" }}
+{{ $body = "我们收到了重置你的 Coco en Forma 密码的请求。" }}
+{{ $cta = "设置新密码" }}
+{{ $ignore = "如果你没有发出此请求，可以忽略这封邮件。" }}
+{{ else if eq $lang "ar" }}
+{{ $title = "إعادة تعيين كلمة المرور" }}
+{{ $body = "تلقّينا طلبًا لإعادة تعيين كلمة المرور لحسابك في Coco en Forma." }}
+{{ $cta = "اختيار كلمة مرور جديدة" }}
+{{ $ignore = "إذا لم تطلب هذه الرسالة، يمكنك تجاهلها." }}
+{{ else if eq $lang "sv" }}
+{{ $title = "Återställ ditt lösenord" }}
+{{ $body = "Du har begärt ett nytt lösenord för Coco en Forma." }}
+{{ $cta = "Välj ett nytt lösenord" }}
+{{ $ignore = "Om du inte har begärt det här mejlet kan du bortse från det." }}
+{{ else if eq $lang "fi" }}
+{{ $title = "Vaihda salasanasi" }}
+{{ $body = "Saimme pyynnön vaihtaa Coco en Forma -tilisi salasanan." }}
+{{ $cta = "Valitse uusi salasana" }}
+{{ $ignore = "Jos et pyytänyt tätä viestiä, voit jättää sen huomiotta." }}
+{{ else if eq $lang "nb" }}
+{{ $title = "Tilbakestill passordet ditt" }}
+{{ $body = "Du har bedt om et nytt passord for Coco en Forma." }}
+{{ $cta = "Velg et nytt passord" }}
+{{ $ignore = "Hvis du ikke ba om denne e-posten, kan du se bort fra den." }}
+{{ else if eq $lang "da" }}
+{{ $title = "Nulstil din adgangskode" }}
+{{ $body = "Du har bedt om en ny adgangskode til Coco en Forma." }}
+{{ $cta = "Vælg en ny adgangskode" }}
+{{ $ignore = "Hvis du ikke har bedt om denne e-mail, kan du se bort fra den." }}
+{{ else }}{{ $lang = "es" }}
+{{ $title = "Restablece tu contraseña" }}
+{{ $body = "Has solicitado una contraseña nueva para Coco en Forma." }}
+{{ $cta = "Elegir una contraseña nueva" }}
+{{ $ignore = "Si no has solicitado este mensaje, puedes ignorarlo." }}
+{{ end }}
+<!doctype html>
+<html lang="{{ $lang }}" dir="{{ if eq $lang "ar" }}rtl{{ else }}ltr{{ end }}"><meta charset="utf-8"><body style="font:16px/1.6 system-ui,sans-serif;color:#173f59"><main style="max-width:540px;margin:auto;padding:24px"><strong>Coco en Forma</strong><h1>{{ $title }}</h1><p>{{ $body }}</p><p><a style="display:inline-block;background:#173f59;color:white;padding:10px 16px;border-radius:8px" href="{{ .ConfirmationURL }}">{{ $cta }}</a></p><p>{{ $ignore }}</p></main></body></html>

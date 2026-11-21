@@ -291,11 +291,14 @@
   function spanishList(values){
     values=(values||[]).filter(Boolean);if(values.length<2)return values[0]||"";if(values.length===2)return values[0]+" y "+values[1];return values.slice(0,-1).join(", ")+" y "+values[values.length-1]
   }
+  function reportSourceText(el){
+    return el ? String(window.CocoLocale?.sourceText(el) ?? el.textContent ?? "").trim() : "";
+  }
   function buildGamesReportModel(modal,card){
     if(!modal)return null;var hero=modal.querySelector(".cocoFamilyHero"),stats=modal.querySelector(".cocoFamilyStats"),barRoot=modal.querySelector(".cocoFamilyBars");if(!hero||!barRoot)return null;
-    var profileText=hero.querySelector("span")?String(hero.querySelector("span").textContent||""):"",profileMatch=profileText.match(/PERFIL DE\s+(.+?)(?:\s+·\s+(\d+)\s+AÑOS)?$/i),name=profileMatch?profileMatch[1].trim():"Jugador Coco",age=profileMatch&&profileMatch[2]?profileMatch[2]+" años":"";
-    var metrics=stats?Array.prototype.slice.call(stats.children).map(function(x){var b=x.querySelector("b,strong"),sp=x.querySelector("span,small");return{value:b?String(b.textContent||"").trim():"0",label:sp?String(sp.textContent||"").trim():"Actividad"}}):[];
-    var bars=Array.prototype.slice.call(barRoot.querySelectorAll(":scope > article,article")).map(function(x){var b=x.querySelector("b"),strong=x.querySelector("strong"),copy=cocoSkillCopy(b?String(b.textContent||"").trim():"Habilidad"),evidence=Math.max(0,Number(x.dataset.cocoEvidence||0));return{label:copy.label,sublabel:copy.detail,value:strong?numberFromText(strong.textContent):0,evidence:evidence}}).filter(function(x){return x.evidence>0&&!retiredEnglishCopy(x.label)});
+    var profileText=reportSourceText(hero.querySelector("span")),profileMatch=profileText.match(/PERFIL DE\s+(.+?)(?:\s+·\s+(\d+)\s+AÑOS)?$/i),name=profileMatch?profileMatch[1].trim():"Jugador Coco",age=profileMatch&&profileMatch[2]?profileMatch[2]+" años":"";
+    var metrics=stats?Array.prototype.slice.call(stats.children).map(function(x){var b=x.querySelector("b,strong"),sp=x.querySelector("span,small");return{value:b?reportSourceText(b):"0",label:sp?reportSourceText(sp):"Actividad"}}):[];
+    var bars=Array.prototype.slice.call(barRoot.querySelectorAll(":scope > article,article")).map(function(x){var b=x.querySelector("b"),strong=x.querySelector("strong"),copy=cocoSkillCopy(b?reportSourceText(b):"Habilidad"),evidence=Math.max(0,Number(x.dataset.cocoEvidence||0));return{label:copy.label,sublabel:copy.detail,value:strong?numberFromText(strong.textContent):0,evidence:evidence}}).filter(function(x){return x.evidence>0&&!retiredEnglishCopy(x.label)});
     var assessable=bars.filter(function(x){return x.evidence>=2}),ordered=assessable.slice().sort(function(a,b){return b.value-a.value}),best=ordered[0]||null,lowest=ordered.length>1?ordered[ordered.length-1]:null,names=bars.map(function(x){return x.label.toLowerCase()}),summary=bars.length?"Con Coco ha entrenado "+spanishList(names)+".":"Todavía no hay partidas registradas para explicar qué habilidades ha entrenado.";
     summary+=best?" Las comparaciones solo usan habilidades practicadas al menos dos veces.":bars.length?" Aún hace falta repetir alguna habilidad antes de destacar fortalezas o aspectos para practicar.":"";
     var panels=[];

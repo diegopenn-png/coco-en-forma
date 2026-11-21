@@ -88,3 +88,67 @@ test('shared links, rerendered forms and report exports preserve the language an
     assert.equal(w.location.hash,'#tab');
   }finally{dom.window.close();}
 });
+
+test('offline reopening uses the previously downloaded pack before the first service worker takes control',async()=>{
+  let offline=false;
+  const items=new Map();
+  const {api,w,dom,doc}=page(undefined,async url=>{
+    if(offline)throw new Error('offline');
+    return new Response(JSON.stringify(readPack(path.basename(url.pathname,'.json'))),{headers:{'Content-Type':'application/json'}});
+  });
+  try {
+    Object.defineProperty(w,'caches',{value:{open:async()=>({
+      put:async(url,r)=>items.set(url.href,await r.text()),
+      match:async(url)=>items.has(url.href)?new Response(items.get(url.href)):undefined
+    })}});
+    await api.ready;
+    assert.equal(await api.setLanguage('fr'),true);
+    assert.equal(items.size,1);
+    offline=true;
+    await api.setLanguage('es');
+    const script=w.document.createElement('script');script.src='/i18n/coco.js';
+    // A new document has an empty memory cache, but retains the downloaded language.
+    const fresh=page('https://coco.test/',async()=>{throw new Error('offline');});
+    try {
+      Object.defineProperty(fresh.w,'caches',{value:w.caches});
+      await fresh.api.ready;
+      assert.equal(await fresh.api.setLanguage('fr'),true);
+      assert.equal(fresh.doc.querySelector('label').textContent,'Mot de passe');
+    } finally {fresh.dom.window.close();}
+    assert.equal(doc.documentElement.lang,'es');
+  } finally {dom.window.close();}
+});
+
+test('localized game and account labels retain the numeric and navigation state',async()=>{
+  const {api,doc,dom}=page();
+  try {
+    await api.ready;
+    const stat=doc.createElement('b');stat.dataset.cocoNumber='12003';stat.textContent='12.003';
+    doc.body.append(stat);
+    for(const lang of ['ar','zh-Hans','de','es']){
+      await api.setLanguage(lang);
+      assert.equal(stat.textContent,(12003).toLocaleString(lang));
+      assert.equal(api.spanishGame('crucigrama'),true);
+      assert.equal(api.spanishGame('conecta'),false);
+    }
+  } finally {dom.window.close();}
+});
+
+test('dynamic game rounds and report scores update in place without translating personal text',async()=>{
+  const {api,dom,doc}=page();
+  try {
+    doc.body.dataset.cocoLanguagePage='game';
+    const round=doc.createElement('strong');round.textContent='RONDA 2 DE 11';doc.body.append(round);
+    const report=doc.createElement('section');report.dataset.familyIntegralReport='1';
+    report.innerHTML='<small>Señal observada · 89/100</small><p>Ha trabajado Matemáticas, Ciencias Naturales. Solo valoramos los conceptos con al menos dos interacciones; el resto se muestra como actividad, sin inventar conclusiones.</p><b data-coco-verbatim>Memoria</b>';
+    doc.body.append(report);await api.ready;
+    for(const tag of locales.filter(l=>l!=='es')){
+      await api.setLanguage(tag);
+      assert.equal(round.textContent,api.t('Ronda {n} de {total}',{n:(2).toLocaleString(tag),total:(11).toLocaleString(tag)}));
+      assert.ok(report.querySelector('p').textContent.includes(api.t('Matemáticas')));
+      assert.equal(report.querySelector('small').textContent,api.t('Señal observada · {score}/100',{score:(89).toLocaleString(tag)}));
+      assert.equal(report.querySelector('b').textContent,'Memoria');
+    }
+    await api.setLanguage('es');assert.equal(round.textContent,'RONDA 2 DE 11');
+  }finally{dom.window.close();}
+});

@@ -30,9 +30,40 @@
     const template = Object.hasOwn(activePack.strings, source) ? activePack.strings[source] : source;
     return args ? template.replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(args, key) ? String(args[key]) : match) : template;
   }
-  function localize(value) {
+  const reportScope = '[data-family-integral-report],.cocoV16083ReportBody,.cocoReportDocument';
+  function reportPhrase(key) {
+    const templates = [
+      ['Más avance en: ', 'Más avance en: {topic}'],
+      ['Practicar: ', 'Practicar: {topic}'],
+      ['Se desenvuelve mejor en ', 'Se desenvuelve mejor en {topic}']
+    ];
+    for (const [prefix, template] of templates) {
+      if (key.startsWith(prefix)) return message(template,{topic:message(key.slice(prefix.length))});
+    }
+    const score = key.match(/^Señal observada · (\d+)\/100$/);
+    if (score) return message('Señal observada · {score}/100',{score:Number(score[1]).toLocaleString(current)});
+    const summary = key.match(/^Ha trabajado (.+?)(?:\. Solo valoramos los conceptos con al menos dos interacciones; el resto se muestra como actividad, sin inventar conclusiones\.|, pero todavía necesitamos más de una interacción sobre un mismo concepto antes de sacar conclusiones\.)$/);
+    if (summary) {
+      const topics = summary[1].split(', ').map(topic => message(topic));
+      return message('Se ha practicado: {topics}.',{topics:new Intl.ListFormat(current).format(topics)})+' '+message('Solo se valoran conceptos con al menos dos interacciones. El resto figura como actividad.');
+    }
+    return key;
+  }
+  function gamePhrase(key) {
+    const number = value => Number(value).toLocaleString(current);
+    const round = key.match(/^(Ronda|Tirada) (\d+) de (\d+)$/i);
+    if (round) return message(round[1].toLowerCase() === 'ronda' ? 'Ronda {n} de {total}' : 'Tirada {n} de {total}',{n:number(round[2]),total:number(round[3])});
+    const roll = key.match(/^Volver a tirar (\d+) dados?$/);
+    if (roll) return message('Dados que volver a tirar: {n}',{n:number(roll[1])});
+    const lobby = key.match(/^(\d+) de (\d+) jugadores · Mínimo (\d+)$/);
+    if (lobby) return message('Jugadores: {n}/{total} · Mínimo {min}',{n:number(lobby[1]),total:number(lobby[2]),min:number(lobby[3])});
+    return key;
+  }
+  function localize(value, report = false, game = false) {
     const key = value.trim().replace(/\s+/g, ' ');
     let translated = message(key);
+    if (report && translated === key) translated = reportPhrase(key);
+    if (game && translated === key) translated = gamePhrase(key);
     if (translated === key) {
       for (const prefix of ['Inicia sesión para abrir ','Copiar enlace de ']) {
         if (key.startsWith(prefix)) {
@@ -55,7 +86,8 @@
     if (!bindings) { bindings = new Map(); sources.set(node, bindings); }
     const previous = bindings.get(slot);
     const source = previous && previous.output === value ? previous.source : value;
-    const output = current === 'es' ? source : localize(source);
+    const owner = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game');
     if (value !== output) write(output);
     bindings.set(slot,{source,output});
   }
@@ -68,16 +100,18 @@
     return Array.from(node.childNodes).map(sourceText).join('');
   }
   const authored = '[data-coco-copy],[data-coco-attrs]';
-  const spanishGames = new Set(['sopa','crucigrama','palabras','cocomed','verdadero','tiempo']);
+  const spanishGames = new Set(['sopa','crucigrama','palabras','cocomed','verdadero','tiempo','bank']);
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
-  const privateAreas = '.cocoMedOverlay,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-coco-verbatim],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
-  const publicElements = 'a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
+  const privateAreas = '.cocoMedOverlay,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
+  const publicElements = '[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamilyLoading,#coco-startup-status p';
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
   const reportCopy = ':is(.cocoFamilyV129,[data-family-integral-report],.cocoV16083Section,.cocoReportDocument,.rankingTitulo,.rankingNota,.navegacionJugador) :is(h2,h3,h4,b,strong,small,p,span,li,th,button,a)';
+  const gameplayCopy = '[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,.instruccion,.pregunta,.textoReto,.aviso,.titulo)';
+  const familyAccessCopy = '.eternaLaunchV16068 :is(p,label,button,h2,strong,.eternaLaunchV16068Info,.eternaLaunchV16068Msg)';
   const authBoxes = '.caja:has(#oMail),.caja:has(#rNom),.caja:has(#nPas),.loginCard';
   const authCopy = ['p','label','b','.aviso','small'].map(t => ':is('+authBoxes+') '+t).join(',');
   let watching;
@@ -87,11 +121,12 @@
   }
   function shareUrl(value) {
     const url = new URL(value,location.origin);
-    if (current !== 'es') url.searchParams.set('lang',current);
+    if (current !== 'es' || url.searchParams.has('lang')) url.searchParams.set('lang',current);
     return url.href;
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
+    url.searchParams.set('v','20261121-3');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -115,7 +150,7 @@
   function accountReturn(recovery=false) {
     const url = new URL('/',location.origin);
     if (recovery) url.searchParams.set('coco_recuperar','1');
-    if (current !== 'es') url.searchParams.set('lang',current);
+    url.searchParams.set('lang',current);
     return url.href;
   }
   function gameId(card) {
@@ -133,8 +168,9 @@
   function refresh(root = document) {
     if (!document.body) return;
     const page = document.body.dataset.cocoLanguagePage;
-    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,homeCopy,reportCopy].join(',');
+    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy].join(',');
     each(root,query,el => {
+      if (el.tagName === 'CANVAS' && el.hasAttribute('aria-label')) render(el,'aria-label',()=>el.getAttribute('aria-label'),v=>el.setAttribute('aria-label',v));
       if (el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
       // Card titles and some legacy controls are used for DOM-based identification.
       // Their translation is handled by the owning renderer once a stable id exists.
@@ -147,6 +183,25 @@
       const attrs = el.tagName === 'META' ? ['content'] : ['placeholder','aria-label','alt','title'];
       for (const a of attrs) if (el.hasAttribute(a)) render(el,a,() => el.getAttribute(a),v => el.setAttribute(a,v));
     });
+    if (page === 'public' || page === 'game') each(root,'nav a[href],.actions a[href]',link => {
+      const raw = link.getAttribute('href');
+      if (!raw || raw.startsWith('#') || link.hasAttribute('download')) return;
+      const url = new URL(raw,document.baseURI);
+      if (url.origin !== location.origin || !/\/(?:[^.]*|[^/]*\.html)$/.test(url.pathname)) return;
+      if (current === 'es' && !url.searchParams.has('lang')) return;
+      if (url.searchParams.get('lang') !== current) {
+        url.searchParams.set('lang',current);
+        link.setAttribute('href',url.pathname+url.search+url.hash);
+      }
+    });
+    each(root,'[data-coco-number]',el => {
+      const n=Number(el.dataset.cocoNumber);
+      if (Number.isFinite(n)) {
+        const value=n.toLocaleString(current);
+        if (el.textContent!==value) el.textContent=value;
+      }
+    });
+    each(root,'.cocoMedOverlay',el=>{el.lang='es';el.dir='ltr';});
     each(root,'[data-coco-juego],[data-game-card]',card => markGame(card,gameId(card)));
     each(root,'.loginDecorTitle',el => {
       const text = current === 'es' ? '¡Activa tu supercerebro!' : message('Activa tu supercerebro');
@@ -181,7 +236,7 @@
     doc.documentElement.lang = current; doc.documentElement.dir = current === 'ar' ? 'rtl' : 'ltr';
     for (const el of doc.querySelectorAll(publicElements)) {
       if (el.closest(privateAreas)) continue;
-      for (const node of el.childNodes) if (node.nodeType === Node.TEXT_NODE) node.data = localize(node.data);
+      for (const node of el.childNodes) if (node.nodeType === Node.TEXT_NODE) node.data = localize(node.data,true);
       for (const attr of ['title','aria-label','alt']) if (el.hasAttribute(attr)) el.setAttribute(attr,localize(el.getAttribute(attr)));
     }
     return '<!doctype html>'+doc.documentElement.outerHTML;
