@@ -4455,7 +4455,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Se ho un controllo anticipato o ho qualche dubbio, rimango non protetto.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Se hai denaro, decide cosa vuoi prenotare e cosa puoi spendere.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Se l'accordo è stato capito e qualcuno ha bisogno di aiuto.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Se il giocatore è minore di 18 anni, utilizza la posta del padre, madre o tutore.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Se chi gioca ha meno di 18 anni, usa l’indirizzo e-mail di un genitore o del tutore.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Se il reparto è rimasto esplicito e ha permesso a ciascuno di assumere la sua parte.",
   "Si entendiste la elección antes de gastar.": "Se hai capito la scelta prima di spendere.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Se siete insieme, Giochi consente di giocare per turni su uno stesso dispositivo e Generala ammette partite locali. In Battle Naval si può giocare contro Coco o con un'altra persona in una stanza online; ogni partecipante mantiene la sua flotta sul proprio dispositivo.",
@@ -5946,6 +5946,7 @@
   "Etapa escolar: Infantil": "Educazione dell’infanzia",
   "Etapa escolar: Primaria": "Scuola primaria",
   "Etapa escolar: ESO": "Istruzione secondaria obbligatoria (ESO)",
-  "Etapa escolar: Bachillerato": "Istruzione secondaria superiore (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Istruzione secondaria superiore (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Se chi gioca ha meno di 18 anni, un genitore o il tutore legale deve creare o autorizzare l’account. Usa l’indirizzo e-mail dell’adulto responsabile."
  }
 }

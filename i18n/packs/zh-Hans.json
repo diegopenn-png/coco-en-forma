@@ -4330,7 +4330,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "如果我提前检查或怀疑,我会被保护。",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "如果你有钱,决定你想要预订什么,你可以花什么。",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "如果协议被理解,有人需要帮助。",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "如果玩家年龄在18岁以下,则使用父亲、母亲或护士的邮件。",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "如果玩家未满 18 岁，请使用父母或监护人的电子邮箱。",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "如果分配是明确的,并允许每个人承担自己的份额。",
   "Si entendiste la elección antes de gastar.": "如果你在花钱之前明白了选择。",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "如果大家在一起，可以在同一台设备上轮流下国际象棋，也可以玩 Generala 本地对局。在海战棋中，你可以对战 Coco，也可以在在线房间与另一位玩家对战，双方各自在自己的设备上布置舰队。",
@@ -5810,6 +5810,7 @@
   "Etapa escolar: Infantil": "幼儿教育",
   "Etapa escolar: Primaria": "小学",
   "Etapa escolar: ESO": "义务中学阶段（ESO）",
-  "Etapa escolar: Bachillerato": "高中阶段（Bachillerato）"
+  "Etapa escolar: Bachillerato": "高中阶段（Bachillerato）",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "如果玩家未满 18 岁，须由父母或法定监护人创建账户或同意创建账户。请使用负责照护该玩家的成年人的电子邮箱。"
  }
 }

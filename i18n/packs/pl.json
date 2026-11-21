@@ -4438,7 +4438,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Jeśli wcześniejsza kontrola lub wykazuję wątpliwości, zostaję bez ochrony.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Jeśli masz pieniądze, zdecyduj, co chcesz zarezerwować i co możesz wydać.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Jeśli porozumienie zostało zrozumiane i ktoś potrzebuje pomocy.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Jeśli gracz jest poniżej 18 roku życia, używa poczty ojca, matki lub opiekuna.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Jeśli gracz ma mniej niż 18 lat, użyj adresu e-mail rodzica lub opiekuna.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Jeśli podział pozostał wyraźny i pozwolił, aby każda osoba wzięła swój udział.",
   "Si entendiste la elección antes de gastar.": "Zrozumiałeś wybór przed wydaniem.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Jeśli jesteście razem, hazard pozwala grać w rundy na tym samym urządzeniu, a Generala akceptuje lokalne mecze. w bitwie morskiej można grać przeciwko Coco lub z inną osobą w pokoju online; każdy uczestnik utrzymuje swoją flotę na swoim urządzeniu.",
@@ -5929,6 +5929,7 @@
   "Etapa escolar: Infantil": "Edukacja przedszkolna",
   "Etapa escolar: Primaria": "Szkoła podstawowa",
   "Etapa escolar: ESO": "Obowiązkowa szkoła średnia (ESO)",
-  "Etapa escolar: Bachillerato": "Szkoła średnia przygotowująca do studiów (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Szkoła średnia przygotowująca do studiów (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Jeśli gracz ma mniej niż 18 lat, konto musi założyć rodzic lub opiekun prawny albo wyrazić zgodę na jego założenie. Użyj adresu e-mail odpowiedzialnej osoby dorosłej."
  }
 }

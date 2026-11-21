@@ -4339,7 +4339,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Якщо я відкладаю контроль або виявляю сумніви, я залишаюся незахищеним.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Якщо у вас є гроші, вирішуйте, що ви хочете забронювати і що ви можете витрачати.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Якщо угода була зрозуміла і хтось потребував допомоги.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Якщо гравець молодший за 18 років, він використовує електронну пошту батька, матері або опікуна.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Якщо гравцю ще немає 18 років, використовуйте електронну адресу когось із батьків або опікуна.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "У разі, якщо розподіл залишився чітким і дозволив кожному людині взяти свою частину.",
   "Si entendiste la elección antes de gastar.": "Якщо ви розумієте вибір, перш ніж витратити.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Якщо ви разом, Шахтар дозволяє грати за раундами на одному пристрої, а Generala підтримує місцеві матчі. У Бойовій морській піхоті ви можете грати проти Coco або з іншою людиною в інтернет-залі; кожен учасник зберігає свою флоту на своєму пристрої.",
@@ -5813,6 +5813,7 @@
   "Etapa escolar: Infantil": "Дошкільна освіта",
   "Etapa escolar: Primaria": "Початкова освіта",
   "Etapa escolar: ESO": "Обов’язкова середня освіта (ESO)",
-  "Etapa escolar: Bachillerato": "Старша школа (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Старша школа (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Якщо гравцю ще немає 18 років, обліковий запис має створити хтось із батьків або законний опікун чи дати на це згоду. Використовуйте електронну адресу відповідального дорослого."
  }
 }

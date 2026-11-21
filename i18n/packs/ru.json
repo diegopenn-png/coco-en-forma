@@ -4408,7 +4408,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Если я заранее проверяю или сомневаюсь, я остаюсь незащищенным.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Если у вас есть деньги, вы должны решить, что вы хотите забронировать и что вы можете потратить.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Если соглашение было понятно и кто-то нуждался в помощи.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Если игрок младше 18 лет, он использует почту отца, матери или опекуна.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Если игроку ещё нет 18 лет, используйте электронную почту родителя или опекуна.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Если распределение было четко и позволило каждому человеку принять свою часть.",
   "Si entendiste la elección antes de gastar.": "Если вы поняли выбор, прежде чем тратить.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Если вы вместе, Шахматы позволяют играть по кругам на одном устройстве, а Generala поддерживает местные матчи.В Битве морского флота вы можете играть против Coco или с другим человеком в онлайн-зале; каждый участник держит свой флот на своем устройстве.",
@@ -5893,6 +5893,7 @@
   "Etapa escolar: Infantil": "Дошкольное образование",
   "Etapa escolar: Primaria": "Начальная школа",
   "Etapa escolar: ESO": "Обязательное среднее образование (ESO)",
-  "Etapa escolar: Bachillerato": "Старшая школа (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Старшая школа (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Если игроку ещё нет 18 лет, создать учётную запись или разрешить её создание должен родитель либо законный опекун. Используйте электронную почту ответственного взрослого."
  }
 }

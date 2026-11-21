@@ -4406,7 +4406,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Jos minulla on epäilyksiä tai epäilyjä, olen turvattomana.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Jos sinulla on rahaa, päättää, mitä haluat varata ja mitä voit käyttää. Tarkista ostos ilman, että ryhmä vie sinut yksin.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Jos sopimus on ymmärretty ja joku tarvitsee apua.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Jos pelaaja on alle 18-vuotias, hän käyttää isänsä, äitinsä tai opettajansa postia.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Jos pelaaja on alle 18-vuotias, käytä vanhemman tai huoltajan sähköpostiosoitetta.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Jos jakautuminen jäi selväksi ja mahdollisti, että jokainen henkilö otti osansa.",
   "Si entendiste la elección antes de gastar.": "Jos ymmärrät valinnan ennen kulutusta.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Jos olet yhdessä, Chess sallii pelata kierroksia samassa laitteessa ja Generala hyväksyy paikallisia otteluita. Lahdessa voit pelata Coco tai toisen henkilön kanssa verkossa; jokainen osallistujat pitävät aluksensa omalla laitteellaan.",
@@ -5890,6 +5890,7 @@
   "Etapa escolar: Infantil": "Varhaiskasvatus",
   "Etapa escolar: Primaria": "Alakoulu",
   "Etapa escolar: ESO": "Pakollinen ylempi perusopetus (ESO)",
-  "Etapa escolar: Bachillerato": "Lukiokoulutus (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Lukiokoulutus (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Jos pelaaja on alle 18-vuotias, vanhemman tai laillisen huoltajan on luotava tili tai annettava lupa sen luomiseen. Käytä vastuussa olevan aikuisen sähköpostiosoitetta."
  }
 }

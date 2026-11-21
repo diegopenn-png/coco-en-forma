@@ -4439,7 +4439,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Als ik vroeg de controle of een twijfel laat zien, ben ik onbeschermd.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Als je geld hebt, beslist wat je wilt reserveren en wat je kunt besteden.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Als de overeenkomst werd begrepen en iemand hulp nodig.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Als de speler jonger is dan 18 jaar, gebruikt hij het e-mail van zijn vader, moeder of tutor.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Gebruik voor een speler jonger dan 18 jaar het e-mailadres van een ouder of voogd.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Als de verdeling uitdrukkelijk werd en toegestaan dat elke persoon zijn deel te nemen.",
   "Si entendiste la elección antes de gastar.": "Als je de keuze begrijpt voordat je uitbrengt.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Als je samen bent, kunt u spelen per ronde op dezelfde apparaat en Generala accepteert lokale wedstrijden. In Battle Naval kunt u spelen tegen Coco of met iemand anders in een online kamer; elke deelnemer houdt zijn vloot op zijn eigen apparaat.",
@@ -5930,6 +5930,7 @@
   "Etapa escolar: Infantil": "Voorschools onderwijs",
   "Etapa escolar: Primaria": "Basisonderwijs",
   "Etapa escolar: ESO": "Verplicht voortgezet onderwijs (ESO)",
-  "Etapa escolar: Bachillerato": "Hoger secundair onderwijs (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Hoger secundair onderwijs (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Is de speler jonger dan 18 jaar? Dan moet een ouder of wettelijke voogd het account aanmaken of er toestemming voor geven. Gebruik het e-mailadres van de verantwoordelijke volwassene."
  }
 }

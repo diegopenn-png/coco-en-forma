@@ -2186,7 +2186,7 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
 
   function ensureSignupLegalNotice(){
     var login=document.querySelector("#cocoApp .loginCard,.loginCard");if(!login||login.querySelector(".cocoLegalSignupNoticeV16058"))return;
-    var n=document.createElement("div");n.className="cocoLegalSignupNoticeV16058";n.innerHTML='Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable. <a href="/privacidad-menores.html" target="_blank" rel="noopener">Privacidad para menores</a> · <a href="/terminos-y-condiciones.html" target="_blank" rel="noopener">Términos</a>';
+    var n=document.createElement("div");n.className="cocoLegalSignupNoticeV16058";n.setAttribute("data-coco-copy","");n.innerHTML='Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable. <a href="/privacidad-menores.html" target="_blank" rel="noopener">Privacidad para menores</a> · <a href="/terminos-y-condiciones.html" target="_blank" rel="noopener">Términos</a>';
     login.appendChild(n)
   }
 

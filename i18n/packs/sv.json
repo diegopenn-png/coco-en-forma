@@ -4454,7 +4454,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Om jag tar över kontroll eller visar några tvivel, blir jag oskyddad.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Om du har pengar bestämmer du vad du vill boka och vad du kan spendera.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Om avtalet blev förstådd och någon behövde hjälp.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Om spelaren är yngre än 18 år använder han sin fars, mor eller vårdnadshavare.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Om spelaren är under 18 år ska du använda en förälders eller vårdnadshavares e-postadress.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Om fördelningen blev uttrycklig och tillåter att varje person tar sin del.",
   "Si entendiste la elección antes de gastar.": "Om du förstår valet innan du spenderar.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Om du är tillsammans, Chess låter dig spela för turer på samma enhet och Generala accepterar lokala matcher. I Naval Battle kan du spela mot Coco eller med någon annan person i ett online-rum; varje deltagare håller sin flotta på sin egen enhet.",
@@ -5949,6 +5949,7 @@
   "Etapa escolar: Infantil": "Förskola",
   "Etapa escolar: Primaria": "Primärskola",
   "Etapa escolar: ESO": "Obligatorisk sekundärutbildning (ESO)",
-  "Etapa escolar: Bachillerato": "Gymnasieutbildning (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Gymnasieutbildning (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Om spelaren är under 18 år måste en förälder eller vårdnadshavare skapa kontot eller godkänna att det skapas. Använd den ansvariga vuxnas e-postadress."
  }
 }

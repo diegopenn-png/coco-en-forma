@@ -4430,7 +4430,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Hvis jeg tar kontroll eller viser noen tvil, er jeg ubeskyttet.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Hvis du har penger, bestemme hva du ønsker å bestille og hva du kan bruke.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Hvis avtalen ble forstått og noen trengte hjelp.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Hvis spilleren er yngre enn 18 år, bruker du e-posten til din far, mor eller foreldre.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Hvis spilleren er under 18 år, bruk e-postadressen til en forelder eller verge.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Det ble klart at hver enkelt person fikk sin del.",
   "Si entendiste la elección antes de gastar.": "Hvis du forstår valget før du bruker.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Hvis du er sammen, kan gambling spille for turer på samme enhet og Generala godtar lokale kamper. i Naval Battle kan du spille mot Coco eller med en annen person i et nettrom; hver deltaker holder sin flåte på sin egen enhet.",
@@ -5918,6 +5918,7 @@
   "Etapa escolar: Infantil": "Førskole",
   "Etapa escolar: Primaria": "Barneskole",
   "Etapa escolar: ESO": "Obligatorisk sekundærutdanning (ESO)",
-  "Etapa escolar: Bachillerato": "Studieforberedende videregående opplæring (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Studieforberedende videregående opplæring (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Hvis spilleren er under 18 år, må en forelder eller verge opprette kontoen eller godkjenne at den opprettes. Bruk e-postadressen til den ansvarlige voksne."
  }
 }

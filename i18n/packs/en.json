@@ -4438,7 +4438,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "If I am late or show a doubt, I am unprotected.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "If you have money, decide what you want to book and what you can spend. review a purchase without leaving you take alone by the group.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "If the deal was understood and someone needed help.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "If the player is under 18 years of age, use the mail of his father, mother or tutor.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "If the player is under 18, use a parent’s or guardian’s email address.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "If the distribution remained explicit and allowed each person to take on his part.",
   "Si entendiste la elección antes de gastar.": "If you understand the choice before spending.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "If you’re together, Joker allows you to play by rounds on the same device and Generala admits local matches. In Battle Naval you can play against Coco or with another person in an online room; each participant keeps his fleet on his own device.",
@@ -5932,6 +5932,7 @@
   "Etapa escolar: Infantil": "Early childhood education",
   "Etapa escolar: Primaria": "Primary education",
   "Etapa escolar: ESO": "Compulsory secondary education (ESO)",
-  "Etapa escolar: Bachillerato": "Upper secondary education (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Upper secondary education (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "If the player is under 18, a parent or legal guardian must create or authorise the account. Use the responsible adult’s email address."
  }
 }

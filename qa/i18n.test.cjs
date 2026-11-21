@@ -26,6 +26,12 @@ test('all QH locales keep the original account fields, scores and PWA identity',
   const {doc,w,api,dom}=page();
   try {
     await api.ready;
+    const experience=fs.readFileSync(path.join(root,'eterna-experience-v160.js'),'utf8');
+    const start=experience.indexOf('  function ensureSignupLegalNotice()');
+    const end=experience.indexOf('  function installCapture()',start);
+    w.Function(experience.slice(start,end)+';ensureSignupLegalNotice()')();
+    const adultNotice=doc.querySelector('.cocoLegalSignupNoticeV16058');
+    const noticeText=adultNotice.firstChild.textContent.trim();
     doc.querySelector('input').value='synthetic-value';
     for(const locale of locales) {
       assert.equal(await api.setLanguage(locale),true);
@@ -33,6 +39,9 @@ test('all QH locales keep the original account fields, scores and PWA identity',
       assert.equal(doc.documentElement.dir,locale==='ar'?'rtl':'ltr');
       const text=locale==='es'?'Contraseña':readPack(locale).strings['Contraseña'];
       assert.equal(doc.querySelector('label').textContent,text);
+      assert.equal(adultNotice.firstChild.textContent.trim(),api.t(noticeText));
+      if(locale!=='es')assert.notEqual(api.t(noticeText),noticeText);
+      assert.equal(adultNotice.querySelectorAll('a').length,2);
       assert.equal(doc.querySelector('input').value,'synthetic-value');
       assert.deepEqual([...doc.querySelectorAll('td')].map(td=>td.textContent),['Memoria','23']);
       assert.equal(w.localStorage.getItem('coco.language.v1'),locale);

@@ -4420,7 +4420,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Hvis jeg er forsinket eller har en tvivl, er jeg ubeskyttet.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Hvis du har penge, skal du beslutte, hvad du ønsker at reservere og hvad du kan bruge.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Hvis aftalen blev forstået og nogen har brug for hjælp.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Hvis spilleren er under 18 år, skal du bruge din fars mail, mor eller værter.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Hvis spilleren er under 18 år, skal du bruge en forælders eller værges e-mailadresse.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Det er klart, at hver enkelt person kan tage sin rolle.",
   "Si entendiste la elección antes de gastar.": "Hvis du forstår valget, før du bruger det.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Hvis du er sammen, kan spil spille for runde på samme enhed og Generala accepterer lokale kampe. I Naval Battle kan du spille mod Coco eller med en anden person i et online rum; hver deltager holder sin flåde på sin egen enhed.",
@@ -5905,6 +5905,7 @@
   "Etapa escolar: Infantil": "Førskole",
   "Etapa escolar: Primaria": "Primærskole",
   "Etapa escolar: ESO": "Obligatorisk sekundæruddannelse (ESO)",
-  "Etapa escolar: Bachillerato": "Gymnasial uddannelse (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Gymnasial uddannelse (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Hvis spilleren er under 18 år, skal en forælder eller værge oprette kontoen eller godkende, at den oprettes. Brug den ansvarlige voksnes e-mailadresse."
  }
 }

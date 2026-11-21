@@ -4454,7 +4454,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Wenn ich früh auf die Kontrolle oder einen Zweifel zeige, bin ich geschützt.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Wenn Sie Geld haben, entscheiden Sie, was Sie buchen möchten und was Sie ausgeben können.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Wenn die Vereinbarung verstanden wurde und jemand Hilfe brauchte.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Wenn der Spieler unter 18 Jahre alt ist, benutzt er die E-Mail seines Vaters, seiner Mutter oder seiner Eltern.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Bei Spielern unter 18 Jahren verwenden Sie die E-Mail-Adresse eines Elternteils oder einer erziehungsberechtigten Person.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Wenn die Verteilung ausdrücklich und erlaubt, dass jede Person seine Rolle übernimmt.",
   "Si entendiste la elección antes de gastar.": "Wenn Sie die Wahl verstehen, bevor Sie ausgeben.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Wenn Sie zusammen sind, können Sie auf dem gleichen Gerät Runden spielen und Generala lokale Spiele unterstützt. In der Schlacht können Sie gegen Coco oder mit einer anderen Person in einem Online-Raum spielen; jeder Teilnehmer hält seine Flotte auf seinem eigenen Gerät.",
@@ -5942,6 +5942,7 @@
   "Etapa escolar: Infantil": "Frühkindliche Bildung",
   "Etapa escolar: Primaria": "Primarstufe",
   "Etapa escolar: ESO": "Verpflichtende Sekundarstufe (ESO)",
-  "Etapa escolar: Bachillerato": "Gymnasiale Oberstufe (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Gymnasiale Oberstufe (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Ist die spielende Person unter 18, muss ein Elternteil oder eine erziehungsberechtigte Person das Konto erstellen oder genehmigen. Verwenden Sie die E-Mail-Adresse der verantwortlichen erwachsenen Person."
  }
 }

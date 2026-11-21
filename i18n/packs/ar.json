@@ -4383,7 +4383,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "إذا كنت في وقت مبكر من التحكم أو أظهر شكوك ، فأنا غير محمي.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "إذا كان لديك المال ، فقرر ما تريد حجزه وما يمكن أن تنفقه.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "إذا كان الاتفاق قد تم فهمه وهناك شخص بحاجة إلى المساعدة.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "إذا كان اللاعب أقل من 18 عامًا ، فإنه يستخدم البريد الإلكتروني لوالده أو والدته أو الوالد.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "إذا كان عمر اللاعب أقل من 18 عامًا، فاستخدم عنوان البريد الإلكتروني لأحد الوالدين أو الوصي.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "إذا كان التوزيع واضحا وسمح لكل شخص أن يتخذ حصته.",
   "Si entendiste la elección antes de gastar.": "إذا كنت تفهم الخيار قبل أن تنفق.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "إذا كنت معًا ، فإن اللعب يسمح لك باللعب في جولات على نفس الجهاز و Generala يدعم المباريات المحلية.في المعركة البحرية يمكنك اللعب ضد Coco أو مع شخص آخر في غرفة عبر الإنترنت ؛ يحافظ كل مشارك على أسطوله على جهازه الخاص.",
@@ -5862,6 +5862,7 @@
   "Etapa escolar: Infantil": "تعليم الطفولة المبكرة",
   "Etapa escolar: Primaria": "التعليم الابتدائي",
   "Etapa escolar: ESO": "التعليم الثانوي الإلزامي (ESO)",
-  "Etapa escolar: Bachillerato": "مرحلة البكالوريا الإسبانية (Bachillerato)"
+  "Etapa escolar: Bachillerato": "مرحلة البكالوريا الإسبانية (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "إذا كان عمر اللاعب أقل من 18 عامًا، فيجب أن ينشئ أحد الوالدين أو الوصي القانوني الحساب أو يوافق على إنشائه. استخدم عنوان البريد الإلكتروني للشخص البالغ المسؤول."
  }
 }

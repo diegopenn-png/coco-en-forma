@@ -4440,7 +4440,7 @@
   "Si cedo el control o muestro una duda, quedo desprotegido.": "Si j’ai des doutes ou des doutes, je ne suis pas protégé.",
   "Si dispones de dinero, decide qué quieres reservar y qué puedes gastar. Revisa una compra sin dejarte llevar solo por el grupo.": "Si vous avez de l'argent, décidez ce que vous voulez réserver et ce que vous pouvez dépenser.",
   "Si el acuerdo se entendió y alguien necesitó ayuda.": "Si l'accord a été compris et que quelqu'un a besoin d'aide.",
-  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Si le joueur est mineur de 18 ans, il utilise le courrier de son père, mère ou tuteur.",
+  "Si el jugador es menor de 18 años, utiliza el correo de su padre, madre o tutor.": "Si le joueur a moins de 18 ans, utilisez l’adresse e-mail d’un parent ou de son représentant légal.",
   "Si el reparto quedó explícito y permitió que cada persona asumiera su parte.": "Si la répartition était explicite et permettait à chaque personne d'assumer sa part.",
   "Si entendiste la elección antes de gastar.": "Si vous avez compris le choix avant de dépenser.",
   "Si estáis juntos, Ajedrez permite jugar por turnos en un mismo dispositivo y Generala admite partidas locales. En Batalla Naval puedes jugar contra Coco o con otra persona en una sala online; cada participante mantiene su flota en su propio dispositivo.": "Si vous êtes ensemble, Jeux permet de jouer par tour sur un même appareil et Generala admet des matchs locaux. Dans Battle Naval, vous pouvez jouer contre Coco ou avec une autre personne dans une salle en ligne; chaque participant maintient sa flotte sur son propre appareil.",
@@ -5935,6 +5935,7 @@
   "Etapa escolar: Infantil": "Éducation préscolaire",
   "Etapa escolar: Primaria": "Enseignement primaire",
   "Etapa escolar: ESO": "Enseignement secondaire obligatoire (ESO)",
-  "Etapa escolar: Bachillerato": "Second cycle du secondaire (Bachillerato)"
+  "Etapa escolar: Bachillerato": "Second cycle du secondaire (Bachillerato)",
+  "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Si le joueur a moins de 18 ans, un parent ou son représentant légal doit créer le compte ou en autoriser la création. Utilisez l’adresse e-mail de l’adulte responsable."
  }
 }
