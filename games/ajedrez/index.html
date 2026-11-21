@@ -74,7 +74,7 @@
       <div class="arena-top"><span id="modeBadge" class="badge">PARTIDA ESTÁNDAR</span><span id="gameMeta">A tu ritmo · Sin reloj</span></div>
       <div class="play-heading"><span id="playingEyebrow" class="sr-only">PARTIDA ESTÁNDAR</span><h2 id="turnTitle" data-coco-copy tabindex="-1">Tu turno</h2><p id="status" class="status" role="status" aria-live="polite"></p></div>
       <div class="player" id="topPlayer"><span class="avatar graphite" aria-hidden="true">♟</span><div><b id="topName">Equipo grafito</b><span id="topCaption">Negras · Luz ámbar</span></div><div id="topCaptured" class="captured" aria-label="Piezas capturadas por el equipo superior"></div><span class="turn-marker" id="topTurn">TURNO</span></div>
-      <div class="board-frame"><div id="board" class="board" role="group" aria-label="Tablero de ajedrez. Elige una pieza y después su destino."></div></div>
+      <div class="board-frame"><div id="board" dir="ltr" class="board" role="group" aria-label="Tablero de ajedrez. Elige una pieza y después su destino."></div></div>
       <div class="player"><span class="avatar silver" aria-hidden="true">♙</span><div><b id="bottomName">Equipo plata</b><span id="bottomCaption">Blancas · Luz azul</span></div><div id="bottomCaptured" class="captured" aria-label="Piezas capturadas por el equipo inferior"></div><span class="turn-marker" id="bottomTurn">TURNO</span></div>
       <p class="sr-only" id="boardHelp"></p>
       <p id="onlineNotice" class="online-notice" hidden role="status"></p><button id="reconnectRoom" class="secondary" hidden>Reconectar partida</button>
@@ -90,7 +90,7 @@
   <div class="dialog-body">
     <div class="selected-piece"><div id="piecePreview" class="piece" aria-hidden="true"></div><div><span id="pieceName">Tu próxima jugada</span><small id="pieceInfo">Elige una pieza del tablero.</small></div></div>
     <div class="board-tools"><button id="flip">⇄ Girar tablero</button><button id="view" aria-pressed="false">◇ Vista inclinada</button><label><input id="legal" type="checkbox" checked> Ver movimientos posibles</label></div>
-    <details id="historyPanel"><summary>Movimientos <span id="moveCount">0</span></summary><ol id="history" aria-label="Historial de movimientos"></ol><button id="export" class="quiet">Descargar partida PGN ↓</button></details>
+    <details id="historyPanel"><summary>Movimientos <span id="moveCount">0</span></summary><ol id="history" dir="ltr" aria-label="Historial de movimientos"></ol><button id="export" class="quiet">Descargar partida PGN ↓</button></details>
     <button class="secondary" data-rules>Cómo jugar</button>
     <div id="standardActions" class="minor-actions"><button id="draw">Acordar tablas</button><button id="resign">Abandonar partida</button></div>
     <button id="declineDraw" class="secondary" hidden>Rechazar propuesta de tablas</button>

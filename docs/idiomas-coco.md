@@ -52,3 +52,5 @@ Se corrigió también el aviso para padres y tutores de la pantalla de acceso qu
 El tablero utiliza vocabulario propio de ajedrez para las piezas, el turno, las pistas y los finales de partida. El selector conserva la pieza seleccionada, las casillas legales, el historial y la posición guardada. Las coordenadas y la notación de las jugadas mantienen su valor al cambiar de idioma. Los enlaces para entrar, compartir e invitar incorporan el idioma activo.
 
 La prueba del selector juega un mate en cuatro medias jugadas y unas tablas por triple repetición. También comprueba un jaque, unas tablas por ahogado desde una posición guardada y las cuatro opciones de coronación con el diálogo abierto. Cada recorrido comprueba los mensajes en los 15 idiomas a través de los controles del juego.
+
+El selector se puede usar dentro de las ventanas de opciones, reglas y coronación de Ajedrez. El tablero conserva su orientación al activar el árabe y los dos botones de entrada de la ficha enlazan con el idioma elegido. El control de vista previa abre el botón inferior en Chrome con pantalla táctil simulada de 390 × 844, juega hasta un mate y regresa al menú principal.

@@ -2589,8 +2589,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "اللاعبون: {n}/{total} · الحد الأدنى {min}",
   "Jugar": "العب",
   "Jugar (": "اللعب (",
-  "Jugar a Ajedrez": "العب · الشطرنج",
-  "Jugar a Ajedrez →": "العب · الشطرنج →",
+  "Jugar a Ajedrez": "العب الشطرنج",
+  "Jugar a Ajedrez →": "العب الشطرنج →",
   "Jugar a Batalla Naval": "العب · لعبة السفن",
   "Jugar a Batalla Naval →": "العب · لعبة السفن →",
   "Jugar a Ciudad": "العب · Coco Ciudad",
@@ -5956,6 +5956,17 @@
   "Jaque mate. Ganan las negras.": "كش مات. فاز الأسود.",
   "En línea · Tú juegas con negras": "على الانترنت · الأسود",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "كش! احمِ ملكك. فوز 100 · تعادل 50 · خسارة 0.",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "تلعب بالأبيض. فوز 100 · تعادل 50 · خسارة 0."
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "تلعب بالأبيض. فوز 100 · تعادل 50 · خسارة 0.",
+  "Partida libre": "مباراة ودية",
+  "Dos personas": "لاعبان",
+  "Contra Coco": "اللعب ضد كوكو",
+  "Resolver desafíos": "حل ألغاز الشطرنج",
+  "Encuentra la jugada ganadora": "اعثر على النقلة الفائزة",
+  "Invita a alguien con cuenta de Coco": "ادعُ شخصًا لديه حساب كوكو",
+  "Compartir ajedrez": "مشاركة شطرنج كوكو",
+  "Tu próxima gran jugada.": "نقلتك الرائعة القادمة.",
+  "En este dispositivo": "على هذا الجهاز",
+  "La única que suma puntos · Hasta 100": "المباراة الوحيدة التي تمنح نقاطًا · حتى 100 نقطة",
+  "Coco en Forma, menú principal": "Coco en Forma، القائمة الرئيسية"
  }
 }

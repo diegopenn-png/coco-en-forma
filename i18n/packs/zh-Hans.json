@@ -2560,8 +2560,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "玩家：{n}/{total} · 至少 {min} 人",
   "Jugar": "开始游戏",
   "Jugar (": "玩游戏(",
-  "Jugar a Ajedrez": "开始游戏 · 国际象棋",
-  "Jugar a Ajedrez →": "开始游戏 · 国际象棋 →",
+  "Jugar a Ajedrez": "下国际象棋",
+  "Jugar a Ajedrez →": "下国际象棋 →",
   "Jugar a Batalla Naval": "开始游戏 · 海战棋",
   "Jugar a Batalla Naval →": "开始游戏 · 海战棋 →",
   "Jugar a Ciudad": "开始游戏 · Coco Ciudad",
@@ -5904,6 +5904,17 @@
   "Jaque mate. Ganan las negras.": "将杀。黑方胜。",
   "En línea · Tú juegas con negras": "在线 · 黑方",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "将军！请保护你的王。胜 100 分 · 和 50 分 · 负 0 分。",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "你执白。胜 100 分 · 和 50 分 · 负 0 分。"
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "你执白。胜 100 分 · 和 50 分 · 负 0 分。",
+  "Partida libre": "自由对局",
+  "Dos personas": "双人对弈",
+  "Contra Coco": "与 Coco 对弈",
+  "Resolver desafíos": "解国际象棋谜题",
+  "Encuentra la jugada ganadora": "找出制胜的一步",
+  "Invita a alguien con cuenta de Coco": "邀请拥有 Coco 账号的朋友",
+  "Compartir ajedrez": "分享 Coco 国际象棋",
+  "Tu próxima gran jugada.": "走出你的下一步妙棋。",
+  "En este dispositivo": "在此设备上",
+  "La única que suma puntos · Hasta 100": "只有这场对局计分 · 最高 100 分",
+  "Coco en Forma, menú principal": "Coco en Forma 主菜单"
  }
 }

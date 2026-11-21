@@ -2652,8 +2652,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "Spelers: {n}/{total} · Minimaal {min}",
   "Jugar": "Spelen",
   "Jugar (": "Spelen (",
-  "Jugar a Ajedrez": "Spelen · Schaken",
-  "Jugar a Ajedrez →": "Spelen · Schaken →",
+  "Jugar a Ajedrez": "Speel schaak",
+  "Jugar a Ajedrez →": "Speel schaak →",
   "Jugar a Batalla Naval": "Spelen · Zeeslag",
   "Jugar a Batalla Naval →": "Spelen · Zeeslag →",
   "Jugar a Ciudad": "Spelen · Coco Ciudad",
@@ -6024,6 +6024,17 @@
   "Jaque mate. Ganan las negras.": "Schaakmat. Zwart wint.",
   "En línea · Tú juegas con negras": "Online · Zwart",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "Schaak! Bescherm je koning. Winst 100 · Remise 50 · Verlies 0.",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Je speelt met wit. Winst 100 · Remise 50 · Verlies 0."
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Je speelt met wit. Winst 100 · Remise 50 · Verlies 0.",
+  "Partida libre": "Vrije partij",
+  "Dos personas": "Twee spelers",
+  "Contra Coco": "Tegen Coco spelen",
+  "Resolver desafíos": "Los schaakpuzzels op",
+  "Encuentra la jugada ganadora": "Vind de winnende zet",
+  "Invita a alguien con cuenta de Coco": "Nodig iemand met een Coco-account uit",
+  "Compartir ajedrez": "Coco Schaken delen",
+  "Tu próxima gran jugada.": "Je volgende meesterzet.",
+  "En este dispositivo": "Op dit apparaat",
+  "La única que suma puntos · Hasta 100": "Alleen deze partij levert punten op · Maximaal 100",
+  "Coco en Forma, menú principal": "Coco en Forma, hoofdmenu"
  }
 }

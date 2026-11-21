@@ -2649,8 +2649,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "Joueurs : {n}/{total} · Minimum {min}",
   "Jugar": "Jouer",
   "Jugar (": "Le jeu (",
-  "Jugar a Ajedrez": "Jouer · Échecs",
-  "Jugar a Ajedrez →": "Jouer · Échecs →",
+  "Jugar a Ajedrez": "Jouer aux échecs",
+  "Jugar a Ajedrez →": "Jouer aux échecs →",
   "Jugar a Batalla Naval": "Jouer · Bataille navale",
   "Jugar a Batalla Naval →": "Jouer · Bataille navale →",
   "Jugar a Ciudad": "Jouer · Coco Ciudad",
@@ -6029,6 +6029,17 @@
   "Jaque mate. Ganan las negras.": "Échec et mat. Les noirs gagnent.",
   "En línea · Tú juegas con negras": "En ligne · Noirs",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "Échec ! Protège ton roi. Victoire 100 · Nulle 50 · Défaite 0.",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Tu joues avec les blancs. Victoire 100 · Nulle 50 · Défaite 0."
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Tu joues avec les blancs. Victoire 100 · Nulle 50 · Défaite 0.",
+  "Partida libre": "Partie libre",
+  "Dos personas": "Deux joueurs",
+  "Contra Coco": "Jouer contre Coco",
+  "Resolver desafíos": "Résoudre des problèmes d’échecs",
+  "Encuentra la jugada ganadora": "Trouve le coup gagnant",
+  "Invita a alguien con cuenta de Coco": "Invite une personne qui a un compte Coco",
+  "Compartir ajedrez": "Partager les échecs de Coco",
+  "Tu próxima gran jugada.": "À toi de trouver le prochain grand coup.",
+  "En este dispositivo": "Sur cet appareil",
+  "La única que suma puntos · Hasta 100": "Seule cette partie rapporte des points · Jusqu’à 100",
+  "Coco en Forma, menú principal": "Coco en Forma, menu principal"
  }
 }

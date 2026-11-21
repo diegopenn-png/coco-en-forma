@@ -200,7 +200,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261121-14');
+    url.searchParams.set('v','20261121-15');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -261,7 +261,7 @@
       const attrs = el.tagName === 'META' ? ['content'] : ['placeholder','aria-label','alt','title'];
       for (const a of attrs) if (el.hasAttribute(a)) render(el,a,() => el.getAttribute(a),v => el.setAttribute(a,v));
     });
-    if (page === 'public' || page === 'game') each(root,'nav a[href],.actions a[href]',link => {
+    if (page === 'public' || page === 'game') each(root,'nav a[href],.actions a[href],.closing a.button[href]',link => {
       const raw = link.getAttribute('href');
       if (!raw || raw.startsWith('#') || link.hasAttribute('download') || link.hasAttribute('data-coco-original-document')) return;
       const url = new URL(raw,document.baseURI);

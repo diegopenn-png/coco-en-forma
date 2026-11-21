@@ -2619,8 +2619,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "Pelaajat: {n}/{total} · Vähintään {min}",
   "Jugar": "Pelaa",
   "Jugar (": "Pelaaminen (",
-  "Jugar a Ajedrez": "Pelaa · Shakki",
-  "Jugar a Ajedrez →": "Pelaa · Shakki →",
+  "Jugar a Ajedrez": "Pelaa shakkia",
+  "Jugar a Ajedrez →": "Pelaa shakkia →",
   "Jugar a Batalla Naval": "Pelaa · Laivanupotus",
   "Jugar a Batalla Naval →": "Pelaa · Laivanupotus →",
   "Jugar a Ciudad": "Pelaa · Coco Ciudad",
@@ -5984,6 +5984,17 @@
   "Jaque mate. Ganan las negras.": "Shakkimatti. Musta voittaa.",
   "En línea · Tú juegas con negras": "verkossa · Musta",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "Shakki! Suojaa kuningastasi. Voitto 100 · Tasapeli 50 · Tappio 0.",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Pelaat valkeilla. Voitto 100 · Tasapeli 50 · Tappio 0."
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Pelaat valkeilla. Voitto 100 · Tasapeli 50 · Tappio 0.",
+  "Partida libre": "Vapaa peli",
+  "Dos personas": "Kaksi pelaajaa",
+  "Contra Coco": "Pelaa Cocoa vastaan",
+  "Resolver desafíos": "Ratkaise shakkitehtäviä",
+  "Encuentra la jugada ganadora": "Löydä voittosiirto",
+  "Invita a alguien con cuenta de Coco": "Kutsu pelaaja, jolla on Coco-tili",
+  "Compartir ajedrez": "Jaa Coco-shakki",
+  "Tu próxima gran jugada.": "Seuraava hieno siirtosi.",
+  "En este dispositivo": "Tällä laitteella",
+  "La única que suma puntos · Hasta 100": "Vain tästä pelistä saa pisteitä · Enintään 100",
+  "Coco en Forma, menú principal": "Coco en Forma, päävalikko"
  }
 }

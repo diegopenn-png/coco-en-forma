@@ -2642,8 +2642,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "Spillere: {n}/{total} · Minst {min}",
   "Jugar": "Spill",
   "Jugar (": "Spillet (",
-  "Jugar a Ajedrez": "Spill · Sjakk",
-  "Jugar a Ajedrez →": "Spill · Sjakk →",
+  "Jugar a Ajedrez": "Spill sjakk",
+  "Jugar a Ajedrez →": "Spill sjakk →",
   "Jugar a Batalla Naval": "Spill · Senke slagskip",
   "Jugar a Batalla Naval →": "Spill · Senke slagskip →",
   "Jugar a Ciudad": "Spill · Coco Ciudad",
@@ -6012,6 +6012,17 @@
   "Jaque mate. Ganan las negras.": "Sjakkmatt. Svart vinner.",
   "En línea · Tú juegas con negras": "På nettet · Svart",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "Sjakk! Beskytt kongen din. Seier 100 · Remis 50 · Tap 0.",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Du spiller hvit. Seier 100 · Remis 50 · Tap 0."
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Du spiller hvit. Seier 100 · Remis 50 · Tap 0.",
+  "Partida libre": "Fritt parti",
+  "Dos personas": "To spillere",
+  "Contra Coco": "Spill mot Coco",
+  "Resolver desafíos": "Løs sjakkoppgaver",
+  "Encuentra la jugada ganadora": "Finn vinnertrekket",
+  "Invita a alguien con cuenta de Coco": "Inviter noen med Coco-konto",
+  "Compartir ajedrez": "Del Coco-sjakk",
+  "Tu próxima gran jugada.": "Ditt neste store trekk.",
+  "En este dispositivo": "På denne enheten",
+  "La única que suma puntos · Hasta 100": "Det eneste partiet som gir poeng · Opptil 100",
+  "Coco en Forma, menú principal": "Coco en Forma, hovedmeny"
  }
 }

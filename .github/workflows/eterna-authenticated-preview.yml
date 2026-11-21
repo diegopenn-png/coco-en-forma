@@ -399,6 +399,13 @@ jobs:
           COCO_QA_EVIDENCE_DIR: ${{ github.workspace }}/device-evidence/rendered
         run: node qa/device-update-browser.mjs
 
+      - name: Play chess through the published preview on a mobile viewport
+        env:
+          NODE_PATH: ${{ runner.temp }}/coco-device-qa/node_modules
+          COCO_QA_BROWSER_CHANNEL: chrome
+          COCO_QA_URL: ${{ env.PREVIEW_ORIGIN }}
+        run: node qa/ajedrez-mobile-preview.cjs
+
       - name: Preserve preview evidence
         if: always()
         uses: actions/upload-artifact@v4

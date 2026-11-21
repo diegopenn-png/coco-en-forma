@@ -2644,8 +2644,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "Players: {n}/{total} · Minimum {min}",
   "Jugar": "Play",
   "Jugar (": "The game (",
-  "Jugar a Ajedrez": "Play · Chess",
-  "Jugar a Ajedrez →": "Play · Chess →",
+  "Jugar a Ajedrez": "Play chess",
+  "Jugar a Ajedrez →": "Play chess →",
   "Jugar a Batalla Naval": "Play · Battleships",
   "Jugar a Batalla Naval →": "Play · Battleships →",
   "Jugar a Ciudad": "Play · Coco Ciudad",
@@ -6026,6 +6026,17 @@
   "Jaque mate. Ganan las negras.": "Checkmate. Black wins.",
   "En línea · Tú juegas con negras": "on line · Black",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "Check! Protect your king. Win 100 · Draw 50 · Loss 0.",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "You play White. Win 100 · Draw 50 · Loss 0."
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "You play White. Win 100 · Draw 50 · Loss 0.",
+  "Partida libre": "Casual game",
+  "Dos personas": "Two players",
+  "Contra Coco": "Play against Coco",
+  "Resolver desafíos": "Solve puzzles",
+  "Encuentra la jugada ganadora": "Find the winning move",
+  "Invita a alguien con cuenta de Coco": "Invite someone with a Coco account",
+  "Compartir ajedrez": "Share Coco Chess",
+  "Tu próxima gran jugada.": "Your next great move.",
+  "En este dispositivo": "On this device",
+  "La única que suma puntos · Hasta 100": "The only game that earns points · Up to 100",
+  "Coco en Forma, menú principal": "Coco en Forma, main menu"
  }
 }

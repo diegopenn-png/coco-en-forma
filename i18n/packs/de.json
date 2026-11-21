@@ -2660,8 +2660,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "Spieler: {n}/{total} · Mindestens {min}",
   "Jugar": "Spielen",
   "Jugar (": "Spielen (",
-  "Jugar a Ajedrez": "Spielen · Schach",
-  "Jugar a Ajedrez →": "Spielen · Schach →",
+  "Jugar a Ajedrez": "Schach spielen",
+  "Jugar a Ajedrez →": "Schach spielen →",
   "Jugar a Batalla Naval": "Spielen · Schiffe versenken",
   "Jugar a Batalla Naval →": "Spielen · Schiffe versenken →",
   "Jugar a Ciudad": "Spielen · Coco Ciudad",
@@ -6036,6 +6036,17 @@
   "Jaque mate. Ganan las negras.": "Schachmatt. Schwarz gewinnt.",
   "En línea · Tú juegas con negras": "online · Schwarz",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "Schach! Schütze deinen König. Sieg 100 · Remis 50 · Niederlage 0.",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Du spielst Weiß. Sieg 100 · Remis 50 · Niederlage 0."
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Du spielst Weiß. Sieg 100 · Remis 50 · Niederlage 0.",
+  "Partida libre": "Freie Partie",
+  "Dos personas": "Zwei Spieler",
+  "Contra Coco": "Gegen Coco spielen",
+  "Resolver desafíos": "Schachaufgaben lösen",
+  "Encuentra la jugada ganadora": "Finde den Gewinnzug",
+  "Invita a alguien con cuenta de Coco": "Lade jemanden mit einem Coco-Konto ein",
+  "Compartir ajedrez": "Coco-Schach teilen",
+  "Tu próxima gran jugada.": "Dein nächster großer Zug.",
+  "En este dispositivo": "Auf diesem Gerät",
+  "La única que suma puntos · Hasta 100": "Nur diese Partie bringt Punkte · Bis zu 100",
+  "Coco en Forma, menú principal": "Coco en Forma, Hauptmenü"
  }
 }

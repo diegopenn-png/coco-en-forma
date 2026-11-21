@@ -26,7 +26,21 @@ function toast(message){$('toast').textContent=message;$('toast').classList.add(
 function beep(capture=false){if(!sound)return;try{audio??=new(window.AudioContext||window.webkitAudioContext)();audio.resume();const osc=audio.createOscillator(),gain=audio.createGain();osc.connect(gain);gain.connect(audio.destination);osc.type='sine';osc.frequency.setValueAtTime(capture?330:640,audio.currentTime);osc.frequency.exponentialRampToValueAtTime(capture?180:840,audio.currentTime+.13);gain.gain.setValueAtTime(.06,audio.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.16);osc.start();osc.stop(audio.currentTime+.17)}catch{}}
 function cancelWork(){requestId++;worker?.terminate();worker=null;busy=false}
 function save(){if(mode!=='standard'||screen!=='play'||['online','daily'].includes(opponent))return;saved={pgn:game.pgn(),opponent,human,level,ended,finished:complete(),flipped,updated:Date.now()};if(!write(KEY,saved))toast('No se pudo guardar. Esta partida seguirá disponible mientras mantengas la página abierta.')}
-function modal(title,text,choices){return new Promise(resolve=>{const d=$('dialog');$('dialogTitle').textContent=title;$('dialogText').textContent=text;$('dialogChoices').replaceChildren();for(const [value,label]of choices){const b=document.createElement('button');b.value=value;b.textContent=label;b.className='primary';$('dialogChoices').append(b)}d.returnValue='cancel';d.addEventListener('close',()=>resolve(d.returnValue),{once:true});d.showModal()})}
+const languageSlot=document.querySelector('[data-coco-language-menu]');
+const languageHome=languageSlot?.parentElement;
+const openDialogs=[];
+function showDialog(dialog){
+ dialog.showModal();
+ if(!languageSlot)return;
+ openDialogs.push(dialog);
+ dialog.prepend(languageSlot);
+ dialog.addEventListener('close',()=>{
+  openDialogs.splice(openDialogs.lastIndexOf(dialog),1);
+  const parent=openDialogs.filter(item=>item.open).at(-1) || languageHome;
+  parent.prepend(languageSlot);
+ },{once:true});
+}
+function modal(title,text,choices){return new Promise(resolve=>{const d=$('dialog');$('dialogTitle').textContent=title;$('dialogText').textContent=text;$('dialogChoices').replaceChildren();for(const [value,label]of choices){const b=document.createElement('button');b.value=value;b.textContent=label;b.className='primary';$('dialogChoices').append(b)}d.returnValue='cancel';d.addEventListener('close',()=>resolve(d.returnValue),{once:true});showDialog(d)})}
 function selectedArt(type='n',color='w'){const el=$('piecePreview');el.dataset.type=type;el.dataset.color=color}
 function item(){return(mode==='learn'?LESSONS:CHALLENGES)[itemIndex]}
 function complete(){return Boolean(ended)||game.isGameOver()}
@@ -179,9 +193,9 @@ document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>showSetup(b.da
 document.querySelectorAll('[data-opponent]').forEach(b=>b.onclick=()=>{opponent=b.dataset.opponent;document.querySelectorAll('[data-opponent]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('aiSettings').hidden=opponent==='local'});
 $('start').onclick=()=>startStandard();$('resume').onclick=$('resumeSetup').onclick=()=>startStandard(true);
 $('back').onclick=()=>{if(screen==='play'&&opponent==='daily'){showDaily();return}if(screen==='waiting'||(screen==='play'&&opponent==='online'))showOnline();else if(screen==='play')showSetup();else if(screen!=='home')showHome();else location.assign(languageUrl(new URL('../../',location.href)))};$('newGame').onclick=()=>showHome();
-$('options').onclick=()=>$('optionsDialog').showModal();
+$('options').onclick=()=>showDialog($('optionsDialog'));
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
-document.querySelectorAll('[data-rules]').forEach(b=>b.onclick=()=>$('rulesDialog').showModal());
+document.querySelectorAll('[data-rules]').forEach(b=>b.onclick=()=>showDialog($('rulesDialog')));
 $('flip').onclick=()=>{flipped=!flipped;renderBoard();save()};$('view').onclick=()=>{const on=$('view').getAttribute('aria-pressed')!=='true';$('view').setAttribute('aria-pressed',String(on));document.querySelector('.arena').classList.toggle('inclined',on);$('view').textContent=on?'▦ Vista desde arriba':'◇ Vista inclinada'};
 $('legal').onchange=()=>renderBoard();$('sound').onclick=()=>{sound=!sound;$('sound').setAttribute('aria-pressed',String(sound));$('sound').setAttribute('aria-label',sound?'Desactivar sonido':'Activar sonido');toast(sound?'Sonido activado':'Sonido desactivado');if(sound)beep()};
 $('hint').onclick=()=>{if(['online','daily'].includes(opponent)||!canMove())return;if(mode==='standard')requestEngine('hint');else{const it=item(),from=mode==='learn'?it.from:it.solution.slice(0,2),to=mode==='learn'?it.to:it.solution.slice(2,4);highlight={from,to};selected=from;renderBoard();const piece=NAMES[game.get(from).type];showCoach(()=>t('{piece}: prueba mover de {from} a {to}.',{piece:t(piece),from,to}))}};
@@ -190,7 +204,7 @@ $('retry').onclick=()=>startItem(itemIndex);$('next').onclick=()=>{if(itemIndex+
 $('resign').onclick=async()=>{if(opponent==='daily'){$('optionsDialog').close();const ok=await modal('¿Abandonar la partida del día?','Se guardarán 0 puntos. Hoy podrás seguir jugando libremente, pero no repetir la partida que puntúa.',[['yes','Abandonar']]);if(ok==='yes')await dailyAction('daily_resign');return}if(opponent==='online'){const ok=await modal('¿Abandonar esta partida?','Ganará tu rival.',[['yes','Abandonar']]);if(ok==='yes'){$('optionsDialog').close();await onlineAction('resign')}return}$('optionsDialog').close();const color=opponent==='ai'?human:game.turn();const ok=await modal('¿Abandonar esta partida?','Ganará el otro equipo. Puedes empezar una partida nueva después.',[['yes','Abandonar']]);if(ok!=='yes')return;cancelWork();ended='El equipo '+(color==='w'?'plata':'grafito')+' abandona. Gana el equipo '+(color==='w'?'grafito.':'plata.');render();save()};
 $('draw').onclick=async()=>{if(opponent==='daily')return;if(opponent==='online'){await onlineAction('draw');$('optionsDialog').close();return}$('optionsDialog').close();const ok=await modal('¿Ambos aceptáis las tablas?','Usad esta opción solo si los dos jugadores estáis de acuerdo en empatar.',[['yes','Ambos aceptamos']]);if(ok!=='yes')return;ended='Tablas por acuerdo de ambos jugadores.';render();save()};
 $('export').onclick=()=>{const copy=new Chess();copy.loadPgn(game.pgn());copy.header('Event',opponent==='daily'?'Coco Ajedrez · Partida del día':'Coco Ajedrez','White',['ai','daily'].includes(opponent)?(human==='w'?'Jugador':'Coco'):'Blancas','Black',['ai','daily'].includes(opponent)?(human==='b'?'Jugador':'Coco'):'Negras');const result=opponent==='daily'?dailyRoom.result:opponent==='online'?onlineRoom.result:game.isCheckmate()?(game.turn()==='w'?'0-1':'1-0'):ended.includes('abandona')?(ended.includes('plata abandona')?'0-1':'1-0'):ended||game.isDraw()?'1/2-1/2':'*';copy.header('Result',result);const url=URL.createObjectURL(new Blob([copy.pgn()],{type:'application/x-chess-pgn'}));const a=document.createElement('a');a.href=url;a.download='coco-ajedrez.pgn';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
-$('share').onclick=async()=>{const url=languageUrl(new URL('./',location.href));try{if(navigator.share){await navigator.share({title:t('Coco Ajedrez · La ciudad del futuro'),url});return}await navigator.clipboard.writeText(url);toast('Enlace copiado. Ya puedes compartirlo.')}catch(e){if(e.name!=='AbortError'){const choice=await modal('Comparte Coco Ajedrez',url,[['copy','Seleccionar enlace']]);if(choice==='copy'){const range=document.createRange();range.selectNodeContents($('dialogText'));$('dialog').showModal();getSelection().removeAllRanges();getSelection().addRange(range)}}}};
+$('share').onclick=async()=>{const url=languageUrl(new URL('./',location.href));try{if(navigator.share){await navigator.share({title:t('Coco Ajedrez · La ciudad del futuro'),url});return}await navigator.clipboard.writeText(url);toast('Enlace copiado. Ya puedes compartirlo.')}catch(e){if(e.name!=='AbortError'){const choice=await modal('Comparte Coco Ajedrez',url,[['copy','Seleccionar enlace']]);if(choice==='copy'){const range=document.createRange();range.selectNodeContents($('dialogText'));showDialog($('dialog'));getSelection().removeAllRanges();getSelection().addRange(range)}}}};
 window.addEventListener('pagehide',()=>{save();cancelWork();onlineApi?.stop()});window.addEventListener('pageshow',()=>{if(screen==='play'&&mode==='standard'&&!complete()&&opponent==='ai'&&game.turn()!==human&&!busy)requestEngine('play')});
 async function getOnline(){
  if(!onlineApi){const {OnlineChess}=await import('./online.mjs');onlineApi=new OnlineChess()}

@@ -1,0 +1,61 @@
+const assert = require('node:assert/strict');
+const {readFileSync} = require('node:fs');
+const {join} = require('node:path');
+const {chromium} = require('playwright');
+
+async function verify(page, origin) {
+  await page.goto(new URL('/juego/ajedrez/?lang=es', origin).href);
+  const picker = page.locator('.coco-language-bar select');
+  const tags = await picker.locator('option').evaluateAll(options => options.map(option => option.value));
+  assert.equal(tags.length, 15);
+  async function choose(tag) {
+    await picker.selectOption(tag);
+    await page.waitForFunction(tag => document.documentElement.lang === tag, tag);
+  }
+  await choose('en');
+  for (const link of await page.locator('a[href*="/games/ajedrez/"]').all()) {
+    assert.equal(new URL(await link.getAttribute('href'), origin).searchParams.get('lang'), 'en');
+  }
+  await page.locator('.closing a.button').tap();
+  await page.locator('[data-mode="standard"]').tap();
+  await page.locator('[data-opponent="local"]').tap();
+  await page.locator('#start').tap();
+  const square = name => page.locator('[data-square="'+name+'"]');
+  await square('f2').tap();
+  const initial = await square('f2').boundingBox();
+  await choose('ar');
+  assert.equal(await square('f2').getAttribute('aria-pressed'), 'true');
+  const a = await square('a1').boundingBox();
+  const h = await square('h1').boundingBox();
+  assert.ok(a.x < h.x, 'Arabic must keep a1 to the left of h1 for White');
+  assert.ok(Math.abs((await square('f2').boundingBox()).x - initial.x) < 1, 'selected file keeps its place');
+  for (const name of ['f3','e7','e5','g2','g4','d8','h4']) await square(name).tap();
+  const result = 'Jaque mate. Gana el equipo grafito (negras).';
+  const history = await page.locator('#history').textContent();
+  assert.match(history, /Qh4#/);
+  for (const tag of tags) {
+    await choose(tag);
+    const expected = tag === 'es' ? result : JSON.parse(readFileSync(join(__dirname,'../i18n/packs',tag+'.json'),'utf8')).chess[result];
+    await page.waitForFunction(expected => document.getElementById('boardHelp').textContent === expected, expected);
+    assert.equal(await page.locator('#history').textContent(),history);
+  }
+  await page.locator('#options').tap();
+  await page.locator('#optionsDialog [data-rules]').tap();
+  await choose('fr');
+  assert.ok(await page.locator('#rulesDialog').isVisible());
+  await page.locator('#rulesDialog .dialog-return').tap();
+  assert.ok(await page.locator('#optionsDialog .coco-language-bar select').isVisible());
+  await page.locator('#optionsDialog .dialog-return').tap();
+  await page.locator('.topbar nav a').tap();
+  await page.waitForFunction(() => document.documentElement.lang === 'fr');
+  assert.equal(new URL(page.url()).pathname,'/');
+  assert.equal(await picker.inputValue(),'fr');
+  console.log('15 checkmate messages verified, board orientation preserved in Arabic, French retained through nested dialogs and return to the main menu.');
+}
+(async()=>{
+  const browser = await chromium.launch({channel:process.env.COCO_QA_BROWSER_CHANNEL});
+  try {
+    const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
+    await verify(page,process.env.COCO_QA_URL);
+  } finally {await browser.close();}
+})().catch(error=>{console.error(error);process.exitCode=1;});

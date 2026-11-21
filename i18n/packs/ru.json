@@ -2620,8 +2620,8 @@
   "Jugadores: {n}/{total} · Mínimo {min}": "Игроки: {n}/{total} · Минимум {min}",
   "Jugar": "Играть",
   "Jugar (": "Игры (",
-  "Jugar a Ajedrez": "Играть · Шахматы",
-  "Jugar a Ajedrez →": "Играть · Шахматы →",
+  "Jugar a Ajedrez": "Играть в шахматы",
+  "Jugar a Ajedrez →": "Играть в шахматы →",
   "Jugar a Batalla Naval": "Играть · Морской бой",
   "Jugar a Batalla Naval →": "Играть · Морской бой →",
   "Jugar a Ciudad": "Играть · Coco Ciudad",
@@ -5987,6 +5987,17 @@
   "Jaque mate. Ganan las negras.": "Мат. Чёрные выиграли.",
   "En línea · Tú juegas con negras": "В Линии · Чёрные",
   "¡Jaque! Protege a tu rey. Victoria 100 · Tablas 50 · Derrota 0.": "Шах! Защити короля. Победа 100 · Ничья 50 · Поражение 0.",
-  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Ты играешь белыми. Победа 100 · Ничья 50 · Поражение 0."
+  "Juegas con blancas. Victoria 100 · Tablas 50 · Derrota 0.": "Ты играешь белыми. Победа 100 · Ничья 50 · Поражение 0.",
+  "Partida libre": "Свободная партия",
+  "Dos personas": "Два игрока",
+  "Contra Coco": "Играть против Коко",
+  "Resolver desafíos": "Решать шахматные задачи",
+  "Encuentra la jugada ganadora": "Найди выигрышный ход",
+  "Invita a alguien con cuenta de Coco": "Пригласи игрока с аккаунтом Coco",
+  "Compartir ajedrez": "Поделиться шахматами Coco",
+  "Tu próxima gran jugada.": "Твой следующий блестящий ход.",
+  "En este dispositivo": "На этом устройстве",
+  "La única que suma puntos · Hasta 100": "Только за эту партию начисляются очки · До 100",
+  "Coco en Forma, menú principal": "Coco en Forma, главное меню"
  }
 }
