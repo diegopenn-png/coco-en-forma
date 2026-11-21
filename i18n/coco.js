@@ -103,6 +103,10 @@
   function localize(value, report = false, game = false) {
     const key = value.trim().replace(/\s+/g, ' ');
     let translated = (report && reportStatistic(key)) || message(key);
+    if (translated === key && key.startsWith('Tabla independiente dedicada exclusivamente a ') && key.endsWith('.')) {
+      const gameName = key.slice('Tabla independiente dedicada exclusivamente a '.length,-1);
+      translated = message('Clasificación')+' · '+message(gameName);
+    }
     if (report && translated === key) translated = reportPhrase(key);
     if (game && translated === key) translated = gamePhrase(key);
     if (translated === key) {

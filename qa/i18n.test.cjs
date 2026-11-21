@@ -352,10 +352,11 @@ test('the game leaderboard keeps player names and updates the score and best gam
     assert.ok(start>=0);
     const table=w.Function('money','esc',source+';return rankingTableHtml;')(String,s=>s);
     const board={myPosition:8,totalPlayers:1234,rows:[{position:8,apodo:'Memoria',plays:2375,best:1000,total:23456}]};
-    doc.body.insertAdjacentHTML('beforeend',table(board));
+    doc.body.insertAdjacentHTML('beforeend','<p data-ranking-description>Tabla independiente dedicada exclusivamente a Coco Generala.</p>'+table(board));
     for(const tag of [...locales.slice(1),'es']){
       await api.setLanguage(tag);
       const row=doc.querySelector('.cocoRankingRow');
+      assert.equal(doc.querySelector('[data-ranking-description]').textContent,tag==='es'?'Tabla independiente dedicada exclusivamente a Coco Generala.':api.t('Clasificación')+' · '+api.t('Coco Generala'));
       assert.equal(row.querySelector('[data-coco-verbatim]').textContent,'Memoria');
       assert.equal(row.querySelector('[data-ranking-stat="best"]').textContent,api.t('Mejor puntuación'));
       assert.equal(row.querySelector('strong [data-coco-number]').textContent,(23456).toLocaleString(tag));
