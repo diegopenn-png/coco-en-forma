@@ -56,7 +56,7 @@
   function reportSkill(value) {
     return message(reportSkills.find(s => s.toLowerCase() === value) || value);
   }
-  function reportPhrase(key) {
+  function reportPhrase(key, element) {
     const templates = [
       ['Más avance en: ', 'Más avance en: {topic}'],
       ['Practicar: ', 'Practicar: {topic}'],
@@ -85,10 +85,15 @@
     }
     const alternate = key.match(/^Puede alternar (.+?) con (.+?) en días distintos\.$/);
     if (alternate) return message('Practicar en días distintos: {a} / {b}.',{a:reportSkill(alternate[1]),b:reportSkill(alternate[2])});
-    const summary = key.match(/^Ha trabajado (.+?)(?:\. Solo valoramos los conceptos con al menos dos interacciones; el resto se muestra como actividad, sin inventar conclusiones\.|, pero todavía necesitamos más de una interacción sobre un mismo concepto antes de sacar conclusiones\.)$/);
+    const summary = key.match(/^Ha trabajado (.+?)(\. Solo valoramos los conceptos con al menos dos interacciones; el resto se muestra como actividad, sin inventar conclusiones\.|, pero todavía necesitamos más de una interacción sobre un mismo concepto antes de sacar conclusiones\.)$/);
     if (summary) {
-      const topics = summary[1].split(', ').map(topic => message(topic));
-      return message('Se ha practicado: {topics}.',{topics:new Intl.ListFormat(current).format(topics)})+' '+message('Solo se valoran conceptos con al menos dos interacciones. El resto figura como actividad.');
+      const recorded = element?.getAttribute('data-coco-report-subjects');
+      const topics = recorded ? JSON.parse(recorded) : summary[1].split(', ');
+      const list = new Intl.ListFormat(current).format(topics.map(topic => message(topic)));
+      const guidance = summary[2].startsWith(',')
+        ? 'Todavía hace falta repetir un mismo concepto para valorar el progreso.'
+        : 'Solo se valoran conceptos con al menos dos interacciones. El resto figura como actividad.';
+      return message('Se ha practicado: {topics}.',{topics:list})+' '+message(guidance);
     }
     return key;
   }
@@ -108,14 +113,14 @@
     if (lobby) return message('Jugadores: {n}/{total} · Mínimo {min}',{n:number(lobby[1]),total:number(lobby[2]),min:number(lobby[3])});
     return key;
   }
-  function localize(value, report = false, game = false) {
+  function localize(value, report = false, game = false, element) {
     const key = value.trim().replace(/\s+/g, ' ');
     let translated = (report && reportStatistic(key)) || message(key);
     if (translated === key && key.startsWith('Tabla independiente dedicada exclusivamente a ') && key.endsWith('.')) {
       const gameName = key.slice('Tabla independiente dedicada exclusivamente a '.length,-1);
       translated = message('Clasificación')+' · '+message(gameName);
     }
-    if (report && translated === key) translated = reportPhrase(key);
+    if (report && translated === key) translated = reportPhrase(key,element);
     if (game && translated === key) translated = gamePhrase(key);
     if (translated === key) {
       for (const prefix of ['Inicia sesión para abrir ','Copiar enlace de ']) {
@@ -141,7 +146,7 @@
     const canonical = slot !== 'text' && node.getAttribute('data-coco-source-'+slot);
     const source = canonical || (previous && previous.output === value ? previous.source : value);
     const owner = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
-    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game');
+    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game',owner);
     if (value !== output) write(output);
     bindings.set(slot,{source,output});
   }
@@ -181,7 +186,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261121-10');
+    url.searchParams.set('v','20261121-11');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -315,7 +320,7 @@
     if (doc.title.endsWith(brandSuffix)) doc.title = message(doc.title.slice(0, -brandSuffix.length)) + brandSuffix;
     for (const el of doc.querySelectorAll(publicElements)) {
       if (el.closest(privateAreas)) continue;
-      for (const node of el.childNodes) if (node.nodeType === Node.TEXT_NODE) node.data = localize(node.data,true);
+      for (const node of el.childNodes) if (node.nodeType === Node.TEXT_NODE) node.data = localize(node.data,true,false,el);
       for (const attr of ['title','aria-label','alt']) if (el.hasAttribute(attr)) el.setAttribute(attr,localize(el.getAttribute(attr)));
     }
     return '<!doctype html>'+doc.documentElement.outerHTML;

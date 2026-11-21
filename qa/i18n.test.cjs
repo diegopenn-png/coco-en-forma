@@ -342,6 +342,44 @@ test('report counts, percentages and weekly activity localize in the open report
   }finally{dom.window.close();}
 });
 
+test('family summaries distinguish no practice, a first attempt and repeated practice in all languages',async()=>{
+  const {api,w,doc,dom}=page();
+  try {
+    await api.ready;
+    w.eval(fs.readFileSync(path.join(root,'coco-v153-fixes.js'),'utf8'));
+    const kit=w.CocoFamilyReportKitV16084;
+    const subjects=['Matemáticas','Taller, «A y B»'];
+    const intro='Ha trabajado '+subjects.join(', ');
+    const empty='Todavía no hay actividad escolar suficiente para preparar una valoración.';
+    const states=[
+      {summary:empty},
+      {summary:intro+', pero todavía necesitamos más de una interacción sobre un mismo concepto antes de sacar conclusiones.',guidance:'Todavía hace falta repetir un mismo concepto para valorar el progreso.'},
+      {summary:intro+'. Solo valoramos los conceptos con al menos dos interacciones; el resto se muestra como actividad, sin inventar conclusiones.',guidance:'Solo se valoran conceptos con al menos dos interacciones. El resto figura como actividad.'}
+    ];
+    for(const state of states){
+      const learning={theme:'learning',summary:state.summary,groups:state.guidance?[{title:'Materias trabajadas',items:subjects}]:[]};
+      const family={learning,games:{theme:'games'}};
+      const view=doc.createElement('main');
+      view.innerHTML=kit.familyHtml(family,true);
+      doc.body.append(view);
+      for(const tag of [...locales.slice(1),'es']){
+        await api.setLanguage(tag);
+        let expected=state.summary;
+        if(tag!=='es'){
+          const topics=new Intl.ListFormat(tag).format(subjects.map(subject=>api.t(subject)));
+          expected=state.guidance?api.t('Se ha practicado: {topics}.',{topics})+' '+api.t(state.guidance):api.t(empty);
+          assert.notEqual(api.t(state.guidance||empty),state.guidance||empty);
+        }
+        const print=new w.DOMParser().parseFromString(kit.familyDocumentHtml(family),'text/html');
+        for(const output of [view,print]){
+          assert.equal(output.querySelector('.cocoV160100PlainSummary').textContent,expected,tag);
+        }
+      }
+      view.remove();
+    }
+  } finally { dom.window.close(); }
+});
+
 test('the game leaderboard keeps player names and updates the score and best game in place',async()=>{
   const {api,w,doc,dom}=page();
   try{

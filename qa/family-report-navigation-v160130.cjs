@@ -6,9 +6,10 @@ const sample={kind:'family',student:{name:'Perfil de prueba',age:'10 años',scho
 (async()=>{
 const server=http.createServer((req,res)=>{let p=path.join(root,decodeURIComponent(req.url.split('?')[0]));try{if(fs.statSync(p).isDirectory())p=path.join(p,'index.html');res.setHeader('Content-Type',types[path.extname(p)]||'application/octet-stream');res.end(fs.readFileSync(p))}catch{res.writeHead(404).end()}});await new Promise(ok=>server.listen(4189,'127.0.0.1',ok));
 const browser=await chromium.launch({headless:true,...(process.env.COCO_CHROMIUM_PATH?{executablePath:process.env.COCO_CHROMIUM_PATH}:{}),args:['--no-sandbox','--disable-gpu','--no-zygote']});const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block',isMobile:true,hasTouch:true});const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
+let attempts=3;
 await p.route('**/*',r=>{const u=new URL(r.request().url());if(u.hostname==='127.0.0.1')return r.continue();if(u.hostname==='cdn.jsdelivr.net'&&u.pathname.includes('supabase'))return r.fulfill({contentType:'application/javascript',body:fs.readFileSync(root+'/supabase-js-2.112.3.min.js','utf8')});if(u.hostname.endsWith('workers.dev')&&u.pathname==='/v1/export')return r.fulfill({
   headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:4189','Access-Control-Allow-Methods':'GET, OPTIONS','Access-Control-Allow-Headers':'authorization, content-type'},
-  json:{student_profile:{school_year:'5º de Primaria'},student_concept_memory:[{concept_label:'Memoria',subject:'Matemáticas',attempts:3,mastery_score:.8}],learning_strategy_memory:[{strategy_key:'worked_example',evidence_count:3,success_score:.8}],academic_memory:[],usage:[{usage_date:'2026-11-21'}]}
+  json:{student_profile:{school_year:'5º de Primaria'},student_concept_memory:attempts?[{concept_label:'Memoria',subject:'Matemáticas',attempts,mastery_score:.8},{concept_label:'Proyecto',subject:'Taller, «A y B»',attempts:1,mastery_score:.5}]:[],learning_strategy_memory:attempts>1?[{strategy_key:'worked_example',evidence_count:3,success_score:.8}]:[],academic_memory:[],usage:[]}
 });if(u.hostname.endsWith('workers.dev'))return r.fulfill({headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:4189','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':r.request().headers()['access-control-request-headers']||'authorization, content-type'},contentType:'application/json',body:JSON.stringify({ok:true,subscription:{status:'active',plan:'monthly'},student:{},summary:{},report:{},features:{},usage:{},parent_settings:{}})});return r.abort()});
 await p.addInitScript(({hash})=>{
 const user={id:'00000000-0000-4000-8000-000000000001',email:'visual-test@example.invalid',user_metadata:{apodo:'Perfil de prueba',edad:'10'}};let session={access_token:'synthetic-ui-only',user};
@@ -19,37 +20,59 @@ window.__COCO_SUPABASE_CLIENT={from:query,rpc:()=>Promise.resolve({data:[],error
 }, {hash:crypto.createHash('sha256').update('coco-familia-4826').digest('hex')});
 if(process.argv.includes('--languages')){
   try{
-    await p.goto('http://127.0.0.1:4189/?lang=fr',{waitUntil:'domcontentloaded'});
     const choose=p.locator('[data-coco-language-menu] select').first();
-    await choose.waitFor();
     const familyButton=p.locator('.cocoFamiliaBtn').first();
-    for(const tag of ['fr','ar','en']){
-      await choose.selectOption(tag);
-      await p.waitForFunction(tag=>window.CocoLocale?.tag===tag,tag);
-      await familyButton.click();
-      const pin=p.locator('.cocoFamilyPin input').first();
-      await pin.fill('1');
-      await p.locator('[data-family-enter]').click();
-      await p.waitForFunction(()=>document.querySelector('.cocoFamilyError')?.textContent===CocoLocale.t('Escribe exactamente cuatro cifras.'));
-      await p.locator('[data-family-recover-open]').click();
-      await p.waitForFunction(()=>document.querySelector('[data-family-recover-email] bdi')?.textContent==='vi***t@example.invalid');
-      await p.locator('[data-family-recover-save]').click();
-      await p.waitForFunction(()=>document.querySelector('[data-family-recover-msg]')?.textContent===CocoLocale.t('Escribe la contraseña de la cuenta.'));
-      await p.locator('[data-family-recover-close]').click();
-      await pin.fill(tag==='ar'?'٤٨٢٦':'4826');
-      await p.locator('[data-family-enter]').click();
-      const printButton=p.locator('[data-family-integral-export]:enabled');
-      await printButton.click();
-      const report=p.frameLocator('.cocoReportPreview iframe');
-      await report.locator('html[lang="'+tag+'"]').waitFor();
-      assert.equal(await report.locator('html').getAttribute('dir'),tag==='ar'?'rtl':'ltr');
-      assert.equal(await p.locator('html').getAttribute('lang'),tag);
-      const strategy=await p.evaluate(()=>CocoLocale.t('ejemplos similares'));
-      assert.ok((await report.locator('[data-family-integral-chapter="learning"]').innerText()).includes(strategy));
-      assert.ok((await report.locator('.cocoV16086ExportIdentity').innerText()).includes('Perfil de prueba'));
-      await report.locator('.is-home').click();
-      await p.locator('.cocoFamilyV129').waitFor({state:'detached'});
-      console.log('Family PIN, recovery, report and print preview passed in '+tag);
+    const profiles = [
+      {attempts:3, languages:['fr','ar','en','es','de']},
+      {attempts:1, languages:['nl','it','ru','zh-Hans','da']},
+      {attempts:0, languages:['pl','uk','sv','fi','nb']}
+    ];
+    for(const profile of profiles){
+      attempts=profile.attempts;
+      await p.goto('http://127.0.0.1:4189/?lang='+profile.languages[0],{waitUntil:'domcontentloaded'});
+      for(const tag of profile.languages){
+        await choose.selectOption(tag);
+        await p.waitForFunction(tag=>window.CocoLocale?.tag===tag,tag);
+        await familyButton.click();
+        const pin=p.locator('.cocoFamilyPin input').first();
+        await pin.fill('1');
+        await p.locator('[data-family-enter]').click();
+        await p.waitForFunction(()=>document.querySelector('.cocoFamilyError')?.textContent===CocoLocale.t('Escribe exactamente cuatro cifras.'));
+        await p.locator('[data-family-recover-open]').click();
+        await p.waitForFunction(()=>document.querySelector('[data-family-recover-email] bdi')?.textContent==='vi***t@example.invalid');
+        await p.locator('[data-family-recover-save]').click();
+        await p.waitForFunction(()=>document.querySelector('[data-family-recover-msg]')?.textContent===CocoLocale.t('Escribe la contraseña de la cuenta.'));
+        await p.locator('[data-family-recover-close]').click();
+        await pin.fill(tag==='ar'?'٤٨٢٦':'4826');
+        await p.locator('[data-family-enter]').click();
+        const printButton=p.locator('[data-family-integral-export]:enabled');
+        await printButton.waitFor();
+        const chapter='[data-family-integral-chapter="learning"]';
+        const summarySelector=chapter+' .cocoV160100PlainSummary';
+        const expected=await p.evaluate(({attempts,tag})=>{
+          if(!attempts)return CocoLocale.t('Todavía no hay actividad escolar suficiente para preparar una valoración.');
+          const subjects=['Matemáticas','Taller, «A y B»'];
+          if(tag==='es')return 'Ha trabajado '+subjects.join(', ')+(attempts===1?', pero todavía necesitamos más de una interacción sobre un mismo concepto antes de sacar conclusiones.':'. Solo valoramos los conceptos con al menos dos interacciones; el resto se muestra como actividad, sin inventar conclusiones.');
+          const topics=new Intl.ListFormat(tag).format(subjects.map(s=>CocoLocale.t(s)));
+          return CocoLocale.t('Se ha practicado: {topics}.',{topics})+' '+CocoLocale.t(attempts===1?'Todavía hace falta repetir un mismo concepto para valorar el progreso.':'Solo se valoran conceptos con al menos dos interacciones. El resto figura como actividad.');
+        },{attempts,tag});
+        await p.waitForFunction(([s,text])=>document.querySelector(s)?.textContent===text,[summarySelector,expected]);
+        assert.equal(await p.locator(chapter+' .cocoV16083Next').count(),attempts?1:0);
+        await printButton.click();
+        const report=p.frameLocator('.cocoReportPreview iframe');
+        await report.locator('html[lang="'+tag+'"]').waitFor();
+        assert.equal(await report.locator('html').getAttribute('dir'),tag==='ar'?'rtl':'ltr');
+        assert.equal(await p.locator('html').getAttribute('lang'),tag);
+        assert.equal(await report.locator(summarySelector).textContent(),expected);
+        if(attempts>1){
+          const strategy=await p.evaluate(()=>CocoLocale.t('ejemplos similares'));
+          assert.ok((await report.locator(chapter).innerText()).includes(strategy));
+        }
+        assert.ok((await report.locator('.cocoV16086ExportIdentity').innerText()).includes('Perfil de prueba'));
+        await report.locator('.is-home').click();
+        await p.locator('.cocoFamilyV129').waitFor({state:'detached'});
+        console.log('Family PIN, recovery, report and print preview passed in '+tag+' (attempts per concept: '+attempts+')');
+      }
     }
     assert.deepEqual(errors,[]);
   }catch(error){
