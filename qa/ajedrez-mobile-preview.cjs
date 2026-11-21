@@ -46,6 +46,8 @@ async function verify(page, origin) {
   await page.locator('#rulesDialog .dialog-return').tap();
   await page.locator('#optionsDialog .coco-language-bar select').waitFor({state:'visible'});
   await page.locator('#optionsDialog .dialog-return').tap();
+  await page.locator('#optionsDialog').waitFor({state:'hidden'});
+  await page.locator('body > [data-coco-language-menu] select').waitFor({state:'visible'});
   const menuLink = page.locator('.topbar nav a');
   await menuLink.waitFor({state:'visible'});
   try {
@@ -92,6 +94,17 @@ async function verify(page, origin) {
   const browser = await chromium.launch({channel:process.env.COCO_QA_BROWSER_CHANNEL});
   try {
     const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
-    await verify(page,process.env.COCO_QA_URL);
+    page.setDefaultTimeout(12000);
+    try {
+      await verify(page,process.env.COCO_QA_URL);
+    } catch(error) {
+      const state=await page.evaluate(()=>({
+        path:location.pathname,screen:document.body.dataset.screen,lang:document.documentElement.lang,
+        dialogs:[...document.querySelectorAll('dialog[open]')].map(d=>d.id),
+        active:document.activeElement?.outerHTML.slice(0,220)
+      }));
+      console.error('Chess screen',JSON.stringify(state));
+      throw error;
+    }
   } finally {await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});

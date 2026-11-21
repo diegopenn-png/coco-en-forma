@@ -338,5 +338,9 @@ window.addEventListener('coco:language',()=>{
  if(screen==='play')renderBoard();
 });
 selectedArt();render();
+// The translated labels change the height of these touch targets on first paint.
+Promise.resolve(window.CocoLocale?.ready).then(()=>{
+ document.querySelector('.mode-menu').removeAttribute('inert');
+});
 if(new URLSearchParams(location.hash.slice(1)).has('sala'))showOnline();
 if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('../../sw.js').catch(()=>{});
