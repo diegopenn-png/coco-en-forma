@@ -1,3 +1,4 @@
+import { assertPwaRelease } from './pwa-release-contract.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -42,5 +43,5 @@ test("dynamic viewport wins over the small-viewport fallback", () => {
 
 test("the release invalidates both document and service-worker caches", () => {
   assert.match(read("index.html"), /eterna-v159\.js\?v=160114/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.100\.60-family-contrast/);
+  assertPwaRelease(read("sw.js"));
 });

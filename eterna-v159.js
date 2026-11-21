@@ -1059,7 +1059,7 @@
 
     button.onclick=async function(event){
       if(event){event.preventDefault();event.stopPropagation()}
-      var pin=String(input.value||"").replace(/\D/g,"");
+      var pin=window.CocoLocale?.pinDigits(input.value) ?? String(input.value||"").replace(/\D/g,"");
       if(pin.length!==4){
         if(error)error.textContent="Escribe exactamente cuatro cifras.";
         return

@@ -23,6 +23,14 @@
     if (code === 'no') return 'nb';
     return Object.hasOwn(languages, code) ? code : null;
   }
+  function pinDigits(value) {
+    // Use the same four digits for input from Arabic, Persian and full-width keyboards.
+    return String(value || '').replace(/[٠-٩۰-۹０-９]/g, digit => {
+      const point = digit.charCodeAt(0);
+      const zero = point >= 0xff10 ? 0xff10 : point >= 0x06f0 ? 0x06f0 : 0x0660;
+      return String(point - zero);
+    }).replace(/\D/g, '');
+  }
   function stored() {
     try { return supported(localStorage.getItem(storageKey)); } catch { return null; }
   }
@@ -145,7 +153,7 @@
     }
     return Array.from(node.childNodes).map(sourceText).join('');
   }
-  const authored = '[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
+  const authored = '.cocoFamilyError,[data-family-recover-msg],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
   const spanishGames = new Set(['sopa','crucigrama','palabras','cocomed','verdadero','tiempo','bank']);
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
@@ -172,7 +180,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261121-6');
+    url.searchParams.set('v','20261121-7');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -302,6 +310,8 @@
     if (current === 'es') return html;
     const doc = new DOMParser().parseFromString(html,'text/html');
     doc.documentElement.lang = current; doc.documentElement.dir = current === 'ar' ? 'rtl' : 'ltr';
+    const brandSuffix = ' · Coco en Forma';
+    if (doc.title.endsWith(brandSuffix)) doc.title = message(doc.title.slice(0, -brandSuffix.length)) + brandSuffix;
     for (const el of doc.querySelectorAll(publicElements)) {
       if (el.closest(privateAreas)) continue;
       for (const node of el.childNodes) if (node.nodeType === Node.TEXT_NODE) node.data = localize(node.data,true);
@@ -386,7 +396,7 @@
     if (event.key === storageKey && next && next !== current) void setLanguage(next,false);
   });
   window.CocoLocale = {get tag(){return current;},
-    t:message, shareUrl, accountReturn, spanishGame:id=>spanishGames.has(id), sourceText, reportDocument, refresh, setLanguage, languages:Object.freeze(languages)};
+    t:message, pinDigits, shareUrl, accountReturn, spanishGame:id=>spanishGames.has(id), sourceText, reportDocument, refresh, setLanguage, languages:Object.freeze(languages)};
   if (requested !== 'es') window.CocoFirstPaint?.hold('language');
   window.CocoLocale.ready = setLanguage(requested,!originalDocument && Boolean(explicitLanguage || (!rememberedLanguage && installLanguage))).finally(() => {
     if (requested !== 'es') window.CocoFirstPaint?.settled('language');

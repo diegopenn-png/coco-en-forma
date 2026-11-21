@@ -249,12 +249,19 @@
         panel.hidden=false;openBtn.setAttribute("aria-expanded","true");
         var cli=familyClient();
         if(!cli){familyRecoveryMessage(panel,"No se pudo conectar con la cuenta. Inténtalo de nuevo.","error");return}
-        try{var s=await cli.auth.getSession(),session=s&&s.data&&s.data.session,email=session&&session.user&&session.user.email||"";var e=panel.querySelector("[data-family-recover-email]");if(e)e.textContent=email?"Cuenta: "+maskEmail(email)+" · confirma su contraseña y crea un PIN nuevo.":"Confirma la contraseña de la cuenta y crea un PIN nuevo."}catch(e){}
+        try{var s=await cli.auth.getSession(),session=s&&s.data&&s.data.session,email=session&&session.user&&session.user.email||"";var e=panel.querySelector("[data-family-recover-email]");if(e){
+          e.textContent="Confirma la contraseña de la cuenta y crea un PIN nuevo.";
+          if(email){
+            var account=document.createElement("span"),address=document.createElement("bdi");
+            account.textContent="Cuenta:";address.setAttribute("data-coco-verbatim","");address.textContent=maskEmail(email);
+            e.prepend(account," ",address," · ");
+          }
+        }}catch(e){}
         setTimeout(function(){var p=panel.querySelector("[data-family-recover-password]");if(p)p.focus()},30)
       };
       closeBtn.onclick=closePanel;
       saveBtn.onclick=async function(){
-        var password=String(panel.querySelector("[data-family-recover-password]").value||""),newPin=String(panel.querySelector("[data-family-recover-pin]").value||"").replace(/\D/g,""),confirmPin=String(panel.querySelector("[data-family-recover-confirm]").value||"").replace(/\D/g,"");
+        var password=String(panel.querySelector("[data-family-recover-password]").value||""),newPin=window.CocoLocale?.pinDigits(panel.querySelector("[data-family-recover-pin]").value) ?? String(panel.querySelector("[data-family-recover-pin]").value||"").replace(/\D/g,""),confirmPin=window.CocoLocale?.pinDigits(panel.querySelector("[data-family-recover-confirm]").value) ?? String(panel.querySelector("[data-family-recover-confirm]").value||"").replace(/\D/g,"");
         if(!password){familyRecoveryMessage(panel,"Escribe la contraseña de la cuenta.","error");return}
         if(!/^\d{4}$/.test(newPin)){familyRecoveryMessage(panel,"El nuevo PIN debe tener exactamente 4 cifras.","error");return}
         if(newPin!==confirmPin){familyRecoveryMessage(panel,"Los dos PIN no coinciden.","error");return}

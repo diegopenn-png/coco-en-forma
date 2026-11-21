@@ -1,3 +1,4 @@
+import { assertPwaRelease } from './pwa-release-contract.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -75,7 +76,7 @@ test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   assert.match(html,/coco-excellence-v160934\.js\?v=160960/);
   assert.match(html,/eterna-v159\.js\?v=160114/);
   assert.match(html,/coco-v144-core\.js\?v=15001/);
-  assert.match(sw,/coco-en-forma-v160\.100\.60-family-contrast/);
+  assertPwaRelease(sw);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión para abrir /);

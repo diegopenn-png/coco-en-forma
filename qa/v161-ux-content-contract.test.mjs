@@ -1,3 +1,4 @@
+import { assertPwaRelease } from './pwa-release-contract.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -126,7 +127,7 @@ test("master accounts can replay every game without adding a second daily score"
   assert.match(runtime, /return \{ ok: true, unlimited: true, ranked: false, source: "test" \}/);
   assert.match(unified, /daily\.isUnlimited\(userId\)/);
   assert.match(unified, /if\(!unlimited&&userId&&window\.CocoDailyV134\.localUsed/);
-  assert.match(read("sw.js"), /coco-en-forma-v160\.100\.69-locales/);
+  assertPwaRelease(read("sw.js"));
 });
 
 test("production promotes the exact preview-tested Worker with automatic rollback", () => {

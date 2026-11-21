@@ -14,6 +14,41 @@ const rows={ajustes:{id:1,partidas_por_dia:1},perfiles:{id:user.id,apodo:'Perfil
 function query(table){let single=false;const chain=new Proxy({},{get(_,key){if(key==='then')return resolve=>resolve({data:single?(Array.isArray(rows[table])?null:rows[table]||null):(Array.isArray(rows[table])?rows[table]:rows[table]?[rows[table]]:[]),error:null,count:0});if(key==='single'||key==='maybeSingle')return ()=>{single=true;return chain};return ()=>chain}});return chain;}
 window.__COCO_SUPABASE_CLIENT={from:query,rpc:()=>Promise.resolve({data:[],error:null}),auth:{getSession:async()=>({data:{session}}),getUser:async()=>({data:{user}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},channel:()=>({on(){return this},subscribe(){return this},unsubscribe(){}}),removeChannel(){}};
 }, {hash:crypto.createHash('sha256').update('coco-familia-4826').digest('hex')});
+if(process.argv.includes('--languages')){
+  try{
+    await p.goto('http://127.0.0.1:4189/?lang=fr',{waitUntil:'domcontentloaded'});
+    const choose=p.locator('[data-coco-language-menu] select').first();
+    await choose.waitFor();
+    const familyButton=p.locator('.cocoFamiliaBtn').first();
+    for(const tag of ['fr','ar','en']){
+      await choose.selectOption(tag);
+      await p.waitForFunction(tag=>window.CocoLocale?.tag===tag,tag);
+      await familyButton.click();
+      const pin=p.locator('.cocoFamilyPin input').first();
+      await pin.fill('1');
+      await p.locator('[data-family-enter]').click();
+      await p.waitForFunction(()=>document.querySelector('.cocoFamilyError')?.textContent===CocoLocale.t('Escribe exactamente cuatro cifras.'));
+      await p.locator('[data-family-recover-open]').click();
+      await p.waitForFunction(()=>document.querySelector('[data-family-recover-email] bdi')?.textContent==='vi***t@example.invalid');
+      await p.locator('[data-family-recover-save]').click();
+      await p.waitForFunction(()=>document.querySelector('[data-family-recover-msg]')?.textContent===CocoLocale.t('Escribe la contraseña de la cuenta.'));
+      await p.locator('[data-family-recover-close]').click();
+      await pin.fill(tag==='ar'?'٤٨٢٦':'4826');
+      await p.locator('[data-family-enter]').click();
+      const printButton=p.locator('[data-family-integral-export]:enabled');
+      await printButton.click();
+      const report=p.frameLocator('.cocoReportPreview iframe');
+      await report.locator('html[lang="'+tag+'"]').waitFor();
+      assert.equal(await report.locator('html').getAttribute('dir'),tag==='ar'?'rtl':'ltr');
+      assert.ok((await report.locator('.cocoV16086ExportIdentity').innerText()).includes('Perfil de prueba'));
+      await report.locator('.is-home').click();
+      await p.locator('.cocoFamilyV129').waitFor({state:'detached'});
+      console.log('Family PIN, recovery, report and print preview passed in '+tag);
+    }
+    assert.deepEqual(errors,[]);
+  }finally{await browser.close();server.close();}
+  return;
+}
 await p.goto('http://127.0.0.1:4189/',{waitUntil:'domcontentloaded'});await p.locator('.cocoFamiliaBtn').first().waitFor();await p.locator('.cocoFamiliaBtn').first().click();await p.locator('.cocoFamilyPin input').first().waitFor();
 await p.screenshot({path:out+'/pin-390.png'});assert.ok(await p.locator('[data-family-back]').isVisible());await p.locator('[data-family-back]').click();await p.locator('.cocoFamilyV129').waitFor({state:'detached'});
 await p.locator('.cocoFamiliaBtn').first().click();await p.locator('.cocoFamilyPin input').first().fill('4826');await p.locator('[data-family-enter]').click();

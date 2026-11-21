@@ -1,3 +1,4 @@
+import { assertPwaRelease } from './pwa-release-contract.mjs';
 import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import test from "node:test";
@@ -40,6 +41,6 @@ test("visible cards and downloads use the same six new reward illustrations", ()
 });
 
 test("the PWA pre-caches thumbnails under a new release key", () => {
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.60-family-contrast"/);
+  assertPwaRelease(serviceWorker);
   assert.match(serviceWorker, /\.concat\(CARD_THUMBNAILS(?:,|\))/);
 });

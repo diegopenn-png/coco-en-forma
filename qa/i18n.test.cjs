@@ -364,3 +364,67 @@ test('the game leaderboard keeps player names and updates the score and best gam
     }
   }finally{dom.window.close();}
 });
+
+test('family PIN recovery localizes feedback and keeps the masked account and typed fields intact',async()=>{
+  const {w,api,doc,dom}=page();
+  try{
+    await api.ready;
+    const index=fs.readFileSync(path.join(root,'index.html'),'utf8');
+    const gate=index.slice(index.indexOf('  function openFamilyGate(){'),index.indexOf('  function madridDate('));
+    const app=doc.createElement('main');app.id='cocoApp';doc.body.append(app);
+    const shell=()=>{
+      app.innerHTML='<section class="cocoFamilyV129"><div class="cocoFamilyV129Body"></div></section>';
+      return app.querySelector('.cocoFamilyV129Body');
+    };
+    w.Function('familyShell','brainSvg',gate+';openFamilyGate();')(shell,()=>'');
+    w.__COCO_SUPABASE_CLIENT={auth:{getSession:async()=>({data:{session:{user:{email:'memoria@example.invalid'}}}})}};
+    w.requestAnimationFrame=callback=>w.setTimeout(callback,1);
+    w.eval(fs.readFileSync(path.join(root,'coco-v155-identity.js'),'utf8'));
+    assert.equal(api.pinDigits('٠١٢٣'),'0123');
+    assert.equal(api.pinDigits('۰۱۲۳'),'0123');
+    assert.equal(api.pinDigits('０１２３'),'0123');
+    assert.equal(api.pinDigits('0123'),'0123');
+    const pin=app.querySelector('.cocoFamilyPin input');
+    pin.value='12';app.querySelector('[data-family-enter]').click();
+    await app.querySelector('[data-family-recover-open]').onclick();
+    const newPin=app.querySelector('[data-family-recover-pin]');
+    newPin.value='4321';await app.querySelector('[data-family-recover-save]').onclick();
+    for(const tag of [...locales.slice(1),'es']){
+      await api.setLanguage(tag);
+      assert.equal(app.querySelector('.cocoFamilyError').textContent,api.t('Escribe exactamente cuatro cifras.'),tag);
+      assert.equal(app.querySelector('[data-family-recover-msg]').textContent,api.t('Escribe la contraseña de la cuenta.'),tag);
+      const identity=app.querySelector('[data-family-recover-email]');
+      assert.equal(identity.querySelector('bdi').textContent,'me***a@example.invalid');
+      assert.equal(identity.textContent,api.t('Cuenta:')+' me***a@example.invalid · '+api.t('Confirma la contraseña de la cuenta y crea un PIN nuevo.'),tag);
+      assert.equal(pin.value,'12');assert.equal(newPin.value,'4321');
+    }
+  }finally{dom.window.close();}
+});
+
+test('learning strategies, pending chapters, print titles and the shared report use the selected language',async()=>{
+  const {w,api,doc,dom}=page();
+  try{
+    await api.ready;w.eval(fs.readFileSync(path.join(root,'coco-v153-fixes.js'),'utf8'));
+    const kit=w.CocoFamilyReportKitV16084;
+    const strategies=['preguntas guiadas','ejemplos similares','analogías','apoyo visual y estructura','preguntas de recuerdo','pasos cortos','análisis de errores','explicación directa'];
+    const model={theme:'learning',title:'Aprendizaje con Eterna',panels:[{items:strategies.map(label=>({label}))}]};
+    const family={kind:'family',student:{name:'Memoria'},learning:model,games:{theme:'games'}};
+    const view=doc.createElement('section');view.innerHTML=kit.familyHtml({learning:model},true);doc.body.append(view);
+    let shared;
+    w.navigator.share=async data=>{shared=data};
+    for(const tag of [...locales.slice(1),'es']){
+      await api.setLanguage(tag);
+      const file=new w.DOMParser().parseFromString(kit.familyDocumentHtml(family),'text/html');
+      assert.equal(file.title,api.t('Así está avanzando')+' · Coco en Forma',tag);
+      for(const surface of [view,file]){
+        assert.deepEqual(Array.from(surface.querySelectorAll('.cocoV16083Item b'),n=>n.textContent),strategies.map(s=>api.t(s)),tag);
+      }
+      if(tag!=='es')for(const s of strategies)assert.ok(readPack(tag).strings[s],tag+' / '+s);
+      assert.equal(view.querySelector('.cocoV16086Pending').textContent,api.t('Preparando las señales de los juegos de Coco…'));
+      await kit.share(model);
+      assert.equal(shared.title,api.t(model.title));
+      assert.equal(shared.text,api.t('Te comparto el informe de progreso de Coco en Forma: {title}.',{title:api.t(model.title)}));
+      assert.equal(shared.files.length,1);
+    }
+  }finally{dom.window.close();}
+});
