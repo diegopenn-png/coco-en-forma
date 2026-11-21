@@ -32,6 +32,19 @@
   }
   const reportScope = '[data-family-integral-report],.cocoV16083ReportBody,.cocoReportDocument';
   const reportSkills = ['Cálculo y patrones','Memoria','Atención y estrategia','Rapidez con precisión','Lenguaje','Percepción y coordinación'];
+  function reportStatistic(key) {
+    const number = value => Number(value).toLocaleString(current);
+    const count = key.match(/^(?:(.+?) · )?(\d+) (interacción|interacciones|observación|observaciones)$/u);
+    if (count) {
+      const label = message(count[3].startsWith('inter') ? 'Interacciones' : 'Observaciones');
+      return (count[1] ? message(count[1])+' · ' : '') + label + ': '+number(count[2]);
+    }
+    const ratio = key.match(/^(\d+)\/(\d+)$/);
+    if (ratio) return number(ratio[1])+'/'+number(ratio[2]);
+    if (/^\d+%$/.test(key)) return new Intl.NumberFormat(current,{style:'percent'}).format(Number(key.slice(0,-1))/100);
+    if (/^\d+$/.test(key)) return number(key);
+    return null;
+  }
   function reportSkill(value) {
     return message(reportSkills.find(s => s.toLowerCase() === value) || value);
   }
@@ -89,7 +102,7 @@
   }
   function localize(value, report = false, game = false) {
     const key = value.trim().replace(/\s+/g, ' ');
-    let translated = message(key);
+    let translated = (report && reportStatistic(key)) || message(key);
     if (report && translated === key) translated = reportPhrase(key);
     if (game && translated === key) translated = gamePhrase(key);
     if (translated === key) {
@@ -128,7 +141,7 @@
     }
     return Array.from(node.childNodes).map(sourceText).join('');
   }
-  const authored = '[data-coco-copy],[data-coco-attrs]';
+  const authored = '[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
   const spanishGames = new Set(['sopa','crucigrama','palabras','cocomed','verdadero','tiempo','bank']);
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
@@ -155,7 +168,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261121-5');
+    url.searchParams.set('v','20261121-6');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -233,6 +246,10 @@
         const value = date.toLocaleDateString(current);
         if (el.textContent !== value) el.textContent = value;
       }
+    });
+    each(root,'[data-ranking-stat]',el => {
+      const label = message(el.dataset.rankingStat === 'plays' ? 'Partidas jugadas' : 'Mejor puntuación');
+      if (el.textContent !== label) el.textContent = label;
     });
     each(root,'[data-coco-number]',el => {
       const n=Number(el.dataset.cocoNumber);

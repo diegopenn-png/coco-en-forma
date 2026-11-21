@@ -6091,7 +6091,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 #cocoApp .cocoRankingSummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:13px}
 #cocoApp .cocoRankingSummary>div{padding:12px 8px;border:1px solid #d5e8f2;border-radius:15px;background:#fff;text-align:center}
 #cocoApp .cocoRankingSummary b{display:block;color:#17394b;font-family:var(--display)!important;font-size:24px!important}
-#cocoApp .cocoRankingSummary span{color:#6a8190!important;font-size:8px!important;font-weight:900;letter-spacing:.08em!important}
+#cocoApp .cocoRankingSummary>div>span{color:#6a8190!important;font-size:8px!important;font-weight:900;letter-spacing:.08em!important}
 #cocoApp .cocoRankingRows{display:grid;gap:7px}
 #cocoApp .cocoRankingRow{padding:10px 11px;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:10px;border:1px solid #d8e9f1;border-radius:15px;background:#fff}
 #cocoApp .cocoRankingRow.me{border:2px solid #f1bb52;background:#fff8e8}
@@ -7023,7 +7023,19 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     board=board||{};var rows=board.rows||[];
     if(board.error&&!rows.length)return '<div class="cocoRankingEmpty"><b>La clasificación no está disponible en este momento</b><span>Vuelve a intentarlo dentro de unos instantes.</span></div>';
     if(!rows.length)return '<div class="cocoRankingEmpty"><b>Esta clasificación comienza contigo</b><span>Juega una partida puntuable para estrenar la tabla.</span></div>';
-    return '<div class="cocoRankingSummary"><div><b>'+money(board.totalPlayers||rows.length)+'</b><span>JUGADORES</span></div><div><b>'+(board.myPosition?'#'+board.myPosition:'—')+'</b><span>TU POSICIÓN</span></div><div><b>'+money(rows[0].total||0)+'</b><span>PUNTOS DEL LÍDER</span></div></div><div class="cocoRankingRows">'+rows.map(function(row){return'<div class="cocoRankingRow '+(row.me?'me':'')+'"><span class="cocoRankingPosition">'+(row.position===1?'🥇':row.position===2?'🥈':row.position===3?'🥉':'#'+row.position)+'</span><div><b>'+esc(row.apodo)+'</b><small>'+money(row.plays)+' partidas · mejor '+money(row.best)+'</small></div><strong>'+money(row.total)+' pts</strong></div>'}).join("")+'</div>';
+    function number(value){
+      var n=Math.round(Number(value)||0);
+      return '<span data-coco-number="'+n+'">'+money(n)+'</span>';
+    }
+    function stat(type,label,value){
+      return '<span data-ranking-stat="'+type+'">'+label+'</span>: '+number(value);
+    }
+    var summary='<div class="cocoRankingSummary"><div><b>'+number(board.totalPlayers||rows.length)+'</b><span>JUGADORES</span></div><div><b>'+(board.myPosition?'#'+number(board.myPosition):'—')+'</b><span>TU POSICIÓN</span></div><div><b>'+number(rows[0].total)+'</b><span>PUNTOS DEL LÍDER</span></div></div>';
+    var items=rows.map(function(row){
+      var medal=['🥇','🥈','🥉'][row.position-1]||'#'+number(row.position);
+      return '<div class="cocoRankingRow '+(row.me?'me':'')+'"><span class="cocoRankingPosition">'+medal+'</span><div><b data-coco-verbatim>'+esc(row.apodo)+'</b><small>'+stat('plays','Partidas',row.plays)+' · '+stat('best','Mejor puntuación',row.best)+'</small></div><strong>'+number(row.total)+' <span data-coco-copy>pts</span></strong></div>';
+    });
+    return summary+'<div class="cocoRankingRows">'+items.join('')+'</div>';
   }
   function closeLeaderboard(){
     if(!rankingModal)return;rankingModal.classList.remove("visible");if(rankingOrigin&&document.contains(rankingOrigin))try{rankingOrigin.focus({preventScroll:true})}catch{}rankingOrigin=null;

@@ -313,3 +313,53 @@ test('play buttons identify the same game in every locale and Generala keeps its
   assert.equal(english['Tirar los cinco dados'],'Roll all five dice');
   assert.equal(english['Tira el dado'],'Roll the die');
 });
+
+test('report counts, percentages and weekly activity localize in the open report and in the export',async()=>{
+  const {api,w,doc,dom}=page();
+  try{
+    await api.ready;
+    w.eval(fs.readFileSync(path.join(root,'coco-v153-fixes.js'),'utf8'));
+    const model={theme:'learning',hero:{title:'Memoria',percent:82},
+      bars:[{label:'Matemáticas',value:82,detail:'2391 interacciones'}],
+      metrics:[{value:'3/7',label:'días activos esta semana'}],
+      panels:[{items:[{label:'Memoria',detail:'Matemáticas · 1 interacción'},{label:'Memoria',detail:'3 observaciones'}]}]};
+    const family={student:{name:'Memoria'},learning:model,games:{theme:'games'}};
+    const markup=()=>w.CocoFamilyReportKitV16084.familyDocumentHtml(family);
+    doc.body.insertAdjacentHTML('beforeend',new w.DOMParser().parseFromString(markup(),'text/html').querySelector('[data-family-integral-report]').outerHTML);
+    for(const tag of locales.slice(1)){
+      await api.setLanguage(tag);
+      const exported=new w.DOMParser().parseFromString(markup(),'text/html');
+      for(const scope of [doc,exported]){
+        const section=scope.querySelector('[data-family-integral-chapter="learning"]');
+        assert.equal(section.querySelector('.cocoV16083BarList small').textContent,api.t('Interacciones')+': '+Number(2391).toLocaleString(tag));
+        assert.equal(section.querySelector('.cocoV16083Metrics strong').textContent,Number(3).toLocaleString(tag)+'/'+Number(7).toLocaleString(tag));
+        assert.equal(section.querySelector('.cocoV16083HeroOrb b').textContent,new Intl.NumberFormat(tag,{style:'percent'}).format(.82));
+        const details=section.querySelectorAll('.cocoV16083Item span');
+        assert.equal(details[0].textContent,api.t('Matemáticas')+' · '+api.t('Interacciones')+': '+Number(1).toLocaleString(tag));
+        assert.equal(details[1].textContent,api.t('Observaciones')+': '+Number(3).toLocaleString(tag));
+      }
+    }
+  }finally{dom.window.close();}
+});
+
+test('the game leaderboard keeps player names and updates the score and best game in place',async()=>{
+  const {api,w,doc,dom}=page();
+  try{
+    await api.ready;
+    const index=fs.readFileSync(path.join(root,'index.html'),'utf8');
+    const start=index.indexOf('  function rankingTableHtml(board){');
+    const source=index.slice(start,index.indexOf('  function closeLeaderboard()',start));
+    assert.ok(start>=0);
+    const table=w.Function('money','esc',source+';return rankingTableHtml;')(String,s=>s);
+    const board={myPosition:8,totalPlayers:1234,rows:[{position:8,apodo:'Memoria',plays:2375,best:1000,total:23456}]};
+    doc.body.insertAdjacentHTML('beforeend',table(board));
+    for(const tag of [...locales.slice(1),'es']){
+      await api.setLanguage(tag);
+      const row=doc.querySelector('.cocoRankingRow');
+      assert.equal(row.querySelector('[data-coco-verbatim]').textContent,'Memoria');
+      assert.equal(row.querySelector('[data-ranking-stat="best"]').textContent,api.t('Mejor puntuación'));
+      assert.equal(row.querySelector('strong [data-coco-number]').textContent,(23456).toLocaleString(tag));
+      assert.equal(row.querySelector('small [data-coco-number]').textContent,(2375).toLocaleString(tag));
+    }
+  }finally{dom.window.close();}
+});
