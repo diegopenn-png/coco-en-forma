@@ -138,7 +138,8 @@
     let bindings = sources.get(node);
     if (!bindings) { bindings = new Map(); sources.set(node, bindings); }
     const previous = bindings.get(slot);
-    const source = previous && previous.output === value ? previous.source : value;
+    const canonical = slot !== 'text' && node.getAttribute('data-coco-source-'+slot);
+    const source = canonical || (previous && previous.output === value ? previous.source : value);
     const owner = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
     const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game');
     if (value !== output) write(output);
@@ -153,7 +154,7 @@
     }
     return Array.from(node.childNodes).map(sourceText).join('');
   }
-  const authored = '.cocoFamilyError,[data-family-recover-msg],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
+  const authored = 'head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
   const spanishGames = new Set(['sopa','crucigrama','palabras','cocomed','verdadero','tiempo','bank']);
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
@@ -180,7 +181,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261121-7');
+    url.searchParams.set('v','20261121-8');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}

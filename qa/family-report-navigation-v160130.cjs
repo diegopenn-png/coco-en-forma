@@ -6,7 +6,7 @@ const sample={kind:'family',student:{name:'Perfil de prueba',age:'10 años',scho
 (async()=>{
 const server=http.createServer((req,res)=>{let p=path.join(root,decodeURIComponent(req.url.split('?')[0]));try{if(fs.statSync(p).isDirectory())p=path.join(p,'index.html');res.setHeader('Content-Type',types[path.extname(p)]||'application/octet-stream');res.end(fs.readFileSync(p))}catch{res.writeHead(404).end()}});await new Promise(ok=>server.listen(4189,'127.0.0.1',ok));
 const browser=await chromium.launch({headless:true,...(process.env.COCO_CHROMIUM_PATH?{executablePath:process.env.COCO_CHROMIUM_PATH}:{}),args:['--no-sandbox','--disable-gpu','--no-zygote']});const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block',isMobile:true,hasTouch:true});const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
-await p.route('**/*',r=>{const u=new URL(r.request().url());if(u.hostname==='127.0.0.1')return r.continue();if(u.hostname==='cdn.jsdelivr.net'&&u.pathname.includes('supabase'))return r.fulfill({contentType:'application/javascript',body:fs.readFileSync(root+'/supabase-js-2.112.3.min.js','utf8')});if(u.hostname.endsWith('workers.dev'))return r.fulfill({contentType:'application/json',body:JSON.stringify({ok:true,subscription:{status:'active',plan:'monthly'},student:{},summary:{},report:{},features:{},usage:{},parent_settings:{}})});return r.abort()});
+await p.route('**/*',r=>{const u=new URL(r.request().url());if(u.hostname==='127.0.0.1')return r.continue();if(u.hostname==='cdn.jsdelivr.net'&&u.pathname.includes('supabase'))return r.fulfill({contentType:'application/javascript',body:fs.readFileSync(root+'/supabase-js-2.112.3.min.js','utf8')});if(u.hostname.endsWith('workers.dev'))return r.fulfill({headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:4189','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':r.request().headers()['access-control-request-headers']||'authorization, content-type'},contentType:'application/json',body:JSON.stringify({ok:true,subscription:{status:'active',plan:'monthly'},student:{},summary:{},report:{},features:{},usage:{},parent_settings:{}})});return r.abort()});
 await p.addInitScript(({hash})=>{
 const user={id:'00000000-0000-4000-8000-000000000001',email:'visual-test@example.invalid',user_metadata:{apodo:'Perfil de prueba',edad:'10'}};let session={access_token:'synthetic-ui-only',user};
 localStorage.setItem('coco_pin_familia',hash);
@@ -46,6 +46,16 @@ if(process.argv.includes('--languages')){
       console.log('Family PIN, recovery, report and print preview passed in '+tag);
     }
     assert.deepEqual(errors,[]);
+  }catch(error){
+    console.error('Synthetic family screen at failure:',await p.evaluate(()=>({
+      language:document.documentElement.lang, pinGate:!!document.querySelector('.cocoFamilyPin'),
+      pinError:document.querySelector('.cocoFamilyError')?.textContent,
+      canonical:document.querySelector('.eternaV159FamilyCard')?.dataset.etFamilyState,
+      controls:Array.from(document.querySelectorAll('.cocoFamilyV129 button')).filter(node=>node.offsetWidth).map(node=>node.textContent.trim()).slice(0,20),
+      report:document.querySelector('[data-family-integral-report]')?.innerText.slice(0,1800),
+      message:document.querySelector('.cocoFamilyV129Body')?.innerText.slice(0,500)
+    })),errors);
+    throw error;
   }finally{await browser.close();server.close();}
   return;
 }

@@ -1059,7 +1059,7 @@
 
     button.onclick=async function(event){
       if(event){event.preventDefault();event.stopPropagation()}
-      var pin=window.CocoLocale?.pinDigits(input.value) ?? String(input.value||"").replace(/\D/g,"");
+      var pin=window.CocoLocale?.pinDigits?.(input.value) ?? String(input.value||"").replace(/\D/g,"");
       if(pin.length!==4){
         if(error)error.textContent="Escribe exactamente cuatro cifras.";
         return
@@ -1156,10 +1156,19 @@
   function familyGatePresentation(body){
     body.querySelectorAll(".eternaV159FamilyCard,.cocoFamilyMapIntroV160").forEach(function(n){n.remove()});
     var modal=body.closest(".cocoFamilyV129"),headerKicker=modal&&modal.querySelector("header span"),pinScreen=body.querySelector(".cocoFamilyPin");
-    if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · ACCESO PROTEGIDO";
+    function source(node){return window.CocoLocale?.sourceText(node) ?? node.textContent}
+    var heading="ZONA FAMILIAR · ACCESO PROTEGIDO";
+    if(headerKicker&&source(headerKicker)!==heading)headerKicker.textContent=heading;
     if(pinScreen){
-      var pinCopy=pinScreen.querySelector("p");if(pinCopy)pinCopy.textContent="El PIN protege el progreso escolar de Eterna y el mapa de fortalezas de los juegos para la mente.";
-      var pinButton=pinScreen.querySelector("[data-family-enter]");if(pinButton)pinButton.textContent=/crear/i.test(String(pinButton.textContent||""))?"Crear PIN y entrar":"Entrar en Zona Familiar"
+      var pinCopy=pinScreen.querySelector("p"),pinButton=pinScreen.querySelector("[data-family-enter]");
+      if(pinCopy&&["Este acceso evita aperturas accidentales del informe.","El PIN protege de accesos casuales; no sustituye la contraseña de la cuenta."].includes(source(pinCopy))){
+        pinCopy.textContent="El PIN protege el progreso escolar de Eterna y el mapa de fortalezas de los juegos para la mente.";
+      }
+      if(pinButton){
+        var initial=source(pinButton);
+        if(initial==="Crear PIN y abrir")pinButton.textContent="Crear PIN y entrar";
+        if(initial==="Abrir informe")pinButton.textContent="Entrar en Zona Familiar";
+      }
     }
   }
 

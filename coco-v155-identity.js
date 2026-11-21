@@ -261,7 +261,7 @@
       };
       closeBtn.onclick=closePanel;
       saveBtn.onclick=async function(){
-        var password=String(panel.querySelector("[data-family-recover-password]").value||""),newPin=window.CocoLocale?.pinDigits(panel.querySelector("[data-family-recover-pin]").value) ?? String(panel.querySelector("[data-family-recover-pin]").value||"").replace(/\D/g,""),confirmPin=window.CocoLocale?.pinDigits(panel.querySelector("[data-family-recover-confirm]").value) ?? String(panel.querySelector("[data-family-recover-confirm]").value||"").replace(/\D/g,"");
+        var password=String(panel.querySelector("[data-family-recover-password]").value||""),newPin=window.CocoLocale?.pinDigits?.(panel.querySelector("[data-family-recover-pin]").value) ?? String(panel.querySelector("[data-family-recover-pin]").value||"").replace(/\D/g,""),confirmPin=window.CocoLocale?.pinDigits?.(panel.querySelector("[data-family-recover-confirm]").value) ?? String(panel.querySelector("[data-family-recover-confirm]").value||"").replace(/\D/g,"");
         if(!password){familyRecoveryMessage(panel,"Escribe la contraseña de la cuenta.","error");return}
         if(!/^\d{4}$/.test(newPin)){familyRecoveryMessage(panel,"El nuevo PIN debe tener exactamente 4 cifras.","error");return}
         if(newPin!==confirmPin){familyRecoveryMessage(panel,"Los dos PIN no coinciden.","error");return}

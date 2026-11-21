@@ -682,7 +682,11 @@
     if(!card||!card.matches||!card.matches(".cocoMiniJuego[data-coco-juego]"))return false;
     if(card.tagName==="BUTTON")return true;
     var title=card.querySelector("b"),name=String(title&&(window.CocoLocale?.sourceText(title) ?? title.textContent)||"este juego").trim();
-    card.setAttribute("role","button");card.setAttribute("tabindex","0");card.setAttribute("aria-label","Inicia sesión para abrir "+name);
+    card.setAttribute("role","button");card.setAttribute("tabindex","0");
+    var sourceLabel="Inicia sesión para abrir "+name;
+    card.setAttribute("data-coco-source-aria-label",sourceLabel);
+    var locale=window.CocoLocale, label=locale?locale.t("Inicia sesión para abrir {game}",{game:locale.t(name)}):sourceLabel;
+    if(card.getAttribute("aria-label")!==label)card.setAttribute("aria-label",label);
     if(card.dataset.cocoKeyboardAccess!=="1"){card.dataset.cocoKeyboardAccess="1";card.addEventListener("keydown",function(event){if(event.key!=="Enter"&&event.key!==" ")return;event.preventDefault();card.click()})}
     return true
   }
