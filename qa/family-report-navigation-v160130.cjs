@@ -6,7 +6,10 @@ const sample={kind:'family',student:{name:'Perfil de prueba',age:'10 años',scho
 (async()=>{
 const server=http.createServer((req,res)=>{let p=path.join(root,decodeURIComponent(req.url.split('?')[0]));try{if(fs.statSync(p).isDirectory())p=path.join(p,'index.html');res.setHeader('Content-Type',types[path.extname(p)]||'application/octet-stream');res.end(fs.readFileSync(p))}catch{res.writeHead(404).end()}});await new Promise(ok=>server.listen(4189,'127.0.0.1',ok));
 const browser=await chromium.launch({headless:true,...(process.env.COCO_CHROMIUM_PATH?{executablePath:process.env.COCO_CHROMIUM_PATH}:{}),args:['--no-sandbox','--disable-gpu','--no-zygote']});const ctx=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block',isMobile:true,hasTouch:true});const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
-await p.route('**/*',r=>{const u=new URL(r.request().url());if(u.hostname==='127.0.0.1')return r.continue();if(u.hostname==='cdn.jsdelivr.net'&&u.pathname.includes('supabase'))return r.fulfill({contentType:'application/javascript',body:fs.readFileSync(root+'/supabase-js-2.112.3.min.js','utf8')});if(u.hostname.endsWith('workers.dev'))return r.fulfill({headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:4189','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':r.request().headers()['access-control-request-headers']||'authorization, content-type'},contentType:'application/json',body:JSON.stringify({ok:true,subscription:{status:'active',plan:'monthly'},student:{},summary:{},report:{},features:{},usage:{},parent_settings:{}})});return r.abort()});
+await p.route('**/*',r=>{const u=new URL(r.request().url());if(u.hostname==='127.0.0.1')return r.continue();if(u.hostname==='cdn.jsdelivr.net'&&u.pathname.includes('supabase'))return r.fulfill({contentType:'application/javascript',body:fs.readFileSync(root+'/supabase-js-2.112.3.min.js','utf8')});if(u.hostname.endsWith('workers.dev')&&u.pathname==='/v1/export')return r.fulfill({
+  headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:4189','Access-Control-Allow-Methods':'GET, OPTIONS','Access-Control-Allow-Headers':'authorization, content-type'},
+  json:{student_profile:{school_year:'5º de Primaria'},student_concept_memory:[{concept_label:'Memoria',subject:'Matemáticas',attempts:3,mastery_score:.8}],learning_strategy_memory:[{strategy_key:'worked_example',evidence_count:3,success_score:.8}],academic_memory:[],usage:[{usage_date:'2026-11-21'}]}
+});if(u.hostname.endsWith('workers.dev'))return r.fulfill({headers:{'Access-Control-Allow-Origin':'http://127.0.0.1:4189','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Allow-Headers':r.request().headers()['access-control-request-headers']||'authorization, content-type'},contentType:'application/json',body:JSON.stringify({ok:true,subscription:{status:'active',plan:'monthly'},student:{},summary:{},report:{},features:{},usage:{},parent_settings:{}})});return r.abort()});
 await p.addInitScript(({hash})=>{
 const user={id:'00000000-0000-4000-8000-000000000001',email:'visual-test@example.invalid',user_metadata:{apodo:'Perfil de prueba',edad:'10'}};let session={access_token:'synthetic-ui-only',user};
 localStorage.setItem('coco_pin_familia',hash);
@@ -40,6 +43,9 @@ if(process.argv.includes('--languages')){
       const report=p.frameLocator('.cocoReportPreview iframe');
       await report.locator('html[lang="'+tag+'"]').waitFor();
       assert.equal(await report.locator('html').getAttribute('dir'),tag==='ar'?'rtl':'ltr');
+      assert.equal(await p.locator('html').getAttribute('lang'),tag);
+      const strategy=await p.evaluate(()=>CocoLocale.t('ejemplos similares'));
+      assert.ok((await report.locator('[data-family-integral-chapter="learning"]').innerText()).includes(strategy));
       assert.ok((await report.locator('.cocoV16086ExportIdentity').innerText()).includes('Perfil de prueba'));
       await report.locator('.is-home').click();
       await p.locator('.cocoFamilyV129').waitFor({state:'detached'});

@@ -114,7 +114,7 @@
     var existing=directChildren(card,"eternaV16061SubscriptionTop")[0];
     if(existing){bindCreatedPlanButtons(existing);return true}
 
-    var status=card.querySelector(".eternaV159FamilyStatus"),statusText=clean(status&&status.textContent).toLowerCase();
+    var status=card.querySelector(".eternaV159FamilyStatus"),statusText=clean(status&&(window.CocoLocale?.sourceText(status) ?? status.textContent)).toLowerCase();
     var trial=directChildren(card,"eternaV160TrialActive")[0]||null;
     var upgrade=directChildren(card,"eternaV160UpgradeWrap")[0]||null;
     var paidButtons=directChildren(card,"eternaV159Buttons").filter(function(n){
