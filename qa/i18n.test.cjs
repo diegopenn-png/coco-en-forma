@@ -9,13 +9,15 @@ const locales = ['es','en','de','nl','fr','it','pl','uk','ru','zh-Hans','ar','sv
 const code = fs.readFileSync(path.join(root,'i18n/coco.js'),'utf8');
 const readPack = id => JSON.parse(fs.readFileSync(path.join(root,'i18n/packs',id+'.json'),'utf8'));
 
-function page(url='https://coco.test/?source=pwa-v159',customFetch) {
+function page(url='https://coco.test/?source=pwa-v159',customFetch,remembered,extraHtml='') {
   const body = '<div data-coco-language-menu></div><div class="loginCard"><label for="pw">Contraseña</label><input id="pw" type="password"><button>Entrar</button></div><div data-coco-juego="crucigrama"><b>Crucigrama</b></div><table><tbody><tr><td>Memoria</td><td>23</td></tr></tbody></table>';
   const dom = new JSDOM('<html lang="es"><head><link rel="manifest" href="/manifest.webmanifest"></head><body>'+body+'</body></html>',{url,runScripts:'outside-only'});
   const w=dom.window;
+  if(extraHtml)w.document.body.insertAdjacentHTML('beforeend',extraHtml);
   const script=w.document.createElement('script');script.src='/i18n/coco.js';
   Object.defineProperty(w.document,'currentScript',{get:()=>script});
   w.fetch=customFetch || (async url => ({ok:true,json:async()=>readPack(path.basename(url.pathname,'.json'))}));
+  if(remembered)w.localStorage.setItem('coco.language.v1',remembered);
   w.eval(code);
   return {w,dom,doc:w.document,api:w.CocoLocale};
 }
@@ -166,24 +168,133 @@ test('language arrows wrap around and the native menu stays in sync',async()=>{
   }finally{dom.window.close();}
 });
 
-test('every published game landing and the catalogue have translated headings and actions in each pack',()=>{
-  const paths=['juegos/index.html',...fs.readdirSync(path.join(root,'juego')).map(id=>'juego/'+id+'/index.html')];
-  const headings=new Set();
+test('all catalogue descriptions, guides and standalone game menu text have entries in each language',()=>{
+  const guides=fs.readdirSync(root,{withFileTypes:true})
+    .filter(f=>f.isDirectory() && /^(?:apoyo|aprender|ayuda|preparar|juegos-)/.test(f.name))
+    .map(f=>f.name+'/index.html');
+  const directories=folder=>fs.readdirSync(path.join(root,folder)).map(id=>folder+'/'+id+'/index.html');
+  const paths=['juegos/index.html','explora/index.html',...directories('juego'),...directories('games'),...guides];
+  const strings=new Set();
   for(const file of paths){
     const dom=new JSDOM(fs.readFileSync(path.join(root,file),'utf8'));
     try {
       const doc=dom.window.document;
       assert.ok(doc.querySelector('[data-coco-language-menu]'),file);
-      for(const el of doc.querySelectorAll('h1,h2,.actions a,.actions button,nav a')){
+      for(const el of doc.body.querySelectorAll('p,button,a,label,h1,h2,h3,h4,li,span,b,strong,small,summary,figcaption')){
+        if(el.closest('[data-coco-verbatim],code'))continue;
         for(const node of el.childNodes){
-          const key=node.textContent.trim().replace(/\s+/g,' ');
-          if(node.nodeType===3 && /[a-z]/i.test(key))headings.add(key);
+          if(node.nodeType!==3)continue;
+          const key=node.data.trim().replace(/\s+/g,' ');
+          if(/[A-Za-zÀ-ɏ]{2}/.test(key))strings.add(key);
         }
       }
     } finally {dom.window.close();}
   }
   for(const language of locales.filter(l=>l!=='es')){
     const pack=readPack(language);
-    for(const key of headings)assert.ok(pack.strings[key],language+' / '+key);
+    for(const key of strings)assert.ok(pack.strings[key],language+' / '+key);
+  }
+});
+
+test('a fresh PWA uses the installation language and later launches respect the player’s preference',async()=>{
+  for(const tag of locales.filter(l=>l!=='es')){
+    const manifest=JSON.parse(fs.readFileSync(path.join(root,'i18n/manifests',tag+'.webmanifest'),'utf8'));
+    for(const route of [manifest.start_url,...manifest.shortcuts.map(s=>s.url)]){
+      assert.equal(new URL(route,'https://coco.test').searchParams.get('pwa_lang'),tag);
+    }
+    const first=page('https://coco.test'+manifest.start_url);
+    try {await first.api.ready;assert.equal(first.api.tag,tag);assert.equal(first.w.localStorage.getItem('coco.language.v1'),tag);}
+    finally{first.dom.window.close();}
+  }
+  const next=page('https://coco.test/?source=pwa-v159&pwa_lang=ar',undefined,'nl');
+  try {await next.api.ready;assert.equal(next.api.tag,'nl');}
+  finally{next.dom.window.close();}
+});
+
+test('Generala can switch between every language after a roll without losing the held die or player name',async()=>{
+  const engine=await import('../games/generala/engine.mjs');
+  const dom=new JSDOM(fs.readFileSync(path.join(root,'games/generala/index.html'),'utf8'),{url:'https://coco.test/games/generala/',runScripts:'outside-only',pretendToBeVisual:true});
+  const w=dom.window,d=w.document,destroy=w.close.bind(w);
+  try {
+    Object.assign(w,engine,{structuredClone,matchMedia:()=>({matches:true}),OnlineGenerala:class{stop(){}}});
+    w.scrollTo=()=>{};
+    const script=d.querySelector('script[src*="/i18n/coco.js"]');
+    Object.defineProperty(d,'currentScript',{get:()=>script});
+    w.fetch=async url=>({ok:true,json:async()=>readPack(path.basename(url.pathname,'.json'))});
+    w.eval(code);await w.CocoLocale.ready;
+    w.eval(fs.readFileSync(path.join(root,'games/generala/app.mjs'),'utf8').replace(/^import[^\n]+\n/gm,''));
+    d.querySelector('[data-mode="solo"]').click();
+    d.querySelector('[name=playerName]').value='Memoria';
+    d.querySelector('#start').click();d.querySelector('#roll').click();
+    await new Promise(resolve=>setTimeout(resolve,35));
+    d.querySelector('[data-die="0"]').click();
+    const saved=w.localStorage.getItem('coco-generala-local-v1');
+    const pips=d.querySelectorAll('#dice .pip').length;
+    assert.ok(pips>=5);
+    for(const tag of locales) {
+      await w.CocoLocale.setLanguage(tag);
+      const die=d.querySelector('[data-die="0"]');
+      assert.equal(die.getAttribute('aria-pressed'),'true',tag);
+      assert.match(die.getAttribute('aria-label'),tag==='es'?/guardado/:new RegExp(readPack(tag).strings['Dado guardado']));
+      assert.equal(d.querySelectorAll('#dice .pip').length,pips);
+      assert.equal(w.localStorage.getItem('coco-generala-local-v1'),saved);
+      assert.ok(d.querySelector('#players').textContent.includes('Memoria'));
+    }
+  }finally{destroy();}
+});
+
+test('opening the Spanish original of a policy keeps the reader’s chosen language for the app',async()=>{
+  const {w,doc,api,dom}=page('https://coco.test/aviso-legal.html?document_original=es',undefined,'pl','<a data-coco-original-document href="?document_original=es">Ver original en español</a>');
+  try {
+    await api.ready;
+    assert.equal(api.tag,'es');
+    assert.equal(w.localStorage.getItem('coco.language.v1'),'pl');
+    assert.equal(doc.querySelector('[data-coco-original-document]').hidden,true);
+    await api.setLanguage('it');
+    assert.equal(w.location.search,'?lang=it');
+    assert.equal(doc.querySelector('[data-coco-original-document]').hidden,false);
+  }finally{dom.window.close();}
+});
+
+test('the family report renderer exports the selected language and preserves names, marks and score values',async()=>{
+  const {api,w,dom}=page('https://coco.test/?source=pwa&code=sample-only#access_token=example');
+  try {
+    await api.ready;
+    w.eval(fs.readFileSync(path.join(root,'coco-v153-fixes.js'),'utf8'));
+    const section={theme:'games',hero:{title:'Memoria',percent:82},metrics:[{value:12,label:'partidas que puntúan'}]};
+    const family={student:{name:'Memoria',age:'10 años',schoolYear:'5º de Primaria',ccaa:'Andalucía'},games:section,learning:{theme:'learning',hero:{title:'Más avance en: Matemáticas',percent:89}}};
+    for(const tag of locales) {
+      await api.setLanguage(tag);
+      const raw=w.CocoFamilyReportKitV16084.familyDocumentHtml(family);
+      const doc=new w.DOMParser().parseFromString(raw,'text/html');
+      assert.equal(doc.documentElement.lang,tag);
+      const back=new URL(doc.body.dataset.cocoReturnUrl);
+      assert.equal(back.hash,'');assert.equal(back.searchParams.has('code'),false);
+      assert.equal(back.searchParams.get('lang'),tag==='es'?null:tag);
+      const person=doc.querySelector('.cocoV16086ExportIdentity').textContent;
+      assert.ok(person.includes('Memoria'));assert.ok(person.includes('Andalucía'));
+      assert.ok(person.includes(tag==='es'?'10 años':new Intl.NumberFormat(tag,{style:'unit',unit:'year',unitDisplay:'long'}).format(10)));
+      assert.equal(doc.querySelector('.cocoV16083Metrics article strong').textContent,'12');
+      assert.equal(doc.querySelector('.cocoV16083Metrics article span').textContent,api.t('partidas que puntúan'));
+      assert.equal(doc.querySelector('.cocoV16086DocumentTitle').textContent,api.t('Así está avanzando'));
+      assert.equal(doc.querySelector('[onclick="window.print()"]').textContent,api.t('Imprimir o guardar como PDF'));
+    }
+  } finally {dom.window.close();}
+});
+
+test('displayed prices and Generala scoring rules keep every figure in all locales',()=>{
+  const keys=[
+    'Evaluación + PDF · 15 €',
+    'Prueba gratuita · 7 días',
+    'Conoce Eterna: apoyo escolar con IA por escritura y voz, con modos para tareas, explicaciones y repaso. Prueba 7 días sin tarjeta. Después, 7,99 €/mes o 79,99 €/año si decides continuar.',
+    'Escalera 20, full 30, póker 40, generala 50 y doble generala 100. Escalera, full y póker suman 5 extra en la primera tirada. La doble exige una generala previa de 50.'
+  ];
+  const numbers=text=>(text.match(/\d+(?:[.,]\d+)?/g)||[]).map(s=>Number(s.replace(',','.'))).sort((a,b)=>a-b);
+  for(const tag of locales.filter(l=>l!=='es')){
+    const d=readPack(tag).strings;
+    for(const k of keys){
+      assert.ok(d[k],tag+' / '+k);
+      assert.deepEqual(numbers(d[k]),numbers(k),tag+' / '+k);
+    }
   }
 });

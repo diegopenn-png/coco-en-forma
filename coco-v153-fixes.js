@@ -191,9 +191,11 @@
 
   /* Shared screen/print document. Absolute asset URLs also work in srcdoc and saved HTML. */
   function reportDocumentShell(title,identity,content,note){
-    var base=new URL("./",document.baseURI).href,returnUrl=String(location.href||base);
+    var base=new URL("./",document.baseURI).href,current=new URL(location.href||base),back=new URL(current.pathname,current.origin);
+    for(var key of ["source","juego","lang"]){if(current.searchParams.has(key))back.searchParams.set(key,current.searchParams.get(key))}
+    var returnUrl=window.CocoLocale?.shareUrl(back.href) ?? back.href,homeUrl=window.CocoLocale?.shareUrl(base) ?? base;
     var actions='<nav class="cocoReportNavigation" aria-label="Navegación del informe"><button type="button" onclick="cocoReportNavigate(\'back\')">← Volver</button><button type="button" class="is-home" onclick="cocoReportNavigate(\'home\')">Menú principal</button></nav>';
-    var html='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>'+escapeReportHtml(title)+' · Coco en Forma</title><style>'+reportKitCss(true)+'</style><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-unified-v160127.css?v=160128"><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-family-v160130.css?v=160131"></head><body class="cocoReportDocument" data-coco-return-url="'+escapeReportHtml(returnUrl)+'" data-coco-home-url="'+escapeReportHtml(base)+'">'+actions+'<main class="cocoV16083Document"><header class="cocoV16083DocTop"><div class="cocoReportBrand"><img src="'+escapeReportHtml(base)+'assets/brand/coco-premium-v160127/icon-192.png" width="72" height="72" alt="Coco en Forma"><div><b>ZONA FAMILIAR</b><h1 class="cocoV16086DocumentTitle">'+escapeReportHtml(title)+'</h1><span>'+escapeReportHtml(reportDate())+'</span></div></div>'+identity+'<div class="cocoV16085DocActions"><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></header>'+content+'<footer>'+escapeReportHtml(note)+'</footer></main><script>('+reportDocumentNavigation.toString()+')();<\/script></body></html>';
+    var html='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>'+escapeReportHtml(title)+' · Coco en Forma</title><style>'+reportKitCss(true)+'</style><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-unified-v160127.css?v=160128"><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-family-v160130.css?v=160131"></head><body class="cocoReportDocument" data-coco-return-url="'+escapeReportHtml(returnUrl)+'" data-coco-home-url="'+escapeReportHtml(homeUrl)+'">'+actions+'<main class="cocoV16083Document"><header class="cocoV16083DocTop"><div class="cocoReportBrand"><img src="'+escapeReportHtml(base)+'assets/brand/coco-premium-v160127/icon-192.png" width="72" height="72" alt="Coco en Forma"><div><b>ZONA FAMILIAR</b><h1 class="cocoV16086DocumentTitle">'+escapeReportHtml(title)+'</h1><span>'+escapeReportHtml(reportDate())+'</span></div></div>'+identity+'<div class="cocoV16085DocActions"><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></header>'+content+'<footer>'+escapeReportHtml(note)+'</footer></main><script>('+reportDocumentNavigation.toString()+')();<\/script></body></html>';
     return window.CocoLocale?.reportDocument(html) ?? html;
   }
 
@@ -335,7 +337,12 @@
   }
 
   function familyStudentHtml(student){
-    student=student||{};var line1=[student.name,student.age].filter(Boolean).join(" · "),line2=[student.schoolYear,student.ccaa].filter(Boolean).join(" · ");
+    student=student||{};
+    var age=student.age,years=String(age||"").match(/^(\d+) años?$/i),language=window.CocoLocale?.tag;
+    if(years&&language&&language!=="es"){
+      age=new Intl.NumberFormat(language,{style:"unit",unit:"year",unitDisplay:"long"}).format(Number(years[1]));
+    }
+    var line1=[student.name,age].filter(Boolean).join(" · "),line2=[student.schoolYear,student.ccaa].filter(Boolean).join(" · ");
     return '<div class="cocoV16086ExportIdentity">'+(line1?'<b>'+escapeReportHtml(line1)+'</b>':"")+(line2?'<span>'+escapeReportHtml(line2)+'</span>':"")+'</div>'
   }
 

@@ -25,3 +25,10 @@ La exportación del informe familiar prepara un documento local con el idioma y 
 La revisión del catálogo cubre 21 fichas de juego y la página del catálogo. Se identificaron 468 apariciones de títulos y acciones. Todas tienen entrada en los 14 paquetes, además del español original. Este control comprueba la cobertura de las claves. La revisión de estilo y significado es independiente.
 
 Se comprobaron en local el alta y el restablecimiento en plantillas HTML, el informe de Eneagrama con dos perfiles ficticios, la impresión familiar, los controles de compartir y la continuidad de la partida. El aviso de Coco Bank se aplica en el catálogo y en su ficha. El funcionamiento de las áreas con usuarios reales, la aprobación de los textos y el despliegue están pendientes.
+
+
+En 38 páginas (fichas, guías, menú y pantallas de juego) se identificaron 1.306 fragmentos distintos de texto visible en la estructura estática. Los 14 paquetes de traducción contienen una entrada para cada fragmento. El control no cubre todas las combinaciones de una partida ni acredita la calidad lingüística de las traducciones. Las traducciones automáticas, los textos largos del informe y las páginas legales requieren revisión. Estas últimas ofrecen el original español en una pestaña independiente.
+
+Al instalar la PWA se registra el idioma de instalación. En los siguientes arranques tiene prioridad la última preferencia elegida por el jugador. Una prueba simula estos casos y comprueba los accesos rápidos del manifiesto. Las pruebas de Generala tiran los dados y cambian de idioma con un dado guardado. Las del informe familiar generan una exportación con una identidad ficticia en cada uno de los idiomas.
+
+El entorno de vista previa usa la API de pruebas y desactiva el trabajador de servicio para mostrar la última revisión. La prueba de apertura sin conexión se realiza por separado. La página inicial de producción conserva su versión anterior hasta la publicación.

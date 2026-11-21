@@ -77,6 +77,8 @@
     if (question) return message('Frase {n} de {total}',{n:number(question[1]),total:number(question[2])});
     const answered = key.match(/^(\d+) respondidas$/);
     if (answered) return message('Respuestas: {n}',{n:number(answered[1])});
+    const die = key.match(/^Dado (\d+)(?:: (\d+))?(, guardado)?$/);
+    if (die) return [message('Dado {n}',{n:number(die[1])}),die[2] && number(die[2]),die[3] && message('Dado guardado')].filter(Boolean).join(' · ');
     const round = key.match(/^(Ronda|Tirada) (\d+) de (\d+)$/i);
     if (round) return message(round[1].toLowerCase() === 'ronda' ? 'Ronda {n} de {total}' : 'Tirada {n} de {total}',{n:number(round[2]),total:number(round[3])});
     const roll = key.match(/^Volver a tirar (\d+) dados?$/);
@@ -132,7 +134,7 @@
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
   const privateAreas = '.cocoMedOverlay,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-name],[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
-  const publicElements = '.note,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
+  const publicElements = '.resumen,.alerta,.card,.lead,.note,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamilyLoading,#coco-startup-status p';
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
@@ -153,7 +155,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261121-3');
+    url.searchParams.set('v','20261121-4');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -216,7 +218,7 @@
     });
     if (page === 'public' || page === 'game') each(root,'nav a[href],.actions a[href]',link => {
       const raw = link.getAttribute('href');
-      if (!raw || raw.startsWith('#') || link.hasAttribute('download')) return;
+      if (!raw || raw.startsWith('#') || link.hasAttribute('download') || link.hasAttribute('data-coco-original-document')) return;
       const url = new URL(raw,document.baseURI);
       if (url.origin !== location.origin || !/\/(?:[^.]*|[^/]*\.html)$/.test(url.pathname)) return;
       if (current === 'es' && !url.searchParams.has('lang')) return;
@@ -241,6 +243,7 @@
     });
     each(root,'.cocoMedOverlay',el=>{el.lang='es';el.dir='ltr';});
     each(root,'[data-coco-juego],[data-game-card]',card => markGame(card,gameId(card)));
+    each(root,'[data-coco-original-document]',el => {el.hidden = current === 'es';});
     each(root,'[data-eterna-language-note],[data-questionnaire-language]',el => {
       el.hidden = current === 'es';
       const source = el.hasAttribute('data-questionnaire-language') ? 'Cuestionario en español' : 'Las sesiones de Eterna se realizan en español.';
@@ -286,7 +289,11 @@
     return '<!doctype html>'+doc.documentElement.outerHTML;
   }
   const params = new URLSearchParams(location.search);
-  const requested = supported(params.get('lang')) || stored() || 'es';
+  const explicitLanguage = supported(params.get('lang'));
+  const installLanguage = supported(params.get('pwa_lang'));
+  const rememberedLanguage = stored();
+  const originalDocument = params.get('document_original') === 'es' && Boolean(document.querySelector('[data-coco-original-document]'));
+  const requested = originalDocument ? 'es' : (explicitLanguage || rememberedLanguage || installLanguage || 'es');
 
   async function setLanguage(tag, persist = true) {
     tag = supported(tag);
@@ -308,8 +315,8 @@
     current = tag; activePack = pack;
     if (persist) {
       try { localStorage.setItem(storageKey,tag); } catch {}
-      if (new URLSearchParams(location.search).has('lang')) {
-        const url = new URL(location.href); url.searchParams.set('lang',tag);
+      if (new URLSearchParams(location.search).has('lang') || new URLSearchParams(location.search).has('document_original')) {
+        const url = new URL(location.href); url.searchParams.delete('document_original'); url.searchParams.set('lang',tag);
         window.history.replaceState(window.history.state,'',url);
       }
     }
@@ -360,7 +367,7 @@
   window.CocoLocale = {get tag(){return current;},
     t:message, shareUrl, accountReturn, spanishGame:id=>spanishGames.has(id), sourceText, reportDocument, refresh, setLanguage, languages:Object.freeze(languages)};
   if (requested !== 'es') window.CocoFirstPaint?.hold('language');
-  window.CocoLocale.ready = setLanguage(requested,Boolean(supported(params.get('lang')))).finally(() => {
+  window.CocoLocale.ready = setLanguage(requested,!originalDocument && Boolean(explicitLanguage || (!rememberedLanguage && installLanguage))).finally(() => {
     if (requested !== 'es') window.CocoFirstPaint?.settled('language');
   });
 })();
