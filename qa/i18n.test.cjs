@@ -298,3 +298,18 @@ test('displayed prices and Generala scoring rules keep every figure in all local
     }
   }
 });
+
+test('play buttons identify the same game in every locale and Generala keeps its name',()=>{
+  for(const tag of locales.slice(1)){
+    const strings=readPack(tag).strings;
+    assert.equal(strings.Generala,'Generala',tag);
+    for(const game of ['Ajedrez','Generala','Reto tiempo','Crucigrama','Sopa de letras']){
+      const button=strings['Jugar a '+game];
+      assert.ok(button.includes(strings[game]),tag+' / '+game);
+      assert.equal(strings['Jugar a '+game+' →'],button+' →',tag+' / '+game);
+    }
+  }
+  const english=readPack('en').strings;
+  assert.equal(english['Tirar los cinco dados'],'Roll all five dice');
+  assert.equal(english['Tira el dado'],'Roll the die');
+});
