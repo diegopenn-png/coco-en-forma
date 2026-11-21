@@ -90,7 +90,8 @@ test("mic-only v4 records the full utterance, auto-stops and submits through the
 test("public game cards expose keyboard controls and Eterna announces login", () => {
   assert.match(bootstrap, /card\.setAttribute\("role","button"\)/);
   assert.match(bootstrap, /card\.setAttribute\("tabindex","0"\)/);
-  assert.match(bootstrap, /aria-label","Inicia sesión para abrir /);
+  assert.match(bootstrap, /locale\.t\("Inicia sesión para abrir \{game\}"/);
+  assert.match(bootstrap, /card\.setAttribute\("aria-label",label\)/);
   assert.match(bootstrap, /event\.key!=="Enter"&&event\.key!==" "/);
   assert.match(bootstrap, /cocoMiniJuego\[role='button'\]:focus-visible/);
   assert.match(client, /Inicia sesión o crea una cuenta para abrir Eterna\./);

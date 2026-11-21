@@ -11,7 +11,7 @@ function attach(){
   const share=document.createElement('button');share.type='button';share.className='cocoCardShare';share.setAttribute('aria-label','Copiar enlace de Coco Ciudad');share.innerHTML='↗ <span>Compartir</span>';card.append(share);anchor.after(card);
  });
 }
-window.addEventListener('click',async e=>{const card=e.target.closest?.('[data-coco-city-entry]');if(!card)return;e.preventDefault();e.stopImmediatePropagation();const button=e.target.closest('.cocoCardShare');if(!button){location.assign(URL_PATH);return}
+window.addEventListener('click',async e=>{const card=e.target.closest?.('[data-coco-city-entry]');if(!card||e.target.closest('[data-coco-copy-link]'))return;e.preventDefault();e.stopImmediatePropagation();const button=e.target.closest('.cocoCardShare');if(!button){location.assign(URL_PATH);return}
  const landing=new URL('/juego/ciudad/',location.origin).href,url=window.CocoLocale?.shareUrl(landing) ?? landing;try{await navigator.clipboard.writeText(url);button.innerHTML='✓ <span>Copiado</span>';setTimeout(()=>{if(button.isConnected)button.innerHTML='↗ <span>Compartir</span>'},2500)}catch{const field=document.createElement('textarea');field.value=url;field.style.cssText='position:fixed;left:12px;bottom:12px;width:calc(100% - 24px);z-index:2147483647';field.setAttribute('aria-label','Enlace de Coco Ciudad para copiar');document.body.append(field);field.select();if(document.execCommand('copy')){button.innerHTML='✓ <span>Copiado</span>';field.remove()}else field.addEventListener('blur',()=>field.remove(),{once:true})}
 },true);
 let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;attach()})}).observe(document.documentElement,{subtree:true,childList:true});attach();

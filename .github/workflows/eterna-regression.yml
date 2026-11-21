@@ -47,6 +47,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Open localized family reports in mobile Chrome with a synthetic account
+        env:
+          COCO_CHROMIUM_PATH: /usr/bin/google-chrome
+          COCO_PLAYWRIGHT_PATH: ${{ runner.temp }}/coco-family-browser/node_modules/playwright
+        run: |
+          npm install --prefix "$RUNNER_TEMP/coco-family-browser" --no-audit --no-fund playwright@1.63.0
+          node qa/family-report-navigation-v160130.cjs --languages
       - name: Check Worker and regression matrix
         working-directory: eterna-worker
         run: npm run check
@@ -80,13 +87,6 @@ jobs:
           COCO_JSDOM_PATH="$RUNNER_TEMP/coco-startup-qa/node_modules/jsdom" node --test qa/first-paint.test.cjs qa/startup-light.test.cjs qa/navigation/recovery.test.cjs qa/i18n.test.cjs
       - name: Check signup and recovery email templates in every language
         run: go test -v qa/auth_language_templates_test.go
-      - name: Open localized family reports in mobile Chrome with a synthetic account
-        env:
-          COCO_CHROMIUM_PATH: /usr/bin/google-chrome
-          COCO_PLAYWRIGHT_PATH: ${{ runner.temp }}/coco-family-browser/node_modules/playwright
-        run: |
-          npm install --prefix "$RUNNER_TEMP/coco-family-browser" --no-audit --no-fund playwright@1.63.0
-          node qa/family-report-navigation-v160130.cjs --languages
       - name: Check 48-conversation Eterna matrix
         run: |
           node --test qa/eterna/offline/*.test.mjs
