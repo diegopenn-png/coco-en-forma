@@ -46,7 +46,7 @@ test("PWA clients check for the current release and support an explicit update",
   assert.match(index, /serviceWorker\.addEventListener\("controllerchange"/);
   assert.match(index, /location\.reload\(\)/);
 
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.67-uninterrupted-startup"/);
+  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.68-locales"/);
   for (const asset of [
     "coco-scoring-v160110.js",
     "coco-variety-director-v160960.js",

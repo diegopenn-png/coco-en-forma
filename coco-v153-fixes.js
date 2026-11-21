@@ -137,7 +137,7 @@
   function escapeReportHtml(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
   function retiredEnglishCopy(v){var s=String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();return /(^|[^a-z])ingles([^a-z]|$)/.test(s)}
   function reportValue(n){n=Number(n);return isFinite(n)?Math.max(0,Math.min(100,Math.round(n))):0}
-  function reportDate(){try{return new Intl.DateTimeFormat("es-ES",{day:"2-digit",month:"long",year:"numeric"}).format(new Date())}catch(e){return new Date().toLocaleDateString("es-ES")}}
+  function reportDate(){try{return new Intl.DateTimeFormat(window.CocoLocale?.tag || "es-ES",{day:"2-digit",month:"long",year:"numeric"}).format(new Date())}catch(e){return new Date().toLocaleDateString(window.CocoLocale?.tag || "es-ES")}}
   function modelSignature(model){try{return JSON.stringify(model)}catch(e){return String(Date.now())}}
 
   var familyReportState={games:null,learning:null,gamesStatus:"idle",learningStatus:"idle",learningPromise:null,renderQueued:false,lastSignature:"",generation:0};
@@ -193,7 +193,8 @@
   function reportDocumentShell(title,identity,content,note){
     var base=new URL("./",document.baseURI).href,returnUrl=String(location.href||base);
     var actions='<nav class="cocoReportNavigation" aria-label="Navegación del informe"><button type="button" onclick="cocoReportNavigate(\'back\')">← Volver</button><button type="button" class="is-home" onclick="cocoReportNavigate(\'home\')">Menú principal</button></nav>';
-    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>'+escapeReportHtml(title)+' · Coco en Forma</title><style>'+reportKitCss(true)+'</style><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-unified-v160127.css?v=160128"><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-family-v160130.css?v=160131"></head><body class="cocoReportDocument" data-coco-return-url="'+escapeReportHtml(returnUrl)+'" data-coco-home-url="'+escapeReportHtml(base)+'">'+actions+'<main class="cocoV16083Document"><header class="cocoV16083DocTop"><div class="cocoReportBrand"><img src="'+escapeReportHtml(base)+'assets/brand/coco-premium-v160127/icon-192.png" width="72" height="72" alt="Coco en Forma"><div><b>ZONA FAMILIAR</b><h1 class="cocoV16086DocumentTitle">'+escapeReportHtml(title)+'</h1><span>'+escapeReportHtml(reportDate())+'</span></div></div>'+identity+'<div class="cocoV16085DocActions"><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></header>'+content+'<footer>'+escapeReportHtml(note)+'</footer></main><script>('+reportDocumentNavigation.toString()+')();<\/script></body></html>'
+    var html='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>'+escapeReportHtml(title)+' · Coco en Forma</title><style>'+reportKitCss(true)+'</style><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-unified-v160127.css?v=160128"><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-family-v160130.css?v=160131"></head><body class="cocoReportDocument" data-coco-return-url="'+escapeReportHtml(returnUrl)+'" data-coco-home-url="'+escapeReportHtml(base)+'">'+actions+'<main class="cocoV16083Document"><header class="cocoV16083DocTop"><div class="cocoReportBrand"><img src="'+escapeReportHtml(base)+'assets/brand/coco-premium-v160127/icon-192.png" width="72" height="72" alt="Coco en Forma"><div><b>ZONA FAMILIAR</b><h1 class="cocoV16086DocumentTitle">'+escapeReportHtml(title)+'</h1><span>'+escapeReportHtml(reportDate())+'</span></div></div>'+identity+'<div class="cocoV16085DocActions"><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></header>'+content+'<footer>'+escapeReportHtml(note)+'</footer></main><script>('+reportDocumentNavigation.toString()+')();<\/script></body></html>';
+    return window.CocoLocale?.reportDocument(html) ?? html;
   }
 
   function reportDocumentNavigation(){
@@ -666,7 +667,7 @@
   function makePublicMiniAccessible(card){
     if(!card||!card.matches||!card.matches(".cocoMiniJuego[data-coco-juego]"))return false;
     if(card.tagName==="BUTTON")return true;
-    var title=card.querySelector("b"),name=String(title&&title.textContent||"este juego").trim();
+    var title=card.querySelector("b"),name=String(title&&(window.CocoLocale?.sourceText(title) ?? title.textContent)||"este juego").trim();
     card.setAttribute("role","button");card.setAttribute("tabindex","0");card.setAttribute("aria-label","Inicia sesión para abrir "+name);
     if(card.dataset.cocoKeyboardAccess!=="1"){card.dataset.cocoKeyboardAccess="1";card.addEventListener("keydown",function(event){if(event.key!=="Enter"&&event.key!==" ")return;event.preventDefault();card.click()})}
     return true
