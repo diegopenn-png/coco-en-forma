@@ -62,7 +62,7 @@ async function verify(page, origin) {
       const hit=document.elementFromPoint(x+width/2,y+height/2);
       const view=window.visualViewport;
       return {link:rect(link),nav:rect(link.parentElement),hit:hit?.outerHTML.slice(0,350),
-        hitStyle:getComputedStyle(link).pointerEvents,active:document.activeElement?.id,
+        overflow:[...document.body.querySelectorAll('*')].filter(el=>el.getBoundingClientRect().right>document.documentElement.clientWidth+1).slice(0,15).map(el=>[el.tagName,el.id,el.className,rect(el)]),client:document.documentElement.clientWidth,body:document.body.scrollWidth,hitStyle:getComputedStyle(link).pointerEvents,active:document.activeElement?.id,
         openDialogs:[...document.querySelectorAll('dialog[open]')].map(d=>d.id),
         scroll:[window.scrollX,window.scrollY],viewport:[innerWidth,innerHeight],
         visual:[view.width,view.height,view.offsetLeft,view.offsetTop,view.scale]};
