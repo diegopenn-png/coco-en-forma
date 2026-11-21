@@ -58,10 +58,12 @@ if(process.argv.includes('--languages')){
         },{attempts,tag});
         await p.waitForFunction(([s,text])=>document.querySelector(s)?.textContent===text,[summarySelector,expected]);
         assert.equal(await p.locator(chapter+' .cocoV16083Next').count(),attempts?1:0);
+        const year=await p.evaluate(()=>CocoLocale.t('5º de Primaria'));
+        await p.waitForFunction(year=>document.querySelector('[data-coco-current-course]')?.textContent.includes(year),year);
         await printButton.click();
         const report=p.frameLocator('.cocoReportPreview iframe');
         await report.locator('html[lang="'+tag+'"]').waitFor();
-        assert.equal(await report.locator('html').getAttribute('dir'),tag==='ar'?'rtl':'ltr');
+        assert.equal(await report.locator('html').evaluate(el=>getComputedStyle(el).direction),tag==='ar'?'rtl':'ltr');
         assert.equal(await p.locator('html').getAttribute('lang'),tag);
         assert.equal(await report.locator(summarySelector).textContent(),expected);
         if(attempts>1){
@@ -69,6 +71,7 @@ if(process.argv.includes('--languages')){
           assert.ok((await report.locator(chapter).innerText()).includes(strategy));
         }
         assert.ok((await report.locator('.cocoV16086ExportIdentity').innerText()).includes('Perfil de prueba'));
+        assert.ok((await report.locator('.cocoV16086ExportIdentity').innerText()).includes(year));
         await report.locator('.is-home').click();
         await p.locator('.cocoFamilyV129').waitFor({state:'detached'});
         console.log('Family PIN, recovery, report and print preview passed in '+tag+' (attempts per concept: '+attempts+')');

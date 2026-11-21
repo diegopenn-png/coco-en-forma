@@ -38,6 +38,11 @@
     const template = Object.hasOwn(activePack.strings, source) ? activePack.strings[source] : source;
     return args ? template.replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(args, key) ? String(args[key]) : match) : template;
   }
+  function schoolYear(value) {
+    // Translate the configured Spanish stages, preserving custom school descriptions.
+    const standard = /^(?:Infantil · (?:0–2|[345]) años|[1-6]º de Primaria|[1-4]º de ESO|[12]º de Bachillerato|Curso no indicado)$/u;
+    return standard.test(value) ? message(value) : value;
+  }
   const reportScope = '[data-family-integral-report],.cocoV16083ReportBody,.cocoReportDocument';
   const reportSkills = ['Cálculo y patrones','Memoria','Atención y estrategia','Rapidez con precisión','Lenguaje','Percepción y coordinación'];
   function reportStatistic(key) {
@@ -115,6 +120,13 @@
   }
   function localize(value, report = false, game = false, element) {
     const key = value.trim().replace(/\s+/g, ' ');
+    if (element?.matches('select[data-stage] > option') && element.value) {
+      return message('Etapa escolar: '+key);
+    }
+    if (element?.hasAttribute('data-coco-calculated-age')) {
+      const age = key.match(/^(\d+) años?$/u);
+      if (age) return new Intl.NumberFormat(current,{style:'unit',unit:'year',unitDisplay:'long'}).format(Number(age[1]));
+    }
     let translated = (report && reportStatistic(key)) || message(key);
     if (translated === key && key.startsWith('Tabla independiente dedicada exclusivamente a ') && key.endsWith('.')) {
       const gameName = key.slice('Tabla independiente dedicada exclusivamente a '.length,-1);
@@ -159,7 +171,7 @@
     }
     return Array.from(node.childNodes).map(sourceText).join('');
   }
-  const authored = 'head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
+  const authored = 'head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
   const spanishGames = new Set(['sopa','crucigrama','palabras','cocomed','verdadero','tiempo','bank']);
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
@@ -186,7 +198,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261121-11');
+    url.searchParams.set('v','20261121-12');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -275,6 +287,12 @@
         const value=n.toLocaleString(current);
         if (el.textContent!==value) el.textContent=value;
       }
+    });
+    each(root,'[data-coco-current-course][data-school-year]',el => {
+      const {schoolYear:year,region} = el.dataset;
+      const text = year ? message('Curso actual:')+' '+schoolYear(year)+(region?' · '+region:'')
+                        : message('Curso actual: pendiente de configurar en Eterna');
+      if (el.textContent !== text) el.textContent = text;
     });
     each(root,'.cocoMedOverlay',el=>{el.lang='es';el.dir='ltr';});
     each(root,'[data-coco-juego],[data-game-card]',card => markGame(card,gameId(card)));
@@ -402,7 +420,7 @@
     if (event.key === storageKey && next && next !== current) void setLanguage(next,false);
   });
   window.CocoLocale = {get tag(){return current;},
-    t:message, pinDigits, shareUrl, accountReturn, spanishGame:id=>spanishGames.has(id), sourceText, reportDocument, refresh, setLanguage, languages:Object.freeze(languages)};
+    t:message, schoolYear, pinDigits, shareUrl, accountReturn, spanishGame:id=>spanishGames.has(id), sourceText, reportDocument, refresh, setLanguage, languages:Object.freeze(languages)};
   if (requested !== 'es') window.CocoFirstPaint?.hold('language');
   window.CocoLocale.ready = setLanguage(requested,!originalDocument && Boolean(explicitLanguage || (!rememberedLanguage && installLanguage))).finally(() => {
     if (requested !== 'es') window.CocoFirstPaint?.settled('language');

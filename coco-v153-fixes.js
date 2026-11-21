@@ -319,7 +319,12 @@
     return{theme:"games",eyebrow:"JUEGOS · COCO",title:"Habilidades entrenadas con Coco",subtitle:"Un resumen sencillo de lo que realmente ha practicado en los juegos.",summary:summary,personName:name,personMeta:age,hero:{eyebrow:best?"MEJOR RESULTADO OBSERVADO":"SIN VALORACIÓN TODAVÍA",title:best?"Se desenvuelve mejor en "+best.label:"Necesitamos un poco más de práctica",text:heroText,percent:best?best.value:null},metrics:metrics,bars:bars,barEyebrow:"HABILIDADES PRACTICADAS",barTitle:"Lo que ha entrenado",barScale:"Resultado orientativo · 0–100",panels:panels,groups:[],nextStep:nextStep,note:"Informe orientativo. Resume únicamente la actividad registrada en los juegos de Coco; no mide inteligencia, no es una prueba clínica y no establece diagnósticos."}
   }
 
-  function splitPersonMeta(meta){var parts=String(meta||"").split("·").map(function(x){return String(x||"").trim()}).filter(Boolean);return{schoolYear:parts[0]||"",ccaa:parts.slice(1).join(" · ")}}
+  function splitPersonMeta(meta){
+    var parts=String(meta||"").split("·").map(function(x){return x.trim()}).filter(Boolean);
+    var year=parts.shift()||"";
+    if(year==="Infantil" && /^(?:0–2|[345]) años$/.test(parts[0]))year+=" · "+parts.shift();
+    return{schoolYear:year,ccaa:parts.join(" · ")}
+  }
   function genericStudentName(v){var t=normalizeText(v);return !t||t==="alumno coco"||t==="jugador coco"}
 
   function buildFamilyReportModel(modal,card,incoming){
@@ -351,7 +356,8 @@
     if(years&&language&&language!=="es"){
       age=new Intl.NumberFormat(language,{style:"unit",unit:"year",unitDisplay:"long"}).format(Number(years[1]));
     }
-    var line1=[student.name,age].filter(Boolean).join(" · "),line2=[student.schoolYear,student.ccaa].filter(Boolean).join(" · ");
+    var year=window.CocoLocale?.schoolYear?.(student.schoolYear) ?? student.schoolYear;
+    var line1=[student.name,age].filter(Boolean).join(" · "),line2=[year,student.ccaa].filter(Boolean).join(" · ");
     return '<div class="cocoV16086ExportIdentity">'+(line1?'<b>'+escapeReportHtml(line1)+'</b>':"")+(line2?'<span>'+escapeReportHtml(line2)+'</span>':"")+'</div>'
   }
 

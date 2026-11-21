@@ -273,11 +273,65 @@ test('the family report renderer exports the selected language and preserves nam
       assert.equal(back.searchParams.get('lang'),tag==='es'?null:tag);
       const person=doc.querySelector('.cocoV16086ExportIdentity').textContent;
       assert.ok(person.includes('Memoria'));assert.ok(person.includes('Andalucía'));
+      assert.ok(person.includes(api.t('5º de Primaria')));
       assert.ok(person.includes(tag==='es'?'10 años':new Intl.NumberFormat(tag,{style:'unit',unit:'year',unitDisplay:'long'}).format(10)));
       assert.equal(doc.querySelector('.cocoV16083Metrics article strong').textContent,'12');
       assert.equal(doc.querySelector('.cocoV16083Metrics article span').textContent,api.t('partidas que puntúan'));
       assert.equal(doc.querySelector('.cocoV16086DocumentTitle').textContent,api.t('Así está avanzando'));
       assert.equal(doc.querySelector('[onclick="window.print()"]').textContent,api.t('Imprimir o guardar como PDF'));
+    }
+  } finally {dom.window.close();}
+});
+
+test('school stages keep Spanish enrolment values and preserve custom years and regions',async()=>{
+  const {api,w,doc,dom}=page();
+  try {
+    await api.ready;
+    const years=['0–2','3','4','5'].map(n=>'Infantil · '+n+' años');
+    for(const [stage,count] of [['Primaria',6],['ESO',4],['Bachillerato',2]]){
+      for(let n=1;n<=count;n++)years.push(n+'º de '+stage);
+    }
+    const custom='Memoria';
+    const select=doc.createElement('select');
+    for(const year of years)select.add(new w.Option(year,year));
+    doc.body.append(select);
+    select.value=years[2];
+    const stageSelect=doc.createElement('select');
+    stageSelect.setAttribute('data-stage','');
+    const stages=['Infantil','Primaria','ESO','Bachillerato'];
+    for(const stage of stages)stageSelect.add(new w.Option(stage,stage.toLowerCase()));
+    doc.body.append(stageSelect);
+    const output=doc.createElement('output');
+    output.setAttribute('data-coco-current-course','');
+    output.dataset.region='Lenguaje';
+    doc.body.append(output);
+    const age=doc.createElement('output');
+    age.setAttribute('data-coco-calculated-age','');
+    age.textContent='1 año';
+    doc.body.append(age);
+    for(const tag of [...locales.slice(1),'es']){
+      await api.setLanguage(tag);
+      assert.equal(select.value,years[2]);
+      for(const [index,stage] of stages.entries()){
+        const option=stageSelect.options[index];
+        assert.equal(option.value,stage.toLowerCase());
+        assert.equal(option.textContent,tag==='es'?stage:api.t('Etapa escolar: '+stage));
+      }
+      assert.equal(age.textContent,tag==='es'?'1 año':new Intl.NumberFormat(tag,{style:'unit',unit:'year',unitDisplay:'long'}).format(1));
+      for(const option of select.options){
+        const year=option.value;
+        assert.equal(option.textContent,api.schoolYear(year));
+        if(tag!=='es')assert.notEqual(option.textContent,year);
+        output.dataset.schoolYear=year;
+        api.refresh(output);
+        assert.equal(output.textContent,api.t('Curso actual:')+' '+option.textContent+' · Lenguaje');
+      }
+      output.dataset.schoolYear=custom;
+      api.refresh(output);
+      assert.equal(output.textContent,api.t('Curso actual:')+' '+custom+' · Lenguaje');
+      output.dataset.schoolYear='';
+      api.refresh(output);
+      assert.equal(output.textContent,api.t('Curso actual: pendiente de configurar en Eterna'));
     }
   } finally {dom.window.close();}
 });
