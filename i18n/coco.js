@@ -35,7 +35,9 @@
     try { return supported(localStorage.getItem(storageKey)); } catch { return null; }
   }
   function message(source, args) {
-    const template = Object.hasOwn(activePack.strings, source) ? activePack.strings[source] : source;
+    const chess = document.body?.hasAttribute('data-coco-chess') && activePack.chess;
+    const template = chess && Object.hasOwn(chess,source) ? chess[source]
+      : Object.hasOwn(activePack.strings,source) ? activePack.strings[source] : source;
     return args ? template.replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(args, key) ? String(args[key]) : match) : template;
   }
   function schoolYear(value) {
@@ -198,7 +200,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261121-13');
+    url.searchParams.set('v','20261121-14');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -252,7 +254,7 @@
       // Their translation is handled by the owning renderer once a stable id exists.
       if (!page && el.closest('.cocoGameCard,.cocoMiniJuego') && !el.closest('[data-coco-juego],[data-coco-chess-entry],[data-coco-city-entry],[data-coco-naval-entry],[data-coco-generala-entry]')) return;
       // Nicknames, room codes, board cells and questionnaire answers are model values.
-      if (el.closest('[role=grid],.cocoCrossBoard,#board,#lobbyPlayers,.player,.answer-review,#history') || el.matches('[data-answer],#turnTitle,#turn,#winner,#playingAs,#playingName')) return;
+      if (el.closest('[role=grid],.cocoCrossBoard,#board,#lobbyPlayers,.player,.answer-review,#history') || el.matches('[data-answer],#turnTitle:not([data-coco-copy]),#turn,#winner,#playingAs,#playingName')) return;
       if (el.tagName !== 'OPTION' || el.hasAttribute('value')) {
         for (const n of el.childNodes) if (n.nodeType === Node.TEXT_NODE) render(n,'text',() => n.data,v => {n.data=v;});
       }

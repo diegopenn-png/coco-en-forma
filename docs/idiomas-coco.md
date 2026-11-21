@@ -46,3 +46,9 @@ La prueba de idioma genera tres historiales ficticios y compara el resumen en pa
 La ficha familiar, el formulario de contexto escolar y la impresión utilizan las denominaciones locales de los 16 cursos registrados por Coco en el sistema educativo español. El selector conserva el valor original al guardar. La traducción del curso respeta los textos personalizados, el nombre del estudiante y la comunidad autónoma. El campo de edad calculada usa las unidades y los números del idioma que haya elegido la familia.
 
 Se corrigió también el aviso para padres y tutores de la pantalla de acceso que aparecía en español al seleccionar francés. La prueba de los 15 idiomas comprueba el aviso insertado por la aplicación, los dos enlaces y la conservación de los campos de acceso.
+
+### Coco Ajedrez · 21 de noviembre
+
+El tablero utiliza vocabulario propio de ajedrez para las piezas, el turno, las pistas y los finales de partida. El selector conserva la pieza seleccionada, las casillas legales, el historial y la posición guardada. Las coordenadas y la notación de las jugadas mantienen su valor al cambiar de idioma. Los enlaces para entrar, compartir e invitar incorporan el idioma activo.
+
+La prueba del selector juega un mate en cuatro medias jugadas y unas tablas por triple repetición. También comprueba un jaque, unas tablas por ahogado desde una posición guardada y las cuatro opciones de coronación con el diálogo abierto. Cada recorrido comprueba los mensajes en los 15 idiomas a través de los controles del juego.
