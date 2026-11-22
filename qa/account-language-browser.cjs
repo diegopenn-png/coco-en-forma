@@ -188,6 +188,38 @@ async function run(browser, origin, standalone) {
     await padel.locator('.cocoGameNavigation button').last().click();
     await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     console.log('Coco Pádel player directory in 15 languages.');
+    // Capture the actual lettering drawn into the downloadable file.
+    await page.evaluate(()=>{
+      window.cocoDownloadLetters=[];
+      const original=CanvasRenderingContext2D.prototype.fillText;
+      CanvasRenderingContext2D.prototype.fillText=function(text,...args){
+        if(this.canvas.width===1200&&this.canvas.height===630)window.cocoDownloadLetters.push(String(text));
+        return original.call(this,text,...args);
+      };
+      window.CocoShareToolV1('bank');
+    });
+    const share=page.locator('.cocoShareModal');
+    const download=share.locator('.cocoDownloadCard');
+    for(const tag of await picker.locator('option').evaluateAll(options=>options.map(o=>o.value))){
+      await page.evaluate(tag=>window.CocoLocale.setLanguage(tag),tag);
+      const file=tag==='es'?'coco-bank.jpg':'coco-bank-'+tag+'.jpg';
+      await page.waitForFunction(file=>document.querySelector('.cocoShareModal .cocoDownloadCard')?.download===file,file);
+      if(tag!=='es'){
+        const dimensions=await download.evaluate(async a=>{
+          if(!a.href.startsWith('data:image/jpeg;base64,'))return [];
+          const img=new Image();img.src=a.href;await img.decode();return [img.naturalWidth,img.naturalHeight];
+        });
+        assert.deepEqual(dimensions,[1200,630],tag+' localized downloadable JPEG');
+        const lettering=await page.evaluate(()=>({
+          observed:window.cocoDownloadLetters.slice(-2),
+          expected:['Coco Bank','Gestiona tu dinero'].map(key=>window.CocoLocale.t(key))
+        }));
+        assert.deepEqual(lettering.observed,lettering.expected,tag+' lettering drawn into the JPEG');
+      }
+    }
+    await share.locator('[data-share-close]').click();
+    console.log('Downloadable catalogue thumbnail in 15 languages passed.');
+    await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     const truthCard=page.locator(grid+' > [data-coco-juego="verdadero"]');
     await truthCard.locator('.cocoBotonJuego,button.btn').first().click();
     const quiz=page.locator('.cocoArcadeOverlay.visible[data-coco-playing="verdadero"]');
@@ -219,23 +251,6 @@ async function run(browser, origin, standalone) {
     await picker.waitFor();
     console.log('Active true-or-false round in 15 languages and native exit confirmation passed.');
 
-    await page.evaluate(()=>window.CocoShareToolV1('bank'));
-    const share=page.locator('.cocoShareModal');
-    const download=share.locator('.cocoDownloadCard');
-    for(const tag of await picker.locator('option').evaluateAll(options=>options.map(o=>o.value))){
-      await page.evaluate(tag=>window.CocoLocale.setLanguage(tag),tag);
-      const file=tag==='es'?'coco-bank.jpg':'coco-bank-'+tag+'.jpg';
-      await page.waitForFunction(file=>document.querySelector('.cocoShareModal .cocoDownloadCard')?.download===file,file);
-      if(tag!=='es'){
-        const dimensions=await download.evaluate(async a=>{
-          if(!a.href.startsWith('data:image/jpeg;base64,'))return [];
-          const img=new Image();img.src=a.href;await img.decode();return [img.naturalWidth,img.naturalHeight];
-        });
-        assert.deepEqual(dimensions,[1200,630],tag+' localized downloadable JPEG');
-      }
-    }
-    await share.locator('[data-share-close]').click();
-    console.log('Downloadable catalogue thumbnail in 15 languages passed.');
     await page.evaluate(()=>window.CocoEternaV160.open());
     const tutor=page.locator('#eternaOverlayV159.is-open');
     const inside=tutor.locator('[data-eterna-picker] select');

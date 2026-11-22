@@ -100,28 +100,38 @@ test('3D purchase terms preserve the address and contact and offer the Spanish o
 
 test('every timed challenge retains its choices, answer and question when the language switches',async()=>{
   const source=read('index.html');
-  const body=source.slice(source.indexOf('  function microQuestion('),source.indexOf('  function startTime('));
+  const body=source.slice(source.indexOf('  function microQuestion('),source.indexOf('  function startTime('))+
+    source.slice(source.indexOf('  function updateTimeLanguage('),source.indexOf('  function timeTick('));
   const {w,dom}=await openTimeHarness();
   try {
     const game=w.eval('('+function(build){
       let seed=12345;
       const active={level:3,rng(){seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;}};
       const dailySerial=()=>0;
+      const levelName=()=>'Avanzado';
+      const body=document.createElement('section');
+      body.innerHTML='<span data-time-mode></span><b class="cocoArcadeQuestionTag"></b><h3 class="cocoTimePrompt"></h3><button data-time-option></button><button data-time-option></button><button data-time-option></button><p data-time-explanation></p>';
+      active.game={type:'time'};active.phase='playing';active.locked=true;
       function shuffle(items,rng){
         for(let i=items.length-1;i>0;i--){
           const j=Math.floor(rng()*(i+1));[items[i],items[j]]=[items[j],items[i]];
         }
         return items;
       }
-      return eval(build+';({make:microQuestion,display:displayTimeQuestion})');
+      return eval(build+';({make:microQuestion,display:displayTimeQuestion,active,body})');
     }.toString()+')');
-    const {make,display}=game(body);
+    const {make,display,active,body:screen}=game(body);
     const rounds=Array.from({length:15},(_,index)=>make(index));
     const spanish=rounds.map(q=>JSON.stringify([q.prompt,q.options,q.answer,q.explanation]));
     for(const tag of ['en','es',...languages,'es']){
       await w.CocoLocale.setLanguage(tag);
       for(const [i,q] of rounds.entries()){
-        const shown=display(JSON.parse(JSON.stringify(q)));
+        active.question=JSON.parse(JSON.stringify(q)); // Daily missions are loaded from JSON.
+        w.dispatchEvent(new w.CustomEvent('coco:language',{detail:{locale:tag}}));
+        const shown=display(active.question);
+        assert.equal(screen.querySelector('.cocoTimePrompt').textContent,shown.prompt);
+        assert.deepEqual([...screen.querySelectorAll('[data-time-option]')].map(b=>b.textContent),Array.from(shown.options));
+        assert.equal(screen.querySelector('[data-time-explanation]').textContent,shown.explanation);
         assert.equal(shown.answer,q.answer,tag+' answer index '+i);
         assert.equal(new Set(shown.options).size,3,tag+' distinct choices '+i);
         assert.ok(shown.prompt && shown.explanation && shown.tag);
@@ -145,15 +155,33 @@ async function openTimeHarness(){
   return {dom,w};
 }
 
-test('the full true-or-false bank and explanations are available regardless of the starting language',()=>{
-  const source=read('index.html')+'\n'+read('coco-v144-content.js');
-  const entries=[...source.matchAll(/\[\s*"[^"\n]+",\s*(?:true|false),\s*"[^"\n]+",\s*[1-3]\s*\]/gu)].map(match=>JSON.parse(match[0]));
-  assert.equal(entries.length,120);
+function liveBank() {
+  const home=read('index.html');
+  const dom=new JSDOM(home,{url:'https://coco.test/',runScripts:'outside-only'});
+  try {
+    const w=dom.window;
+    for(const script of w.document.scripts){
+      if(script.textContent.includes('window.CocoV134Content = Object.freeze('))w.eval(script.textContent);
+      if(script.src && /\/coco-v\d+-content(?:-extension)?\.js$/.test(new URL(script.src).pathname))w.eval(read(new URL(script.src).pathname.slice(1)));
+    }
+    const start=home.indexOf('var TRUE_FALSE=')+'var TRUE_FALSE='.length;
+    const end=home.indexOf(';\n',start);
+    return JSON.parse(JSON.stringify(w.eval(home.slice(start,end))));
+  } finally {dom.window.close();}
+}
+test('the runtime true-or-false bank and explanations are available in every language',()=>{
+  const entries=liveBank();
+  assert.equal(entries.length,180);
+  assert.equal(new Set(entries.map(([statement])=>statement)).size,179);
   for(const tag of languages){
     const copy=JSON.parse(read('i18n/extra/'+tag+'.json')).strings;
-    for(const [statement,,explanation] of entries){
+    const answers=new Map();
+    for(const [statement,answer,explanation] of entries){
       for(const text of [statement,explanation])assert.ok(Object.hasOwn(copy,text)&&copy[text].trim(),tag+' '+text);
+      const translated=copy[statement];
+      assert.notEqual(translated,statement,tag+' '+statement);
+      if(answers.has(translated))assert.equal(answers.get(translated),answer,tag+' '+translated);
+      answers.set(translated,answer);
     }
-    assert.equal(new Set(entries.map(([statement])=>copy[statement])).size,entries.length,tag);
   }
 });

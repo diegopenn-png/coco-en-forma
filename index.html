@@ -7508,7 +7508,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
 
   function updateTimeLanguage(){
-    if(active?.game.type!=="time"||active.phase!=="playing"||!active.question?.display)return;
+    if(active?.game.type!=="time"||active.phase!=="playing"||!active.question)return;
     var mode=body.querySelector("[data-time-mode]");
     if(!mode)return;
     var q=displayTimeQuestion(active.question),locale=window.CocoLocale;

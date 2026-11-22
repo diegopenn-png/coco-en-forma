@@ -123,6 +123,6 @@ El recorrido de los juegos también incluye la organización de dobles y campeon
 
 ### Partidas abiertas y miniaturas descargables · 23 de noviembre
 
-Verdadero o falso comparte las 120 afirmaciones y sus 120 explicaciones en los 15 idiomas. La rotación y las respuestas usan las mismas claves en todos ellos. Reto tiempo actualiza las 15 clases de pregunta, las opciones y las explicaciones al cambiar el idioma, incluso al recuperar una misión diaria guardada. Conserva la cuenta atrás y el orden de las opciones.
+Verdadero o falso comparte las 180 entradas del banco y sus explicaciones (179 enunciados distintos, uno se utiliza en dos niveles) en los 15 idiomas. La rotación y las respuestas usan las mismas claves en todos ellos. Reto tiempo actualiza las 15 clases de pregunta, las opciones y las explicaciones al cambiar el idioma, incluso al recuperar una misión diaria guardada. Conserva la cuenta atrás y el orden de las opciones.
 
 La revisión también abarca 38 mensajes de confirmación, avisos y solicitudes de datos que muestran el navegador y los juegos, incluida la gestión de memoria de Eterna. La miniatura descargable desde el catálogo se genera con el título y el pie del idioma elegido. La prueba de navegador abre la partida con una cuenta ficticia, cambia de idioma, cancela el aviso de salida y comprueba el JPEG de Coco Bank. La batería local de esta revisión pasó 102 pruebas. La comprobación en dispositivo iOS físico, la recepción efectiva de correos y la validación editorial del banco médico completo siguen pendientes.
