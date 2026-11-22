@@ -848,6 +848,7 @@ test('monthly and annual subscriptions, trial offers and the school profile tran
     const profile=w.Function('courseLabel',family.slice(family.indexOf('  function profileSection('),family.indexOf('  function installStyles('))+';return profileSection;')(()=> '');
     const container=doc.createElement('section');container.className='eternaV16061SubscriptionTop';doc.body.append(container);
     container.innerHTML=['monthly','annual'].map((planName,i)=>plan({plan:planName,provider_customer_id:'fixture',provider_subscription_id:'fixture',current_period_end:i?'2030-04-08T12:00:00Z':null,cancel_at_period_end:false})).join('');
+    container.insertAdjacentHTML('beforeend',[null,'2030-04-08T12:00:00Z'].map(end=>plan({plan:'annual',current_period_end:end,cancel_at_period_end:true})).join(''));
     container.append(trial(),profile({school_year:'Custom grade',autonomous_community:'Región de prueba'}));
     const walker=doc.createTreeWalker(container,w.NodeFilter.SHOW_TEXT),copy=[];
     while(walker.nextNode()){

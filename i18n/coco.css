@@ -57,3 +57,7 @@ html[dir=rtl] body #cocoApp .cocoLocalizedThumbnailCopy{direction:rtl}
 #eternaOverlayV159 [data-eterna-picker] { position:static; display:flex; flex:0 1 auto; width:auto; margin:0; padding:0; z-index:auto; }
 #eternaOverlayV159 [data-eterna-picker] select { max-width:min(27vw,10rem); min-height:36px; }
 #eternaOverlayV159 .eternaV159TopCopy { min-width:0; }
+
+#cocoApp [data-coco-family-picker] { flex:0 0 auto; padding:.25rem max(.75rem,env(safe-area-inset-right)); }
+#cocoApp [data-coco-family-picker] select { width:auto; min-height:44px; max-width:100%; margin:0; }
+@media print { [data-coco-family-picker] { display:none!important; } }

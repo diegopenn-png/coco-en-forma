@@ -160,15 +160,18 @@ async function run(browser, origin, standalone) {
       [page.locator('.cocoFamilyProfileV160100Head p'),'La fecha mantiene la edad al día. Eterna sigue usando el curso actual como referencia académica.']
     ];
     // Exercise the actual open dialog and preserve its form values across locale changes.
-    for(const tag of await picker.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
-      await page.evaluate(tag=>CocoLocale.setLanguage(tag),tag);
+    const familyPicker=page.locator('.cocoFamilyV129 [data-coco-family-picker] select');
+    await familyPicker.waitFor();
+    for(const tag of await familyPicker.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
+      await familyPicker.selectOption(tag);
+      await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
       for(const [el,source] of labels){
         const expected=await page.evaluate(s=>CocoLocale.t(s),source);
         if(tag!=='es')assert.notEqual(expected,source,tag+' family '+source);
         assert.equal(await el.textContent(),expected,tag+' open family '+source);
       }
     }
-    await page.locator('.cocoFamilyV129 [data-family-close]').click();
+    await page.locator('.cocoFamilyV129 [data-family-back]').click();
     console.log('Paid family area and school profile in 15 languages.');
     await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     await page.evaluate(()=>window.CocoEternaV160.open());

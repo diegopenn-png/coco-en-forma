@@ -645,7 +645,8 @@
       const header = app?.querySelector(':scope > [data-coco-account-header]');
       if (header && accountSlot.parentElement !== header) header.append(accountSlot);
       const tutorSlot = document.querySelector('#eternaOverlayV159.is-open [data-eterna-picker]');
-      const target = tutorSlot || (header ? accountSlot : publicSlot);
+      const familySlot = app?.querySelector('.cocoFamilyV129 [data-coco-family-picker]');
+      const target = tutorSlot || familySlot || (header ? accountSlot : publicSlot);
       if (target && bar.parentElement !== target) target.append(bar);
       if (!header && accountSlot.isConnected) accountSlot.remove();
       if (publicSlot) publicSlot.hidden = Boolean(header);
