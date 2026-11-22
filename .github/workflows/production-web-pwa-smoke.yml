@@ -96,7 +96,7 @@ jobs:
             fetch_live "${APEX_URL}/eterna-landing-captacion-v1.html?" /tmp/eterna-landing-captacion-v1.html
             if grep -Fq "const CACHE_VERSION=\"${EXPECTED_PWA_CACHE}\"" /tmp/sw.js \
               && grep -Fq "${EXPECTED_FRONTEND_VERSION}" /tmp/eterna-v159.js \
-              && grep -Fq 'eterna-v159.js?v=160114' /tmp/apex.html; then
+              && grep -Fq 'eterna-v159.js?v=160115' /tmp/apex.html; then
               web_ready=1
               break
             fi

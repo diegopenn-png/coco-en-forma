@@ -74,7 +74,7 @@ test("failed Eterna requests keep the student's input ready to retry",()=>{
 test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   const html=read("index.html"),sw=read("sw.js"),workflow=read(".github/workflows/eterna-authenticated-preview.yml"),core=read("coco-v144-core.js");
   assert.match(html,/coco-excellence-v160934\.js\?v=160960/);
-  assert.match(html,/eterna-v159\.js\?v=160114/);
+  assert.match(html,/eterna-v159\.js\?v=160115/);
   assert.match(html,/coco-v144-core\.js\?v=20261122-4/);
   assertPwaRelease(sw);
   assert.match(sw,/"\.\/coco-excellence-v160934\.js"/);

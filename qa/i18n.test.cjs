@@ -97,6 +97,10 @@ test('the real Eterna launcher patch keeps translated trial copy and opens the t
     // The base launcher can be clicked before the experience module arrives.
     for(const locale of locales){
       await api.setLanguage(locale);
+      const trial=launcher.querySelector('.eternaLauncherTrialFinal3');
+      assert.equal(cta.textContent,api.t('Probar Eterna gratis 7 días'),locale+' initial CTA');
+      assert.equal(trial.querySelector('strong').textContent,'⭐ '+api.t('7 días gratis'),locale+' initial trial');
+      assert.equal(trial.querySelector('span').textContent,api.t('Sin tarjeta ni datos bancarios para empezar.'),locale+' initial no card');
       const before=signupClicks;
       cta.click();
       assert.equal(signupClicks,before+1,locale+' base signup click');
