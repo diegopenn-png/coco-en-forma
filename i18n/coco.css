@@ -48,3 +48,7 @@ html body #cocoApp .cocoLocalizedThumbnailCopy{position:absolute!important;inset
 html body #cocoApp .cocoLocalizedThumbnailCopy>strong{font:900 5.4cqw/1.12 system-ui,sans-serif!important;color:#fff!important;margin:0!important}
 html body #cocoApp .cocoLocalizedThumbnailCopy>small{font:650 2.5cqw/1.2 system-ui,sans-serif!important;color:#fff!important;margin:0!important}
 html[dir=rtl] body #cocoApp .cocoLocalizedThumbnailCopy{direction:rtl}
+
+#eternaOverlayV159 [data-eterna-picker] { position:static; display:flex; flex:0 1 auto; width:auto; margin:0; padding:0; z-index:auto; }
+#eternaOverlayV159 [data-eterna-picker] select { max-width:min(27vw,10rem); min-height:36px; }
+#eternaOverlayV159 .eternaV159TopCopy { min-width:0; }

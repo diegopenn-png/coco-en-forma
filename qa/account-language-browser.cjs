@@ -49,6 +49,21 @@ async function run(browser, origin, standalone) {
     const menu = page.locator('.navegacionJugador');
     const controls = menu.locator(':scope > [data-player-menu]');
     await controls.nth(3).waitFor();
+    async function catalog(selector) {
+      const cards=page.locator(selector);
+      await cards.locator('[data-coco-naval-entry]').waitFor();
+      return cards.evaluate(grid=>Array.from(grid.children).flatMap(card=>{
+        const extensions=[['cocoChessEntry','ajedrez'],['cocoCityEntry','ciudad'],['cocoGeneralaEntry','generala'],['cocoNavalEntry','naval']];
+        const id=extensions.find(([attr])=>card.dataset[attr])?.[1]||card.dataset.cocoJuego;
+        return id && !card.hasAttribute('data-coco-suggestion') ? [id] : [];
+      }));
+    }
+    const grid='.cocoGridUnificada';
+    await picker.selectOption('es');await page.waitForFunction(()=>document.documentElement.lang==='es');
+    const spanish=await catalog(grid);
+    assert.equal(new Set(spanish).size,spanish.length);
+    assert.ok(['conecta','sopa','ajedrez','crucigrama','ciudad','naval','bank','eneagrama'].every(id=>spanish.includes(id)));
+    console.log('Spanish catalogue ('+spanish.length+'): '+spanish.join(', '));
     for(const tag of await picker.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
       await picker.selectOption(tag);
       await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
@@ -59,8 +74,22 @@ async function run(browser, origin, standalone) {
       if(tag==='es')assert.deepEqual(await controls.locator('b').allTextContents(),['Mis retos','Mis tarjetas','Mi clasificación','Impresiones 3D']);
       await controls.nth(1).click();await page.locator('.panelJugador.activa:not([data-coco-panel="games"])').waitFor();
       await controls.first().click();await page.locator('[data-coco-panel="games"].activa').waitFor();
+      assert.deepEqual(await catalog(grid),spanish,tag+' complete game list and order');
     }
     await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
+    await page.evaluate(()=>window.CocoEternaV160.open());
+    const tutor=page.locator('#eternaOverlayV159.is-open');
+    const inside=tutor.locator('[data-eterna-picker] select');
+    await inside.waitFor();
+    for(const tag of ['de','ar','zh-Hans','en']){
+      await inside.selectOption(tag);
+      await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
+      assert.ok(await inside.isVisible(),tag+' tutor picker visible');
+      assert.equal(await tutor.locator('.eternaV159Close').getAttribute('aria-label'),await page.evaluate(()=>CocoLocale.t('Cerrar Eterna')));
+      assert.notEqual(await tutor.locator('.eternaV159Close').getAttribute('aria-label'),'Cerrar Eterna');
+    }
+    await tutor.locator('.eternaV159Close').click();
+    await picker.waitFor();
     await page.reload({waitUntil:'domcontentloaded'});await picker.waitFor();
     await page.waitForFunction(()=>document.documentElement.lang==='en');
     assert.equal(await picker.inputValue(),'en');
@@ -69,6 +98,7 @@ async function run(browser, origin, standalone) {
     const publicPicker=page.locator('body > [data-coco-language-menu] select');
     await publicPicker.waitFor();
     assert.equal(await publicPicker.inputValue(),'en');
+    assert.deepEqual(await catalog('.cocoMiniJuegos'),spanish,'public and signed-in catalogue order');
     assert.equal(await page.locator('.coco-language-bar select:visible').count(),1);
     console.log((standalone?'Standalone':'Web')+' account header, portrait/landscape, stored language and logout passed.');
   } finally {await page.close();}

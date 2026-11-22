@@ -107,7 +107,7 @@ test("greetings use local time once per conversational window", () => {
   assert.match(client, /client_clock:clientClock\(\)/);
   assert.match(client, /client_greeting_state:clientGreetingState\(\)/);
   assert.match(client, /saveGreetingState\(data\.greeting_state\)/);
-  assert.match(client, /startTitle=openingGreeting\(studentName\)\+p\.title/);
+  assert.match(client, /startTitle=openingGreeting\(studentName\).*esc\(p\.title\)/);
   assert.match(greetingGuard, /first\|\|newDay\|\|periodChanged/);
   assert.match(greetingGuard, /explicit&&onlyGreeting&&!safeInterrupt/);
   assert.match(greetingGuard, /modeOpeningQuestion\(body\?\.mode\)/);

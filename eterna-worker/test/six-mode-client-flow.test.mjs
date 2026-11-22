@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 const source=readFileSync(new URL('../../eterna-v159.js',import.meta.url),'utf8');
 const modes=['homework','ask','review','explain','exam','practice'];
 function harness(){
- const input={value:'Respuesta anterior',placeholder:'Escribe tu respuesta…',focus(){}};
+ const input={setAttribute(){},value:'Respuesta anterior',placeholder:'Escribe tu respuesta…',focus(){}};
  const elements=[];
  const makeNode=()=>({className:'',innerHTML:'',children:new Map(),appendChild(node){elements.push(node)},querySelector(selector){if(selector==='.eternaV160Start')return null;if(!this.children.has(selector))this.children.set(selector,{onclick:null,remove(){}});return this.children.get(selector)},querySelectorAll(){return[]},setAttribute(){},classList:{remove(){}}});
  const chat=makeNode(),composer=makeNode(),overlay={querySelector:s=>s==='[data-et-input]'?input:s==='[data-et-composer]'?composer:chat};

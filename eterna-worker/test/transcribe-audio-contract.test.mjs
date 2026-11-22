@@ -6,7 +6,8 @@ const source=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const start=source.indexOf('async function handleTranscribe(');
 const end=source.indexOf('\nasync function handleSpeak(',start);
 assert.ok(start>0&&end>start);
-const handler=source.slice(start,end);
+const helpers=source.slice(source.indexOf('const languages = Object.freeze'),source.indexOf('async function translateTutorText'));
+const handler=helpers+source.slice(start,end);
 function load({legal=true,sub=true,audioAllowed=true,result={text:'Texto de prueba'}}={}){
  const calls=[];
  const sandbox={File,FormData,Blob,Uint8Array,btoa,

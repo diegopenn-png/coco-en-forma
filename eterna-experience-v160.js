@@ -907,7 +907,7 @@
       for(var attempt=0;attempt<2;attempt++){
         try{
           var fd=new FormData();
-          fd.append("audio",blob,fileNameForMime(mime||blob.type));
+          fd.append("locale",document.documentElement.lang||"es");fd.append("audio",blob,fileNameForMime(mime||blob.type));
           response=await originalFetch(url,{method:"POST",headers:{Authorization:"Bearer "+token},body:fd});
           data=await response.json().catch(function(){return{}});
           if(response.ok)break;
