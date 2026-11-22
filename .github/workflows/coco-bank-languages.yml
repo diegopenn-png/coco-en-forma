@@ -1,0 +1,69 @@
+name: Deploy Coco Bank languages
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/coco-bank-languages.yml', '.github/coco-bank/src/worker.mjs', '.github/coco-bank/src/ui.mjs', '.github/coco-bank/src/locale.mjs', '.github/coco-bank/src/translations.mjs', '.github/coco-bank/src/lang/**', '.github/coco-bank/test/languages.cjs']
+permissions:
+  contents: read
+concurrency:
+  group: coco-bank-production
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: eterna-worker/package-lock.json
+      - name: Prepare existing deployment credentials
+        shell: bash
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          clean_token="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          echo "::add-mask::$clean_token"
+          echo "CLOUDFLARE_API_TOKEN=$clean_token" >> "$GITHUB_ENV"
+          account_id="${CLOUDFLARE_ACCOUNT_INPUT#https://dash.cloudflare.com/}"
+          account_id="${account_id%%/*}"
+          [[ "$account_id" =~ ^[0-9a-fA-F]{32}$ ]]
+          echo "::add-mask::$account_id"
+          echo "CLOUDFLARE_ACCOUNT_ID=$account_id" >> "$GITHUB_ENV"
+      - run: npm ci --no-audit --no-fund
+        working-directory: eterna-worker
+      - name: Verify banking rules and all player languages
+        shell: bash
+        run: |
+          node --test .github/coco-bank/test/*.test.mjs
+          npm install --prefix "$RUNNER_TEMP/bank-dom" --no-audit --no-fund jsdom@26.1.0
+          NODE_PATH="$RUNNER_TEMP/bank-dom/node_modules" node .github/coco-bank/test/languages.cjs
+      - name: Upload the private game keeping existing bindings and settings
+        working-directory: eterna-worker
+        shell: bash
+        run: |
+          npx wrangler versions upload --config ../.github/coco-bank/wrangler.jsonc --keep-vars | tee /tmp/coco-bank-language-upload.log
+          version_id="$(sed -n -E 's/^(Worker )?Version ID: //p' /tmp/coco-bank-language-upload.log | tail -1)"
+          [[ "$version_id" =~ ^[0-9a-f-]{36}$ ]]
+          echo "CANDIDATE_VERSION=$version_id" >> "$GITHUB_ENV"
+      - name: Deploy tested game
+        working-directory: eterna-worker
+        run: npx wrangler versions deploy "$CANDIDATE_VERSION@100%" --config ../.github/coco-bank/wrangler.jsonc --message 'Localized private Coco Bank game' --yes
+      - name: Verify deployed revision and private game access
+        shell: bash
+        run: |
+          origin="https://coco-bank-private.chatinmobiliario.workers.dev"
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error "$origin/health?verify=${GITHUB_SHA}-${attempt}" > /tmp/coco-bank-live.json &&
+              node -e 'const d=require("/tmp/coco-bank-live.json");if(!d.ok||!d.requiresLogin||d.language_revision!=="20261122")process.exit(1)'; then
+              status="$(curl --silent --output /dev/null --write-out '%{http_code}' -H 'Origin: https://cocoenforma.com' "$origin/bundle?lang=fi")"
+              test "$status" = 401
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
