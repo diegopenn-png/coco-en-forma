@@ -28,7 +28,7 @@ Las preguntas que siguen pendientes se conservan durante un saludo. Una nueva pr
 
 La ruta HTTP y la gestión de estado son las del Worker real. Las llamadas a modelos se sustituyen por fixtures y todo acceso de datos se restringe a `https://supabase.test/`: cero inferencias reales.
 
-Comprobación conjunta: 596 pruebas aprobadas en continuidad, director pedagógico, regresión del Worker, biblioteca, contrato v3 y matriz de seis modos. Tras fijar la versión final también pasaron las siete regresiones nuevas y la comprobación de sintaxis.
+Comprobación conjunta: 596 pruebas aprobadas en continuidad, director pedagógico, regresión del Worker, biblioteca, contrato v3 y matriz de seis modos. Tras fijar la versión final también pasaron las siete regresiones nuevas y la comprobación de sintaxis. La comprobación completa posterior (`npm run check`) aprobó 1194/1194 pruebas; los contratos de versión y las huellas del código se actualizaron a esta revisión, conservando las huellas del contenido educativo.
 
 ```sh
 node --check src/index.js
