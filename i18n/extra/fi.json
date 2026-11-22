@@ -159,7 +159,7 @@
   "Entendiendo lo que has dicho…": "Ymmärrän mitä olet sanonut...",
   "Entendiendo tu voz…": "Ymmärrän äänesi...",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "Ensin ymmärrän harjoituksen ja annan sinulle jäljennöksen joka kerta.",
-  "Entra o crea tu cuenta para probar Eterna": "Kirjoita tai luo tilisi kokeilla Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "Kirjaudu sisään tai luo tili kokeillaksesi Eternaa",
   "Entrar o crear cuenta": "Sisäänpääsy tai tilin luominen",
   "Entregado": "toimitetaan",
   "Entrenar en Coco": "Harjoittelu Coco",
@@ -206,7 +206,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna Äänipalvelua ei ole määritelty.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna Vastaus vain koulun oppimiseen",
   "Eterna todavía necesita que configures su servicio.": "Eterna Sinun täytyy vielä luoda palvelun.",
-  "Eterna, tutor escolar personalizado": "EternaHenkilökohtainen koulun opettaja",
+  "Eterna, tutor escolar personalizado": "Eterna, oma oppimistukesi",
   "Explicarlo por voz": "Selittää äänellä",
   "Explora todas las piezas →": "Tutki kaikki osat",
   "Explorar la colección →": "Tutki kokoelmaa",
@@ -241,7 +241,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "Pidä linkki, joka näkyy tilauksen pyynnöstä tai maksun palauttamisesta.",
   "Guardar y continuar": "Säilytä ja jatkaa",
   "Habla ahora con un adulto de confianza": "Keskustele luotettavien aikuisten kanssa",
-  "Habla y Eterna te responde con su voz": "Puhutaan ja Eterna Hän vastaa hänen äänensä",
+  "Habla y Eterna te responde con su voz": "Puhu ja kuuntele Eternan vastaus",
   "Hablar con Eterna": "Puhu Eternan kanssa",
   "Hablar por micrófono": "Puhuminen mikrofonin kautta",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "Olet saavuttanut perheen kuulemisrajan Eterna Pyydä vanhempasi hallitsemaan sitä perhealueelta.",
@@ -273,7 +273,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "Kuvat ylittävät sallitun koon.Kokeile lyhyempi lause.",
   "La imaginación toma forma.": "Mielikuvitus on muodossa.",
   "La pareja": "Pari on",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Ilmainen testi kestää 7 päivää ja alkaa ilman korttia tai pankkitietoja. Tilin avulla voit tallentaa akateemisen edistyksen ja jatkaa missä jätät sen.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Maksuton kokeilu kestää 7 päivää. Et tarvitse maksukorttia tai pankkitietoja. Tilisi tallentaa edistymisesi, jotta voit jatkaa siitä, mihin jäit.",
   "La prueba gratuita ha terminado": "Ilmainen kokeilu on päättynyt",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "Kokous on päättynyt.Lisää EternaOta tilisi takaisin ja yritä uudelleen.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "Se on päättynyt.Pyydä takaisin ja kokeile mikrofonia.",
@@ -387,7 +387,7 @@
   "Productos": "Tuotteet",
   "Progreso pedagógico actualizado": "Päivitetyt pedagogiset edistykset",
   "Provincia / región": "maakunta / alue",
-  "Prueba Eterna gratis durante 7 días": "Kokeile Eterna Ilmainen 7 päivää",
+  "Prueba Eterna gratis durante 7 días": "Kokeile Eternaa maksutta 7 päivän ajan",
   "Prueba con otro nombre o vuelve a «Todos».": "Kokeile toista nimeä tai palauta ”Kaikki”.",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "Voit tutustua yksityiskohtiin Coco osoittamalla viittauksesi.",
   "Puedes guardar o copiar la dirección de esta página.": "Voit tallentaa tai kopioida tämän sivun osoitteen.",
@@ -536,6 +536,7 @@
   "Área sugerida para reforzar": "Suositeltu alue vahvistetaan",
   "← Volver a Coco": "← Paluu Cocoon",
   "← Volver a la colección": "← Paluu kokoelmaan",
-  "← Volver a mi bolsa": "← Takaisin lompakkoon"
+  "← Volver a mi bolsa": "← Takaisin lompakkoon",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "Et tarvitse korttia tai pankkitietoja. Kokeilun päätyttyä päätät itse, haluatko jatkaa."
  }
 }

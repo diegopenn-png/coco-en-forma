@@ -159,7 +159,7 @@
   "Entendiendo lo que has dicho…": "Zrozumienie tego, co powiedziałeś...",
   "Entendiendo tu voz…": "Zrozumienie Twojego głosu...",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "Zacznijmy od ćwiczeń i dajemy ci ślady.",
-  "Entra o crea tu cuenta para probar Eterna": "Wejdź lub utwórz konto, aby sprawdzić Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "Zaloguj się lub utwórz konto, aby wypróbować Eterna",
   "Entrar o crear cuenta": "Wprowadzenie lub utworzenie konta",
   "Entregado": "Podane",
   "Entrenar en Coco": "Ćwiczenia w Coco",
@@ -206,7 +206,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna Nie ma funkcji głosowej.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna Odpowiedź tylko na temat uczenia się szkolnego",
   "Eterna todavía necesita que configures su servicio.": "Eterna Wciąż potrzebujesz, aby zainstalować swoje usługi.",
-  "Eterna, tutor escolar personalizado": "EternaSzkoła personalizowana nauczycielka",
+  "Eterna, tutor escolar personalizado": "Eterna, twój osobisty korepetytor",
   "Explicarlo por voz": "Wyjaśnij to głosem",
   "Explora todas las piezas →": "Odkryj wszystkie części",
   "Explorar la colección →": "Odkryj kolekcję",
@@ -241,7 +241,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "Zapisz link, który pojawia się przy złożeniu zamówienia lub zwrocie płatności.",
   "Guardar y continuar": "Zachowaj i kontynuuj",
   "Habla ahora con un adulto de confianza": "Rozmawiaj z zaufanym dorosłym",
-  "Habla y Eterna te responde con su voz": "Mówi i Eterna Odpowiedz swoim głosem",
+  "Habla y Eterna te responde con su voz": "Powiedz coś i posłuchaj odpowiedzi Eterna",
   "Hablar con Eterna": "Porozmawiaj z Eterna",
   "Hablar por micrófono": "Rozmawiaj przez mikrofon",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "Doszło do granicy konsultacji rodzinnych Eterna Zapytaj rodziców, aby zajęli się nim w rodzinie.",
@@ -273,7 +273,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "Nagranie przekracza dopuszczalny rozmiar. spróbuj krótszej frazy.",
   "La imaginación toma forma.": "Wyobraźnia ma formę.",
   "La pareja": "Para jest",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Bezpłatny test trwa 7 dni i zaczyna się bez karty ani danych bankowych. konto pozwala zapisać postęp akademicki i kontynuować tam, gdzie go zostawiłeś.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Bezpłatny okres próbny trwa 7 dni. Nie potrzebujesz karty ani danych bankowych. Konto zapisuje postępy, więc możesz wrócić do nauki w tym samym miejscu.",
   "La prueba gratuita ha terminado": "Bezpłatne testy się skończyły",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "Sesja zakończyła się EternaWejdź do swojego konta i spróbuj ponownie.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "Sesja wygasła. wstań i sprawdzić mikrofon.",
@@ -387,7 +387,7 @@
   "Productos": "Produkty",
   "Progreso pedagógico actualizado": "Aktualizowany postęp pedagogiczny",
   "Provincia / región": "Prowincja / Region",
-  "Prueba Eterna gratis durante 7 días": "Wypróbuj Eterna Bezpłatne przez 7 dni",
+  "Prueba Eterna gratis durante 7 días": "Wypróbuj Eterna bezpłatnie przez 7 dni",
   "Prueba con otro nombre o vuelve a «Todos».": "Spróbuj w innym imieniu lub wróć do „Wszystko”.",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "Możesz zapoznać się z szczegóły z Coco wskazując swoje odniesienie.",
   "Puedes guardar o copiar la dirección de esta página.": "Możesz zapisać lub skopiować adres tej strony.",
@@ -536,6 +536,7 @@
   "Área sugerida para reforzar": "Wniosek o wzmocnienie",
   "← Volver a Coco": "← Powrót do Coco",
   "← Volver a la colección": "← Powrót do kolekcji",
-  "← Volver a mi bolsa": "← Powrót do mojej kieszeni"
+  "← Volver a mi bolsa": "← Powrót do mojej kieszeni",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "Nie potrzebujesz karty ani danych bankowych. Po zakończeniu okresu próbnego zdecydujesz, czy chcesz kontynuować."
  }
 }

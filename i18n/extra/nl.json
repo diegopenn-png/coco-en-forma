@@ -159,7 +159,7 @@
   "Entendiendo lo que has dicho…": "Begrijp wat je zegt...",
   "Entendiendo tu voz…": "Je stem begrijpen...",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "Ik begrijp eerst de oefening en ik geef je een trace elke keer.",
-  "Entra o crea tu cuenta para probar Eterna": "Ga naar of creëer uw account om te proberen Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "Log in of maak een account om Eterna te proberen",
   "Entrar o crear cuenta": "Inloggen of maken van een account",
   "Entregado": "Gevonden",
   "Entrenar en Coco": "Trainen in Coco",
@@ -206,7 +206,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna De stemdienst is niet ingesteld.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna Reageer alleen op schoollearning",
   "Eterna todavía necesita que configures su servicio.": "Eterna Je moet je service nog steeds aanpassen.",
-  "Eterna, tutor escolar personalizado": "EternaPersoonlijke school tutor",
+  "Eterna, tutor escolar personalizado": "Eterna, je persoonlijke tutor",
   "Explicarlo por voz": "Uitleg door stem",
   "Explora todas las piezas →": "Ontdek alle stukken",
   "Explorar la colección →": "Ontdek de collectie",
@@ -241,7 +241,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "Bewaar de link die verschijnt bij het aanvragen van uw bestelling of terugbetaling.",
   "Guardar y continuar": "Bewaar en voortzetten",
   "Habla ahora con un adulto de confianza": "Spreek nu met een vertrouwde volwassene",
-  "Habla y Eterna te responde con su voz": "spreekt en Eterna Hij antwoordt met zijn stem.",
+  "Habla y Eterna te responde con su voz": "Praat en luister naar het antwoord van Eterna",
   "Hablar con Eterna": "Met Eterna praten",
   "Hablar por micrófono": "Spreken door microfoon",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "Je hebt de familie grens bereikt Eterna Vandaag vraagt u uw ouders om het te beheren vanuit het gezin.",
@@ -273,7 +273,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "De opname overschrijdt de toegestane grootte.Probeer een kortere zin.",
   "La imaginación toma forma.": "De verbeelding neemt vorm.",
   "La pareja": "Het paar",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "De gratis test duurt 7 dagen en begint zonder kaart of bankgegevens. het account maakt het mogelijk om de academische vooruitgang te bewaren en te blijven waar je het hebt verlaten.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "De gratis proefperiode duurt 7 dagen. Je hebt geen betaalkaart of bankgegevens nodig. Je account bewaart je voortgang, zodat je verder kunt waar je was gebleven.",
   "La prueba gratuita ha terminado": "De gratis test is voorbij",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "De vergadering is uitgesteld, sluit EternaGa terug naar je account en probeer het weer.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "De sessie is uitgesteld. kom terug en probeer de microfoon.",
@@ -387,7 +387,7 @@
   "Productos": "Producten",
   "Progreso pedagógico actualizado": "Bijgewerkt pedagogisch vooruitgang",
   "Provincia / región": "Provincie / regio",
-  "Prueba Eterna gratis durante 7 días": "Probeer Eterna Gratis voor 7 dagen",
+  "Prueba Eterna gratis durante 7 días": "Probeer Eterna 7 dagen gratis",
   "Prueba con otro nombre o vuelve a «Todos».": "Probeer met een andere naam of ga terug naar “Alle”.",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "U kunt de details met Coco bekijken door uw referentie te geven.",
   "Puedes guardar o copiar la dirección de esta página.": "U kunt het adres van deze pagina opslaan of kopiëren.",
@@ -536,6 +536,7 @@
   "Área sugerida para reforzar": "Het gebied dat wordt versterkt",
   "← Volver a Coco": "← Terug naar Coco",
   "← Volver a la colección": "← Terug naar de collectie",
-  "← Volver a mi bolsa": "← Terug naar mijn zak"
+  "← Volver a mi bolsa": "← Terug naar mijn zak",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "Je hebt geen kaart of bankgegevens nodig. Na de proefperiode kies je zelf of je doorgaat."
  }
 }

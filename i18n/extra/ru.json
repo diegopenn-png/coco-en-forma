@@ -160,7 +160,7 @@
   "Entendiendo lo que has dicho…": "Понимая то, что вы сказали...",
   "Entendiendo tu voz…": "Понимая свой голос...",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "Я понимаю упражнения сначала и каждый раз даю вам следы.",
-  "Entra o crea tu cuenta para probar Eterna": "Введите или создайте свой аккаунт, чтобы попробовать Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "Войди или создай аккаунт, чтобы попробовать Eterna",
   "Entrar o crear cuenta": "Вход или создание аккаунта",
   "Entregado": "Доставка",
   "Entrenar en Coco": "Тренировка в Коко",
@@ -207,7 +207,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna Голосование не установлено.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna Ответить только на учебу",
   "Eterna todavía necesita que configures su servicio.": "Eterna Вам нужно еще установить свой сервис.",
-  "Eterna, tutor escolar personalizado": "EternaПерсональный школьный наставник",
+  "Eterna, tutor escolar personalizado": "Eterna, твой персональный репетитор",
   "Explicarlo por voz": "Объяснять голосом",
   "Explora todas las piezas →": "Исследуйте все части",
   "Explorar la colección →": "Изучить коллекцию →",
@@ -242,7 +242,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "Сохраните ссылку, которая появляется при запросе заказа или возвращении оплаты.",
   "Guardar y continuar": "Сохранить и продолжать",
   "Habla ahora con un adulto de confianza": "Поговорите с доверенным взрослым",
-  "Habla y Eterna te responde con su voz": "Говорит и Eterna Он отвечает своим голосом",
+  "Habla y Eterna te responde con su voz": "Говори и слушай ответ Eterna",
   "Hablar con Eterna": "Поговорить с Eterna",
   "Hablar por micrófono": "Говорить по микрофону",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "Вы достигли границы семейных консультаций Eterna Пожалуйста, обращайтесь к родителям, чтобы они управляли вами из семейной зоны.",
@@ -274,7 +274,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "Запись превышает разрешенный размер. Попробуйте более короткую фразу.",
   "La imaginación toma forma.": "Изображение принимает форму.",
   "La pareja": "Пара",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Бесплатный тест длится 7 дней и начинается без карты или банковских данных. счет позволяет сохранить академический прогресс и продолжать там, где вы его оставили.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Бесплатный пробный период длится 7 дней. Карта и банковские реквизиты не нужны. Аккаунт сохраняет твой прогресс, чтобы ты мог продолжить с того же места.",
   "La prueba gratuita ha terminado": "Бесплатный тест закончился",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "Сеанс истекает, закрывается EternaВход в свой аккаунт и попробуйте снова.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "Завершилась сессия, вход снова и пробуйте микрофон.",
@@ -388,7 +388,7 @@
   "Productos": "Продукты",
   "Progreso pedagógico actualizado": "Актуальный педагогический прогресс",
   "Provincia / región": "Провинция / регион",
-  "Prueba Eterna gratis durante 7 días": "Тест Eterna Бесплатно 7 дней",
+  "Prueba Eterna gratis durante 7 días": "Попробуй Eterna бесплатно в течение 7 дней",
   "Prueba con otro nombre o vuelve a «Todos».": "Попробуйте другим названием или вернитесь к «Все».",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "Вы можете ознакомиться с подробностями с Coco, указывая свою ссылку.",
   "Puedes guardar o copiar la dirección de esta página.": "Вы можете сохранить или копировать адрес этой страницы.",
@@ -537,6 +537,7 @@
   "Área sugerida para reforzar": "Предложенная область для укрепления",
   "← Volver a Coco": "← Возвращение в Коко",
   "← Volver a la colección": "← Возвращение в коллекцию",
-  "← Volver a mi bolsa": "← Возвращение в мою сумку"
+  "← Volver a mi bolsa": "← Возвращение в мою сумку",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "Карта и банковские реквизиты не нужны. После пробного периода ты решишь, продолжать ли занятия."
  }
 }

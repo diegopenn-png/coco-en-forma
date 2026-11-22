@@ -160,7 +160,7 @@
   "Entendiendo lo que has dicho…": "Зрозумівши, що ви сказали...",
   "Entendiendo tu voz…": "Зрозуміти свій голос...",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "Я розумію, що це відбувається, і я завжди даю вам певний шлях.",
-  "Entra o crea tu cuenta para probar Eterna": "Завантажити або створити свій обліковий запис Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "Увійди або створи обліковий запис, щоб спробувати Eterna",
   "Entrar o crear cuenta": "Вхід або створення облікового запису",
   "Entregado": "Доставка",
   "Entrenar en Coco": "Тренування в Коко",
@@ -207,7 +207,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna У нас немає голосової служби.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna Відповідає тільки про освіту",
   "Eterna todavía necesita que configures su servicio.": "Eterna Ви маєте намір встановити свою службу.",
-  "Eterna, tutor escolar personalizado": "EternaНавчальний заклад персоналізований",
+  "Eterna, tutor escolar personalizado": "Eterna, твій особистий репетитор",
   "Explicarlo por voz": "Виражається голосом",
   "Explora todas las piezas →": "Розглянемо всі частини",
   "Explorar la colección →": "Вивчення колекції →",
@@ -242,7 +242,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "Зберігайте посилання, яке з'являється при запитуванні замовлення або поверненні платежу.",
   "Guardar y continuar": "Зберегти і продовжити",
   "Habla ahora con un adulto de confianza": "Спілкуйтеся з дорослим, який довіряє",
-  "Habla y Eterna te responde con su voz": "Говорить і Eterna Відповідає голосом.",
+  "Habla y Eterna te responde con su voz": "Говори й слухай відповідь Eterna",
   "Hablar con Eterna": "Поговорити з Eterna",
   "Hablar por micrófono": "Говорити за мікрофоном",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "Ви досягли межі сімейних консультацій Eterna Запрошуємо батьків, щоб вони працювали в сімейній зоні.",
@@ -274,7 +274,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "Запис перевищує допустимий розмір. спробуйте коротшу фразу.",
   "La imaginación toma forma.": "Уявіть собі форму.",
   "La pareja": "Пара",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Безкоштовний тест триває 7 днів і починається без картки або банківських даних.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Безкоштовний пробний період триває 7 днів. Картка й банківські реквізити не потрібні. Обліковий запис зберігає твій прогрес, щоб ти міг продовжити з того самого місця.",
   "La prueba gratuita ha terminado": "Безкоштовний тест закінчився",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "Зустріч закінчилася, закінчилася EternaПоверніться до свого облікового запису і спробуйте знову.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "Завершився час, поверніться і перегляньте мікрофон.",
@@ -388,7 +388,7 @@
   "Productos": "Продукти",
   "Progreso pedagógico actualizado": "Оновлений педагогічний прогрес",
   "Provincia / región": "Провінція / Регіон",
-  "Prueba Eterna gratis durante 7 días": "Тестування Eterna Безкоштовні 7 днів",
+  "Prueba Eterna gratis durante 7 días": "Спробуй Eterna безкоштовно протягом 7 днів",
   "Prueba con otro nombre o vuelve a «Todos».": "Попробуйте іншим ім'ям або поверніться до «Всі».",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "Ви можете ознайомитися з деталіми, вказуючи свою референцію.",
   "Puedes guardar o copiar la dirección de esta página.": "Ви можете завантажити або завантажити цю сторінку.",
@@ -537,6 +537,7 @@
   "Área sugerida para reforzar": "Пропоновані місця для зміцнення",
   "← Volver a Coco": "Повернення до Коко",
   "← Volver a la colección": "← Повернення до колекції",
-  "← Volver a mi bolsa": "← Повернення до моєї торгівлі"
+  "← Volver a mi bolsa": "← Повернення до моєї торгівлі",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "Картка й банківські реквізити не потрібні. Після завершення ти вирішиш, чи продовжувати."
  }
 }

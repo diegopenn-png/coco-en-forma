@@ -159,7 +159,7 @@
   "Entendiendo lo que has dicho…": "Capendo quello che hai detto...",
   "Entendiendo tu voz…": "Comprendo la tua voce...",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "Io capisco prima l’esercizio e ti dico una traccia ogni volta.",
-  "Entra o crea tu cuenta para probar Eterna": "Inserisci o crea il tuo account per provare Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "Accedi o crea un account per provare Eterna",
   "Entrar o crear cuenta": "Inserisci o crea un account",
   "Entregado": "consegnato",
   "Entrenar en Coco": "Allenamento a Coco",
@@ -206,7 +206,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna Non ha configurato il servizio vocale.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna Rispondi solo sull'apprendimento scolastico",
   "Eterna todavía necesita que configures su servicio.": "Eterna Ha ancora bisogno di configurare il suo servizio.",
-  "Eterna, tutor escolar personalizado": "EternaTutore scolastico personalizzato",
+  "Eterna, tutor escolar personalizado": "Eterna, il tuo tutor personale",
   "Explicarlo por voz": "Spiegare per voce",
   "Explora todas las piezas →": "Scopri tutte le parti",
   "Explorar la colección →": "Esplorare la collezione",
@@ -241,7 +241,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "Salva il link che appare quando si richiede il tuo ordine o il ritorno del pagamento. Per qualsiasi consultazione, scrivete a",
   "Guardar y continuar": "Conservare e continuare",
   "Habla ahora con un adulto de confianza": "Parla con un adulto di fiducia",
-  "Habla y Eterna te responde con su voz": "Parla e Eterna risponde con la sua voce",
+  "Habla y Eterna te responde con su voz": "Parla e ascolta la risposta di Eterna",
   "Hablar con Eterna": "Parla con Eterna",
   "Hablar por micrófono": "Parlare per microfono",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "Ha raggiunto il limite familiare di consultazioni Eterna Chiedete ai vostri genitori di gestire la vostra zona familiare.",
@@ -273,7 +273,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "Il testo è più grande di quello consentito, prova una frase più breve.",
   "La imaginación toma forma.": "La fantasia prende forma.",
   "La pareja": "La coppia",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "La prova gratuita dura 7 giorni e inizia senza carta o dati bancari. Il conto consente di salvare il progresso accademico e continuare dove lo lasciate.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "La prova gratuita dura 7 giorni e non richiede carta o dati bancari. Il tuo account salva i progressi per riprendere da dove eri rimasto.",
   "La prueba gratuita ha terminado": "La prova gratuita è finita",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "La sessione è scaduta, chiude EternaInserisci il tuo account e provi di nuovo.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "La sessione è scaduta. torna a entrare e prova il microfono.",
@@ -387,7 +387,7 @@
   "Productos": "Prodotti",
   "Progreso pedagógico actualizado": "Progresso pedagogico aggiornato",
   "Provincia / región": "Provincia / Regione",
-  "Prueba Eterna gratis durante 7 días": "Prova Eterna Gratuito per 7 giorni",
+  "Prueba Eterna gratis durante 7 días": "Prova Eterna gratis per 7 giorni",
   "Prueba con otro nombre o vuelve a «Todos».": "Prova con un altro nome o torna a “Tutti”.",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "Puoi consultare i dettagli con Coco indicando il tuo riferimento.",
   "Puedes guardar o copiar la dirección de esta página.": "Puoi salvare o copiare l'indirizzo di questa pagina.",
@@ -536,6 +536,7 @@
   "Área sugerida para reforzar": "L'area proposta per rafforzare",
   "← Volver a Coco": "← Ritorno a Coco",
   "← Volver a la colección": "← Ritorno alla collezione",
-  "← Volver a mi bolsa": "← Ritorno alla mia borsa"
+  "← Volver a mi bolsa": "← Ritorno alla mia borsa",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "Non servono carta o dati bancari. Alla fine della prova decidi tu se continuare."
  }
 }

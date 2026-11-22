@@ -159,7 +159,7 @@
   "Entendiendo lo que has dicho…": "Understanding what you said...",
   "Entendiendo tu voz…": "Understanding your voice.",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "I understand the exercise first and I give you a track every time.",
-  "Entra o crea tu cuenta para probar Eterna": "Enter or create your account to try Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "Sign in or create an account to try Eterna",
   "Entrar o crear cuenta": "Create or enter an account",
   "Entregado": "delivered",
   "Entrenar en Coco": "Training in Coco",
@@ -206,7 +206,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna The voice service is not set.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna Reply to school learning",
   "Eterna todavía necesita que configures su servicio.": "Eterna You need to set up your service.",
-  "Eterna, tutor escolar personalizado": "EternaPersonalized school tutor",
+  "Eterna, tutor escolar personalizado": "Eterna, your personal tutor",
   "Explicarlo por voz": "Explain it by voice",
   "Explora todas las piezas →": "Explore all the pieces",
   "Explorar la colección →": "Explore the collection",
@@ -241,7 +241,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "Save the link that appears when requesting your order or returning from the payment. for any query, write to",
   "Guardar y continuar": "Save and continue",
   "Habla ahora con un adulto de confianza": "Talk to a trusted adult.",
-  "Habla y Eterna te responde con su voz": "Speaked and Eterna He responds with his voice.",
+  "Habla y Eterna te responde con su voz": "Speak and hear Eterna’s reply",
   "Hablar con Eterna": "Talk to Eterna",
   "Hablar por micrófono": "Speaking by microphone",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "You have reached the family limit of consultations. Eterna Ask your parents to manage it from the Family Zone.",
@@ -273,7 +273,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "The recording is greater than the allowed size. try a shorter phrase.",
   "La imaginación toma forma.": "Imagination takes shape.",
   "La pareja": "The couple",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "The free test lasts 7 days and starts without card or bank data.The account allows you to save the academic progress and continue where you leave it.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "The free trial lasts 7 days. You can start without a card or bank details. Your account saves your progress so you can pick up where you left off.",
   "La prueba gratuita ha terminado": "The free test is over.",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "The session is over.Closed EternaGo back to your account and try it again.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "The session has expired. enter again and try the microphone.",
@@ -387,7 +387,7 @@
   "Productos": "Products",
   "Progreso pedagógico actualizado": "Updated Pedagogical Progress",
   "Provincia / región": "Province / Region",
-  "Prueba Eterna gratis durante 7 días": "Tested Eterna Free for 7 days",
+  "Prueba Eterna gratis durante 7 días": "Try Eterna free for 7 days",
   "Prueba con otro nombre o vuelve a «Todos».": "Try with another name or go back to “All”.",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "You can consult the details with Coco indicating your reference.",
   "Puedes guardar o copiar la dirección de esta página.": "You can save or copy the address of this page.",
@@ -536,6 +536,7 @@
   "Área sugerida para reforzar": "Area proposed to strengthen",
   "← Volver a Coco": "Return to Coco",
   "← Volver a la colección": "Return to the collection",
-  "← Volver a mi bolsa": "Return to my pocket"
+  "← Volver a mi bolsa": "Return to my pocket",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "Start without a card or bank details. When the trial ends, you decide whether to continue."
  }
 }

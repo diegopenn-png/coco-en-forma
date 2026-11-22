@@ -160,7 +160,7 @@
   "Entendiendo lo que has dicho…": "理解你说的话......",
   "Entendiendo tu voz…": "理解你的声音",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "我先了解你的练习,每次都给你一个技巧。",
-  "Entra o crea tu cuenta para probar Eterna": "登录或创建您的帐户 Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "登录或创建账号以试用 Eterna",
   "Entrar o crear cuenta": "登录或创建帐户",
   "Entregado": "交付",
   "Entrenar en Coco": "教科书",
@@ -207,7 +207,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna 没有声音服务。",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna 只回答学校学习",
   "Eterna todavía necesita que configures su servicio.": "Eterna 你需要设置自己的服务。",
-  "Eterna, tutor escolar personalizado": "Eterna个性化学校教师",
+  "Eterna, tutor escolar personalizado": "Eterna，你的专属学习辅导助手",
   "Explicarlo por voz": "用声音解释",
   "Explora todas las piezas →": "探索所有部分",
   "Explorar la colección →": "探索收藏",
@@ -242,7 +242,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "保留您订单或退款时显示的链接. 任何查询,请写下",
   "Guardar y continuar": "保存和继续",
   "Habla ahora con un adulto de confianza": "与一个有信心的成年人交谈",
-  "Habla y Eterna te responde con su voz": "说话和 Eterna 用自己的声音回答你",
+  "Habla y Eterna te responde con su voz": "说出你的问题，听 Eterna 回答",
   "Hablar con Eterna": "与 Eterna 对话",
   "Hablar por micrófono": "用微波说话",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "您已达到家庭咨询的限制 Eterna 今天,请你的父母从家庭区管理。",
@@ -274,7 +274,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "记录超过允许的尺寸,试一句更短的句子。",
   "La imaginación toma forma.": "想象力采取形式。",
   "La pareja": "夫妻",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "免费考试持续7天,没有卡或银行数据开始,帐户可以保存学术进展并继续在你留下的地方。",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "免费试用期为 7 天，无需提供银行卡或银行账户信息。账号会保存学习进度，以便下次继续。",
   "La prueba gratuita ha terminado": "免费测试结束了",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "会议结束了,结束了。 Eterna然后再登录你的帐户,然后再试一次。",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "接下来的时间已经结束了,然后再试一下微波。",
@@ -388,7 +388,7 @@
   "Productos": "产品",
   "Progreso pedagógico actualizado": "更新教学进展",
   "Provincia / región": "地區 / 地區",
-  "Prueba Eterna gratis durante 7 días": "测试 Eterna 免费7天",
+  "Prueba Eterna gratis durante 7 días": "免费试用 Eterna 7 天",
   "Prueba con otro nombre o vuelve a «Todos».": "用另一个名字尝试或返回“所有人”。",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "您可以通过指示您的参考来查看细节。",
   "Puedes guardar o copiar la dirección de esta página.": "您可以保存或复制此页面的地址。",
@@ -537,6 +537,7 @@
   "Área sugerida para reforzar": "建议加强的区域",
   "← Volver a Coco": "← 回到Coco",
   "← Volver a la colección": "← 回到收藏",
-  "← Volver a mi bolsa": "← 回到我的行李箱"
+  "← Volver a mi bolsa": "← 回到我的行李箱",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "无需提供银行卡或银行账户信息。试用结束后，由你决定是否继续。"
  }
 }

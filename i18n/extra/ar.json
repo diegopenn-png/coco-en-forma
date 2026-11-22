@@ -160,7 +160,7 @@
   "Entendiendo lo que has dicho…": "فهم ما قلت ..",
   "Entendiendo tu voz…": "فهم صوتك ..",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "أولاً، أنا أفهم التمرين وأعطيك مسارًا في كل مرة.",
-  "Entra o crea tu cuenta para probar Eterna": "قم بتسجيل الدخول أو إنشاء حسابك لتجربة Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "سجّل الدخول أو أنشئ حسابًا لتجربة Eterna",
   "Entrar o crear cuenta": "إدخال أو إنشاء حساب",
   "Entregado": "تسليم",
   "Entrenar en Coco": "التدريب في كوكو",
@@ -207,7 +207,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna لا يوجد خدمة صوتية.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna فقط الرد على التعلم المدرسي",
   "Eterna todavía necesita que configures su servicio.": "Eterna لا يزال من الضروري أن تقوم بتثبيت الخدمة.",
-  "Eterna, tutor escolar personalizado": "Eternaمعلم مدرسة مخصص",
+  "Eterna, tutor escolar personalizado": "Eterna، مساعدك الدراسي الشخصي",
   "Explicarlo por voz": "تفسيرها بصوت",
   "Explora todas las piezas →": "اكتشف كل الأجزاء",
   "Explorar la colección →": "استكشاف المجموعة",
@@ -242,7 +242,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "احفظ الرابط الذي يظهر عند طلب طلبك أو استرداد الدفع.",
   "Guardar y continuar": "الحفاظ على واستمرار",
   "Habla ahora con un adulto de confianza": "تحدث مع شخص ثقة",
-  "Habla y Eterna te responde con su voz": "تحدثت و Eterna يجيبك بصوته",
+  "Habla y Eterna te responde con su voz": "تحدث واستمع إلى رد Eterna",
   "Hablar con Eterna": "تحدث مع Eterna",
   "Hablar por micrófono": "التحدث عن الميكروفون",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "لقد وصلت إلى الحد الأدنى للمستشارات العائلية Eterna يطلب من والديك أن يسيطروا عليه من منطقة العائلة.",
@@ -274,7 +274,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "يزيد حجم التسجيل عن الحجم المسموح به، ويحاول إدخال عبارة أقصر.",
   "La imaginación toma forma.": "الخيال يأخذ شكلًا.",
   "La pareja": "الزوجة",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "تستمر الامتحان المجاني لمدة 7 أيام وتبدأ دون بطاقة أو بيانات مصرفية.المحاسبة تسمح لك بالحفاظ على التقدم الأكاديمي والاستمرار حيث تركتها.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "تستمر التجربة المجانية 7 أيام ولا تحتاج إلى بطاقة أو بيانات مصرفية. يحفظ حسابك تقدمك الدراسي لتتمكن من المتابعة من حيث توقفت.",
   "La prueba gratuita ha terminado": "اختبار مجاني انتهى",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "جلسة انتهاء الصلاحية.إغلاق Eternaاذهب إلى حسابك واحاول ذلك مرة أخرى.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "لقد انتهى الجلسة، ثم قم بإعادة الدخول واختبر الميكروفون.",
@@ -388,7 +388,7 @@
   "Productos": "المنتجات",
   "Progreso pedagógico actualizado": "التقدم التربوي المحدث",
   "Provincia / región": "مقاطعة / منطقة",
-  "Prueba Eterna gratis durante 7 días": "اختبار Eterna مجانا لمدة 7 أيام",
+  "Prueba Eterna gratis durante 7 días": "جرّب Eterna مجانًا لمدة 7 أيام",
   "Prueba con otro nombre o vuelve a «Todos».": "حاول باستخدام اسم آخر أو العودة إلى \"جميع\".",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "يمكنك الاطلاع على التفاصيل مع Coco من خلال الإشارة الخاصة بك.",
   "Puedes guardar o copiar la dirección de esta página.": "يمكنك حفظ أو نسخ عنوان هذا الصفحة.",
@@ -537,6 +537,7 @@
   "Área sugerida para reforzar": "المنطقة المطلوبة لتعزيز",
   "← Volver a Coco": "← العودة إلى كوكو",
   "← Volver a la colección": "← العودة إلى المجموعة",
-  "← Volver a mi bolsa": "← العودة إلى جيبي"
+  "← Volver a mi bolsa": "← العودة إلى جيبي",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "لا تحتاج إلى بطاقة أو بيانات مصرفية. بعد انتهاء التجربة، أنت من يقرر إن كنت تريد المتابعة."
  }
 }

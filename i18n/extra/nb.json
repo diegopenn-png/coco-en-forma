@@ -159,7 +159,7 @@
   "Entendiendo lo que has dicho…": "Forstå hva du sa...",
   "Entendiendo tu voz…": "Å forstå stemmen din...",
   "Entiendo primero el ejercicio y te doy una pista cada vez.": "Jeg forstår øvelsen først og da gir jeg deg en spor hver gang.",
-  "Entra o crea tu cuenta para probar Eterna": "Skriv inn eller opprette kontoen din for å prøve Eterna",
+  "Entra o crea tu cuenta para probar Eterna": "Logg inn eller opprett en konto for å prøve Eterna",
   "Entrar o crear cuenta": "Å skrive inn eller opprette konto",
   "Entregado": "Leveret",
   "Entrenar en Coco": "Trener i Coco",
@@ -206,7 +206,7 @@
   "Eterna no tiene configurado el servicio de voz.": "Eterna Det er ikke oppført stemmerett.",
   "Eterna solo responde sobre aprendizaje escolar": "Eterna Bare svar på skolelæring",
   "Eterna todavía necesita que configures su servicio.": "Eterna Du trenger fortsatt å konfigurere tjenesten din.",
-  "Eterna, tutor escolar personalizado": "EternaPersonlig skolestøtte",
+  "Eterna, tutor escolar personalizado": "Eterna, din personlige læringshjelp",
   "Explicarlo por voz": "forklarer det med stemme",
   "Explora todas las piezas →": "Utforsk alle deler",
   "Explorar la colección →": "Utforske samlingen",
@@ -241,7 +241,7 @@
   "Guarda el enlace que aparece al solicitar tu pedido o volver del pago. Para cualquier consulta, escribe a": "Oppbevar koblingen som vises når du ber om bestillingen eller betaler tilbake.",
   "Guardar y continuar": "Oppbevar og fortsette",
   "Habla ahora con un adulto de confianza": "Snakk med en pålitelig voksen",
-  "Habla y Eterna te responde con su voz": "Snakk og Eterna Svarer med sin stemme",
+  "Habla y Eterna te responde con su voz": "Snakk og lytt til svaret fra Eterna",
   "Hablar con Eterna": "Snakk med Eterna",
   "Hablar por micrófono": "Talk på mikrofon",
   "Has alcanzado el límite familiar de consultas de Eterna por hoy. Pide a tus padres que lo gestionen desde Zona Familiar.": "Du har nådd familiens grense for konsultasjoner Eterna Spør foreldrene dine om å forvalte dem fra familielivet.",
@@ -273,7 +273,7 @@
   "La grabación supera el tamaño permitido. Prueba una frase más corta.": "Oppskriften overstiger den tillatte størrelsen. prøv en kortere utgave.",
   "La imaginación toma forma.": "Fantasien tar form.",
   "La pareja": "Paret",
-  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Gratis test varer 7 dager og starter uten kort eller bankopplysninger. kontoen lar deg lagre akademisk fremgang og fortsette der du forlater det.",
+  "La prueba gratuita dura 7 días y empieza sin tarjeta ni datos bancarios. La cuenta permite guardar el progreso académico y continuar donde lo dejaste.": "Den gratis prøveperioden varer i 7 dager. Du trenger ikke kort eller bankopplysninger. Kontoen lagrer fremgangen din, så du kan fortsette der du slapp.",
   "La prueba gratuita ha terminado": "Gratis test er over",
   "La sesión ha caducado. Cierra Eterna, vuelve a entrar en tu cuenta e inténtalo otra vez.": "Møtet er avsluttet, lukker EternaGå inn på kontoen din og prøv igjen.",
   "La sesión ha caducado. Vuelve a entrar y prueba el micrófono.": "Sessionen er utløpt. gå inn igjen og prøv mikrofonen.",
@@ -387,7 +387,7 @@
   "Productos": "Produkter",
   "Progreso pedagógico actualizado": "Oppdatert pedagogisk utvikling",
   "Provincia / región": "Provinsen / Regionen",
-  "Prueba Eterna gratis durante 7 días": "Prøve Eterna Gratis i 7 dager",
+  "Prueba Eterna gratis durante 7 días": "Prøv Eterna gratis i 7 dager",
   "Prueba con otro nombre o vuelve a «Todos».": "Prøv med et annet navn eller gå tilbake til «Alle».",
   "Puedes consultar los detalles con Coco indicando tu referencia.": "Du kan lese detaljene med Coco ved å indikere referansen din.",
   "Puedes guardar o copiar la dirección de esta página.": "Du kan lagre eller kopiere adressen på denne siden.",
@@ -536,6 +536,7 @@
   "Área sugerida para reforzar": "Foreslått område for å styrke",
   "← Volver a Coco": "Tilbake til Coco",
   "← Volver a la colección": "← Tilbake til samlingen",
-  "← Volver a mi bolsa": "← Tilbake til lommeboka"
+  "← Volver a mi bolsa": "← Tilbake til lommeboka",
+  "Empieza sin tarjeta ni datos bancarios. Al terminar, tú decides si quieres continuar.": "Du trenger ikke kort eller bankopplysninger. Når prøvetiden er over, bestemmer du om du vil fortsette."
  }
 }

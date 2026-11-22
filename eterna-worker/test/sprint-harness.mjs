@@ -8,14 +8,15 @@ const text=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const worker=text('../src/index.js'),content=text('../src/library/content-v1.js'),runtime=text('../src/library/runtime-v1.js'),contract=text('../../eterna-state-contract-v3.js');
 const cleanWorker=worker.replace(/^import\s+[^;]+;\s*/gm,'').replace(/\nexport default\s*\{[\s\S]*?\};\s*$/,'');
 const plain=x=>JSON.parse(JSON.stringify(x));
-export function harness({year='5º de Primaria',legal=true,subscription=true,quota=true,profile=true,delay=0,enabled=true,factory=true}={}){
+export function harness({year='5º de Primaria',legal=true,subscription=true,quota=true,profile=true,delay=0,enabled=true,factory=true,translationBudget=false}={}){
   const requests=[],inferences=[],work=[],cache=new Map();
   const sb=async(input,init={})=>{
     const url=String(input);requests.push({url,method:init.method||'GET'});
     if(!url.startsWith('https://supabase.test/'))throw Error('Unplanned external request '+url);
     if(delay)await new Promise(r=>setTimeout(r,delay));
     const u=new URL(url),p=u.pathname;if(p==='/auth/v1/user')return new Response(JSON.stringify({id:'student-test',email:'adult@example.invalid',email_confirmed_at:new Date().toISOString()}),{status:200});let rows=[];
-    if(p.endsWith('/eterna_student_profiles'))rows=profile?[{school_year:year,stage:year.includes('Primaria')?'primaria':year.includes('ESO')?'eso':year.includes('Bachillerato')?'bachillerato':'infantil',autonomous_community:'Andalucía'}]:[];
+    if(p.endsWith('/rpc/eterna_ai_budget_reserve')&&translationBudget)rows=[{ok:true,reservation_id:'qa-reservation'}];
+    else if(p.endsWith('/eterna_student_profiles'))rows=profile?[{school_year:year,stage:year.includes('Primaria')?'primaria':year.includes('ESO')?'eso':year.includes('Bachillerato')?'bachillerato':'infantil',autonomous_community:'Andalucía'}]:[];
     else if(p.endsWith('/perfiles'))rows=[{apodo:'Prueba',edad:10,rol:'usuario'}];
     else if(p.endsWith('/eterna_subscriptions'))rows=[{status:subscription?'active':'canceled',plan:'monthly'}];
     else if(p.endsWith('/eterna_legal_acceptances'))rows=legal?[{terms_accepted:true,privacy_accepted:true,ai_notice_accepted:true,parental_authorization:true,relationship:'parent',accepted_at:new Date().toISOString(),legal_version:'2026-08-23-v1'}]:[];
