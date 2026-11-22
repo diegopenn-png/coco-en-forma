@@ -71,7 +71,14 @@ async function run(browser, origin, standalone) {
           const width=Math.min(box.right,frame.right)-Math.max(box.left,frame.left);
           const height=Math.min(box.bottom,frame.bottom)-Math.max(box.top,frame.top);
           if(!(width>=36 && height>=18 && image.naturalWidth>0))
-            throw Error(tag+' clipped illustration for '+id+': '+width+' × '+height);
+            {
+              const sizes=[];
+              for(let el=image;el&&el!==container.parentElement;el=el.parentElement){
+                const b=el.getBoundingClientRect(),css=getComputedStyle(el);
+                sizes.push([el.className,b.width,b.height,css.display,css.gridTemplateColumns]);
+              }
+              throw Error(tag+' clipped illustration for '+id+': '+JSON.stringify(sizes));
+            }
           for(const caption of art.querySelectorAll('[data-coco-source-text]')){
             const translated=window.CocoLocale.t(caption.getAttribute('data-coco-source-text'));
             if(!translated || caption.textContent!==translated)throw Error(tag+' wrong caption for '+id);
