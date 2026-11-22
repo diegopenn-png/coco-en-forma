@@ -58,6 +58,30 @@ async function run(browser, origin, standalone) {
         return id && !card.hasAttribute('data-coco-suggestion') ? [id] : [];
       }));
     }
+    async function verifyArtwork(grid,tag,expected) {
+      const posterIds=await page.locator(grid).evaluate(async (container,{tag,expected})=>{
+        const seen=[];
+        for(const id of expected){
+          const art=container.querySelector('[data-coco-thumbnail="'+id+'"]');
+          const image=art?.querySelector('img');
+          if(!image)throw Error(tag+' missing illustration for '+id);
+          image.scrollIntoView({block:'center',behavior:'instant'});
+          await image.decode();
+          const box=image.getBoundingClientRect(),frame=art.parentElement.getBoundingClientRect();
+          const width=Math.min(box.right,frame.right)-Math.max(box.left,frame.left);
+          const height=Math.min(box.bottom,frame.bottom)-Math.max(box.top,frame.top);
+          if(!(width>=36 && height>=18 && image.naturalWidth>0))
+            throw Error(tag+' clipped illustration for '+id+': '+width+' × '+height);
+          for(const caption of art.querySelectorAll('[data-coco-source-text]')){
+            const translated=window.CocoLocale.t(caption.getAttribute('data-coco-source-text'));
+            if(!translated || caption.textContent!==translated)throw Error(tag+' wrong caption for '+id);
+          }
+          seen.push(id);
+        }
+        return seen;
+      },{tag,expected});
+      assert.deepEqual(posterIds,expected);
+    }
     const grid='.cocoGridUnificada';
     await picker.selectOption('es');await page.waitForFunction(()=>document.documentElement.lang==='es');
     const spanish=await catalog(grid);
@@ -75,6 +99,7 @@ async function run(browser, origin, standalone) {
       await controls.nth(1).click();await page.locator('.panelJugador.activa:not([data-coco-panel="games"])').waitFor();
       await controls.first().click();await page.locator('[data-coco-panel="games"].activa').waitFor();
       assert.deepEqual(await catalog(grid),spanish,tag+' complete game list and order');
+      if(tag!=='es')await verifyArtwork(grid,tag,spanish);
     }
     await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     await page.evaluate(()=>window.CocoEternaV160.open());
@@ -102,6 +127,7 @@ async function run(browser, origin, standalone) {
       await publicPicker.selectOption(tag);
       await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
       assert.deepEqual(await catalog('.cocoMiniJuegos'),spanish,tag+' public and signed-in catalogue order');
+      if(tag!=='es')await verifyArtwork('.cocoMiniJuegos',tag,spanish);
     }
     assert.equal(await page.locator('.coco-language-bar select:visible').count(),1);
     console.log((standalone?'Standalone':'Web')+' account header, portrait/landscape, stored language and logout passed.');
