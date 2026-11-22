@@ -1,3 +1,48 @@
+# Análisis y resultados · versión 2026-11-22-coaching-4
+
+Actualización editorial local del 22 de noviembre de 2026. La publicación de esta versión se verifica por separado; los registros históricos inferiores no acreditan este cambio.
+
+## Cambios comprobados
+
+- Modelo compartido `buildResultMap` para web y PDF: nueve medias en escala 1–5, respuestas válidas por tendencia, omisiones y medias que todavía no pueden calcularse. Una media de cuatro o cinco respuestas se identifica como parcial; un hueco no se convierte en una puntuación baja.
+- Distinción entre empate exacto, medias próximas, mapa amplio e información insuficiente. El margen de 0,25 conserva su carácter editorial; no se presenta como precisión estadística. Una diferencia numérica no mide probabilidad de pertenecer a un tipo.
+- Cada lectura incluye su media y el número real de respuestas, un recurso posible y una pregunta para contrastar la hipótesis con otras explicaciones. Las medias no se utilizan para inventar respuestas concretas ni episodios personales.
+- Nueve experimentos originales para las lecturas adultas con foco único: acción, observación y criterio para ajustar o descartar. Los empates y los mapas incompletos mantienen una práctica transversal; los menores conservan propuestas voluntarias adaptadas a infancia y adolescencia, sin tipo dominante.
+- Tabla web con encabezados de columna y de fila, texto numérico accesible y barras decorativas. PDF de siete páginas con la misma fuente de resultados y prácticas; se eliminó un párrafo redundante para mantener espacio legible en las lecturas de tres tendencias.
+- La revisión independiente detectó y corrigió dos incoherencias de texto: un mapa incompleto o amplio no se describe automáticamente como empate, y un menor sin respuestas no recibe un mensaje que presuponga nueve medias disponibles.
+
+El cuestionario, la inversión de ítems, las puntuaciones, los requisitos de comparación, los precios y la autorización de descarga permanecen en sus módulos existentes. La generación continúa siendo determinista y no añade llamadas a modelos.
+
+## Evidencia de verificación
+
+| Verificación local | Resultado observado |
+| --- | --- |
+| Motor, informe y nueva suite de evidencia | 21/21 pruebas correctas; las nueve regresiones nuevas se observaron fallar antes de sus correcciones. |
+| Aplicación real con DOM simulado | UI, navegación y compartir correctos; flujos de adulto, menor, omisiones, revisión del mismo informe y permisos simulados. |
+| PDF: pares y tríos de perspectivas | 72 pares ordenados y 84 tríos sin desbordamientos; se incluyen notas y procedencia largas en el barrido de pares. |
+| Revisión visual de PDF | Cinco muestras ficticias de siete páginas: foco único con segunda perspectiva, triple empate, omisiones, adolescente y menor con cero respuestas. Sin cortes ni solapes; revisadas las páginas densas y las portadas con datos faltantes. |
+| Pruebas acotadas del Worker | 119/119 correctas para `content-370`, `content-410` y `eneagrama-payments` antes del cambio independiente de versión funcional del Worker. La verificación final de esa versión forma parte del despliegue. |
+| Revisión independiente | Modelo, empates, omisiones, menores, equivalencia web/PDF y longitud aprobados tras corregir los dos mensajes descritos. |
+
+Comandos reproducibles:
+
+```sh
+node --test qa/explora/report-evidence.test.mjs qa/explora/coaching.test.mjs qa/explora/engine.test.mjs
+COCO_JSDOM_PATH=/ruta/a/node_modules/jsdom node qa/explora/ui.test.cjs
+COCO_JSDOM_PATH=/ruta/a/node_modules/jsdom node qa/explora/navigation.test.cjs
+COCO_JSDOM_PATH=/ruta/a/node_modules/jsdom node qa/explora/share-tools.test.cjs
+```
+
+La suite nueva se incorpora a los cuatro comandos explícitos de CI que verifican Eneagrama. Las comprobaciones de salud esperan `2026-11-22-coaching-4`. El cambio editorial de `report_version` se elimina al normalizar los contratos `content-370/410`; no requiere por sí solo cambiar sus hashes. El literal independiente de versión funcional del Worker se coordina en la publicación.
+
+Estas comprobaciones usan datos ficticios y sesiones simuladas. No se realizaron compras, cargos, llamadas facturables a modelos ni pruebas con datos personales. La tabla se revisó semánticamente; este registro no representa una auditoría manual con lector de pantalla ni una prueba en iPhone físico.
+
+## Criterio de interpretación
+
+Se conserva la distinción entre autoconocimiento y medida validada. La revisión sistemática de Hook y colaboradores describe evidencia mixta sobre fiabilidad y validez del Eneagrama; se consultó su resumen editorial, no el artículo íntegro: [Journal of Clinical Psychology, DOI 10.1002/jclp.23097](https://onlinelibrary.wiley.com/doi/10.1002/jclp.23097). No aporta validación al cuestionario original de Coco. La documentación de fuentes y la firma mantienen sus límites de alcance y ausencia de respaldo institucional.
+
+---
+
 # Referencias y firma · versión 2026-10-31-coaching-3
 
 - Firma de presentación solicitada por el propietario: Diego Pennise / Coach Organizacional & Ontológico / Universidad de San Andrés. «Univ» fue aclarado como la misma universidad.

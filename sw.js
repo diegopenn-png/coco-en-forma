@@ -1,5 +1,5 @@
 /* Coco en Forma · Service Worker v160.100.22 · Conecta colores integrated */
-const CACHE_VERSION="coco-en-forma-v160.100.85-dropdown-languages";
+const CACHE_VERSION="coco-en-forma-v160.100.86-eneagrama-analysis";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
