@@ -110,8 +110,9 @@ test('social metadata and structured data describe the visible page without inve
       assert.equal(d.querySelector(`meta[${attribute}="${prefix}:description"]`).content, copy[tag].description, tag);
       const image = new URL(d.querySelector(`meta[${attribute}="${prefix}:image"]`).content);
       assert.equal(image.origin, origin, tag);
+      assert.equal(image.pathname,'/share/juegos-gratis/'+tag+'.jpg',tag);
       assert.ok(existsSync(new URL('.' + image.pathname, root)), image.href);
-      assert.ok(d.querySelector(`meta[${attribute}="${prefix}:image:alt"]`).content.trim(), tag);
+      assert.equal(d.querySelector(`meta[${attribute}="${prefix}:image:alt"]`).content,copy[tag].eyebrow+' · '+copy[tag].labels.explore,tag);
     }
     const collection = data.find(item => item['@type'] === 'CollectionPage');
     assert.equal(collection.url, url, tag);
