@@ -89,7 +89,9 @@ async function assessment(browser,age,saveDir){
       assert.ok(painted.includes(rendered.headline.replace(/\s/gu,'')),tag+' report heading in downloaded PDF');
       assert.ok(painted.includes(player.replace(/\s/gu,'')),tag+' participant alias in downloaded PDF');
       assert.doesNotMatch(rendered.headline,/Nueve formas de mirarte/);
-      assert.doesNotMatch(rendered.coverage,/respuestas|omisiones|disponibles/);
+      const statsTemplate=require('../i18n/assessment/'+tag+'.json').templates['{n} de {total} respuestas · {omitted} omisiones · {available} de 9 medias disponibles.'];
+      const expectedStats=statsTemplate.replace('{n}','54').replace('{total}','54').replace('{omitted}','0').replace('{available}','9');
+      assert.equal(rendered.coverage,expectedStats,tag+' localized response summary');
       assert.doesNotMatch(rendered.descriptions.join(' '),/con \d de 6 respuestas/);
       const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#download').click()]);
       assert.equal(download.suggestedFilename(),'Coco-Eneagrama-'+tag+'.pdf');
