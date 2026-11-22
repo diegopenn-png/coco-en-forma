@@ -46,6 +46,21 @@ async function run(browser, origin, standalone) {
       assert.equal(await picker.inputValue(),tag);
       assert.equal(await page.locator('.carnet .quien strong').innerText(),'Coco QA');
     }
+    const menu = page.locator('.navegacionJugador');
+    const controls = menu.locator(':scope > [data-player-menu]');
+    await controls.nth(3).waitFor();
+    for(const tag of await picker.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
+      await picker.selectOption(tag);
+      await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
+      assert.deepEqual(await controls.evaluateAll(nodes=>nodes.map(x=>x.dataset.playerMenu)),['challenges','cards','ranking','prints']);
+      assert.equal(await menu.locator(':scope > .pestanaJugador:visible').count(),4);
+      assert.equal(new URL(await controls.last().getAttribute('href'),origin).searchParams.get('lang'),tag);
+      assert.ok((await controls.locator('b').allTextContents()).every(t=>t.trim()));
+      if(tag==='es')assert.deepEqual(await controls.locator('b').allTextContents(),['Mis retos','Mis tarjetas','Mi clasificación','Impresiones 3D']);
+      await controls.nth(1).click();await page.locator('.panelJugador.activa:not([data-coco-panel="games"])').waitFor();
+      await controls.first().click();await page.locator('[data-coco-panel="games"].activa').waitFor();
+    }
+    await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     await page.reload({waitUntil:'domcontentloaded'});await picker.waitFor();
     await page.waitForFunction(()=>document.documentElement.lang==='en');
     assert.equal(await picker.inputValue(),'en');
