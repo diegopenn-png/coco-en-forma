@@ -338,7 +338,7 @@
         img.alt = ''; img.width = 1200; img.height = 630;
         img.loading = original.loading || 'lazy'; img.decoding = 'async';
         const caption = document.createElement('span');caption.className='cocoLocalizedThumbnailCopy';
-        caption.append(bannerText('b',copy[0]),bannerText('small',copy[1]));
+        caption.append(bannerText('strong',copy[0]),bannerText('small',copy[1]));
         art.append(img,caption); original.after(art);
       }
       if (!original.hasAttribute('data-coco-original-thumbnail')) {
