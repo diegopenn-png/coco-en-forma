@@ -11,6 +11,8 @@ on:
       - "tarjetas/ver/**"
       - "qa/reward-cards-browser.cjs"
       - "qa/account-language-browser.cjs"
+      - "qa/study-language-browser.cjs"
+      - "i18n/assessment/**"
   push:
     branches:
       - main
@@ -20,6 +22,8 @@ on:
       - "tarjetas/ver/**"
       - "qa/reward-cards-browser.cjs"
       - "qa/account-language-browser.cjs"
+      - "qa/study-language-browser.cjs"
+      - "i18n/assessment/**"
       - "index.html"
       - "sw.js"
       - "coco-scoring-v160110.js"
@@ -48,7 +52,7 @@ jobs:
   reward-preview:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 9
     steps:
       - uses: actions/checkout@v4
       - name: Check localized gallery and exported artwork in a mobile browser
@@ -63,6 +67,8 @@ jobs:
           curl --retry 5 --retry-connrefused -fsS "$COCO_QA_URL/tarjetas/ver/" -o /dev/null
           node qa/reward-cards-browser.cjs
           node qa/account-language-browser.cjs
+          node --test qa/study-language-data.test.cjs
+          node qa/study-language-browser.cjs
   live-smoke:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -73,7 +79,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.2-eneagrama-analysis
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.94-bank-languages
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.95-enneagram-languages
       EXPECTED_ENEAGRAMA_REPORT_VERSION: 2026-11-22-coaching-4
     steps:
       - name: Fetch uncached production assets
@@ -238,6 +244,7 @@ jobs:
           sparse-checkout: |
             qa/reward-cards-browser.cjs
             qa/account-language-browser.cjs
+            qa/study-language-browser.cjs
           sparse-checkout-cone-mode: false
       - name: Download and verify localized reward images on the live mobile web
         env:
@@ -248,3 +255,4 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/coco-reward-browser" --ignore-scripts --no-audit --no-fund playwright@1.63.0
           node qa/reward-cards-browser.cjs
           node qa/account-language-browser.cjs
+          node qa/study-language-browser.cjs
