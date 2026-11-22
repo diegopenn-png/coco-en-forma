@@ -12,18 +12,24 @@ async function run(browser, origin, standalone) {
     await page.addInitScript(standalone=>{
       Object.defineProperty(navigator,'standalone',{value:standalone,configurable:true});
       const user={id:'00000000-0000-4000-8000-000000000001',email:'coco-qa@example.invalid'};
+      const games=Array.from({length:279},(_,i)=>({juego:'memoria',puntos:i===0?58:51,creado:'2026-01-01',puntuacion_version:'balanced-v1'}));
       let session={user};
-      const rows={ajustes:{id:1,partidas_por_dia:1},perfiles:{...user,apodo:'Coco QA',rol:'jugador',edad:30}};
+      const rows={ajustes:{id:1,partidas_por_dia:1},perfiles:{...user,apodo:'Memoria',rol:'jugador',edad:30}};
       function query(table) {
         let single=false;
         const chain=new Proxy({}, {get(_,key){
-          if (key==='then') return resolve=>resolve({data:single ? rows[table]||null : rows[table]?[rows[table]]:[],count:0,error:null});
+          if (key==='then') return resolve=>resolve({data:table==='partidas' ? games : single ? rows[table]||null : rows[table]?[rows[table]]:[],count:0,error:null});
           if (key==='single' || key==='maybeSingle') return ()=>{single=true;return chain;};
           return ()=>chain;
         }});
         return chain;
       }
-      const client={from:query,rpc:async name=>({data:name==='racha_de'?0:[],error:null}),
+      async function rpc(name) {
+        if(name==='racha_de')return {data:0,error:null};
+        if(name==='clasificacion_general_coco')return {data:[{jugador:user.id,es_mio:true,apodo:'Memoria',puntos:games.reduce((total,g)=>total+g.puntos,0)}],error:null};
+        return {data:[],error:null};
+      }
+      const client={from:query,rpc,
         auth:{getSession:async()=>({data:{session}}),getUser:async()=>({data:{user:session?.user}}),
           onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>{session=null;return {error:null};}},
         channel:()=>({on(){return this;},subscribe(){return this;},unsubscribe(){}}),removeChannel(){}};
@@ -44,7 +50,7 @@ async function run(browser, origin, standalone) {
       await picker.selectOption(tag);
       await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
       assert.equal(await picker.inputValue(),tag);
-      assert.equal(await page.locator('.carnet .quien strong').innerText(),'Coco QA');
+      assert.equal(await page.locator('.carnet .quien strong').innerText(),'Memoria');
     }
     const menu = page.locator('.navegacionJugador');
     const controls = menu.locator(':scope > [data-player-menu]');
@@ -95,12 +101,45 @@ async function run(browser, origin, standalone) {
     assert.equal(new Set(spanish).size,spanish.length);
     assert.ok(['conecta','sopa','ajedrez','crucigrama','ciudad','naval','bank','eneagrama'].every(id=>spanish.includes(id)));
     console.log('Spanish catalogue ('+spanish.length+'): '+spanish.join(', '));
+    const profile=page.locator('.carnet');
+    const launcher=page.locator('#eternaLauncherV159');
+    const score=14236;
+    assert.equal(await profile.locator('.quien .pequeno').textContent(),'279 partidas jugadas');
+    const fields=[
+      [profile.locator('.cocoFamiliaBtn span'),'Zona familiar'],
+      [profile.locator('.tanteo .pequeno'),'puntos de clasificación'],
+      [launcher.locator('.eternaLauncherEyebrowV159'),'✨ ETERNA · LISTA PARA AYUDARTE'],
+      [launcher.locator('h2'),'Eterna · tu ayuda escolar'],
+      [launcher.locator('.eternaLauncherCopyFinal3 p'),'Continúa una tarea, resuelve una duda o practica lo que más te cuesta.'],
+      [launcher.locator('.eternaLauncherCtaFinal3'),'Abrir Eterna']
+    ];
     for(const tag of await picker.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
       await picker.selectOption(tag);
       await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
       assert.deepEqual(await controls.evaluateAll(nodes=>nodes.map(x=>x.dataset.playerMenu)),['challenges','cards','ranking','prints']);
       assert.equal(await menu.locator(':scope > .pestanaJugador:visible').count(),4);
       assert.equal(new URL(await controls.last().getAttribute('href'),origin).searchParams.get('lang'),tag);
+      assert.equal(await profile.locator('.quien strong').textContent(),'Memoria',tag+' nickname');
+      assert.equal(await profile.locator('.tanteo b').textContent(),score.toLocaleString(tag),tag+' score');
+      const expected=source=>page.evaluate(s=>CocoLocale.t(s),source);
+      const number=new Intl.NumberFormat(tag).format(279);
+      const games=tag==='es'?'279 partidas jugadas':(await expected('Partidas jugadas: {n}')).replace('{n}',number);
+      assert.equal(await profile.locator('.quien .pequeno').textContent(),games,tag+' games played');
+      for(const [el,source] of fields) {
+        const translated=await expected(source);
+        if(tag!=='es')assert.notEqual(translated,source,tag+' missing '+source);
+        assert.equal(await el.textContent(),translated,tag+' '+source);
+      }
+      const pills=launcher.locator('.eternaLauncherPillV159');
+      for(const [i,[icon,key]] of [['📚','Tareas'],['🎯','Practicar'],['🧠','Explicar'],['✅','Revisar']].entries()){
+        const translated=await expected(key);
+        assert.equal(await pills.nth(i).textContent(),icon+' '+translated,tag+' '+key);
+      }
+      if(tag==='de'){
+        assert.equal(await profile.locator('.cocoFamiliaBtn span').textContent(),'Familienbereich');
+        assert.equal(await profile.locator('.tanteo .pequeno').textContent(),'Ranglistenpunkte');
+        assert.equal(games,'Gespielte Partien: 279');
+      }
       assert.ok((await controls.locator('b').allTextContents()).every(t=>t.trim()));
       if(tag==='es')assert.deepEqual(await controls.locator('b').allTextContents(),['Mis retos','Mis tarjetas','Mi clasificación','Impresiones 3D']);
       await controls.nth(1).click();await page.locator('.panelJugador.activa:not([data-coco-panel="games"])').waitFor();
