@@ -178,13 +178,14 @@ async function run(browser, origin, standalone) {
     const tutor=page.locator('#eternaOverlayV159.is-open');
     const inside=tutor.locator('[data-eterna-picker] select');
     await inside.waitFor();
-    for(const tag of ['de','ar','zh-Hans','en']){
+    for(const tag of await inside.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
       await inside.selectOption(tag);
       await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
       assert.ok(await inside.isVisible(),tag+' tutor picker visible');
       assert.equal(await tutor.locator('.eternaV159Close').getAttribute('aria-label'),await page.evaluate(()=>CocoLocale.t('Cerrar Eterna')));
-      assert.notEqual(await tutor.locator('.eternaV159Close').getAttribute('aria-label'),'Cerrar Eterna');
+      if(tag!=='es')assert.notEqual(await tutor.locator('.eternaV159Close').getAttribute('aria-label'),'Cerrar Eterna');
     }
+    await inside.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     await tutor.locator('.eternaV159Close').click();
     await picker.waitFor();
     await page.reload({waitUntil:'domcontentloaded'});await picker.waitFor();

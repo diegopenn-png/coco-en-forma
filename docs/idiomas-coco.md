@@ -110,3 +110,11 @@ La prueba local lee la página real y comprueba texto, título, descripción, di
 ### Inicio de la cuenta y acceso familiar · 22 de noviembre
 
 La ficha del jugador traduce el botón de acceso familiar, el rótulo de puntos y el número de partidas. El total conserva su valor al aplicar los separadores del idioma. Las instrucciones del PIN y el campo de confirmación también tienen traducción. La tarjeta de Eterna incluye los textos que aparecen al entrar con una cuenta. La prueba reproduce el cambio de idioma con 279 partidas ficticias y un apodo que también es una palabra traducible. Comprueba el apodo, los puntos, la ficha y las acciones de Eterna en los 15 idiomas en web y en modo de aplicación simulado. La comprobación física en iPhone sigue pendiente.
+
+### Zona familiar, partidas y tienda 3D · 22 de noviembre
+
+El selector también está disponible al abrir la zona familiar. Una cuenta de prueba con una suscripción mensual reproduce el recorrido desde el menú, introduce el PIN y cambia de idioma con la ficha abierta. El plan, los botones de gestión, la oferta anual y el perfil escolar se actualizan en los 15 idiomas. Las pruebas locales también cubren planes anuales, la fecha de renovación, una cancelación programada y las ofertas de prueba.
+
+Se recorrieron las 55 páginas que en ese momento utilizaban el traductor compartido, entre ellas las 21 fichas de juegos. También se probaron estados que se crean al jugar o abrir la bolsa. Hay pruebas de regresión para el turno y el objetivo de Batalla naval, el sorteo inicial de Coco Ciudad, la planilla de Generala y el recorrido desde una pieza 3D hasta el formulario de pago. El formulario se comprueba sin enviarlo. Las pruebas distinguen los nombres de jugador, los títulos bibliográficos, las direcciones y los datos introducidos de los textos de la interfaz.
+
+Coco Med ofrece 24 preguntas del banco adaptadas en los 14 idiomas adicionales. Las pruebas de Eneagrama verifican las 54 afirmaciones por tramo de edad y los campos de los informes. La comprobación de una PWA instalada físicamente en iOS y la recepción de correos de acceso son verificaciones independientes.

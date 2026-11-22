@@ -98,7 +98,7 @@ function renderBattle(v){
  const a=ownFirst?v.me.shots:opponent.shots,b=ownFirst?opponent.shots:v.me.shots,rows=[];
  for(let i=0;i<Math.max(a.length,b.length);i++){if(a[i])rows.push({actor:ownFirst?v.me.id:opponent.id,...a[i]});if(b[i])rows.push({actor:ownFirst?opponent.id:v.me.id,...b[i]});}
  $('history').innerHTML=rows.slice(-12).reverse().map(s=>'<li>'+esc(resultText(s,v))+'</li>').join('');
- if(!rows.length)$('history').innerHTML='<li>La primera jugada está por llegar.</li>';
+ if(!rows.length)$('history').innerHTML='<li data-coco-copy>La primera jugada está por llegar.</li>';
  if(done&&!$('command-panel-again')){const b=document.createElement('button');b.id='command-panel-again';b.textContent='Volver al resultado';b.onclick=()=>renderFinished(v);$('enemyFleetStatus').after(b);}else if(!done)$('command-panel-again')?.remove();
 }
 document.querySelectorAll('[data-board]').forEach(b=>b.onclick=()=>{boardView=b.dataset.board;renderBattle(view());});
