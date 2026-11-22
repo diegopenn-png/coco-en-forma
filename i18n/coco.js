@@ -37,6 +37,7 @@
   const properNames = new Set(['Coco en Forma','Eterna','Stripe','GitHub','Supabase','OpenAI','Cloudflare','iPhone','iPad','Android','3. Coco en Forma','4. Eterna','© 2026 Coco en Forma · Diego Hernán Pennise ·']);
   function message(source, args) {
     if (properNames.has(source)) return source;
+    if (document.body?.hasAttribute('data-coco-shop-terms') && Object.hasOwn(activePack.strings,'3D · '+source)) return activePack.strings['3D · '+source];
     const chess = document.body?.hasAttribute('data-coco-chess') && activePack.chess;
     const template = chess && Object.hasOwn(chess,source) ? chess[source]
       : Object.hasOwn(activePack.strings,source) ? activePack.strings[source] : source;
@@ -559,8 +560,8 @@
       }
     });
     const pageLinks = document.querySelector('[data-coco-original-document]')
-      ? 'nav a[href],main a[href]'
-      : 'nav a[href],.actions a[href],.closing a.button[href]';
+      ? 'nav a[href],main a[href],.site-header a[href]'
+       : 'nav a[href],.actions a[href],.closing a.button[href],#order-form a[href],.site-header a[href],.shop-footer a[href]';
     if (page === 'public' || page === 'game') each(root,pageLinks,link => {
       const raw = link.getAttribute('href');
       if (!raw || raw.startsWith('#') || link.hasAttribute('download') || link.hasAttribute('data-coco-original-document')) return;

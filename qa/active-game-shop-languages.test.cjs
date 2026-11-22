@@ -74,3 +74,25 @@ test('3D gallery translates product detail, cart and checkout in place in 15 lan
     assert.equal(name.value,'Memoria');assert.equal(v.one('#bag-count').textContent,'1');
   }finally{v.dom.window.close();}
 });
+test('3D purchase terms preserve the address and contact and offer the Spanish original in every language',async()=>{
+  const file='galeria/impresiones-3d/condiciones.html';
+  const dom=new JSDOM(read(file),{url:'https://coco.test/'+file,runScripts:'outside-only'});
+  const w=dom.window,d=w.document;
+  try{
+    Object.defineProperty(d,'currentScript',{value:d.querySelector('script[src*="/i18n/coco.js"]')});
+    w.fetch=async url=>({ok:true,json:async()=>JSON.parse(read(new URL(url).pathname))});
+    w.eval(read('i18n/coco.js'));await w.CocoLocale.ready;
+    const nodes=[...d.querySelectorAll('main p,main h1,main h2')];
+    const spanish=nodes.map(n=>n.textContent);
+    for(const lang of [...languages,'es']){
+      await w.CocoLocale.setLanguage(lang);
+      nodes.forEach((node,i)=>{
+        if(lang==='es')assert.equal(node.textContent,spanish[i]);
+        else assert.notEqual(node.textContent,spanish[i],lang+' '+spanish[i]);
+      });
+      assert.ok(d.querySelector('main').textContent.includes('Calle El Lirio 16, escalera 1, 1.º B, 29640 Fuengirola (Málaga)'));
+      assert.equal(d.querySelector('a[href^="mailto:"]').href,'mailto:info@cocoenforma.com');
+      assert.equal(d.querySelector('[data-coco-original-document]').hidden,lang==='es');
+    }
+  }finally{w.close();}
+});
