@@ -269,13 +269,13 @@ test('the two home banners use clean artwork and localized captions, including c
         assert.equal(w.getComputedStyle(visual).backgroundImage,'none',locale+' clean hero background');
         assert.equal(w.getComputedStyle(original).display,'none',locale+' Spanish poster hidden');
         assert.equal(visual.querySelectorAll('.cocoLocalizedHero').length,1);
-        assert.match(visual.querySelector('.cocoLocalizedHeroArt').src,/\/art\/conecta\.webp$/);
+        assert.match(visual.querySelector('.cocoLocalizedHeroArt').src,/\/hero-explorer-clean\.webp$/);
         assert.equal(visual.querySelector('[data-coco-banner-caption] b').textContent,api.t('Juegos para la mente y apoyo escolar'));
         assert.equal(visual.querySelector('[data-coco-banner-caption] span').textContent,api.t('Con Coco y Eterna.'));
         for(const stage of app.querySelectorAll('.loginDecorStage')) {
           assert.equal(stage.querySelectorAll('.cocoLocalizedPoster').length,1);
           const img=stage.querySelector('.cocoLocalizedPosterArt');
-          assert.match(img.src,/\/coco-premium-v160127\/icon-512\.png$/);
+          assert.match(img.src,/\/premium-v160127\/coco-clean\.webp$/);
           assert.equal(img.alt,api.t('Tarjeta Coco: Tu primer gran paso'));
           assert.equal(stage.querySelector('[data-coco-banner-caption] span').textContent,api.t('Tu primer gran paso'));
         }

@@ -7,11 +7,17 @@ on:
       - main
     paths:
       - ".github/workflows/production-web-pwa-smoke.yml"
+      - "i18n/reward-cards.js"
+      - "tarjetas/ver/**"
+      - "qa/reward-cards-browser.cjs"
   push:
     branches:
       - main
     paths:
       - ".github/workflows/production-web-pwa-smoke.yml"
+      - "i18n/reward-cards.js"
+      - "tarjetas/ver/**"
+      - "qa/reward-cards-browser.cjs"
       - "index.html"
       - "sw.js"
       - "coco-scoring-v160110.js"
@@ -37,6 +43,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  reward-preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check localized gallery and exported artwork in a mobile browser
+        env:
+          COCO_QA_URL: http://127.0.0.1:8372
+          NODE_PATH: ${{ runner.temp }}/coco-reward-browser/node_modules
+        run: |
+          npm install --prefix "$RUNNER_TEMP/coco-reward-browser" --ignore-scripts --no-audit --no-fund playwright@1.63.0
+          python3 -m http.server 8372 --bind 127.0.0.1 > "$RUNNER_TEMP/coco-reward-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          curl --retry 5 --retry-connrefused -fsS "$COCO_QA_URL/tarjetas/ver/" -o /dev/null
+          node qa/reward-cards-browser.cjs
   live-smoke:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -47,7 +70,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.2-eneagrama-analysis
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.89-isolated-thumbnail-lettering
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.90-localized-reward-cards
       EXPECTED_ENEAGRAMA_REPORT_VERSION: 2026-11-22-coaching-4
     steps:
       - name: Fetch uncached production assets
@@ -206,3 +229,16 @@ jobs:
           if (!sizes.has("192x192") || !sizes.has("512x512")) process.exit(1);
           console.log(`PWA live: ${process.env.EXPECTED_PWA_CACHE}`);
           NODE
+
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: qa/reward-cards-browser.cjs
+          sparse-checkout-cone-mode: false
+      - name: Download and verify localized reward images on the live mobile web
+        env:
+          COCO_QA_URL: https://cocoenforma.com
+          COCO_QA_BROWSER_CHANNEL: chrome
+          NODE_PATH: ${{ runner.temp }}/coco-reward-browser/node_modules
+        run: |
+          npm install --prefix "$RUNNER_TEMP/coco-reward-browser" --ignore-scripts --no-audit --no-fund playwright@1.63.0
+          node qa/reward-cards-browser.cjs
