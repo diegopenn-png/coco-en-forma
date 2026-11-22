@@ -431,6 +431,7 @@
         } else { el.textContent = text; }
       }
     });
+    window.CocoRewardCards?.apply(root,current);
     const game = location.pathname.match(/\/juego\/([^/]+)/)?.[1];
     if (game && root === document) { const cta = document.querySelector('.hero .actions,.hero-copy,.hero h1')?.parentElement; if (cta) markGame(cta,game); }
   }
