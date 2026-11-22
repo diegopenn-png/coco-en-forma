@@ -5,7 +5,8 @@
  if(back)back.addEventListener('click',e=>{try{if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){e.preventDefault();history.back();}}catch{}});
  const copy=document.querySelector('[data-copy]'),status=document.querySelector('[data-copy-status]');
  if(copy)copy.addEventListener('click',async()=>{
-  const url=document.querySelector('link[rel="canonical"]').href;
+  const canonical=document.querySelector('link[rel="canonical"]').href;
+  const url=window.CocoLocale?.shareUrl(canonical) ?? canonical;
   try{await navigator.clipboard.writeText(url);status.textContent='Enlace copiado.';}catch{
    let field=document.querySelector('.copy-fallback');if(!field){field=document.createElement('input');field.className='copy-fallback';field.readOnly=true;field.setAttribute('aria-label','Enlace para copiar');status.after(field);}field.value=url;field.focus();field.select();status.textContent='Selecciona y copia este enlace.';
   }

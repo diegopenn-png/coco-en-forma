@@ -533,7 +533,7 @@
   }
 
   function enhanceCopyAndAccessibility() {
-    document.documentElement.lang = "es";
+    if (!document.documentElement.lang) document.documentElement.lang = "es";
     var app = document.getElementById("cocoApp"); if (!app) return;
     app.querySelectorAll('.cocoGameCard[data-coco-juego="cocomed"]').forEach(function (card) {
       var description = card.querySelector(".cocoDescripcion,.pequeno.apagado");

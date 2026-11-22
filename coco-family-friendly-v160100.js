@@ -53,7 +53,10 @@
   function profileSection(profile){
     var section=document.createElement("section");section.className="cocoFamilyProfileV160100";section.dataset.cocoFamilyProfile="160100";
     section.innerHTML='<div class="cocoFamilyProfileV160100Head"><div><span>PERFIL ESCOLAR</span><h3>Edad y curso</h3></div><p>La fecha mantiene la edad al día. Eterna sigue usando el curso actual como referencia académica.</p></div><div class="cocoFamilyProfileV160100Grid"><label>Fecha de nacimiento<input type="date" autocomplete="bday" data-coco-birth-date></label><div class="cocoFamilyProfileV160100Value"><span>Edad calculada</span><output data-coco-calculated-age>—</output></div><div class="cocoFamilyProfileV160100Value is-course"><span>Referencia académica</span><output data-coco-current-course></output></div></div><div class="cocoFamilyProfileV160100Actions"><button type="button" data-coco-save-profile>Guardar perfil</button><span role="status" aria-live="polite" data-coco-profile-status></span></div>';
-    section.querySelector("[data-coco-current-course]").textContent=courseLabel(profile);
+    var course=section.querySelector("[data-coco-current-course]");
+    course.dataset.schoolYear=profile&&profile.school_year||"";
+    course.dataset.region=profile&&profile.autonomous_community||"";
+    course.textContent=courseLabel(profile);
     return section
   }
   function installStyles(){

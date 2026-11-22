@@ -199,7 +199,7 @@
 
   function titleOf(node) {
     var title = node && node.querySelector && node.querySelector("h3,b");
-    return title ? String(title.textContent || "").trim() : "";
+    return title ? String((window.CocoLocale?.sourceText(title) ?? title.textContent) || "").trim() : "";
   }
 
   function removeEnglishExposure() {

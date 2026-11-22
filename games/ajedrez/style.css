@@ -217,7 +217,10 @@ html{scroll-padding-top:12px}
  .play-heading .status{font-size:13px;line-height:1.35;margin:0 0 10px}
  .play-screen .board-frame{width:min(100%,calc(100svh - 290px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));padding:4px;border-radius:11px}
  .play-actions{gap:6px;margin-top:14px}
- .play-actions button{font-size:13px;border-radius:12px}
+ .play-actions button{flex:1 1 0;min-width:0;font-size:13px;border-radius:12px;white-space:normal;overflow-wrap:anywhere}
+ .mode-card>span:nth-child(2),.choice button,.dialog-body{min-width:0;overflow-wrap:anywhere}
+ .play-screen{overflow-wrap:anywhere}
+ .shell{overflow-x:clip}
  .play-screen .coach{margin:12px 0 0;padding:10px;font-size:13px;line-height:1.4}
  .dialog-heading{padding:12px 14px 10px}.dialog-body{padding:14px}.dialog-heading h2{font-size:24px}
  #toast{bottom:calc(86px + env(safe-area-inset-bottom,0px))}

@@ -1,0 +1,97 @@
+{{ $lang := "es" }}
+{{ with .Data }}{{ with .locale }}{{ $lang = . }}{{ end }}{{ end }}
+{{ $url := .RedirectTo }}
+{{ if eq $url (printf "%s/?lang=es" $.SiteURL) (printf "%s?lang=es" $.SiteURL) "https://cocoenforma.com/?lang=es" "https://www.cocoenforma.com/?lang=es" (printf "%s/" $.SiteURL) (printf "%s" $.SiteURL) "https://cocoenforma.com/" "https://www.cocoenforma.com/" }}{{ $lang = "es" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=en" $.SiteURL) (printf "%s?lang=en" $.SiteURL) "https://cocoenforma.com/?lang=en" "https://www.cocoenforma.com/?lang=en" }}{{ $lang = "en" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=fr" $.SiteURL) (printf "%s?lang=fr" $.SiteURL) "https://cocoenforma.com/?lang=fr" "https://www.cocoenforma.com/?lang=fr" }}{{ $lang = "fr" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=de" $.SiteURL) (printf "%s?lang=de" $.SiteURL) "https://cocoenforma.com/?lang=de" "https://www.cocoenforma.com/?lang=de" }}{{ $lang = "de" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=nl" $.SiteURL) (printf "%s?lang=nl" $.SiteURL) "https://cocoenforma.com/?lang=nl" "https://www.cocoenforma.com/?lang=nl" }}{{ $lang = "nl" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=it" $.SiteURL) (printf "%s?lang=it" $.SiteURL) "https://cocoenforma.com/?lang=it" "https://www.cocoenforma.com/?lang=it" }}{{ $lang = "it" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=pl" $.SiteURL) (printf "%s?lang=pl" $.SiteURL) "https://cocoenforma.com/?lang=pl" "https://www.cocoenforma.com/?lang=pl" }}{{ $lang = "pl" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=uk" $.SiteURL) (printf "%s?lang=uk" $.SiteURL) "https://cocoenforma.com/?lang=uk" "https://www.cocoenforma.com/?lang=uk" }}{{ $lang = "uk" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=ru" $.SiteURL) (printf "%s?lang=ru" $.SiteURL) "https://cocoenforma.com/?lang=ru" "https://www.cocoenforma.com/?lang=ru" }}{{ $lang = "ru" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=zh-Hans" $.SiteURL) (printf "%s?lang=zh-Hans" $.SiteURL) "https://cocoenforma.com/?lang=zh-Hans" "https://www.cocoenforma.com/?lang=zh-Hans" }}{{ $lang = "zh-Hans" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=ar" $.SiteURL) (printf "%s?lang=ar" $.SiteURL) "https://cocoenforma.com/?lang=ar" "https://www.cocoenforma.com/?lang=ar" }}{{ $lang = "ar" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=sv" $.SiteURL) (printf "%s?lang=sv" $.SiteURL) "https://cocoenforma.com/?lang=sv" "https://www.cocoenforma.com/?lang=sv" }}{{ $lang = "sv" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=fi" $.SiteURL) (printf "%s?lang=fi" $.SiteURL) "https://cocoenforma.com/?lang=fi" "https://www.cocoenforma.com/?lang=fi" }}{{ $lang = "fi" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=nb" $.SiteURL) (printf "%s?lang=nb" $.SiteURL) "https://cocoenforma.com/?lang=nb" "https://www.cocoenforma.com/?lang=nb" }}{{ $lang = "nb" }}{{ end }}
+{{ if eq $url (printf "%s/?lang=da" $.SiteURL) (printf "%s?lang=da" $.SiteURL) "https://cocoenforma.com/?lang=da" "https://www.cocoenforma.com/?lang=da" }}{{ $lang = "da" }}{{ end }}
+{{ $title := "" }}{{ $body := "" }}{{ $cta := "" }}{{ $ignore := "" }}
+{{ if eq $lang "en" }}
+{{ $title = "Confirm your email address" }}
+{{ $body = "Use this link to confirm your Coco en Forma account." }}
+{{ $cta = "Confirm my account" }}
+{{ $ignore = "If you did not request this email, you can ignore it." }}
+{{ else if eq $lang "fr" }}
+{{ $title = "Confirme ton adresse e-mail" }}
+{{ $body = "Utilise ce lien pour confirmer ton compte Coco en Forma." }}
+{{ $cta = "Confirmer mon compte" }}
+{{ $ignore = "Si tu n’as pas demandé cet e-mail, tu peux l’ignorer." }}
+{{ else if eq $lang "de" }}
+{{ $title = "Bestätige deine E-Mail-Adresse" }}
+{{ $body = "Über diesen Link kannst du dein Konto bei Coco en Forma bestätigen." }}
+{{ $cta = "Mein Konto bestätigen" }}
+{{ $ignore = "Wenn du diese E-Mail nicht angefordert hast, kannst du sie ignorieren." }}
+{{ else if eq $lang "nl" }}
+{{ $title = "Bevestig je e-mailadres" }}
+{{ $body = "Gebruik deze link om je account bij Coco en Forma te bevestigen." }}
+{{ $cta = "Mijn account bevestigen" }}
+{{ $ignore = "Heb je deze e-mail niet aangevraagd? Dan kun je hem negeren." }}
+{{ else if eq $lang "it" }}
+{{ $title = "Conferma il tuo indirizzo email" }}
+{{ $body = "Usa questo link per confermare il tuo account Coco en Forma." }}
+{{ $cta = "Conferma il mio account" }}
+{{ $ignore = "Se non hai richiesto questa email, puoi ignorarla." }}
+{{ else if eq $lang "pl" }}
+{{ $title = "Potwierdź adres e-mail" }}
+{{ $body = "Użyj tego linku, aby potwierdzić konto w Coco en Forma." }}
+{{ $cta = "Potwierdź moje konto" }}
+{{ $ignore = "Jeśli ta wiadomość trafiła do Ciebie przez pomyłkę, możesz ją zignorować." }}
+{{ else if eq $lang "uk" }}
+{{ $title = "Підтвердьте адресу електронної пошти" }}
+{{ $body = "Скористайтеся цим посиланням, щоб підтвердити обліковий запис у Coco en Forma." }}
+{{ $cta = "Підтвердити обліковий запис" }}
+{{ $ignore = "Якщо ви не надсилали запит, просто проігноруйте цей лист." }}
+{{ else if eq $lang "ru" }}
+{{ $title = "Подтвердите адрес электронной почты" }}
+{{ $body = "Перейдите по ссылке, чтобы подтвердить учётную запись в Coco en Forma." }}
+{{ $cta = "Подтвердить учётную запись" }}
+{{ $ignore = "Если вы не отправляли запрос, просто проигнорируйте это письмо." }}
+{{ else if eq $lang "zh-Hans" }}
+{{ $title = "验证电子邮箱" }}
+{{ $body = "请使用以下链接验证你的 Coco en Forma 账号。" }}
+{{ $cta = "验证我的账号" }}
+{{ $ignore = "如果你没有发出此请求，可以忽略这封邮件。" }}
+{{ else if eq $lang "ar" }}
+{{ $title = "تأكيد عنوان بريدك الإلكتروني" }}
+{{ $body = "استخدم هذا الرابط لتأكيد حسابك في Coco en Forma." }}
+{{ $cta = "تأكيد حسابي" }}
+{{ $ignore = "إذا لم تطلب هذه الرسالة، يمكنك تجاهلها." }}
+{{ else if eq $lang "sv" }}
+{{ $title = "Bekräfta din e-postadress" }}
+{{ $body = "Använd länken för att bekräfta ditt konto hos Coco en Forma." }}
+{{ $cta = "Bekräfta mitt konto" }}
+{{ $ignore = "Om du inte har begärt det här mejlet kan du bortse från det." }}
+{{ else if eq $lang "fi" }}
+{{ $title = "Vahvista sähköpostiosoitteesi" }}
+{{ $body = "Vahvista Coco en Forma -tilisi tästä linkistä." }}
+{{ $cta = "Vahvista tilini" }}
+{{ $ignore = "Jos et pyytänyt tätä viestiä, voit jättää sen huomiotta." }}
+{{ else if eq $lang "nb" }}
+{{ $title = "Bekreft e-postadressen din" }}
+{{ $body = "Bruk lenken for å bekrefte kontoen din hos Coco en Forma." }}
+{{ $cta = "Bekreft kontoen min" }}
+{{ $ignore = "Hvis du ikke ba om denne e-posten, kan du se bort fra den." }}
+{{ else if eq $lang "da" }}
+{{ $title = "Bekræft din e-mailadresse" }}
+{{ $body = "Brug linket til at bekræfte din konto hos Coco en Forma." }}
+{{ $cta = "Bekræft min konto" }}
+{{ $ignore = "Hvis du ikke har bedt om denne e-mail, kan du se bort fra den." }}
+{{ else }}{{ $lang = "es" }}
+{{ $title = "Confirma tu correo" }}
+{{ $body = "Usa este enlace para confirmar tu cuenta de Coco en Forma." }}
+{{ $cta = "Confirmar mi cuenta" }}
+{{ $ignore = "Si no has solicitado este mensaje, puedes ignorarlo." }}
+{{ end }}
+<!doctype html>
+<html lang="{{ $lang }}" dir="{{ if eq $lang "ar" }}rtl{{ else }}ltr{{ end }}"><meta charset="utf-8"><body style="font:16px/1.6 system-ui,sans-serif;color:#173f59"><main style="max-width:540px;margin:auto;padding:24px"><strong>Coco en Forma</strong><h1>{{ $title }}</h1><p>{{ $body }}</p><p><a style="display:inline-block;background:#173f59;color:white;padding:10px 16px;border-radius:8px" href="{{ .ConfirmationURL }}">{{ $cta }}</a></p><p>{{ $ignore }}</p></main></body></html>

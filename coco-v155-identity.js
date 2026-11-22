@@ -28,7 +28,7 @@
   DATA.eneagrama.image="./share/premium-v160126/eneagrama.jpg";
   root.COCO_GAME_IDENTITY_V155=Object.freeze(DATA);root.COCO_VERSION=VERSION;
   var TITLE_TO_ID={};Object.keys(DATA).forEach(function(id){TITLE_TO_ID[DATA[id].name]=id});TITLE_TO_ID["Coco Fútbol"]="futbol";TITLE_TO_ID["Coco Pádel"]="padel";TITLE_TO_ID["Coco Pádel Club"]="padel";TITLE_TO_ID["Reto Tiempo"]="tiempo";
-  function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String(title.textContent||"").trim()]||""}
+  function idOf(node){if(!node)return"";var id=String(node.dataset&&node.dataset.cocoJuego||node.dataset&&node.dataset.cocoSharePreview||"").trim();if(DATA[id])return id;var title=node.querySelector&&node.querySelector("h3,b");return title&&TITLE_TO_ID[String((window.CocoLocale?.sourceText(title) ?? title.textContent)||"").trim()]||""}
   // Catalogue colours and actions match share/card-themes-v1.json.
   var CARD_THEMES={"naval":["#063b4c","#128f9d","Encuentra la flota"],"generala":["#472374","#8151b9","Tira tus dados"],"conecta":["#075f65","#169996","Une los colores"],"numeros":["#193a8d","#356fe3","Traza tu camino"],"calculo":["#81320b","#d46316","Haz la cuenta"],"palabras":["#8d174e","#cf3677","Ordena las letras"],"sopa":["#145b32","#278942","Encuentra palabras"],"sudoku":["#302269","#6551b8","Completa el tablero"],"memoria":["#7a217b","#b638ab","Descubre las parejas"],"series":["#704e0d","#b0831c","Sigue el patrón"],"crucigrama":["#7a2027","#c44737","Resuelve las pistas"],"tiempo":["#51307e","#9563c9","Activa el reloj"],"verdadero":["#075d4a","#149e73","Elige tu respuesta"],"cocomed":["#07516d","#1595ba","Explora la salud"],"futbol":["#3f5520","#748e2f","Marca el gol"],"padel":["#244b6e","#4e839f","Organiza tu partido"],"ajedrez":["#4b2d20","#9c6841","Haz tu jugada"],"bank":["#725b11","#b39532","Gestiona tu dinero"],"ciudad":["#9f321f","#d66b36","Tira el dado"],"eneagrama":["#203c43","#527777","Explora tus tendencias"]};
   function tint(hex,amount){return '#'+[1,3,5].map(function(i){var n=parseInt(hex.slice(i,i+2),16);return Math.round(n+(255-n)*amount).toString(16).padStart(2,'0')}).join('')}
@@ -39,7 +39,7 @@
   }
   // Copy remains available in standalone PWAs, independently of native sharing.
   function copyGameId(card){return card.hasAttribute("data-coco-city-entry")?"ciudad":card.hasAttribute("data-coco-chess-entry")?"ajedrez":idOf(card)}
-  function gameLink(id){return id==="eneagrama"?"https://cocoenforma.com/explora/":"https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/"}
+  function gameLink(id){var url=id==="eneagrama"?"https://cocoenforma.com/explora/":"https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/";return window.CocoLocale?.shareUrl(url) ?? url}
   async function copyGameLink(id,button){
     if(!DATA[id]&&id!=="ciudad")return false;
     var url=gameLink(id),ok=false,host=button.parentElement;
@@ -81,14 +81,15 @@
     }
     return true;
   }
-  function applyCard(card){if(applySuggestion(card))return;themeCard(card);ensureCardCopy(card);var id=idOf(card),d=DATA[id];if(!d)return;if(id!=="generala"&&id!=="naval")card.dataset.cocoJuego=id;var box=card.querySelector(".emoji,.cocoIconoEspecial");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&String(desc.textContent||"").trim()!==d.description)desc.textContent=d.description}
+  function applyCard(card){if(applySuggestion(card))return;themeCard(card);ensureCardCopy(card);var id=idOf(card),d=DATA[id];if(!d)return;if(id!=="generala"&&id!=="naval")card.dataset.cocoJuego=id;var box=card.querySelector(".emoji,.cocoIconoEspecial");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}var desc=card.querySelector(".cocoDescripcion,p.pequeno.apagado");if(desc&&String(window.CocoLocale?.sourceText(desc) ?? desc.textContent ?? "").trim()!==d.description)desc.textContent=d.description}
   function applyMini(node){if(applySuggestion(node))return;themeCard(node);ensureCardCopy(node);var id=idOf(node),d=DATA[id];if(!d)return;if(id!=="generala"&&id!=="naval")node.dataset.cocoJuego=id;var box=node.querySelector(".cocoMiniIcono");if(box){box.classList.add("cocoOfficialThumbBox");var img=box.querySelector("img.cocoOfficialThumb");if(!img||img.getAttribute("src")!==d.image)box.innerHTML=imgHtml(id,d.name)}}
-  function applyShare(modal){var title=modal.querySelector("#cocoShareTitle"),id=title&&TITLE_TO_ID[String(title.textContent||"").trim()]||"";if(!DATA[id])return;var box=modal.querySelector(".cocoSharePreview");if(box){box.classList.add("cocoOfficialThumbBox");box.innerHTML=imgHtml(id,DATA[id].name)}var p=modal.querySelector(".cocoShareSheet>p");if(p)p.textContent=DATA[id].description;upgradeShareLinks(modal,id)}
+  function applyShare(modal){var title=modal.querySelector("#cocoShareTitle"),id=title&&TITLE_TO_ID[String((window.CocoLocale?.sourceText(title) ?? title.textContent)||"").trim()]||"";if(!DATA[id])return;var box=modal.querySelector(".cocoSharePreview");if(box){box.classList.add("cocoOfficialThumbBox");box.innerHTML=imgHtml(id,DATA[id].name)}var p=modal.querySelector(".cocoShareSheet>p");if(p)p.textContent=DATA[id].description;upgradeShareLinks(modal,id)}
 
   function upgradeShareLinks(modal,id){
     if(modal.dataset.colorfulShare===id)return;
     modal.dataset.colorfulShare=id;
     var d=DATA[id],url=d.url||"https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/";
+    url=window.CocoLocale?.shareUrl(url) ?? url;
     var label=modal.querySelector(".cocoShareUrl"),status=modal.querySelector(".cocoShareStatus");
     if(label)label.textContent=url;
     var copy=modal.querySelector("[data-share-copy]");
@@ -111,13 +112,13 @@
   // of their entry/navigation handlers and without registering them as scored games.
   root.CocoShareToolV1=function(id){
     if(id!=="bank"&&id!=="eneagrama")return;
-    var app=document.getElementById("cocoApp")||document.body,previous=document.activeElement;
+    var app=document.getElementById("cocoApp")||document.body,previous=document.activeElement,originCard=previous?.closest?.('[data-coco-juego]');
     app.querySelectorAll(".cocoShareModal").forEach(function(node){node.remove()});
     var modal=document.createElement("section");modal.className="cocoShareModal";
     modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.setAttribute("aria-labelledby","cocoShareTitle");
     modal.innerHTML='<div class="cocoShareSheet" tabindex="-1"><button type="button" class="cocoShareClose" data-share-close aria-label="Cerrar">×</button><div class="cocoSharePreview"></div><span>COMPARTIR</span><h3 id="cocoShareTitle"></h3><p></p><div class="cocoShareUrl"></div><div class="cocoShareActions"><button type="button" class="primary" data-share-native>↗ Compartir</button><button type="button" data-share-whatsapp>💬 WhatsApp</button><button type="button" data-share-copy>🔗 Copiar enlace</button></div><div class="cocoShareStatus" role="status" aria-live="polite"></div></div>';
     modal.querySelector("#cocoShareTitle").textContent=DATA[id].name;
-    function close(){modal.remove();if(previous&&previous.isConnected)previous.focus({preventScroll:true})}
+    function close(){modal.remove();var target=previous?.isConnected?previous:originCard?.querySelector('[data-coco-copy-link]');target?.focus({preventScroll:true})}
     modal.querySelector("[data-share-close]").onclick=close;
     modal.onclick=function(e){if(e.target===modal)close()};
     modal.onkeydown=function(e){if(e.key==="Escape"){e.preventDefault();close()}};
@@ -248,12 +249,19 @@
         panel.hidden=false;openBtn.setAttribute("aria-expanded","true");
         var cli=familyClient();
         if(!cli){familyRecoveryMessage(panel,"No se pudo conectar con la cuenta. Inténtalo de nuevo.","error");return}
-        try{var s=await cli.auth.getSession(),session=s&&s.data&&s.data.session,email=session&&session.user&&session.user.email||"";var e=panel.querySelector("[data-family-recover-email]");if(e)e.textContent=email?"Cuenta: "+maskEmail(email)+" · confirma su contraseña y crea un PIN nuevo.":"Confirma la contraseña de la cuenta y crea un PIN nuevo."}catch(e){}
+        try{var s=await cli.auth.getSession(),session=s&&s.data&&s.data.session,email=session&&session.user&&session.user.email||"";var e=panel.querySelector("[data-family-recover-email]");if(e){
+          e.textContent="Confirma la contraseña de la cuenta y crea un PIN nuevo.";
+          if(email){
+            var account=document.createElement("span"),address=document.createElement("bdi");
+            account.textContent="Cuenta:";address.setAttribute("data-coco-verbatim","");address.textContent=maskEmail(email);
+            e.prepend(account," ",address," · ");
+          }
+        }}catch(e){}
         setTimeout(function(){var p=panel.querySelector("[data-family-recover-password]");if(p)p.focus()},30)
       };
       closeBtn.onclick=closePanel;
       saveBtn.onclick=async function(){
-        var password=String(panel.querySelector("[data-family-recover-password]").value||""),newPin=String(panel.querySelector("[data-family-recover-pin]").value||"").replace(/\D/g,""),confirmPin=String(panel.querySelector("[data-family-recover-confirm]").value||"").replace(/\D/g,"");
+        var password=String(panel.querySelector("[data-family-recover-password]").value||""),newPin=window.CocoLocale?.pinDigits?.(panel.querySelector("[data-family-recover-pin]").value) ?? String(panel.querySelector("[data-family-recover-pin]").value||"").replace(/\D/g,""),confirmPin=window.CocoLocale?.pinDigits?.(panel.querySelector("[data-family-recover-confirm]").value) ?? String(panel.querySelector("[data-family-recover-confirm]").value||"").replace(/\D/g,"");
         if(!password){familyRecoveryMessage(panel,"Escribe la contraseña de la cuenta.","error");return}
         if(!/^\d{4}$/.test(newPin)){familyRecoveryMessage(panel,"El nuevo PIN debe tener exactamente 4 cifras.","error");return}
         if(newPin!==confirmPin){familyRecoveryMessage(panel,"Los dos PIN no coinciden.","error");return}
@@ -283,7 +291,7 @@
         try{
           var sr=await cli.auth.getSession(),session=sr&&sr.data&&sr.data.session,email=session&&session.user&&session.user.email;
           if(!email)throw new Error("NO_EMAIL");
-          var r=await cli.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/"});
+          var r=await cli.auth.resetPasswordForEmail(email,{redirectTo:window.CocoLocale?.accountReturn(true) ?? location.origin+"/?coco_recuperar=1"});
           if(r&&r.error)throw r.error;
           familyRecoveryMessage(panel,"Te hemos enviado el correo para recuperar la contraseña. Después vuelve aquí y crea un PIN nuevo.","ok")
         }catch(e){familyRecoveryMessage(panel,"No se pudo enviar el correo de recuperación. Inténtalo de nuevo.","error")}finally{mailBtn.disabled=false}

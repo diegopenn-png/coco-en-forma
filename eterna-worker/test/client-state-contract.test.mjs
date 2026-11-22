@@ -1,3 +1,4 @@
+import { assertPwaRelease } from '../../qa/pwa-release-contract.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
@@ -55,7 +56,7 @@ test("web entrypoint and Service Worker invalidate the corrected assets together
   assert.match(index, /eterna-v159\.js\?v=160114/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
   assert.match(index, /coco-v144-core\.js\?v=15001/);
-  assert.match(serviceWorker, /CACHE_VERSION="coco-en-forma-v160\.100\.67-uninterrupted-startup"/);
+  assertPwaRelease(serviceWorker);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /ETERNA_MIC_ONLY_PATH="\.\/eterna-mic-only-v4\.js"/);
@@ -89,7 +90,8 @@ test("mic-only v4 records the full utterance, auto-stops and submits through the
 test("public game cards expose keyboard controls and Eterna announces login", () => {
   assert.match(bootstrap, /card\.setAttribute\("role","button"\)/);
   assert.match(bootstrap, /card\.setAttribute\("tabindex","0"\)/);
-  assert.match(bootstrap, /aria-label","Inicia sesión para abrir /);
+  assert.match(bootstrap, /locale\.t\("Inicia sesión para abrir \{game\}"/);
+  assert.match(bootstrap, /card\.setAttribute\("aria-label",label\)/);
   assert.match(bootstrap, /event\.key!=="Enter"&&event\.key!==" "/);
   assert.match(bootstrap, /cocoMiniJuego\[role='button'\]:focus-visible/);
   assert.match(client, /Inicia sesión o crea una cuenta para abrir Eterna\./);

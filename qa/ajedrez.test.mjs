@@ -12,10 +12,10 @@ test('offline first visit to the chess directory opens its cached game, includin
  const context=vm.createContext({URL,Request,Response,Promise,self:{registration:{scope:origin+'/'},location:{origin},navigator:{userAgent:''},addEventListener(){}},caches:{match:async input=>cache.get(typeof input==='string'?input:input.url)}});
  vm.runInContext(readFileSync(new URL('../sw.js',import.meta.url),'utf8'),context);
  for(const path of ['/games/ajedrez/','/games/ajedrez','/games/ajedrez/?source=share']){
-  context.request=new Request(origin+path);
+  context.request={url:origin+path,mode:'navigate',destination:'document'};
   assert.equal(await (await vm.runInContext('offlineFallback(request)',context)).clone().text(),'Chess game');
  }
- context.request=new Request(origin+'/another-page');
+ context.request={url:origin+'/another-page',mode:'navigate',destination:'document'};
  assert.equal(await (await vm.runInContext('offlineFallback(request)',context)).clone().text(),'Coco menu');
 });
 test('standard board starts with all 32 pieces and 20 legal moves',()=>{const c=new Chess();assert.equal(c.board().flat().filter(Boolean).length,32);assert.equal(c.moves().length,20)});

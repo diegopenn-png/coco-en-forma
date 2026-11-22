@@ -3,3 +3,12 @@
 .hero .eyebrow{font-size:11px}.hero .wheel-caption{font-size:10px;max-width:none}
 
 .explora-navigation{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:1fr 1fr;gap:10px;background:var(--paper);padding:12px 0;padding-top:max(12px,env(safe-area-inset-top));border-bottom:1px solid var(--line)}.explora-navigation .btn{min-width:0;padding:13px 8px;min-height:48px}.explora-navigation [aria-disabled=true]{opacity:.5;cursor:wait}.coach-reading{border-left:4px solid var(--accent);padding:6px 22px;margin:26px 0}.coach-questions{padding-left:23px}.coach-questions li{line-height:1.7;margin:10px 0}.coach-areas .card{padding:24px}.coach-areas .eyebrow{margin-top:0}.coach-areas h3{font-size:25px}.coach-tips{margin:24px 0}.coach-tips dt{font-weight:bold;font-size:14px;margin-top:20px}.coach-tips dd{margin:7px 0 0;font-size:15px;line-height:1.7}.answer-review li{margin:18px 0;line-height:1.6}.answer-review span{display:block;color:var(--muted)}@media(max-width:700px){.explora-navigation .btn{font-size:13px}.coach-reading{padding-left:15px}.coach-areas .card{padding:20px}}
+
+.printed-reflection {display:none;white-space:pre-wrap;overflow-wrap:anywhere}
+.downloads > small {align-self:center}
+@media print {
+  .report .journal textarea {display:none}
+  .report .printed-reflection {display:block}
+  .report .printed-reflection:empty {display:none}
+  .report .section {break-inside:auto}
+}

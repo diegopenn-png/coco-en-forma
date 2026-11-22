@@ -588,7 +588,7 @@
     injectFinal3Styles();
     o=document.createElement("div");o.id="eternaOverlayV159";o.className="eternaV159";o.setAttribute("role","dialog");o.setAttribute("aria-modal","true");o.setAttribute("aria-label","Eterna, tutor escolar personalizado");
     o.innerHTML='<div class="eternaV159Shell">'+
-      '<header class="eternaV159Top"><div class="eternaV159Mark" aria-hidden="true">✦</div><div class="eternaV159TopCopy"><small>COCO EN FORMA · APOYO ESCOLAR</small><h2>Eterna</h2><p>IA tutora escolar: razonamiento riguroso, explicación adaptada a tu curso.</p></div><button type="button" class="eternaV159Close" aria-label="Cerrar Eterna">×</button></header>'+
+      '<header class="eternaV159Top"><div class="eternaV159Mark" aria-hidden="true">✦</div><div class="eternaV159TopCopy"><small>COCO EN FORMA · APOYO ESCOLAR</small><h2>Eterna</h2><p>IA tutora escolar: razonamiento riguroso, explicación adaptada a tu curso.</p><p data-eterna-language-note hidden></p></div><button type="button" class="eternaV159Close" aria-label="Cerrar Eterna">×</button></header>'+
       '<div class="eternaV159Body">'+
         '<aside class="eternaV159Menu"><div class="eternaV159Identity"><b data-et-name>Alumno Coco</b><span data-et-course>Configura tu curso</span></div><nav class="eternaV159Actions" aria-label="Modos de ayuda">'+Object.keys(MODE_CONFIG).map(function(k){var m=MODE_CONFIG[k];return '<button class="eternaV159Action '+(k==="homework"?"is-active":"")+'" data-et-mode="'+k+'"><i>'+m.icon+'</i><span>'+esc(m.label)+'</span></button>'}).join("")+'</nav><div class="eternaV159Scope">🔒 Soy una IA, no una persona. Puedo ayudarte con toda la profundidad que necesites en temas de aprendizaje: adapto la explicación a tu curso y aplico límites de seguridad sin rebajar el razonamiento.</div></aside>'+
         '<main class="eternaV159Main"><div class="eternaV159Status"><span class="eternaV159Dot" data-et-dot></span><span data-et-status>Preparando Eterna…</span></div><div class="eternaV160ModeBar" data-et-modebar></div><div class="eternaV159Chat" data-et-chat></div>'+
@@ -908,7 +908,10 @@
     if(reinforce.length)panels.push({tone:"reinforce",icon:"↗",eyebrow:"PARA SEGUIR PRACTICANDO",title:"Aprendizajes todavía en proceso",text:"No son etiquetas: pueden cambiar con la práctica.",items:reinforce.map(function(x){return{label:cleanText(x.concept_label),detail:(cleanText(x.subject)||"Aprendizaje")+" · "+familyCountLabel(x.attempts,"interacción","interacciones"),percent:percent(x.mastery_score)}})});
     if(strategies.length)panels.push({tone:"strategy",icon:"💡",eyebrow:"CÓMO LE AYUDA ETERNA",title:"Formas de explicar que le están ayudando",text:"Solo se muestran estrategias observadas más de una vez.",items:strategies.map(function(x){var score=Number(x.success_score);return{label:strategyName(x.strategy_key),detail:familyCountLabel(x.evidence_count,"observación","observaciones"),percent:isFinite(score)?percent(score):null}})});
     if(attempts)panels.push({tone:"activity",icon:"◎",eyebrow:"ACTIVIDAD",title:"Qué ha ocurrido en las actividades",items:[{label:"Respuestas correctas con poca ayuda",value:independent},{label:"Respuestas correctas con apoyo",value:assisted},{label:"Respuestas por revisar",value:errors},{label:"Respuestas parcialmente correctas",value:partials}]});
-    return{academicMemory:academicMemory,theme:"learning",eyebrow:"APRENDIZAJE · ETERNA",title:"Lo que ha trabajado con Eterna",subtitle:"Un resumen sencillo de las materias y conceptos que realmente ha practicado.",summary:summary,personName:familyLearningSupportName(),personMeta:[profile.school_year||"Curso no indicado",profile.autonomous_community||""].filter(Boolean).join(" · "),hero:{eyebrow:lead?"MAYOR AVANCE OBSERVADO":"SIN VALORACIÓN TODAVÍA",title:lead?"Más avance en: "+cleanText(lead.concept_label):"Necesitamos un poco más de práctica",text:lead?"Esta valoración se basa en práctica repetida y puede cambiar con nuevas actividades.":"Una sola interacción no basta para decir qué entiende mejor o qué necesita reforzar.",percent:lead?percent(lead.mastery_score):null},signalDefinition:FAMILY_SIGNAL_DEFINITION,metrics:[{value:subjects.length,label:"materias trabajadas"},{value:attempts,label:"interacciones registradas"},{value:evaluable.length,label:"conceptos con práctica suficiente"},{value:activeDays+"/7",label:"días activos esta semana"}],bars:bars,barEyebrow:"CON PRÁCTICA SUFICIENTE",barTitle:"Avance por conceptos",barScale:"Avance orientativo · 0–100",panels:panels,groups:subjects.length?[{title:"Materias trabajadas",items:subjects}]:[],groupEyebrow:"MATERIAS",groupTitle:"Dónde ha trabajado",nextStep:{eyebrow:"QUÉ RECOMENDAMOS AHORA",title:next?"Practicar: "+cleanText(next.concept_label):evaluable.length?"Seguir practicando las materias trabajadas":"Repetir algún concepto en otra actividad",text:next?"Conviene volver a este concepto con pasos cortos y una comprobación al final.":evaluable.length?"Mantener una práctica variada ayudará a confirmar y ampliar estos avances.":"Con una segunda actividad sobre el mismo concepto podremos empezar a valorar el progreso con más fundamento."},note:"Informe pedagógico y orientativo. Analiza solo la actividad escolar registrada; no es una nota, una etiqueta ni un diagnóstico."}
+    var heroText="";
+    if(lead)heroText="Esta valoración se basa en práctica repetida y puede cambiar con nuevas actividades.";
+    else if(attempts)heroText="Una sola interacción no basta para decir qué entiende mejor o qué necesita reforzar.";
+    return{academicMemory:academicMemory,theme:"learning",eyebrow:"APRENDIZAJE · ETERNA",title:"Lo que ha trabajado con Eterna",subtitle:"Un resumen sencillo de las materias y conceptos que realmente ha practicado.",summary:summary,personName:familyLearningSupportName(),personMeta:[profile.school_year||"Curso no indicado",profile.autonomous_community||""].filter(Boolean).join(" · "),hero:{eyebrow:lead?"MAYOR AVANCE OBSERVADO":"SIN VALORACIÓN TODAVÍA",title:lead?"Más avance en: "+cleanText(lead.concept_label):"Necesitamos un poco más de práctica",text:heroText,percent:lead?percent(lead.mastery_score):null},signalDefinition:FAMILY_SIGNAL_DEFINITION,metrics:[{value:subjects.length,label:"materias trabajadas"},{value:attempts,label:"interacciones registradas"},{value:evaluable.length,label:"conceptos con práctica suficiente"},{value:activeDays+"/7",label:"días activos esta semana"}],bars:bars,barEyebrow:"CON PRÁCTICA SUFICIENTE",barTitle:"Avance por conceptos",barScale:"Avance orientativo · 0–100",panels:panels,groups:subjects.length?[{title:"Materias trabajadas",items:subjects}]:[],groupEyebrow:"MATERIAS",groupTitle:"Dónde ha trabajado",nextStep:attempts?{eyebrow:"QUÉ RECOMENDAMOS AHORA",title:next?"Practicar: "+cleanText(next.concept_label):evaluable.length?"Seguir practicando las materias trabajadas":"Repetir algún concepto en otra actividad",text:next?"Conviene volver a este concepto con pasos cortos y una comprobación al final.":evaluable.length?"Mantener una práctica variada ayudará a confirmar y ampliar estos avances.":"Con una segunda actividad sobre el mismo concepto podremos empezar a valorar el progreso con más fundamento."}:null,note:"Informe pedagógico y orientativo. Analiza solo la actividad escolar registrada; no es una nota, una etiqueta ni un diagnóstico."}
   }
   async function getFamilyLearningReportModel(force){
     var now=Date.now();if(!force&&familyLearningReportCache.model&&now-familyLearningReportCache.at<DATA_CACHE_MS)return familyLearningReportCache.model;if(familyLearningReportCache.promise)return familyLearningReportCache.promise;
@@ -1059,7 +1062,7 @@
 
     button.onclick=async function(event){
       if(event){event.preventDefault();event.stopPropagation()}
-      var pin=String(input.value||"").replace(/\D/g,"");
+      var pin=window.CocoLocale?.pinDigits?.(input.value) ?? String(input.value||"").replace(/\D/g,"");
       if(pin.length!==4){
         if(error)error.textContent="Escribe exactamente cuatro cifras.";
         return
@@ -1156,10 +1159,19 @@
   function familyGatePresentation(body){
     body.querySelectorAll(".eternaV159FamilyCard,.cocoFamilyMapIntroV160").forEach(function(n){n.remove()});
     var modal=body.closest(".cocoFamilyV129"),headerKicker=modal&&modal.querySelector("header span"),pinScreen=body.querySelector(".cocoFamilyPin");
-    if(headerKicker)headerKicker.textContent="ZONA FAMILIAR · ACCESO PROTEGIDO";
+    function source(node){return window.CocoLocale?.sourceText(node) ?? node.textContent}
+    var heading="ZONA FAMILIAR · ACCESO PROTEGIDO";
+    if(headerKicker&&source(headerKicker)!==heading)headerKicker.textContent=heading;
     if(pinScreen){
-      var pinCopy=pinScreen.querySelector("p");if(pinCopy)pinCopy.textContent="El PIN protege el progreso escolar de Eterna y el mapa de fortalezas de los juegos para la mente.";
-      var pinButton=pinScreen.querySelector("[data-family-enter]");if(pinButton)pinButton.textContent=/crear/i.test(String(pinButton.textContent||""))?"Crear PIN y entrar":"Entrar en Zona Familiar"
+      var pinCopy=pinScreen.querySelector("p"),pinButton=pinScreen.querySelector("[data-family-enter]");
+      if(pinCopy&&["Este acceso evita aperturas accidentales del informe.","El PIN protege de accesos casuales; no sustituye la contraseña de la cuenta."].includes(source(pinCopy))){
+        pinCopy.textContent="El PIN protege el progreso escolar de Eterna y el mapa de fortalezas de los juegos para la mente.";
+      }
+      if(pinButton){
+        var initial=source(pinButton);
+        if(initial==="Crear PIN y abrir")pinButton.textContent="Crear PIN y entrar";
+        if(initial==="Abrir informe")pinButton.textContent="Entrar en Zona Familiar";
+      }
     }
   }
 

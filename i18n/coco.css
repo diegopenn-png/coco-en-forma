@@ -1,0 +1,13 @@
+[data-coco-language-menu] { box-sizing:border-box; width:100%; max-width:74rem; margin-inline:auto; padding:4px max(12px,env(safe-area-inset-right)); }
+.coco-language-bar { display:flex; align-items:center; justify-content:flex-end; gap:.4rem; color:#214767; font:600 .9rem/1.4 system-ui,sans-serif; direction:ltr; }
+.coco-language-bar select { box-sizing:border-box; width:auto; min-height:40px; margin:0; padding:.3rem .6rem; border:1px solid #b6cddd; border-radius:.65rem; background:#fff; color:#173451; font:inherit; }
+.coco-language-bar select:focus-visible { outline:3px solid #0984ad; outline-offset:2px; }
+html.coco-starting [data-coco-language-menu], body.embedded:not(.standalone) [data-coco-language-menu] {display:none;}
+@media print { [data-coco-language-menu] {display:none!important;} }
+[data-game-language] { display:block; width:fit-content; margin:.35rem 0; padding:.15rem .5rem; border:1px solid #c5d5e3; border-radius:.4rem; color:#274c66; background:#f1f6fa; font:600 .8rem/1.3 system-ui,sans-serif; }
+[dir=rtl] :is(.cocoCrossBoard,#board,.board,.dice-tray) {direction:ltr;}
+
+.coco-language-bar button { display:inline-grid; place-items:center; flex:0 0 auto; width:40px; min-height:40px; padding:0; margin:0; border:1px solid #b6cddd; border-radius:.65rem; background:#fff; color:#173451; font:600 1.35rem/1 system-ui,sans-serif; cursor:pointer; }
+.coco-language-bar button:focus-visible { outline:3px solid #0984ad; outline-offset:2px; }
+
+@media (max-width: 760px) { .coco-language-bar select { font-size: 16px; } }

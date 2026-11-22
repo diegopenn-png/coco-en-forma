@@ -1,9 +1,9 @@
 name: Coco Ajedrez rules and challenges
 on:
   push:
-    paths: ['games/ajedrez/**', 'qa/ajedrez*.mjs', 'qa/ajedrez*.cjs', 'supabase/functions/coco-chess/**', 'supabase-coco-ajedrez-online.sql', 'supabase-coco-ajedrez-daily.sql', '.github/workflows/coco-ajedrez-tests.yml']
+    paths: ['games/ajedrez/**', 'i18n/coco.js', 'i18n/packs/*.json', 'qa/ajedrez*.mjs', 'qa/ajedrez*.cjs', 'supabase/functions/coco-chess/**', 'supabase-coco-ajedrez-online.sql', 'supabase-coco-ajedrez-daily.sql', '.github/workflows/coco-ajedrez-tests.yml']
   pull_request:
-    paths: ['games/ajedrez/**', 'qa/ajedrez*.mjs', 'qa/ajedrez*.cjs', 'supabase/functions/coco-chess/**', 'supabase-coco-ajedrez-online.sql', 'supabase-coco-ajedrez-daily.sql', '.github/workflows/coco-ajedrez-tests.yml']
+    paths: ['games/ajedrez/**', 'i18n/coco.js', 'i18n/packs/*.json', 'qa/ajedrez*.mjs', 'qa/ajedrez*.cjs', 'supabase/functions/coco-chess/**', 'supabase-coco-ajedrez-online.sql', 'supabase-coco-ajedrez-daily.sql', '.github/workflows/coco-ajedrez-tests.yml']
 permissions:
   contents: read
 jobs:
@@ -17,3 +17,16 @@ jobs:
       - run: node --test qa/ajedrez.test.mjs qa/ajedrez-online.test.mjs qa/ajedrez-daily.test.mjs
       - run: npm install --prefix /tmp/coco-chess-dom --ignore-scripts --no-audit --no-fund jsdom@26.1.0
       - run: COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node qa/ajedrez-ui.test.cjs
+      - run: COCO_JSDOM_PATH=/tmp/coco-chess-dom/node_modules/jsdom node --test qa/ajedrez-idiomas.test.cjs
+      - name: Play localized games with touch input on the checked-out revision
+        env:
+          NODE_PATH: ${{ runner.temp }}/coco-chess-browser/node_modules
+          COCO_QA_BROWSER_CHANNEL: chrome
+          COCO_QA_URL: http://127.0.0.1:4190
+        run: |
+          npm install --prefix "$RUNNER_TEMP/coco-chess-browser" --no-audit --no-fund playwright@1.63.0
+          python3 -m http.server 4190 --bind 127.0.0.1 > "$RUNNER_TEMP/coco-chess-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          curl --retry 5 --retry-connrefused -fsS "$COCO_QA_URL/games/ajedrez/" -o /dev/null
+          node qa/ajedrez-mobile-preview.cjs

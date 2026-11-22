@@ -1,3 +1,4 @@
+import { assertPwaRelease } from './pwa-release-contract.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -41,7 +42,7 @@ test("the fixed microphone assets invalidate browser and PWA caches together", (
   const serviceWorker = read("sw.js");
   const previewWorkflow = read(".github/workflows/eterna-authenticated-preview.yml");
 
-  assert.match(serviceWorker, /coco-en-forma-v160\.100\.60-family-contrast/);
+  assertPwaRelease(serviceWorker);
   assert.match(serviceWorker, /const ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(eternaExperienceWithMicOnly\(e\)\)/);
   assert.match(previewWorkflow, /frontend 160\.99\.25-contextual-dialogue/);

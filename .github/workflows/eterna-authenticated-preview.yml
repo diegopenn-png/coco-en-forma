@@ -376,6 +376,17 @@ jobs:
           desktop-chrome|Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36
           DEVICE_AGENTS
 
+      - name: Check the language menu and packs on the preview
+        shell: bash
+        run: |
+          curl --retry 2 --max-time 20 -fsS "${PREVIEW_ORIGIN}/?lang=fr&verify=${GITHUB_SHA}" -o /tmp/coco-language-home.html
+          grep -Fq 'data-coco-language-menu' /tmp/coco-language-home.html
+          grep -Fq '/i18n/coco.js' /tmp/coco-language-home.html
+          curl --retry 2 --max-time 20 -fsS "${PREVIEW_ORIGIN}/i18n/packs/fr.json?verify=${GITHUB_SHA}" -o /tmp/coco-language-fr.json
+          jq -e '.locale == "fr" and .strings["Contraseña"] == "Mot de passe"' /tmp/coco-language-fr.json >/dev/null
+          curl --retry 2 --max-time 20 -fsS "${PREVIEW_ORIGIN}/i18n/manifests/ar.webmanifest?verify=${GITHUB_SHA}" -o /tmp/coco-language-ar.json
+          jq -e '.lang == "ar" and .dir == "rtl"' /tmp/coco-language-ar.json >/dev/null
+
       - name: Install isolated browser QA tooling
         run: npm install --prefix "${RUNNER_TEMP}/coco-device-qa" --no-save --no-package-lock playwright@1.63.0
 
@@ -387,6 +398,13 @@ jobs:
           COCO_QA_EXPECTED_COMMIT: ${{ github.sha }}
           COCO_QA_EVIDENCE_DIR: ${{ github.workspace }}/device-evidence/rendered
         run: node qa/device-update-browser.mjs
+
+      - name: Play chess through the published preview on a mobile viewport
+        env:
+          NODE_PATH: ${{ runner.temp }}/coco-device-qa/node_modules
+          COCO_QA_BROWSER_CHANNEL: chrome
+          COCO_QA_URL: ${{ env.PREVIEW_ORIGIN }}
+        run: node qa/ajedrez-mobile-preview.cjs
 
       - name: Preserve preview evidence
         if: always()

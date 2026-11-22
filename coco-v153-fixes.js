@@ -137,7 +137,7 @@
   function escapeReportHtml(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]})}
   function retiredEnglishCopy(v){var s=String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();return /(^|[^a-z])ingles([^a-z]|$)/.test(s)}
   function reportValue(n){n=Number(n);return isFinite(n)?Math.max(0,Math.min(100,Math.round(n))):0}
-  function reportDate(){try{return new Intl.DateTimeFormat("es-ES",{day:"2-digit",month:"long",year:"numeric"}).format(new Date())}catch(e){return new Date().toLocaleDateString("es-ES")}}
+  function reportDate(){try{return new Intl.DateTimeFormat(window.CocoLocale?.tag || "es-ES",{day:"2-digit",month:"long",year:"numeric"}).format(new Date())}catch(e){return new Date().toLocaleDateString(window.CocoLocale?.tag || "es-ES")}}
   function modelSignature(model){try{return JSON.stringify(model)}catch(e){return String(Date.now())}}
 
   var familyReportState={games:null,learning:null,gamesStatus:"idle",learningStatus:"idle",learningPromise:null,renderQueued:false,lastSignature:"",generation:0};
@@ -145,7 +145,9 @@
   function reportBodyHtml(model){
     model=model||{};var theme=model.theme==="games"?"games":"learning",hero=model.hero||{},metrics=Array.isArray(model.metrics)?model.metrics:[],bars=Array.isArray(model.bars)?model.bars:[],panels=Array.isArray(model.panels)?model.panels:[],groups=Array.isArray(model.groups)?model.groups:[],next=model.nextStep||null;
     var heroPercent=hero.percent==null?null:reportValue(hero.percent);
-    var summaryHtml=model.summary?'<p class="cocoV160100PlainSummary">'+escapeReportHtml(model.summary)+'</p>':"";
+    var subjects=groups.find(function(group){return group.title==="Materias trabajadas" && Array.isArray(group.items)});
+    var subjectAttr=subjects?' data-coco-report-subjects="'+escapeReportHtml(JSON.stringify(subjects.items))+'"':"";
+    var summaryHtml=model.summary?'<p class="cocoV160100PlainSummary"'+subjectAttr+'>'+escapeReportHtml(model.summary)+'</p>':"";
     var metricsHtml=metrics.length?'<div class="cocoV16083Metrics">'+metrics.map(function(x){return'<article><strong>'+escapeReportHtml(x.value)+'</strong><span>'+escapeReportHtml(x.label)+'</span>'+(x.detail?'<small>'+escapeReportHtml(x.detail)+'</small>':"")+'</article>'}).join("")+'</div>':"";
     var signalHtml=model.signalDefinition?'<section class="cocoV16083SignalNote"><b>¿Qué significa “señal observada”?</b><p>'+escapeReportHtml(model.signalDefinition)+'</p></section>':"";
     var barsHtml=bars.length?'<section class="cocoV16083Section cocoV16083Bars"><div class="cocoV16083SectionHead"><div><span>'+escapeReportHtml(model.barEyebrow||"MAPA VISUAL")+'</span><h3>'+escapeReportHtml(model.barTitle||"Progreso observado")+'</h3></div><small>'+escapeReportHtml(model.barScale||"0–100")+'</small></div><div class="cocoV16083BarList">'+bars.map(function(x){var value=reportValue(x.value);return'<article><div class="cocoV16083BarLabel"><b>'+escapeReportHtml(x.label)+'</b>'+(x.sublabel?'<span>'+escapeReportHtml(x.sublabel)+'</span>':"")+'</div><div class="cocoV16083Track"><i style="width:'+value+'%"></i></div><strong>'+value+'</strong>'+(x.detail?'<small>'+escapeReportHtml(x.detail)+'</small>':"")+'</article>'}).join("")+'</div></section>':"";
@@ -191,9 +193,12 @@
 
   /* Shared screen/print document. Absolute asset URLs also work in srcdoc and saved HTML. */
   function reportDocumentShell(title,identity,content,note){
-    var base=new URL("./",document.baseURI).href,returnUrl=String(location.href||base);
+    var base=new URL("./",document.baseURI).href,current=new URL(location.href||base),back=new URL(current.pathname,current.origin);
+    for(var key of ["source","juego","lang"]){if(current.searchParams.has(key))back.searchParams.set(key,current.searchParams.get(key))}
+    var returnUrl=window.CocoLocale?.shareUrl(back.href) ?? back.href,homeUrl=window.CocoLocale?.shareUrl(base) ?? base;
     var actions='<nav class="cocoReportNavigation" aria-label="Navegación del informe"><button type="button" onclick="cocoReportNavigate(\'back\')">← Volver</button><button type="button" class="is-home" onclick="cocoReportNavigate(\'home\')">Menú principal</button></nav>';
-    return '<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>'+escapeReportHtml(title)+' · Coco en Forma</title><style>'+reportKitCss(true)+'</style><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-unified-v160127.css?v=160128"><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-family-v160130.css?v=160131"></head><body class="cocoReportDocument" data-coco-return-url="'+escapeReportHtml(returnUrl)+'" data-coco-home-url="'+escapeReportHtml(base)+'">'+actions+'<main class="cocoV16083Document"><header class="cocoV16083DocTop"><div class="cocoReportBrand"><img src="'+escapeReportHtml(base)+'assets/brand/coco-premium-v160127/icon-192.png" width="72" height="72" alt="Coco en Forma"><div><b>ZONA FAMILIAR</b><h1 class="cocoV16086DocumentTitle">'+escapeReportHtml(title)+'</h1><span>'+escapeReportHtml(reportDate())+'</span></div></div>'+identity+'<div class="cocoV16085DocActions"><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></header>'+content+'<footer>'+escapeReportHtml(note)+'</footer></main><script>('+reportDocumentNavigation.toString()+')();<\/script></body></html>'
+    var html='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>'+escapeReportHtml(title)+' · Coco en Forma</title><style>'+reportKitCss(true)+'</style><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-unified-v160127.css?v=160128"><link rel="stylesheet" href="'+escapeReportHtml(base)+'assets/styles/coco-family-v160130.css?v=160131"></head><body class="cocoReportDocument" data-coco-return-url="'+escapeReportHtml(returnUrl)+'" data-coco-home-url="'+escapeReportHtml(homeUrl)+'">'+actions+'<main class="cocoV16083Document"><header class="cocoV16083DocTop"><div class="cocoReportBrand"><img src="'+escapeReportHtml(base)+'assets/brand/coco-premium-v160127/icon-192.png" width="72" height="72" alt="Coco en Forma"><div><b>ZONA FAMILIAR</b><h1 class="cocoV16086DocumentTitle">'+escapeReportHtml(title)+'</h1><span>'+escapeReportHtml(reportDate())+'</span></div></div>'+identity+'<div class="cocoV16085DocActions"><button type="button" class="is-print" onclick="window.print()">Imprimir o guardar como PDF</button></div></header>'+content+'<footer>'+escapeReportHtml(note)+'</footer></main><script>('+reportDocumentNavigation.toString()+')();<\/script></body></html>';
+    return window.CocoLocale?.reportDocument(html) ?? html;
   }
 
   function reportDocumentNavigation(){
@@ -257,11 +262,15 @@
     else if(current.trigger&&current.trigger.isConnected)current.trigger.focus({preventScroll:true});
     return true
   }
+  function reportMessage(source, values){
+    if(window.CocoLocale)return window.CocoLocale.t(source,values);
+    return values ? source.replace(/\{(\w+)\}/g,function(match,key){return Object.hasOwn(values,key)?String(values[key]):match}) : source
+  }
   function openReportPreview(html,trigger){
     closeReportPreview("back");
     var overlay=document.createElement("section"),frame=document.createElement("iframe"),siblings=Array.prototype.map.call(document.body.children,function(node){return{node:node,inert:node.inert}});
-    overlay.className="cocoReportPreview";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label","Informe de progreso de Coco");
-    frame.title="Informe familiar · Vista para imprimir o guardar";frame.srcdoc=html;overlay.appendChild(frame);
+    overlay.className="cocoReportPreview";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label",reportMessage("Informe de progreso de Coco"));
+    frame.title=reportMessage("Informe familiar · Vista para imprimir o guardar");frame.srcdoc=html;overlay.appendChild(frame);
     activeReportPreview={overlay:overlay,trigger:trigger||document.activeElement,siblings:siblings,overflow:document.body.style.overflow};
     siblings.forEach(function(item){item.node.inert=true});document.body.style.overflow="hidden";document.body.appendChild(overlay);
     frame.addEventListener("load",function(){try{frame.contentDocument.querySelector(".cocoReportNavigation button").focus({preventScroll:true})}catch(e){}},{once:true});
@@ -269,10 +278,10 @@
   }
   root.CocoFamilyReportPreview=Object.freeze({close:closeReportPreview});
   document.addEventListener("keydown",function(event){if(activeReportPreview&&event.key==="Escape"){event.preventDefault();event.stopImmediatePropagation();closeReportPreview("back")}},{capture:true});
-  async function exportReportModel(model,button){var original=button&&button.textContent||"Exportar PDF",modal=document.querySelector("#cocoApp .cocoFamilyV129,.cocoFamilyV129"),card=modal&&modal.querySelector(".eternaV159FamilyCard"),family=model&&model.kind==="family"?model:buildFamilyReportModel(modal,card,model),html=family&&family.learning&&family.games?familyReportDocumentHtml(family):"";if(!html){alert("El informe integral todavía se está preparando. Inténtalo de nuevo en unos segundos.");return false}if(button){button.disabled=true;button.textContent="Preparando…"}try{openReportPreview(html,button);return true}catch(e){closeReportPreview("back");alert("No se pudo preparar la vista de impresión.");return false}finally{if(button){button.disabled=false;button.textContent=original}}}
-  async function shareReportModel(model,button){var original=button&&button.textContent||"Compartir por WhatsApp",bundle=reportFile(model),message="Te comparto el informe de progreso de Coco en Forma: "+model.title+".";if(button){button.disabled=true;button.textContent="Preparando…"}try{if(bundle.file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[bundle.file]}))){await navigator.share({title:model.title,text:message,files:[bundle.file]})}else{triggerReportDownload(bundle);var url="https://wa.me/?text="+encodeURIComponent(message+" El informe visual se ha descargado para que puedas adjuntarlo en este chat.");try{window.open(url,"_blank","noopener,noreferrer")}catch(e){location.href=url}}}catch(e){if(!e||e.name!=="AbortError")alert("No se pudo compartir el informe.")}finally{if(button){button.disabled=false;button.textContent=original}}}
+  async function exportReportModel(model,button){var original=button&&button.textContent||"Exportar PDF",modal=document.querySelector("#cocoApp .cocoFamilyV129,.cocoFamilyV129"),card=modal&&modal.querySelector(".eternaV159FamilyCard"),family=model&&model.kind==="family"?model:buildFamilyReportModel(modal,card,model),html=family&&family.learning&&family.games?familyReportDocumentHtml(family):"";if(!html){alert(reportMessage("El informe integral todavía se está preparando. Inténtalo de nuevo en unos segundos."));return false}if(button){button.disabled=true;button.textContent=reportMessage("Preparando…")}try{openReportPreview(html,button);return true}catch(e){closeReportPreview("back");alert(reportMessage("No se pudo preparar la vista de impresión."));return false}finally{if(button){button.disabled=false;button.textContent=original}}}
+  async function shareReportModel(model,button){var original=button&&button.textContent||"Compartir por WhatsApp",bundle=reportFile(model),title=reportMessage(model.title),message=reportMessage("Te comparto el informe de progreso de Coco en Forma: {title}.",{title:title});if(button){button.disabled=true;button.textContent=reportMessage("Preparando…")}try{if(bundle.file&&navigator.share&&(!navigator.canShare||navigator.canShare({files:[bundle.file]}))){await navigator.share({title:title,text:message,files:[bundle.file]})}else{triggerReportDownload(bundle);var url="https://wa.me/?text="+encodeURIComponent(message+" "+reportMessage("El informe visual se ha descargado para que puedas adjuntarlo en este chat."));try{window.open(url,"_blank","noopener,noreferrer")}catch(e){location.href=url}}}catch(e){if(!e||e.name!=="AbortError")alert(reportMessage("No se pudo compartir el informe."))}finally{if(button){button.disabled=false;button.textContent=original}}}
 
-  function placeReportExportAction(scope,button){if(!scope)return false;button=button||scope.querySelector("[data-report-export],[data-et-export]");var header=scope.querySelector(".cocoV16083ReportHeader"),aside=header&&header.querySelector(".cocoV16085HeaderAside");if(!button||!header)return false;if(!aside){aside=document.createElement("div");aside.className="cocoV16085HeaderAside";header.appendChild(aside)}if(button.textContent!=="Exportar PDF")button.textContent="Exportar PDF";if(!button.classList.contains("cocoV16085HeaderExport"))button.classList.add("cocoV16085HeaderExport");var actions=aside.querySelector(".cocoV16085HeaderActions");if(!actions){actions=document.createElement("div");actions.className="cocoV16085HeaderActions";aside.appendChild(actions)}if(button.parentElement!==actions)actions.appendChild(button);var inline=scope.querySelector(".cocoV16083InlineActions");if(inline&&!inline.children.length)inline.remove();return true}
+  function placeReportExportAction(scope,button){if(!scope)return false;button=button||scope.querySelector("[data-report-export],[data-et-export]");var header=scope.querySelector(".cocoV16083ReportHeader"),aside=header&&header.querySelector(".cocoV16085HeaderAside");if(!button||!header)return false;if(!aside){aside=document.createElement("div");aside.className="cocoV16085HeaderAside";header.appendChild(aside)}if(reportSourceText(button)!=="Exportar PDF"){button.textContent="Exportar PDF";window.CocoLocale?.refresh(button)}if(!button.classList.contains("cocoV16085HeaderExport"))button.classList.add("cocoV16085HeaderExport");var actions=aside.querySelector(".cocoV16085HeaderActions");if(!actions){actions=document.createElement("div");actions.className="cocoV16085HeaderActions";aside.appendChild(actions)}if(button.parentElement!==actions)actions.appendChild(button);var inline=scope.querySelector(".cocoV16083InlineActions");if(inline&&!inline.children.length)inline.remove();return true}
 
   var reportKitV16084=Object.freeze({version:"160.100-family-profile-reports",coreHtml:reportCoreHtml,documentHtml:reportDocumentHtml,signature:modelSignature,export:exportReportModel,share:shareReportModel,placeExport:placeReportExportAction,captureLearning:captureLearningReportModel,familyDocumentHtml:familyReportDocumentHtml,familyHtml:familyReportHtml});root.CocoFamilyReportKitV16084=reportKitV16084;root.CocoFamilyReportKitV16083=reportKitV16084;
 
@@ -290,21 +299,32 @@
   function spanishList(values){
     values=(values||[]).filter(Boolean);if(values.length<2)return values[0]||"";if(values.length===2)return values[0]+" y "+values[1];return values.slice(0,-1).join(", ")+" y "+values[values.length-1]
   }
+  function reportSourceText(el){
+    return el ? String(window.CocoLocale?.sourceText(el) ?? el.textContent ?? "").trim() : "";
+  }
   function buildGamesReportModel(modal,card){
     if(!modal)return null;var hero=modal.querySelector(".cocoFamilyHero"),stats=modal.querySelector(".cocoFamilyStats"),barRoot=modal.querySelector(".cocoFamilyBars");if(!hero||!barRoot)return null;
-    var profileText=hero.querySelector("span")?String(hero.querySelector("span").textContent||""):"",profileMatch=profileText.match(/PERFIL DE\s+(.+?)(?:\s+·\s+(\d+)\s+AÑOS)?$/i),name=profileMatch?profileMatch[1].trim():"Jugador Coco",age=profileMatch&&profileMatch[2]?profileMatch[2]+" años":"";
-    var metrics=stats?Array.prototype.slice.call(stats.children).map(function(x){var b=x.querySelector("b,strong"),sp=x.querySelector("span,small");return{value:b?String(b.textContent||"").trim():"0",label:sp?String(sp.textContent||"").trim():"Actividad"}}):[];
-    var bars=Array.prototype.slice.call(barRoot.querySelectorAll(":scope > article,article")).map(function(x){var b=x.querySelector("b"),strong=x.querySelector("strong"),copy=cocoSkillCopy(b?String(b.textContent||"").trim():"Habilidad"),evidence=Math.max(0,Number(x.dataset.cocoEvidence||0));return{label:copy.label,sublabel:copy.detail,value:strong?numberFromText(strong.textContent):0,evidence:evidence}}).filter(function(x){return x.evidence>0&&!retiredEnglishCopy(x.label)});
+    var profileText=reportSourceText(hero.querySelector("span")),profileMatch=profileText.match(/PERFIL DE\s+(.+?)(?:\s+·\s+(\d+)\s+AÑOS)?$/i),name=hero.dataset.familyPlayerName || (profileMatch?profileMatch[1].trim():"Jugador Coco"),age=profileMatch&&profileMatch[2]?profileMatch[2]+" años":"";
+    var metrics=stats?Array.prototype.slice.call(stats.children).map(function(x){var b=x.querySelector("b,strong"),sp=x.querySelector("span,small");return{value:b?(b.dataset.familyValue ?? reportSourceText(b)):"0",label:sp?reportSourceText(sp):"Actividad"}}):[];
+    var bars=Array.prototype.slice.call(barRoot.querySelectorAll(":scope > article,article")).map(function(x){var b=x.querySelector("b"),strong=x.querySelector("strong"),copy=cocoSkillCopy(b?reportSourceText(b):"Habilidad"),evidence=Math.max(0,Number(x.dataset.cocoEvidence||0));return{label:copy.label,sublabel:copy.detail,value:strong?numberFromText(reportSourceText(strong)):0,evidence:evidence}}).filter(function(x){return x.evidence>0&&!retiredEnglishCopy(x.label)});
     var assessable=bars.filter(function(x){return x.evidence>=2}),ordered=assessable.slice().sort(function(a,b){return b.value-a.value}),best=ordered[0]||null,lowest=ordered.length>1?ordered[ordered.length-1]:null,names=bars.map(function(x){return x.label.toLowerCase()}),summary=bars.length?"Con Coco ha entrenado "+spanishList(names)+".":"Todavía no hay partidas registradas para explicar qué habilidades ha entrenado.";
     summary+=best?" Las comparaciones solo usan habilidades practicadas al menos dos veces.":bars.length?" Aún hace falta repetir alguna habilidad antes de destacar fortalezas o aspectos para practicar.":"";
     var panels=[];
     if(best)panels.push({tone:"strength",icon:"★",eyebrow:"LO QUE MEJOR LE HA IDO",title:"Habilidad más asentada",items:[{label:best.label,detail:best.sublabel,percent:best.value}],text:"Es el mejor resultado entre las habilidades que ha practicado al menos dos veces."});
     if(lowest)panels.push({tone:"reinforce",icon:"↗",eyebrow:"PARA SEGUIR PRACTICANDO",title:"Habilidad todavía en proceso",items:[{label:lowest.label,detail:lowest.sublabel,percent:lowest.value}],text:"No es una etiqueta: el resultado puede cambiar con nuevas partidas."});
     var nextStep=lowest?{eyebrow:"QUÉ RECOMENDAMOS AHORA",title:"Seguir variando los juegos",text:"Puede alternar "+best.label.toLowerCase()+" con "+lowest.label.toLowerCase()+" en días distintos."}:bars.length?{eyebrow:"QUÉ RECOMENDAMOS AHORA",title:"Repetir con calma",text:"Conviene practicar estas habilidades en varios días antes de comparar resultados."}:null;
-    return{theme:"games",eyebrow:"JUEGOS · COCO",title:"Habilidades entrenadas con Coco",subtitle:"Un resumen sencillo de lo que realmente ha practicado en los juegos.",summary:summary,personName:name,personMeta:age,hero:{eyebrow:best?"MEJOR RESULTADO OBSERVADO":"SIN VALORACIÓN TODAVÍA",title:best?"Se desenvuelve mejor en "+best.label:"Necesitamos un poco más de práctica",text:best?"Esta lectura se basa en práctica repetida y puede cambiar con nuevas partidas.":"Una sola partida no basta para decir qué habilidad se le da mejor o cuál necesita reforzar.",percent:best?best.value:null},metrics:metrics,bars:bars,barEyebrow:"HABILIDADES PRACTICADAS",barTitle:"Lo que ha entrenado",barScale:"Resultado orientativo · 0–100",panels:panels,groups:[],nextStep:nextStep,note:"Informe orientativo. Resume únicamente la actividad registrada en los juegos de Coco; no mide inteligencia, no es una prueba clínica y no establece diagnósticos."}
+    var heroText="";
+    if(best)heroText="Esta lectura se basa en práctica repetida y puede cambiar con nuevas partidas.";
+    else if(bars.length)heroText="Una sola partida no basta para decir qué habilidad se le da mejor o cuál necesita reforzar.";
+    return{theme:"games",eyebrow:"JUEGOS · COCO",title:"Habilidades entrenadas con Coco",subtitle:"Un resumen sencillo de lo que realmente ha practicado en los juegos.",summary:summary,personName:name,personMeta:age,hero:{eyebrow:best?"MEJOR RESULTADO OBSERVADO":"SIN VALORACIÓN TODAVÍA",title:best?"Se desenvuelve mejor en "+best.label:"Necesitamos un poco más de práctica",text:heroText,percent:best?best.value:null},metrics:metrics,bars:bars,barEyebrow:"HABILIDADES PRACTICADAS",barTitle:"Lo que ha entrenado",barScale:"Resultado orientativo · 0–100",panels:panels,groups:[],nextStep:nextStep,note:"Informe orientativo. Resume únicamente la actividad registrada en los juegos de Coco; no mide inteligencia, no es una prueba clínica y no establece diagnósticos."}
   }
 
-  function splitPersonMeta(meta){var parts=String(meta||"").split("·").map(function(x){return String(x||"").trim()}).filter(Boolean);return{schoolYear:parts[0]||"",ccaa:parts.slice(1).join(" · ")}}
+  function splitPersonMeta(meta){
+    var parts=String(meta||"").split("·").map(function(x){return x.trim()}).filter(Boolean);
+    var year=parts.shift()||"";
+    if(year==="Infantil" && /^(?:0–2|[345]) años$/.test(parts[0]))year+=" · "+parts.shift();
+    return{schoolYear:year,ccaa:parts.join(" · ")}
+  }
   function genericStudentName(v){var t=normalizeText(v);return !t||t==="alumno coco"||t==="jugador coco"}
 
   function buildFamilyReportModel(modal,card,incoming){
@@ -331,7 +351,13 @@
   }
 
   function familyStudentHtml(student){
-    student=student||{};var line1=[student.name,student.age].filter(Boolean).join(" · "),line2=[student.schoolYear,student.ccaa].filter(Boolean).join(" · ");
+    student=student||{};
+    var age=student.age,years=String(age||"").match(/^(\d+) años?$/i),language=window.CocoLocale?.tag;
+    if(years&&language&&language!=="es"){
+      age=new Intl.NumberFormat(language,{style:"unit",unit:"year",unitDisplay:"long"}).format(Number(years[1]));
+    }
+    var year=window.CocoLocale?.schoolYear?.(student.schoolYear) ?? student.schoolYear;
+    var line1=[student.name,age].filter(Boolean).join(" · "),line2=[year,student.ccaa].filter(Boolean).join(" · ");
     return '<div class="cocoV16086ExportIdentity">'+(line1?'<b>'+escapeReportHtml(line1)+'</b>':"")+(line2?'<span>'+escapeReportHtml(line2)+'</span>':"")+'</div>'
   }
 
@@ -354,12 +380,12 @@
     function gone(n){if(!n||n===modal||n===body||(n.closest&&n.closest("[data-family-integral-report='1'],[data-coco-family-data-source='games']")))return false;n.remove();removed++;return true}
     Array.prototype.slice.call(modal.querySelectorAll(".cocoV16083GamesReport,.eternaV16081MapIdentity.is-games,[data-et-v16081-map='map-games']")).forEach(gone);
     Array.prototype.slice.call(modal.querySelectorAll("p,small")).forEach(function(copy){
-      if(normalizeText(copy.textContent).indexOf("este apartado se calcula a partir")!==0)return;
+      if(normalizeText(reportSourceText(copy)).indexOf("este apartado se calcula a partir")!==0)return;
       var node=copy,steps=0;while(node.parentElement&&node.parentElement!==body&&node.parentElement!==modal&&steps<6){node=node.parentElement;steps++}gone(node)
     });
     Array.prototype.slice.call(body.children||[]).forEach(function(n){
       if(!n||n===card||n.matches&&n.matches("[data-family-integral-report='1'],[data-coco-family-data-source='games']"))return;
-      var t=normalizeText(n.textContent);if(t.indexOf("juegos para la mente")>=0&&t.indexOf("mapa de fortalezas")>=0&&t.length<2200)gone(n)
+      var t=normalizeText(reportSourceText(n));if(t.indexOf("juegos para la mente")>=0&&t.indexOf("mapa de fortalezas")>=0&&t.length<2200)gone(n)
     });
     return removed
   }
@@ -371,8 +397,8 @@
   function normalizeFamilyModalChrome(modal){
     ensureFamilyNavigation(modal);
     if(!modal)return;var header=modal.querySelector(":scope > header,.cocoFamilyV129>header");if(!header)return;
-    Array.prototype.slice.call(header.querySelectorAll("p,small")).forEach(function(n){var t=normalizeText(n.textContent);if(t.indexOf("dos lecturas")>=0||t.indexOf("eterna resume")>=0||t.indexOf("dos miradas complementarias")>=0||t.indexOf("dos mapas complementarios")>=0)n.remove()});
-    Array.prototype.slice.call(header.querySelectorAll("span,b,strong,h1,h2,h3,h4")).forEach(function(n){if(n.closest&&n.closest("button"))return;var t=normalizeText(n.textContent);if(t==="zona familiar progreso"||t==="zona familiar · progreso")n.remove()})
+    Array.prototype.slice.call(header.querySelectorAll("p,small")).forEach(function(n){var t=normalizeText(reportSourceText(n));if(t.indexOf("dos lecturas")>=0||t.indexOf("eterna resume")>=0||t.indexOf("dos miradas complementarias")>=0||t.indexOf("dos mapas complementarios")>=0)n.remove()});
+    Array.prototype.slice.call(header.querySelectorAll("span,b,strong,h1,h2,h3,h4")).forEach(function(n){if(n.closest&&n.closest("button"))return;var t=normalizeText(reportSourceText(n));if(t==="zona familiar progreso"||t==="zona familiar · progreso")n.remove()})
   }
 
   function ensureSingleFamilyIntegralReport(modal,card){
@@ -659,15 +685,19 @@
 
   function normalizeText(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim()}
   function idOf(node){if(node&&node.hasAttribute){if(node.hasAttribute("data-coco-naval-entry"))return "naval";if(node.hasAttribute("data-coco-generala-entry"))return "generala";if(node.hasAttribute("data-coco-city-entry"))return "ciudad";if(node.hasAttribute("data-coco-chess-entry"))return "ajedrez"}return String(node&&node.dataset&&node.dataset.cocoJuego||"").toLowerCase()}
-  function cleanScoreNoise(card){card.querySelectorAll(".cocoArcadeCardScore,.cocoScoreCopy").forEach(function(n){n.remove()});card.querySelectorAll("p.pequeno").forEach(function(n){var t=normalizeText(n.textContent);if(/\b(puntos?|pts?)\b/.test(t)&&!/partida|reto|dia/.test(t))n.remove()});card.querySelectorAll(".pesas").forEach(function(n){var next=n.nextElementSibling;if(next&&/puntos?|pts?/i.test(next.textContent||""))next.remove();n.remove()})}
+  function cleanScoreNoise(card){card.querySelectorAll(".cocoArcadeCardScore,.cocoScoreCopy").forEach(function(n){n.remove()});card.querySelectorAll("p.pequeno").forEach(function(n){var t=normalizeText(reportSourceText(n));if(/\b(puntos?|pts?)\b/.test(t)&&!/partida|reto|dia/.test(t))n.remove()});card.querySelectorAll(".pesas").forEach(function(n){var next=n.nextElementSibling;if(next&&/puntos?|pts?/i.test(next.textContent||""))next.remove();n.remove()})}
   function scoreStatus(card,id){var badge=card.querySelector(".cocoLigaBadge");if(!badge){badge=document.createElement(card.classList.contains("cocoMiniJuego")?"span":"div");var btn=card.querySelector(".btn,.cocoBotonJuego");card.insertBefore(badge,btn||null)}var general=GENERAL.has(id),html='<span aria-hidden="true">'+(general?"🏆":"•")+'</span><b>'+(general?"Puntúa para la clasificación general":"No puntúa para la clasificación general")+'</b>'+(id==="ajedrez"?'<small class="cocoScoringScope">Solo la partida del día</small>':'');stabilizeRankingBadge(badge);badge.className="cocoLigaBadge c153ScoreStatus";badge.dataset.general=general?"yes":"no";badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";if(badge.innerHTML!==html)badge.innerHTML=html}
   function fixPadel(card,id){if(id!=="padel")return;card.classList.remove("cocoConstruccion","proximo");card.querySelectorAll(".cocoEstadoObra,.cintaObras").forEach(function(n){n.remove()});var btn=card.querySelector(".cocoBotonJuego,.btn");if(btn){if(/construcci|pr[oó]xim/i.test(btn.textContent||""))btn.textContent="Abrir Coco Pádel";btn.disabled=false;btn.removeAttribute("aria-disabled")}}
   function applyCard(card){var id=idOf(card);if(!id)return;if(RETIRED.has(id)){card.remove();return}card.dataset.cocoScoringV16084=GENERAL.has(id)?"yes":"no";cleanScoreNoise(card);scoreStatus(card,id);fixPadel(card,id)}
   function makePublicMiniAccessible(card){
     if(!card||!card.matches||!card.matches(".cocoMiniJuego[data-coco-juego]"))return false;
     if(card.tagName==="BUTTON")return true;
-    var title=card.querySelector("b"),name=String(title&&title.textContent||"este juego").trim();
-    card.setAttribute("role","button");card.setAttribute("tabindex","0");card.setAttribute("aria-label","Inicia sesión para abrir "+name);
+    var title=card.querySelector("b"),name=String(title&&(window.CocoLocale?.sourceText(title) ?? title.textContent)||"este juego").trim();
+    card.setAttribute("role","button");card.setAttribute("tabindex","0");
+    var sourceLabel="Inicia sesión para abrir "+name;
+    card.setAttribute("data-coco-source-aria-label",sourceLabel);
+    var locale=window.CocoLocale, label=locale?locale.t("Inicia sesión para abrir {game}",{game:locale.t(name)}):sourceLabel;
+    if(card.getAttribute("aria-label")!==label)card.setAttribute("aria-label",label);
     if(card.dataset.cocoKeyboardAccess!=="1"){card.dataset.cocoKeyboardAccess="1";card.addEventListener("keydown",function(event){if(event.key!=="Enter"&&event.key!==" ")return;event.preventDefault();card.click()})}
     return true
   }

@@ -68,5 +68,5 @@ test('share copies canonical URL and static examples do not contact services',as
  const w=dom.window;let copied;Object.defineProperty(w.navigator,'clipboard',{value:{writeText:async value=>{copied=value;}}});
  w.eval(read('seo/landing.js'));w.document.querySelector('[data-copy]').click();await new Promise(setImmediate);
  assert.equal(copied,origin+'/apoyo-escolar-con-ia/');
- for(const p of discoveryPages){const d=page(`/${p.slug}/index.html`);assert.deepEqual([...d.querySelectorAll('script[src]')].map(x=>x.getAttribute('src')),['/seo/landing.js?v=1']);}
+ for(const p of discoveryPages){const d=page(`/${p.slug}/index.html`);assert.deepEqual([...d.querySelectorAll('script[src]')].map(x=>x.getAttribute('src')),['/seo/landing.js?v=1','/i18n/coco.js?v=20261121-1']);}
 });
