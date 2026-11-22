@@ -1,3 +1,4 @@
+import {localizeLandingArtwork} from './landing-artwork.mjs';
 import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {games, origin} from '../seo/catalog.mjs';
@@ -80,7 +81,7 @@ export function buildLocalizedLandings() {
   for (const tag of Object.keys(localeNames)) {
     const path = localizedLandingPath(tag);
     mkdirSync(root + path, {recursive:true});
-    writeFileSync(root + path + 'index.html', render(tag,landingLocales[tag]));
+    writeFileSync(root + path + 'index.html', localizeLandingArtwork(render(tag,landingLocales[tag])));
   }
   console.log(`Built ${Object.keys(localeNames).length} static language landing pages.`);
 }

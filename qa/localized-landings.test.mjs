@@ -219,3 +219,16 @@ test('language selection navigates with blocked storage and ignores external des
     } finally { dom.window.close(); }
   }
 });
+
+test('all 15 landings render six native-language image labels without baked Spanish',()=>{
+ for(const tag of locales){
+  const {document}=page(tag);
+  for(const id of featuredGames){
+   const card=document.querySelector(`[data-discovery-game="${id}"]`);
+   assert.equal(card.querySelector('.coco-landing-art-label').textContent,copy[tag].gameCards[id].title,`${tag}/${id}`);
+   assert.equal(card.querySelector('img').getAttribute('src'),`/share/premium-v160126/art/${id}.webp`);
+   assert.equal(card.querySelector('img').hasAttribute('srcset'),false);
+  }
+  assert.ok(document.querySelector('link[href="/seo/artwork.css?v=20261122-1"]'));
+ }
+});

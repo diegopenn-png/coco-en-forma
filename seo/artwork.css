@@ -1,0 +1,6 @@
+/* Language-aware lettering on the original text-free promotional artwork. */
+.coco-landing-art{display:block;position:relative;width:100%;overflow:hidden;border-radius:inherit;isolation:isolate;direction:ltr;container-type:inline-size}
+.coco-landing-art img{display:block!important;width:100%!important;height:auto!important;aspect-ratio:1200/630;object-fit:contain!important;margin:0!important}
+.coco-landing-art-label{position:absolute;inset:12% 53% 12% 5%;display:flex;align-items:center;color:#fff;font-family:system-ui,sans-serif;font-size:clamp(13px,5.2cqw,32px);font-weight:900;line-height:1.14;overflow-wrap:anywhere;text-shadow:0 2px 5px #000;text-align:start}
+html[dir=rtl] .coco-landing-art-label{direction:rtl}
+.game-image>.coco-landing-art{height:100%}
