@@ -29,6 +29,13 @@ async function setup(browser) {
       }});return chain;
     }
     const cli={auth:{getSession:async()=>({data:{session}}),getUser:async()=>({data:{user}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},from:query,rpc:()=>query('rpc')};
+    window.pdfTextByLanguage={};
+    const fill=CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText=function(text,...args){
+      const lang=document.documentElement.lang;
+      (window.pdfTextByLanguage[lang]||=[]).push(text);
+      return fill.call(this,text,...args);
+    };
     window.__COCO_SUPABASE_CLIENT=cli;
     Object.defineProperty(window,'supabase',{configurable:true,get:()=>({createClient:()=>cli}),set(){}});
   },{player});
@@ -77,6 +84,10 @@ async function assessment(browser,age,saveDir){
         descriptions:[...report.querySelectorAll('.coach-reading p')].map(p=>p.textContent)
       }));
       assert.equal(rendered.alias,player);
+      assert.equal(await page.locator('.report-signature h3').textContent(),'Diego Pennise');
+      const painted=await page.evaluate(tag=>(window.pdfTextByLanguage[tag]||[]).join('').replace(/\s/gu,''),tag);
+      assert.ok(painted.includes(rendered.headline.replace(/\s/gu,'')),tag+' report heading in downloaded PDF');
+      assert.ok(painted.includes(player.replace(/\s/gu,'')),tag+' participant alias in downloaded PDF');
       assert.doesNotMatch(rendered.headline,/Nueve formas de mirarte/);
       assert.doesNotMatch(rendered.coverage,/respuestas|omisiones|disponibles/);
       assert.doesNotMatch(rendered.descriptions.join(' '),/con \d de 6 respuestas/);
