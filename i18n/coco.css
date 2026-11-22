@@ -39,6 +39,6 @@ html body #cocoApp img[data-coco-original-thumbnail]{display:none!important}
 html body #cocoApp .cocoLocalizedThumbnail{position:relative!important;display:block!important;width:100%!important;aspect-ratio:1200/630;height:auto!important;overflow:hidden;border-radius:inherit;container-type:inline-size;direction:ltr}
 html body #cocoApp .cocoLocalizedThumbnail>img{position:static!important;display:block!important;width:100%!important;height:auto!important;aspect-ratio:1200/630;object-fit:contain!important;margin:0!important;transform:none!important}
 html body #cocoApp .cocoLocalizedThumbnailCopy{position:absolute!important;inset:15% 51% 13% 5%!important;display:flex!important;flex-direction:column;justify-content:center;gap:9cqw;text-align:start;line-height:1.12;color:#fff!important;text-shadow:0 1px 3px #000;overflow-wrap:anywhere}
-html body #cocoApp .cocoLocalizedThumbnailCopy>b{font:900 5.4cqw/1.12 system-ui,sans-serif!important;color:#fff!important;margin:0!important}
+html body #cocoApp .cocoLocalizedThumbnailCopy>strong{font:900 5.4cqw/1.12 system-ui,sans-serif!important;color:#fff!important;margin:0!important}
 html body #cocoApp .cocoLocalizedThumbnailCopy>small{font:650 2.5cqw/1.2 system-ui,sans-serif!important;color:#fff!important;margin:0!important}
 html[dir=rtl] body #cocoApp .cocoLocalizedThumbnailCopy{direction:rtl}

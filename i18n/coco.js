@@ -202,7 +202,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261122-5');
+    url.searchParams.set('v','20261122-7');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -338,7 +338,7 @@
         img.alt = ''; img.width = 1200; img.height = 630;
         img.loading = original.loading || 'lazy'; img.decoding = 'async';
         const caption = document.createElement('span');caption.className='cocoLocalizedThumbnailCopy';
-        caption.append(bannerText('b',copy[0]),bannerText('small',copy[1]));
+        caption.append(bannerText('strong',copy[0]),bannerText('small',copy[1]));
         art.append(img,caption); original.after(art);
       }
       if (!original.hasAttribute('data-coco-original-thumbnail')) {

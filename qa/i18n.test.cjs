@@ -979,6 +979,20 @@ test('menu thumbnails translate every title and caption across all 15 languages,
   assert.equal(clone.querySelector('[data-coco-copy]').textContent,api.t('Conecta colores'));
   clone.querySelector('.cocoMiniIcono').innerHTML='<img class="cocoOfficialThumb" src="/share/premium-v160126/memoria.jpg">';
   await new Promise(r=>w.setTimeout(r,25));
-  assert.equal(clone.querySelector('.cocoLocalizedThumbnail b').textContent,api.t('Memoria'));
+  assert.equal(clone.querySelector('.cocoLocalizedThumbnail strong').textContent,api.t('Memoria'));
+ }finally{dom.window.close()}
+});
+
+test('thumbnail lettering cannot become the title targeted by the real tool-card decorator',async()=>{
+ const {api,w,doc,dom}=page(undefined,undefined,undefined,'<main id="cocoApp"><div class="cocoMiniJuego" data-coco-juego="padel"><span class="cocoMiniIcono"><img src="/share/premium-v160126/padel.jpg"></span><b id="real-card-title">Pádel</b><div class="cocoExcellenceMeta"></div></div></main>');
+ try{
+  await api.ready;await api.setLanguage('fi');
+  const source=fs.readFileSync(path.join(root,'coco-excellence-v160934.js'),'utf8');
+  const fn=source.slice(source.indexOf('  function decorateCards(scope){'),source.indexOf('  function decorateArcade(){'));
+  const decorate=w.Function('GAME','gameIdFromCard',fn+';return decorateCards;')({padel:{tool:true}},()=> 'padel');
+  decorate(doc);
+  assert.equal(doc.querySelector('.cocoExToolLabel').parentElement,doc.querySelector('.cocoMiniJuego'));
+  assert.equal(doc.querySelector('.cocoLocalizedThumbnail .cocoExToolLabel'),null);
+  assert.equal(doc.querySelector('.cocoMiniJuego').querySelector('h3,b').id,'real-card-title');
  }finally{dom.window.close()}
 });
