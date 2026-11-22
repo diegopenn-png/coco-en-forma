@@ -149,6 +149,12 @@
     }
     const menu = element?.matches('b') && element.closest('[data-player-menu]');
     if (menu) return playerTitles[current][playerMenuOrder.indexOf(menu.dataset.playerMenu)] || value;
+    if (element?.closest('#eternaOverlayV159')) {
+      const mode = key.match(/^Modo: (.+)$/u);
+      if (mode) return message('Modo')+' · '+message(mode[1]);
+      const status = key.split(' · ');
+      if (status.length > 1) return status.map(part => message(part)).join(' · ');
+    }
     let translated = (report && reportStatistic(key)) || message(key);
     if (translated === key && key.startsWith('Tabla independiente dedicada exclusivamente a ') && key.endsWith('.')) {
       const gameName = key.slice('Tabla independiente dedicada exclusivamente a '.length,-1);
@@ -196,7 +202,7 @@
     return Array.from(node.childNodes).map(sourceText).join('');
   }
   const authored = '#rConsentText,#rConsentText a,.cocoLegalResumenRegistro,head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
-  const spanishGames = new Set(['sopa','crucigrama','palabras','cocomed','verdadero','tiempo','bank']);
+  const spanishGames = new Set(['cocomed','bank']);
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
@@ -206,7 +212,7 @@
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego,#coco-game-guides)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
   const reportCopy = ':is(.cocoFamilyV129,[data-family-integral-report],.cocoV16083Section,.cocoReportDocument,.rankingTitulo,.rankingNota,.navegacionJugador) :is(h2,h3,h4,b,strong,small,p,span,li,th,button,a)';
-  const gameplayCopy = '[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,.instruccion,.pregunta,.textoReto,.aviso,.titulo)';
+  const gameplayCopy = '[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,h4,strong,b,.instruccion,.pregunta,.textoReto,.aviso,.titulo,.cocoArcadeQuestionTag,.cocoArcadeProgressMeta span,.dato)';
   const familyAccessCopy = '.eternaLaunchV16068 :is(p,label,button,h2,strong,.eternaLaunchV16068Info,.eternaLaunchV16068Msg)';
   const authBoxes = '.caja:has(#oMail),.caja:has(#rNom),.caja:has(#nPas),.loginCard';
   const authCopy = ['p','label','b','.aviso','small'].map(t => ':is('+authBoxes+') '+t).join(',');
@@ -221,8 +227,13 @@
     return url.href;
   }
   async function readPack(tag) {
-    const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261122-7');
+    if (!document.documentElement.hasAttribute('data-coco-extra-languages')) return readLanguageFile(tag,'packs');
+    const [main,extra] = await Promise.all([readLanguageFile(tag,'packs'),readLanguageFile(tag,'extra')]);
+    return {...main,strings:{...main.strings,...extra.strings}};
+  }
+  async function readLanguageFile(tag,folder) {
+    const url = new URL(folder+'/'+tag+'.json',base);
+    url.searchParams.set('v',folder==='packs'?'20261122-7':'20261122-1');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -379,15 +390,27 @@
       });
     });
   }
+  function refreshTutor(root) {
+    const dialog = '#eternaOverlayV159';
+    const protectedText = '[data-et-name],.eternaV159Bubble,.eternaV159Check p,.eternaV159Mission p,[data-coco-verbatim],[contenteditable=true]';
+    each(root,dialog+' :is(button,label,strong,b,em,p,h2,h3,h4,option,small,span,section,div,textarea,[aria-label]),'+dialog,el => {
+      if (el.closest('[data-coco-language-menu],svg,script,style') || el.closest(protectedText)) return;
+      if (el.tagName !== 'TEXTAREA' && (el.tagName !== 'OPTION' || el.hasAttribute('value'))) {
+        for (const n of el.childNodes) if (n.nodeType === Node.TEXT_NODE) render(n,'text',()=>n.data,v=>{n.data=v;});
+      }
+      for (const a of ['aria-label','placeholder','title']) if (el.hasAttribute(a)) render(el,a,()=>el.getAttribute(a),v=>el.setAttribute(a,v));
+    });
+  }
   function refresh(root = document) {
     if (!document.body) return;
     localizeHomeArtwork(root);
     localizeThumbnails(root);
+    refreshTutor(root);
     const page = document.body.dataset.cocoLanguagePage;
     const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,'.cocoV16086Pending,.rankingNota'].join(',');
     each(root,query,el => {
       if (el.tagName === 'CANVAS' && el.hasAttribute('aria-label')) render(el,'aria-label',()=>el.getAttribute('aria-label'),v=>el.setAttribute('aria-label',v));
-      if (el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
+      if (el.closest('#eternaOverlayV159') || el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
       // Card titles and some legacy controls are used for DOM-based identification.
       // Their translation is handled by the owning renderer once a stable id exists.
       if (!page && el.closest('.cocoGameCard,.cocoMiniJuego') && !el.closest('[data-coco-juego],[data-coco-chess-entry],[data-coco-city-entry],[data-coco-naval-entry],[data-coco-generala-entry],[data-coco-suggestion],.cocoMiniSuggestion')) return;
@@ -446,9 +469,9 @@
     each(root,'.cocoMedOverlay',el=>{el.lang='es';el.dir='ltr';});
     each(root,'[data-coco-juego],[data-game-card]',card => markGame(card,gameId(card)));
     each(root,'[data-coco-original-document]',el => {el.hidden = current === 'es';});
-    each(root,'[data-eterna-language-note],[data-questionnaire-language]',el => {
+    each(root,'[data-questionnaire-language]',el => {
       el.hidden = current === 'es';
-      const source = el.hasAttribute('data-questionnaire-language') ? 'Cuestionario en español' : 'Las sesiones de Eterna se realizan en español.';
+      const source = 'Cuestionario en español';
       const note = el.hidden ? '' : message(source);
       if (el.textContent !== note) el.textContent = note;
     });
@@ -559,12 +582,14 @@
     function placeLanguageMenu() {
       const header = app?.querySelector(':scope > [data-coco-account-header]');
       if (header && accountSlot.parentElement !== header) header.append(accountSlot);
-      const target = header ? accountSlot : publicSlot;
+      const tutorSlot = document.querySelector('#eternaOverlayV159.is-open [data-eterna-picker]');
+      const target = tutorSlot || (header ? accountSlot : publicSlot);
       if (target && bar.parentElement !== target) target.append(bar);
       if (!header && accountSlot.isConnected) accountSlot.remove();
       if (publicSlot) publicSlot.hidden = Boolean(header);
     }
     placeLanguageMenu();
+    window.addEventListener('coco:eterna-visibility',placeLanguageMenu);
     if (app && !menuObserver) {
       // The router replaces the top-level header on login, navigation and logout.
       menuObserver = new MutationObserver(placeLanguageMenu);

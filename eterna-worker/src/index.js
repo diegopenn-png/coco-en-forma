@@ -406,6 +406,7 @@ function aiBudgetPriceUsdPerMillion(model){
   if(m.includes("qwen3-30b-a3b"))return{input:.051,output:.335};
   if(m.includes("llama-3.1-8b-instruct-fast"))return{input:.045,output:.384};
   if(m.includes("llama-3.1-8b-instruct"))return{input:.282,output:.827};
+  if(m.includes("m2m100"))return{input:.342,output:.342};
   if(m.includes("llama-guard-3-8b"))return{input:.484,output:.030};
   if(m.includes("llama-4-scout-17b-16e"))return{input:.270,output:.850};
   if(m.includes("moondream"))return{input:.300,output:1.000};
@@ -1853,12 +1854,118 @@ function ownedLibraryDecision(env,{text,image,ctx,mode,incomingPedState,incoming
   return library.decision({text:canonicalText,profile:ctx.profile,pedState:incomingPedState,modeState:incomingModeState,mode,image,newTopic:startsNewTopic})
 }
 
+// Keep the teaching state in its original language. Only the learner's message and
+// the public reply cross this boundary. Both directions use the metered AI binding.
+const languages = Object.freeze({
+  es:'spanish', en:'english', de:'german', nl:'dutch', fr:'french', it:'italian',
+  pl:'polish', uk:'ukrainian', ru:'russian', 'zh-Hans':'chinese', ar:'arabic',
+  sv:'swedish', fi:'finnish', nb:'norwegian', da:'danish'
+});
+const tutorLanguages = Object.keys(languages);
+function tutorLocale(value) { return Object.hasOwn(languages,value) ? value : 'es'; }
+function audioLocale(value) { return ({'zh-Hans':'zh',nb:'no'})[value] || tutorLocale(value); }
+
+async function translateTutorText(env,text,from,to) {
+  if (!text || from === to || !/\p{L}/u.test(text)) return text;
+  // Smaller segments avoid silent truncation by the translation model.
+  const segments = String(text).match(/\s+|[^\s]+/gu) || [];
+  const chunks = [];
+  let chunk = '';
+  for (const segment of segments) {
+    if (segment.length > 512) throw Error('ETERNA_TRANSLATION_UNAVAILABLE');
+    if (chunk && (chunk.length + segment.length > 240 || segment.includes('\n'))) {
+      chunks.push(chunk); chunk = '';
+    }
+    chunk += segment;
+  }
+  if (chunk) chunks.push(chunk);
+  const output = [];
+  for (const part of chunks) {
+    const body = part.trim();
+    if (!/\p{L}/u.test(body)) { output.push(part); continue; }
+    let result;
+    try { result = await env.AI.run('@cf/meta/m2m100-1.2b', {
+      text:body, source_lang:languages[from], target_lang:languages[to]
+    }); } catch (error) {
+      if (isAiMonthlyBudgetError(error)) throw error;
+      throw Error('ETERNA_TRANSLATION_UNAVAILABLE');
+    }
+    if (typeof result?.translated_text !== 'string' || !result.translated_text.trim()) throw Error('ETERNA_TRANSLATION_UNAVAILABLE');
+    const digits = value => Array.from(value.normalize('NFKC')).map(ch => {
+      const code=ch.charCodeAt(0);
+      return code>=0x660&&code<=0x669?String(code-0x660):code>=0x6f0&&code<=0x6f9?String(code-0x6f0):ch;
+    }).join('').match(/\d+/g)||[];
+    const before=digits(body), after=digits(result.translated_text);
+    if(before.length && before.join('|')!==after.join('|')) throw Error('ETERNA_TRANSLATION_UNAVAILABLE');
+    output.push(part.replace(/\S[\s\S]*\S|\S/u,() => result.translated_text.trim()));
+  }
+  return output.join('');
+}
+
+async function translateTutorResponse(env,response,locale,canonicalInput) {
+  if (!response.headers.get('Content-Type')?.includes('application/json')) return response;
+  const data = await response.clone().json();
+  if (!data.reply) return response;
+  data.canonical_turn = {text:canonicalInput,reply:data.reply,check_question:data.check_question||null,subject:data.subject||null};
+  // Safeguarding replies must remain available if machine translation is down.
+  const immediateHelp = {
+    en:'Please talk to a trusted adult now. If you are in immediate danger, contact local emergency services.',
+    de:'Sprich jetzt mit einem Erwachsenen, dem du vertraust. Wende dich bei unmittelbarer Gefahr an den örtlichen Notruf.',
+    nl:'Praat nu met een volwassene die je vertrouwt. Bel bij direct gevaar de plaatselijke hulpdiensten.',
+    fr:'Parle maintenant à un adulte de confiance. En cas de danger immédiat, contacte les secours.',
+    it:'Parla subito con un adulto di cui ti fidi. Se sei in pericolo immediato, contatta i servizi di emergenza locali.',
+    pl:'Porozmawiaj teraz z dorosłą osobą, której ufasz. W razie bezpośredniego zagrożenia skontaktuj się ze służbami ratunkowymi.',
+    uk:'Поговори зараз із дорослим, якому довіряєш. Якщо тобі загрожує безпосередня небезпека, звернися до екстрених служб.',
+    ru:'Поговори сейчас со взрослым, которому доверяешь. При непосредственной опасности обратись в экстренные службы.',
+    'zh-Hans':'请现在就告诉一位你信任的成年人。如果你正面临紧急危险，请联系当地紧急救援部门。',
+    ar:'تحدث الآن مع شخص بالغ تثق به. إذا كنت في خطر فوري فاتصل بخدمات الطوارئ المحلية.',
+    sv:'Prata nu med en vuxen som du litar på. Kontakta larmcentralen om du är i omedelbar fara.',
+    fi:'Puhu heti aikuiselle, johon luotat. Jos olet välittömässä vaarassa, ota yhteyttä hätäkeskukseen.',
+    nb:'Snakk med en voksen du stoler på nå. Kontakt nødetatene hvis du er i umiddelbar fare.',
+    da:'Tal nu med en voksen, du stoler på. Kontakt alarmcentralen, hvis du er i akut fare.'
+  };
+  const memo = new Map();
+  for (const field of ['reply','check_question','practice_suggestion','subject','concept','mode_label']) {
+    const source = data[field];
+    if (typeof source !== 'string' || !source) continue;
+    if (!memo.has(source)) {
+      try { memo.set(source,await translateTutorText(env,source,'es',locale)); }
+      catch(error) {
+        if(data.verification_status!=='blocked_safety')throw error;
+        memo.set(source,field==='reply'?immediateHelp[locale]:null);
+      }
+    }
+    data[field] = memo.get(source);
+  }
+  data.locale = locale;
+  const headers = new Headers(response.headers);
+  headers.delete('Content-Length');
+  headers.set('Content-Language',locale);
+  return new Response(JSON.stringify(data),{status:response.status,headers});
+}
+
 async function handleChat(request,env,auth,event,greetingBody=null){
   const timings=createChatTimings();
   let policyBody=greetingBody;if(!policyBody)try{policyBody=await request.clone().json()}catch(_e){policyBody={}};
-  try{return withChatTimings(await applyGreetingContinuity(await handleChatCore(request,env,auth,event,timings),policyBody),timings)}catch(error){timings.mark("failed");if(isAiMonthlyBudgetError(error))return monthlyAiBudgetResponse(error);throw error}
+  try {
+    const locale=tutorLocale(policyBody.locale);
+    if(locale==="es")return withChatTimings(await applyGreetingContinuity(await handleChatCore(request,env,auth,event,timings),policyBody),timings);
+    const preflight=await getChatPreflight(env,auth);
+    if(!subscriptionActive(preflight.subscription))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);
+    if(!preflight.ctx.profile?.school_year)return json({error:"STUDENT_PROFILE_REQUIRED"},409);
+    if(!preflight.legal.accepted)return legalRequiredResponse(preflight.legal);
+    const original=String(policyBody.text||"").slice(0,6000);
+    const q=preflight.quota;
+    if(!q.ok)return json({error:q.period==="weekly"?"ETERNA_WEEKLY_LIMIT":"ETERNA_DAILY_LIMIT",limit:q.limit,used:q.used,limit_type:q.period},429);
+    env=withAiMonthlyBudget(env,auth.user.id);
+    const canonical=await translateTutorText(env,original,locale,"es");
+    const body={...policyBody,text:canonical};
+    const internal=new Request(request.url,{method:"POST",headers:request.headers,body:JSON.stringify(body)});
+    const response=await applyGreetingContinuity(await handleChatCore(internal,env,auth,event,timings,preflight),body);
+    return withChatTimings(await translateTutorResponse(env,response,locale,canonical),timings);
+  }catch(error){timings.mark("failed");if(isAiMonthlyBudgetError(error))return monthlyAiBudgetResponse(error);if(error.message==="ETERNA_TRANSLATION_UNAVAILABLE")return json({error:error.message},503);throw error}
 }
-async function handleChatCore(request,env,auth,event,timings){
+async function handleChatCore(request,env,auth,event,timings,knownPreflight=null){
   const body=await request.json(),text=String(body.text||"").slice(0,6000),rawImage=typeof body.image_data_url==="string"?body.image_data_url:null,imageValidation=validateImageDataUrl(rawImage),image=imageValidation.ok?rawImage:null,imageRegions=validatedImageRegions(body.image_regions,imageValidation.ok),history=Array.isArray(body.history)?body.history.slice(-12):[],mode=MODE_PROFILES[body.mode]?String(body.mode):"homework",inputSource=["text","voice","image"].includes(body.input_source)?body.input_source:(image?"image":"text"),incomingModeState=sanitizeModeState(body.mode_state),incomingPedState=sanitizePedagogicalState(body.pedagogical_state,mode),clientStudentIntent=["answer_check","return_topic","confused","simplify","continue_pending","advance_sequence","ask_cause","ask_mechanism","deepen","relational_followup"].includes(String(body.student_intent||""))?String(body.student_intent):null,clientTutorDirective=["RETURN_TOPIC","CHANGE_STRATEGY","SIMPLIFY","ADVANCE","EXPLAIN_CAUSE","EXPLAIN_MECHANISM"].includes(String(body.tutor_directive||""))?String(body.tutor_directive):null,clientRepetitionGuard=typeof body.repetition_guard==="string"?body.repetition_guard.slice(0,700):null;
   timings?.mark("input");
   const currentSafetyCategory=!image?childSafeguardingCategory(text):null,currentSituation=!image?(ownedLibraryRuntime(env)?.protocol(text)||classroomSituation(text,history,incomingPedState)):null,contractMeta=parseContractV3Input(body,{mode,modeState:incomingModeState,pedState:incomingPedState});
@@ -1874,8 +1981,8 @@ async function handleChatCore(request,env,auth,event,timings){
   if(rawImage&&!image)return json({error:imageValidation.reason==="invalid_size"?"IMAGE_TOO_LARGE":"IMAGE_TYPE_NOT_ALLOWED"},imageValidation.reason==="invalid_size"?413:415);if(!text&&!image)return json({error:"EMPTY_INPUT"},400);
   const uid=auth.user.id;
   env=withAiMonthlyBudget(env,uid);
-  if(currentSafetyCategory){const safetyPreflight=await getChatPreflight(env,auth),ctx=safetyPreflight.ctx,sub=safetyPreflight.subscription;if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);if(!ctx.profile?.school_year)return json({error:"STUDENT_PROFILE_REQUIRED"},409);if(!safetyPreflight.legal.accepted)return legalRequiredResponse(safetyPreflight.legal);timings?.mark("safety_access");deferWork(event,"safety-interaction",()=>logInteraction(env,uid,{text,image,inputSource,scope:"safety",verification:"blocked_safety",subject:null,concept:null,help:null,modelRoute:"teacher-core-safety-interrupt-v1",mode}));return json(safetyInterruptionPayload(currentSafetyCategory,incomingPedState,mode,incomingModeState,text))}
-  const preflight=await getChatPreflight(env,auth),ctx=preflight.ctx,sub=preflight.subscription,q=preflight.quota;if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);if(!ctx.profile?.school_year)return json({error:"STUDENT_PROFILE_REQUIRED"},409);if(!preflight.legal.accepted)return legalRequiredResponse(preflight.legal);timings?.mark("preflight");
+  if(currentSafetyCategory){const safetyPreflight=knownPreflight||await getChatPreflight(env,auth),ctx=safetyPreflight.ctx,sub=safetyPreflight.subscription;if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);if(!ctx.profile?.school_year)return json({error:"STUDENT_PROFILE_REQUIRED"},409);if(!safetyPreflight.legal.accepted)return legalRequiredResponse(safetyPreflight.legal);timings?.mark("safety_access");deferWork(event,"safety-interaction",()=>logInteraction(env,uid,{text,image,inputSource,scope:"safety",verification:"blocked_safety",subject:null,concept:null,help:null,modelRoute:"teacher-core-safety-interrupt-v1",mode}));return json(safetyInterruptionPayload(currentSafetyCategory,incomingPedState,mode,incomingModeState,text))}
+  const preflight=knownPreflight||await getChatPreflight(env,auth),ctx=preflight.ctx,sub=preflight.subscription,q=preflight.quota;if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);if(!ctx.profile?.school_year)return json({error:"STUDENT_PROFILE_REQUIRED"},409);if(!preflight.legal.accepted)return legalRequiredResponse(preflight.legal);timings?.mark("preflight");
   const safetyFollowUp=safetyFollowUpPayload(text,incomingPedState,mode,incomingModeState);if(safetyFollowUp){deferWork(event,"safety-follow-up",()=>logInteraction(env,uid,{text:"[safety follow-up]",image:null,inputSource,scope:"safety",verification:safetyFollowUp.verification_status,subject:null,concept:null,help:null,modelRoute:"teacher-core-safety-follow-up-v1",mode}));return json(safetyFollowUp)}
   const libraryModeState=contractMeta.enabled?{...incomingModeState,question_number:contractMeta.activityState.question_number}:incomingModeState,initialActivity=learningActivityContext({text,history,pedState:incomingPedState,profile:ctx.profile,mode});
   if(currentSituation&&!currentSituation.follow_up&&!isRelationalSituation(currentSituation)&&!(currentSituation.kind==="weather_query"&&currentSituation.location)){const libraryProtocol=currentSituation.kind==="library_protocol",ownedContext=libraryProtocol?ownedLibraryRuntime(env).owned(incomingPedState,ctx.profile,mode):null;if(libraryProtocol)deferWork(event,"library-cordiality",()=>logInteraction(env,uid,{text,image:null,inputSource,scope:"school",verification:"verified",subject:null,concept:null,help:null,modelRoute:"owned-protocol-v1",mode}));return json({...(libraryProtocol?{library_route:"owned-protocol-v1",library_release:"eterna-library-2026.09-v8-410-consolidated-1c484e",generation_model_calls:0,generation_tokens:0}:{}),reply:libraryProtocol?ownedLibraryRuntime(env).cordial(currentSituation.protocol,{text,profile:ctx.profile,base:ctx.base,pedState:incomingPedState}):situationalReply(currentSituation,text,ctx?.base?.apodo||ctx?.profile?.apodo||""),verification_status:"verified",subject:ownedContext?.lesson.subject||null,concept:ownedContext?.lesson.title||null,help_level:null,check_question:ownedContext?incomingPedState.pending_question:null,practice_suggestion:null,student_answer_assessment:"not_applicable",strategy_used:null,mode_label:MODE_PROFILES[mode].label,mode_state:libraryProtocol?libraryModeState:incomingModeState,pedagogical_state:preservedInterruptionState(incomingPedState,mode),auto_speak:false,situational:true,situational_kind:currentSituation.kind,relational:false,resume_available:Boolean(incomingPedState.pending_question)})}
@@ -2137,8 +2244,8 @@ async function handleChatJobResult(request,env,auth){
   const jobMs=Math.max(0,Number(job.completed_at||Date.now())-Number(job.created_at||job.completed_at||Date.now()));return new Response(job.body||"{}",{status:Number(job.http_status||200),headers:{"Content-Type":job.content_type||"application/json; charset=utf-8","Cache-Control":"no-store","X-Eterna-Job-Status":job.status,"X-Eterna-Job-Id":id,"X-Eterna-Response-Id":job.response_id||"","X-Eterna-Latency-Ms":String(job.latency_ms||jobMs),"X-Eterna-Job-Ms":String(jobMs),...(job.server_timing?{"Server-Timing":job.server_timing}:{})}})
 }
 
-async function handleTranscribe(request,env,auth){const legal=await requireLegalState(env,auth);if(!legal.ok)return legal.response;const sub=await getSubscription(env,auth.user.id,auth.user.email);if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);const settings=await getParentSettings(env,auth.user.id,sub);if(!settings.allow_audio_input)return json({error:"ETERNA_AUDIO_DISABLED"},403);const form=await request.formData(),file=form.get("audio");if(!(file instanceof File))return json({error:"AUDIO_REQUIRED"},400);if(file.size>8*1024*1024)return json({error:"AUDIO_TOO_LARGE"},413);const mime=String(file.type||"").toLowerCase();if(mime&&!/^(audio\/(webm|mp4|mpeg|wav|x-wav|ogg|aac|flac|m4a|x-m4a)|video\/webm)/.test(mime))return json({error:"AUDIO_TYPE_NOT_ALLOWED"},415);if(aiProvider(env)==="cloudflare"){const bytes=new Uint8Array(await file.arrayBuffer());let audio="";for(let offset=0;offset<bytes.length;offset+=24576)audio+=btoa(String.fromCharCode(...bytes.subarray(offset,offset+24576)));const data=await env.AI.run(env.TRANSCRIBE_MODEL||"@cf/openai/whisper-large-v3-turbo",{audio,language:"es",task:"transcribe",vad_filter:true,condition_on_previous_text:false});return json({text:data?.text||data?.transcription_info?.text||""})}const fd=new FormData();fd.append("file",file,file.name||"audio.webm");fd.append("model",env.TRANSCRIBE_MODEL||"gpt-4o-mini-transcribe");fd.append("language","es");const r=await openai(env,"/audio/transcriptions",{method:"POST",body:fd});const data=await r.json();return json({text:data.text||""})}
-async function handleSpeak(request,env,auth){const legal=await requireLegalState(env,auth);if(!legal.ok)return legal.response;const sub=await getSubscription(env,auth.user.id,auth.user.email);if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);const settings=await getParentSettings(env,auth.user.id,sub);if(!settings.voice_enabled)return json({error:"ETERNA_VOICE_DISABLED"},403);const body=await request.json(),text=String(body.text||"").slice(0,2000);if(!text)return json({error:"TEXT_REQUIRED"},400);let response;if(aiProvider(env)==="cloudflare"){const audio=await env.AI.run(env.TTS_MODEL||"@cf/myshell-ai/melotts",{prompt:text,lang:"es"});response=audio instanceof Response?audio:new Response(audio,{status:200,headers:{"Content-Type":"audio/mpeg"}})}else{const r=await openai(env,"/audio/speech",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:env.TTS_MODEL||"gpt-4o-mini-tts",voice:env.TTS_VOICE||"marin",input:text,response_format:"mp3",instructions:"Habla en español de España con tono amable, claro, sereno y respetuoso. Es un tutor escolar: no infantilices en exceso."})});response=new Response(r.body,{status:200,headers:{"Content-Type":"audio/mpeg"}})}try{const u=await getTodayUsage(env,auth.user.id);await supabase(env,"eterna_usage?on_conflict=user_id,usage_date",{method:"POST",body:{...u,user_id:auth.user.id,usage_date:usageDate(env),speech_characters:Number(u.speech_characters||0)+text.length,updated_at:new Date().toISOString()},headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}catch(e){}const headers=new Headers(response.headers);headers.set("Cache-Control","no-store");headers.set("Content-Type","audio/mpeg");return new Response(response.body,{status:200,headers})}
+async function handleTranscribe(request,env,auth){const legal=await requireLegalState(env,auth);if(!legal.ok)return legal.response;const sub=await getSubscription(env,auth.user.id,auth.user.email);if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);const settings=await getParentSettings(env,auth.user.id,sub);if(!settings.allow_audio_input)return json({error:"ETERNA_AUDIO_DISABLED"},403);const form=await request.formData(),language=audioLocale(form.get("locale")),file=form.get("audio");if(!(file instanceof File))return json({error:"AUDIO_REQUIRED"},400);if(file.size>8*1024*1024)return json({error:"AUDIO_TOO_LARGE"},413);const mime=String(file.type||"").toLowerCase();if(mime&&!/^(audio\/(webm|mp4|mpeg|wav|x-wav|ogg|aac|flac|m4a|x-m4a)|video\/webm)/.test(mime))return json({error:"AUDIO_TYPE_NOT_ALLOWED"},415);if(aiProvider(env)==="cloudflare"){const bytes=new Uint8Array(await file.arrayBuffer());let audio="";for(let offset=0;offset<bytes.length;offset+=24576)audio+=btoa(String.fromCharCode(...bytes.subarray(offset,offset+24576)));const data=await env.AI.run(env.TRANSCRIBE_MODEL||"@cf/openai/whisper-large-v3-turbo",{audio,language,task:"transcribe",vad_filter:true,condition_on_previous_text:false});return json({text:data?.text||data?.transcription_info?.text||""})}const fd=new FormData();fd.append("file",file,file.name||"audio.webm");fd.append("model",env.TRANSCRIBE_MODEL||"gpt-4o-mini-transcribe");fd.append("language",language);const r=await openai(env,"/audio/transcriptions",{method:"POST",body:fd});const data=await r.json();return json({text:data.text||""})}
+async function handleSpeak(request,env,auth){const legal=await requireLegalState(env,auth);if(!legal.ok)return legal.response;const sub=await getSubscription(env,auth.user.id,auth.user.email);if(!subscriptionActive(sub))return json({error:"ETERNA_SUBSCRIPTION_REQUIRED"},402);const settings=await getParentSettings(env,auth.user.id,sub);if(!settings.voice_enabled)return json({error:"ETERNA_VOICE_DISABLED"},403);const body=await request.json(),language=audioLocale(body.locale),text=String(body.text||"").slice(0,2000);if(!text)return json({error:"TEXT_REQUIRED"},400);const cloud=aiProvider(env)==="cloudflare";let response;if(cloud&&["es","en","fr","zh"].includes(language)){const audio=await env.AI.run(env.TTS_MODEL||"@cf/myshell-ai/melotts",{prompt:text,lang:language});response=audio instanceof Response?audio:new Response(audio,{status:200,headers:{"Content-Type":"audio/mpeg"}})}else{if(cloud&&!openaiFallbackEnabled(env))return json({error:"ETERNA_VOICE_LANGUAGE_UNAVAILABLE"},503);const model=cloud?(env.OPENAI_TTS_MODEL||"gpt-4o-mini-tts"):(env.TTS_MODEL||"gpt-4o-mini-tts");const r=await openai(env,"/audio/speech",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model,voice:env.TTS_VOICE||"marin",input:text,response_format:"mp3",instructions:"Habla en el idioma "+language+" con tono amable, claro, sereno y respetuoso. Es un tutor escolar: no infantilices en exceso."})});response=new Response(r.body,{status:200,headers:{"Content-Type":"audio/mpeg"}})}try{const u=await getTodayUsage(env,auth.user.id);await supabase(env,"eterna_usage?on_conflict=user_id,usage_date",{method:"POST",body:{...u,user_id:auth.user.id,usage_date:usageDate(env),speech_characters:Number(u.speech_characters||0)+text.length,updated_at:new Date().toISOString()},headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}catch(e){}const headers=new Headers(response.headers);headers.set("Cache-Control","no-store");headers.set("Content-Type","audio/mpeg");return new Response(response.body,{status:200,headers})}
 
 async function applyStudentMemory(env,uid,{subject=null,concept=null,conceptId=null,outcome="partial",help=null}={}){if(!concept)return;const key=normalizeConceptKey(concept),rows=await supabase(env,`eterna_student_concept_memory?user_id=eq.${uid}&concept_key=eq.${encodeURIComponent(key)}&select=*`),m=rows?.[0]||{},attempts=Number(m.attempts||0)+1,correct=outcome==="correct",incorrect=outcome==="incorrect",partial=outcome==="partial",ind=Number(m.independent_successes||0)+(correct&&Number(help)<=1?1:0),ass=Number(m.assisted_successes||0)+(correct&&Number(help)>1?1:0),errors=Number(m.errors||0)+(incorrect?1:0),partials=Number(m.partials||0)+(partial?1:0),base=Number(m.mastery_score||0),target=correct?(Number(help)<=1?.92:Number(help)<=3?.72:.55):partial?.45:.18,score=Math.max(0,Math.min(1,base*.72+target*.28)),avg=m.avg_help_level==null?help:(Number(m.avg_help_level)*.8+Number(help||0)*.2);await supabase(env,"eterna_student_concept_memory?on_conflict=user_id,concept_key",{method:"POST",body:{user_id:uid,concept_key:key,subject:subject||m.subject||null,concept_label:concept,concept_id:conceptId||m.concept_id||null,attempts,independent_successes:ind,assisted_successes:ass,errors,partials,mastery_score:score,last_help_level:Number.isInteger(help)?help:null,avg_help_level:avg,last_practiced_at:new Date().toISOString(),updated_at:new Date().toISOString()},headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}
 async function applyMasteryOutcome(env,uid,conceptId,{outcome="partial",help=null}={}){if(!conceptId)return;const rows=await supabase(env,`eterna_mastery?user_id=eq.${uid}&concept_id=eq.${conceptId}&select=*`),m=rows?.[0]||{},attempts=Number(m.attempts||0)+1,correct=outcome==="correct",incorrect=outcome==="incorrect",ind=Number(m.independent_successes||0)+(correct&&Number(help)<=1?1:0),ass=Number(m.assisted_successes||0)+(correct&&Number(help)>1?1:0),errors=Number(m.errors||0)+(incorrect?1:0),base=Number(m.mastery_score||0),target=correct?(Number(help)<=1?.92:Number(help)<=3?.72:.55):outcome==="partial"?.45:.18,score=Math.max(0,Math.min(1,base*.72+target*.28)),avg=m.avg_help_level==null?help:(Number(m.avg_help_level)*.8+Number(help||0)*.2);await supabase(env,"eterna_attempts",{method:"POST",body:{user_id:uid,concept_id:conceptId,understood:correct?true:incorrect?false:null,help_level:Number.isInteger(help)?help:null}});await supabase(env,"eterna_mastery?on_conflict=user_id,concept_id",{method:"POST",body:{user_id:uid,concept_id:conceptId,attempts,independent_successes:ind,assisted_successes:ass,errors,mastery_score:score,last_help_level:Number.isInteger(help)?help:null,avg_help_level:avg,last_practiced_at:new Date().toISOString(),updated_at:new Date().toISOString()},headers:{Prefer:"resolution=merge-duplicates,return=representation"}})}
@@ -2238,7 +2345,7 @@ function withDependencyProbeBudget(env){
 async function dependencyProbe(request,env){
   if(!protectedProbeRequest(request,env))return json({error:"NOT_FOUND"},404);
   env=withDependencyProbeBudget(env);
-  const provider=aiProvider(env),result={ok:false,degraded:false,service:"eterna",version:VERSION,eneagrama_payments:true,eneagrama_report_version:'2026-11-22-coaching-4',provider,moderation:{ok:false,provider:null,model:null,diagnostic_code:null},image_moderation:{ok:false,provider:null,model:null,diagnostic_code:null},responses:{ok:false,provider,diagnostic_code:null},structured_tutor:{ok:false,provider:null,diagnostic_code:null},structured_vision:{ok:false,provider:null,visual_model:null,diagnostic_code:null},photo_intake:{ok:false,subject:null,concept:null,items:0,confidence:0,diagnostic_code:null}};
+  const provider=aiProvider(env),result={ok:false,degraded:false,service:"eterna",version:VERSION,tutor_locale_version:"2026-11-22.1",tutor_languages:tutorLanguages,eneagrama_payments:true,eneagrama_report_version:'2026-11-22-coaching-4',provider,moderation:{ok:false,provider:null,model:null,diagnostic_code:null},image_moderation:{ok:false,provider:null,model:null,diagnostic_code:null},responses:{ok:false,provider,diagnostic_code:null},structured_tutor:{ok:false,provider:null,diagnostic_code:null},structured_vision:{ok:false,provider:null,visual_model:null,diagnostic_code:null},photo_intake:{ok:false,subject:null,concept:null,items:0,confidence:0,diagnostic_code:null}};
   try{const moderation=await moderate(env,"Explica la fotosíntesis.",null);result.moderation={ok:!moderation.moderation_error,provider:moderation.provider||provider,model:moderation.model||null,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"MODERATION"):openaiErrorDiagnostic(error,"MODERATION")}
   try{const moderation=await moderate(env,"Ficha escolar de multiplicaciones.",DEPENDENCY_PROBE_IMAGE_DATA_URL);result.image_moderation={ok:!moderation.moderation_error,provider:moderation.provider||provider,model:moderation.model||null,diagnostic_code:moderation.diagnostic_code||null}}catch(error){result.image_moderation.diagnostic_code=provider==="cloudflare"?cloudflareErrorDiagnostic(error,"IMAGE_MODERATION"):openaiErrorDiagnostic(error,"IMAGE_MODERATION")}
   try{
@@ -2273,7 +2380,7 @@ async function dependencyProbe(request,env){
 async function handleFetch(request,env,event){
   const c=cors(env,request);if(request.method==="OPTIONS")return withCors(new Response(null,{status:204}),c);const url=new URL(request.url);
   try{
-    if(url.pathname==="/health"||url.pathname==="/")return withCors(json({ok:true,service:"eterna",version:VERSION,eneagrama_payments:true,eneagrama_report_version:'2026-11-22-coaching-4',ai_provider:aiProvider(env),cloudflare_ai_configured:Boolean(env.AI&&typeof env.AI.run==="function"),openai_configured:Boolean(String(env.OPENAI_API_KEY||"").trim()),supabase_configured:Boolean(env.SUPABASE_URL&&supabasePublicKey(env)&&supabaseSecretKey(env)),stripe_configured:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET),model_configuration:modelConfiguration(env),features:healthFeatures(env),owned_library:{revision:ownedLibraryRuntime(env)?.version||null,enabled:Boolean(ownedLibraryRuntime(env)),release:ownedLibraryRuntime(env)?.release_id||null,lessons:ownedLibraryRuntime(env)?globalThis.ETERNA_LIBRARY_CONTENT.lessons.length:0,protocols:ownedLibraryRuntime(env)?.protocols.length||0,curriculum_complete:false},exercise_factory:{enabled:env.ETERNA_EXERCISE_FACTORY==="v1"&&Boolean(ownedLibraryRuntime(env))&&Boolean(globalThis.EternaProceduralPractice),version:globalThis.EternaProceduralPractice?.version||null,families:env.ETERNA_EXERCISE_FACTORY==="v1"?globalThis.EternaProceduralPractice?.skills.length||0:0,generated_variants_are_not_new_lessons:true},curricular_compass:{enabled:env.ETERNA_CURRICULAR_COMPASS==="v1"&&Boolean(globalThis.EternaCurricularCompass),version:globalThis.EternaCurricularCompass?.version||null,source_elements:globalThis.ETERNA_COMPASS_DATA?.source_elements||0,scope:"state_curriculum_orientation_only",max_items:3,additional_generation_model_calls:0,territorial_completeness:false}}),c);
+    if(url.pathname==="/health"||url.pathname==="/")return withCors(json({ok:true,service:"eterna",version:VERSION,tutor_locale_version:"2026-11-22.1",tutor_languages:tutorLanguages,eneagrama_payments:true,eneagrama_report_version:'2026-11-22-coaching-4',ai_provider:aiProvider(env),cloudflare_ai_configured:Boolean(env.AI&&typeof env.AI.run==="function"),openai_configured:Boolean(String(env.OPENAI_API_KEY||"").trim()),supabase_configured:Boolean(env.SUPABASE_URL&&supabasePublicKey(env)&&supabaseSecretKey(env)),stripe_configured:Boolean(env.STRIPE_SECRET_KEY&&env.STRIPE_MONTHLY_PRICE_ID&&env.STRIPE_ANNUAL_PRICE_ID&&env.STRIPE_WEBHOOK_SECRET),model_configuration:modelConfiguration(env),features:healthFeatures(env),owned_library:{revision:ownedLibraryRuntime(env)?.version||null,enabled:Boolean(ownedLibraryRuntime(env)),release:ownedLibraryRuntime(env)?.release_id||null,lessons:ownedLibraryRuntime(env)?globalThis.ETERNA_LIBRARY_CONTENT.lessons.length:0,protocols:ownedLibraryRuntime(env)?.protocols.length||0,curriculum_complete:false},exercise_factory:{enabled:env.ETERNA_EXERCISE_FACTORY==="v1"&&Boolean(ownedLibraryRuntime(env))&&Boolean(globalThis.EternaProceduralPractice),version:globalThis.EternaProceduralPractice?.version||null,families:env.ETERNA_EXERCISE_FACTORY==="v1"?globalThis.EternaProceduralPractice?.skills.length||0:0,generated_variants_are_not_new_lessons:true},curricular_compass:{enabled:env.ETERNA_CURRICULAR_COMPASS==="v1"&&Boolean(globalThis.EternaCurricularCompass),version:globalThis.EternaCurricularCompass?.version||null,source_elements:globalThis.ETERNA_COMPASS_DATA?.source_elements||0,scope:"state_curriculum_orientation_only",max_items:3,additional_generation_model_calls:0,territorial_completeness:false}}),c);
     if(url.pathname==="/health/dependencies"&&request.method==="GET")return withCors(await dependencyProbe(request,env),c);
     if(url.pathname==="/v1/stripe/webhook"&&request.method==="POST")return await handleStripeWebhook(request,env);if(!c)return json({error:"ORIGIN_NOT_ALLOWED"},403);
     if(url.pathname.startsWith("/v1/gifts/"))return withCors(await handleGifts(request,env,(path,opts)=>supabase(env,path,opts),authenticate),c);

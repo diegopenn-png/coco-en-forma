@@ -10,7 +10,7 @@ const code = fs.readFileSync(path.join(root,'i18n/coco.js'),'utf8');
 const readPack = id => JSON.parse(fs.readFileSync(path.join(root,'i18n/packs',id+'.json'),'utf8'));
 
 function page(url='https://coco.test/?source=pwa-v159',customFetch,remembered,extraHtml='') {
-  const body = '<div data-coco-language-menu></div><div class="loginCard"><label for="pw">Contraseña</label><input id="pw" type="password"><button>Entrar</button></div><div data-coco-juego="crucigrama"><b>Crucigrama</b></div><table><tbody><tr><td>Memoria</td><td>23</td></tr></tbody></table>';
+  const body = '<div data-coco-language-menu></div><div class="loginCard"><label for="pw">Contraseña</label><input id="pw" type="password"><button>Entrar</button></div><div data-coco-juego="cocomed"><b>Coco Med</b></div><table><tbody><tr><td>Memoria</td><td>23</td></tr></tbody></table>';
   const dom = new JSDOM('<html lang="es"><head><link rel="manifest" href="/manifest.webmanifest"></head><body>'+body+'</body></html>',{url,runScripts:'outside-only'});
   const w=dom.window;
   if(extraHtml)w.document.body.insertAdjacentHTML('beforeend',extraHtml);
@@ -89,9 +89,6 @@ test('the real Eterna launcher patch keeps translated trial copy and opens the t
     const launcher=w.Function('visible','rememberEternaAfterAuth','open',
       source.slice(start,end)+';return createLauncher();')(()=>true,()=>{remembered++;},fail);
     app.append(launcher);
-    // The tutor remains Spanish-only even when the surrounding interface changes.
-    const noteMarkup=source.match(/<p data-eterna-language-note hidden><\/p>/)[0];
-    launcher.insertAdjacentHTML('beforeend',noteMarkup);
     api.refresh(launcher);
     const cta=launcher.querySelector('.eternaLauncherCtaFinal3');
     // The base launcher can be clicked before the experience module arrives.
@@ -138,9 +135,7 @@ test('the real Eterna launcher patch keeps translated trial copy and opens the t
       const before=signupClicks;
       cta.click();
       assert.equal(signupClicks,before+1,locale+' translated signup click');
-      const note=launcher.querySelector('[data-eterna-language-note]');
-      assert.equal(note.hidden,locale==='es');
-      if(locale!=='es')assert.equal(note.textContent,api.t('Las sesiones de Eterna se realizan en español.'));
+      assert.equal(launcher.querySelector('[data-eterna-language-note]'),null);
       login.style.display='none';
       authChanges[0]('SIGNED_IN',null);
       assert.equal(cta.textContent,api.t('Abrir Eterna'),locale+' signed-in CTA');
@@ -393,7 +388,7 @@ test('localized game and account labels retain the numeric and navigation state'
     for(const lang of ['ar','zh-Hans','de','es']){
       await api.setLanguage(lang);
       assert.equal(stat.textContent,(12003).toLocaleString(lang));
-      assert.equal(api.spanishGame('crucigrama'),true);
+      assert.equal(api.spanishGame('crucigrama'),false);
       assert.equal(api.spanishGame('conecta'),false);
     }
   } finally {dom.window.close();}

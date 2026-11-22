@@ -12,7 +12,7 @@ test('410 actual lessons, 1230 questions and only forty non-overlapping new topi
 test('all 370 published objects are preserved and the current Worker revision stays pinned',()=>{
  assert.equal(hash(JSON.stringify(ls.slice(0,370))),m.baseline_canonical_sha256);
  for(const[path,want]of Object.entries(m.preserved_sha256))assert.equal(hash(readFileSync(new URL('../../'+path,import.meta.url))),want,path);
- assert.equal(hash(educationalWorker(text('../src/index.js')).replaceAll(",eneagrama_report_version:'2026-11-22-coaching-4'",'').replaceAll(m.release_id,m.baseline_release)),'091fefc9e18946b1f95944640c66933cfaca2c2dc4f71455a60097f6a5608297');
+ assert.equal(hash(educationalWorker(text('../src/index.js')).replaceAll(",eneagrama_report_version:'2026-11-22-coaching-4'",'').replaceAll(m.release_id,m.baseline_release)),'69372fae4b4bac1900b1729e79f53488cffd2abb14d92ae614accc93905b1cbc');
  assert.equal(hash(text('../src/library/runtime-v1.js').replaceAll(m.release_id,m.baseline_release)),'7f12e766fb6a2bcc5791819d622a15f642cabfb7b95fc8a4b1481413ec1ae657');
 });
 for(const id of m.new_ids)test('new unique topic all scoped courses and six modes: '+id,()=>{

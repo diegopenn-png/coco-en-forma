@@ -652,7 +652,7 @@ test("teacher core adapts all Spanish school stages and forbids human impersonat
 });
 
 test("handler ordering makes safety and current-turn meaning authoritative", () => {
-  const start = source.indexOf("async function handleChat(");
+  const start = source.indexOf("async function handleChatCore(");
   const end = source.indexOf("const CHAT_JOB_TTL_SECONDS", start);
   const chat = source.slice(start, end);
   const safetyCategory = chat.indexOf("currentSafetyCategory=");

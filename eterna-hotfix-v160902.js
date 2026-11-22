@@ -111,7 +111,7 @@
     var hotfixFetch=async function(input,init){
       var url=typeof input==='string'?input:(input&&input.url)||'',isChat=/\/v1\/chat(?:\?|$)/.test(url);
       if(!isChat)return baseFetch(input,init);
-      var body=parseChatInit(init);if(!body)return baseFetch(input,init);
+      var body=parseChatInit(init);if(!body||(body.locale&&body.locale!=="es"))return baseFetch(input,init);
       var mode=String(body.mode||'homework');
       var canonicalState=body.client_state_contract>=2;
 
