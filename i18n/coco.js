@@ -311,9 +311,54 @@
       stage.setAttribute('data-coco-localized-banner','coco');
     });
   }
+  // Keep the original image node and src intact: the identity renderer uses
+  // them to recognise cards. Rewriting src would trigger a replacement loop.
+  const thumbnailCopy = {"conecta": ["Conecta colores", "Une los colores"], "numeros": ["Une los números", "Traza tu camino"], "calculo": ["Cálculo veloz", "Haz la cuenta"], "palabras": ["Descifra la palabra", "Ordena las letras"], "sopa": ["Sopa de letras", "Encuentra palabras"], "sudoku": ["Sudoku", "Completa el tablero"], "memoria": ["Memoria", "Descubre las parejas"], "series": ["Series lógicas", "Sigue el patrón"], "crucigrama": ["Crucigrama", "Resuelve las pistas"], "tiempo": ["Reto tiempo", "Activa el reloj"], "verdadero": ["Verdadero o falso", "Elige tu respuesta"], "cocomed": ["Coco Med", "Explora la salud"], "futbol": ["Fútbol", "Marca el gol"], "padel": ["Pádel", "Organiza tu partido"], "ajedrez": ["Ajedrez", "Haz tu jugada"], "bank": ["Coco Bank", "Gestiona tu dinero"], "ciudad": ["Coco Ciudad", "Tira el dado"], "generala": ["Coco Generala", "Tira tus dados"], "naval": ["Coco Batalla Naval", "Encuentra la flota"], "eneagrama": ["Coco Eneagrama", "Explora tus tendencias"], "ideas": ["Tu idea cuenta", "Danos una idea"], "hero-explorer-v160129": ["Juegos para la mente y apoyo escolar", "Con Coco y Eterna."]};
+  function localizeThumbnails(root) {
+    each(root,'img[src*="/share/premium-v"]',original => {
+      if (original.closest('.cocoLocalizedThumbnail')) return;
+      const path = new URL(original.getAttribute('src'),document.baseURI).pathname;
+      const id = path.split('/').pop().replace(/(?:-720)?\.(?:jpg|webp|png)$/,'');
+      const copy = thumbnailCopy[id];
+      if (!copy || path.includes('/art/')) return;
+      let art = original.nextElementSibling;
+      if (!art?.classList.contains('cocoLocalizedThumbnail')) art = null;
+      if (current === 'es') {
+        if (original.hasAttribute('data-coco-original-thumbnail')) {
+          original.style.setProperty('display',original.getAttribute('data-coco-thumbnail-display') || '',original.getAttribute('data-coco-thumbnail-priority') || '');
+          original.removeAttribute('data-coco-original-thumbnail');
+        }
+        art?.remove(); return;
+      }
+      if (!art) {
+        art = document.createElement('span'); art.className = 'cocoLocalizedThumbnail';
+        art.setAttribute('data-coco-thumbnail',id);
+        const img = document.createElement('img');
+        img.src = new URL('../share/premium-v160126/art/'+(id === 'ideas' || id.startsWith('hero-') ? 'conecta' : id)+'.webp',base);
+        img.alt = ''; img.width = 1200; img.height = 630;
+        img.loading = original.loading || 'lazy'; img.decoding = 'async';
+        const caption = document.createElement('span');caption.className='cocoLocalizedThumbnailCopy';
+        caption.append(bannerText('b',copy[0]),bannerText('small',copy[1]));
+        art.append(img,caption); original.after(art);
+      }
+      if (!original.hasAttribute('data-coco-original-thumbnail')) {
+        original.setAttribute('data-coco-thumbnail-display',original.style.getPropertyValue('display'));
+        original.setAttribute('data-coco-thumbnail-priority',original.style.getPropertyPriority('display'));
+      }
+      original.style.setProperty('display','none','important');
+      original.setAttribute('data-coco-original-thumbnail','');
+      // Also translate synchronously when processing only an inserted img;
+      // its newly created sibling is outside that refresh subtree.
+      art.querySelectorAll('[data-coco-source-text]').forEach(el=>{
+        const translated=message(el.getAttribute('data-coco-source-text'));
+        if(el.textContent!==translated)el.textContent=translated;
+      });
+    });
+  }
   function refresh(root = document) {
     if (!document.body) return;
     localizeHomeArtwork(root);
+    localizeThumbnails(root);
     const page = document.body.dataset.cocoLanguagePage;
     const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,'.cocoV16086Pending,.rankingNota'].join(',');
     each(root,query,el => {

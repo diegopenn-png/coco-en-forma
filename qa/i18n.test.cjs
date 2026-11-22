@@ -946,3 +946,39 @@ test('child privacy guide keeps its complete text, contact and policy links acro
     }
   } finally { dom.window.close(); }
 });
+
+test('menu thumbnails translate every title and caption across all 15 languages, clones and late rendering',async()=>{
+ const {api,w,doc,dom}=page(undefined,undefined,undefined,'<main id="cocoApp"></main>');
+ try{
+  await api.ready;
+  const ids=['conecta','numeros','calculo','palabras','sopa','sudoku','memoria','series','crucigrama','tiempo','verdadero','cocomed','futbol','padel','ajedrez','bank','ciudad','generala','naval','eneagrama','ideas','hero-explorer-v160129'];
+  const app=doc.querySelector('#cocoApp');
+  for(const id of ids){const card=doc.createElement('div');card.className='cocoMiniJuego';card.dataset.cocoJuego=id;card.innerHTML=`<span class="cocoMiniIcono"><img class="cocoOfficialThumb" src="/share/premium-v160126/${id}.jpg" srcset="/share/premium-v160126/${id}-720.webp 720w"></span>`;app.append(card)}
+  for(const locale of [...locales,'fi','en','es']){
+   await api.setLanguage(locale);await new Promise(r=>w.setTimeout(r,20));
+   const originals=app.querySelectorAll('img.cocoOfficialThumb');
+   assert.equal(originals.length,22);
+   assert.equal(app.querySelectorAll('.cocoLocalizedThumbnail').length,locale==='es'?0:22);
+   for(const img of originals){
+    assert.match(img.getAttribute('src'),/\.jpg$/);assert.ok(img.hasAttribute('srcset'));
+    if(locale==='es'){assert.notEqual(img.style.display,'none');continue}
+    assert.equal(img.style.display,'none');assert.equal(img.style.getPropertyPriority('display'),'important');
+    const art=img.nextElementSibling;assert.match(art.querySelector('img').src,/\/art\/[^/]+\.webp$/);
+    for(const el of art.querySelectorAll('[data-coco-copy]')){
+     const source=el.getAttribute('data-coco-source-text');
+     assert.ok(Object.hasOwn(readPack(locale).strings,source),`${locale}: missing ${source}`);
+     assert.equal(el.textContent,api.t(source),`${locale}: ${source}`);
+    }
+   }
+  }
+  await api.setLanguage('fi');
+  const clone=app.firstElementChild.cloneNode(true);app.append(clone);
+  await new Promise(r=>w.setTimeout(r,25));
+  assert.equal(clone.querySelectorAll('.cocoLocalizedThumbnail').length,1);
+  await api.setLanguage('de');
+  assert.equal(clone.querySelector('[data-coco-copy]').textContent,api.t('Conecta colores'));
+  clone.querySelector('.cocoMiniIcono').innerHTML='<img class="cocoOfficialThumb" src="/share/premium-v160126/memoria.jpg">';
+  await new Promise(r=>w.setTimeout(r,25));
+  assert.equal(clone.querySelector('.cocoLocalizedThumbnail b').textContent,api.t('Memoria'));
+ }finally{dom.window.close()}
+});
