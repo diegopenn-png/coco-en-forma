@@ -32,3 +32,24 @@ test('the installed app caches the downloadable report module and only existing 
   const studyAssets=new Set([...core,...worker.matchAll(/"(\.\/i18n\/[^"]+\.js)"/g)].map(entry=>Array.isArray(entry)?entry[1]:entry));
   for(const asset of studyAssets)assert.ok(fs.existsSync(path.join(root,asset)),asset);
 });
+
+test('the 24 published Coco Med questions keep their original choices and explanations across languages',async()=>{
+  const rows=json('assets/data/coco-med-cda16aea8bb4.json');
+  const source=json('i18n/med/source.json');
+  const env={window:{},document:{currentScript:{src:'https://coco.test/i18n/med.js'}},URL,fetch:async url=>({ok:true,json:async()=>json(new URL(url).pathname.slice(1))})};
+  vm.runInNewContext(read('i18n/med.js'),env);
+  const api=env.window.CocoMedLanguage;
+  const selected=rows.filter(q=>api.hasQuestion(q.id));
+  assert.equal(selected.length,24);assert.equal(source.questionIds.length,24);
+  for(const tag of locales){
+    await api.load(tag);
+    for(const q of selected){
+      const answers=q.options.map(v=>api.text(v,tag));
+      assert.equal(new Set(answers).size,3,tag+' '+q.id);
+      assert.notEqual(api.text(q.stem,tag),q.stem);
+      const explanation=api.text(q.explanation,tag);
+      assert.ok(explanation.includes(answers[q.answer]),tag+' original correct concept in explanation for '+q.id);
+      assert.ok(explanation.includes(' — '));
+    }
+  }
+});

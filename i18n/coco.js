@@ -180,6 +180,11 @@
   }
   function localize(value, report = false, game = false, element) {
     const key = value.trim().replace(/\s+/g, ' ');
+    if (element?.closest('#cocoMedOverlay,#cocoMedRankingModal')) {
+      const field=key==='Media' && element.matches('.cocoMedTag')?'Dificultad media':key;
+      const localized = window.CocoMedLanguage?.text(field,current);
+      if (localized && localized !== key) return value.replace(key,()=>localized);
+    }
     if (element?.matches('select[data-stage] > option') && element.value) {
       return message('Etapa escolar: '+key);
     }
@@ -246,7 +251,7 @@
     return Array.from(node.childNodes).map(sourceText).join('');
   }
   const authored = '#rConsentText,#rConsentText a,.cocoLegalResumenRegistro,head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
-  const spanishGames = new Set(['cocomed']);
+  const spanishGames = new Set();
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
@@ -456,7 +461,8 @@
     localizeThumbnails(root);
     refreshTutor(root);
     const page = document.body.dataset.cocoLanguagePage;
-    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,'.cocoV16086Pending,.rankingNota'].join(',');
+    const medicalFields = '#cocoMedOverlay :is(h1,h2,h3,h4,p,div,b,button,span,small,summary,label,[aria-label]),#cocoMedRankingModal :is(h3,p,span,button)';
+    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,medicalFields,'.cocoV16086Pending,.rankingNota'].join(',');
     each(root,query,el => {
       if (el.tagName === 'CANVAS' && el.hasAttribute('aria-label')) render(el,'aria-label',()=>el.getAttribute('aria-label'),v=>el.setAttribute('aria-label',v));
       if (el.closest('#eternaOverlayV159') || el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
@@ -515,7 +521,8 @@
                         : message('Curso actual: pendiente de configurar en Eterna');
       if (el.textContent !== text) el.textContent = text;
     });
-    each(root,'.cocoMedOverlay',el=>{el.lang='es';el.dir='ltr';});
+    each(root,'.cocoMedOverlay',el=>{el.lang=current;el.dir=current==='ar'?'rtl':'ltr';});
+    each(root,'select[data-med-locale]',el=>{el.value=current;});
     each(root,'[data-coco-juego],[data-game-card]',card => markGame(card,gameId(card)));
     each(root,'[data-coco-original-document]',el => {el.hidden = current === 'es';});
     each(root,'.loginDecorTitle',el => {
@@ -574,7 +581,9 @@
       packs.set(tag, readPack(tag).catch(error => { packs.delete(tag); throw error; }));
     }
     let pack;
-    try { pack = await packs.get(tag); }
+    try {
+      [pack] = await Promise.all([packs.get(tag),document.querySelector('#cocoMedOverlay.abierto') && window.CocoMedLanguage?.load(tag)]);
+    }
     catch {
       if (attempt === generation) {
         select.value = current;

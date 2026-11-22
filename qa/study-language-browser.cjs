@@ -108,4 +108,37 @@ async function assessment(browser,age,saveDir){
     await page.locator('#return-report').click();await page.locator('.report').waitFor();assert.equal(sent.length,1);
   }finally{await page.close()}
 }
-(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROME_BIN?{executablePath:process.env.CHROME_BIN}:{}),channel:process.env.COCO_QA_BROWSER_CHANNEL||(!process.env.CHROME_BIN?'chrome':undefined),args:['--no-sandbox']});try{for(const a of [9,32]){await assessment(browser,a,process.env.STUDY_PDF_DIR);console.log('Assessment, review and PDF for age',a)}}finally{await browser.close()}})().catch(err=>{console.error(err);process.exitCode=1});
+async function med(browser){
+  const {page}=await setup(browser);try{
+    await page.goto(origin+'/?lang=fr',{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>window.CocoMedV148&&window.CocoLocale?.tag==='fr');
+    await page.evaluate(()=>window.CocoMedV148.open());
+    await page.locator('[data-etapa-index]').first().waitFor();
+    const picker=page.locator('select[data-med-locale]');
+    assert.equal(await page.locator('[data-etapa-index]').count(),5);
+    assert.match(await page.locator('#medBancoCompleto').textContent(),/espagnol/);
+    await page.locator('#medBancoCompleto').click();
+    await page.waitForFunction(()=>CocoLocale.tag==='es' && document.querySelectorAll('[data-etapa-index]').length===9);
+    await picker.selectOption('fr');
+    await page.waitForFunction(()=>CocoLocale.tag==='fr' && document.querySelectorAll('[data-etapa-index]').length===5);
+    await page.locator('[data-etapa-index]').first().click();await page.locator('#medGeneral').click();
+    await page.locator('.cocoMedPregunta').waitFor();
+    const spanish=await page.locator('.cocoMedOriginal [lang=es] p').first().textContent();
+    const originalOptions=await page.locator('.cocoMedOriginal li').allTextContents();
+    for(const tag of locales){
+      await picker.selectOption(tag);
+      await page.waitForFunction(t=>window.CocoLocale.tag===t,tag);
+      const options=await page.locator('[data-op] span').allTextContents();
+      assert.equal(options.length,3);assert.equal(new Set(options).size,3);
+      if(tag==='es'){assert.deepEqual(options,originalOptions);assert.equal(await page.locator('.cocoMedPregunta').textContent(),spanish)}
+      else assert.notEqual(await page.locator('.cocoMedPregunta').textContent(),spanish,tag);
+    }
+    await picker.selectOption('ar');await page.waitForFunction(()=>CocoLocale.tag==='ar');
+    await page.locator('[data-op="0"]').click();
+    await page.locator('#medFeedback.visible').waitFor();assert.equal(await page.locator('[data-op].correcta').count(),1);
+    const right=await page.locator('[data-op].correcta').getAttribute('data-op');
+    await picker.selectOption('de');await page.waitForFunction(()=>CocoLocale.tag==='de');
+    assert.equal(await page.locator('[data-op].correcta').getAttribute('data-op'),right);
+  }finally{await page.close()}
+}
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROME_BIN?{executablePath:process.env.CHROME_BIN}:{}),channel:process.env.COCO_QA_BROWSER_CHANNEL||(!process.env.CHROME_BIN?'chrome':undefined),args:['--no-sandbox']});try{await med(browser);console.log('Medical round, score and original in 15 languages.');for(const a of [9,32]){await assessment(browser,a,process.env.STUDY_PDF_DIR);console.log('Assessment, review and PDF for age',a)}}finally{await browser.close()}})().catch(err=>{console.error(err);process.exitCode=1});
