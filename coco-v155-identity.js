@@ -86,10 +86,14 @@
   function applyShare(modal){var title=modal.querySelector("#cocoShareTitle"),id=title&&TITLE_TO_ID[String((window.CocoLocale?.sourceText(title) ?? title.textContent)||"").trim()]||"";if(!DATA[id])return;var box=modal.querySelector(".cocoSharePreview");if(box){box.classList.add("cocoOfficialThumbBox");box.innerHTML=imgHtml(id,DATA[id].name)}var p=modal.querySelector(".cocoShareSheet>p");if(p)p.textContent=DATA[id].description;upgradeShareLinks(modal,id)}
 
   function upgradeShareLinks(modal,id){
-    if(modal.dataset.colorfulShare===id)return;
+    const locale=root.CocoLocale;
+    const tag=locale?.tag||"es";
+    if(modal.dataset.colorfulShare===id && modal.dataset.shareLanguage===tag)return;
     modal.dataset.colorfulShare=id;
-    var d=DATA[id],url=d.url||"https://cocoenforma.com/juego/"+encodeURIComponent(id)+"/";
-    url=window.CocoLocale?.shareUrl(url) ?? url;
+    modal.dataset.shareLanguage=tag;
+    const d=DATA[id],url=gameLink(id);
+    const title=(locale?.t(d.name)??d.name)+" · Coco en Forma";
+    const description=locale?.t(d.description)??d.description;
     var label=modal.querySelector(".cocoShareUrl"),status=modal.querySelector(".cocoShareStatus");
     if(label)label.textContent=url;
     var copy=modal.querySelector("[data-share-copy]");
@@ -100,13 +104,48 @@
       if(status)status.textContent=ok?"Enlace copiado. Pegalo en tu publicación o mensaje.":"Copiá el enlace que aparece arriba.";
     };
     var whatsapp=modal.querySelector("[data-share-whatsapp]");
-    if(whatsapp)whatsapp.onclick=function(){window.open("https://wa.me/?text="+encodeURIComponent(d.name+" · Coco en Forma\n"+url),"_blank","noopener,noreferrer")};
+    if(whatsapp)whatsapp.onclick=function(){window.open("https://wa.me/?text="+encodeURIComponent(title+"\n"+url),"_blank","noopener,noreferrer")};
     var native=modal.querySelector("[data-share-native]");
-    if(native&&navigator.share)native.onclick=async function(){try{await navigator.share({title:d.name+" · Coco en Forma",text:d.description,url:url})}catch(e){if(e.name!=="AbortError"&&status)status.textContent="Podés usar Copiar enlace."}};
-    var sheet=modal.querySelector(".cocoShareSheet"),download=document.createElement("a");
-    download.href=d.image;download.download="coco-"+id+".jpg";download.textContent="↓ Descargar miniatura";download.className="cocoDownloadCard";sheet.appendChild(download);
-    var note=document.createElement("p");note.className="cocoShareImageNote";note.textContent="Pegá el enlace para que se pueda abrir el juego. La vista previa depende de la red social. Si publicás solo la imagen, añadí también el enlace.";sheet.appendChild(note);
+    if(native&&navigator.share)native.onclick=async function(){try{await navigator.share({title:title,text:description,url:url})}catch(e){if(e.name!=="AbortError"&&status)status.textContent="Podés usar Copiar enlace."}};
+    var sheet=modal.querySelector(".cocoShareSheet");
+    var download=sheet.querySelector(".cocoDownloadCard");
+    if(!download){
+      download=document.createElement("a");download.className="cocoDownloadCard";
+      download.textContent="↓ Descargar miniatura";sheet.appendChild(download);
+      var note=document.createElement("p");note.className="cocoShareImageNote";
+      note.textContent="Pegá el enlace para que se pueda abrir el juego. La vista previa depende de la red social. Si publicás solo la imagen, añadí también el enlace.";sheet.appendChild(note);
+    }
+    download.onclick=null;
+    download.removeAttribute("aria-disabled");
+    download.removeAttribute("tabindex");
+    if(tag==="es"){
+      download.href=d.image;download.download="coco-"+id+".jpg";
+    }else{
+      // Disable the previous file until the lettering for this language is ready.
+      download.removeAttribute("href");download.removeAttribute("download");
+      download.setAttribute("aria-disabled","true");
+      locale.thumbnailJpeg(id,tag).then(function(url){
+        if(!modal.isConnected||modal.dataset.shareLanguage!==tag)return;
+        download.removeAttribute("aria-disabled");
+        download.href=url;download.download="coco-"+id+"-"+tag+".jpg";
+      }).catch(function(){
+        if(modal.isConnected && modal.dataset.shareLanguage===tag){
+          // Offer a retry without attaching an image from a different language.
+          download.removeAttribute("aria-disabled");
+          download.href="#";download.removeAttribute("download");
+          if(status)status.textContent=locale.t("Reintentar");
+          download.onclick=function(event){
+            event.preventDefault();if(status)status.textContent="";
+            modal.dataset.shareLanguage="";upgradeShareLinks(modal,id);
+          };
+        }
+      });
+    }
   }
+  root.addEventListener("coco:language",function(){
+    const modal=document.querySelector(".cocoShareModal[data-colorful-share]");
+    if(modal && DATA[modal.dataset.colorfulShare])upgradeShareLinks(modal,modal.dataset.colorfulShare);
+  });
 
   // Bank and Eneagrama use the catalogue's existing share controls, independently
   // of their entry/navigation handlers and without registering them as scored games.
@@ -129,10 +168,10 @@
   function eternaShareUrlFinal47(){
     var u=new URL(location.origin+"/eterna.html");
     u.searchParams.set("share","16047");
-    return u.toString()
+    return root.CocoLocale?.shareUrl(u) ?? u.toString()
   }
   async function shareEternaFinal47(button){
-    var url=eternaShareUrlFinal47(),title="Eterna · Tu ayuda escolar personalizada",text="Prueba Eterna gratis durante 7 días. Empieza sin tarjeta ni datos bancarios; al terminar, tú decides si quieres continuar.";
+    var url=eternaShareUrlFinal47(),t=root.CocoLocale?.t||String,title=t("Eterna · Tu ayuda escolar personalizada"),text=t("Prueba Eterna gratis durante 7 días. Empieza sin tarjeta ni datos bancarios; al terminar, tú decides si quieres continuar.");
     try{
       if(navigator.share){await navigator.share({title:title,text:text,url:url});return}
       if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -142,8 +181,8 @@
         setTimeout(function(){if(button&&old)button.textContent=old},1200);
         return
       }
-      window.prompt("Copia este enlace de Eterna:",url)
-    }catch(e){if(!e||e.name!=="AbortError")window.prompt("Copia este enlace de Eterna:",url)}
+      window.prompt(t("Copia este enlace de Eterna:"),url)
+    }catch(e){if(!e||e.name!=="AbortError")window.prompt(t("Copia este enlace de Eterna:"),url)}
   }
   function installEternaShareFinal47(){
     var app=document.getElementById("cocoApp");

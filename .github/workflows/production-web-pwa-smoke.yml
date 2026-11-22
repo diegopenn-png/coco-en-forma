@@ -81,7 +81,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.2-eneagrama-analysis
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.100-game-displays
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.101-round-languages
       EXPECTED_ENEAGRAMA_REPORT_VERSION: 2026-11-22-coaching-4
     steps:
       - name: Fetch uncached production assets

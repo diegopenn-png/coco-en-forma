@@ -41,6 +41,7 @@ function runtime() {
       level: 3,
       startedAt: 0
     },
+    displayTimeQuestion(question) { return question; },
     performance: { now() { return 500; } },
     cancelAnimationFrame() {},
     clamp(value, min, max) { return Math.max(min, Math.min(max, value)); },

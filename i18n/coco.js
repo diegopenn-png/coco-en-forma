@@ -36,6 +36,8 @@
   }
   const properNames = new Set(['Coco en Forma','Eterna','Stripe','GitHub','Supabase','OpenAI','Cloudflare','iPhone','iPad','Android','3. Coco en Forma','4. Eterna','© 2026 Coco en Forma · Diego Hernán Pennise ·']);
   function message(source, args) {
+    const menuIndex=playerTitles.es.indexOf(source);
+    if(menuIndex!==-1)return playerTitles[current][menuIndex];
     if (properNames.has(source)) return source;
     if (document.body?.hasAttribute('data-coco-shop-terms') && Object.hasOwn(activePack.strings,'3D · '+source)) return activePack.strings['3D · '+source];
     const chess = document.body?.hasAttribute('data-coco-chess') && activePack.chess;
@@ -161,6 +163,8 @@
     if (variant) return '· '+message('Combinación')+' '+number(variant[1])+'/'+number(variant[2])+' · '+new Intl.NumberFormat(current,{style:'unit',unit:'second',unitDisplay:'long'}).format(Number(variant[3]))+'.';
     const calculation=key.match(/^Comprueba esta operación: ([\d\s+×÷−=.,-]+)\.$/u);
     if (calculation) return message('Comprueba esta operación: {formula}.',{formula:calculation[1]});
+    const result=key.match(/^El resultado correcto es (-?\d+)\.$/u);
+    if(result)return message('El resultado correcto es {n}.',{n:number(result[1])});
     const monthNames='enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre'.split(' ');
     const month=name=>new Intl.DateTimeFormat(current,{month:'long',timeZone:'UTC'}).format(Date.UTC(2024,monthNames.indexOf(name),15));
     if (element?.closest('[data-coco-playing="tiempo"]')) {
@@ -386,7 +390,7 @@
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
-    url.searchParams.set('v',folder==='packs'?'20261123-games-1':folder==='assessment'?'20261122-2':'20261123-games-1');
+    url.searchParams.set('v',folder==='packs'?'20261123-rounds-2':folder==='assessment'?'20261122-2':'20261123-rounds-2');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -502,6 +506,32 @@
   // Keep the original image node and src intact: the identity renderer uses
   // them to recognise cards. Rewriting src would trigger a replacement loop.
   const thumbnailCopy = {"conecta": ["Conecta colores", "Une los colores"], "numeros": ["Une los números", "Traza tu camino"], "calculo": ["Cálculo veloz", "Haz la cuenta"], "palabras": ["Descifra la palabra", "Ordena las letras"], "sopa": ["Sopa de letras", "Encuentra palabras"], "sudoku": ["Sudoku", "Completa el tablero"], "memoria": ["Memoria", "Descubre las parejas"], "series": ["Series lógicas", "Sigue el patrón"], "crucigrama": ["Crucigrama", "Resuelve las pistas"], "tiempo": ["Reto tiempo", "Activa el reloj"], "verdadero": ["Verdadero o falso", "Elige tu respuesta"], "cocomed": ["Coco Med", "Explora la salud"], "futbol": ["Fútbol", "Marca el gol"], "padel": ["Pádel", "Organiza tu partido"], "ajedrez": ["Ajedrez", "Haz tu jugada"], "bank": ["Coco Bank", "Gestiona tu dinero"], "ciudad": ["Coco Ciudad", "Tira el dado"], "generala": ["Coco Generala", "Tira tus dados"], "naval": ["Coco Batalla Naval", "Encuentra la flota"], "eneagrama": ["Coco Eneagrama", "Explora tus tendencias"], "ideas": ["Tu idea cuenta", "Danos una idea"], "hero-explorer-v160129": ["Juegos para la mente y apoyo escolar", "Con Coco y Eterna."]};
+  async function thumbnailJpeg(id,tag) {
+    const copy=thumbnailCopy[id];
+    if(tag!==current || !copy)throw Error('thumbnail unavailable');
+    const [title,caption]=copy.map(source=>message(source));
+    const art=new Image();
+    art.src=new URL('../share/premium-v160126/art/'+id+'.webp',base);
+    await art.decode();
+    const canvas=document.createElement('canvas');
+    canvas.width=1200;canvas.height=630;
+    const ctx=canvas.getContext('2d');
+    ctx.drawImage(art,0,0,1200,630);
+    const shade=ctx.createLinearGradient(0,300,0,630);
+    shade.addColorStop(0,'rgba(5,19,40,0)');shade.addColorStop(1,'rgba(5,19,40,.98)');
+    ctx.fillStyle=shade;ctx.fillRect(0,300,1200,330);
+    ctx.direction=tag==='ar'?'rtl':'ltr';ctx.textAlign='center';ctx.textBaseline='middle';
+    function line(text,y,size,color,weight) {
+      ctx.font=weight+' '+size+'px system-ui,sans-serif';
+      const width=ctx.measureText(text).width;
+      if(width>1088)ctx.font=weight+' '+Math.floor(size*1088/width)+'px system-ui,sans-serif';
+      ctx.fillStyle=color;ctx.fillText(text,600,y);
+    }
+    line(title,494,72,'#ffffff','bold');line(caption,573,41,'#ffdb88','600');
+    const jpeg=canvas.toDataURL('image/jpeg',.9);
+    if(!jpeg.startsWith('data:image/jpeg;base64,'))throw Error('JPEG export failed');
+    return jpeg;
+  }
   function localizeThumbnails(root) {
     each(root,'img[src*="/share/premium-v"]',original => {
       if (original.closest('.cocoLocalizedThumbnail')) return;
@@ -764,7 +794,7 @@
     if (event.key === storageKey && next && next !== current) void setLanguage(next,false);
   });
   window.CocoLocale = {get tag(){return current;},
-    t:message, schoolYear, pinDigits, shareUrl, accountReturn, spanishGame:id=>spanishGames.has(id), sourceText, reportDocument, refresh, setLanguage, languages:Object.freeze(languages)};
+    t:message, schoolYear, pinDigits, thumbnailJpeg, shareUrl, accountReturn, spanishGame:id=>spanishGames.has(id), sourceText, reportDocument, refresh, setLanguage, languages:Object.freeze(languages)};
   if (requested !== 'es') window.CocoFirstPaint?.hold('language');
   window.CocoLocale.ready = setLanguage(requested,!originalDocument && Boolean(explicitLanguage || (!rememberedLanguage && installLanguage))).finally(() => {
     if (requested !== 'es') window.CocoFirstPaint?.settled('language');

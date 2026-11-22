@@ -1,12 +1,12 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('coco-v155-identity.js','utf8');
-const fn=source.slice(source.indexOf('  function upgradeShareLinks('),source.indexOf('  function eternaShareUrlFinal47('));
+const fn=source.match(/  function gameLink\(id\)[^\n]+/)[0]+'\n'+source.slice(source.indexOf('  function upgradeShareLinks('),source.indexOf('  root.addEventListener("coco:language"'));
 (async()=>{
 for(const item of JSON.parse(fs.readFileSync('share/colorful-v160125/catalog.json','utf8'))){
  let copied,shared;const nodes={},children=[];
- const modal={dataset:{},querySelector:s=>nodes[s]??=(s==='.cocoShareSheet'?{appendChild:x=>children.push(x)}:{})};
+ const modal={dataset:{},querySelector:s=>nodes[s]??=(s==='.cocoShareSheet'?{querySelector:()=>children.find(x=>x.className==='cocoDownloadCard'),appendChild:x=>children.push(x)}:{})};
  const data={name:item.title,description:item.description,image:'./share/colorful-v160125/'+item.id+'.jpg'};
- const ctx={root:{},DATA:{[item.id]:data},document:{createElement:()=>({})},navigator:{clipboard:{writeText:async v=>{copied=v}},share:async v=>{shared=v}},window:{open(){throw Error('Unexpected external send')}}};
+ const ctx={root:{},DATA:{[item.id]:data},document:{createElement:()=>({removeAttribute(){}})},navigator:{clipboard:{writeText:async v=>{copied=v}},share:async v=>{shared=v}},window:{open(){throw Error('Unexpected external send')}}};
  vm.createContext(ctx);vm.runInContext(fn,ctx);ctx.upgradeShareLinks(modal,item.id);ctx.upgradeShareLinks(modal,item.id);
  await nodes['[data-share-copy]'].onclick();assert.equal(copied,'https://cocoenforma.com/juego/'+item.id+'/');
  await nodes['[data-share-native]'].onclick();assert.equal(shared.url,copied);
