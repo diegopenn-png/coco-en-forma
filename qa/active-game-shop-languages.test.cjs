@@ -169,7 +169,7 @@ function liveBank() {
     return JSON.parse(JSON.stringify(w.eval(home.slice(start,end))));
   } finally {dom.window.close();}
 }
-test('the runtime true-or-false bank and explanations are available in every language',()=>{
+test('the runtime true-or-false bank and explanations are available in every language',async()=>{
   const entries=liveBank();
   assert.equal(entries.length,180);
   assert.equal(new Set(entries.map(([statement])=>statement)).size,179);
@@ -184,4 +184,19 @@ test('the runtime true-or-false bank and explanations are available in every lan
       answers.set(translated,answer);
     }
   }
+  const {dom,w}=await openTimeHarness();
+  try{
+    const section=w.document.createElement('section');
+    section.dataset.cocoPlaying='verdadero';
+    section.innerHTML='<h3>Comprueba esta operación: 17 + 6 = 24.</h3><p>El resultado correcto es 23.</p>';
+    w.document.body.append(section);
+    for(const tag of [...languages,'es']){
+      await w.CocoLocale.setLanguage(tag);
+      const formula=section.querySelector('h3').textContent,explanation=section.querySelector('p').textContent;
+      assert.ok(formula.includes('17 + 6 = 24'),tag+' generated arithmetic');
+      assert.ok(explanation.includes(new Intl.NumberFormat(tag).format(23)),tag+' correct value');
+      assert.equal(formula.includes('Comprueba esta operación'),tag==='es');
+      assert.equal(explanation.includes('El resultado correcto'),tag==='es');
+    }
+  }finally{dom.window.close();}
 });
