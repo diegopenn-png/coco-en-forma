@@ -98,7 +98,11 @@ async function run(browser, origin, standalone) {
     const publicPicker=page.locator('body > [data-coco-language-menu] select');
     await publicPicker.waitFor();
     assert.equal(await publicPicker.inputValue(),'en');
-    assert.deepEqual(await catalog('.cocoMiniJuegos'),spanish,'public and signed-in catalogue order');
+    for(const tag of await publicPicker.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
+      await publicPicker.selectOption(tag);
+      await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
+      assert.deepEqual(await catalog('.cocoMiniJuegos'),spanish,tag+' public and signed-in catalogue order');
+    }
     assert.equal(await page.locator('.coco-language-bar select:visible').count(),1);
     console.log((standalone?'Standalone':'Web')+' account header, portrait/landscape, stored language and logout passed.');
   } finally {await page.close();}

@@ -4937,8 +4937,8 @@ var JUEGOS=[
  {id:"crucigrama",nombre:"Crucigrama",grupo:"general",estado:"obra",color:"cocoAzul",descripcion:"Completa las palabras usando las pistas."},
  {id:"tiempo",nombre:"Reto tiempo",grupo:"general",estado:"obra",color:"cocoNaranja",descripcion:"Responde antes de que se acabe el tiempo."},
  {id:"verdadero",nombre:"Verdadero o falso",grupo:"general",estado:"obra",color:"cocoVerde",descripcion:"Decide si cada afirmación es correcta."},
- {id:"cocomed",nombre:"Coco Med",grupo:"propio",estado:"listo",color:"cocoNaranja",descripcion:"Poné a prueba tus conocimientos sobre salud y aprendé con una explicación después de cada respuesta."},
  {id:"futbol",nombre:"Fútbol",grupo:"general",estado:"obra",color:"cocoVerde",descripcion:"Memoriza las zonas que se iluminan y chuta al espacio que quedó libre."},
+ {id:"cocomed",nombre:"Coco Med",grupo:"propio",estado:"listo",color:"cocoNaranja",descripcion:"Poné a prueba tus conocimientos sobre salud y aprendé con una explicación después de cada respuesta."},
  {id:"baloncesto",nombre:"Baloncesto",grupo:"propio",estado:"obra",color:"cocoNaranja",descripcion:"Pon a prueba tu pasión y conocimiento sobre baloncesto."},
  {id:"padel",nombre:"Pádel",grupo:"propio",estado:"listo",color:"cocoAzul",descripcion:"Organiza mixings y campeonatos, registra resultados y sigue la clasificación de tus jugadores."},
 ];
@@ -6956,7 +6956,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
     var game=GAMES[id];if(!game)return;
     ensureOverlay();clearActive();
     const onlySpanish=window.CocoLocale?.spanishGame(id) || false;
-    overlay.toggleAttribute("data-coco-verbatim",onlySpanish);
+    overlay.toggleAttribute("data-coco-verbatim",onlySpanish);overlay.dataset.cocoPlaying=id;
     if(onlySpanish){overlay.lang="es";overlay.dir="ltr"}else{overlay.removeAttribute("lang");overlay.removeAttribute("dir")}
     originButton=button||document.activeElement;savedScroll=window.scrollY||0;
     active={id:id,game:game,phase:"loading",timers:[],frame:0,controller:new AbortController(),score:0,correct:0,total:0,maxStreak:0,streak:0,ranked:true};
@@ -7979,7 +7979,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 <script id="eterna-state-contract-v3" src="./eterna-state-contract-v3.js?v=160920"></script>
 <script id="coco-excellence-v160934" src="./coco-excellence-v160934.js?v=160960"></script>
 <script id="coco-v159-eterna" src="./eterna-v159.js?v=160115&amp;locale=1"></script>
-<script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960&amp;locale=1"></script>
+<script id="eterna-hotfix-v160902-direct" src="./eterna-hotfix-v160902.js?v=160960"></script>
 <script id="eterna-desktop-compact-v160907-direct" src="./eterna-desktop-compact-v160907.js?v=16010018"></script>
 <script id="eterna-marketing-attribution-v1" src="./eterna-marketing-attribution-v1.js?v=20260828"></script>
 
