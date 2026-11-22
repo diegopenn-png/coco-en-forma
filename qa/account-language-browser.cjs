@@ -12,7 +12,7 @@ async function run(browser, origin, standalone) {
     await page.addInitScript(standalone=>{
       Object.defineProperty(navigator,'standalone',{value:standalone,configurable:true});
       const user={id:'00000000-0000-4000-8000-000000000001',email:'coco-qa@example.invalid'};
-      const games=Array.from({length:279},()=>({juego:'memoria',puntos:24,creado:'2026-01-01',puntuacion_version:'balanced-v1'}));
+      const games=Array.from({length:279},(_,i)=>({juego:'memoria',puntos:i===0?58:51,creado:'2026-01-01',puntuacion_version:'balanced-v1'}));
       let session={user};
       const rows={ajustes:{id:1,partidas_por_dia:1},perfiles:{...user,apodo:'Memoria',rol:'jugador',edad:30}};
       function query(table) {
@@ -24,7 +24,12 @@ async function run(browser, origin, standalone) {
         }});
         return chain;
       }
-      const client={from:query,rpc:async name=>({data:name==='racha_de'?0:[],error:null}),
+      async function rpc(name) {
+        if(name==='racha_de')return {data:0,error:null};
+        if(name==='clasificacion_general_coco')return {data:[{jugador:user.id,es_mio:true,apodo:'Memoria',puntos:games.reduce((total,g)=>total+g.puntos,0)}],error:null};
+        return {data:[],error:null};
+      }
+      const client={from:query,rpc,
         auth:{getSession:async()=>({data:{session}}),getUser:async()=>({data:{user:session?.user}}),
           onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>{session=null;return {error:null};}},
         channel:()=>({on(){return this;},subscribe(){return this;},unsubscribe(){}}),removeChannel(){}};
@@ -98,7 +103,7 @@ async function run(browser, origin, standalone) {
     console.log('Spanish catalogue ('+spanish.length+'): '+spanish.join(', '));
     const profile=page.locator('.carnet');
     const launcher=page.locator('#eternaLauncherV159');
-    const score=await profile.locator('.tanteo b').textContent();
+    const score=14236;
     assert.equal(await profile.locator('.quien .pequeno').textContent(),'279 partidas jugadas');
     const fields=[
       [profile.locator('.cocoFamiliaBtn span'),'Zona familiar'],
@@ -115,7 +120,7 @@ async function run(browser, origin, standalone) {
       assert.equal(await menu.locator(':scope > .pestanaJugador:visible').count(),4);
       assert.equal(new URL(await controls.last().getAttribute('href'),origin).searchParams.get('lang'),tag);
       assert.equal(await profile.locator('.quien strong').textContent(),'Memoria',tag+' nickname');
-      assert.equal(await profile.locator('.tanteo b').textContent(),score,tag+' score');
+      assert.equal(await profile.locator('.tanteo b').textContent(),score.toLocaleString(tag),tag+' score');
       const expected=source=>page.evaluate(s=>CocoLocale.t(s),source);
       const number=new Intl.NumberFormat(tag).format(279);
       const games=tag==='es'?'279 partidas jugadas':(await expected('Partidas jugadas: {n}')).replace('{n}',number);

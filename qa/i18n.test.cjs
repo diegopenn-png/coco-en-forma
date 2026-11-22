@@ -834,6 +834,34 @@ test('the game leaderboard keeps player names and updates the score and best gam
   }finally{dom.window.close();}
 });
 
+test('family PIN setup localizes its instructions and confirmation placeholder in every language',async()=>{
+  const read=async url=>({ok:true,json:()=>JSON.parse(fs.readFileSync(path.join(root,url.pathname),'utf8'))});
+  const {w,doc,api,dom}=page('https://coco.test/',read);
+  try {
+    await api.ready;
+    doc.documentElement.setAttribute('data-coco-extra-languages','');
+    const file=fs.readFileSync(path.join(root,'eterna-experience-v160.js'),'utf8');
+    const modal=file.slice(file.indexOf('  function closeModal(){'),file.indexOf('  function msg(m,'));
+    const setup=file.slice(file.indexOf('  function showCreatePin(s){'),file.indexOf('  function showExistingPin('));
+    w.Function('inject','esc','let currentModal;'+modal+setup+';showCreatePin({});')(()=>{},s=>s);
+    const dialog=doc.querySelector('.eternaLaunchV16068');
+    const hint=dialog.querySelector('.eternaLaunchV16068Info').lastChild;
+    const confirm=dialog.querySelector('[data-pin2]');
+    const sourceHint=hint.data,sourcePlaceholder=confirm.placeholder;
+    confirm.value='1234';
+    for(const tag of [...locales.slice(1),'es']){
+      await api.setLanguage(tag);
+      assert.equal(hint.data,api.t(sourceHint),tag);
+      assert.equal(confirm.placeholder,api.t(sourcePlaceholder),tag);
+      if(tag!=='es'){
+        assert.notEqual(hint.data,sourceHint,tag);
+        assert.notEqual(confirm.placeholder,sourcePlaceholder,tag);
+      }
+      assert.equal(confirm.value,'1234');
+    }
+  }finally{dom.window.close();}
+});
+
 test('family PIN recovery localizes feedback and keeps the masked account and typed fields intact',async()=>{
   const {w,api,doc,dom}=page();
   try{
