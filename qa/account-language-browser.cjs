@@ -14,7 +14,7 @@ async function run(browser, origin, standalone) {
       const user={id:'00000000-0000-4000-8000-000000000001',email:'coco-qa@example.invalid'};
       const games=Array.from({length:279},(_,i)=>({juego:'memoria',puntos:i===0?58:51,creado:'2026-01-01',puntuacion_version:'balanced-v1'}));
       let session={user};
-      const rows={ajustes:{id:1,partidas_por_dia:1},perfiles:{...user,apodo:'Memoria',rol:'jugador',edad:30}};
+      const rows={eterna_subscriptions:{status:'active',provider:'stripe',plan:'monthly',provider_customer_id:'fixture',provider_subscription_id:'fixture'},eterna_student_profiles:{school_year:'4º de Primaria',autonomous_community:'Región de prueba'},ajustes:{id:1,partidas_por_dia:1},perfiles:{...user,apodo:'Memoria',rol:'jugador',edad:30}};
       function query(table) {
         let single=false;
         const chain=new Proxy({}, {get(_,key){
@@ -147,18 +147,45 @@ async function run(browser, origin, standalone) {
       assert.deepEqual(await catalog(grid),spanish,tag+' complete game list and order');
       if(tag!=='es')await verifyArtwork(grid,tag,spanish);
     }
+    await picker.selectOption('de');await page.waitForFunction(()=>document.documentElement.lang==='de');
+    await profile.locator('.cocoFamiliaBtn').click();
+    await page.locator('.cocoFamilyPin input[placeholder="••••"]').fill('6382');
+    await page.locator('[data-family-enter]').click();
+    const plan=page.locator('[data-et-current-plan="monthly"]');
+    await plan.waitFor({timeout:25000});
+    const labels=[
+      [plan.locator('h5'),'Plan mensual'],[plan.locator('.eternaV16079CurrentPlanLabel'),'TU PLAN ACTUAL'],
+      [plan.locator('.eternaV16079CurrentPlanMeta'),'Suscripción activa'],[plan.locator('[data-et-v16079-manage]'),'Gestionar suscripción'],
+      [plan.locator('.eternaV16079Alternative b'),'Ahorra con el plan anual'],[plan.locator('[data-et-v16080-switch]'),'Cambiar a plan anual'],
+      [page.locator('.cocoFamilyProfileV160100Head p'),'La fecha mantiene la edad al día. Eterna sigue usando el curso actual como referencia académica.']
+    ];
+    // Exercise the actual open dialog and preserve its form values across locale changes.
+    const familyPicker=page.locator('.cocoFamilyV129 [data-coco-family-picker] select');
+    await familyPicker.waitFor();
+    for(const tag of await familyPicker.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
+      await familyPicker.selectOption(tag);
+      await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
+      for(const [el,source] of labels){
+        const expected=await page.evaluate(s=>CocoLocale.t(s),source);
+        if(tag!=='es')assert.notEqual(expected,source,tag+' family '+source);
+        assert.equal(await el.textContent(),expected,tag+' open family '+source);
+      }
+    }
+    await page.locator('.cocoFamilyV129 [data-family-back]').click();
+    console.log('Paid family area and school profile in 15 languages.');
     await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     await page.evaluate(()=>window.CocoEternaV160.open());
     const tutor=page.locator('#eternaOverlayV159.is-open');
     const inside=tutor.locator('[data-eterna-picker] select');
     await inside.waitFor();
-    for(const tag of ['de','ar','zh-Hans','en']){
+    for(const tag of await inside.locator('option').evaluateAll(opts=>opts.map(o=>o.value))){
       await inside.selectOption(tag);
       await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
       assert.ok(await inside.isVisible(),tag+' tutor picker visible');
       assert.equal(await tutor.locator('.eternaV159Close').getAttribute('aria-label'),await page.evaluate(()=>CocoLocale.t('Cerrar Eterna')));
-      assert.notEqual(await tutor.locator('.eternaV159Close').getAttribute('aria-label'),'Cerrar Eterna');
+      if(tag!=='es')assert.notEqual(await tutor.locator('.eternaV159Close').getAttribute('aria-label'),'Cerrar Eterna');
     }
+    await inside.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     await tutor.locator('.eternaV159Close').click();
     await picker.waitFor();
     await page.reload({waitUntil:'domcontentloaded'});await picker.waitFor();

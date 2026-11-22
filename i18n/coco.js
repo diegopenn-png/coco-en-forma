@@ -34,7 +34,10 @@
   function stored() {
     try { return supported(localStorage.getItem(storageKey)); } catch { return null; }
   }
+  const properNames = new Set(['Coco en Forma','Eterna','Stripe','GitHub','Supabase','OpenAI','Cloudflare','iPhone','iPad','Android','3. Coco en Forma','4. Eterna','© 2026 Coco en Forma · Diego Hernán Pennise ·']);
   function message(source, args) {
+    if (properNames.has(source)) return source;
+    if (document.body?.hasAttribute('data-coco-shop-terms') && Object.hasOwn(activePack.strings,'3D · '+source)) return activePack.strings['3D · '+source];
     const chess = document.body?.hasAttribute('data-coco-chess') && activePack.chess;
     const template = chess && Object.hasOwn(chess,source) ? chess[source]
       : Object.hasOwn(activePack.strings,source) ? activePack.strings[source] : source;
@@ -122,8 +125,54 @@
     }
     return key;
   }
-  function gamePhrase(key) {
+  function gamePhrase(key, element) {
     const number = value => Number(value).toLocaleString(current);
+    const difficulty = key.match(/^(Fácil|Medio|Difícil) · (\d+)(?:×(\d+)| parejas)$/u);
+    if (difficulty) {
+      const size=difficulty[3] ? number(difficulty[2])+'×'+number(difficulty[3]) : message('{n} parejas',{n:number(difficulty[2])});
+      return message(difficulty[1])+' · '+size;
+    }
+    if (element?.closest('.enunciado')) {
+      if (key.endsWith(':')) {
+        const label = key.slice(0,-1);
+        const complete = label.match(/^Completa hasta (\d+)$/u);
+        return (complete ? message('Completa hasta')+' '+number(complete[1]) : message(label))+':';
+      }
+      if (/^\d+ (?:millares|centenas|decenas|unidades)(?: \+ \d+ (?:millares|centenas|decenas|unidades))*$/u.test(key)) {
+        return key.split(' + ').map(part=>{
+          const [n,unit]=part.split(' ');
+          return number(n)+' × '+number({millares:1000,centenas:100,decenas:10,unidades:1}[unit]);
+        }).join(' + ');
+      }
+    }
+    const bead = key.match(/^Cuenta inferior (\d+): vale uno$/u);
+    if (bead) return message('Cuenta inferior {n}: vale uno',{n:number(bead[1])});
+    const tier = key.match(/^Nivel (\d+) · (\d+) tipos de reto$/u);
+    if (tier) return message('Nivel')+' '+number(tier[1])+' · '+message('{n} tipos de reto',{n:number(tier[2])});
+    const place = key.match(/^Coloca (portaaviones|crucero|fragata|submarino|patrullero): toca su primera casilla\.$/u);
+    if (place) return message('Coloca {ship}: toca su primera casilla.',{ship:message(place[1][0].toUpperCase()+place[1].slice(1))});
+    const count = key.match(/^(\d+) (casillas|disparos)$/u);
+    if (count) return message('{n} '+count[2],{n:number(count[1])});
+    const target = key.match(/^(Objetivo:|Disparar a) ([A-J](?:10|[1-9]))$/u);
+    if (target) return target[1]==='Objetivo:' ? message('Objetivo')+': '+target[2] : message('Disparar a {cell}',{cell:target[2]});
+    const face = ['unos','doses','treses','cuatros','cincos','seises'].indexOf(key.replace(/^Suma de los /u,''));
+    if (face >= 0) return message('Suma de los {face}',{face:number(face+1)});
+    const filled = key.match(/^(\d+) de (\d+) casillas$/u);
+    if (filled) return message('{n} casillas',{n:number(filled[1])+'/'+number(filled[2])});
+    const points = key.match(/^(\d+) (?:pts|puntos)( · (\d+)\/(\d+))?$/u);
+    if (points) return message('Puntos')+': '+number(points[1])+(points[2]?' · '+number(points[3])+'/'+number(points[4]):'');
+    const dieValue = key.match(/^Dado: (—|\d+)$/u);
+    if (dieValue) return message('Dado')+': '+(dieValue[1]==='—'?'—':number(dieValue[1]));
+    const log = key.match(/^(.+) · tirada (\d+): ([1-6](?: · [1-6]){4})$/u);
+    if (log) return log[1]+' · '+message('Tirada')+' '+number(log[2])+': '+log[3].split(' · ').map(number).join(' · ');
+    const draw = key.match(/^(.+) saca (\d+) en el sorteo\.$/u);
+    if (draw) return message('{name} saca {n} en el sorteo.',{name:draw[1],n:number(draw[2])});
+    if (element?.matches('#turn,#turnTitle,#scoreTitle')) {
+      const mine = key.match(/^(.+), te toca$/u);
+      if (mine) return message('{name}, te toca',{name:mine[1]});
+      if (key.startsWith('Turno de ')) return message('Turno de {name}',{name:key.slice(9).replace(/\.$/u,'')});
+      if (key.startsWith('Planilla de ')) return message('Planilla de {name}',{name:key.slice(11)});
+    }
     const question = key.match(/^Frase (\d+) de (\d+)$/);
     if (question) return message('Frase {n} de {total}',{n:number(question[1]),total:number(question[2])});
     const answered = key.match(/^(\d+) respondidas$/);
@@ -204,6 +253,23 @@
       const status = key.split(' · ');
       if (status.length > 1) return status.map(part => message(part)).join(' · ');
     }
+    if (element?.closest('.product-card,.detail-layout,.cart-item,#cart-dialog,#toast,#result-count')) {
+      const product = key.match(/^Ver (.+)$/u);
+      if (product && element.matches('[data-detail]')) return message('Ver {item}',{item:message(product[1])});
+      const add = key.match(/^Añadir (.+) a la bolsa$/u);
+      if (add) return message('Añadir {item} a la bolsa',{item:message(add[1])});
+      const pay = key.match(/^Pagar (.+) →$/u);
+      if (pay && element.id==='submit-order') {
+        const cents=Number(element.dataset.totalCents);
+        const price=Number.isFinite(cents)?new Intl.NumberFormat(current,{style:'currency',currency:'EUR',maximumFractionDigits:cents%100?2:0}).format(cents/100):pay[1];
+        return message('Pagar {price} →',{price});
+      }
+      const quantity = key.match(/^(\d+) (diseño|diseños)$/u);
+      if (quantity) return Number(quantity[1]).toLocaleString(current)+' '+message(quantity[2]);
+      const added=key.match(/^(.+) añadido a tu bolsa$/u);
+      if (added) return message(added[1])+' · '+message('añadido a tu bolsa');
+      if (key.endsWith(' · fotografía completa')) return message(key.split(' · ')[0])+' · '+message('Fotografía completa de la pieza.');
+    }
     if (activePack.assessmentTemplates && element?.closest('.report')) {
       const phrase=assessmentPhrase(key);
       if(phrase!==key)return value.replace(/\S[\s\S]*\S|\S/,()=>phrase);
@@ -214,7 +280,7 @@
       translated = message('Clasificación')+' · '+message(gameName);
     }
     if (report && translated === key) translated = reportPhrase(key,element);
-    if (game && translated === key) translated = gamePhrase(key);
+    if (game && translated === key) translated = gamePhrase(key,element);
     if (translated === key) {
       for (const prefix of ['Inicia sesión con tu cuenta gratuita para abrir ','Inicia sesión para abrir ','Copiar enlace de ']) {
         if (key.startsWith(prefix)) {
@@ -241,7 +307,7 @@
       ? owner?.childNodes.length === 1 && owner.getAttribute('data-coco-source-text')
       : node.getAttribute('data-coco-source-'+slot);
     const source = canonical || (previous && previous.output === value ? previous.source : value);
-    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game',owner);
+    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game' || Boolean(owner.closest('[data-coco-playing]')),owner);
     if (value !== output) write(output);
     bindings.set(slot,{source,output});
   }
@@ -254,18 +320,19 @@
     }
     return Array.from(node.childNodes).map(sourceText).join('');
   }
-  const authored = '#rConsentText,#rConsentText a,.cocoLegalResumenRegistro,head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
+  const authored = '.coco-cargando,#rConsentText,#rConsentText a,.cocoLegalResumenRegistro,head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
   const spanishGames = new Set();
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
   const privateAreas = '.carnet .quien strong,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-name],[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
-  const publicElements = '.resumen,.alerta,.card,.lead,.note,article.report caption,article.report td,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
+  const publicElements = 'time,div,section,header,aside,caption,article,td,h6,nav,main,figure,.resumen,.alerta,.card,.lead,.note,article.report caption,article.report td,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamiliaBtn span,.carnet .quien .pequeno,.carnet .tanteo .pequeno,.coco160904FamilyLoadingCard b,.coco160904FamilyLoadingCard span,.cocoFamilyLoading,#coco-startup-status p';
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego,#coco-game-guides)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
   const reportCopy = ':is(.cocoFamilyV129,[data-family-integral-report],.cocoV16083Section,.cocoReportDocument,.rankingTitulo,.rankingNota,.navegacionJugador) :is(h2,h3,h4,b,strong,small,p,span,li,th,button,a)';
-  const gameplayCopy = '[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,h4,strong,b,.instruccion,.pregunta,.textoReto,.aviso,.titulo,.cocoArcadeQuestionTag,.cocoArcadeProgressMeta span,.dato)';
+  const gameplayCopy = '.selloRecomendado,[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,h4,strong,b,.instruccion,.pregunta,.textoReto,.aviso,.titulo,.cocoArcadeQuestionTag,.cocoArcadeProgressMeta span,.dato,.tipoSerie,.peso,.comoVa span,.enunciado,[data-col][aria-label])';
+  const familySections = ':is(.eternaV16061SubscriptionTop,.cocoFamilyProfileV160100,.eternaV159ParentSettings,.eternaV160FamilyPromo,.eternaV160ExpiredGate) :is(h5,h6,p,div,small,span,b,strong,summary,button,label,[title],[aria-label])';
   const familyAccessCopy = '.eternaLaunchV16068 :is(p,label,button,h2,strong,.eternaLaunchV16068Info,.eternaLaunchV16068Msg)';
   const authBoxes = '.caja:has(#oMail),.caja:has(#rNom),.caja:has(#nPas),.loginCard';
   const authCopy = ['p','label','b','.aviso','small'].map(t => ':is('+authBoxes+') '+t).join(',');
@@ -291,7 +358,7 @@
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
-    url.searchParams.set('v',folder==='packs'?'20261122-7':folder==='assessment'?'20261122-2':'20261122-account-1');
+    url.searchParams.set('v',folder==='packs'?'20261122-walk-1':folder==='assessment'?'20261122-2':'20261122-walk-1');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -466,7 +533,7 @@
     refreshTutor(root);
     const page = document.body.dataset.cocoLanguagePage;
     const medicalFields = '#cocoMedOverlay :is(h1,h2,h3,h4,p,div,b,button,span,small,summary,label,[aria-label]),#cocoMedRankingModal :is(h3,p,span,button)';
-    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,medicalFields,'.cocoV16086Pending,.rankingNota'].join(',');
+    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familySections,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,medicalFields,'.cocoV16086Pending,.rankingNota'].join(',');
     each(root,query,el => {
       if (el.tagName === 'CANVAS' && el.hasAttribute('aria-label')) render(el,'aria-label',()=>el.getAttribute('aria-label'),v=>el.setAttribute('aria-label',v));
       if (el.closest('#eternaOverlayV159') || el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
@@ -474,7 +541,12 @@
       // Their translation is handled by the owning renderer once a stable id exists.
       if (!page && el.closest('.cocoGameCard,.cocoMiniJuego') && !el.closest('[data-coco-juego],[data-coco-chess-entry],[data-coco-city-entry],[data-coco-naval-entry],[data-coco-generala-entry],[data-coco-suggestion],.cocoMiniSuggestion')) return;
       // Nicknames, room codes, board cells and questionnaire answers are model values.
-      if (el.closest('[role=grid],.cocoCrossBoard,#board,#lobbyPlayers,.player,#history') || el.matches('[data-answer],#turnTitle:not([data-coco-copy]),#turn,#winner,#playingAs,#playingName')) return;
+      const protectedGame = el.closest('[role=grid],.cocoCrossBoard,#board,#lobbyPlayers,.player,#history');
+      const authoredGame = el.matches('[data-coco-copy],#history:is(button),.player > small,.player > span:not(.playerName,.avatar)') || el.closest('.boardCenter');
+      if ((protectedGame && !authoredGame) || el.matches('[data-answer],#turnTitle:not([data-coco-copy]),#turn:not([data-coco-copy]),#winner,#playingAs,#playingName')) {
+        if (el.hasAttribute('aria-label') && el.matches('#history,#board,[role=grid]')) render(el,'aria-label',()=>el.getAttribute('aria-label'),v=>el.setAttribute('aria-label',v));
+        return;
+      }
       if (el.tagName !== 'OPTION' || el.hasAttribute('value')) {
         for (const n of el.childNodes) if (n.nodeType === Node.TEXT_NODE) render(n,'text',() => n.data,v => {n.data=v;});
       }
@@ -488,8 +560,8 @@
       }
     });
     const pageLinks = document.querySelector('[data-coco-original-document]')
-      ? 'nav a[href],main a[href]'
-      : 'nav a[href],.actions a[href],.closing a.button[href]';
+      ? 'nav a[href],main a[href],.site-header a[href]'
+       : 'nav a[href],.actions a[href],.closing a.button[href],#order-form a[href],.site-header a[href],.shop-footer a[href]';
     if (page === 'public' || page === 'game') each(root,pageLinks,link => {
       const raw = link.getAttribute('href');
       if (!raw || raw.startsWith('#') || link.hasAttribute('download') || link.hasAttribute('data-coco-original-document')) return;
@@ -504,7 +576,7 @@
     each(root,'time[data-coco-date]',el => {
       const date = new Date(Number(el.dataset.cocoDate));
       if (Number.isFinite(date.getTime())) {
-        const value = date.toLocaleDateString(current);
+        const value = date.toLocaleDateString(current, el.hasAttribute('data-long-date') ? {day:'2-digit',month:'long',year:'numeric'} : undefined);
         if (el.textContent !== value) el.textContent = value;
       }
     });
@@ -639,7 +711,8 @@
       const header = app?.querySelector(':scope > [data-coco-account-header]');
       if (header && accountSlot.parentElement !== header) header.append(accountSlot);
       const tutorSlot = document.querySelector('#eternaOverlayV159.is-open [data-eterna-picker]');
-      const target = tutorSlot || (header ? accountSlot : publicSlot);
+      const familySlot = app?.querySelector('.cocoFamilyV129 [data-coco-family-picker]');
+      const target = tutorSlot || familySlot || (header ? accountSlot : publicSlot);
       if (target && bar.parentElement !== target) target.append(bar);
       if (!header && accountSlot.isConnected) accountSlot.remove();
       if (publicSlot) publicSlot.hidden = Boolean(header);
