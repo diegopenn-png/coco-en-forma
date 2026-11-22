@@ -386,6 +386,7 @@
     document.documentElement.lang = tag;
     document.documentElement.dir = tag === 'ar' ? 'rtl' : 'ltr';
     select.value = tag; select.setAttribute('aria-label',label[tag]); status.textContent = '';
+    accountCaption.textContent = label[tag];
     previous.setAttribute('aria-label',message('Idioma anterior'));
     next.setAttribute('aria-label',message('Idioma siguiente'));
     const manifest = document.querySelector('link[rel="manifest"]');
@@ -416,9 +417,34 @@
   const previous = languageStep(-1,'‹','Idioma anterior');
   const next = languageStep(1,'›','Idioma siguiente');
   bar.append(status,icon,previous,select,next);
+  const accountSlot = document.createElement('div');
+  accountSlot.setAttribute('data-coco-language-menu','');
+  accountSlot.setAttribute('data-coco-language-account','');
+  const accountCaption = document.createElement('span');
+  accountCaption.className = 'coco-language-caption';
+  accountCaption.textContent = label.es;
+  accountSlot.append(accountCaption);
+  let publicSlot, menuObserver;
+  function placeLanguageMenu() {
+    if (!publicSlot?.isConnected) publicSlot = document.querySelector('[data-coco-language-menu]:not([data-coco-language-account])');
+    const menu = document.querySelector('#cocoApp .navegacionJugador');
+    if (menu) {
+      if (accountSlot.parentElement !== menu) menu.prepend(accountSlot);
+      if (bar.parentElement !== accountSlot) accountSlot.append(bar);
+    } else {
+      if (publicSlot && bar.parentElement !== publicSlot) publicSlot.append(bar);
+      if (accountSlot.isConnected) accountSlot.remove();
+    }
+    if (publicSlot && publicSlot.hidden !== Boolean(menu)) publicSlot.hidden = Boolean(menu);
+  }
   function mount() {
-    const slot = document.querySelector('[data-coco-language-menu]');
-    if (slot) slot.append(bar);
+    placeLanguageMenu();
+    const app = document.getElementById('cocoApp');
+    if (app && !menuObserver) {
+      // The signed-in menu is rebuilt during navigation, including while using Spanish.
+      menuObserver = new MutationObserver(placeLanguageMenu);
+      menuObserver.observe(app,{childList:true,subtree:true});
+    }
     observe();
     refresh();
   }

@@ -7,7 +7,7 @@ export const discoveryPages = [
   heading:'Juega por curiosidad. Vuelve por el reto.',eyebrow:'Juegos educativos gratis online',
   description:'Elige juegos educativos gratis de memoria, lógica, palabras y cálculo en Coco. Descubre cómo jugar desde el móvil o el ordenador y empieza a tu ritmo.',
   intro:'Coco en Forma reúne juegos educativos gratuitos para practicar con números, palabras, memoria y estrategia. Puedes explorar las reglas antes de entrar y elegir un reto individual o una partida compartida.',
-  image:'/share/premium-v160127/hero-explorer-v160129.jpg',games:['memoria','conecta','calculo','palabras','ajedrez','naval'],
+  image:'/share/premium-v160127/hero-explorer-v160129.jpg',games:['memoria','sudoku','conecta','ajedrez','generala','naval'],
   leadTitle:'¿Qué te apetece hacer hoy?',
   paragraphs:['Si te gustan las pistas visuales, empieza por Memoria o Conecta colores. Si prefieres jugar con el lenguaje, prueba Palabras o Sopa de letras. Para pensar cada movimiento con calma tienes Sudoku y Ajedrez. Cada actividad tiene su propia página con reglas y un ejemplo.',
   'Las partidas locales de Ajedrez, Generala y Batalla Naval permiten empezar desde su pantalla de juego. En las actividades vinculadas al perfil, Coco te pide acceder a tu cuenta. Las salas online también requieren cuenta; así cada participante entra con su propio usuario.',

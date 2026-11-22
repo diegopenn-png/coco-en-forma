@@ -14,7 +14,7 @@ const exclusions = read('robots.txt').split('\n').filter(line => line.startsWith
 const canCrawl = url => !exclusions.some(path => new URL(url).pathname.startsWith(path));
 
 test('every sitemap URL is crawlable, indexable and declares itself as canonical', () => {
-  assert.equal(urls.length, 38);
+  assert.equal(urls.length, 52);
   assert.equal(new Set(urls).size, urls.length);
   for (const url of urls) {
     const u = new URL(url);

@@ -1,0 +1,2057 @@
+{
+  "es": {
+    "slug": "juegos-gratis",
+    "title": "Juegos mentales gratis online: memoria y lógica | Coco",
+    "description": "Descubre juegos mentales gratis de memoria, lógica, sudoku y ajedrez en Coco en Forma. Juega desde el móvil o el ordenador, a tu ritmo y sin publicidad.",
+    "eyebrow": "Juegos mentales gratis online",
+    "heading": "Un reto de memoria, lógica o estrategia. Tú eliges.",
+    "intro": "Coco en Forma reúne juegos gratuitos para quienes disfrutan descubriendo patrones, recordando posiciones y pensando la siguiente jugada. Explora las reglas, elige una actividad y empieza desde el navegador del móvil, la tableta o el ordenador.",
+    "keywords": [
+      "juegos mentales gratis",
+      "juegos de memoria online",
+      "juegos de lógica",
+      "sudoku gratis",
+      "ajedrez online",
+      "juegos en familia"
+    ],
+    "labels": {
+      "skip": "Saltar al contenido",
+      "home": "Inicio",
+      "language": "Idioma",
+      "previous": "Idioma anterior",
+      "next": "Idioma siguiente",
+      "menu": "Menú principal",
+      "play": "Jugar",
+      "account": "Entrar o crear cuenta",
+      "learnMore": "Cómo se juega",
+      "explore": "Elige tu próximo juego",
+      "faq": "Preguntas frecuentes",
+      "steps": "Tres pasos para empezar",
+      "example": "Un pequeño reto para probar",
+      "reveal": "Ver la explicación",
+      "related": "Sigue explorando",
+      "privacy": "Privacidad",
+      "terms": "Condiciones",
+      "footer": "Coco en Forma · Juegos, curiosidad y aprendizaje",
+      "updated": "Actualizado",
+      "free": "Gratis y sin publicidad",
+      "pwa": "También como aplicación web",
+      "howItWorks": "Cómo empezar"
+    },
+    "heroPoints": [
+      "Juegos gratuitos, sin publicidad",
+      "Móvil, tableta y ordenador",
+      "Interfaz en 15 idiomas"
+    ],
+    "sections": [
+      {
+        "title": "Encuentra el tipo de reto que te apetece",
+        "paragraphs": [
+          "En Memoria buscas parejas y recuerdas dónde viste cada imagen. Conecta colores propone unir puntos sin cerrar el camino a las demás parejas. Sudoku invita a descartar números según las filas, columnas y bloques. Son formas distintas de jugar: puedes elegir por curiosidad, sin empezar por el reto más difícil.",
+          "Si prefieres decisiones por turnos, abre Ajedrez. Generala combina dados y elecciones sobre qué guardar, mientras que Batalla Naval consiste en localizar barcos en una cuadrícula. Cada juego tiene sus propias reglas; leerlas antes de empezar ayuda a entender qué cuenta y cuándo termina la partida."
+        ]
+      },
+      {
+        "title": "Haz sitio a una partida a tu manera",
+        "paragraphs": [
+          "Puedes jugar un rato a solas o compartir el dispositivo en una modalidad local. En familia, resulta útil comentar una decisión al terminar: qué observaste, qué cambiaste y qué probarías en otra ronda. El resultado pertenece a esa partida; úsalo para conversar sobre cómo jugaste.",
+          "El selector de idioma también está disponible dentro del menú al entrar con tu cuenta. Coco recuerda la elección al navegar. Si utilizas la aplicación web instalada, tendrás un acceso desde la pantalla de inicio. Para cambiar de actividad, vuelve al menú y consulta la siguiente ficha."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Descubre la regla de la serie",
+      "prompt": "3, 6, 12, 24… Si la regla es multiplicar por dos en cada paso, ¿qué número sigue?",
+      "answer": "48: 24 × 2 = 48. Comprueba también los pasos anteriores: 3 × 2 = 6 y 6 × 2 = 12. Explicar la regla permite revisar la respuesta. Este ejemplo se puede resolver aquí, sin cuenta ni puntos."
+    },
+    "steps": [
+      {
+        "title": "Elige un juego",
+        "text": "Compara las propuestas y abre la guía para conocer el objetivo y las reglas."
+      },
+      {
+        "title": "Empieza a jugar",
+        "text": "Accede a tu cuenta cuando el juego lo solicite. Las partidas locales de Ajedrez, Generala y Batalla Naval permiten empezar sin registrarte."
+      },
+      {
+        "title": "Vuelve cuando te apetezca",
+        "text": "Conserva tu idioma, descubre otra actividad y consulta el progreso disponible en tu perfil."
+      }
+    ],
+    "faq": [
+      {
+        "question": "¿Estos juegos son gratuitos?",
+        "answer": "Sí, los juegos de esta selección son gratuitos y no muestran publicidad. Eterna y Coco Eneagrama son servicios separados, con sus propias condiciones."
+      },
+      {
+        "question": "¿Cuándo necesito una cuenta?",
+        "answer": "Memoria, Sudoku y Conecta colores requieren acceder a Coco. También necesitas cuenta para las salas online y las funciones del perfil. Puedes iniciar partidas locales de Ajedrez, Generala y Batalla Naval sin registro."
+      },
+      {
+        "question": "¿Tengo que descargar una aplicación?",
+        "answer": "Puedes jugar directamente en el navegador. Si prefieres un acceso desde tu pantalla de inicio, Coco también se puede instalar como aplicación web."
+      },
+      {
+        "question": "¿Todo el contenido está en los 15 idiomas?",
+        "answer": "La interfaz permite elegir entre 15 idiomas. Algunos juegos basados en palabras o conocimientos conservan contenido en español y lo indican. Puedes consultar ese aviso antes de jugar."
+      },
+      {
+        "question": "¿Se puede jugar en familia?",
+        "answer": "Sí: podéis turnaros, compartir una partida local o utilizar las modalidades online disponibles. La cuenta de un menor debe crearla o autorizarla su padre, madre o tutor."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Memoria",
+        "text": "Observa las cartas, recuerda sus posiciones y encuentra las parejas. Requiere cuenta."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Completa la cuadrícula respetando filas, columnas y bloques. Requiere cuenta."
+      },
+      "conecta": {
+        "title": "Conecta colores",
+        "text": "Une cada pareja y deja espacio para los demás caminos. Requiere cuenta."
+      },
+      "ajedrez": {
+        "title": "Coco Ajedrez",
+        "text": "Piensa tu siguiente movimiento. Puedes empezar una partida local sin cuenta."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Tira los dados, elige cuáles guardar y busca combinaciones. Partidas locales sin cuenta."
+      },
+      "naval": {
+        "title": "Coco Batalla Naval",
+        "text": "Explora la cuadrícula para localizar la flota rival. Partidas locales sin cuenta."
+      }
+    },
+    "closing": {
+      "title": "El siguiente reto lo eliges tú",
+      "text": "Empieza por una partida local o entra en tu cuenta para descubrir las actividades vinculadas a tu perfil.",
+      "button": "Abrir Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Los juegos que conservan contenido en español lo indican en su ficha.",
+      "eterna": "Eterna, el apoyo escolar de Coco, es un servicio independiente. Las sesiones del tutor se ofrecen actualmente en español."
+    }
+  },
+  "en": {
+    "slug": "free-brain-games",
+    "title": "Free online brain games: memory and logic | Coco",
+    "description": "Explore free memory games, logic puzzles, sudoku and chess at Coco en Forma. Play at your own pace on your phone, tablet or computer, with no ads.",
+    "eyebrow": "Free online brain games",
+    "heading": "Memory, logic or strategy. Find your next challenge.",
+    "intro": "Coco en Forma brings together free games for people who enjoy spotting patterns, remembering positions and thinking one move ahead. Read the rules, choose an activity and start in your phone, tablet or computer browser.",
+    "keywords": [
+      "free brain games",
+      "online memory games",
+      "logic puzzles",
+      "free sudoku",
+      "online chess",
+      "family games"
+    ],
+    "labels": {
+      "skip": "Skip to content",
+      "home": "Home",
+      "language": "Language",
+      "previous": "Previous language",
+      "next": "Next language",
+      "menu": "Main menu",
+      "play": "Play",
+      "account": "Sign in or create an account",
+      "learnMore": "How to play",
+      "explore": "Choose your next game",
+      "faq": "Frequently asked questions",
+      "steps": "Three steps to get started",
+      "example": "Try a small challenge",
+      "reveal": "Show the explanation",
+      "related": "Keep exploring",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "footer": "Coco en Forma · Games, curiosity and learning",
+      "updated": "Updated",
+      "free": "Free, with no ads",
+      "pwa": "Also available as a web app",
+      "howItWorks": "Getting started"
+    },
+    "heroPoints": [
+      "Free games, no ads",
+      "Phone, tablet and computer",
+      "Interface in 15 languages"
+    ],
+    "sections": [
+      {
+        "title": "Choose a challenge that interests you",
+        "paragraphs": [
+          "In Memory, you find matching pairs by remembering where each picture appeared. Connect Colours asks you to join dots while leaving room for other paths. Sudoku is about ruling out numbers using rows, columns and boxes. These are different ways to play: follow your curiosity, without having to choose the hardest puzzle first.",
+          "For turn-based strategy, try Chess. Generala combines dice with decisions about which results to keep, while Battleship challenges you to locate ships on a grid. Each game has its own rules. Reading them first helps you understand the aim, the scoring and how a round ends."
+        ]
+      },
+      {
+        "title": "Make a little room for play",
+        "paragraphs": [
+          "Play on your own or share a device for a local game. When playing as a family, talk about a choice after the round: what you noticed, what you changed and what you might try next time. A result describes that particular game and can be a useful starting point for a conversation.",
+          "You can also change the language from the menu after signing in. Coco remembers your choice as you move between pages. Installing the web app adds a shortcut to your home screen. To try a different activity, return to the menu and open its guide."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Find the next number",
+      "prompt": "3, 6, 12, 24… If the rule is to double the number at every step, what comes next?",
+      "answer": "48: 24 × 2 = 48. Check the earlier steps too: 3 × 2 = 6 and 6 × 2 = 12. Explaining the rule helps you check your answer. You can try this example here without an account; it does not award points."
+    },
+    "steps": [
+      {
+        "title": "Choose a game",
+        "text": "Compare the activities and open a guide to learn the aim and the rules."
+      },
+      {
+        "title": "Start playing",
+        "text": "Sign in when an activity asks you to. Local Chess, Generala and Battleship games can be started without an account."
+      },
+      {
+        "title": "Come back when you like",
+        "text": "Keep your language choice, explore another activity and check the progress available in your profile."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Are these games free?",
+        "answer": "Yes. The games in this selection are free and have no ads. Eterna and Coco Eneagrama are separate services with their own terms."
+      },
+      {
+        "question": "When do I need an account?",
+        "answer": "Memory, Sudoku and Connect Colours require a Coco account. Online rooms and profile features also require you to sign in. Local Chess, Generala and Battleship games can be started without registering."
+      },
+      {
+        "question": "Do I have to download an app?",
+        "answer": "You can play directly in your browser. If you would like a shortcut on your home screen, you can also install Coco as a web app."
+      },
+      {
+        "question": "Is all the content available in 15 languages?",
+        "answer": "The interface offers 15 languages. Some word and knowledge games keep their content in Spanish and display a notice. Check the game guide before starting."
+      },
+      {
+        "question": "Can we play as a family?",
+        "answer": "Yes. Take turns, share a local game or use an available online mode. A parent or guardian must create or authorise an account for a child."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Memory",
+        "text": "Watch the cards, remember their positions and find matching pairs. Account required."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Fill the grid using the rules for rows, columns and boxes. Account required."
+      },
+      "conecta": {
+        "title": "Connect Colours",
+        "text": "Join each matching pair while leaving room for the other paths. Account required."
+      },
+      "ajedrez": {
+        "title": "Coco Chess",
+        "text": "Plan your next move. Start a local game without an account."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Roll the dice, choose what to keep and build combinations. Local play without an account."
+      },
+      "naval": {
+        "title": "Coco Battleship",
+        "text": "Search the grid to locate the opposing fleet. Local play without an account."
+      }
+    },
+    "closing": {
+      "title": "Your next challenge is up to you",
+      "text": "Start with a local game or sign in to explore the activities connected to your profile.",
+      "button": "Open Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Games with content in Spanish display a notice in their guide.",
+      "eterna": "Eterna, Coco’s school support service, is separate from the free games. Tutor sessions are currently offered in Spanish."
+    }
+  },
+  "de": {
+    "slug": "kostenlose-denkspiele",
+    "title": "Kostenlose Denkspiele online: Gedächtnis und Logik | Coco",
+    "description": "Entdecke kostenlose Gedächtnisspiele, Logikrätsel, Sudoku und Schach bei Coco en Forma. Spiele ohne Werbung am Handy, Tablet oder Computer.",
+    "eyebrow": "Kostenlose Denkspiele online",
+    "heading": "Gedächtnis, Logik oder Strategie: Wähle deine Herausforderung.",
+    "intro": "Bei Coco en Forma findest du kostenlose Spiele zum Entdecken von Mustern, Merken von Positionen und Planen des nächsten Zuges. Lies die Regeln, wähle ein Spiel und starte direkt im Browser deines Handys, Tablets oder Computers.",
+    "keywords": [
+      "kostenlose Denkspiele",
+      "Gedächtnisspiele online",
+      "Logikspiele",
+      "Sudoku kostenlos",
+      "Schach online",
+      "Spiele für die Familie"
+    ],
+    "labels": {
+      "skip": "Zum Inhalt springen",
+      "home": "Startseite",
+      "language": "Sprache",
+      "previous": "Vorherige Sprache",
+      "next": "Nächste Sprache",
+      "menu": "Hauptmenü",
+      "play": "Spielen",
+      "account": "Anmelden oder Konto erstellen",
+      "learnMore": "Spielanleitung",
+      "explore": "Wähle dein nächstes Spiel",
+      "faq": "Häufige Fragen",
+      "steps": "In drei Schritten loslegen",
+      "example": "Probiere eine kleine Denkaufgabe",
+      "reveal": "Erklärung anzeigen",
+      "related": "Weiter entdecken",
+      "privacy": "Datenschutz",
+      "terms": "Nutzungsbedingungen",
+      "footer": "Coco en Forma · Spielen, entdecken und lernen",
+      "updated": "Aktualisiert",
+      "free": "Kostenlos und ohne Werbung",
+      "pwa": "Auch als Web-App nutzbar",
+      "howItWorks": "So geht’s los"
+    },
+    "heroPoints": [
+      "Kostenlose Spiele ohne Werbung",
+      "Handy, Tablet und Computer",
+      "Benutzeroberfläche in 15 Sprachen"
+    ],
+    "sections": [
+      {
+        "title": "Finde die Aufgabe, auf die du Lust hast",
+        "paragraphs": [
+          "Beim Gedächtnisspiel suchst du Bildpaare und merkst dir ihre Positionen. Bei Farben verbinden verknüpfst du Punkte, ohne den anderen Verbindungen den Weg zu versperren. Im Sudoku schließt du Zahlen anhand von Reihen, Spalten und Blöcken aus. Die Spiele stellen unterschiedliche Aufgaben: Lass dich von deiner Neugier leiten, statt gleich das schwierigste Rätsel zu wählen.",
+          "Für Strategie Zug um Zug gibt es Schach. Bei Generala würfelst du und entscheidest, welche Würfel du behältst. Bei Schiffe versenken suchst du die gegnerische Flotte auf einem Raster. Jedes Spiel hat eigene Regeln. Die Anleitung erklärt das Ziel, die Wertung und das Ende einer Runde."
+        ]
+      },
+      {
+        "title": "Spiele so, wie es zu deinem Tag passt",
+        "paragraphs": [
+          "Spiele allein oder teilt euch ein Gerät für eine lokale Partie. In der Familie könnt ihr nach einer Runde eine Entscheidung besprechen: Was ist euch aufgefallen, was habt ihr geändert und was würdet ihr beim nächsten Mal versuchen? Das Ergebnis beschreibt diese Partie und bietet einen Anlass, über eure Vorgehensweise zu sprechen.",
+          "Auch nach der Anmeldung kannst du die Sprache im Menü wechseln. Coco merkt sich deine Auswahl beim Navigieren. Wenn du die Web-App installierst, erreichst du sie über den Startbildschirm. Für eine andere Aktivität gehst du zurück ins Menü und öffnest die entsprechende Anleitung."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Wie geht die Zahlenfolge weiter?",
+      "prompt": "3, 6, 12, 24 … Die Regel lautet: Verdopple die Zahl bei jedem Schritt. Welche Zahl folgt?",
+      "answer": "48, denn 24 × 2 = 48. Prüfe auch die vorherigen Schritte: 3 × 2 = 6 und 6 × 2 = 12. Wenn du die Regel erklärst, kannst du deine Antwort überprüfen. Für dieses Beispiel brauchst du kein Konto; es werden keine Punkte vergeben."
+    },
+    "steps": [
+      {
+        "title": "Wähle ein Spiel",
+        "text": "Vergleiche die Aktivitäten und lies in der Anleitung nach, was das Ziel ist und welche Regeln gelten."
+      },
+      {
+        "title": "Starte die Partie",
+        "text": "Melde dich an, wenn das Spiel ein Konto erfordert. Lokale Partien in Schach, Generala und Schiffe versenken kannst du ohne Registrierung starten."
+      },
+      {
+        "title": "Komm wieder, wann du möchtest",
+        "text": "Deine Sprachauswahl bleibt erhalten. Entdecke ein anderes Spiel oder sieh dir die verfügbaren Fortschritte in deinem Profil an."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Sind diese Spiele kostenlos?",
+        "answer": "Ja. Die Spiele dieser Auswahl sind kostenlos und ohne Werbung. Eterna und Coco Eneagrama sind eigenständige Angebote mit eigenen Bedingungen."
+      },
+      {
+        "question": "Wann brauche ich ein Konto?",
+        "answer": "Für das Gedächtnisspiel, Sudoku und Farben verbinden brauchst du ein Coco-Konto. Auch Online-Spielräume und Profilfunktionen erfordern eine Anmeldung. Lokale Partien in Schach, Generala und Schiffe versenken sind ohne Registrierung möglich."
+      },
+      {
+        "question": "Muss ich eine App herunterladen?",
+        "answer": "Du kannst direkt im Browser spielen. Für einen schnellen Zugang vom Startbildschirm lässt sich Coco auch als Web-App installieren."
+      },
+      {
+        "question": "Sind alle Inhalte in 15 Sprachen verfügbar?",
+        "answer": "Die Benutzeroberfläche bietet 15 Sprachen. Manche Wort- und Wissensspiele enthalten weiterhin spanische Inhalte und weisen darauf hin. Lies den Hinweis in der Spielbeschreibung."
+      },
+      {
+        "question": "Können wir als Familie spielen?",
+        "answer": "Ja. Ihr könnt euch abwechseln, eine lokale Partie teilen oder einen verfügbaren Online-Modus nutzen. Ein Elternteil oder eine erziehungsberechtigte Person muss das Konto eines Kindes erstellen oder genehmigen."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Gedächtnisspiel",
+        "text": "Merke dir die Positionen der Bilder und finde passende Paare. Konto erforderlich."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Fülle das Raster nach den Regeln für Reihen, Spalten und Blöcke. Konto erforderlich."
+      },
+      "conecta": {
+        "title": "Farben verbinden",
+        "text": "Verbinde jedes Paar und halte die Wege für die anderen Farben frei. Konto erforderlich."
+      },
+      "ajedrez": {
+        "title": "Coco Schach",
+        "text": "Plane deinen nächsten Zug. Eine lokale Partie kannst du ohne Konto starten."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Würfle, behalte passende Würfel und sammle Kombinationen. Lokal ohne Konto spielbar."
+      },
+      "naval": {
+        "title": "Coco Schiffe versenken",
+        "text": "Suche auf dem Raster nach der gegnerischen Flotte. Lokal ohne Konto spielbar."
+      }
+    },
+    "closing": {
+      "title": "Du wählst die nächste Herausforderung",
+      "text": "Starte eine lokale Partie oder melde dich an, um die Spiele und Funktionen deines Profils zu entdecken.",
+      "button": "Coco en Forma öffnen"
+    },
+    "note": {
+      "spanishContent": "Spiele mit spanischen Inhalten sind in ihrer Beschreibung entsprechend gekennzeichnet.",
+      "eterna": "Eterna, Cocos Lernbegleitung, ist ein eigenständiges Angebot. Die Gespräche mit dem Tutor finden derzeit auf Spanisch statt."
+    }
+  },
+  "nl": {
+    "slug": "gratis-denkspellen",
+    "title": "Gratis denkspellen online: geheugen en logica | Coco",
+    "description": "Ontdek gratis geheugenspellen, logische puzzels, sudoku en schaken bij Coco en Forma. Speel zonder reclame op je telefoon, tablet of computer.",
+    "eyebrow": "Gratis online denkspellen",
+    "heading": "Geheugen, logica of strategie. Kies jouw volgende uitdaging.",
+    "intro": "Coco en Forma verzamelt gratis spellen voor wie graag patronen ontdekt, posities onthoudt en een zet vooruitdenkt. Bekijk de spelregels, kies een activiteit en begin in de browser van je telefoon, tablet of computer.",
+    "keywords": [
+      "gratis denkspellen",
+      "geheugenspellen online",
+      "logische puzzels",
+      "gratis sudoku",
+      "online schaken",
+      "spellen voor het gezin"
+    ],
+    "labels": {
+      "skip": "Ga naar de inhoud",
+      "home": "Home",
+      "language": "Taal",
+      "previous": "Vorige taal",
+      "next": "Volgende taal",
+      "menu": "Hoofdmenu",
+      "play": "Spelen",
+      "account": "Inloggen of een account maken",
+      "learnMore": "Spelregels",
+      "explore": "Kies je volgende spel",
+      "faq": "Veelgestelde vragen",
+      "steps": "Begin in drie stappen",
+      "example": "Probeer een kleine uitdaging",
+      "reveal": "Bekijk de uitleg",
+      "related": "Ontdek meer",
+      "privacy": "Privacy",
+      "terms": "Voorwaarden",
+      "footer": "Coco en Forma · Spelen, ontdekken en leren",
+      "updated": "Bijgewerkt",
+      "free": "Gratis en zonder reclame",
+      "pwa": "Ook als webapp te gebruiken",
+      "howItWorks": "Zo begin je"
+    },
+    "heroPoints": [
+      "Gratis spellen zonder reclame",
+      "Telefoon, tablet en computer",
+      "Interface in 15 talen"
+    ],
+    "sections": [
+      {
+        "title": "Kies het soort uitdaging waar je zin in hebt",
+        "paragraphs": [
+          "In het geheugenspel zoek je gelijke paren en onthoud je waar de afbeeldingen liggen. Bij Verbind de kleuren verbind je punten zonder andere routes te blokkeren. In Sudoku sluit je cijfers uit met behulp van rijen, kolommen en blokken. Elk spel vraagt iets anders: volg je nieuwsgierigheid, zonder meteen de moeilijkste puzzel te kiezen.",
+          "Wil je om de beurt een strategische zet doen, probeer dan Schaken. Bij Generala gooi je dobbelstenen en kies je welke je bewaart. Bij Zeeslag zoek je schepen op een rooster. Elk spel heeft eigen regels. De uitleg helpt je begrijpen wat het doel is, hoe de score werkt en wanneer een ronde afgelopen is."
+        ]
+      },
+      {
+        "title": "Maak ruimte voor een spel op jouw manier",
+        "paragraphs": [
+          "Speel alleen of deel een apparaat voor een lokale partij. Als gezin kun je na afloop een keuze bespreken: wat zag je, wat veranderde je en wat zou je de volgende keer proberen? De uitslag hoort bij die partij en kan een aanleiding zijn om over jullie aanpak te praten.",
+          "Ook na het inloggen kun je in het menu van taal veranderen. Coco onthoudt je keuze tijdens het navigeren. Als je de webapp installeert, kun je die vanaf je beginscherm openen. Wil je iets anders spelen? Ga terug naar het menu en bekijk de volgende speluitleg."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Welk getal volgt?",
+      "prompt": "3, 6, 12, 24… De regel is: verdubbel het getal bij elke stap. Welk getal komt hierna?",
+      "answer": "48, want 24 × 2 = 48. Controleer ook de eerdere stappen: 3 × 2 = 6 en 6 × 2 = 12. Door de regel uit te leggen, kun je je antwoord controleren. Je kunt dit voorbeeld zonder account proberen; je krijgt er geen punten voor."
+    },
+    "steps": [
+      {
+        "title": "Kies een spel",
+        "text": "Vergelijk de activiteiten en lees de uitleg om het doel en de spelregels te leren kennen."
+      },
+      {
+        "title": "Begin met spelen",
+        "text": "Log in wanneer een spel daarom vraagt. Lokale partijen Schaken, Generala en Zeeslag kun je zonder account starten."
+      },
+      {
+        "title": "Kom terug wanneer je wilt",
+        "text": "Je taalkeuze blijft bewaard. Ontdek een andere activiteit en bekijk de beschikbare voortgang in je profiel."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Zijn deze spellen gratis?",
+        "answer": "Ja. De spellen in deze selectie zijn gratis en bevatten geen reclame. Eterna en Coco Eneagrama zijn aparte diensten met eigen voorwaarden."
+      },
+      {
+        "question": "Wanneer heb ik een account nodig?",
+        "answer": "Voor het geheugenspel, Sudoku en Verbind de kleuren heb je een Coco-account nodig. Ook online speelkamers en profielfuncties vereisen een account. Lokale partijen Schaken, Generala en Zeeslag kun je zonder registratie starten."
+      },
+      {
+        "question": "Moet ik een app downloaden?",
+        "answer": "Je kunt meteen in je browser spelen. Wil je een snelkoppeling op je beginscherm, dan kun je Coco ook als webapp installeren."
+      },
+      {
+        "question": "Is alle inhoud beschikbaar in 15 talen?",
+        "answer": "De interface biedt 15 talen. Sommige woord- en kennisspellen hebben nog Spaanse inhoud en vermelden dat. Bekijk de melding in de speluitleg voordat je begint."
+      },
+      {
+        "question": "Kunnen we met het gezin spelen?",
+        "answer": "Ja. Wissel elkaar af, deel een lokale partij of kies een beschikbare online spelvorm. Een ouder of voogd moet een account voor een minderjarige aanmaken of goedkeuren."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Geheugenspel",
+        "text": "Bekijk de kaarten, onthoud hun posities en zoek gelijke paren. Account nodig."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Vul het rooster volgens de regels voor rijen, kolommen en blokken. Account nodig."
+      },
+      "conecta": {
+        "title": "Verbind de kleuren",
+        "text": "Verbind elk paar en laat ruimte voor de andere routes. Account nodig."
+      },
+      "ajedrez": {
+        "title": "Coco Schaken",
+        "text": "Denk na over je volgende zet. Start een lokale partij zonder account."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Gooi, kies welke dobbelstenen je bewaart en maak combinaties. Lokaal zonder account."
+      },
+      "naval": {
+        "title": "Coco Zeeslag",
+        "text": "Zoek op het rooster naar de vloot van je tegenstander. Lokaal zonder account."
+      }
+    },
+    "closing": {
+      "title": "Jij kiest de volgende uitdaging",
+      "text": "Begin met een lokale partij of log in om de activiteiten van je profiel te ontdekken.",
+      "button": "Open Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Spellen met Spaanse inhoud vermelden dit in hun speluitleg.",
+      "eterna": "Eterna, de leerondersteuning van Coco, is een aparte dienst. De gesprekken met de tutor zijn momenteel in het Spaans."
+    }
+  },
+  "fr": {
+    "slug": "jeux-de-reflexion-gratuits",
+    "title": "Jeux de réflexion gratuits : mémoire et logique | Coco",
+    "description": "Découvre des jeux gratuits de mémoire, de logique, de sudoku et d’échecs sur Coco en Forma. Joue sans publicité sur téléphone, tablette ou ordinateur.",
+    "eyebrow": "Jeux de réflexion gratuits en ligne",
+    "heading": "Mémoire, logique ou stratégie : choisis ton prochain défi.",
+    "intro": "Coco en Forma propose des jeux gratuits pour celles et ceux qui aiment reconnaître des suites, mémoriser des positions et préparer leur prochain coup. Découvre les règles et lance-toi depuis le navigateur de ton téléphone, de ta tablette ou de ton ordinateur.",
+    "keywords": [
+      "jeux de réflexion gratuits",
+      "jeux de mémoire en ligne",
+      "jeux de logique",
+      "sudoku gratuit",
+      "échecs en ligne",
+      "jeux en famille"
+    ],
+    "labels": {
+      "skip": "Aller au contenu",
+      "home": "Accueil",
+      "language": "Langue",
+      "previous": "Langue précédente",
+      "next": "Langue suivante",
+      "menu": "Menu principal",
+      "play": "Jouer",
+      "account": "Se connecter ou créer un compte",
+      "learnMore": "Règles du jeu",
+      "explore": "Choisis ton prochain jeu",
+      "faq": "Questions fréquentes",
+      "steps": "Trois étapes pour commencer",
+      "example": "Un petit défi à essayer",
+      "reveal": "Voir l’explication",
+      "related": "Continue à découvrir",
+      "privacy": "Confidentialité",
+      "terms": "Conditions",
+      "footer": "Coco en Forma · Jouer, découvrir et apprendre",
+      "updated": "Mis à jour",
+      "free": "Gratuit et sans publicité",
+      "pwa": "Également disponible en application web",
+      "howItWorks": "Comment commencer"
+    },
+    "heroPoints": [
+      "Jeux gratuits, sans publicité",
+      "Téléphone, tablette et ordinateur",
+      "Interface en 15 langues"
+    ],
+    "sections": [
+      {
+        "title": "Trouve le défi qui te donne envie de jouer",
+        "paragraphs": [
+          "Dans Mémoire, tu retrouves des paires en te rappelant où chaque image est apparue. Relie les couleurs consiste à joindre des points sans bloquer les autres chemins. Le sudoku invite à éliminer des possibilités grâce aux lignes, aux colonnes et aux blocs. Chaque jeu propose une approche différente : laisse-toi guider par ta curiosité.",
+          "Pour réfléchir à tour de rôle, essaie les échecs. Dans Generala, tu lances les dés et choisis ceux que tu gardes. La bataille navale consiste à repérer des bateaux sur une grille. Chaque jeu possède ses propres règles : les lire permet de comprendre l’objectif, les points et la fin d’une manche."
+        ]
+      },
+      {
+        "title": "Une partie qui trouve sa place dans ta journée",
+        "paragraphs": [
+          "Joue seul ou partage un appareil pour une partie locale. En famille, vous pouvez revenir sur une décision après la manche : qu’avez-vous remarqué, changé ou envie d’essayer la prochaine fois ? Le résultat décrit cette partie et peut servir de point de départ pour parler de votre façon de jouer.",
+          "Tu peux aussi changer de langue depuis le menu après la connexion. Coco mémorise ton choix pendant la navigation. Si tu installes l’application web, tu y accèdes depuis l’écran d’accueil. Pour découvrir une autre activité, reviens au menu et consulte sa fiche."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Trouve le nombre suivant",
+      "prompt": "3, 6, 12, 24… La règle consiste à doubler le nombre à chaque étape. Quel nombre vient ensuite ?",
+      "answer": "48, car 24 × 2 = 48. Vérifie aussi les étapes précédentes : 3 × 2 = 6 et 6 × 2 = 12. Expliquer la règle permet de vérifier la réponse. Cet exemple se fait ici, sans compte et sans attribution de points."
+    },
+    "steps": [
+      {
+        "title": "Choisis un jeu",
+        "text": "Compare les activités et ouvre une fiche pour découvrir l’objectif et les règles."
+      },
+      {
+        "title": "Lance-toi",
+        "text": "Connecte-toi lorsque le jeu le demande. Les parties locales d’Échecs, de Generala et de Bataille navale sont accessibles sans compte."
+      },
+      {
+        "title": "Reviens quand tu veux",
+        "text": "Retrouve ta langue, découvre une autre activité et consulte les progrès disponibles dans ton profil."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Ces jeux sont-ils gratuits ?",
+        "answer": "Oui. Les jeux de cette sélection sont gratuits et sans publicité. Eterna et Coco Eneagrama sont des services distincts, avec leurs propres conditions."
+      },
+      {
+        "question": "Quand faut-il un compte ?",
+        "answer": "Mémoire, Sudoku et Relie les couleurs nécessitent un compte Coco. Il en faut aussi pour les salons en ligne et les fonctions du profil. Les parties locales d’Échecs, de Generala et de Bataille navale peuvent commencer sans inscription."
+      },
+      {
+        "question": "Faut-il télécharger une application ?",
+        "answer": "Tu peux jouer directement dans le navigateur. Pour retrouver Coco sur ton écran d’accueil, tu peux également l’installer comme application web."
+      },
+      {
+        "question": "Tous les contenus existent-ils en 15 langues ?",
+        "answer": "L’interface propose 15 langues. Certains jeux de mots ou de connaissances conservent leur contenu en espagnol et le signalent. Consulte la fiche avant de jouer."
+      },
+      {
+        "question": "Peut-on jouer en famille ?",
+        "answer": "Oui. Vous pouvez jouer à tour de rôle, partager une partie locale ou utiliser un mode en ligne disponible. Le compte d’un mineur doit être créé ou autorisé par un parent ou un tuteur."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Mémoire",
+        "text": "Observe les cartes, retiens leurs positions et retrouve les paires. Compte nécessaire."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Complète la grille en respectant les lignes, les colonnes et les blocs. Compte nécessaire."
+      },
+      "conecta": {
+        "title": "Relie les couleurs",
+        "text": "Relie chaque paire en laissant de la place aux autres chemins. Compte nécessaire."
+      },
+      "ajedrez": {
+        "title": "Coco Échecs",
+        "text": "Prépare ton prochain coup. Commence une partie locale sans compte."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Lance les dés, choisis ceux que tu gardes et forme des combinaisons. Jeu local sans compte."
+      },
+      "naval": {
+        "title": "Coco Bataille navale",
+        "text": "Explore la grille pour repérer la flotte adverse. Jeu local sans compte."
+      }
+    },
+    "closing": {
+      "title": "À toi de choisir le prochain défi",
+      "text": "Commence par une partie locale ou connecte-toi pour découvrir les activités liées à ton profil.",
+      "button": "Ouvrir Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Les jeux dont le contenu reste en espagnol le précisent dans leur fiche.",
+      "eterna": "Eterna, le soutien scolaire de Coco, est un service distinct. Les échanges avec le tuteur sont actuellement proposés en espagnol."
+    }
+  },
+  "it": {
+    "slug": "giochi-di-logica-gratis",
+    "title": "Giochi mentali gratis online: memoria e logica | Coco",
+    "description": "Scopri giochi gratuiti di memoria, logica, sudoku e scacchi su Coco en Forma. Gioca senza pubblicità dal telefono, dal tablet o dal computer.",
+    "eyebrow": "Giochi mentali gratis online",
+    "heading": "Memoria, logica o strategia: scegli la tua prossima sfida.",
+    "intro": "Coco en Forma raccoglie giochi gratuiti per chi ama riconoscere schemi, ricordare posizioni e pensare alla mossa successiva. Leggi le regole, scegli un’attività e comincia dal browser del telefono, del tablet o del computer.",
+    "keywords": [
+      "giochi mentali gratis",
+      "giochi di memoria online",
+      "giochi di logica",
+      "sudoku gratis",
+      "scacchi online",
+      "giochi in famiglia"
+    ],
+    "labels": {
+      "skip": "Vai al contenuto",
+      "home": "Home",
+      "language": "Lingua",
+      "previous": "Lingua precedente",
+      "next": "Lingua successiva",
+      "menu": "Menu principale",
+      "play": "Gioca",
+      "account": "Accedi o crea un account",
+      "learnMore": "Come si gioca",
+      "explore": "Scegli il prossimo gioco",
+      "faq": "Domande frequenti",
+      "steps": "Tre passi per iniziare",
+      "example": "Prova una piccola sfida",
+      "reveal": "Mostra la spiegazione",
+      "related": "Continua a esplorare",
+      "privacy": "Privacy",
+      "terms": "Condizioni",
+      "footer": "Coco en Forma · Giocare, scoprire e imparare",
+      "updated": "Aggiornato",
+      "free": "Gratis e senza pubblicità",
+      "pwa": "Disponibile anche come app web",
+      "howItWorks": "Come iniziare"
+    },
+    "heroPoints": [
+      "Giochi gratuiti, senza pubblicità",
+      "Telefono, tablet e computer",
+      "Interfaccia in 15 lingue"
+    ],
+    "sections": [
+      {
+        "title": "Trova la sfida che ti incuriosisce",
+        "paragraphs": [
+          "In Memoria cerchi le coppie ricordando dove hai visto ogni immagine. Collega i colori ti invita a unire i punti senza bloccare gli altri percorsi. Nel Sudoku escludi i numeri in base a righe, colonne e riquadri. Sono modi diversi di giocare: segui la curiosità, senza dover scegliere subito il rompicapo più difficile.",
+          "Se preferisci ragionare a turni, prova gli scacchi. In Generala lanci i dadi e decidi quali tenere; in Battaglia navale cerchi le navi su una griglia. Ogni gioco ha regole proprie. Leggerle prima aiuta a capire l’obiettivo, il punteggio e quando finisce una partita."
+        ]
+      },
+      {
+        "title": "Trova il tuo momento per giocare",
+        "paragraphs": [
+          "Puoi giocare da solo o condividere un dispositivo per una partita locale. In famiglia, dopo un turno, potete parlare di una scelta: che cosa avete notato, che cosa avete cambiato e che cosa provereste la prossima volta? Il risultato riguarda quella partita e può aiutare a raccontare il vostro ragionamento.",
+          "Puoi cambiare lingua anche dal menu dopo aver effettuato l’accesso. Coco ricorda la scelta durante la navigazione. Installando l’app web, avrai un collegamento sulla schermata iniziale. Per passare a un’altra attività, torna al menu e apri la sua guida."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Trova il numero successivo",
+      "prompt": "3, 6, 12, 24… La regola è raddoppiare il numero a ogni passaggio. Quale viene dopo?",
+      "answer": "48, perché 24 × 2 = 48. Controlla anche i passaggi precedenti: 3 × 2 = 6 e 6 × 2 = 12. Spiegare la regola permette di verificare la risposta. Puoi provare questo esempio qui, senza account e senza ottenere punti."
+    },
+    "steps": [
+      {
+        "title": "Scegli un gioco",
+        "text": "Confronta le attività e apri una guida per conoscere l’obiettivo e le regole."
+      },
+      {
+        "title": "Inizia a giocare",
+        "text": "Accedi quando il gioco lo richiede. Le partite locali di Scacchi, Generala e Battaglia navale possono iniziare senza account."
+      },
+      {
+        "title": "Torna quando vuoi",
+        "text": "Ritrova la tua lingua, scopri un’altra attività e consulta i progressi disponibili nel profilo."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Questi giochi sono gratuiti?",
+        "answer": "Sì. I giochi di questa selezione sono gratuiti e senza pubblicità. Eterna e Coco Eneagrama sono servizi separati, con condizioni proprie."
+      },
+      {
+        "question": "Quando serve un account?",
+        "answer": "Memoria, Sudoku e Collega i colori richiedono un account Coco. Serve anche per le stanze online e le funzioni del profilo. Puoi iniziare partite locali di Scacchi, Generala e Battaglia navale senza registrarti."
+      },
+      {
+        "question": "Devo scaricare un’app?",
+        "answer": "Puoi giocare direttamente nel browser. Se preferisci un collegamento sulla schermata iniziale, puoi anche installare Coco come app web."
+      },
+      {
+        "question": "Tutti i contenuti sono disponibili in 15 lingue?",
+        "answer": "L’interfaccia offre 15 lingue. Alcuni giochi di parole o di conoscenze mantengono i contenuti in spagnolo e lo segnalano. Controlla la scheda prima di giocare."
+      },
+      {
+        "question": "Possiamo giocare in famiglia?",
+        "answer": "Sì. Potete fare a turno, condividere una partita locale o utilizzare una modalità online disponibile. L’account di un minorenne deve essere creato o autorizzato da un genitore o tutore."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Memoria",
+        "text": "Osserva le carte, ricorda le posizioni e trova le coppie. Account necessario."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Completa la griglia rispettando righe, colonne e riquadri. Account necessario."
+      },
+      "conecta": {
+        "title": "Collega i colori",
+        "text": "Unisci ogni coppia lasciando spazio agli altri percorsi. Account necessario."
+      },
+      "ajedrez": {
+        "title": "Coco Scacchi",
+        "text": "Prepara la prossima mossa. Puoi iniziare una partita locale senza account."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Lancia i dadi, scegli quali tenere e cerca combinazioni. Partite locali senza account."
+      },
+      "naval": {
+        "title": "Coco Battaglia navale",
+        "text": "Esplora la griglia per trovare la flotta avversaria. Partite locali senza account."
+      }
+    },
+    "closing": {
+      "title": "La prossima sfida la scegli tu",
+      "text": "Comincia con una partita locale oppure accedi per scoprire le attività collegate al tuo profilo.",
+      "button": "Apri Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "I giochi con contenuti in spagnolo lo indicano nella propria scheda.",
+      "eterna": "Eterna, il sostegno allo studio di Coco, è un servizio separato. Le conversazioni con il tutor si svolgono attualmente in spagnolo."
+    }
+  },
+  "pl": {
+    "slug": "darmowe-gry-logiczne",
+    "title": "Darmowe gry umysłowe online: pamięć i logika | Coco",
+    "description": "Odkryj darmowe gry pamięciowe, łamigłówki, sudoku i szachy w Coco en Forma. Graj bez reklam na telefonie, tablecie lub komputerze, we własnym tempie.",
+    "eyebrow": "Darmowe gry umysłowe online",
+    "heading": "Pamięć, logika czy strategia? Wybierz kolejne wyzwanie.",
+    "intro": "Coco en Forma to bezpłatne gry dla osób, które lubią odkrywać wzory, zapamiętywać położenie obrazków i planować następny ruch. Przeczytaj zasady, wybierz grę i zacznij w przeglądarce telefonu, tabletu lub komputera.",
+    "keywords": [
+      "darmowe gry umysłowe",
+      "gry pamięciowe online",
+      "gry logiczne",
+      "darmowe sudoku",
+      "szachy online",
+      "gry dla rodziny"
+    ],
+    "labels": {
+      "skip": "Przejdź do treści",
+      "home": "Strona główna",
+      "language": "Język",
+      "previous": "Poprzedni język",
+      "next": "Następny język",
+      "menu": "Menu główne",
+      "play": "Graj",
+      "account": "Zaloguj się lub utwórz konto",
+      "learnMore": "Zasady gry",
+      "explore": "Wybierz kolejną grę",
+      "faq": "Najczęstsze pytania",
+      "steps": "Zacznij w trzech krokach",
+      "example": "Spróbuj krótkiej łamigłówki",
+      "reveal": "Pokaż wyjaśnienie",
+      "related": "Odkrywaj dalej",
+      "privacy": "Prywatność",
+      "terms": "Warunki korzystania",
+      "footer": "Coco en Forma · Zabawa, ciekawość i nauka",
+      "updated": "Aktualizacja",
+      "free": "Bezpłatnie i bez reklam",
+      "pwa": "Dostępne także jako aplikacja internetowa",
+      "howItWorks": "Jak zacząć"
+    },
+    "heroPoints": [
+      "Darmowe gry bez reklam",
+      "Telefon, tablet i komputer",
+      "Interfejs w 15 językach"
+    ],
+    "sections": [
+      {
+        "title": "Znajdź wyzwanie, na które masz ochotę",
+        "paragraphs": [
+          "W grze Pamięć szukasz par, przypominając sobie położenie obrazków. W Połącz kolory łączysz punkty tak, aby pozostawić miejsce na pozostałe ścieżki. Sudoku polega na wykluczaniu liczb zgodnie z układem wierszy, kolumn i bloków. Każda gra wymaga innego podejścia: wybierz tę, która cię ciekawi, bez konieczności zaczynania od najtrudniejszej.",
+          "Jeśli wolisz strategię i ruchy na zmianę, spróbuj szachów. W Generala rzucasz kośćmi i wybierasz, które zachować. W Statkach szukasz floty przeciwnika na siatce. Każda gra ma własne zasady. Warto je poznać, aby rozumieć cel, sposób liczenia punktów i moment zakończenia rozgrywki."
+        ]
+      },
+      {
+        "title": "Znajdź chwilę na grę po swojemu",
+        "paragraphs": [
+          "Możesz grać samodzielnie albo współdzielić urządzenie podczas gry lokalnej. W rodzinie warto po rundzie omówić jedną decyzję: co zauważyliście, co zmieniliście i czego spróbowalibyście następnym razem? Wynik dotyczy konkretnej rozgrywki i może być początkiem rozmowy o waszym sposobie myślenia.",
+          "Język zmienisz również w menu po zalogowaniu. Coco zapamiętuje wybór podczas przechodzenia między stronami. Instalacja aplikacji internetowej pozwala otwierać ją z ekranu głównego. Aby spróbować czegoś innego, wróć do menu i przeczytaj opis następnej gry."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Jaka liczba będzie następna?",
+      "prompt": "3, 6, 12, 24… Zasada brzmi: przy każdym kroku pomnóż liczbę przez dwa. Jaka liczba pojawi się dalej?",
+      "answer": "48, ponieważ 24 × 2 = 48. Sprawdź też wcześniejsze kroki: 3 × 2 = 6 oraz 6 × 2 = 12. Wyjaśnienie zasady pomaga zweryfikować odpowiedź. Ten przykład możesz rozwiązać tutaj, bez konta i bez zdobywania punktów."
+    },
+    "steps": [
+      {
+        "title": "Wybierz grę",
+        "text": "Porównaj propozycje i przeczytaj instrukcję, aby poznać cel oraz zasady."
+      },
+      {
+        "title": "Rozpocznij rozgrywkę",
+        "text": "Zaloguj się, jeśli gra tego wymaga. Lokalne partie Szachów, Generali i Statków możesz rozpocząć bez konta."
+      },
+      {
+        "title": "Wracaj, kiedy chcesz",
+        "text": "Zachowaj wybrany język, odkrywaj kolejne gry i sprawdzaj postępy dostępne w profilu."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Czy te gry są darmowe?",
+        "answer": "Tak. Gry z tego zestawu są bezpłatne i nie zawierają reklam. Eterna oraz Coco Eneagrama to odrębne usługi z własnymi warunkami."
+      },
+      {
+        "question": "Kiedy potrzebuję konta?",
+        "answer": "Pamięć, Sudoku i Połącz kolory wymagają konta Coco. Konto jest też potrzebne do pokoi online i funkcji profilu. Lokalne partie Szachów, Generali i Statków można rozpocząć bez rejestracji."
+      },
+      {
+        "question": "Czy trzeba pobrać aplikację?",
+        "answer": "Możesz grać bezpośrednio w przeglądarce. Jeśli chcesz mieć skrót na ekranie głównym, możesz również zainstalować Coco jako aplikację internetową."
+      },
+      {
+        "question": "Czy wszystkie treści są w 15 językach?",
+        "answer": "Interfejs oferuje 15 języków. Niektóre gry słowne i quizowe nadal zawierają treści po hiszpańsku i informują o tym w opisie. Sprawdź tę informację przed rozpoczęciem."
+      },
+      {
+        "question": "Czy możemy grać całą rodziną?",
+        "answer": "Tak. Możecie grać na zmianę, dzielić lokalną rozgrywkę lub wybrać dostępny tryb online. Konto osoby niepełnoletniej powinien utworzyć lub zatwierdzić rodzic albo opiekun."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Pamięć",
+        "text": "Obserwuj karty, zapamiętuj ich położenie i znajduj pary. Wymagane konto."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Uzupełnij siatkę zgodnie z zasadami wierszy, kolumn i bloków. Wymagane konto."
+      },
+      "conecta": {
+        "title": "Połącz kolory",
+        "text": "Połącz każdą parę, zostawiając miejsce na pozostałe ścieżki. Wymagane konto."
+      },
+      "ajedrez": {
+        "title": "Coco Szachy",
+        "text": "Zaplanuj następny ruch. Lokalną partię możesz rozpocząć bez konta."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Rzuć kośćmi, wybierz te do zachowania i układaj kombinacje. Gra lokalna bez konta."
+      },
+      "naval": {
+        "title": "Coco Statki",
+        "text": "Przeszukuj siatkę, aby znaleźć flotę przeciwnika. Gra lokalna bez konta."
+      }
+    },
+    "closing": {
+      "title": "Kolejne wyzwanie wybierasz samodzielnie",
+      "text": "Zacznij od gry lokalnej lub zaloguj się, aby odkryć aktywności powiązane z twoim profilem.",
+      "button": "Otwórz Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Gry z treściami po hiszpańsku zawierają odpowiednią informację w opisie.",
+      "eterna": "Eterna, wsparcie w nauce oferowane przez Coco, to osobna usługa. Rozmowy z tutorem odbywają się obecnie po hiszpańsku."
+    }
+  },
+  "uk": {
+    "slug": "bezkoshtovni-intelektualni-ihry",
+    "title": "Безкоштовні ігри онлайн: пам’ять і логіка | Coco",
+    "description": "Відкрийте безкоштовні ігри на пам’ять, логічні головоломки, судоку та шахи в Coco en Forma. Грайте без реклами з телефона, планшета чи комп’ютера.",
+    "eyebrow": "Безкоштовні інтелектуальні ігри онлайн",
+    "heading": "Пам’ять, логіка чи стратегія? Обирайте наступний виклик.",
+    "intro": "Coco en Forma пропонує безкоштовні ігри для тих, хто любить помічати закономірності, запам’ятовувати розташування зображень і планувати наступний хід. Ознайомтеся з правилами та почніть у браузері телефона, планшета чи комп’ютера.",
+    "keywords": [
+      "безкоштовні інтелектуальні ігри",
+      "ігри на пам’ять онлайн",
+      "логічні ігри",
+      "судоку безкоштовно",
+      "шахи онлайн",
+      "сімейні ігри"
+    ],
+    "labels": {
+      "skip": "Перейти до вмісту",
+      "home": "Головна",
+      "language": "Мова",
+      "previous": "Попередня мова",
+      "next": "Наступна мова",
+      "menu": "Головне меню",
+      "play": "Грати",
+      "account": "Увійти або створити обліковий запис",
+      "learnMore": "Правила гри",
+      "explore": "Оберіть наступну гру",
+      "faq": "Поширені запитання",
+      "steps": "Три кроки до початку",
+      "example": "Спробуйте невелику головоломку",
+      "reveal": "Показати пояснення",
+      "related": "Дізнавайтеся більше",
+      "privacy": "Конфіденційність",
+      "terms": "Умови користування",
+      "footer": "Coco en Forma · Гра, цікавість і навчання",
+      "updated": "Оновлено",
+      "free": "Безкоштовно та без реклами",
+      "pwa": "Також доступно як вебзастосунок",
+      "howItWorks": "Як почати"
+    },
+    "heroPoints": [
+      "Безкоштовні ігри без реклами",
+      "Телефон, планшет і комп’ютер",
+      "Інтерфейс 15 мовами"
+    ],
+    "sections": [
+      {
+        "title": "Знайдіть завдання, яке вас зацікавить",
+        "paragraphs": [
+          "У грі Пам’ять ви шукаєте пари та пригадуєте, де бачили кожне зображення. У грі З’єднай кольори потрібно поєднати точки, залишаючи місце для інших шляхів. Судоку пропонує виключати числа за правилами рядків, стовпців і блоків. Це різні способи гри: обирайте за цікавістю, не обов’язково починаючи з найскладнішого завдання.",
+          "Якщо вам подобаються почергові стратегічні рішення, спробуйте шахи. У Generala ви кидаєте кубики та вирішуєте, які залишити. У Морському бою шукаєте кораблі на сітці. Кожна гра має власні правила: вони пояснюють мету, нарахування балів і завершення раунду."
+        ]
+      },
+      {
+        "title": "Знайдіть час для гри у власному темпі",
+        "paragraphs": [
+          "Грайте самостійно або користуйтеся одним пристроєм для локальної партії. У родині можна після раунду обговорити одне рішення: що ви помітили, що змінили та що спробували б наступного разу? Результат стосується конкретної гри й може стати приводом поговорити про ваші міркування.",
+          "Мову можна змінити й у меню після входу в обліковий запис. Coco запам’ятовує вибір під час переходів між сторінками. Установивши вебзастосунок, ви зможете відкривати його з головного екрана. Для іншого заняття поверніться до меню та прочитайте опис наступної гри."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Яке число буде наступним?",
+      "prompt": "3, 6, 12, 24… Правило: на кожному кроці помножити число на два. Яке число йде далі?",
+      "answer": "48, адже 24 × 2 = 48. Перевірте також попередні кроки: 3 × 2 = 6 і 6 × 2 = 12. Пояснення правила допомагає перевірити відповідь. Цей приклад можна розв’язати тут без облікового запису; бали за нього не нараховуються."
+    },
+    "steps": [
+      {
+        "title": "Оберіть гру",
+        "text": "Порівняйте варіанти та відкрийте інструкцію, щоб дізнатися мету й правила."
+      },
+      {
+        "title": "Почніть грати",
+        "text": "Увійдіть, якщо гра потребує облікового запису. Локальні партії в Шахи, Generala та Морський бій можна розпочати без реєстрації."
+      },
+      {
+        "title": "Повертайтеся, коли зручно",
+        "text": "Зберігайте обрану мову, відкривайте інші ігри та переглядайте доступний прогрес у профілі."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Чи безкоштовні ці ігри?",
+        "answer": "Так. Ігри в цій добірці безкоштовні та не містять реклами. Eterna й Coco Eneagrama — окремі послуги з власними умовами."
+      },
+      {
+        "question": "Коли потрібен обліковий запис?",
+        "answer": "Пам’ять, Судоку та З’єднай кольори потребують облікового запису Coco. Він також потрібен для онлайн-кімнат і функцій профілю. Локальні партії в Шахи, Generala та Морський бій доступні без реєстрації."
+      },
+      {
+        "question": "Чи потрібно завантажувати застосунок?",
+        "answer": "Можна грати безпосередньо в браузері. Якщо зручніше відкривати Coco з головного екрана, установіть його як вебзастосунок."
+      },
+      {
+        "question": "Чи весь вміст доступний 15 мовами?",
+        "answer": "Інтерфейс пропонує 15 мов. Деякі словесні ігри та вікторини зберігають іспаномовний вміст і повідомляють про це. Перед початком перегляньте опис гри."
+      },
+      {
+        "question": "Чи можна грати всією родиною?",
+        "answer": "Так. Можна грати по черзі, ділити локальну партію або скористатися доступним онлайн-режимом. Обліковий запис неповнолітнього має створити або схвалити один із батьків чи опікун."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Пам’ять",
+        "text": "Розглядайте картки, запам’ятовуйте їхнє розташування та знаходьте пари. Потрібен обліковий запис."
+      },
+      "sudoku": {
+        "title": "Судоку",
+        "text": "Заповніть сітку за правилами рядків, стовпців і блоків. Потрібен обліковий запис."
+      },
+      "conecta": {
+        "title": "З’єднай кольори",
+        "text": "Поєднайте кожну пару, залишаючи місце для інших шляхів. Потрібен обліковий запис."
+      },
+      "ajedrez": {
+        "title": "Coco Шахи",
+        "text": "Сплануйте наступний хід. Локальну партію можна розпочати без облікового запису."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Кидайте кубики, обирайте, які залишити, і збирайте комбінації. Локальна гра без реєстрації."
+      },
+      "naval": {
+        "title": "Coco Морський бій",
+        "text": "Досліджуйте сітку, щоб знайти флот суперника. Локальна гра без реєстрації."
+      }
+    },
+    "closing": {
+      "title": "Наступний виклик обираєте ви",
+      "text": "Почніть із локальної партії або увійдіть, щоб відкрити ігри, пов’язані з вашим профілем.",
+      "button": "Відкрити Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Ігри з іспаномовним вмістом повідомляють про це у своєму описі.",
+      "eterna": "Eterna, навчальна підтримка від Coco, є окремою послугою. Спілкування з тьютором наразі відбувається іспанською."
+    }
+  },
+  "ru": {
+    "slug": "besplatnye-intellektualnye-igry",
+    "title": "Бесплатные игры онлайн: память и логика | Coco",
+    "description": "Откройте бесплатные игры на память, логические головоломки, судоку и шахматы в Coco en Forma. Играйте без рекламы с телефона, планшета или компьютера.",
+    "eyebrow": "Бесплатные интеллектуальные игры онлайн",
+    "heading": "Память, логика или стратегия? Выбирайте новую задачу.",
+    "intro": "Coco en Forma предлагает бесплатные игры для тех, кто любит замечать закономерности, запоминать расположение картинок и продумывать следующий ход. Прочитайте правила и начните прямо в браузере телефона, планшета или компьютера.",
+    "keywords": [
+      "бесплатные интеллектуальные игры",
+      "игры на память онлайн",
+      "логические игры",
+      "судоку бесплатно",
+      "шахматы онлайн",
+      "семейные игры"
+    ],
+    "labels": {
+      "skip": "Перейти к содержимому",
+      "home": "Главная",
+      "language": "Язык",
+      "previous": "Предыдущий язык",
+      "next": "Следующий язык",
+      "menu": "Главное меню",
+      "play": "Играть",
+      "account": "Войти или создать аккаунт",
+      "learnMore": "Правила игры",
+      "explore": "Выберите следующую игру",
+      "faq": "Частые вопросы",
+      "steps": "Три шага для начала",
+      "example": "Попробуйте небольшую головоломку",
+      "reveal": "Показать объяснение",
+      "related": "Узнайте больше",
+      "privacy": "Конфиденциальность",
+      "terms": "Условия использования",
+      "footer": "Coco en Forma · Игра, любопытство и обучение",
+      "updated": "Обновлено",
+      "free": "Бесплатно и без рекламы",
+      "pwa": "Также доступно как веб-приложение",
+      "howItWorks": "Как начать"
+    },
+    "heroPoints": [
+      "Бесплатные игры без рекламы",
+      "Телефон, планшет и компьютер",
+      "Интерфейс на 15 языках"
+    ],
+    "sections": [
+      {
+        "title": "Найдите задачу, которая вам интересна",
+        "paragraphs": [
+          "В игре Память вы находите пары, вспоминая, где появилась каждая картинка. В игре Соедини цвета нужно соединять точки, оставляя место для других путей. В Судоку вы исключаете числа по правилам строк, столбцов и блоков. Это разные способы игры: выбирайте по интересу, не обязательно начиная с самой сложной головоломки.",
+          "Если вам нравится продумывать ходы по очереди, попробуйте шахматы. В Generala вы бросаете кубики и решаете, какие оставить. В Морском бое ищете корабли на сетке. У каждой игры собственные правила: они объясняют цель, подсчёт очков и завершение раунда."
+        ]
+      },
+      {
+        "title": "Играйте в удобное для вас время",
+        "paragraphs": [
+          "Можно играть самостоятельно или пользоваться одним устройством для локальной партии. В семье после раунда удобно обсудить одно решение: что вы заметили, что изменили и что попробовали бы в следующий раз? Результат относится к этой партии и может стать поводом поговорить о вашем подходе к игре.",
+          "Язык можно менять и в меню после входа в аккаунт. Coco сохраняет выбор при переходе между страницами. Установив веб-приложение, вы сможете открывать его с главного экрана. Чтобы сменить занятие, вернитесь в меню и прочитайте описание следующей игры."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Какое число будет следующим?",
+      "prompt": "3, 6, 12, 24… Правило: на каждом шаге умножать число на два. Что идёт дальше?",
+      "answer": "48, потому что 24 × 2 = 48. Проверьте и предыдущие шаги: 3 × 2 = 6 и 6 × 2 = 12. Объяснение правила помогает проверить ответ. Этот пример можно решить здесь без аккаунта; очки за него не начисляются."
+    },
+    "steps": [
+      {
+        "title": "Выберите игру",
+        "text": "Сравните варианты и откройте инструкцию, чтобы узнать цель и правила."
+      },
+      {
+        "title": "Начните играть",
+        "text": "Войдите, если игра требует аккаунт. Локальные партии в Шахматы, Generala и Морской бой можно начать без регистрации."
+      },
+      {
+        "title": "Возвращайтесь, когда захотите",
+        "text": "Сохраняйте выбранный язык, открывайте другие игры и смотрите доступный прогресс в профиле."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Эти игры бесплатные?",
+        "answer": "Да. Игры в этой подборке бесплатны и не содержат рекламы. Eterna и Coco Eneagrama — отдельные услуги со своими условиями."
+      },
+      {
+        "question": "Когда нужен аккаунт?",
+        "answer": "Для игр Память, Судоку и Соедини цвета нужен аккаунт Coco. Он также требуется для онлайн-комнат и функций профиля. Локальные партии в Шахматы, Generala и Морской бой доступны без регистрации."
+      },
+      {
+        "question": "Нужно ли скачивать приложение?",
+        "answer": "Можно играть прямо в браузере. Если удобнее открывать Coco с главного экрана, его также можно установить как веб-приложение."
+      },
+      {
+        "question": "Все ли материалы доступны на 15 языках?",
+        "answer": "Интерфейс предлагает 15 языков. Некоторые словесные игры и викторины сохраняют испаноязычное содержание и сообщают об этом. Перед началом прочитайте описание игры."
+      },
+      {
+        "question": "Можно ли играть всей семьёй?",
+        "answer": "Да. Можно играть по очереди, делить локальную партию или пользоваться доступным онлайн-режимом. Аккаунт несовершеннолетнего должен создать или одобрить родитель либо опекун."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Память",
+        "text": "Смотрите на карточки, запоминайте их расположение и находите пары. Нужен аккаунт."
+      },
+      "sudoku": {
+        "title": "Судоку",
+        "text": "Заполните сетку по правилам строк, столбцов и блоков. Нужен аккаунт."
+      },
+      "conecta": {
+        "title": "Соедини цвета",
+        "text": "Соедините каждую пару, оставив место для остальных путей. Нужен аккаунт."
+      },
+      "ajedrez": {
+        "title": "Coco Шахматы",
+        "text": "Продумайте следующий ход. Локальную партию можно начать без аккаунта."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Бросайте кубики, решайте, какие оставить, и собирайте комбинации. Локальная игра без регистрации."
+      },
+      "naval": {
+        "title": "Coco Морской бой",
+        "text": "Исследуйте сетку, чтобы найти флот соперника. Локальная игра без регистрации."
+      }
+    },
+    "closing": {
+      "title": "Следующее испытание выбираете вы",
+      "text": "Начните с локальной партии или войдите, чтобы открыть игры и возможности своего профиля.",
+      "button": "Открыть Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Игры с испаноязычным содержанием сообщают об этом в своём описании.",
+      "eterna": "Eterna, учебная поддержка от Coco, является отдельной услугой. Общение с тьютором сейчас проходит на испанском языке."
+    }
+  },
+  "zh-Hans": {
+    "slug": "mianfei-yizhi-youxi",
+    "title": "免费在线益智游戏：记忆、逻辑、数独和国际象棋 | Coco",
+    "description": "在 Coco en Forma 探索免费的记忆配对、逻辑、数独和国际象棋游戏。用手机、平板或电脑浏览器随时游玩，无广告，按自己的节奏开始。",
+    "eyebrow": "免费在线益智游戏",
+    "heading": "记忆、逻辑还是策略？选择你喜欢的挑战。",
+    "intro": "Coco en Forma 为喜欢寻找规律、记住位置和思考下一步的玩家提供免费游戏。先了解规则，再选择一项活动，用手机、平板或电脑浏览器就能开始。",
+    "keywords": [
+      "免费益智游戏",
+      "在线记忆游戏",
+      "逻辑游戏",
+      "免费数独",
+      "在线国际象棋",
+      "家庭游戏"
+    ],
+    "labels": {
+      "skip": "跳转到正文",
+      "home": "首页",
+      "language": "语言",
+      "previous": "上一种语言",
+      "next": "下一种语言",
+      "menu": "主菜单",
+      "play": "开始游戏",
+      "account": "登录或创建账户",
+      "learnMore": "游戏规则",
+      "explore": "选择下一款游戏",
+      "faq": "常见问题",
+      "steps": "三步开始游戏",
+      "example": "试试这道小题",
+      "reveal": "查看解析",
+      "related": "继续探索",
+      "privacy": "隐私政策",
+      "terms": "使用条款",
+      "footer": "Coco en Forma · 游戏、好奇与学习",
+      "updated": "更新日期",
+      "free": "免费且无广告",
+      "pwa": "也可安装为网页应用",
+      "howItWorks": "如何开始"
+    },
+    "heroPoints": [
+      "免费游戏，无广告",
+      "支持手机、平板和电脑",
+      "界面提供15种语言"
+    ],
+    "sections": [
+      {
+        "title": "找到适合此刻的挑战",
+        "paragraphs": [
+          "在记忆配对中，你需要回想每张图片出现的位置，找到相同的两张卡片。连接颜色要求你连起成对的点，同时为其他路线留出空间。数独则需要根据行、列和宫的规则排除数字。不同游戏有不同的思考方式，可以先从感兴趣的开始，不必一上来就选最难的。",
+          "如果喜欢轮流做决定，可以试试国际象棋。Generala 骰子游戏让你决定保留哪些骰子，再寻找合适的组合；海战则要在网格上寻找对方的舰船。每款游戏都有自己的规则，开始前看看说明，能帮助你理解目标、计分方式和一局何时结束。"
+        ]
+      },
+      {
+        "title": "用自己的节奏安排一局游戏",
+        "paragraphs": [
+          "你可以独自游玩，也可以共用一个设备进行本地对局。和家人一起玩时，不妨在一轮结束后聊聊某个选择：注意到了什么、改变了什么、下次想尝试什么。成绩反映的是这一局的表现，可以作为交流游戏思路的起点。",
+          "登录账户后，也可以在菜单中切换语言。浏览不同页面时，Coco 会记住你的选择。将网页应用安装到主屏幕后，就能通过图标打开。想换一种活动时，返回主菜单，阅读下一款游戏的介绍即可。"
+        ]
+      }
+    ],
+    "example": {
+      "title": "下一个数字是多少？",
+      "prompt": "3、6、12、24……如果规则是每一步都乘以2，下一个数字是什么？",
+      "answer": "48，因为24 × 2 = 48。也可以检查前面的步骤：3 × 2 = 6，6 × 2 = 12。说清楚规律，有助于核对答案。这道示例题可以直接在这里尝试，不需要账户，也不计入游戏积分。"
+    },
+    "steps": [
+      {
+        "title": "选择一款游戏",
+        "text": "比较不同活动，打开游戏介绍，了解目标和规则。"
+      },
+      {
+        "title": "开始游玩",
+        "text": "如果游戏要求登录，请使用 Coco 账户。国际象棋、Generala 和海战的本地对局可以无需注册直接开始。"
+      },
+      {
+        "title": "想玩时再回来",
+        "text": "保留语言选择，探索其他活动，并查看账户中提供的进度记录。"
+      }
+    ],
+    "faq": [
+      {
+        "question": "这些游戏都免费吗？",
+        "answer": "是的，这里介绍的游戏免费且无广告。Eterna 和 Coco Eneagrama 是独立服务，适用各自的条件。"
+      },
+      {
+        "question": "什么时候需要账户？",
+        "answer": "记忆配对、数独和连接颜色需要 Coco 账户。在线房间和个人资料功能也需要登录。国际象棋、Generala 和海战的本地对局可以无需注册开始。"
+      },
+      {
+        "question": "必须下载应用吗？",
+        "answer": "你可以直接在浏览器中玩。如果希望从主屏幕打开，也可以把 Coco 安装为网页应用。"
+      },
+      {
+        "question": "所有内容都有15种语言吗？",
+        "answer": "界面支持15种语言。部分文字和知识类游戏仍使用西班牙语内容，并会显示提示。开始前可以先查看游戏介绍。"
+      },
+      {
+        "question": "可以和家人一起玩吗？",
+        "answer": "可以。你们可以轮流操作、一起进行本地对局，或使用已有的在线模式。未成年人的账户应由父母或监护人创建或授权。"
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "记忆配对",
+        "text": "观察卡片，记住位置，找到相同的图片。需要账户。"
+      },
+      "sudoku": {
+        "title": "数独",
+        "text": "按照行、列和宫的规则填写网格。需要账户。"
+      },
+      "conecta": {
+        "title": "连接颜色",
+        "text": "连接每一对同色点，同时为其他路线留出空间。需要账户。"
+      },
+      "ajedrez": {
+        "title": "Coco 国际象棋",
+        "text": "思考下一步棋。本地对局无需账户即可开始。"
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "掷骰子，选择保留的点数，寻找组合。本地游戏无需账户。"
+      },
+      "naval": {
+        "title": "Coco 海战",
+        "text": "探索网格，寻找对方的舰队。本地游戏无需账户。"
+      }
+    },
+    "closing": {
+      "title": "下一项挑战，由你选择",
+      "text": "先来一局本地游戏，或者登录账户，探索与你的个人资料关联的活动。",
+      "button": "打开 Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "仍使用西班牙语内容的游戏会在介绍中注明。",
+      "eterna": "Eterna 是 Coco 的独立学习辅导服务。目前，与辅导助手的对话使用西班牙语。"
+    }
+  },
+  "ar": {
+    "slug": "alaab-dhihniya-majaniya",
+    "title": "ألعاب ذهنية مجانية أونلاين: الذاكرة والمنطق | Coco",
+    "description": "اكتشف ألعاب الذاكرة والمنطق والسودوكو والشطرنج المجانية على Coco en Forma. العب بلا إعلانات من الهاتف أو الجهاز اللوحي أو الكمبيوتر وبالوتيرة التي تناسبك.",
+    "eyebrow": "ألعاب ذهنية مجانية أونلاين",
+    "heading": "ذاكرة أم منطق أم استراتيجية؟ اختر تحديك التالي.",
+    "intro": "يجمع Coco en Forma ألعابًا مجانية لمن يحب اكتشاف الأنماط وتذكّر المواقع والتفكير في الخطوة التالية. اطّلع على القواعد، واختر نشاطًا، ثم ابدأ من متصفح الهاتف أو الجهاز اللوحي أو الكمبيوتر.",
+    "keywords": [
+      "ألعاب ذهنية مجانية",
+      "ألعاب ذاكرة أونلاين",
+      "ألعاب منطق",
+      "سودوكو مجاني",
+      "شطرنج أونلاين",
+      "ألعاب عائلية"
+    ],
+    "labels": {
+      "skip": "انتقل إلى المحتوى",
+      "home": "الرئيسية",
+      "language": "اللغة",
+      "previous": "اللغة السابقة",
+      "next": "اللغة التالية",
+      "menu": "القائمة الرئيسية",
+      "play": "العب",
+      "account": "سجّل الدخول أو أنشئ حسابًا",
+      "learnMore": "طريقة اللعب",
+      "explore": "اختر لعبتك التالية",
+      "faq": "الأسئلة الشائعة",
+      "steps": "ثلاث خطوات للبدء",
+      "example": "جرّب هذا التحدي الصغير",
+      "reveal": "اعرض الشرح",
+      "related": "واصل الاستكشاف",
+      "privacy": "الخصوصية",
+      "terms": "شروط الاستخدام",
+      "footer": "Coco en Forma · لعب وفضول وتعلّم",
+      "updated": "آخر تحديث",
+      "free": "مجاني وبلا إعلانات",
+      "pwa": "متاح أيضًا كتطبيق ويب",
+      "howItWorks": "كيف تبدأ"
+    },
+    "heroPoints": [
+      "ألعاب مجانية بلا إعلانات",
+      "الهاتف والجهاز اللوحي والكمبيوتر",
+      "واجهة متاحة بـ15 لغة"
+    ],
+    "sections": [
+      {
+        "title": "اختر التحدي الذي يثير فضولك",
+        "paragraphs": [
+          "في لعبة الذاكرة، تبحث عن الأزواج وتتذكّر مكان ظهور كل صورة. وفي توصيل الألوان، تصل بين النقاط مع ترك مساحة للمسارات الأخرى. أما السودوكو، فتقوم على استبعاد الأرقام وفق الصفوف والأعمدة والمربعات. لكل لعبة طريقة مختلفة في التفكير؛ اختر ما يثير فضولك، ولا يلزم أن تبدأ بأصعب تحدٍّ.",
+          "إذا كنت تفضّل اتخاذ القرارات بالتناوب، فجرّب الشطرنج. في Generala ترمي النرد وتقرّر أي النتائج تحتفظ بها، بينما تبحث في المعركة البحرية عن السفن داخل شبكة. لكل لعبة قواعدها الخاصة. قراءتها أولًا تساعدك على فهم الهدف وطريقة احتساب النقاط وموعد انتهاء الجولة."
+        ]
+      },
+      {
+        "title": "خصص وقتًا للعب بالطريقة التي تناسبك",
+        "paragraphs": [
+          "يمكنك اللعب وحدك أو مشاركة جهاز واحد في مباراة محلية. وعند اللعب مع العائلة، يمكنكم مناقشة قرار بعد الجولة: ماذا لاحظتم؟ ما الذي غيّرتموه؟ وماذا ستجرّبون في المرة القادمة؟ النتيجة تصف تلك المباراة، وقد تكون بداية حوار حول طريقة تفكيركم أثناء اللعب.",
+          "يمكنك تغيير اللغة من القائمة أيضًا بعد تسجيل الدخول. يتذكّر Coco اختيارك أثناء التنقل بين الصفحات. وإذا ثبّتَّ تطبيق الويب، يمكنك فتحه من الشاشة الرئيسية. للانتقال إلى نشاط آخر، عد إلى القائمة واطّلع على دليل اللعبة التالية."
+        ]
+      }
+    ],
+    "example": {
+      "title": "ما العدد التالي؟",
+      "prompt": "3، 6، 12، 24… إذا كانت القاعدة هي ضرب العدد في اثنين في كل خطوة، فما العدد التالي؟",
+      "answer": "48، لأن 24 × 2 = 48. تحقّق أيضًا من الخطوات السابقة: 3 × 2 = 6 و6 × 2 = 12. شرح القاعدة يساعدك على مراجعة الإجابة. يمكنك حل هذا المثال هنا من دون حساب، وهو لا يمنح نقاطًا في الألعاب."
+    },
+    "steps": [
+      {
+        "title": "اختر لعبة",
+        "text": "قارن بين الأنشطة وافتح الدليل للتعرّف إلى الهدف والقواعد."
+      },
+      {
+        "title": "ابدأ اللعب",
+        "text": "سجّل الدخول عندما تطلب اللعبة ذلك. يمكنك بدء مباريات محلية في الشطرنج وGenerala والمعركة البحرية من دون حساب."
+      },
+      {
+        "title": "عد متى شئت",
+        "text": "احتفظ بلغتك المختارة، واكتشف نشاطًا آخر، وراجع التقدّم المتاح في ملفك الشخصي."
+      }
+    ],
+    "faq": [
+      {
+        "question": "هل هذه الألعاب مجانية؟",
+        "answer": "نعم. الألعاب في هذه المجموعة مجانية ولا تعرض إعلانات. أما Eterna وCoco Eneagrama فهما خدمتان منفصلتان، ولكل منهما شروطها الخاصة."
+      },
+      {
+        "question": "متى أحتاج إلى حساب؟",
+        "answer": "تتطلب ألعاب الذاكرة والسودوكو وتوصيل الألوان حساب Coco. وتحتاج غرف اللعب عبر الإنترنت ووظائف الملف الشخصي إلى تسجيل الدخول أيضًا. يمكن بدء المباريات المحلية في الشطرنج وGenerala والمعركة البحرية من دون تسجيل."
+      },
+      {
+        "question": "هل يجب تنزيل تطبيق؟",
+        "answer": "يمكنك اللعب مباشرة من المتصفح. وإذا أردت الوصول من الشاشة الرئيسية، يمكنك أيضًا تثبيت Coco كتطبيق ويب."
+      },
+      {
+        "question": "هل تتوفر كل المحتويات باللغات الخمس عشرة؟",
+        "answer": "تتوفر الواجهة بـ15 لغة. تحتفظ بعض ألعاب الكلمات والمعرفة بمحتواها الإسباني، وتعرض تنبيهًا بذلك. راجع وصف اللعبة قبل البدء."
+      },
+      {
+        "question": "هل يمكننا اللعب مع العائلة؟",
+        "answer": "نعم. يمكنكم التناوب أو مشاركة مباراة محلية أو استخدام أحد أوضاع اللعب المتاحة عبر الإنترنت. يجب أن ينشئ أحد الوالدين أو الوصي حساب القاصر أو يوافق عليه."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "الذاكرة",
+        "text": "راقب البطاقات وتذكّر مواقعها وابحث عن الأزواج. يتطلب حسابًا."
+      },
+      "sudoku": {
+        "title": "السودوكو",
+        "text": "أكمل الشبكة وفق قواعد الصفوف والأعمدة والمربعات. يتطلب حسابًا."
+      },
+      "conecta": {
+        "title": "توصيل الألوان",
+        "text": "صِل كل زوج واترك مساحة للمسارات الأخرى. يتطلب حسابًا."
+      },
+      "ajedrez": {
+        "title": "Coco للشطرنج",
+        "text": "خطط لخطوتك التالية. ابدأ مباراة محلية من دون حساب."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "ارمِ النرد واختر ما تحتفظ به وابحث عن التركيبات. اللعب المحلي لا يحتاج إلى حساب."
+      },
+      "naval": {
+        "title": "Coco المعركة البحرية",
+        "text": "استكشف الشبكة لتحديد مواقع أسطول المنافس. اللعب المحلي لا يحتاج إلى حساب."
+      }
+    },
+    "closing": {
+      "title": "التحدي التالي من اختيارك",
+      "text": "ابدأ بمباراة محلية أو سجّل الدخول لاكتشاف الأنشطة المرتبطة بملفك الشخصي.",
+      "button": "افتح Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "توضح الألعاب التي تحتفظ بالمحتوى الإسباني ذلك في وصفها.",
+      "eterna": "Eterna، خدمة الدعم الدراسي من Coco، خدمة مستقلة. تُقدَّم جلسات المساعد التعليمي حاليًا باللغة الإسبانية."
+    }
+  },
+  "sv": {
+    "slug": "gratis-hjarngympa",
+    "title": "Gratis hjärngympa online: minne och logik | Coco",
+    "description": "Upptäck gratis minnesspel, logikspel, sudoku och schack hos Coco en Forma. Spela utan reklam på mobilen, surfplattan eller datorn i din egen takt.",
+    "eyebrow": "Gratis hjärngympa online",
+    "heading": "Minne, logik eller strategi? Välj din nästa utmaning.",
+    "intro": "Coco en Forma samlar gratis spel för dig som tycker om att upptäcka mönster, minnas placeringar och tänka ett drag framåt. Läs reglerna, välj en aktivitet och börja direkt i webbläsaren på mobilen, surfplattan eller datorn.",
+    "keywords": [
+      "gratis hjärngympa",
+      "minnesspel online",
+      "logikspel",
+      "gratis sudoku",
+      "schack online",
+      "spel för familjen"
+    ],
+    "labels": {
+      "skip": "Hoppa till innehållet",
+      "home": "Hem",
+      "language": "Språk",
+      "previous": "Föregående språk",
+      "next": "Nästa språk",
+      "menu": "Huvudmeny",
+      "play": "Spela",
+      "account": "Logga in eller skapa konto",
+      "learnMore": "Spelregler",
+      "explore": "Välj ditt nästa spel",
+      "faq": "Vanliga frågor",
+      "steps": "Kom igång i tre steg",
+      "example": "Prova en liten utmaning",
+      "reveal": "Visa förklaringen",
+      "related": "Fortsätt upptäcka",
+      "privacy": "Integritet",
+      "terms": "Villkor",
+      "footer": "Coco en Forma · Lek, nyfikenhet och lärande",
+      "updated": "Uppdaterad",
+      "free": "Gratis och utan reklam",
+      "pwa": "Finns även som webbapp",
+      "howItWorks": "Så kommer du igång"
+    },
+    "heroPoints": [
+      "Gratis spel utan reklam",
+      "Mobil, surfplatta och dator",
+      "Gränssnitt på 15 språk"
+    ],
+    "sections": [
+      {
+        "title": "Hitta den sorts utmaning du är sugen på",
+        "paragraphs": [
+          "I Minnesspelet letar du efter par genom att minnas var bilderna finns. I Koppla ihop färger drar du linjer mellan punkter och lämnar plats åt de andra vägarna. I Sudoku utesluter du siffror utifrån rader, kolumner och block. Spelen erbjuder olika sätt att tänka: följ din nyfikenhet, utan att behöva börja med det svåraste.",
+          "Om du gillar strategi där ni turas om kan du prova Schack. I Generala slår du tärningar och väljer vilka du vill behålla. I Sänka skepp söker du efter motståndarens fartyg på ett rutnät. Varje spel har egna regler. Läs dem först för att förstå målet, poängen och när en omgång är slut."
+        ]
+      },
+      {
+        "title": "Gör plats för en spelstund på ditt sätt",
+        "paragraphs": [
+          "Spela själv eller dela en enhet för en lokal match. I familjen kan ni prata om ett beslut efter omgången: vad lade ni märke till, vad ändrade ni och vad skulle ni prova nästa gång? Resultatet gäller just den matchen och kan bli en utgångspunkt för att prata om hur ni tänkte.",
+          "Du kan också byta språk i menyn efter att du har loggat in. Coco kommer ihåg ditt val när du går mellan sidorna. Om du installerar webbappen kan du öppna den från hemskärmen. Vill du prova en annan aktivitet går du tillbaka till menyn och läser dess spelguide."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Vilket tal kommer härnäst?",
+      "prompt": "3, 6, 12, 24 … Regeln är att dubbla talet i varje steg. Vilket tal kommer sedan?",
+      "answer": "48, eftersom 24 × 2 = 48. Kontrollera även de tidigare stegen: 3 × 2 = 6 och 6 × 2 = 12. Att förklara regeln hjälper dig att kontrollera svaret. Du kan lösa exemplet här utan konto; det ger inga spelpoäng."
+    },
+    "steps": [
+      {
+        "title": "Välj ett spel",
+        "text": "Jämför aktiviteterna och öppna en guide för att läsa om målet och reglerna."
+      },
+      {
+        "title": "Börja spela",
+        "text": "Logga in när spelet ber om det. Lokala matcher i Schack, Generala och Sänka skepp går att starta utan konto."
+      },
+      {
+        "title": "Kom tillbaka när du vill",
+        "text": "Behåll ditt språkval, upptäck en annan aktivitet och se de framsteg som finns i din profil."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Är spelen gratis?",
+        "answer": "Ja. Spelen i det här urvalet är gratis och innehåller ingen reklam. Eterna och Coco Eneagrama är separata tjänster med egna villkor."
+      },
+      {
+        "question": "När behöver jag ett konto?",
+        "answer": "Minnesspelet, Sudoku och Koppla ihop färger kräver ett Coco-konto. Även onlinerum och profilfunktioner kräver inloggning. Lokala matcher i Schack, Generala och Sänka skepp går att starta utan registrering."
+      },
+      {
+        "question": "Måste jag ladda ner en app?",
+        "answer": "Du kan spela direkt i webbläsaren. Vill du ha en genväg på hemskärmen kan du också installera Coco som webbapp."
+      },
+      {
+        "question": "Finns allt innehåll på 15 språk?",
+        "answer": "Gränssnittet erbjuder 15 språk. Vissa ord- och kunskapsspel har fortfarande spanskt innehåll och visar en upplysning om det. Läs spelguiden innan du börjar."
+      },
+      {
+        "question": "Kan vi spela tillsammans i familjen?",
+        "answer": "Ja. Ni kan turas om, dela en lokal match eller använda ett tillgängligt onlineläge. En förälder eller vårdnadshavare ska skapa eller godkänna ett konto för en minderårig."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Minnesspelet",
+        "text": "Titta på korten, minns deras placeringar och hitta paren. Konto krävs."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Fyll i rutnätet enligt reglerna för rader, kolumner och block. Konto krävs."
+      },
+      "conecta": {
+        "title": "Koppla ihop färger",
+        "text": "Koppla ihop varje par och lämna plats åt andra vägar. Konto krävs."
+      },
+      "ajedrez": {
+        "title": "Coco Schack",
+        "text": "Planera ditt nästa drag. Starta en lokal match utan konto."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Slå tärningarna, välj vilka du behåller och hitta kombinationer. Lokalt spel utan konto."
+      },
+      "naval": {
+        "title": "Coco Sänka skepp",
+        "text": "Sök på rutnätet för att hitta motståndarens flotta. Lokalt spel utan konto."
+      }
+    },
+    "closing": {
+      "title": "Du väljer nästa utmaning",
+      "text": "Börja med en lokal match eller logga in för att upptäcka aktiviteterna som hör till din profil.",
+      "button": "Öppna Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Spel med spanskt innehåll upplyser om det i sin spelguide.",
+      "eterna": "Eterna, Cocos stöd för skolarbetet, är en separat tjänst. Samtalen med handledaren erbjuds för närvarande på spanska."
+    }
+  },
+  "fi": {
+    "slug": "ilmaiset-aivopelit",
+    "title": "Ilmaiset aivopelit netissä: muisti ja logiikka | Coco",
+    "description": "Tutustu ilmaisiin muistipeleihin, logiikkapeleihin, sudokuun ja shakkiin Coco en Formassa. Pelaa ilman mainoksia puhelimella, tabletilla tai tietokoneella.",
+    "eyebrow": "Ilmaiset aivopelit netissä",
+    "heading": "Muistia, logiikkaa vai strategiaa? Valitse seuraava haasteesi.",
+    "intro": "Coco en Forma kokoaa ilmaisia pelejä sinulle, joka pidät säännönmukaisuuksien löytämisestä, sijaintien muistamisesta ja seuraavan siirron suunnittelusta. Lue säännöt, valitse peli ja aloita puhelimen, tabletin tai tietokoneen selaimessa.",
+    "keywords": [
+      "ilmaiset aivopelit",
+      "muistipelit netissä",
+      "logiikkapelit",
+      "ilmainen sudoku",
+      "shakki netissä",
+      "perheen yhteiset pelit"
+    ],
+    "labels": {
+      "skip": "Siirry sisältöön",
+      "home": "Etusivu",
+      "language": "Kieli",
+      "previous": "Edellinen kieli",
+      "next": "Seuraava kieli",
+      "menu": "Päävalikko",
+      "play": "Pelaa",
+      "account": "Kirjaudu tai luo tili",
+      "learnMore": "Pelin säännöt",
+      "explore": "Valitse seuraava pelisi",
+      "faq": "Usein kysytyt kysymykset",
+      "steps": "Aloita kolmessa vaiheessa",
+      "example": "Kokeile pientä haastetta",
+      "reveal": "Näytä selitys",
+      "related": "Tutustu muihin peleihin",
+      "privacy": "Tietosuoja",
+      "terms": "Käyttöehdot",
+      "footer": "Coco en Forma · Pelejä, uteliaisuutta ja oppimista",
+      "updated": "Päivitetty",
+      "free": "Ilmainen ja mainokseton",
+      "pwa": "Saatavilla myös verkkosovelluksena",
+      "howItWorks": "Näin pääset alkuun"
+    },
+    "heroPoints": [
+      "Ilmaisia pelejä ilman mainoksia",
+      "Puhelin, tabletti ja tietokone",
+      "Käyttöliittymä 15 kielellä"
+    ],
+    "sections": [
+      {
+        "title": "Löydä juuri nyt kiinnostava haaste",
+        "paragraphs": [
+          "Muistipelissä etsit pareja muistamalla, missä kukin kuva oli. Yhdistä värit -pelissä yhdistät pisteitä ja jätät tilaa muille reiteille. Sudokussa suljet numeroita pois rivien, sarakkeiden ja lohkojen perusteella. Pelit tarjoavat erilaisia tapoja pohtia: seuraa uteliaisuuttasi, eikä sinun tarvitse aloittaa vaikeimmasta tehtävästä.",
+          "Jos pidät vuorotellen tehtävistä strategisista siirroista, kokeile shakkia. Generalassa heität noppia ja päätät, mitkä niistä pidät. Laivanupotuksessa etsit vastustajan aluksia ruudukosta. Jokaisella pelillä on omat sääntönsä. Ne auttavat ymmärtämään tavoitteen, pisteytyksen ja sen, milloin kierros päättyy."
+        ]
+      },
+      {
+        "title": "Pelaa omaan tahtiisi",
+        "paragraphs": [
+          "Voit pelata yksin tai jakaa laitteen paikallista peliä varten. Perheen kanssa voitte keskustella kierroksen jälkeen yhdestä valinnasta: mitä huomasitte, mitä muutitte ja mitä kokeilisitte seuraavalla kerralla? Tulos kertoo juuri siitä pelikerrasta ja voi auttaa keskustelemaan omasta pelitavasta.",
+          "Kieltä voi vaihtaa valikosta myös kirjautumisen jälkeen. Coco muistaa valinnan, kun siirryt sivulta toiselle. Asentamalla verkkosovelluksen saat sille kuvakkeen aloitusnäyttöön. Jos haluat kokeilla muuta, palaa valikkoon ja avaa seuraavan pelin ohjeet."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Mikä luku tulee seuraavaksi?",
+      "prompt": "3, 6, 12, 24… Sääntö on, että luku kerrotaan jokaisessa vaiheessa kahdella. Mikä tulee seuraavaksi?",
+      "answer": "48, sillä 24 × 2 = 48. Tarkista myös aiemmat vaiheet: 3 × 2 = 6 ja 6 × 2 = 12. Säännön selittäminen auttaa tarkistamaan vastauksen. Voit ratkaista tämän esimerkin tässä ilman tiliä; siitä ei saa pelipisteitä."
+    },
+    "steps": [
+      {
+        "title": "Valitse peli",
+        "text": "Vertaa vaihtoehtoja ja lue ohjeista pelin tavoite sekä säännöt."
+      },
+      {
+        "title": "Aloita pelaaminen",
+        "text": "Kirjaudu, kun peli sitä pyytää. Shakin, Generalan ja Laivanupotuksen paikalliset pelit voi aloittaa ilman tiliä."
+      },
+      {
+        "title": "Palaa, kun sinulle sopii",
+        "text": "Kielivalintasi säilyy. Tutustu uuteen peliin ja katso profiilissasi saatavilla olevat edistymistiedot."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Ovatko nämä pelit ilmaisia?",
+        "answer": "Kyllä. Tämän valikoiman pelit ovat ilmaisia eikä niissä näytetä mainoksia. Eterna ja Coco Eneagrama ovat erillisiä palveluja, joilla on omat ehtonsa."
+      },
+      {
+        "question": "Milloin tarvitsen tilin?",
+        "answer": "Muistipeli, Sudoku ja Yhdistä värit vaativat Coco-tilin. Myös verkkopelihuoneet ja profiilin toiminnot edellyttävät kirjautumista. Shakin, Generalan ja Laivanupotuksen paikalliset pelit voi aloittaa rekisteröitymättä."
+      },
+      {
+        "question": "Pitääkö minun ladata sovellus?",
+        "answer": "Voit pelata suoraan selaimessa. Jos haluat avata Cocon aloitusnäytöstä, voit asentaa sen myös verkkosovelluksena."
+      },
+      {
+        "question": "Onko kaikki sisältö saatavilla 15 kielellä?",
+        "answer": "Käyttöliittymässä on 15 kielivaihtoehtoa. Joidenkin sana- ja tietopelien sisältö on edelleen espanjaksi, ja siitä kerrotaan pelin esittelyssä. Tarkista tieto ennen aloittamista."
+      },
+      {
+        "question": "Voimmeko pelata perheen kanssa?",
+        "answer": "Kyllä. Voitte pelata vuorotellen, jakaa paikallisen pelin tai käyttää saatavilla olevaa verkkopelitilaa. Vanhemman tai huoltajan tulee luoda tai hyväksyä alaikäisen tili."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Muistipeli",
+        "text": "Katso kortteja, muista niiden sijainnit ja löydä parit. Tili tarvitaan."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Täytä ruudukko rivien, sarakkeiden ja lohkojen sääntöjen mukaan. Tili tarvitaan."
+      },
+      "conecta": {
+        "title": "Yhdistä värit",
+        "text": "Yhdistä jokainen pari ja jätä tilaa muille reiteille. Tili tarvitaan."
+      },
+      "ajedrez": {
+        "title": "Coco Shakki",
+        "text": "Suunnittele seuraava siirtosi. Aloita paikallinen peli ilman tiliä."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Heitä noppia, valitse säilytettävät nopat ja muodosta yhdistelmiä. Paikallinen peli ilman tiliä."
+      },
+      "naval": {
+        "title": "Coco Laivanupotus",
+        "text": "Etsi ruudukosta vastustajan laivasto. Paikallinen peli ilman tiliä."
+      }
+    },
+    "closing": {
+      "title": "Sinä valitset seuraavan haasteen",
+      "text": "Aloita paikallisesta pelistä tai kirjaudu tutustumaan profiiliisi liittyviin peleihin ja toimintoihin.",
+      "button": "Avaa Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Espanjankielisestä pelisisällöstä kerrotaan kyseisen pelin esittelyssä.",
+      "eterna": "Eterna, Cocon koulunkäynnin tukipalvelu, on erillinen palvelu. Keskustelut oppimisavustajan kanssa ovat tällä hetkellä espanjaksi."
+    }
+  },
+  "nb": {
+    "slug": "gratis-hjernespill",
+    "title": "Gratis hjernespill på nett: hukommelse og logikk | Coco",
+    "description": "Oppdag gratis hukommelsesspill, logikkspill, sudoku og sjakk hos Coco en Forma. Spill uten reklame på mobil, nettbrett eller datamaskin i ditt eget tempo.",
+    "eyebrow": "Gratis hjernespill på nett",
+    "heading": "Hukommelse, logikk eller strategi? Velg din neste utfordring.",
+    "intro": "Coco en Forma samler gratis spill for deg som liker å oppdage mønstre, huske plasseringer og tenke ett trekk fremover. Les reglene, velg en aktivitet og start rett i nettleseren på mobilen, nettbrettet eller datamaskinen.",
+    "keywords": [
+      "gratis hjernespill",
+      "hukommelsesspill på nett",
+      "logikkspill",
+      "gratis sudoku",
+      "sjakk på nett",
+      "spill for familien"
+    ],
+    "labels": {
+      "skip": "Hopp til innholdet",
+      "home": "Hjem",
+      "language": "Språk",
+      "previous": "Forrige språk",
+      "next": "Neste språk",
+      "menu": "Hovedmeny",
+      "play": "Spill",
+      "account": "Logg inn eller opprett konto",
+      "learnMore": "Spilleregler",
+      "explore": "Velg ditt neste spill",
+      "faq": "Vanlige spørsmål",
+      "steps": "Kom i gang med tre steg",
+      "example": "Prøv en liten utfordring",
+      "reveal": "Vis forklaringen",
+      "related": "Utforsk videre",
+      "privacy": "Personvern",
+      "terms": "Vilkår",
+      "footer": "Coco en Forma · Spill, nysgjerrighet og læring",
+      "updated": "Oppdatert",
+      "free": "Gratis og uten reklame",
+      "pwa": "Også tilgjengelig som nettapp",
+      "howItWorks": "Slik kommer du i gang"
+    },
+    "heroPoints": [
+      "Gratis spill uten reklame",
+      "Mobil, nettbrett og datamaskin",
+      "Brukergrensesnitt på 15 språk"
+    ],
+    "sections": [
+      {
+        "title": "Finn utfordringen du har lyst til å prøve",
+        "paragraphs": [
+          "I Hukommelsesspillet finner du par ved å huske hvor bildene ligger. I Koble sammen fargene forbinder du punkter uten å blokkere de andre veiene. I Sudoku utelukker du tall ut fra rader, kolonner og bokser. Spillene gir deg ulike måter å tenke på: følg nysgjerrigheten din, uten å måtte begynne med den vanskeligste oppgaven.",
+          "Vil du ha strategi med trekk etter tur, kan du prøve Sjakk. I Generala kaster du terninger og velger hvilke du vil beholde. I Senk skip søker du etter motstanderens fartøy på et rutenett. Hvert spill har egne regler. Les dem først for å forstå målet, poengberegningen og når en runde er ferdig."
+        ]
+      },
+      {
+        "title": "Finn plass til en spillestund på din måte",
+        "paragraphs": [
+          "Spill alene eller del en enhet for et lokalt spill. I familien kan dere snakke om et valg etter runden: hva la dere merke til, hva endret dere, og hva ville dere prøvd neste gang? Resultatet gjelder akkurat dette spillet og kan bli et utgangspunkt for å snakke om fremgangsmåten deres.",
+          "Du kan også bytte språk i menyen etter at du har logget inn. Coco husker valget mens du går mellom sidene. Installerer du nettappen, kan du åpne den fra hjemskjermen. For å prøve en annen aktivitet går du tilbake til menyen og åpner spillveiledningen."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Hvilket tall kommer etterpå?",
+      "prompt": "3, 6, 12, 24 … Regelen er å doble tallet i hvert steg. Hvilket tall kommer nå?",
+      "answer": "48, fordi 24 × 2 = 48. Kontroller også de tidligere stegene: 3 × 2 = 6 og 6 × 2 = 12. Når du forklarer regelen, kan du sjekke svaret. Du kan løse eksemplet her uten konto; det gir ingen spillpoeng."
+    },
+    "steps": [
+      {
+        "title": "Velg et spill",
+        "text": "Sammenlign aktivitetene og åpne en veiledning for å lese om målet og reglene."
+      },
+      {
+        "title": "Begynn å spille",
+        "text": "Logg inn når spillet ber om det. Lokale spill i Sjakk, Generala og Senk skip kan startes uten konto."
+      },
+      {
+        "title": "Kom tilbake når du vil",
+        "text": "Behold språkvalget, oppdag en annen aktivitet og se fremgangen som er tilgjengelig i profilen din."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Er disse spillene gratis?",
+        "answer": "Ja. Spillene i dette utvalget er gratis og inneholder ingen reklame. Eterna og Coco Eneagrama er separate tjenester med egne vilkår."
+      },
+      {
+        "question": "Når trenger jeg en konto?",
+        "answer": "Hukommelsesspillet, Sudoku og Koble sammen fargene krever en Coco-konto. Nettbaserte spillerom og profilfunksjoner krever også innlogging. Lokale spill i Sjakk, Generala og Senk skip kan startes uten registrering."
+      },
+      {
+        "question": "Må jeg laste ned en app?",
+        "answer": "Du kan spille direkte i nettleseren. Hvis du vil ha en snarvei på hjemskjermen, kan du også installere Coco som nettapp."
+      },
+      {
+        "question": "Finnes alt innholdet på 15 språk?",
+        "answer": "Brukergrensesnittet tilbyr 15 språk. Noen ord- og kunnskapsspill har fortsatt spansk innhold og opplyser om det. Les spillbeskrivelsen før du starter."
+      },
+      {
+        "question": "Kan vi spille sammen som familie?",
+        "answer": "Ja. Dere kan bytte på, dele et lokalt spill eller bruke en tilgjengelig nettmodus. En forelder eller verge må opprette eller godkjenne en konto for en mindreårig."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Hukommelsesspillet",
+        "text": "Se på kortene, husk plasseringene og finn parene. Konto kreves."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Fyll ut rutenettet etter reglene for rader, kolonner og bokser. Konto kreves."
+      },
+      "conecta": {
+        "title": "Koble sammen fargene",
+        "text": "Koble hvert par sammen og la det være plass til andre veier. Konto kreves."
+      },
+      "ajedrez": {
+        "title": "Coco Sjakk",
+        "text": "Planlegg neste trekk. Start et lokalt spill uten konto."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Kast terningene, velg hvilke du beholder og lag kombinasjoner. Lokalt spill uten konto."
+      },
+      "naval": {
+        "title": "Coco Senk skip",
+        "text": "Søk på rutenettet for å finne motstanderens flåte. Lokalt spill uten konto."
+      }
+    },
+    "closing": {
+      "title": "Du velger den neste utfordringen",
+      "text": "Start med et lokalt spill eller logg inn for å oppdage aktivitetene som er knyttet til profilen din.",
+      "button": "Åpne Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Spill med spansk innhold opplyser om dette i spillbeskrivelsen.",
+      "eterna": "Eterna, Cocos støtte til skolearbeidet, er en separat tjeneste. Samtalene med veilederen foregår for tiden på spansk."
+    }
+  },
+  "da": {
+    "slug": "gratis-hjernespil",
+    "title": "Gratis hjernespil online: hukommelse og logik | Coco",
+    "description": "Find gratis huskespil, logikspil, sudoku og skak hos Coco en Forma. Spil uden reklamer på mobil, tablet eller computer i dit eget tempo.",
+    "eyebrow": "Gratis hjernespil online",
+    "heading": "Hukommelse, logik eller strategi? Vælg din næste udfordring.",
+    "intro": "Coco en Forma samler gratis spil til dig, der kan lide at finde mønstre, huske placeringer og tænke et træk frem. Læs reglerne, vælg en aktivitet og begynd direkte i browseren på mobilen, tabletten eller computeren.",
+    "keywords": [
+      "gratis hjernespil",
+      "huskespil online",
+      "logikspil",
+      "gratis sudoku",
+      "skak online",
+      "spil for familien"
+    ],
+    "labels": {
+      "skip": "Gå til indholdet",
+      "home": "Forside",
+      "language": "Sprog",
+      "previous": "Forrige sprog",
+      "next": "Næste sprog",
+      "menu": "Hovedmenu",
+      "play": "Spil",
+      "account": "Log ind eller opret en konto",
+      "learnMore": "Spilleregler",
+      "explore": "Vælg dit næste spil",
+      "faq": "Ofte stillede spørgsmål",
+      "steps": "Kom i gang med tre trin",
+      "example": "Prøv en lille udfordring",
+      "reveal": "Vis forklaringen",
+      "related": "Gå på opdagelse",
+      "privacy": "Privatliv",
+      "terms": "Vilkår",
+      "footer": "Coco en Forma · Spil, nysgerrighed og læring",
+      "updated": "Opdateret",
+      "free": "Gratis og uden reklamer",
+      "pwa": "Også tilgængelig som webapp",
+      "howItWorks": "Sådan kommer du i gang"
+    },
+    "heroPoints": [
+      "Gratis spil uden reklamer",
+      "Mobil, tablet og computer",
+      "Brugerflade på 15 sprog"
+    ],
+    "sections": [
+      {
+        "title": "Find den udfordring, du har lyst til",
+        "paragraphs": [
+          "I Huskespillet finder du par ved at huske, hvor billederne ligger. I Forbind farverne forbinder du punkter og efterlader plads til de andre stier. I Sudoku udelukker du tal ud fra rækker, kolonner og bokse. Spillene giver forskellige måder at tænke på: følg din nysgerrighed, uden at du behøver begynde med den sværeste opgave.",
+          "Hvis du kan lide strategi med skiftende ture, kan du prøve Skak. I Generala kaster du terninger og vælger, hvilke du vil beholde. I Sænke slagskibe leder du efter modstanderens skibe på et gitter. Hvert spil har sine egne regler. Læs dem først for at forstå målet, pointene og afslutningen på en runde."
+        ]
+      },
+      {
+        "title": "Find plads til en spillepause på din måde",
+        "paragraphs": [
+          "Spil alene eller del en enhed til et lokalt spil. Som familie kan I tale om en beslutning efter runden: hvad lagde I mærke til, hvad ændrede I, og hvad ville I prøve næste gang? Resultatet handler om netop det spil og kan være en anledning til at tale om jeres fremgangsmåde.",
+          "Du kan også skifte sprog i menuen, når du er logget ind. Coco husker dit valg, mens du går fra side til side. Hvis du installerer webappen, kan du åbne den fra hjemmeskærmen. Vil du prøve en anden aktivitet, går du tilbage til menuen og åbner dens vejledning."
+        ]
+      }
+    ],
+    "example": {
+      "title": "Hvilket tal kommer bagefter?",
+      "prompt": "3, 6, 12, 24 … Reglen er at fordoble tallet i hvert trin. Hvilket tal kommer nu?",
+      "answer": "48, fordi 24 × 2 = 48. Tjek også de tidligere trin: 3 × 2 = 6 og 6 × 2 = 12. Når du forklarer reglen, kan du kontrollere svaret. Du kan løse eksemplet her uden konto; det giver ingen point i spillene."
+    },
+    "steps": [
+      {
+        "title": "Vælg et spil",
+        "text": "Sammenlign aktiviteterne og åbn en vejledning for at læse om målet og reglerne."
+      },
+      {
+        "title": "Begynd at spille",
+        "text": "Log ind, når spillet beder om det. Lokale spil i Skak, Generala og Sænke slagskibe kan startes uden konto."
+      },
+      {
+        "title": "Kom tilbage, når du har lyst",
+        "text": "Behold dit sprogvalg, prøv en anden aktivitet og se de fremskridt, der er tilgængelige i din profil."
+      }
+    ],
+    "faq": [
+      {
+        "question": "Er disse spil gratis?",
+        "answer": "Ja. Spillene i dette udvalg er gratis og indeholder ingen reklamer. Eterna og Coco Eneagrama er selvstændige tjenester med egne vilkår."
+      },
+      {
+        "question": "Hvornår har jeg brug for en konto?",
+        "answer": "Huskespillet, Sudoku og Forbind farverne kræver en Coco-konto. Onlinerum og profilfunktioner kræver også login. Lokale spil i Skak, Generala og Sænke slagskibe kan startes uden tilmelding."
+      },
+      {
+        "question": "Skal jeg downloade en app?",
+        "answer": "Du kan spille direkte i browseren. Vil du have en genvej på hjemmeskærmen, kan du også installere Coco som webapp."
+      },
+      {
+        "question": "Findes alt indhold på 15 sprog?",
+        "answer": "Brugerfladen tilbyder 15 sprog. Nogle ord- og vidensspil har stadig spansk indhold og gør opmærksom på det. Læs spilbeskrivelsen, før du begynder."
+      },
+      {
+        "question": "Kan vi spille sammen som familie?",
+        "answer": "Ja. I kan skiftes, dele et lokalt spil eller bruge en tilgængelig onlinetilstand. En forælder eller værge skal oprette eller godkende en konto til en mindreårig."
+      }
+    ],
+    "gameCards": {
+      "memoria": {
+        "title": "Huskespillet",
+        "text": "Se på kortene, husk deres placeringer og find parrene. Konto påkrævet."
+      },
+      "sudoku": {
+        "title": "Sudoku",
+        "text": "Udfyld gitteret efter reglerne for rækker, kolonner og bokse. Konto påkrævet."
+      },
+      "conecta": {
+        "title": "Forbind farverne",
+        "text": "Forbind hvert par og efterlad plads til de andre stier. Konto påkrævet."
+      },
+      "ajedrez": {
+        "title": "Coco Skak",
+        "text": "Planlæg dit næste træk. Start et lokalt spil uden konto."
+      },
+      "generala": {
+        "title": "Coco Generala",
+        "text": "Kast terningerne, vælg dem, du beholder, og saml kombinationer. Lokalt spil uden konto."
+      },
+      "naval": {
+        "title": "Coco Sænke slagskibe",
+        "text": "Undersøg gitteret for at finde modstanderens flåde. Lokalt spil uden konto."
+      }
+    },
+    "closing": {
+      "title": "Du vælger den næste udfordring",
+      "text": "Begynd med et lokalt spil eller log ind for at udforske aktiviteterne, der er knyttet til din profil.",
+      "button": "Åbn Coco en Forma"
+    },
+    "note": {
+      "spanishContent": "Spil med spansk indhold oplyser om det i deres beskrivelse.",
+      "eterna": "Eterna, Cocos støtte til skolearbejdet, er en selvstændig tjeneste. Samtalerne med vejlederen foregår i øjeblikket på spansk."
+    }
+  }
+}

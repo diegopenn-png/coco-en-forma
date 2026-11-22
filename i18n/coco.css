@@ -10,4 +10,11 @@ html.coco-starting [data-coco-language-menu], body.embedded:not(.standalone) [da
 .coco-language-bar button { display:inline-grid; place-items:center; flex:0 0 auto; width:40px; min-height:40px; padding:0; margin:0; border:1px solid #b6cddd; border-radius:.65rem; background:#fff; color:#173451; font:600 1.35rem/1 system-ui,sans-serif; cursor:pointer; }
 .coco-language-bar button:focus-visible { outline:3px solid #0984ad; outline-offset:2px; }
 
+[data-coco-language-account] { grid-column:1 / -1; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.5rem; max-width:none; margin:0; padding:.2rem .25rem .65rem; border-bottom:1px solid #c5d9e6; direction:ltr; }
+.coco-language-caption { color:#214767; font:600 .9rem/1.4 system-ui,sans-serif; }
+[data-coco-language-account] .coco-language-bar { min-width:0; max-width:100%; margin-inline-start:auto; flex-wrap:wrap; }
+[data-coco-language-account] [role=status]:not(:empty) { flex-basis:100%; text-align:end; }
+#cocoApp [data-coco-language-account] .coco-language-bar select { width:auto; min-width:0; max-width:100%; margin:0; }
+#cocoApp [data-coco-language-account] .coco-language-bar button { width:40px; flex:0 0 40px; }
+
 @media (max-width: 760px) { .coco-language-bar select { font-size: 16px; } }
