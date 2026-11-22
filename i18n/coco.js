@@ -140,6 +140,10 @@
   }
   function localize(value, report = false, game = false, element) {
     const key = value.trim().replace(/\s+/g, ' ');
+    if (element?.closest('#cocoMedOverlay,#cocoMedRankingModal')) {
+      const localized = window.CocoMedLanguage?.text(key,current);
+      if (localized && localized !== key) return value.replace(key,()=>localized);
+    }
     if (element?.matches('select[data-stage] > option') && element.value) {
       return message('Etapa escolar: '+key);
     }
@@ -202,11 +206,11 @@
     return Array.from(node.childNodes).map(sourceText).join('');
   }
   const authored = '#rConsentText,#rConsentText a,.cocoLegalResumenRegistro,head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
-  const spanishGames = new Set(['cocomed']);
+  const spanishGames = new Set();
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
-  const privateAreas = '.cocoMedOverlay,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-name],[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
+  const privateAreas = '.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-name],[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
   const publicElements = '.resumen,.alerta,.card,.lead,.note,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamilyLoading,#coco-startup-status p';
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego,#coco-game-guides)';
@@ -227,9 +231,12 @@
     return url.href;
   }
   async function readPack(tag) {
-    if (!document.documentElement.hasAttribute('data-coco-extra-languages')) return readLanguageFile(tag,'packs');
-    const [main,extra] = await Promise.all([readLanguageFile(tag,'packs'),readLanguageFile(tag,'extra')]);
-    return {...main,strings:{...main.strings,...extra.strings}};
+    const isAssessment = document.documentElement.hasAttribute('data-coco-assessment');
+    const folders = ['packs'];
+    if (document.documentElement.hasAttribute('data-coco-extra-languages')) folders.push('extra');
+    if (isAssessment) folders.push('assessment');
+    const loaded = await Promise.all(folders.map(folder=>readLanguageFile(tag,folder)));
+    return {...loaded[0],strings:Object.assign({},...loaded.map(pack=>pack.strings))};
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
@@ -407,7 +414,8 @@
     localizeThumbnails(root);
     refreshTutor(root);
     const page = document.body.dataset.cocoLanguagePage;
-    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,'.cocoV16086Pending,.rankingNota'].join(',');
+    const medicalFields = '#cocoMedOverlay :is(h1,h2,h3,h4,p,div,b,button,span,small,summary,label,[aria-label]),#cocoMedRankingModal :is(h3,p,span,button)';
+    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,medicalFields,'.cocoV16086Pending,.rankingNota'].join(',');
     each(root,query,el => {
       if (el.tagName === 'CANVAS' && el.hasAttribute('aria-label')) render(el,'aria-label',()=>el.getAttribute('aria-label'),v=>el.setAttribute('aria-label',v));
       if (el.closest('#eternaOverlayV159') || el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
@@ -415,7 +423,7 @@
       // Their translation is handled by the owning renderer once a stable id exists.
       if (!page && el.closest('.cocoGameCard,.cocoMiniJuego') && !el.closest('[data-coco-juego],[data-coco-chess-entry],[data-coco-city-entry],[data-coco-naval-entry],[data-coco-generala-entry],[data-coco-suggestion],.cocoMiniSuggestion')) return;
       // Nicknames, room codes, board cells and questionnaire answers are model values.
-      if (el.closest('[role=grid],.cocoCrossBoard,#board,#lobbyPlayers,.player,.answer-review,#history') || el.matches('[data-answer],#turnTitle:not([data-coco-copy]),#turn,#winner,#playingAs,#playingName')) return;
+      if (el.closest('[role=grid],.cocoCrossBoard,#board,#lobbyPlayers,.player,#history') || el.matches('[data-answer],#turnTitle:not([data-coco-copy]),#turn,#winner,#playingAs,#playingName')) return;
       if (el.tagName !== 'OPTION' || el.hasAttribute('value')) {
         for (const n of el.childNodes) if (n.nodeType === Node.TEXT_NODE) render(n,'text',() => n.data,v => {n.data=v;});
       }
@@ -466,15 +474,10 @@
                         : message('Curso actual: pendiente de configurar en Eterna');
       if (el.textContent !== text) el.textContent = text;
     });
-    each(root,'.cocoMedOverlay',el=>{el.lang='es';el.dir='ltr';});
+    each(root,'.cocoMedOverlay',el=>{el.lang=current;el.dir=current==='ar'?'rtl':'ltr';});
+    each(root,'select[data-med-locale]',el=>{el.value=current;});
     each(root,'[data-coco-juego],[data-game-card]',card => markGame(card,gameId(card)));
     each(root,'[data-coco-original-document]',el => {el.hidden = current === 'es';});
-    each(root,'[data-questionnaire-language]',el => {
-      el.hidden = current === 'es';
-      const source = 'Cuestionario en español';
-      const note = el.hidden ? '' : message(source);
-      if (el.textContent !== note) el.textContent = note;
-    });
     each(root,'.loginDecorTitle',el => {
       const text = current === 'es' ? '¡Activa tu supercerebro!' : message('Activa tu supercerebro');
       if (el.textContent !== text) {
@@ -531,7 +534,9 @@
       packs.set(tag, readPack(tag).catch(error => { packs.delete(tag); throw error; }));
     }
     let pack;
-    try { pack = await packs.get(tag); }
+    try {
+      [pack] = await Promise.all([packs.get(tag),document.querySelector('#cocoMedOverlay.abierto') && window.CocoMedLanguage?.load(tag)]);
+    }
     catch {
       if (attempt === generation) {
         select.value = current;

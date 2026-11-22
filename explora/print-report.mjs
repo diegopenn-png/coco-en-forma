@@ -4,8 +4,7 @@ export function enableLocalizedPrint(report) {
   const journal = report.querySelector('#notes');
   const print = document.createElement('button');
   print.type = 'button';
-  const original = document.createElement('small');
-  controls.prepend(print,original);
+  controls.prepend(print);
   const reflection = document.createElement('p');
   reflection.className = 'printed-reflection';
   reflection.setAttribute('data-coco-verbatim','');
@@ -14,9 +13,10 @@ export function enableLocalizedPrint(report) {
   function sync() {
     const locale = window.CocoLocale;
     const localized = locale && locale.tag !== 'es';
-    print.hidden = original.hidden = !localized;
+    print.hidden = !localized;
+    const pageCount=report.querySelector('[data-original-page-count]');
+    if(pageCount)pageCount.hidden=Boolean(localized);
     print.textContent = locale?.t('Imprimir o guardar como PDF') || 'Imprimir o guardar como PDF';
-    original.textContent = locale?.t('PDF original en español') || 'PDF original en español';
   }
   function prepare() {
     reflection.textContent = journal.value;
