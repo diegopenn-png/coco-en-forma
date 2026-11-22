@@ -1,5 +1,6 @@
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
+const fs=require('node:fs/promises');
 const locales=['es','en','de','nl','fr','it','pl','uk','ru','zh-Hans','ar','sv','fi','nb','da'];
 const origin=process.env.STUDY_ORIGIN||process.env.COCO_QA_URL||'https://cocoenforma.com';
 const player='Mi dinero · 林';
@@ -62,9 +63,12 @@ async function assessment(browser,age,saveDir){
     for(const tag of ['ar','zh-Hans','en']){
       await picker.selectOption(tag);
       await page.waitForFunction(t=>document.documentElement.lang===t&&document.querySelector('#download')?.download==='Coco-Eneagrama-'+t+'.pdf'&&document.querySelector('#download')?.hasAttribute('href'),tag);
-      const meta=await page.locator('#download').evaluate(async el=>{const bytes=new Uint8Array(await (await fetch(el.href)).arrayBuffer());return [String.fromCharCode(...bytes.slice(0,7)),bytes.length]});
-      assert.equal(meta[0],'%PDF-1.');assert.ok(meta[1]>25000);
-      if(saveDir){const download=page.waitForEvent('download');await page.locator('#download').click();await (await download).saveAs(saveDir+'/'+age+'-'+tag+'.pdf');}
+      const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#download').click()]);
+      assert.equal(download.suggestedFilename(),'Coco-Eneagrama-'+tag+'.pdf');
+      const bytes=await fs.readFile(await download.path());
+      assert.equal(bytes.subarray(0,7).toString('ascii'),'%PDF-1.');
+      assert.ok(bytes.length>25000);
+      if(saveDir)await download.saveAs(saveDir+'/'+age+'-'+tag+'.pdf');
     }
     assert.equal(sent.length,1,'language switches reuse the authorized report');
     await page.locator('[data-explora-back]').click();await page.locator('.answer-review').waitFor();
