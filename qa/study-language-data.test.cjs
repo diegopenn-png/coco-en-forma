@@ -22,6 +22,14 @@ test('every original Coco Med question, option and explanation stays usable afte
       const stem=api.text(q.stem,tag),explanation=api.text(q.explanation,tag),options=q.options.map(v=>api.text(v,tag));
       if(stem===q.stem||explanation===q.explanation||!options.every(Boolean)||new Set(options.map(norm)).size!==options.length||!q.options.every(v=>names.has(v)))failures.push(q.id);
       assert.equal(api.text(q.options[q.answer],tag),options[q.answer]);
+      // Rejecting the student's claim and explaining the correct fact are separate messages.
+      const correction=q.explanation.match(/La corrección adecuada es: (.+?\.)/iu);
+      if(correction){
+        const fact=api.text(correction[1],tag);
+        assert.notEqual(fact,correction[1],tag+' missing fact for '+q.id);
+        assert.ok(explanation.includes(fact),tag+' explanation for '+q.id);
+        assert.ok(!explanation.includes(options[q.answer]),tag+' correction repeats the rejection in '+q.id);
+      }
     }
     assert.deepEqual(failures.slice(0,10),[],tag+' translated choices or coverage, '+failures.length+' questions');
     assert.notEqual(api.text('reduce falsos negativos',tag),api.text('reduce falsos positivos',tag));
