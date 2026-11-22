@@ -1,0 +1,62 @@
+name: Build Coco study language drafts
+on:
+  push:
+    branches: [codex/prepare-med-enneagram-20261122]
+    paths: ['.github/locale-build/**', '.github/workflows/build-coco-study-locales.yml']
+permissions:
+  contents: read
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [en, de, nl, fr, it, pl, uk, ru, zh-Hans, ar, sv, fi, nb, da]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Prepare offline translator
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/translator"
+          curl --retry 3 -fsSL https://github.com/ggml-org/llama.cpp/releases/download/b12633/llama-b12633-bin-ubuntu-x64.tar.gz | tar -xz --strip-components=1 -C "$RUNNER_TEMP/translator"
+          curl --retry 3 -fsSL 'https://huggingface.co/Qwen/Qwen3-4B-GGUF/resolve/bc640142c66e1fdd12af0bd68f40445458f3869b/Qwen3-4B-Q4_K_M.gguf' -o "$RUNNER_TEMP/model.gguf"
+      - name: Translate authored material
+        shell: bash
+        run: |
+          "$RUNNER_TEMP/translator/llama-server" -m "$RUNNER_TEMP/model.gguf" --host 127.0.0.1 --port 8014 -np 1 -t "$(nproc)" -c 8192 --jinja > "$RUNNER_TEMP/model.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..60}; do
+            if curl -fsS http://127.0.0.1:8014/health > /dev/null; then break; fi
+            if ! kill -0 "$server_pid"; then tail -30 "$RUNNER_TEMP/model.log"; exit 1; fi
+            sleep 2
+          done
+          python .github/locale-build/translate.py "${{ matrix.lang }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: study-${{ matrix.lang }}
+          path: out/*.json
+          retention-days: 5
+  collect:
+    needs: translate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/prepare-med-enneagram-20261122
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: study-*
+          path: .github/locale-build/drafts
+          merge-multiple: true
+      - name: Save generated text on the preparation branch for review
+        run: |
+          test "$(find .github/locale-build/drafts -name '*.json' | wc -l)" -eq 14
+          git add -- .github/locale-build/drafts
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Prepare fourteen Coco translations for review'
+          git push origin HEAD:refs/heads/codex/prepare-med-enneagram-20261122
