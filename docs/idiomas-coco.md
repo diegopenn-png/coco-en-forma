@@ -54,3 +54,9 @@ El tablero utiliza vocabulario propio de ajedrez para las piezas, el turno, las 
 La prueba del selector juega un mate en cuatro medias jugadas y unas tablas por triple repetición. También comprueba un jaque, unas tablas por ahogado desde una posición guardada y las cuatro opciones de coronación con el diálogo abierto. Cada recorrido comprueba los mensajes en los 15 idiomas a través de los controles del juego.
 
 El selector se puede usar dentro de las ventanas de opciones, reglas y coronación de Ajedrez. El tablero conserva su orientación al activar el árabe y los dos botones de entrada de la ficha enlazan con el idioma elegido. El control de vista previa abre el botón inferior en Chrome con pantalla táctil simulada de 390 × 844, juega hasta un mate y regresa al menú principal.
+
+### Privacidad para menores · 22 de noviembre
+
+Se revisó la guía completa de privacidad para menores frente al original español en los 14 paquetes. Se corrigieron, entre otros, el significado de la ayuda escolar de Eterna, la autorización del adulto, el tratamiento de la voz, la selección de anuncios y el correo de contacto. La página conserva el idioma al abrir la política completa y al volver a Coco. Una pestaña abierta expresamente en el original español conserva ese idioma aunque el jugador cambie la preferencia en otra pestaña.
+
+La prueba local lee la página real y comprueba texto, título, descripción, dirección de lectura, enlace al original, enlaces internos y correo en los 15 idiomas. Pasaron 65 pruebas locales de idioma, Ajedrez, arranque, navegación y PWA. Continúan pendientes la activación de los correos en Coco V2, su recepción en un buzón de prueba, el resto de la revisión editorial y jurídica y la prueba en un iPhone físico.

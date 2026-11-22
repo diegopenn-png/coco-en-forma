@@ -259,8 +259,15 @@ test('opening the Spanish original of a policy keeps the reader’s chosen langu
     assert.equal(api.tag,'es');
     assert.equal(w.localStorage.getItem('coco.language.v1'),'pl');
     assert.equal(doc.querySelector('[data-coco-original-document]').hidden,true);
+    const externalChange = () => w.dispatchEvent(new w.StorageEvent('storage',{key:'coco.language.v1',newValue:'fr'}));
+    externalChange();
+    await new Promise(resolve => setTimeout(resolve,0));
+    assert.equal(api.tag,'es');
     await api.setLanguage('it');
     assert.equal(w.location.search,'?lang=it');
+    externalChange();
+    await new Promise(resolve => setTimeout(resolve,0));
+    assert.equal(api.tag,'fr');
     assert.equal(doc.querySelector('[data-coco-original-document]').hidden,false);
   }finally{dom.window.close();}
 });
@@ -531,4 +538,49 @@ test('learning strategies, pending chapters, print titles and the shared report 
       assert.equal(shared.files.length,1);
     }
   }finally{dom.window.close();}
+});
+
+test('child privacy guide keeps its complete text, contact and policy links across languages', async () => {
+  const file = fs.readFileSync(path.join(root, 'privacidad-menores.html'), 'utf8');
+  const dom = new JSDOM(file, {url:'https://coco.test/privacidad-menores.html',runScripts:'outside-only'});
+  const w = dom.window;
+  const doc = w.document;
+  Object.defineProperty(doc, 'currentScript', {get:() => doc.querySelector('script[src*="/i18n/"]')});
+  w.fetch = async url => ({ok:true,json:async () => readPack(path.basename(url.pathname,'.json'))});
+  const main = doc.querySelector('main');
+  const walker = doc.createTreeWalker(main, w.NodeFilter.SHOW_TEXT);
+  const copy = [];
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    const text = node.data.trim();
+    if (/\p{L}/u.test(text) && !node.parentElement.closest('a[href^="mailto:"]')) copy.push({node,text});
+  }
+  const title = doc.title;
+  const description = doc.querySelector('meta[name=description]');
+  const sourceDescription = description.content;
+  try {
+    w.eval(code);
+    await w.CocoLocale.ready;
+    for (const tag of [...locales.slice(1),'es']) {
+      assert.equal(await w.CocoLocale.setLanguage(tag),true);
+      const pack = tag === 'es' ? null : readPack(tag).strings;
+      for (const {node,text} of copy) {
+        assert.equal(node.data.trim(),pack ? pack[text] : text,tag+' '+text);
+      }
+      assert.equal(doc.title,pack ? pack[title] : title);
+      assert.equal(description.content,pack ? pack[sourceDescription] : sourceDescription);
+      assert.equal(doc.documentElement.dir,tag === 'ar' ? 'rtl' : 'ltr');
+      assert.match(main.textContent,/DNI\/NIE/);
+      assert.match(main.textContent,/👋/u);
+      const contact = main.querySelector('a[href^="mailto:"]');
+      assert.equal(contact.href,'mailto:info@cocoenforma.com');
+      assert.equal(contact.textContent,'info@cocoenforma.com');
+      for (const link of main.querySelectorAll('a[href^="/"]')) {
+        assert.equal(new URL(link.href).searchParams.get('lang'),tag);
+      }
+      const original = doc.querySelector('[data-coco-original-document]');
+      assert.equal(original.getAttribute('href'),'?document_original=es');
+      assert.equal(original.hidden,tag === 'es');
+    }
+  } finally { dom.window.close(); }
 });
