@@ -2,7 +2,7 @@
 // Only its authored copy is looked up. The game downloads one language when opened.
 (() => {
   'use strict';
-  const version='20261122-1';
+  const version='20261122-full-3';
   const base=new URL('med/',document.currentScript.src);
   const loaded=new Map(), pending=new Map();
   let shared;

@@ -138,10 +138,51 @@
     if (lobby) return message('Jugadores: {n}/{total} · Mínimo {min}',{n:number(lobby[1]),total:number(lobby[2]),min:number(lobby[3])});
     return key;
   }
+  function compileAssessmentTemplates(templates) {
+    return Object.entries(templates||{}).map(([source,translation])=>{
+      const keys=[];
+      const parts=source.split(/(\{\w+\})/u).map(part=>{
+        if(!part.startsWith('{'))return part.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+        keys.push(part.slice(1,-1));
+        return '(.+?)';
+      });
+      return {expression:new RegExp('^'+parts.join('')+'$','u'),keys,translation};
+    });
+  }
+  // These templates apply only to authored report text. Participant names and
+  // notes are outside the translation scope, even if they resemble a type name.
+  function assessmentPhrase(source) {
+    function value(text) {
+      if(/^\d+(?:,\d+)?$/.test(text)) {
+        const places=text.includes(',')?text.split(',')[1].length:0;
+        return Number(text.replace(',','.')).toLocaleString(current,{minimumFractionDigits:places,maximumFractionDigits:places});
+      }
+      const numbered=text.match(/^(\d+) · (.+)$/u);
+      if(numbered)return value(numbered[1])+' · '+message(numbered[2]);
+      const score=text.match(/^(.+?) \((\d+,\d+)\/5\)$/u);
+      if(score)return message(score[1])+' ('+value(score[2])+'/5)';
+      return message(text);
+    }
+    for(const {expression,keys,translation} of activePack.assessmentTemplates||[]){
+      const match=expression.exec(source);
+      if(!match)continue;
+      const fields={};
+      keys.forEach((key,index)=>{
+        const captured=match[index+1];
+        fields[key]=key==='names'||key==='scores'
+          ? new Intl.ListFormat(current).format(captured.split(', ').map(value)) : value(captured);
+      });
+      return translation.replace(/\{(\w+)\}/g,(_,key)=>fields[key]);
+    }
+    const numbered=source.match(/^(\d+) · (.+)$/u);
+    if(numbered)return value(source);
+    return source;
+  }
   function localize(value, report = false, game = false, element) {
     const key = value.trim().replace(/\s+/g, ' ');
     if (element?.closest('#cocoMedOverlay,#cocoMedRankingModal')) {
-      const localized = window.CocoMedLanguage?.text(key,current);
+      const field=key==='Media' && element.matches('.cocoMedTag')?'Dificultad media':key;
+      const localized = window.CocoMedLanguage?.text(field,current);
       if (localized && localized !== key) return value.replace(key,()=>localized);
     }
     if (element?.matches('select[data-stage] > option') && element.value) {
@@ -158,6 +199,10 @@
       if (mode) return message('Modo')+' · '+message(mode[1]);
       const status = key.split(' · ');
       if (status.length > 1) return status.map(part => message(part)).join(' · ');
+    }
+    if (activePack.assessmentTemplates && element?.closest('.report')) {
+      const phrase=assessmentPhrase(key);
+      if(phrase!==key)return value.replace(/\S[\s\S]*\S|\S/,()=>phrase);
     }
     let translated = (report && reportStatistic(key)) || message(key);
     if (translated === key && key.startsWith('Tabla independiente dedicada exclusivamente a ') && key.endsWith('.')) {
@@ -211,7 +256,7 @@
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
   const privateAreas = '.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-name],[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
-  const publicElements = '.resumen,.alerta,.card,.lead,.note,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
+  const publicElements = '.resumen,.alerta,.card,.lead,.note,article.report caption,article.report td,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamilyLoading,#coco-startup-status p';
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego,#coco-game-guides)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
@@ -236,11 +281,13 @@
     if (document.documentElement.hasAttribute('data-coco-extra-languages')) folders.push('extra');
     if (isAssessment) folders.push('assessment');
     const loaded = await Promise.all(folders.map(folder=>readLanguageFile(tag,folder)));
-    return {...loaded[0],strings:Object.assign({},...loaded.map(pack=>pack.strings))};
+    const assessment=loaded.find(pack=>pack.templates);
+    return {...loaded[0],strings:Object.assign({},...loaded.map(pack=>pack.strings)),
+      assessmentTemplates:assessment && compileAssessmentTemplates(assessment.templates)};
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
-    url.searchParams.set('v',folder==='packs'?'20261122-7':'20261122-1');
+    url.searchParams.set('v',folder==='packs'?'20261122-7':folder==='assessment'?'20261122-2':'20261122-1');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}

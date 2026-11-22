@@ -37,3 +37,23 @@ test('every age-specific Enneagram item and scale has a translation independent 
     }
   }
 });
+test('report templates retain all scored values and the author’s name in every language',()=>{
+  const english=json('i18n/assessment/en.json');
+  const fields=s=>[...s.matchAll(/\{(\w+)\}/g)].map(match=>match[1]).sort();
+  for(const tag of locales){
+    const translated=json('i18n/assessment/'+tag+'.json');
+    assert.deepEqual(Object.keys(translated.templates).sort(),Object.keys(english.templates).sort(),tag);
+    for(const [source,target] of Object.entries(translated.templates)){
+      assert.deepEqual(fields(target),fields(source),tag+' '+source);
+    }
+    assert.equal(translated.strings['Diego Pennise'],'Diego Pennise');
+    assert.equal(translated.strings['Universidad de San Andrés'],'Universidad de San Andrés');
+  }
+});
+test('the installed app caches the downloadable report module and only existing study scripts',()=>{
+  const worker=read('sw.js');
+  const core=JSON.parse(worker.match(/const ENEAGRAM_CORE=(\[[^;]+\]);/)[1]);
+  assert.ok(core.includes('./explora/localized-pdf.mjs'));
+  const studyAssets=new Set([...core,...worker.matchAll(/"(\.\/i18n\/[^"]+\.js)"/g)].map(entry=>Array.isArray(entry)?entry[1]:entry));
+  for(const asset of studyAssets)assert.ok(fs.existsSync(path.join(root,asset)),asset);
+});

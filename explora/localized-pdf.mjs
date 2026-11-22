@@ -6,6 +6,7 @@ export function reportBlocks(root) {
     if(el.matches('[hidden],.no-print,button,a.btn,script,style,textarea,.printed-reflection,svg'))return;
     const tag=el.tagName.toLowerCase();
     if(tag==='table'){
+      if(el.caption)blocks.push({kind:'small',text:el.caption.textContent.trim()});
       for(const row of el.rows)blocks.push({kind:'row',text:[...row.cells].map(c=>c.textContent.trim()).join('   ·   ')});
       return;
     }
@@ -55,7 +56,7 @@ export async function localizedPDF(root,locale){
   const images=[],segment=new Intl.Segmenter(locale,{granularity:'word'}),graphemes=new Intl.Segmenter(locale,{granularity:'grapheme'});
   const x=rtl?w-margin:margin,maxWidth=w-2*margin;let y;
   function style(size,bold=false,color='#213c43'){ctx.font=(bold?'600 ':'400 ')+size+'px system-ui, sans-serif';ctx.fillStyle=color;ctx.textAlign=rtl?'right':'left';ctx.direction=rtl?'rtl':'ltr';ctx.textBaseline='top'}
-  function begin(){ctx.fillStyle='#fbfaf6';ctx.fillRect(0,0,w,h);style(21,true,'#765b32');ctx.fillText('COCO  /  ENEAGRAMA',x,49);ctx.strokeStyle='#dbd8cc';ctx.beginPath();ctx.moveTo(margin,86);ctx.lineTo(w-margin,86);ctx.stroke();y=120}
+  function begin(){ctx.fillStyle='#fbfaf6';ctx.fillRect(0,0,w,h);style(21,true,'#765b32');ctx.fillText(window.CocoLocale?.t('Coco Eneagrama')||'Coco Eneagrama',x,49);ctx.strokeStyle='#dbd8cc';ctx.beginPath();ctx.moveTo(margin,86);ctx.lineTo(w-margin,86);ctx.stroke();y=120}
   function finish(){ctx.save();style(19,false,'#53656c');ctx.fillText(new Intl.NumberFormat(locale).format(images.length+1),x,h-66);ctx.restore();
     const data=atob(canvas.toDataURL('image/jpeg',.91).split(',')[1]);images.push(Uint8Array.from(data,c=>c.charCodeAt(0)));}
   function room(n){if(y+n>bottom){finish();begin()}}

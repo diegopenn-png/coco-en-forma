@@ -29,6 +29,13 @@ async function setup(browser) {
       }});return chain;
     }
     const cli={auth:{getSession:async()=>({data:{session}}),getUser:async()=>({data:{user}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},from:query,rpc:()=>query('rpc')};
+    window.pdfTextByLanguage={};
+    const fill=CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText=function(text,...args){
+      const lang=document.documentElement.lang;
+      (window.pdfTextByLanguage[lang]||=[]).push(text);
+      return fill.call(this,text,...args);
+    };
     window.__COCO_SUPABASE_CLIENT=cli;
     Object.defineProperty(window,'supabase',{configurable:true,get:()=>({createClient:()=>cli}),set(){}});
   },{player});
@@ -56,13 +63,36 @@ async function assessment(browser,age,saveDir){
     assert.equal(first.size,15,'one distinct first statement for each language');
     // The whole instrument can be answered in one language and reviewed in another.
     await picker.selectOption('ar');await page.waitForFunction(()=>window.CocoLocale.tag==='ar');
-    for(let n=0;n<54;n++){await page.locator('[data-value="3"]').click();await page.locator('#next').click()}
+    for(let n=0;n<54;n++){
+      const group=Math.floor(n/9),type=(n%9+group*4)%9+1;
+      const score=age<18?3:type===1?5:type===2?4:2;
+      const answer=group<4?score:6-score;
+      await page.locator('[data-value="'+answer+'"]').click();
+      await page.locator('#next').click();
+    }
     await page.locator('.report').waitFor();
     assert.equal(sent.length,1);assert.equal(Object.keys(sent[0].answers).length,54);
     assert.equal(sent[0].alias,player);
-    for(const tag of ['ar','zh-Hans','en']){
+    if(age>=18)assert.equal(await page.locator('.coach-reading').count(),2);
+    for(const tag of locales.filter(tag=>tag!=='es')){
       await picker.selectOption(tag);
       await page.waitForFunction(t=>document.documentElement.lang===t&&document.querySelector('#download')?.download==='Coco-Eneagrama-'+t+'.pdf'&&document.querySelector('#download')?.hasAttribute('href'),tag);
+      const rendered=await page.locator('.report').evaluate(report=>({
+        coverage:report.querySelector('[data-report-results] strong').textContent,
+        headline:report.querySelector('h1').textContent,
+        alias:report.querySelector('[data-coco-verbatim]').textContent,
+        descriptions:[...report.querySelectorAll('.coach-reading p')].map(p=>p.textContent)
+      }));
+      assert.equal(rendered.alias,player);
+      assert.equal(await page.locator('.report-signature h3').textContent(),'Diego Pennise');
+      const painted=await page.evaluate(tag=>(window.pdfTextByLanguage[tag]||[]).join('').replace(/\s/gu,''),tag);
+      assert.ok(painted.includes(rendered.headline.replace(/\s/gu,'')),tag+' report heading in downloaded PDF');
+      assert.ok(painted.includes(player.replace(/\s/gu,'')),tag+' participant alias in downloaded PDF');
+      assert.doesNotMatch(rendered.headline,/Nueve formas de mirarte/);
+      const statsTemplate=require('../i18n/assessment/'+tag+'.json').templates['{n} de {total} respuestas · {omitted} omisiones · {available} de 9 medias disponibles.'];
+      const expectedStats=statsTemplate.replace('{n}','54').replace('{total}','54').replace('{omitted}','0').replace('{available}','9');
+      assert.equal(rendered.coverage,expectedStats,tag+' localized response summary');
+      assert.doesNotMatch(rendered.descriptions.join(' '),/con \d de 6 respuestas/);
       const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#download').click()]);
       assert.equal(download.suggestedFilename(),'Coco-Eneagrama-'+tag+'.pdf');
       const bytes=await fs.readFile(await download.path());
