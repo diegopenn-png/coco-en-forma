@@ -1057,3 +1057,26 @@ test('thumbnail lettering cannot become the title targeted by the real tool-card
   assert.equal(doc.querySelector('.cocoMiniJuego').querySelector('h3,b').id,'real-card-title');
  }finally{dom.window.close()}
 });
+
+test('Coco Pádel keeps the language selector and club directory available in all fifteen languages',async()=>{
+  const fetchPack=async url=>({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(root,url.pathname),'utf8'))});
+  const {w,doc,dom,api}=page('https://coco.test/',fetchPack);
+  try{
+    doc.documentElement.setAttribute('data-coco-extra-languages','');await api.ready;
+    w.CocoArcadeDemo=true;w.matchMedia=()=>({matches:false});w.scrollTo=()=>{};
+    w.requestAnimationFrame=fn=>w.setTimeout(fn,1);
+    for(const file of ['coco-v144-core.js','coco-v152-padel.js'])w.eval(fs.readFileSync(path.join(root,file),'utf8'));
+    const original=doc.querySelector('[data-coco-language-menu] select');
+    await w.CocoPadelV152.open();
+    const dialog=doc.querySelector('.cocoV144Modal.visible');
+    const picker=dialog.querySelector('[data-coco-game-picker] select');assert.equal(picker,original);
+    dialog.querySelector('[data-padel144-view="players"]').click();
+    for(const tag of [...locales.slice(1),'es']){
+      await api.setLanguage(tag);assert.equal(picker.value,tag);
+      const source='Directorio del club';
+      assert.ok(dialog.textContent.includes(api.t(source)),tag);
+      if(tag!=='es')assert.ok(!dialog.textContent.includes(source),tag);
+    }
+    w.CocoV144.closeModal();assert.equal(doc.querySelector('[data-coco-language-menu] select'),original);
+  }finally{dom.window.close();}
+});

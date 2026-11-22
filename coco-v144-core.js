@@ -134,7 +134,7 @@
     modal.innerHTML = '<div class="cocoV144Shell" tabindex="-1">' +
       '<header class="cocoV144Header"><div><span class="cocoV144Kicker"></span><h2 id="cocoV144ModalTitle"></h2></div>' +
       '<div class="cocoV144HeaderActions"><button type="button" data-v144-share aria-label="Compartir este juego">↗</button><button type="button" data-v144-sound aria-label="Activar o desactivar sonido"></button><button type="button" data-v144-close aria-label="Cerrar">×</button></div></header>' +
-      '<div class="cocoV144Body"></div></div>';
+      '<div data-coco-game-picker></div><div class="cocoV144Body"></div></div>';
     document.body.appendChild(modal);
     modalBody = modal.querySelector(".cocoV144Body");
     modalTitle = modal.querySelector("#cocoV144ModalTitle");
@@ -174,7 +174,7 @@
     modalKicker.textContent = options.kicker || "COCO EN FORMA · v154.0";
     modalBody.innerHTML = options.html || "";
     disposer = typeof options.dispose === "function" ? options.dispose : null;
-    modal.classList.add("visible");
+    modal.classList.add("visible");root.dispatchEvent(new CustomEvent("coco:game-visibility"));
     document.documentElement.classList.add("cocoV144Open");
     document.body.classList.add("cocoV144Open");
     requestAnimationFrame(function () { var shell = modal.querySelector(".cocoV144Shell"); if (shell) shell.focus({ preventScroll: true }); });
@@ -185,7 +185,7 @@
     if (!modal || !modal.classList.contains("visible")) return;
     if (disposer) { try { disposer(); } catch (_) {} disposer = null; }
     try { modal.dispatchEvent(new CustomEvent("coco:v144-close", { bubbles: false })); } catch (_) {}
-    modal.classList.remove("visible");
+    modal.classList.remove("visible");root.dispatchEvent(new CustomEvent("coco:game-visibility"));
     modalBody.innerHTML = "";
     document.documentElement.classList.remove("cocoV144Open");
     document.body.classList.remove("cocoV144Open");
