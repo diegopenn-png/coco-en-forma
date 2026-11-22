@@ -375,10 +375,13 @@
     current = tag; activePack = pack;
     if (persist) {
       try { localStorage.setItem(storageKey,tag); } catch {}
-      if (new URLSearchParams(location.search).has('lang') || new URLSearchParams(location.search).has('document_original')) {
-        const url = new URL(location.href); url.searchParams.delete('document_original'); url.searchParams.set('lang',tag);
-        window.history.replaceState(window.history.state,'',url);
-      }
+    }
+    // A change from another tab must also survive reloading an explicit language URL.
+    const url = new URL(location.href);
+    const keepOriginal = !persist && originalDocument && url.searchParams.get('document_original') === 'es';
+    if (!keepOriginal && (url.searchParams.has('lang') || url.searchParams.has('document_original'))) {
+      url.searchParams.delete('document_original'); url.searchParams.set('lang',tag);
+      window.history.replaceState(window.history.state,'',url);
     }
     document.documentElement.lang = tag;
     document.documentElement.dir = tag === 'ar' ? 'rtl' : 'ltr';

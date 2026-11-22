@@ -100,6 +100,31 @@ test('shared links, rerendered forms and report exports preserve the language an
   }finally{dom.window.close();}
 });
 
+test('a language change from another tab updates the URL and survives reload without rewriting storage',async()=>{
+  const {api,w,dom}=page('https://coco.test/?lang=es&source=pwa-shortcut&juego=memoria#tab');
+  try {
+    await api.ready;
+    // The other tab has already written the shared preference before this event arrives.
+    w.localStorage.setItem('coco.language.v1','fr');
+    const setItem=w.Storage.prototype.setItem;
+    const writes=[];
+    w.Storage.prototype.setItem=function(key,value){writes.push([key,value]);return setItem.call(this,key,value);};
+    const changed=new Promise(resolve=>w.addEventListener('coco:language',resolve,{once:true}));
+    w.dispatchEvent(new w.StorageEvent('storage',{key:'coco.language.v1',newValue:'fr',oldValue:'es'}));
+    await changed;
+    assert.equal(api.tag,'fr');
+    assert.equal(w.location.search,'?lang=fr&source=pwa-shortcut&juego=memoria');
+    assert.equal(w.location.hash,'#tab');
+    assert.deepEqual(writes,[]);
+    const reloaded=page(w.location.href,undefined,w.localStorage.getItem('coco.language.v1'));
+    try {
+      await reloaded.api.ready;
+      assert.equal(reloaded.api.tag,'fr');
+      assert.equal(reloaded.w.localStorage.getItem('coco.language.v1'),'fr');
+    } finally {reloaded.dom.window.close();}
+  } finally {dom.window.close();}
+});
+
 test('offline reopening uses the previously downloaded pack before the first service worker takes control',async()=>{
   let offline=false;
   const items=new Map();
@@ -253,7 +278,7 @@ test('Generala can switch between every language after a roll without losing the
 });
 
 test('opening the Spanish original of a policy keeps the reader’s chosen language for the app',async()=>{
-  const {w,doc,api,dom}=page('https://coco.test/aviso-legal.html?document_original=es',undefined,'pl','<a data-coco-original-document href="?document_original=es">Ver original en español</a>');
+  const {w,doc,api,dom}=page('https://coco.test/aviso-legal.html?document_original=es&source=policy#privacy',undefined,'pl','<a data-coco-original-document href="?document_original=es">Ver original en español</a>');
   try {
     await api.ready;
     assert.equal(api.tag,'es');
@@ -263,11 +288,16 @@ test('opening the Spanish original of a policy keeps the reader’s chosen langu
     externalChange();
     await new Promise(resolve => setTimeout(resolve,0));
     assert.equal(api.tag,'es');
+    assert.equal(w.location.search,'?document_original=es&source=policy');
+    assert.equal(w.location.hash,'#privacy');
+    assert.equal(w.localStorage.getItem('coco.language.v1'),'pl');
     await api.setLanguage('it');
-    assert.equal(w.location.search,'?lang=it');
+    assert.equal(w.location.search,'?source=policy&lang=it');
     externalChange();
     await new Promise(resolve => setTimeout(resolve,0));
     assert.equal(api.tag,'fr');
+    assert.equal(w.location.search,'?source=policy&lang=fr');
+    assert.equal(w.location.hash,'#privacy');
     assert.equal(doc.querySelector('[data-coco-original-document]').hidden,false);
   }finally{dom.window.close();}
 });
