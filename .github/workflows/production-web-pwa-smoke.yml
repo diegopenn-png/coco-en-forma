@@ -247,6 +247,7 @@ jobs:
             qa/reward-cards-browser.cjs
             qa/account-language-browser.cjs
             qa/study-language-browser.cjs
+            i18n/assessment/*.json
           sparse-checkout-cone-mode: false
       - name: Download and verify localized reward images on the live mobile web
         env:
