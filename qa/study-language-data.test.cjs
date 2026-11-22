@@ -24,3 +24,11 @@ test('report templates retain all scored values and the author’s name in every
     assert.equal(translated.strings['Universidad de San Andrés'],'Universidad de San Andrés');
   }
 });
+
+test('the installed app caches the downloadable report module and only existing study scripts',()=>{
+  const worker=read('sw.js');
+  const core=JSON.parse(worker.match(/const ENEAGRAM_CORE=(\[[^;]+\]);/)[1]);
+  assert.ok(core.includes('./explora/localized-pdf.mjs'));
+  const studyAssets=new Set([...core,...worker.matchAll(/"(\.\/i18n\/[^"]+\.js)"/g)].map(entry=>Array.isArray(entry)?entry[1]:entry));
+  for(const asset of studyAssets)assert.ok(fs.existsSync(path.join(root,asset)),asset);
+});
