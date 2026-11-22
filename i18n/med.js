@@ -2,11 +2,10 @@
 // Only its authored copy is looked up. The game downloads one language when opened.
 (() => {
   'use strict';
-  const version='20261122-reviewed';
+  const version='20261122-full-3';
   const base=new URL('med/',document.currentScript.src);
   const loaded=new Map(), pending=new Map();
   let shared;
-  const questionIds=new Set(["bio-001b", "bio-002b", "bio-003b", "bio-004b", "bio-007b", "bio-008b", "quí-002b", "quí-003b", "quí-004b", "quí-010b", "quí-011b", "quí-012b", "com-006b", "com-007b", "com-008b", "com-009b", "1año-02b", "1año-03b", "1año-05b", "5año-10b", "6año-16b", "6año-17b", "residencias-01b", "residencias-02b"]);
   const normalize=s=>s.trim().replace(/\s+/gu,' ').toLocaleLowerCase('es');
   async function file(name) {
     const url=new URL(name+'.json?v='+version,base);
@@ -21,7 +20,6 @@
     if(!shared)shared=file('source').catch(error=>{shared=null;throw error});
     const request=Promise.all([shared,file(tag)]).then(([source,pack])=>{
       if(pack.locale!==tag||pack.values.length!==source.terms.length||pack.revision!==source.revision)throw Error('Idioma no disponible.');
-      if (source.questionIds.length!==questionIds.size || !source.questionIds.every(id=>questionIds.has(id))) throw Error('Idioma no disponible.');
       loaded.set(tag,{dict:new Map(source.terms.map((s,i)=>[normalize(s),pack.values[i]])),prefixes:source.prefixes,suffixes:source.suffixes,ui:pack.ui});
     }).finally(()=>pending.delete(tag));
     pending.set(tag,request);
@@ -50,5 +48,5 @@
     if(/^\d+% recorrido$/.test(raw))return raw.split('%')[0]+'% '+(find('recorrido')||'');
     return value;
   }
-  window.CocoMedLanguage=Object.freeze({load,text,hasQuestion:id=>questionIds.has(id)});
+  window.CocoMedLanguage=Object.freeze({load,text});
 })();

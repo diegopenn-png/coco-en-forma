@@ -582,7 +582,7 @@ try{if(new URL(location.href).searchParams.get("coco_home")==="1")localStorage.s
 </script>
 <script src="./supabase-js-2.112.3.min.js?v=15000"></script>
 <link rel="stylesheet" href="./eterna-v159.css?v=160980">
-<link rel="stylesheet" href="/assets/styles/coco-unified-v160127.css?v=20261122-4"><link rel="stylesheet" href="/i18n/coco.css?v=20261122-11"><script defer src="/i18n/reward-cards.js?v=1"></script><script defer src="/i18n/word-games.js?v=1"></script><script defer src="/i18n/med.js?v=20261122-reviewed"></script><script defer src="/i18n/coco.js?v=20261122-15"></script></head><body><div data-coco-language-menu></div>
+<link rel="stylesheet" href="/assets/styles/coco-unified-v160127.css?v=20261122-4"><link rel="stylesheet" href="/i18n/coco.css?v=20261122-11"><script defer src="/i18n/reward-cards.js?v=1"></script><script defer src="/i18n/word-games.js?v=1"></script><script defer src="/i18n/med.js?v=20261122-full-3"></script><script defer src="/i18n/coco.js?v=20261122-16"></script></head><body><div data-coco-language-menu></div>
 <div id="coco-startup-status" role="status" aria-live="polite"><img src="./assets/brand/coco-premium-v160127/icon-192.png" width="96" height="96" alt=""><p>Preparando Coco…</p></div>
 <script>window.COCO_VERSION="2026-08-20-v155.0-identidad-unificada";window.COCO_GENERAL_RANKING_IDS_V153=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol","conecta","ajedrez"]);var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://www.cocoenforma.com/icon-512.png',correo:'info@cocoenforma.com',privacidad:'https://www.cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',eternaEndpoint:'https://coco-eterna-v159.chatinmobiliario.workers.dev'};</script>
 <script id="coco-scoring-v160110" src="./coco-scoring-v160110.js?v=16010048"></script>
@@ -4356,16 +4356,12 @@ html[lang="es"] .cocoMedOriginal{display:none}
    return req.join(" · ");
  }
 
- function bancoPorIdiomaMed(){
-   if(!window.CocoLocale || window.CocoLocale.tag==='es')return banco;
-   return banco.filter(function(q){return window.CocoMedLanguage.hasQuestion(q.id)});
- }
  function etapasOrdenadasMed(){
    var preferidas=[
      "Preuniversitario","1.º año","2.º año","3.º año","4.º año",
      "5.º año","6.º año","Internado","Residencias"
    ];
-   var existentes=Array.from(new Set(bancoPorIdiomaMed().map(function(q){return q.stage})));
+   var existentes=Array.from(new Set(banco.map(function(q){return q.stage})));
    return preferidas.filter(function(e){return existentes.indexOf(e)>=0})
      .concat(existentes.filter(function(e){return preferidas.indexOf(e)<0}));
  }
@@ -4406,16 +4402,10 @@ html[lang="es"] .cocoMedOriginal{display:none}
      ["Básica","🌱","Básico"],["Media","⚡","Intermedio"],["Avanzada","🏆","Avanzado"]
    ].map(function(x){return '<button type="button" class="'+(estado.nivel===x[0]?'active':'')+'" data-med-difficulty="'+x[0]+'" aria-pressed="'+(estado.nivel===x[0]?'true':'false')+'"><span>'+x[1]+'</span>'+x[2]+'</button>'}).join('')+'</div></section>'+ 
    '<h3 style="font-size:24px">Elige tu etapa</h3><p class="apagado">Cada día recibes hasta 20 preguntas rotadas del nivel elegido, con materias y respuestas equilibradas. El programa recorre Preuniversitario, 1.º a 6.º año, Internado y Residencias.</p>'+ 
-   '<div class="cocoMedGrid">'+etapasOrdenadasMed().map(function(e,i){var cantidad=bancoPorIdiomaMed().filter(function(q){return q.stage===e}).length;return '<button type="button" class="cocoMedEtapa" data-etapa-index="'+i+'"><b>'+e+'</b><span>'+textoCantidadMed(e,cantidad)+'</span></button>'}).join('')+'</div>'+
+   '<div class="cocoMedGrid">'+etapasOrdenadasMed().map(function(e,i){var cantidad=banco.filter(function(q){return q.stage===e}).length;return '<button type="button" class="cocoMedEtapa" data-etapa-index="'+i+'"><b>'+e+'</b><span>'+textoCantidadMed(e,cantidad)+'</span></button>'}).join('')+'</div>'+ 
    '<h3 style="font-size:23px;margin-top:24px">Tu carrera en Coco Med</h3><div class="cocoMedTarjetas">'+catalogoRangosMed().map(function(x){var actual=x.name===(n&&n.name),cumplido=x.cumple(met),cls=actual?' actual':(cumplido?'':' bloqueada');return '<div class="cocoMedTarjeta'+cls+'"><h4 class="cocoMedRangoTitulo"><span class="cocoMedTarjetaIcono">'+escapeMed(x.icon||"🩺")+'</span><span>'+escapeMed(x.name||"Nivel médico")+'</span></h4><p>'+escapeMed(x.desc||"")+'</p><small>'+(actual?'Rango actual':cumplido?'Conseguido':escapeMed(requisitosNivelMed(x,met)))+'</small></div>'}).join('')+'</div>';
    cargarPosicionMed().then(function(p){if(!p)return;var a=document.getElementById("medPosicionActual"),t=document.getElementById("medTotalJugadores");if(a)a.textContent=p.rank_position||"—";if(t)t.textContent=p.total_players||"—"});
    c.querySelectorAll("[data-med-difficulty]").forEach(function(btn){btn.addEventListener("click",function(){estado.nivel=this.dataset.medDifficulty||"Media";inicio()})});
-   if(window.CocoLocale && window.CocoLocale.tag!=='es'){
-     var grid=c.querySelector('.cocoMedGrid'),info=grid.previousElementSibling;
-     info.textContent='Hay 24 preguntas en este idioma. El banco completo de 4.704 preguntas está disponible en español.';
-     var full=document.createElement('button');full.type='button';full.className='cocoMedBtn sec';full.id='medBancoCompleto';full.textContent='Abrir el banco completo en español';
-     full.onclick=function(){window.CocoLocale.setLanguage('es')};grid.before(full);
-   }
    var etapasDisponibles=etapasOrdenadasMed();
    c.querySelectorAll("[data-etapa-index]").forEach(function(b){
      b.addEventListener("click",function(e){
@@ -4429,7 +4419,7 @@ html[lang="es"] .cocoMedOriginal{display:none}
    cancelarTutorMed();estado.avanzando=false;
    configurarVolverSuperiorMed(inicio,true);
    var c=document.getElementById("cocoMedContenido");
-   var listaEtapa=bancoPorIdiomaMed().filter(function(q){return q.stage===estado.etapa});
+   var listaEtapa=banco.filter(function(q){return q.stage===estado.etapa});
    var materiasLista=Array.from(new Set(listaEtapa.map(function(q){return q.subject})));
    c.innerHTML='<button type="button" class="cocoMedBtn sec" id="medInicio">← Inicio</button>'+
      '<h3 style="font-size:26px;margin-top:14px">'+escapeMed(estado.etapa||"Etapa")+'</h3>'+
@@ -4511,11 +4501,6 @@ html[lang="es"] .cocoMedOriginal{display:none}
    var c=document.getElementById("cocoMedContenido");if(estado.indice>=estado.preguntas.length)return resultado();
    var q=estado.preguntas[estado.indice],p=Math.round(100*estado.indice/estado.preguntas.length);
    c.innerHTML='<button class="cocoMedBtn sec" id="medSalir">← Materias</button><div class="cocoMedHud"><span>'+estado.etapa+' · '+estado.materia+'</span><span>Pregunta '+(estado.indice+1)+' de '+estado.preguntas.length+' · Aciertos '+estado.aciertos+'</span></div><div class="cocoMedProgreso"><span style="width:'+p+'%"></span></div><div class="cocoMedQuiz"><div class="cocoMedMeta"><span class="cocoMedTag">'+q.subject+'</span><span class="cocoMedTag">'+q.difficulty+'</span></div><h3 class="cocoMedPregunta">'+escapeMed(q.stem)+'</h3><div class="cocoMedOpciones">'+q.options.map(function(o,i){return '<button type="button" class="cocoMedOpcion" data-op="'+i+'">'+String.fromCharCode(65+i)+'. <span>'+escapeMed(o)+'</span></button>'}).join('')+'</div><div id="medFeedback" class="cocoMedFeedback"></div></div>';
-   // A player can change language inside a Spanish exam. Preserve any unreviewed
-   // source question and its answers without altering the running exam or its score.
-   if(!window.CocoMedLanguage?.hasQuestion(q.id)){
-     c.querySelectorAll('.cocoMedPregunta,[data-op] span').forEach(function(el){el.setAttribute('data-coco-verbatim','');el.lang='es';el.dir='ltr'});
-   }
    var original=document.createElement('details');
    original.className='cocoMedOriginal';
    var summary=document.createElement('summary');summary.textContent='Ver original en español';original.appendChild(summary);
@@ -4621,14 +4606,6 @@ html[lang="es"] .cocoMedOriginal{display:none}
  }
 
  window.addEventListener('coco:language',function(event){
-   var overlay=document.getElementById('cocoMedOverlay');
-   if(!overlay?.classList.contains('abierto'))return;
-   var content=document.getElementById('cocoMedContenido');
-   if(content?.querySelector('.cocoMedGrid')){inicio();return}
-   if(content?.querySelector('#medGeneral')){
-     if(etapasOrdenadasMed().includes(estado.etapa))materias();else inicio();
-     return;
-   }
    if(event.detail?.locale==='es')return;
    var panel=document.getElementById('medTutorPanel'),q=estado.preguntas[estado.indice];
    if(panel&&q&&estado.respondida&&panel.childElementCount){
@@ -4639,7 +4616,7 @@ html[lang="es"] .cocoMedOriginal{display:none}
  function medTextoTutor(value){return window.CocoMedLanguage?.text(value,window.CocoLocale?.tag)||value}
  function ampliarDesdeBancoMed(panel,q){
    var base=q.id.replace(/(?:-v\d+|-extra\d+)$/,'').slice(0,-1);
-   var related=[q.explanation];if(window.CocoLocale?.tag==='es')['a','c'].forEach(function(suffix){
+   var related=[q.explanation];['a','c'].forEach(function(suffix){
      var item=banco.find(function(entry){return entry.id===base+suffix});
      if(item&&item.explanation&&!related.includes(item.explanation))related.push(item.explanation);
    });
@@ -4777,10 +4754,6 @@ function mostrarLogroMed(racha,continuar){
       '<p>'+escapeMed(q.explanation||"")+'</p>'+
       '<div class="cocoMedFuente"><b>Referencia:</b> '+escapeMed(q.reference||"Referencia no disponible")+'</div>'+
       '<div id="medTutorPanel" class="cocoMedTutorPanel" aria-live="polite"></div>';
-    if(!window.CocoMedLanguage?.hasQuestion(q.id)){
-      var copy=document.querySelectorAll('#medFeedback > p');
-      copy.forEach(function(el){el.setAttribute('data-coco-verbatim','');el.lang='es';el.dir='ltr'});
-    }
     var quoted=document.querySelector('.cocoMedOriginal [data-coco-verbatim]');
     if(quoted && q.explanation){var explanation=document.createElement('p');explanation.textContent=q.explanation;quoted.appendChild(explanation)}
     document.getElementById("medExplicarMejor").addEventListener("click",function(event){event.preventDefault();if(!estado.avanzando)explicarMejorMed(q,q.options[i],ok)});

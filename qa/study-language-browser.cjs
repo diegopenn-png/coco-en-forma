@@ -115,12 +115,6 @@ async function med(browser){
     await page.evaluate(()=>window.CocoMedV148.open());
     await page.locator('[data-etapa-index]').first().waitFor();
     const picker=page.locator('select[data-med-locale]');
-    assert.equal(await page.locator('[data-etapa-index]').count(),5);
-    assert.match(await page.locator('#medBancoCompleto').textContent(),/espagnol/);
-    await page.locator('#medBancoCompleto').click();
-    await page.waitForFunction(()=>CocoLocale.tag==='es' && document.querySelectorAll('[data-etapa-index]').length===9);
-    await picker.selectOption('fr');
-    await page.waitForFunction(()=>CocoLocale.tag==='fr' && document.querySelectorAll('[data-etapa-index]').length===5);
     await page.locator('[data-etapa-index]').first().click();await page.locator('#medGeneral').click();
     await page.locator('.cocoMedPregunta').waitFor();
     const spanish=await page.locator('.cocoMedOriginal [lang=es] p').first().textContent();
