@@ -47,7 +47,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.1-conversation-continuity
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.84-menu-languages
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.85-dropdown-languages
     steps:
       - name: Fetch uncached production assets
         shell: bash

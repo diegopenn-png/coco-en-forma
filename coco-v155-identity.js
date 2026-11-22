@@ -5,7 +5,7 @@
   var DATA={
     naval:{name:"Coco Batalla Naval",description:"Cinco barcos y un océano por descubrir. Juega contra Coco o invita a un amigo a una sala privada. No puntúa para la clasificación general."},
     generala:{name:"Coco Generala",description:"Cinco dados, tres tiradas y tu mejor jugada. Contra Coco, en familia o en salas privadas. No puntúa para la clasificación general."},
-    eneagrama:{name:"Coco Eneagrama",description:"Explora tus nueve tendencias con una guía de autoconocimiento y un informe personal en PDF.",url:"https://cocoenforma.com/explora/"},
+    eneagrama:{name:"Coco Eneagrama",description:"Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.",url:"https://cocoenforma.com/explora/"},
     bank:{name:"Coco Bank",description:"Recibe dinero de juego, paga tus gastos y ahorra para tu meta. Coco te guía paso a paso."},
     ajedrez:{name:"Coco Ajedrez · Partida del día",description:"Entrena estrategia y planificación. Puntúa solo la partida del día."},
     conecta:{name:"Conecta colores",description:"Planificá rutas y conectá parejas sin cerrar el paso a los demás colores."},

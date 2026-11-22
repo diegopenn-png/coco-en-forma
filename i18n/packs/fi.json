@@ -5894,7 +5894,15 @@
   "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Jos pelaaja on alle 18-vuotias, vanhemman tai laillisen huoltajan on luotava tili tai annettava lupa sen luomiseen. Käytä vastuussa olevan aikuisen sähköpostiosoitetta.",
   "Tu privacidad en Eterna | Coco en Forma": "Yksityisyytesi Eternassa | Coco en Forma",
   "Privacidad explicada para menores usuarios de Eterna.": "Tietoa yksityisyydestä Eternaa käyttäville lapsille ja nuorille.",
-  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Ei. Eterna on tehty oppimisen ja koulutyön tueksi. Jos kerrot jotain, mikä vaikuttaa tärkeältä turvallisuutesi tai hyvinvointisi kannalta, Eterna voi ehdottaa, että puhut luotettavalle aikuiselle."
+  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Ei. Eterna on tehty oppimisen ja koulutyön tueksi. Jos kerrot jotain, mikä vaikuttaa tärkeältä turvallisuutesi tai hyvinvointisi kannalta, Eterna voi ehdottaa, että puhut luotettavalle aikuiselle.",
+  "Todos los juegos son gratuitos": "Kaikki pelit ovat ilmaisia",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "Myös tili on ilmainen. Pelaamiseen ei tarvita maksukorttia eikä tilausta.",
+  "Cuenta gratuita · sin publicidad": "Ilmainen tili · ei mainoksia",
+  "Juega sin tarjeta ni suscripción.": "Pelaa ilman maksukorttia tai tilausta.",
+  "Apoyo escolar opcional con IA": "Valinnainen tekoälyavusteinen tuki koulutyöhön",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "Erillinen palvelu. Kokeilun jälkeen voit halutessasi tehdä tilauksen.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "Itsetuntemusta tukeva arviointi ja henkilökohtainen PDF-raportti. Peleistä erillinen maksullinen palvelu.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "Kirjaudu ilmaiselle tilillesi avataksesi pelin {game}"
  },
  "chess": {
   "Peón": "Sotilas",

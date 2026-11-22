@@ -5,7 +5,7 @@
     "description": "Descubre juegos mentales gratis de memoria, lógica, sudoku y ajedrez en Coco en Forma. Juega desde el móvil o el ordenador, a tu ritmo y sin publicidad.",
     "eyebrow": "Juegos mentales gratis online",
     "heading": "Un reto de memoria, lógica o estrategia. Tú eliges.",
-    "intro": "Coco en Forma reúne juegos gratuitos para quienes disfrutan descubriendo patrones, recordando posiciones y pensando la siguiente jugada. Explora las reglas, elige una actividad y empieza desde el navegador del móvil, la tableta o el ordenador.",
+    "intro": "Todos los juegos de Coco en Forma son gratuitos y sin publicidad. Descubre patrones, recuerda posiciones y piensa tu siguiente jugada. Explora las reglas, elige una actividad y empieza desde el navegador del móvil, la tableta o el ordenador.",
     "keywords": [
       "juegos mentales gratis",
       "juegos de memoria online",
@@ -22,7 +22,7 @@
       "next": "Idioma siguiente",
       "menu": "Menú principal",
       "play": "Jugar",
-      "account": "Entrar o crear cuenta",
+      "account": "Entrar o crear una cuenta gratuita",
       "learnMore": "Cómo se juega",
       "explore": "Elige tu próximo juego",
       "faq": "Preguntas frecuentes",
@@ -34,12 +34,12 @@
       "terms": "Condiciones",
       "footer": "Coco en Forma · Juegos, curiosidad y aprendizaje",
       "updated": "Actualizado",
-      "free": "Gratis y sin publicidad",
+      "free": "Todos los juegos son gratuitos",
       "pwa": "También como aplicación web",
       "howItWorks": "Cómo empezar"
     },
     "heroPoints": [
-      "Juegos gratuitos, sin publicidad",
+      "Cuenta gratuita, sin tarjeta",
       "Móvil, tableta y ordenador",
       "Interfaz en 15 idiomas"
     ],
@@ -71,7 +71,7 @@
       },
       {
         "title": "Empieza a jugar",
-        "text": "Accede a tu cuenta cuando el juego lo solicite. Las partidas locales de Ajedrez, Generala y Batalla Naval permiten empezar sin registrarte."
+        "text": "Accede a tu cuenta gratuita cuando el juego lo solicite. Las partidas locales de Ajedrez, Generala y Batalla Naval permiten empezar sin registrarte."
       },
       {
         "title": "Vuelve cuando te apetezca",
@@ -81,11 +81,11 @@
     "faq": [
       {
         "question": "¿Estos juegos son gratuitos?",
-        "answer": "Sí, los juegos de esta selección son gratuitos y no muestran publicidad. Eterna y Coco Eneagrama son servicios separados, con sus propias condiciones."
+        "answer": "Sí. Todos los juegos y la cuenta de Coco son gratuitos. No necesitas tarjeta ni suscripción para jugar y no se muestra publicidad. Eterna ofrece apoyo escolar opcional por suscripción. Coco Eneagrama es una evaluación de autoconocimiento con informe en PDF de pago. Ambos servicios son independientes de los juegos."
       },
       {
         "question": "¿Cuándo necesito una cuenta?",
-        "answer": "Memoria, Sudoku y Conecta colores requieren acceder a Coco. También necesitas cuenta para las salas online y las funciones del perfil. Puedes iniciar partidas locales de Ajedrez, Generala y Batalla Naval sin registro."
+        "answer": "Memoria, Sudoku y Conecta colores requieren una cuenta gratuita de Coco. También necesitas cuenta para las salas online y las funciones del perfil. Puedes iniciar partidas locales de Ajedrez, Generala y Batalla Naval sin registro."
       },
       {
         "question": "¿Tengo que descargar una aplicación?",
@@ -103,15 +103,15 @@
     "gameCards": {
       "memoria": {
         "title": "Memoria",
-        "text": "Observa las cartas, recuerda sus posiciones y encuentra las parejas. Requiere cuenta."
+        "text": "Observa las cartas, recuerda sus posiciones y encuentra las parejas. Requiere una cuenta gratuita."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Completa la cuadrícula respetando filas, columnas y bloques. Requiere cuenta."
+        "text": "Completa la cuadrícula respetando filas, columnas y bloques. Requiere una cuenta gratuita."
       },
       "conecta": {
         "title": "Conecta colores",
-        "text": "Une cada pareja y deja espacio para los demás caminos. Requiere cuenta."
+        "text": "Une cada pareja y deja espacio para los demás caminos. Requiere una cuenta gratuita."
       },
       "ajedrez": {
         "title": "Coco Ajedrez",
@@ -128,12 +128,12 @@
     },
     "closing": {
       "title": "El siguiente reto lo eliges tú",
-      "text": "Empieza por una partida local o entra en tu cuenta para descubrir las actividades vinculadas a tu perfil.",
+      "text": "Empieza por una partida local o entra en tu cuenta gratuita para descubrir las actividades vinculadas a tu perfil.",
       "button": "Abrir Coco en Forma"
     },
     "note": {
       "spanishContent": "Los juegos que conservan contenido en español lo indican en su ficha.",
-      "eterna": "Eterna, el apoyo escolar de Coco, es un servicio independiente. Las sesiones del tutor se ofrecen actualmente en español."
+      "eterna": "Eterna, el apoyo escolar de Coco, es un servicio opcional e independiente por suscripción. Las sesiones del tutor se ofrecen actualmente en español."
     }
   },
   "en": {
@@ -142,7 +142,7 @@
     "description": "Explore free memory games, logic puzzles, sudoku and chess at Coco en Forma. Play at your own pace on your phone, tablet or computer, with no ads.",
     "eyebrow": "Free online brain games",
     "heading": "Memory, logic or strategy. Find your next challenge.",
-    "intro": "Coco en Forma brings together free games for people who enjoy spotting patterns, remembering positions and thinking one move ahead. Read the rules, choose an activity and start in your phone, tablet or computer browser.",
+    "intro": "All games on Coco en Forma are free and have no ads. Spot patterns, remember positions and think one move ahead. Read the rules, choose an activity and start in your phone, tablet or computer browser.",
     "keywords": [
       "free brain games",
       "online memory games",
@@ -159,7 +159,7 @@
       "next": "Next language",
       "menu": "Main menu",
       "play": "Play",
-      "account": "Sign in or create an account",
+      "account": "Sign in or create a free account",
       "learnMore": "How to play",
       "explore": "Choose your next game",
       "faq": "Frequently asked questions",
@@ -171,12 +171,12 @@
       "terms": "Terms",
       "footer": "Coco en Forma · Games, curiosity and learning",
       "updated": "Updated",
-      "free": "Free, with no ads",
+      "free": "All games are free",
       "pwa": "Also available as a web app",
       "howItWorks": "Getting started"
     },
     "heroPoints": [
-      "Free games, no ads",
+      "Free account, no payment card",
       "Phone, tablet and computer",
       "Interface in 15 languages"
     ],
@@ -208,7 +208,7 @@
       },
       {
         "title": "Start playing",
-        "text": "Sign in when an activity asks you to. Local Chess, Generala and Battleship games can be started without an account."
+        "text": "Sign in to your free account when an activity asks you to. Local Chess, Generala and Battleship games can be started without an account."
       },
       {
         "title": "Come back when you like",
@@ -218,11 +218,11 @@
     "faq": [
       {
         "question": "Are these games free?",
-        "answer": "Yes. The games in this selection are free and have no ads. Eterna and Coco Eneagrama are separate services with their own terms."
+        "answer": "Yes. All Coco games and accounts are free. You don’t need a payment card or subscription to play, and there are no ads. Eterna offers optional school support through a subscription. Coco Eneagrama is a paid self-awareness assessment with a PDF report. Both services are separate from the games."
       },
       {
         "question": "When do I need an account?",
-        "answer": "Memory, Sudoku and Connect Colours require a Coco account. Online rooms and profile features also require you to sign in. Local Chess, Generala and Battleship games can be started without registering."
+        "answer": "Memory, Sudoku and Connect Colours require a free Coco account. Online rooms and profile features also require you to sign in. Local Chess, Generala and Battleship games can be started without registering."
       },
       {
         "question": "Do I have to download an app?",
@@ -240,15 +240,15 @@
     "gameCards": {
       "memoria": {
         "title": "Memory",
-        "text": "Watch the cards, remember their positions and find matching pairs. Account required."
+        "text": "Watch the cards, remember their positions and find matching pairs. Free account required."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Fill the grid using the rules for rows, columns and boxes. Account required."
+        "text": "Fill the grid using the rules for rows, columns and boxes. Free account required."
       },
       "conecta": {
         "title": "Connect Colours",
-        "text": "Join each matching pair while leaving room for the other paths. Account required."
+        "text": "Join each matching pair while leaving room for the other paths. Free account required."
       },
       "ajedrez": {
         "title": "Coco Chess",
@@ -265,12 +265,12 @@
     },
     "closing": {
       "title": "Your next challenge is up to you",
-      "text": "Start with a local game or sign in to explore the activities connected to your profile.",
+      "text": "Start with a local game or sign in to your free account to explore the activities connected to your profile.",
       "button": "Open Coco en Forma"
     },
     "note": {
       "spanishContent": "Games with content in Spanish display a notice in their guide.",
-      "eterna": "Eterna, Coco’s school support service, is separate from the free games. Tutor sessions are currently offered in Spanish."
+      "eterna": "Eterna, Coco’s school support service, is an optional subscription service separate from the games. Tutor sessions are currently offered in Spanish."
     }
   },
   "de": {
@@ -279,7 +279,7 @@
     "description": "Entdecke kostenlose Gedächtnisspiele, Logikrätsel, Sudoku und Schach bei Coco en Forma. Spiele ohne Werbung am Handy, Tablet oder Computer.",
     "eyebrow": "Kostenlose Denkspiele online",
     "heading": "Gedächtnis, Logik oder Strategie: Wähle deine Herausforderung.",
-    "intro": "Bei Coco en Forma findest du kostenlose Spiele zum Entdecken von Mustern, Merken von Positionen und Planen des nächsten Zuges. Lies die Regeln, wähle ein Spiel und starte direkt im Browser deines Handys, Tablets oder Computers.",
+    "intro": "Alle Spiele bei Coco en Forma sind kostenlos und ohne Werbung. Entdecke Muster, merke dir Positionen und plane deinen nächsten Zug. Lies die Regeln, wähle ein Spiel und starte direkt im Browser deines Handys, Tablets oder Computers.",
     "keywords": [
       "kostenlose Denkspiele",
       "Gedächtnisspiele online",
@@ -296,7 +296,7 @@
       "next": "Nächste Sprache",
       "menu": "Hauptmenü",
       "play": "Spielen",
-      "account": "Anmelden oder Konto erstellen",
+      "account": "Anmelden oder kostenloses Konto erstellen",
       "learnMore": "Spielanleitung",
       "explore": "Wähle dein nächstes Spiel",
       "faq": "Häufige Fragen",
@@ -308,12 +308,12 @@
       "terms": "Nutzungsbedingungen",
       "footer": "Coco en Forma · Spielen, entdecken und lernen",
       "updated": "Aktualisiert",
-      "free": "Kostenlos und ohne Werbung",
+      "free": "Alle Spiele sind kostenlos",
       "pwa": "Auch als Web-App nutzbar",
       "howItWorks": "So geht’s los"
     },
     "heroPoints": [
-      "Kostenlose Spiele ohne Werbung",
+      "Kostenloses Konto, keine Zahlungskarte nötig",
       "Handy, Tablet und Computer",
       "Benutzeroberfläche in 15 Sprachen"
     ],
@@ -345,7 +345,7 @@
       },
       {
         "title": "Starte die Partie",
-        "text": "Melde dich an, wenn das Spiel ein Konto erfordert. Lokale Partien in Schach, Generala und Schiffe versenken kannst du ohne Registrierung starten."
+        "text": "Melde dich mit deinem kostenlosen Konto an, wenn das Spiel ein Konto erfordert. Lokale Partien in Schach, Generala und Schiffe versenken kannst du ohne Registrierung starten."
       },
       {
         "title": "Komm wieder, wann du möchtest",
@@ -355,11 +355,11 @@
     "faq": [
       {
         "question": "Sind diese Spiele kostenlos?",
-        "answer": "Ja. Die Spiele dieser Auswahl sind kostenlos und ohne Werbung. Eterna und Coco Eneagrama sind eigenständige Angebote mit eigenen Bedingungen."
+        "answer": "Ja. Alle Spiele und das Coco-Konto sind kostenlos. Zum Spielen brauchst du weder eine Zahlungskarte noch ein Abo, und es wird keine Werbung eingeblendet. Eterna bietet eine optionale Lernbegleitung im Abo. Coco Eneagrama ist eine kostenpflichtige Selbsterkundung mit PDF-Bericht. Beide Angebote sind unabhängig von den Spielen."
       },
       {
         "question": "Wann brauche ich ein Konto?",
-        "answer": "Für das Gedächtnisspiel, Sudoku und Farben verbinden brauchst du ein Coco-Konto. Auch Online-Spielräume und Profilfunktionen erfordern eine Anmeldung. Lokale Partien in Schach, Generala und Schiffe versenken sind ohne Registrierung möglich."
+        "answer": "Für das Gedächtnisspiel, Sudoku und Farben verbinden brauchst du ein kostenloses Coco-Konto. Auch Online-Spielräume und Profilfunktionen erfordern eine Anmeldung. Lokale Partien in Schach, Generala und Schiffe versenken sind ohne Registrierung möglich."
       },
       {
         "question": "Muss ich eine App herunterladen?",
@@ -377,15 +377,15 @@
     "gameCards": {
       "memoria": {
         "title": "Gedächtnisspiel",
-        "text": "Merke dir die Positionen der Bilder und finde passende Paare. Konto erforderlich."
+        "text": "Merke dir die Positionen der Bilder und finde passende Paare. Kostenloses Konto erforderlich."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Fülle das Raster nach den Regeln für Reihen, Spalten und Blöcke. Konto erforderlich."
+        "text": "Fülle das Raster nach den Regeln für Reihen, Spalten und Blöcke. Kostenloses Konto erforderlich."
       },
       "conecta": {
         "title": "Farben verbinden",
-        "text": "Verbinde jedes Paar und halte die Wege für die anderen Farben frei. Konto erforderlich."
+        "text": "Verbinde jedes Paar und halte die Wege für die anderen Farben frei. Kostenloses Konto erforderlich."
       },
       "ajedrez": {
         "title": "Coco Schach",
@@ -402,12 +402,12 @@
     },
     "closing": {
       "title": "Du wählst die nächste Herausforderung",
-      "text": "Starte eine lokale Partie oder melde dich an, um die Spiele und Funktionen deines Profils zu entdecken.",
+      "text": "Starte eine lokale Partie oder melde dich mit deinem kostenlosen Konto an, um die Spiele und Funktionen deines Profils zu entdecken.",
       "button": "Coco en Forma öffnen"
     },
     "note": {
       "spanishContent": "Spiele mit spanischen Inhalten sind in ihrer Beschreibung entsprechend gekennzeichnet.",
-      "eterna": "Eterna, Cocos Lernbegleitung, ist ein eigenständiges Angebot. Die Gespräche mit dem Tutor finden derzeit auf Spanisch statt."
+      "eterna": "Eterna, Cocos Lernbegleitung, ist ein optionales Abo-Angebot, unabhängig von den Spielen. Die Gespräche mit dem Tutor finden derzeit auf Spanisch statt."
     }
   },
   "nl": {
@@ -416,7 +416,7 @@
     "description": "Ontdek gratis geheugenspellen, logische puzzels, sudoku en schaken bij Coco en Forma. Speel zonder reclame op je telefoon, tablet of computer.",
     "eyebrow": "Gratis online denkspellen",
     "heading": "Geheugen, logica of strategie. Kies jouw volgende uitdaging.",
-    "intro": "Coco en Forma verzamelt gratis spellen voor wie graag patronen ontdekt, posities onthoudt en een zet vooruitdenkt. Bekijk de spelregels, kies een activiteit en begin in de browser van je telefoon, tablet of computer.",
+    "intro": "Alle spellen van Coco en Forma zijn gratis en zonder reclame. Ontdek patronen, onthoud posities en denk een zet vooruit. Bekijk de spelregels, kies een activiteit en begin in de browser van je telefoon, tablet of computer.",
     "keywords": [
       "gratis denkspellen",
       "geheugenspellen online",
@@ -433,7 +433,7 @@
       "next": "Volgende taal",
       "menu": "Hoofdmenu",
       "play": "Spelen",
-      "account": "Inloggen of een account maken",
+      "account": "Inloggen of een gratis account maken",
       "learnMore": "Spelregels",
       "explore": "Kies je volgende spel",
       "faq": "Veelgestelde vragen",
@@ -445,12 +445,12 @@
       "terms": "Voorwaarden",
       "footer": "Coco en Forma · Spelen, ontdekken en leren",
       "updated": "Bijgewerkt",
-      "free": "Gratis en zonder reclame",
+      "free": "Alle spellen zijn gratis",
       "pwa": "Ook als webapp te gebruiken",
       "howItWorks": "Zo begin je"
     },
     "heroPoints": [
-      "Gratis spellen zonder reclame",
+      "Gratis account, geen betaalkaart nodig",
       "Telefoon, tablet en computer",
       "Interface in 15 talen"
     ],
@@ -482,7 +482,7 @@
       },
       {
         "title": "Begin met spelen",
-        "text": "Log in wanneer een spel daarom vraagt. Lokale partijen Schaken, Generala en Zeeslag kun je zonder account starten."
+        "text": "Log in met je gratis account wanneer een spel daarom vraagt. Lokale partijen Schaken, Generala en Zeeslag kun je zonder account starten."
       },
       {
         "title": "Kom terug wanneer je wilt",
@@ -492,11 +492,11 @@
     "faq": [
       {
         "question": "Zijn deze spellen gratis?",
-        "answer": "Ja. De spellen in deze selectie zijn gratis en bevatten geen reclame. Eterna en Coco Eneagrama zijn aparte diensten met eigen voorwaarden."
+        "answer": "Ja. Alle spellen en het Coco-account zijn gratis. Je hebt geen betaalkaart of abonnement nodig om te spelen en je ziet geen reclame. Eterna biedt optionele leerondersteuning via een abonnement. Coco Eneagrama is een betaald zelfonderzoek met een PDF-rapport. Beide diensten staan los van de spellen."
       },
       {
         "question": "Wanneer heb ik een account nodig?",
-        "answer": "Voor het geheugenspel, Sudoku en Verbind de kleuren heb je een Coco-account nodig. Ook online speelkamers en profielfuncties vereisen een account. Lokale partijen Schaken, Generala en Zeeslag kun je zonder registratie starten."
+        "answer": "Voor het geheugenspel, Sudoku en Verbind de kleuren heb je een gratis Coco-account nodig. Ook online speelkamers en profielfuncties vereisen een account. Lokale partijen Schaken, Generala en Zeeslag kun je zonder registratie starten."
       },
       {
         "question": "Moet ik een app downloaden?",
@@ -514,15 +514,15 @@
     "gameCards": {
       "memoria": {
         "title": "Geheugenspel",
-        "text": "Bekijk de kaarten, onthoud hun posities en zoek gelijke paren. Account nodig."
+        "text": "Bekijk de kaarten, onthoud hun posities en zoek gelijke paren. Gratis account nodig."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Vul het rooster volgens de regels voor rijen, kolommen en blokken. Account nodig."
+        "text": "Vul het rooster volgens de regels voor rijen, kolommen en blokken. Gratis account nodig."
       },
       "conecta": {
         "title": "Verbind de kleuren",
-        "text": "Verbind elk paar en laat ruimte voor de andere routes. Account nodig."
+        "text": "Verbind elk paar en laat ruimte voor de andere routes. Gratis account nodig."
       },
       "ajedrez": {
         "title": "Coco Schaken",
@@ -539,12 +539,12 @@
     },
     "closing": {
       "title": "Jij kiest de volgende uitdaging",
-      "text": "Begin met een lokale partij of log in om de activiteiten van je profiel te ontdekken.",
+      "text": "Begin met een lokale partij of log in met je gratis account om de activiteiten van je profiel te ontdekken.",
       "button": "Open Coco en Forma"
     },
     "note": {
       "spanishContent": "Spellen met Spaanse inhoud vermelden dit in hun speluitleg.",
-      "eterna": "Eterna, de leerondersteuning van Coco, is een aparte dienst. De gesprekken met de tutor zijn momenteel in het Spaans."
+      "eterna": "Eterna, de leerondersteuning van Coco, is een optionele abonnementsdienst die losstaat van de spellen. De gesprekken met de tutor zijn momenteel in het Spaans."
     }
   },
   "fr": {
@@ -553,7 +553,7 @@
     "description": "Découvre des jeux gratuits de mémoire, de logique, de sudoku et d’échecs sur Coco en Forma. Joue sans publicité sur téléphone, tablette ou ordinateur.",
     "eyebrow": "Jeux de réflexion gratuits en ligne",
     "heading": "Mémoire, logique ou stratégie : choisis ton prochain défi.",
-    "intro": "Coco en Forma propose des jeux gratuits pour celles et ceux qui aiment reconnaître des suites, mémoriser des positions et préparer leur prochain coup. Découvre les règles et lance-toi depuis le navigateur de ton téléphone, de ta tablette ou de ton ordinateur.",
+    "intro": "Tous les jeux de Coco en Forma sont gratuits et sans publicité. Reconnais des suites, mémorise des positions et prépare ton prochain coup. Découvre les règles et lance-toi depuis le navigateur de ton téléphone, de ta tablette ou de ton ordinateur.",
     "keywords": [
       "jeux de réflexion gratuits",
       "jeux de mémoire en ligne",
@@ -570,7 +570,7 @@
       "next": "Langue suivante",
       "menu": "Menu principal",
       "play": "Jouer",
-      "account": "Se connecter ou créer un compte",
+      "account": "Se connecter ou créer un compte gratuit",
       "learnMore": "Règles du jeu",
       "explore": "Choisis ton prochain jeu",
       "faq": "Questions fréquentes",
@@ -582,12 +582,12 @@
       "terms": "Conditions",
       "footer": "Coco en Forma · Jouer, découvrir et apprendre",
       "updated": "Mis à jour",
-      "free": "Gratuit et sans publicité",
+      "free": "Tous les jeux sont gratuits",
       "pwa": "Également disponible en application web",
       "howItWorks": "Comment commencer"
     },
     "heroPoints": [
-      "Jeux gratuits, sans publicité",
+      "Compte gratuit, sans carte bancaire",
       "Téléphone, tablette et ordinateur",
       "Interface en 15 langues"
     ],
@@ -619,7 +619,7 @@
       },
       {
         "title": "Lance-toi",
-        "text": "Connecte-toi lorsque le jeu le demande. Les parties locales d’Échecs, de Generala et de Bataille navale sont accessibles sans compte."
+        "text": "Connecte-toi à ton compte gratuit lorsque le jeu le demande. Les parties locales d’Échecs, de Generala et de Bataille navale sont accessibles sans compte."
       },
       {
         "title": "Reviens quand tu veux",
@@ -629,11 +629,11 @@
     "faq": [
       {
         "question": "Ces jeux sont-ils gratuits ?",
-        "answer": "Oui. Les jeux de cette sélection sont gratuits et sans publicité. Eterna et Coco Eneagrama sont des services distincts, avec leurs propres conditions."
+        "answer": "Oui. Tous les jeux et le compte Coco sont gratuits. Aucune carte bancaire ni aucun abonnement ne sont nécessaires pour jouer, et il n’y a pas de publicité. Eterna propose un soutien scolaire facultatif sur abonnement. Coco Eneagrama est une évaluation payante de connaissance de soi avec un rapport PDF. Ces deux services sont indépendants des jeux."
       },
       {
         "question": "Quand faut-il un compte ?",
-        "answer": "Mémoire, Sudoku et Relie les couleurs nécessitent un compte Coco. Il en faut aussi pour les salons en ligne et les fonctions du profil. Les parties locales d’Échecs, de Generala et de Bataille navale peuvent commencer sans inscription."
+        "answer": "Mémoire, Sudoku et Relie les couleurs nécessitent un compte Coco gratuit. Il en faut aussi pour les salons en ligne et les fonctions du profil. Les parties locales d’Échecs, de Generala et de Bataille navale peuvent commencer sans inscription."
       },
       {
         "question": "Faut-il télécharger une application ?",
@@ -651,15 +651,15 @@
     "gameCards": {
       "memoria": {
         "title": "Mémoire",
-        "text": "Observe les cartes, retiens leurs positions et retrouve les paires. Compte nécessaire."
+        "text": "Observe les cartes, retiens leurs positions et retrouve les paires. Compte gratuit nécessaire."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Complète la grille en respectant les lignes, les colonnes et les blocs. Compte nécessaire."
+        "text": "Complète la grille en respectant les lignes, les colonnes et les blocs. Compte gratuit nécessaire."
       },
       "conecta": {
         "title": "Relie les couleurs",
-        "text": "Relie chaque paire en laissant de la place aux autres chemins. Compte nécessaire."
+        "text": "Relie chaque paire en laissant de la place aux autres chemins. Compte gratuit nécessaire."
       },
       "ajedrez": {
         "title": "Coco Échecs",
@@ -676,12 +676,12 @@
     },
     "closing": {
       "title": "À toi de choisir le prochain défi",
-      "text": "Commence par une partie locale ou connecte-toi pour découvrir les activités liées à ton profil.",
+      "text": "Commence par une partie locale ou connecte-toi à ton compte gratuit pour découvrir les activités liées à ton profil.",
       "button": "Ouvrir Coco en Forma"
     },
     "note": {
       "spanishContent": "Les jeux dont le contenu reste en espagnol le précisent dans leur fiche.",
-      "eterna": "Eterna, le soutien scolaire de Coco, est un service distinct. Les échanges avec le tuteur sont actuellement proposés en espagnol."
+      "eterna": "Eterna, le soutien scolaire de Coco, est un service facultatif sur abonnement, indépendant des jeux. Les échanges avec le tuteur sont actuellement proposés en espagnol."
     }
   },
   "it": {
@@ -690,7 +690,7 @@
     "description": "Scopri giochi gratuiti di memoria, logica, sudoku e scacchi su Coco en Forma. Gioca senza pubblicità dal telefono, dal tablet o dal computer.",
     "eyebrow": "Giochi mentali gratis online",
     "heading": "Memoria, logica o strategia: scegli la tua prossima sfida.",
-    "intro": "Coco en Forma raccoglie giochi gratuiti per chi ama riconoscere schemi, ricordare posizioni e pensare alla mossa successiva. Leggi le regole, scegli un’attività e comincia dal browser del telefono, del tablet o del computer.",
+    "intro": "Tutti i giochi di Coco en Forma sono gratuiti e senza pubblicità. Riconosci schemi, ricorda posizioni e pensa alla mossa successiva. Leggi le regole, scegli un’attività e comincia dal browser del telefono, del tablet o del computer.",
     "keywords": [
       "giochi mentali gratis",
       "giochi di memoria online",
@@ -707,7 +707,7 @@
       "next": "Lingua successiva",
       "menu": "Menu principale",
       "play": "Gioca",
-      "account": "Accedi o crea un account",
+      "account": "Accedi o crea un account gratuito",
       "learnMore": "Come si gioca",
       "explore": "Scegli il prossimo gioco",
       "faq": "Domande frequenti",
@@ -719,12 +719,12 @@
       "terms": "Condizioni",
       "footer": "Coco en Forma · Giocare, scoprire e imparare",
       "updated": "Aggiornato",
-      "free": "Gratis e senza pubblicità",
+      "free": "Tutti i giochi sono gratuiti",
       "pwa": "Disponibile anche come app web",
       "howItWorks": "Come iniziare"
     },
     "heroPoints": [
-      "Giochi gratuiti, senza pubblicità",
+      "Account gratuito, senza carta di pagamento",
       "Telefono, tablet e computer",
       "Interfaccia in 15 lingue"
     ],
@@ -756,7 +756,7 @@
       },
       {
         "title": "Inizia a giocare",
-        "text": "Accedi quando il gioco lo richiede. Le partite locali di Scacchi, Generala e Battaglia navale possono iniziare senza account."
+        "text": "Accedi al tuo account gratuito quando il gioco lo richiede. Le partite locali di Scacchi, Generala e Battaglia navale possono iniziare senza account."
       },
       {
         "title": "Torna quando vuoi",
@@ -766,11 +766,11 @@
     "faq": [
       {
         "question": "Questi giochi sono gratuiti?",
-        "answer": "Sì. I giochi di questa selezione sono gratuiti e senza pubblicità. Eterna e Coco Eneagrama sono servizi separati, con condizioni proprie."
+        "answer": "Sì. Tutti i giochi e l’account Coco sono gratuiti. Per giocare non servono una carta di pagamento né un abbonamento e non ci sono pubblicità. Eterna offre un sostegno allo studio facoltativo in abbonamento. Coco Eneagrama è una valutazione a pagamento per conoscere meglio sé stessi, con un rapporto PDF. Entrambi i servizi sono indipendenti dai giochi."
       },
       {
         "question": "Quando serve un account?",
-        "answer": "Memoria, Sudoku e Collega i colori richiedono un account Coco. Serve anche per le stanze online e le funzioni del profilo. Puoi iniziare partite locali di Scacchi, Generala e Battaglia navale senza registrarti."
+        "answer": "Memoria, Sudoku e Collega i colori richiedono un account Coco gratuito. Serve anche per le stanze online e le funzioni del profilo. Puoi iniziare partite locali di Scacchi, Generala e Battaglia navale senza registrarti."
       },
       {
         "question": "Devo scaricare un’app?",
@@ -788,15 +788,15 @@
     "gameCards": {
       "memoria": {
         "title": "Memoria",
-        "text": "Osserva le carte, ricorda le posizioni e trova le coppie. Account necessario."
+        "text": "Osserva le carte, ricorda le posizioni e trova le coppie. Account gratuito necessario."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Completa la griglia rispettando righe, colonne e riquadri. Account necessario."
+        "text": "Completa la griglia rispettando righe, colonne e riquadri. Account gratuito necessario."
       },
       "conecta": {
         "title": "Collega i colori",
-        "text": "Unisci ogni coppia lasciando spazio agli altri percorsi. Account necessario."
+        "text": "Unisci ogni coppia lasciando spazio agli altri percorsi. Account gratuito necessario."
       },
       "ajedrez": {
         "title": "Coco Scacchi",
@@ -813,12 +813,12 @@
     },
     "closing": {
       "title": "La prossima sfida la scegli tu",
-      "text": "Comincia con una partita locale oppure accedi per scoprire le attività collegate al tuo profilo.",
+      "text": "Comincia con una partita locale oppure accedi al tuo account gratuito per scoprire le attività collegate al tuo profilo.",
       "button": "Apri Coco en Forma"
     },
     "note": {
       "spanishContent": "I giochi con contenuti in spagnolo lo indicano nella propria scheda.",
-      "eterna": "Eterna, il sostegno allo studio di Coco, è un servizio separato. Le conversazioni con il tutor si svolgono attualmente in spagnolo."
+      "eterna": "Eterna, il sostegno allo studio di Coco, è un servizio facoltativo in abbonamento, indipendente dai giochi. Le conversazioni con il tutor si svolgono attualmente in spagnolo."
     }
   },
   "pl": {
@@ -827,7 +827,7 @@
     "description": "Odkryj darmowe gry pamięciowe, łamigłówki, sudoku i szachy w Coco en Forma. Graj bez reklam na telefonie, tablecie lub komputerze, we własnym tempie.",
     "eyebrow": "Darmowe gry umysłowe online",
     "heading": "Pamięć, logika czy strategia? Wybierz kolejne wyzwanie.",
-    "intro": "Coco en Forma to bezpłatne gry dla osób, które lubią odkrywać wzory, zapamiętywać położenie obrazków i planować następny ruch. Przeczytaj zasady, wybierz grę i zacznij w przeglądarce telefonu, tabletu lub komputera.",
+    "intro": "Wszystkie gry w Coco en Forma są bezpłatne i bez reklam. Odkrywaj wzory, zapamiętuj położenie obrazków i planuj następny ruch. Przeczytaj zasady, wybierz grę i zacznij w przeglądarce telefonu, tabletu lub komputera.",
     "keywords": [
       "darmowe gry umysłowe",
       "gry pamięciowe online",
@@ -844,7 +844,7 @@
       "next": "Następny język",
       "menu": "Menu główne",
       "play": "Graj",
-      "account": "Zaloguj się lub utwórz konto",
+      "account": "Zaloguj się lub utwórz bezpłatne konto",
       "learnMore": "Zasady gry",
       "explore": "Wybierz kolejną grę",
       "faq": "Najczęstsze pytania",
@@ -856,12 +856,12 @@
       "terms": "Warunki korzystania",
       "footer": "Coco en Forma · Zabawa, ciekawość i nauka",
       "updated": "Aktualizacja",
-      "free": "Bezpłatnie i bez reklam",
+      "free": "Wszystkie gry są bezpłatne",
       "pwa": "Dostępne także jako aplikacja internetowa",
       "howItWorks": "Jak zacząć"
     },
     "heroPoints": [
-      "Darmowe gry bez reklam",
+      "Bezpłatne konto, bez karty płatniczej",
       "Telefon, tablet i komputer",
       "Interfejs w 15 językach"
     ],
@@ -893,7 +893,7 @@
       },
       {
         "title": "Rozpocznij rozgrywkę",
-        "text": "Zaloguj się, jeśli gra tego wymaga. Lokalne partie Szachów, Generali i Statków możesz rozpocząć bez konta."
+        "text": "Zaloguj się na bezpłatne konto, jeśli gra tego wymaga. Lokalne partie Szachów, Generali i Statków możesz rozpocząć bez konta."
       },
       {
         "title": "Wracaj, kiedy chcesz",
@@ -903,11 +903,11 @@
     "faq": [
       {
         "question": "Czy te gry są darmowe?",
-        "answer": "Tak. Gry z tego zestawu są bezpłatne i nie zawierają reklam. Eterna oraz Coco Eneagrama to odrębne usługi z własnymi warunkami."
+        "answer": "Tak. Wszystkie gry i konto Coco są bezpłatne. Do gry nie potrzebujesz karty płatniczej ani subskrypcji, a gry nie wyświetlają reklam. Eterna oferuje opcjonalne wsparcie w nauce w ramach subskrypcji. Coco Eneagrama to płatna ocena służąca lepszemu poznaniu siebie, z raportem PDF. Obie usługi są niezależne od gier."
       },
       {
         "question": "Kiedy potrzebuję konta?",
-        "answer": "Pamięć, Sudoku i Połącz kolory wymagają konta Coco. Konto jest też potrzebne do pokoi online i funkcji profilu. Lokalne partie Szachów, Generali i Statków można rozpocząć bez rejestracji."
+        "answer": "Pamięć, Sudoku i Połącz kolory wymagają bezpłatnego konta Coco. Konto jest też potrzebne do pokoi online i funkcji profilu. Lokalne partie Szachów, Generali i Statków można rozpocząć bez rejestracji."
       },
       {
         "question": "Czy trzeba pobrać aplikację?",
@@ -925,15 +925,15 @@
     "gameCards": {
       "memoria": {
         "title": "Pamięć",
-        "text": "Obserwuj karty, zapamiętuj ich położenie i znajduj pary. Wymagane konto."
+        "text": "Obserwuj karty, zapamiętuj ich położenie i znajduj pary. Wymagane bezpłatne konto."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Uzupełnij siatkę zgodnie z zasadami wierszy, kolumn i bloków. Wymagane konto."
+        "text": "Uzupełnij siatkę zgodnie z zasadami wierszy, kolumn i bloków. Wymagane bezpłatne konto."
       },
       "conecta": {
         "title": "Połącz kolory",
-        "text": "Połącz każdą parę, zostawiając miejsce na pozostałe ścieżki. Wymagane konto."
+        "text": "Połącz każdą parę, zostawiając miejsce na pozostałe ścieżki. Wymagane bezpłatne konto."
       },
       "ajedrez": {
         "title": "Coco Szachy",
@@ -950,12 +950,12 @@
     },
     "closing": {
       "title": "Kolejne wyzwanie wybierasz samodzielnie",
-      "text": "Zacznij od gry lokalnej lub zaloguj się, aby odkryć aktywności powiązane z twoim profilem.",
+      "text": "Zacznij od gry lokalnej lub zaloguj się na bezpłatne konto, aby odkryć aktywności powiązane z twoim profilem.",
       "button": "Otwórz Coco en Forma"
     },
     "note": {
       "spanishContent": "Gry z treściami po hiszpańsku zawierają odpowiednią informację w opisie.",
-      "eterna": "Eterna, wsparcie w nauce oferowane przez Coco, to osobna usługa. Rozmowy z tutorem odbywają się obecnie po hiszpańsku."
+      "eterna": "Eterna, wsparcie w nauce oferowane przez Coco, to opcjonalna usługa subskrypcyjna niezależna od gier. Rozmowy z tutorem odbywają się obecnie po hiszpańsku."
     }
   },
   "uk": {
@@ -964,7 +964,7 @@
     "description": "Відкрийте безкоштовні ігри на пам’ять, логічні головоломки, судоку та шахи в Coco en Forma. Грайте без реклами з телефона, планшета чи комп’ютера.",
     "eyebrow": "Безкоштовні інтелектуальні ігри онлайн",
     "heading": "Пам’ять, логіка чи стратегія? Обирайте наступний виклик.",
-    "intro": "Coco en Forma пропонує безкоштовні ігри для тих, хто любить помічати закономірності, запам’ятовувати розташування зображень і планувати наступний хід. Ознайомтеся з правилами та почніть у браузері телефона, планшета чи комп’ютера.",
+    "intro": "Усі ігри Coco en Forma безкоштовні та без реклами. Помічайте закономірності, запам’ятовуйте розташування зображень і плануйте наступний хід. Ознайомтеся з правилами та почніть у браузері телефона, планшета чи комп’ютера.",
     "keywords": [
       "безкоштовні інтелектуальні ігри",
       "ігри на пам’ять онлайн",
@@ -981,7 +981,7 @@
       "next": "Наступна мова",
       "menu": "Головне меню",
       "play": "Грати",
-      "account": "Увійти або створити обліковий запис",
+      "account": "Увійти або створити безкоштовний обліковий запис",
       "learnMore": "Правила гри",
       "explore": "Оберіть наступну гру",
       "faq": "Поширені запитання",
@@ -993,12 +993,12 @@
       "terms": "Умови користування",
       "footer": "Coco en Forma · Гра, цікавість і навчання",
       "updated": "Оновлено",
-      "free": "Безкоштовно та без реклами",
+      "free": "Усі ігри безкоштовні",
       "pwa": "Також доступно як вебзастосунок",
       "howItWorks": "Як почати"
     },
     "heroPoints": [
-      "Безкоштовні ігри без реклами",
+      "Безкоштовний обліковий запис, без платіжної картки",
       "Телефон, планшет і комп’ютер",
       "Інтерфейс 15 мовами"
     ],
@@ -1030,7 +1030,7 @@
       },
       {
         "title": "Почніть грати",
-        "text": "Увійдіть, якщо гра потребує облікового запису. Локальні партії в Шахи, Generala та Морський бій можна розпочати без реєстрації."
+        "text": "Увійдіть у свій безкоштовний обліковий запис, якщо гра цього потребує. Локальні партії в Шахи, Generala та Морський бій можна розпочати без реєстрації."
       },
       {
         "title": "Повертайтеся, коли зручно",
@@ -1040,11 +1040,11 @@
     "faq": [
       {
         "question": "Чи безкоштовні ці ігри?",
-        "answer": "Так. Ігри в цій добірці безкоштовні та не містять реклами. Eterna й Coco Eneagrama — окремі послуги з власними умовами."
+        "answer": "Так. Усі ігри та обліковий запис Coco безкоштовні. Для гри не потрібні платіжна картка чи підписка, а реклама не показується. Eterna пропонує додаткову навчальну підтримку за підпискою. Coco Eneagrama — платне оцінювання для самопізнання зі звітом у PDF. Обидві послуги незалежні від ігор."
       },
       {
         "question": "Коли потрібен обліковий запис?",
-        "answer": "Пам’ять, Судоку та З’єднай кольори потребують облікового запису Coco. Він також потрібен для онлайн-кімнат і функцій профілю. Локальні партії в Шахи, Generala та Морський бій доступні без реєстрації."
+        "answer": "Пам’ять, Судоку та З’єднай кольори потребують безкоштовного облікового запису Coco. Він також потрібен для онлайн-кімнат і функцій профілю. Локальні партії в Шахи, Generala та Морський бій доступні без реєстрації."
       },
       {
         "question": "Чи потрібно завантажувати застосунок?",
@@ -1062,15 +1062,15 @@
     "gameCards": {
       "memoria": {
         "title": "Пам’ять",
-        "text": "Розглядайте картки, запам’ятовуйте їхнє розташування та знаходьте пари. Потрібен обліковий запис."
+        "text": "Розглядайте картки, запам’ятовуйте їхнє розташування та знаходьте пари. Потрібен безкоштовний обліковий запис."
       },
       "sudoku": {
         "title": "Судоку",
-        "text": "Заповніть сітку за правилами рядків, стовпців і блоків. Потрібен обліковий запис."
+        "text": "Заповніть сітку за правилами рядків, стовпців і блоків. Потрібен безкоштовний обліковий запис."
       },
       "conecta": {
         "title": "З’єднай кольори",
-        "text": "Поєднайте кожну пару, залишаючи місце для інших шляхів. Потрібен обліковий запис."
+        "text": "Поєднайте кожну пару, залишаючи місце для інших шляхів. Потрібен безкоштовний обліковий запис."
       },
       "ajedrez": {
         "title": "Coco Шахи",
@@ -1087,12 +1087,12 @@
     },
     "closing": {
       "title": "Наступний виклик обираєте ви",
-      "text": "Почніть із локальної партії або увійдіть, щоб відкрити ігри, пов’язані з вашим профілем.",
+      "text": "Почніть із локальної партії або увійдіть у свій безкоштовний обліковий запис, щоб відкрити ігри, пов’язані з вашим профілем.",
       "button": "Відкрити Coco en Forma"
     },
     "note": {
       "spanishContent": "Ігри з іспаномовним вмістом повідомляють про це у своєму описі.",
-      "eterna": "Eterna, навчальна підтримка від Coco, є окремою послугою. Спілкування з тьютором наразі відбувається іспанською."
+      "eterna": "Eterna, навчальна підтримка від Coco, є окремою послугою за підпискою, яку можна обрати за бажанням. Спілкування з тьютором наразі відбувається іспанською."
     }
   },
   "ru": {
@@ -1101,7 +1101,7 @@
     "description": "Откройте бесплатные игры на память, логические головоломки, судоку и шахматы в Coco en Forma. Играйте без рекламы с телефона, планшета или компьютера.",
     "eyebrow": "Бесплатные интеллектуальные игры онлайн",
     "heading": "Память, логика или стратегия? Выбирайте новую задачу.",
-    "intro": "Coco en Forma предлагает бесплатные игры для тех, кто любит замечать закономерности, запоминать расположение картинок и продумывать следующий ход. Прочитайте правила и начните прямо в браузере телефона, планшета или компьютера.",
+    "intro": "Все игры Coco en Forma бесплатны и не содержат рекламы. Замечайте закономерности, запоминайте расположение картинок и продумывайте следующий ход. Прочитайте правила и начните прямо в браузере телефона, планшета или компьютера.",
     "keywords": [
       "бесплатные интеллектуальные игры",
       "игры на память онлайн",
@@ -1118,7 +1118,7 @@
       "next": "Следующий язык",
       "menu": "Главное меню",
       "play": "Играть",
-      "account": "Войти или создать аккаунт",
+      "account": "Войти или создать бесплатный аккаунт",
       "learnMore": "Правила игры",
       "explore": "Выберите следующую игру",
       "faq": "Частые вопросы",
@@ -1130,12 +1130,12 @@
       "terms": "Условия использования",
       "footer": "Coco en Forma · Игра, любопытство и обучение",
       "updated": "Обновлено",
-      "free": "Бесплатно и без рекламы",
+      "free": "Все игры бесплатны",
       "pwa": "Также доступно как веб-приложение",
       "howItWorks": "Как начать"
     },
     "heroPoints": [
-      "Бесплатные игры без рекламы",
+      "Бесплатный аккаунт, без платёжной карты",
       "Телефон, планшет и компьютер",
       "Интерфейс на 15 языках"
     ],
@@ -1167,7 +1167,7 @@
       },
       {
         "title": "Начните играть",
-        "text": "Войдите, если игра требует аккаунт. Локальные партии в Шахматы, Generala и Морской бой можно начать без регистрации."
+        "text": "Войдите в свой бесплатный аккаунт, если игра этого требует. Локальные партии в Шахматы, Generala и Морской бой можно начать без регистрации."
       },
       {
         "title": "Возвращайтесь, когда захотите",
@@ -1177,11 +1177,11 @@
     "faq": [
       {
         "question": "Эти игры бесплатные?",
-        "answer": "Да. Игры в этой подборке бесплатны и не содержат рекламы. Eterna и Coco Eneagrama — отдельные услуги со своими условиями."
+        "answer": "Да. Все игры и аккаунт Coco бесплатны. Для игры не нужны платёжная карта или подписка, а реклама не показывается. Eterna предлагает дополнительную учебную поддержку по подписке. Coco Eneagrama — платная оценка для самопознания с отчётом в PDF. Обе услуги независимы от игр."
       },
       {
         "question": "Когда нужен аккаунт?",
-        "answer": "Для игр Память, Судоку и Соедини цвета нужен аккаунт Coco. Он также требуется для онлайн-комнат и функций профиля. Локальные партии в Шахматы, Generala и Морской бой доступны без регистрации."
+        "answer": "Для игр Память, Судоку и Соедини цвета нужен бесплатный аккаунт Coco. Он также требуется для онлайн-комнат и функций профиля. Локальные партии в Шахматы, Generala и Морской бой доступны без регистрации."
       },
       {
         "question": "Нужно ли скачивать приложение?",
@@ -1199,15 +1199,15 @@
     "gameCards": {
       "memoria": {
         "title": "Память",
-        "text": "Смотрите на карточки, запоминайте их расположение и находите пары. Нужен аккаунт."
+        "text": "Смотрите на карточки, запоминайте их расположение и находите пары. Нужен бесплатный аккаунт."
       },
       "sudoku": {
         "title": "Судоку",
-        "text": "Заполните сетку по правилам строк, столбцов и блоков. Нужен аккаунт."
+        "text": "Заполните сетку по правилам строк, столбцов и блоков. Нужен бесплатный аккаунт."
       },
       "conecta": {
         "title": "Соедини цвета",
-        "text": "Соедините каждую пару, оставив место для остальных путей. Нужен аккаунт."
+        "text": "Соедините каждую пару, оставив место для остальных путей. Нужен бесплатный аккаунт."
       },
       "ajedrez": {
         "title": "Coco Шахматы",
@@ -1224,12 +1224,12 @@
     },
     "closing": {
       "title": "Следующее испытание выбираете вы",
-      "text": "Начните с локальной партии или войдите, чтобы открыть игры и возможности своего профиля.",
+      "text": "Начните с локальной партии или войдите в свой бесплатный аккаунт, чтобы открыть игры и возможности своего профиля.",
       "button": "Открыть Coco en Forma"
     },
     "note": {
       "spanishContent": "Игры с испаноязычным содержанием сообщают об этом в своём описании.",
-      "eterna": "Eterna, учебная поддержка от Coco, является отдельной услугой. Общение с тьютором сейчас проходит на испанском языке."
+      "eterna": "Eterna, учебная поддержка от Coco, является отдельной услугой по подписке, которую можно выбрать по желанию. Общение с тьютором сейчас проходит на испанском языке."
     }
   },
   "zh-Hans": {
@@ -1238,7 +1238,7 @@
     "description": "在 Coco en Forma 探索免费的记忆配对、逻辑、数独和国际象棋游戏。用手机、平板或电脑浏览器随时游玩，无广告，按自己的节奏开始。",
     "eyebrow": "免费在线益智游戏",
     "heading": "记忆、逻辑还是策略？选择你喜欢的挑战。",
-    "intro": "Coco en Forma 为喜欢寻找规律、记住位置和思考下一步的玩家提供免费游戏。先了解规则，再选择一项活动，用手机、平板或电脑浏览器就能开始。",
+    "intro": "Coco en Forma 的所有游戏均免费且无广告。寻找规律、记住位置，思考下一步。先了解规则，再选择一项活动，用手机、平板或电脑浏览器就能开始。",
     "keywords": [
       "免费益智游戏",
       "在线记忆游戏",
@@ -1255,7 +1255,7 @@
       "next": "下一种语言",
       "menu": "主菜单",
       "play": "开始游戏",
-      "account": "登录或创建账户",
+      "account": "登录或创建免费账户",
       "learnMore": "游戏规则",
       "explore": "选择下一款游戏",
       "faq": "常见问题",
@@ -1267,12 +1267,12 @@
       "terms": "使用条款",
       "footer": "Coco en Forma · 游戏、好奇与学习",
       "updated": "更新日期",
-      "free": "免费且无广告",
+      "free": "所有游戏均免费",
       "pwa": "也可安装为网页应用",
       "howItWorks": "如何开始"
     },
     "heroPoints": [
-      "免费游戏，无广告",
+      "账户免费，无需银行卡",
       "支持手机、平板和电脑",
       "界面提供15种语言"
     ],
@@ -1304,7 +1304,7 @@
       },
       {
         "title": "开始游玩",
-        "text": "如果游戏要求登录，请使用 Coco 账户。国际象棋、Generala 和海战的本地对局可以无需注册直接开始。"
+        "text": "如果游戏要求登录，请使用免费的 Coco 账户。国际象棋、Generala 和海战的本地对局可以无需注册直接开始。"
       },
       {
         "title": "想玩时再回来",
@@ -1314,11 +1314,11 @@
     "faq": [
       {
         "question": "这些游戏都免费吗？",
-        "answer": "是的，这里介绍的游戏免费且无广告。Eterna 和 Coco Eneagrama 是独立服务，适用各自的条件。"
+        "answer": "是的，Coco 的所有游戏和账户均免费。玩游戏无需提供银行卡，也无需订阅，而且没有广告。Eterna 提供可自选的订阅制学习辅导。Coco Eneagrama 是一项付费自我认知评估，附 PDF 报告。这两项服务均独立于游戏。"
       },
       {
         "question": "什么时候需要账户？",
-        "answer": "记忆配对、数独和连接颜色需要 Coco 账户。在线房间和个人资料功能也需要登录。国际象棋、Generala 和海战的本地对局可以无需注册开始。"
+        "answer": "记忆配对、数独和连接颜色需要免费的 Coco 账户。在线房间和个人资料功能也需要登录。国际象棋、Generala 和海战的本地对局可以无需注册开始。"
       },
       {
         "question": "必须下载应用吗？",
@@ -1336,15 +1336,15 @@
     "gameCards": {
       "memoria": {
         "title": "记忆配对",
-        "text": "观察卡片，记住位置，找到相同的图片。需要账户。"
+        "text": "观察卡片，记住位置，找到相同的图片。需要免费账户。"
       },
       "sudoku": {
         "title": "数独",
-        "text": "按照行、列和宫的规则填写网格。需要账户。"
+        "text": "按照行、列和宫的规则填写网格。需要免费账户。"
       },
       "conecta": {
         "title": "连接颜色",
-        "text": "连接每一对同色点，同时为其他路线留出空间。需要账户。"
+        "text": "连接每一对同色点，同时为其他路线留出空间。需要免费账户。"
       },
       "ajedrez": {
         "title": "Coco 国际象棋",
@@ -1361,12 +1361,12 @@
     },
     "closing": {
       "title": "下一项挑战，由你选择",
-      "text": "先来一局本地游戏，或者登录账户，探索与你的个人资料关联的活动。",
+      "text": "先来一局本地游戏，或者登录免费账户，探索与你的个人资料关联的活动。",
       "button": "打开 Coco en Forma"
     },
     "note": {
       "spanishContent": "仍使用西班牙语内容的游戏会在介绍中注明。",
-      "eterna": "Eterna 是 Coco 的独立学习辅导服务。目前，与辅导助手的对话使用西班牙语。"
+      "eterna": "Eterna 是 Coco 的独立学习辅导服务，采用订阅制，可自行选择是否使用。目前，与辅导助手的对话使用西班牙语。"
     }
   },
   "ar": {
@@ -1375,7 +1375,7 @@
     "description": "اكتشف ألعاب الذاكرة والمنطق والسودوكو والشطرنج المجانية على Coco en Forma. العب بلا إعلانات من الهاتف أو الجهاز اللوحي أو الكمبيوتر وبالوتيرة التي تناسبك.",
     "eyebrow": "ألعاب ذهنية مجانية أونلاين",
     "heading": "ذاكرة أم منطق أم استراتيجية؟ اختر تحديك التالي.",
-    "intro": "يجمع Coco en Forma ألعابًا مجانية لمن يحب اكتشاف الأنماط وتذكّر المواقع والتفكير في الخطوة التالية. اطّلع على القواعد، واختر نشاطًا، ثم ابدأ من متصفح الهاتف أو الجهاز اللوحي أو الكمبيوتر.",
+    "intro": "جميع ألعاب Coco en Forma مجانية وبلا إعلانات. اكتشف الأنماط، وتذكّر المواقع، وفكّر في الخطوة التالية. اطّلع على القواعد، واختر نشاطًا، ثم ابدأ من متصفح الهاتف أو الجهاز اللوحي أو الكمبيوتر.",
     "keywords": [
       "ألعاب ذهنية مجانية",
       "ألعاب ذاكرة أونلاين",
@@ -1392,7 +1392,7 @@
       "next": "اللغة التالية",
       "menu": "القائمة الرئيسية",
       "play": "العب",
-      "account": "سجّل الدخول أو أنشئ حسابًا",
+      "account": "سجّل الدخول أو أنشئ حسابًا مجانيًا",
       "learnMore": "طريقة اللعب",
       "explore": "اختر لعبتك التالية",
       "faq": "الأسئلة الشائعة",
@@ -1404,12 +1404,12 @@
       "terms": "شروط الاستخدام",
       "footer": "Coco en Forma · لعب وفضول وتعلّم",
       "updated": "آخر تحديث",
-      "free": "مجاني وبلا إعلانات",
+      "free": "جميع الألعاب مجانية",
       "pwa": "متاح أيضًا كتطبيق ويب",
       "howItWorks": "كيف تبدأ"
     },
     "heroPoints": [
-      "ألعاب مجانية بلا إعلانات",
+      "حساب مجاني، من دون بطاقة دفع",
       "الهاتف والجهاز اللوحي والكمبيوتر",
       "واجهة متاحة بـ15 لغة"
     ],
@@ -1441,7 +1441,7 @@
       },
       {
         "title": "ابدأ اللعب",
-        "text": "سجّل الدخول عندما تطلب اللعبة ذلك. يمكنك بدء مباريات محلية في الشطرنج وGenerala والمعركة البحرية من دون حساب."
+        "text": "سجّل الدخول إلى حسابك المجاني عندما تطلب اللعبة ذلك. يمكنك بدء مباريات محلية في الشطرنج وGenerala والمعركة البحرية من دون حساب."
       },
       {
         "title": "عد متى شئت",
@@ -1451,11 +1451,11 @@
     "faq": [
       {
         "question": "هل هذه الألعاب مجانية؟",
-        "answer": "نعم. الألعاب في هذه المجموعة مجانية ولا تعرض إعلانات. أما Eterna وCoco Eneagrama فهما خدمتان منفصلتان، ولكل منهما شروطها الخاصة."
+        "answer": "نعم. جميع الألعاب وحساب Coco مجانية. لا تحتاج إلى بطاقة دفع أو اشتراك للعب، ولا تُعرض إعلانات. يقدّم Eterna دعمًا دراسيًا اختياريًا باشتراك. أما Coco Eneagrama فهو تقييم مدفوع للتعرّف إلى الذات مع تقرير بصيغة PDF. الخدمتان مستقلتان عن الألعاب."
       },
       {
         "question": "متى أحتاج إلى حساب؟",
-        "answer": "تتطلب ألعاب الذاكرة والسودوكو وتوصيل الألوان حساب Coco. وتحتاج غرف اللعب عبر الإنترنت ووظائف الملف الشخصي إلى تسجيل الدخول أيضًا. يمكن بدء المباريات المحلية في الشطرنج وGenerala والمعركة البحرية من دون تسجيل."
+        "answer": "تتطلب ألعاب الذاكرة والسودوكو وتوصيل الألوان حساب Coco مجانيًا. وتحتاج غرف اللعب عبر الإنترنت ووظائف الملف الشخصي إلى تسجيل الدخول أيضًا. يمكن بدء المباريات المحلية في الشطرنج وGenerala والمعركة البحرية من دون تسجيل."
       },
       {
         "question": "هل يجب تنزيل تطبيق؟",
@@ -1473,15 +1473,15 @@
     "gameCards": {
       "memoria": {
         "title": "الذاكرة",
-        "text": "راقب البطاقات وتذكّر مواقعها وابحث عن الأزواج. يتطلب حسابًا."
+        "text": "راقب البطاقات وتذكّر مواقعها وابحث عن الأزواج. يتطلب حسابًا مجانيًا."
       },
       "sudoku": {
         "title": "السودوكو",
-        "text": "أكمل الشبكة وفق قواعد الصفوف والأعمدة والمربعات. يتطلب حسابًا."
+        "text": "أكمل الشبكة وفق قواعد الصفوف والأعمدة والمربعات. يتطلب حسابًا مجانيًا."
       },
       "conecta": {
         "title": "توصيل الألوان",
-        "text": "صِل كل زوج واترك مساحة للمسارات الأخرى. يتطلب حسابًا."
+        "text": "صِل كل زوج واترك مساحة للمسارات الأخرى. يتطلب حسابًا مجانيًا."
       },
       "ajedrez": {
         "title": "Coco للشطرنج",
@@ -1498,12 +1498,12 @@
     },
     "closing": {
       "title": "التحدي التالي من اختيارك",
-      "text": "ابدأ بمباراة محلية أو سجّل الدخول لاكتشاف الأنشطة المرتبطة بملفك الشخصي.",
+      "text": "ابدأ بمباراة محلية أو سجّل الدخول إلى حسابك المجاني لاكتشاف الأنشطة المرتبطة بملفك الشخصي.",
       "button": "افتح Coco en Forma"
     },
     "note": {
       "spanishContent": "توضح الألعاب التي تحتفظ بالمحتوى الإسباني ذلك في وصفها.",
-      "eterna": "Eterna، خدمة الدعم الدراسي من Coco، خدمة مستقلة. تُقدَّم جلسات المساعد التعليمي حاليًا باللغة الإسبانية."
+      "eterna": "Eterna، خدمة الدعم الدراسي من Coco، خدمة مستقلة واختيارية باشتراك. تُقدَّم جلسات المساعد التعليمي حاليًا باللغة الإسبانية."
     }
   },
   "sv": {
@@ -1512,7 +1512,7 @@
     "description": "Upptäck gratis minnesspel, logikspel, sudoku och schack hos Coco en Forma. Spela utan reklam på mobilen, surfplattan eller datorn i din egen takt.",
     "eyebrow": "Gratis hjärngympa online",
     "heading": "Minne, logik eller strategi? Välj din nästa utmaning.",
-    "intro": "Coco en Forma samlar gratis spel för dig som tycker om att upptäcka mönster, minnas placeringar och tänka ett drag framåt. Läs reglerna, välj en aktivitet och börja direkt i webbläsaren på mobilen, surfplattan eller datorn.",
+    "intro": "Alla spel på Coco en Forma är gratis och utan reklam. Upptäck mönster, minns placeringar och tänk ett drag framåt. Läs reglerna, välj en aktivitet och börja direkt i webbläsaren på mobilen, surfplattan eller datorn.",
     "keywords": [
       "gratis hjärngympa",
       "minnesspel online",
@@ -1529,7 +1529,7 @@
       "next": "Nästa språk",
       "menu": "Huvudmeny",
       "play": "Spela",
-      "account": "Logga in eller skapa konto",
+      "account": "Logga in eller skapa ett gratis konto",
       "learnMore": "Spelregler",
       "explore": "Välj ditt nästa spel",
       "faq": "Vanliga frågor",
@@ -1541,12 +1541,12 @@
       "terms": "Villkor",
       "footer": "Coco en Forma · Lek, nyfikenhet och lärande",
       "updated": "Uppdaterad",
-      "free": "Gratis och utan reklam",
+      "free": "Alla spel är gratis",
       "pwa": "Finns även som webbapp",
       "howItWorks": "Så kommer du igång"
     },
     "heroPoints": [
-      "Gratis spel utan reklam",
+      "Gratis konto, inget betalkort behövs",
       "Mobil, surfplatta och dator",
       "Gränssnitt på 15 språk"
     ],
@@ -1578,7 +1578,7 @@
       },
       {
         "title": "Börja spela",
-        "text": "Logga in när spelet ber om det. Lokala matcher i Schack, Generala och Sänka skepp går att starta utan konto."
+        "text": "Logga in på ditt gratis konto när spelet ber om det. Lokala matcher i Schack, Generala och Sänka skepp går att starta utan konto."
       },
       {
         "title": "Kom tillbaka när du vill",
@@ -1588,11 +1588,11 @@
     "faq": [
       {
         "question": "Är spelen gratis?",
-        "answer": "Ja. Spelen i det här urvalet är gratis och innehåller ingen reklam. Eterna och Coco Eneagrama är separata tjänster med egna villkor."
+        "answer": "Ja. Alla spel och Coco-kontot är gratis. Du behöver varken betalkort eller abonnemang för att spela, och ingen reklam visas. Eterna erbjuder valfritt stöd för skolarbetet via ett abonnemang. Coco Eneagrama är en betald självskattning för ökad självkännedom med en PDF-rapport. Båda tjänsterna är separata från spelen."
       },
       {
         "question": "När behöver jag ett konto?",
-        "answer": "Minnesspelet, Sudoku och Koppla ihop färger kräver ett Coco-konto. Även onlinerum och profilfunktioner kräver inloggning. Lokala matcher i Schack, Generala och Sänka skepp går att starta utan registrering."
+        "answer": "Minnesspelet, Sudoku och Koppla ihop färger kräver ett gratis Coco-konto. Även onlinerum och profilfunktioner kräver inloggning. Lokala matcher i Schack, Generala och Sänka skepp går att starta utan registrering."
       },
       {
         "question": "Måste jag ladda ner en app?",
@@ -1610,15 +1610,15 @@
     "gameCards": {
       "memoria": {
         "title": "Minnesspelet",
-        "text": "Titta på korten, minns deras placeringar och hitta paren. Konto krävs."
+        "text": "Titta på korten, minns deras placeringar och hitta paren. Gratis konto krävs."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Fyll i rutnätet enligt reglerna för rader, kolumner och block. Konto krävs."
+        "text": "Fyll i rutnätet enligt reglerna för rader, kolumner och block. Gratis konto krävs."
       },
       "conecta": {
         "title": "Koppla ihop färger",
-        "text": "Koppla ihop varje par och lämna plats åt andra vägar. Konto krävs."
+        "text": "Koppla ihop varje par och lämna plats åt andra vägar. Gratis konto krävs."
       },
       "ajedrez": {
         "title": "Coco Schack",
@@ -1635,12 +1635,12 @@
     },
     "closing": {
       "title": "Du väljer nästa utmaning",
-      "text": "Börja med en lokal match eller logga in för att upptäcka aktiviteterna som hör till din profil.",
+      "text": "Börja med en lokal match eller logga in på ditt gratis konto för att upptäcka aktiviteterna som hör till din profil.",
       "button": "Öppna Coco en Forma"
     },
     "note": {
       "spanishContent": "Spel med spanskt innehåll upplyser om det i sin spelguide.",
-      "eterna": "Eterna, Cocos stöd för skolarbetet, är en separat tjänst. Samtalen med handledaren erbjuds för närvarande på spanska."
+      "eterna": "Eterna, Cocos stöd för skolarbetet, är en valfri abonnemangstjänst som är separat från spelen. Samtalen med handledaren erbjuds för närvarande på spanska."
     }
   },
   "fi": {
@@ -1649,7 +1649,7 @@
     "description": "Tutustu ilmaisiin muistipeleihin, logiikkapeleihin, sudokuun ja shakkiin Coco en Formassa. Pelaa ilman mainoksia puhelimella, tabletilla tai tietokoneella.",
     "eyebrow": "Ilmaiset aivopelit netissä",
     "heading": "Muistia, logiikkaa vai strategiaa? Valitse seuraava haasteesi.",
-    "intro": "Coco en Forma kokoaa ilmaisia pelejä sinulle, joka pidät säännönmukaisuuksien löytämisestä, sijaintien muistamisesta ja seuraavan siirron suunnittelusta. Lue säännöt, valitse peli ja aloita puhelimen, tabletin tai tietokoneen selaimessa.",
+    "intro": "Kaikki Coco en Forman pelit ovat ilmaisia ja mainoksettomia. Löydä säännönmukaisuuksia, muista sijainteja ja suunnittele seuraava siirtosi. Lue säännöt, valitse peli ja aloita puhelimen, tabletin tai tietokoneen selaimessa.",
     "keywords": [
       "ilmaiset aivopelit",
       "muistipelit netissä",
@@ -1666,7 +1666,7 @@
       "next": "Seuraava kieli",
       "menu": "Päävalikko",
       "play": "Pelaa",
-      "account": "Kirjaudu tai luo tili",
+      "account": "Kirjaudu tai luo ilmainen tili",
       "learnMore": "Pelin säännöt",
       "explore": "Valitse seuraava pelisi",
       "faq": "Usein kysytyt kysymykset",
@@ -1678,12 +1678,12 @@
       "terms": "Käyttöehdot",
       "footer": "Coco en Forma · Pelejä, uteliaisuutta ja oppimista",
       "updated": "Päivitetty",
-      "free": "Ilmainen ja mainokseton",
+      "free": "Kaikki pelit ovat ilmaisia",
       "pwa": "Saatavilla myös verkkosovelluksena",
       "howItWorks": "Näin pääset alkuun"
     },
     "heroPoints": [
-      "Ilmaisia pelejä ilman mainoksia",
+      "Ilmainen tili, ei maksukorttia",
       "Puhelin, tabletti ja tietokone",
       "Käyttöliittymä 15 kielellä"
     ],
@@ -1715,7 +1715,7 @@
       },
       {
         "title": "Aloita pelaaminen",
-        "text": "Kirjaudu, kun peli sitä pyytää. Shakin, Generalan ja Laivanupotuksen paikalliset pelit voi aloittaa ilman tiliä."
+        "text": "Kirjaudu ilmaiselle tilillesi, kun peli sitä pyytää. Shakin, Generalan ja Laivanupotuksen paikalliset pelit voi aloittaa ilman tiliä."
       },
       {
         "title": "Palaa, kun sinulle sopii",
@@ -1725,11 +1725,11 @@
     "faq": [
       {
         "question": "Ovatko nämä pelit ilmaisia?",
-        "answer": "Kyllä. Tämän valikoiman pelit ovat ilmaisia eikä niissä näytetä mainoksia. Eterna ja Coco Eneagrama ovat erillisiä palveluja, joilla on omat ehtonsa."
+        "answer": "Kyllä. Kaikki pelit ja Coco-tili ovat ilmaisia. Pelaamiseen ei tarvita maksukorttia eikä tilausta, eikä peleissä näytetä mainoksia. Eterna tarjoaa valinnaista tukea koulutyöhön tilauspalveluna. Coco Eneagrama on maksullinen itsetuntemusta tukeva arviointi, johon kuuluu PDF-raportti. Molemmat palvelut ovat peleistä erillisiä."
       },
       {
         "question": "Milloin tarvitsen tilin?",
-        "answer": "Muistipeli, Sudoku ja Yhdistä värit vaativat Coco-tilin. Myös verkkopelihuoneet ja profiilin toiminnot edellyttävät kirjautumista. Shakin, Generalan ja Laivanupotuksen paikalliset pelit voi aloittaa rekisteröitymättä."
+        "answer": "Muistipeli, Sudoku ja Yhdistä värit vaativat ilmaisen Coco-tilin. Myös verkkopelihuoneet ja profiilin toiminnot edellyttävät kirjautumista. Shakin, Generalan ja Laivanupotuksen paikalliset pelit voi aloittaa rekisteröitymättä."
       },
       {
         "question": "Pitääkö minun ladata sovellus?",
@@ -1747,15 +1747,15 @@
     "gameCards": {
       "memoria": {
         "title": "Muistipeli",
-        "text": "Katso kortteja, muista niiden sijainnit ja löydä parit. Tili tarvitaan."
+        "text": "Katso kortteja, muista niiden sijainnit ja löydä parit. Ilmainen tili tarvitaan."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Täytä ruudukko rivien, sarakkeiden ja lohkojen sääntöjen mukaan. Tili tarvitaan."
+        "text": "Täytä ruudukko rivien, sarakkeiden ja lohkojen sääntöjen mukaan. Ilmainen tili tarvitaan."
       },
       "conecta": {
         "title": "Yhdistä värit",
-        "text": "Yhdistä jokainen pari ja jätä tilaa muille reiteille. Tili tarvitaan."
+        "text": "Yhdistä jokainen pari ja jätä tilaa muille reiteille. Ilmainen tili tarvitaan."
       },
       "ajedrez": {
         "title": "Coco Shakki",
@@ -1772,12 +1772,12 @@
     },
     "closing": {
       "title": "Sinä valitset seuraavan haasteen",
-      "text": "Aloita paikallisesta pelistä tai kirjaudu tutustumaan profiiliisi liittyviin peleihin ja toimintoihin.",
+      "text": "Aloita paikallisesta pelistä tai kirjaudu ilmaiselle tilillesi tutustumaan profiiliisi liittyviin peleihin ja toimintoihin.",
       "button": "Avaa Coco en Forma"
     },
     "note": {
       "spanishContent": "Espanjankielisestä pelisisällöstä kerrotaan kyseisen pelin esittelyssä.",
-      "eterna": "Eterna, Cocon koulunkäynnin tukipalvelu, on erillinen palvelu. Keskustelut oppimisavustajan kanssa ovat tällä hetkellä espanjaksi."
+      "eterna": "Eterna, Cocon koulunkäynnin tukipalvelu, on valinnainen tilauspalvelu, joka on peleistä erillinen. Keskustelut oppimisavustajan kanssa ovat tällä hetkellä espanjaksi."
     }
   },
   "nb": {
@@ -1786,7 +1786,7 @@
     "description": "Oppdag gratis hukommelsesspill, logikkspill, sudoku og sjakk hos Coco en Forma. Spill uten reklame på mobil, nettbrett eller datamaskin i ditt eget tempo.",
     "eyebrow": "Gratis hjernespill på nett",
     "heading": "Hukommelse, logikk eller strategi? Velg din neste utfordring.",
-    "intro": "Coco en Forma samler gratis spill for deg som liker å oppdage mønstre, huske plasseringer og tenke ett trekk fremover. Les reglene, velg en aktivitet og start rett i nettleseren på mobilen, nettbrettet eller datamaskinen.",
+    "intro": "Alle spill på Coco en Forma er gratis og uten reklame. Oppdag mønstre, husk plasseringer og tenk ett trekk fremover. Les reglene, velg en aktivitet og start rett i nettleseren på mobilen, nettbrettet eller datamaskinen.",
     "keywords": [
       "gratis hjernespill",
       "hukommelsesspill på nett",
@@ -1803,7 +1803,7 @@
       "next": "Neste språk",
       "menu": "Hovedmeny",
       "play": "Spill",
-      "account": "Logg inn eller opprett konto",
+      "account": "Logg inn eller opprett en gratis konto",
       "learnMore": "Spilleregler",
       "explore": "Velg ditt neste spill",
       "faq": "Vanlige spørsmål",
@@ -1815,12 +1815,12 @@
       "terms": "Vilkår",
       "footer": "Coco en Forma · Spill, nysgjerrighet og læring",
       "updated": "Oppdatert",
-      "free": "Gratis og uten reklame",
+      "free": "Alle spill er gratis",
       "pwa": "Også tilgjengelig som nettapp",
       "howItWorks": "Slik kommer du i gang"
     },
     "heroPoints": [
-      "Gratis spill uten reklame",
+      "Gratis konto, uten betalingskort",
       "Mobil, nettbrett og datamaskin",
       "Brukergrensesnitt på 15 språk"
     ],
@@ -1852,7 +1852,7 @@
       },
       {
         "title": "Begynn å spille",
-        "text": "Logg inn når spillet ber om det. Lokale spill i Sjakk, Generala og Senk skip kan startes uten konto."
+        "text": "Logg inn på gratiskontoen din når spillet ber om det. Lokale spill i Sjakk, Generala og Senk skip kan startes uten konto."
       },
       {
         "title": "Kom tilbake når du vil",
@@ -1862,11 +1862,11 @@
     "faq": [
       {
         "question": "Er disse spillene gratis?",
-        "answer": "Ja. Spillene i dette utvalget er gratis og inneholder ingen reklame. Eterna og Coco Eneagrama er separate tjenester med egne vilkår."
+        "answer": "Ja. Alle spill og Coco-kontoen er gratis. Du trenger verken betalingskort eller abonnement for å spille, og det vises ingen reklame. Eterna tilbyr valgfri støtte til skolearbeidet gjennom et abonnement. Coco Eneagrama er en betalt kartlegging for bedre selvinnsikt med en PDF-rapport. Begge tjenestene er uavhengige av spillene."
       },
       {
         "question": "Når trenger jeg en konto?",
-        "answer": "Hukommelsesspillet, Sudoku og Koble sammen fargene krever en Coco-konto. Nettbaserte spillerom og profilfunksjoner krever også innlogging. Lokale spill i Sjakk, Generala og Senk skip kan startes uten registrering."
+        "answer": "Hukommelsesspillet, Sudoku og Koble sammen fargene krever en gratis Coco-konto. Nettbaserte spillerom og profilfunksjoner krever også innlogging. Lokale spill i Sjakk, Generala og Senk skip kan startes uten registrering."
       },
       {
         "question": "Må jeg laste ned en app?",
@@ -1884,15 +1884,15 @@
     "gameCards": {
       "memoria": {
         "title": "Hukommelsesspillet",
-        "text": "Se på kortene, husk plasseringene og finn parene. Konto kreves."
+        "text": "Se på kortene, husk plasseringene og finn parene. Gratis konto kreves."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Fyll ut rutenettet etter reglene for rader, kolonner og bokser. Konto kreves."
+        "text": "Fyll ut rutenettet etter reglene for rader, kolonner og bokser. Gratis konto kreves."
       },
       "conecta": {
         "title": "Koble sammen fargene",
-        "text": "Koble hvert par sammen og la det være plass til andre veier. Konto kreves."
+        "text": "Koble hvert par sammen og la det være plass til andre veier. Gratis konto kreves."
       },
       "ajedrez": {
         "title": "Coco Sjakk",
@@ -1909,12 +1909,12 @@
     },
     "closing": {
       "title": "Du velger den neste utfordringen",
-      "text": "Start med et lokalt spill eller logg inn for å oppdage aktivitetene som er knyttet til profilen din.",
+      "text": "Start med et lokalt spill eller logg inn på gratiskontoen din for å oppdage aktivitetene som er knyttet til profilen din.",
       "button": "Åpne Coco en Forma"
     },
     "note": {
       "spanishContent": "Spill med spansk innhold opplyser om dette i spillbeskrivelsen.",
-      "eterna": "Eterna, Cocos støtte til skolearbeidet, er en separat tjeneste. Samtalene med veilederen foregår for tiden på spansk."
+      "eterna": "Eterna, Cocos støtte til skolearbeidet, er en valgfri abonnementstjeneste som er uavhengig av spillene. Samtalene med veilederen foregår for tiden på spansk."
     }
   },
   "da": {
@@ -1923,7 +1923,7 @@
     "description": "Find gratis huskespil, logikspil, sudoku og skak hos Coco en Forma. Spil uden reklamer på mobil, tablet eller computer i dit eget tempo.",
     "eyebrow": "Gratis hjernespil online",
     "heading": "Hukommelse, logik eller strategi? Vælg din næste udfordring.",
-    "intro": "Coco en Forma samler gratis spil til dig, der kan lide at finde mønstre, huske placeringer og tænke et træk frem. Læs reglerne, vælg en aktivitet og begynd direkte i browseren på mobilen, tabletten eller computeren.",
+    "intro": "Alle spil på Coco en Forma er gratis og uden reklamer. Find mønstre, husk placeringer og tænk et træk frem. Læs reglerne, vælg en aktivitet og begynd direkte i browseren på mobilen, tabletten eller computeren.",
     "keywords": [
       "gratis hjernespil",
       "huskespil online",
@@ -1940,7 +1940,7 @@
       "next": "Næste sprog",
       "menu": "Hovedmenu",
       "play": "Spil",
-      "account": "Log ind eller opret en konto",
+      "account": "Log ind eller opret en gratis konto",
       "learnMore": "Spilleregler",
       "explore": "Vælg dit næste spil",
       "faq": "Ofte stillede spørgsmål",
@@ -1952,12 +1952,12 @@
       "terms": "Vilkår",
       "footer": "Coco en Forma · Spil, nysgerrighed og læring",
       "updated": "Opdateret",
-      "free": "Gratis og uden reklamer",
+      "free": "Alle spil er gratis",
       "pwa": "Også tilgængelig som webapp",
       "howItWorks": "Sådan kommer du i gang"
     },
     "heroPoints": [
-      "Gratis spil uden reklamer",
+      "Gratis konto, uden betalingskort",
       "Mobil, tablet og computer",
       "Brugerflade på 15 sprog"
     ],
@@ -1989,7 +1989,7 @@
       },
       {
         "title": "Begynd at spille",
-        "text": "Log ind, når spillet beder om det. Lokale spil i Skak, Generala og Sænke slagskibe kan startes uden konto."
+        "text": "Log ind på din gratis konto, når spillet beder om det. Lokale spil i Skak, Generala og Sænke slagskibe kan startes uden konto."
       },
       {
         "title": "Kom tilbage, når du har lyst",
@@ -1999,11 +1999,11 @@
     "faq": [
       {
         "question": "Er disse spil gratis?",
-        "answer": "Ja. Spillene i dette udvalg er gratis og indeholder ingen reklamer. Eterna og Coco Eneagrama er selvstændige tjenester med egne vilkår."
+        "answer": "Ja. Alle spil og Coco-kontoen er gratis. Du behøver hverken betalingskort eller abonnement for at spille, og der vises ingen reklamer. Eterna tilbyder valgfri støtte til skolearbejdet via et abonnement. Coco Eneagrama er en betalt vurdering til øget selvindsigt med en PDF-rapport. Begge tjenester er uafhængige af spillene."
       },
       {
         "question": "Hvornår har jeg brug for en konto?",
-        "answer": "Huskespillet, Sudoku og Forbind farverne kræver en Coco-konto. Onlinerum og profilfunktioner kræver også login. Lokale spil i Skak, Generala og Sænke slagskibe kan startes uden tilmelding."
+        "answer": "Huskespillet, Sudoku og Forbind farverne kræver en gratis Coco-konto. Onlinerum og profilfunktioner kræver også login. Lokale spil i Skak, Generala og Sænke slagskibe kan startes uden tilmelding."
       },
       {
         "question": "Skal jeg downloade en app?",
@@ -2021,15 +2021,15 @@
     "gameCards": {
       "memoria": {
         "title": "Huskespillet",
-        "text": "Se på kortene, husk deres placeringer og find parrene. Konto påkrævet."
+        "text": "Se på kortene, husk deres placeringer og find parrene. Gratis konto påkrævet."
       },
       "sudoku": {
         "title": "Sudoku",
-        "text": "Udfyld gitteret efter reglerne for rækker, kolonner og bokse. Konto påkrævet."
+        "text": "Udfyld gitteret efter reglerne for rækker, kolonner og bokse. Gratis konto påkrævet."
       },
       "conecta": {
         "title": "Forbind farverne",
-        "text": "Forbind hvert par og efterlad plads til de andre stier. Konto påkrævet."
+        "text": "Forbind hvert par og efterlad plads til de andre stier. Gratis konto påkrævet."
       },
       "ajedrez": {
         "title": "Coco Skak",
@@ -2046,12 +2046,12 @@
     },
     "closing": {
       "title": "Du vælger den næste udfordring",
-      "text": "Begynd med et lokalt spil eller log ind for at udforske aktiviteterne, der er knyttet til din profil.",
+      "text": "Begynd med et lokalt spil eller log ind på din gratis konto for at udforske aktiviteterne, der er knyttet til din profil.",
       "button": "Åbn Coco en Forma"
     },
     "note": {
       "spanishContent": "Spil med spansk indhold oplyser om det i deres beskrivelse.",
-      "eterna": "Eterna, Cocos støtte til skolearbejdet, er en selvstændig tjeneste. Samtalerne med vejlederen foregår i øjeblikket på spansk."
+      "eterna": "Eterna, Cocos støtte til skolearbejdet, er en valgfri abonnementstjeneste, der er uafhængig af spillene. Samtalerne med vejlederen foregår i øjeblikket på spansk."
     }
   }
 }

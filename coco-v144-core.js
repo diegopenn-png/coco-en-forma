@@ -238,7 +238,7 @@
 
   function requestGameLogin(card, email) {
     var name = titleOf(card) || "este juego";
-    toast("Inicia sesión para abrir " + name + ".", "info");
+    toast("Inicia sesión con tu cuenta gratuita para abrir " + name + ".", "info");
     var login = email.closest(".loginCard,.caja,form") || email;
     if (login.scrollIntoView) login.scrollIntoView({ behavior: "smooth", block: "center" });
     setTimeout(function () { try { email.focus({ preventScroll: true }); } catch (_) { email.focus(); } }, 280);

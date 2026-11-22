@@ -2,7 +2,7 @@
 
 Trabajo iniciado el 21 de noviembre de 2026 sobre la aplicación que sirve cocoenforma.com.
 
-La web y la PWA comparten la preferencia de idioma. El catálogo usa español, inglés, alemán, neerlandés, francés, italiano, polaco, ucraniano, ruso, chino simplificado, árabe, sueco, finés, noruego bokmål y danés. El selector usa flechas, permite elegir directamente un idioma y carga un paquete local del propio sitio. El español usa el contenido original.
+La web y la PWA comparten la preferencia de idioma. El catálogo usa español, inglés, alemán, neerlandés, francés, italiano, polaco, ucraniano, ruso, chino simplificado, árabe, sueco, finés, noruego bokmål y danés. El selector usa un desplegable nativo, permite elegir directamente un idioma y carga un paquete local del propio sitio. La aplicación, los diálogos y las landings no añaden flechas laterales al control. El español usa el contenido original.
 
 Diego autorizó conservar en español los juegos con una adaptación lingüística compleja. El aviso previo cubre Descifra la palabra, Sopa de letras, Crucigrama, Coco Med, Verdadero o falso, Reto tiempo y Coco Bank. Coco Med, Verdadero o falso y Reto tiempo tienen bancos de preguntas o microdesafíos de contenido. Coco Bank incluye su propia escuela de inversión, presupuesto y simulación familiar.
 
@@ -15,11 +15,20 @@ Diego amplió el encargo: selector dentro del menú después de entrar, landings
 - El mismo selector se coloca en `.navegacionJugador` cuando el menú está abierto y regresa al espacio público al salir. No duplica los controles ni reinicia el juego. El renderer real, con Supabase simulado, se comprobó entrando, cambiando pestañas, abriendo la clasificación y Memoria, cambiando idioma con una carta girada y cerrando sesión, en web y modo PWA. Las 24 pruebas de idiomas pasan.
 - La página española `/juegos-gratis/` conserva su URL. Se añaden 14 equivalentes con HTML estático y redacción propia, canonical individual, 15 alternates `hreflang` y `x-default`, enlaces de idioma utilizables sin JavaScript, metadatos sociales y FAQ coherente con su JSON-LD. El sitemap pasa de 38 a 52 URL. El generador único conserva las nuevas direcciones al reconstruir el catálogo.
 - El contenido se encuentra en `seo/locales/free-games.json`; las palabras clave son intenciones editoriales, sin estimaciones inventadas de demanda o posición. Cada página incluye seis juegos, un ejemplo resuelto, pasos para empezar, FAQ y enlaces a la aplicación que conservan el idioma. Las 14 pruebas de páginas/SEO pasan. No se afirma que Google haya indexado las nuevas URL.
+- La actualización del acceso destaca «Todos los juegos son gratuitos» y aclara que crear una cuenta también es gratis, sin tarjeta ni suscripción para jugar. El aviso aparece en entrada y registro, en las tarjetas comerciales y en las 15 landings. Eterna se presenta como apoyo escolar opcional por suscripción; Coco Eneagrama sigue identificado como evaluación de autoconocimiento con informe PDF de pago independiente. No se cambian precios, checkout ni flujos de cuenta o recuperación.
 - Eterna `160.100.1-conversation-continuity` impide recuperar desde el historial una pregunta que un turno posterior ya cerró. Conserva las preguntas legítimamente pendientes y registra como aprendidas las ideas correspondientes a la pregunta contestada. La reproducción y siete regresiones nuevas pasan con fixtures y sin llamadas a modelos; la validación backend afectada pasa 596 comprobaciones. Su publicación requiere promover un candidato con los bindings de la versión activa, sin adoptar los orígenes de las vistas previas.
 
-La caché de esta entrega es `coco-en-forma-v160.100.84-menu-languages`; los archivos compartidos de idioma utilizan `20261122-2`. El estado final de despliegue y los identificadores de la publicación se registran en la PR de esta entrega. No dar por publicada una versión solo por existir en la rama.
+La caché de esta entrega es `coco-en-forma-v160.100.85-dropdown-languages`; los archivos compartidos de idioma utilizan `20261122-3`. El estado final de despliegue y los identificadores de la publicación se registran en la PR de esta entrega. No dar por publicada una versión solo por existir en la rama.
 
-Pendientes de validación externa: correos de alta/recuperación recibidos en un buzón real; PWA instalada en un iPhone físico; inspección posterior de las nuevas URL en Search Console. No se dispone de un conector GSC en esta sesión. Los juegos marcados en español, las sesiones del tutor y el cuestionario/PDF original de Eneagrama mantienen el alcance lingüístico indicado. La revisión editorial completa de los paquetes anteriores sigue siendo distinta de la redacción nueva de estas landings.
+### Evidencia operativa · 22 de noviembre de 2026
+
+En la propiedad de Search Console `https://cocoenforma.com/`, se reenvió `sitemap.xml` y el panel confirmó su lectura en esta fecha con estado **Correcto** y **52 URL descubiertas**, frente a las 38 anteriores. Este recuento acredita descubrimiento, no indexación.
+
+La inspección de `https://cocoenforma.com/en/free-brain-games/` confirmó que Google la había detectado mediante el sitemap y que todavía no estaba indexada. La solicitud manual de indexación fue aceptada y pasó a la cola prioritaria. La aceptación de la solicitud tampoco acredita que la página ya esté indexada ni garantiza una fecha.
+
+La comprobación de SMTP/Auth sigue pendiente de una sesión disponible del dashboard. No se ha verificado la recepción real de los correos de alta o recuperación. Tampoco se dispone de un iPhone físico para validar la PWA instalada. Estos controles permanecen abiertos.
+
+Los juegos marcados en español, las sesiones del tutor y el cuestionario/PDF original de Eneagrama mantienen el alcance lingüístico indicado. La revisión editorial completa de los paquetes anteriores sigue siendo distinta de la redacción nueva de estas landings.
 
 Referencias técnicas de SEO: [versiones localizadas](https://developers.google.com/search/docs/specialty/international/localized-versions) y [contenido para la búsqueda con IA](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide). La publicación, el rastreo, la indexación y la obtención de usuarios son etapas diferentes.
 

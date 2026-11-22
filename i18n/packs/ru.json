@@ -5898,7 +5898,15 @@
   "Tu privacidad en Eterna | Coco en Forma": "Твоя конфиденциальность в Eterna | Coco en Forma",
   "Privacidad explicada para menores usuarios de Eterna.": "О конфиденциальности для детей и подростков, которые пользуются Eterna.",
   "¿Eterna puede hablar de cualquier cosa?": "Можно ли говорить с Eterna обо всём?",
-  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Нет. Eterna создана для учёбы и помощи со школьными заданиями. Если ты расскажешь что-то, что может быть важно для твоей безопасности или самочувствия, Eterna может предложить поговорить со взрослым, которому ты доверяешь."
+  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Нет. Eterna создана для учёбы и помощи со школьными заданиями. Если ты расскажешь что-то, что может быть важно для твоей безопасности или самочувствия, Eterna может предложить поговорить со взрослым, которому ты доверяешь.",
+  "Todos los juegos son gratuitos": "Все игры бесплатны",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "Аккаунт тоже бесплатный. Для игры не нужны платёжная карта или подписка.",
+  "Cuenta gratuita · sin publicidad": "Бесплатный аккаунт · без рекламы",
+  "Juega sin tarjeta ni suscripción.": "Играйте без платёжной карты и подписки.",
+  "Apoyo escolar opcional con IA": "Дополнительная учебная поддержка с ИИ",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "Отдельная услуга. После пробного периода подписку можно оформить по желанию.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "Оценка для самопознания с персональным отчётом в PDF. Отдельная платная услуга, независимая от игр.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "Войдите в свой бесплатный аккаунт, чтобы открыть {game}"
  },
  "chess": {
   "Peón": "Пешка",

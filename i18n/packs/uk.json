@@ -5821,7 +5821,15 @@
   "No necesita guardar todo lo que has hablado. Puede recordar algunas señales para enseñarte mejor, como:": "Eterna не потрібно зберігати все, що ти кажеш. Щоб краще допомагати тобі в навчанні, Eterna може запам’ятати, наприклад:",
   "¿Eterna puede hablar de cualquier cosa?": "Чи можна говорити з Eterna про все?",
   "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Ні. Eterna створено для навчання й допомоги зі шкільними завданнями. Якщо ти розкажеш щось, що може бути важливим для твоєї безпеки чи самопочуття, Eterna може порадити поговорити з дорослою людиною, якій ти довіряєш.",
-  "Volver a Coco en Forma": "Повернутися до Coco en Forma"
+  "Volver a Coco en Forma": "Повернутися до Coco en Forma",
+  "Todos los juegos son gratuitos": "Усі ігри безкоштовні",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "Обліковий запис теж безкоштовний. Для гри не потрібні платіжна картка чи підписка.",
+  "Cuenta gratuita · sin publicidad": "Безкоштовний обліковий запис · без реклами",
+  "Juega sin tarjeta ni suscripción.": "Грайте без платіжної картки та підписки.",
+  "Apoyo escolar opcional con IA": "Додаткова навчальна підтримка зі ШІ",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "Окрема послуга. Після пробного періоду підписку можна оформити за бажанням.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "Оцінювання для самопізнання з персональним звітом у PDF. Окрема платна послуга, незалежна від ігор.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "Увійдіть у свій безкоштовний обліковий запис, щоб відкрити {game}"
  },
  "chess": {
   "Peón": "Пішак",

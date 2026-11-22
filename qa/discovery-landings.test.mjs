@@ -82,7 +82,7 @@ test('share copies canonical URL and static examples do not contact services',as
  assert.equal(copied,origin+'/apoyo-escolar-con-ia/');
  for(const p of discoveryPages){
   const d=page(`/${p.slug}/index.html`);
-  const scripts=p.slug==='juegos-gratis'?['/seo/localized.js?v=20261122-1']:['/seo/landing.js?v=1','/i18n/coco.js?v=20261122-2'];
+  const scripts=p.slug==='juegos-gratis'?['/seo/localized.js?v=20261122-3']:['/seo/landing.js?v=1','/i18n/coco.js?v=20261122-3'];
   assert.deepEqual([...d.querySelectorAll('script[src]')].map(x=>x.getAttribute('src')),scripts);
  }
 });

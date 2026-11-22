@@ -26,6 +26,14 @@ test('all QH locales keep the original account fields, scores and PWA identity',
   const {doc,w,api,dom}=page();
   try {
     await api.ready;
+    const notice=fs.readFileSync(path.join(root,'index.html'),'utf8').match(/<div class="cocoFreeGamesNotice"[^>]*>[\s\S]*?<\/div>/)[0];
+    doc.querySelector('.loginCard').insertAdjacentHTML('afterbegin',notice);
+    const commercial=doc.createElement('section');commercial.className='cocoFreemiumV16084';
+    commercial.innerHTML=fs.readFileSync(path.join(root,'coco-v153-fixes.js'),'utf8').match(/block\.innerHTML='([^']+)';/)[1];
+    const evaluation=doc.createElement('p');evaluation.className='cocoDescripcion';
+    evaluation.textContent=fs.readFileSync(path.join(root,'coco-v155-identity.js'),'utf8').match(/eneagrama:\{name:"Coco Eneagrama",description:"([^"]+)"/)[1];
+    doc.body.append(commercial,evaluation);
+    const commerce=[...doc.querySelectorAll('.cocoFreeGamesNotice b,.cocoFreeGamesNotice p,.cocoFreemiumV16084 b,.cocoFreemiumV16084 strong,.cocoFreemiumV16084 small'),evaluation].map(el=>[el,el.textContent]);
     const experience=fs.readFileSync(path.join(root,'eterna-experience-v160.js'),'utf8');
     const start=experience.indexOf('  function ensureSignupLegalNotice()');
     const end=experience.indexOf('  function installCapture()',start);
@@ -43,6 +51,10 @@ test('all QH locales keep the original account fields, scores and PWA identity',
       if(locale!=='es')assert.notEqual(api.t(noticeText),noticeText);
       assert.equal(adultNotice.querySelectorAll('a').length,2);
       assert.equal(doc.querySelector('input').value,'synthetic-value');
+      for(const [el,source] of commerce){
+        if(locale!=='es')assert.ok(readPack(locale).strings[source],locale+' / '+source);
+        assert.equal(el.textContent,api.t(source),locale+' / '+source);
+      }
       assert.deepEqual([...doc.querySelectorAll('td')].map(td=>td.textContent),['Memoria','23']);
       assert.equal(w.localStorage.getItem('coco.language.v1'),locale);
       const badge=doc.querySelector('[data-game-language]');
@@ -189,16 +201,21 @@ test('dynamic game rounds and report scores update in place without translating 
   }finally{dom.window.close();}
 });
 
-test('language arrows wrap around and the native menu stays in sync',async()=>{
-  const {api,doc,w,dom}=page();
+test('the native dropdown changes language and keeps the saved preference and URL in sync',async()=>{
+  const {api,doc,w,dom}=page('https://coco.test/?lang=es&source=pwa-v159#menu');
   try {
     await api.ready;
+    const bar=doc.querySelector('.coco-language-bar'),select=bar.querySelector('select');
+    assert.deepEqual([...bar.querySelectorAll('button,a,select')].map(el=>el.tagName),['SELECT']);
+    assert.equal(select.options.length,15);
     const changed=()=>new Promise(resolve=>w.addEventListener('coco:language',resolve,{once:true}));
-    const prev=doc.querySelector('[data-coco-language-menu] button');
-    const next=doc.querySelector('[data-coco-language-menu] button:last-child');
-    let update=changed();prev.click();await update;
-    assert.equal(api.tag,'da');assert.equal(next.getAttribute('aria-label'),readPack('da').strings['Idioma siguiente']);
-    update=changed();next.click();await update;assert.equal(doc.querySelector('select').value,'es');
+    for(const tag of ['da','es']){
+      const update=changed();select.value=tag;select.dispatchEvent(new w.Event('change',{bubbles:true}));await update;
+      assert.equal(api.tag,tag);assert.equal(select.value,tag);
+      assert.equal(w.localStorage.getItem('coco.language.v1'),tag);
+      assert.equal(w.location.search,'?lang='+tag+'&source=pwa-v159');
+      assert.equal(w.location.hash,'#menu');
+    }
   }finally{dom.window.close();}
 });
 
@@ -228,6 +245,15 @@ for(const standalone of [false,true])test('the '+(standalone?'PWA':'web')+' acco
     w.eval(scripts.find(m=>m[2].startsWith('!function(){var a=window.COCO_CONFIG'))[2]);
     await settle();
     assert.equal(publicSlot.querySelector('select'),select);
+    const assertFreeAccount=()=>{
+      assert.equal(app.querySelector('.cocoFreeGamesNotice b')?.textContent,'Todos los juegos son gratuitos');
+      assert.equal(app.querySelector('.cocoFreeGamesNotice p')?.textContent,'La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.');
+    };
+    assertFreeAccount();
+    app.querySelector('.loginCard .btn.plano').click();await settle();
+    assert.ok(app.querySelector('#rNom'));assertFreeAccount();
+    app.querySelector('#rNom').closest('.caja').querySelector('.btn.plano').click();await settle();
+    assertFreeAccount();
     app.querySelector('#cMail').value='fixture@example.invalid';
     app.querySelector('#cPas').value='synthetic-password';
     await app.querySelector('.loginCard .btn.lima').onclick();

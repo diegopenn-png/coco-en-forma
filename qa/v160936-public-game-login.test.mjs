@@ -46,7 +46,7 @@ function harness(){
 test("las 13 tarjetas públicas muestran un mensaje de login específico",()=>{
   const h=harness();
   names.forEach(name=>h.click(name));
-  assert.deepEqual(h.calls.toasts,names.map(name=>`Inicia sesión para abrir ${name}.`));
+  assert.deepEqual(h.calls.toasts,names.map(name=>`Inicia sesión con tu cuenta gratuita para abrir ${name}.`));
   assert.equal(h.calls.prevent,13);
   assert.equal(h.calls.stop,13);
   assert.equal(h.calls.immediate,13);

@@ -42,6 +42,7 @@ test('all 15 languages render useful, distinct content before JavaScript runs', 
     assert.equal(d.body.dataset.cocoLandingLocale, tag);
     assert.equal(d.querySelectorAll('h1').length, 1, tag);
     assert.equal(text(d.querySelector('h1')), expected.heading, tag);
+    assert.equal(text(d.querySelector('.hero [data-free-games]')), expected.labels.free, tag);
     assert.equal(text(d.querySelector('.lead')), expected.intro, tag);
     assert.equal(d.title, expected.title, tag);
     assert.equal(d.querySelector('meta[name="description"]').content, expected.description, tag);
@@ -61,7 +62,7 @@ test('all 15 languages render useful, distinct content before JavaScript runs', 
     assert.equal(text(d.querySelector('#ejemplo details p')), expected.example.answer, tag);
     assert.equal(text(d.querySelector('.language-note')), expected.note.spanishContent, tag);
     assert.ok(text(d.querySelector('.related')).includes(expected.note.eterna), tag);
-    assert.deepEqual([...d.querySelectorAll('script[src]')].map(el => el.getAttribute('src')), ['/seo/localized.js?v=20261122-1'], tag);
+    assert.deepEqual([...d.querySelectorAll('script[src]')].map(el => el.getAttribute('src')), ['/seo/localized.js?v=20261122-3'], tag);
     if (tag !== 'es') {
       assert.notEqual(expected.heading, copy.es.heading, tag);
       assert.notEqual(expected.intro, copy.es.intro, tag);
@@ -178,12 +179,7 @@ test('native language links and every local resource work without JavaScript', (
       assert.equal(link.lang, targetTag, tag);
       assert.equal(link.getAttribute('aria-current'), tag === targetTag ? 'page' : null, tag);
     }
-    const arrows = [...d.querySelectorAll('.locale-arrow')];
-    assert.equal(arrows.length, 2, tag);
-    for (const arrow of arrows) {
-      assert.ok(locales.some(other => other !== tag && route(other) === arrow.getAttribute('href')), tag);
-      assert.ok(arrow.getAttribute('aria-label').trim(), tag);
-    }
+    assert.deepEqual([...menu.closest('.locale-switch').querySelectorAll('a,button,select')].map(el => el.tagName), ['SELECT'], tag);
     for (const el of d.querySelectorAll('a[href],link[href],script[src],img[src]')) {
       const target = new URL(el.getAttribute('href') || el.getAttribute('src'), origin + path);
       assert.equal(target.origin, origin, `${tag}: unexpected external resource ${target.href}`);
