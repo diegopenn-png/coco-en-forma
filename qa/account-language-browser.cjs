@@ -174,6 +174,20 @@ async function run(browser, origin, standalone) {
     await page.locator('.cocoFamilyV129 [data-family-back]').click();
     console.log('Paid family area and school profile in 15 languages.');
     await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
+    const padelCard=page.locator(grid+' > [data-coco-juego="padel"]');
+    await padelCard.locator('.cocoBotonJuego,button.btn').first().click();
+    const padel=page.locator('.cocoV144Modal.visible[data-module="padel"]');
+    await padel.locator('[data-padel144-view="players"]').click();
+    const courtPicker=padel.locator('[data-coco-game-picker] select');
+    for(const tag of await courtPicker.locator('option').evaluateAll(options=>options.map(item=>item.value))){
+      await courtPicker.selectOption(tag);
+      await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
+      const heading=await page.evaluate(()=>CocoLocale.t('Directorio del club'));
+      assert.ok((await padel.innerText()).includes(heading),tag+' club directory');
+    }
+    await padel.locator('.cocoGameNavigation button').last().click();
+    await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
+    console.log('Coco Pádel player directory in 15 languages.');
     await page.evaluate(()=>window.CocoEternaV160.open());
     const tutor=page.locator('#eternaOverlayV159.is-open');
     const inside=tutor.locator('[data-eterna-picker] select');

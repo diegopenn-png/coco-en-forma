@@ -147,6 +147,33 @@
     }
     const bead = key.match(/^Cuenta inferior (\d+): vale uno$/u);
     if (bead) return message('Cuenta inferior {n}: vale uno',{n:number(bead[1])});
+    const step = key.match(/^(PASO|ACTIVIDAD|RETO DE MEMORIA|MICRODESAFÍO) (\d+) DE (\d+)$/iu);
+    if (step) {
+      const n=number(step[2]),total=number(step[3]);
+      const label={'ACTIVIDAD':'Actividad','RETO DE MEMORIA':'Reto de memoria','MICRODESAFÍO':'Microdesafío'}[step[1].toUpperCase()];
+      return label ? message(label)+' · '+n+'/'+total : message('Paso {n} de {total}',{n,total});
+    }
+    const scene = key.match(/^ESCENARIO: (.+)$/u);
+    if (scene) return message('Escenario')+': '+message(scene[1][0]+scene[1].slice(1).toLocaleLowerCase('es').replace(/\bcoco\b/gu,'Coco'));
+    const differences = key.match(/^Encuentra (\d+) diferencias$/u);
+    if (differences) return message('Encuentra {n} diferencias',{n:number(differences[1])});
+    const variant=key.match(/^· combinación (\d+)\/(\d+) · (\d+) segundos\.$/iu);
+    if (variant) return '· '+message('Combinación')+' '+number(variant[1])+'/'+number(variant[2])+' · '+new Intl.NumberFormat(current,{style:'unit',unit:'second',unitDisplay:'long'}).format(Number(variant[3]))+'.';
+    const calculation=key.match(/^Comprueba esta operación: ([\d\s+×÷−=.,-]+)\.$/u);
+    if (calculation) return message('Comprueba esta operación: {formula}.',{formula:calculation[1]});
+    const monthNames='enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre'.split(' ');
+    const month=name=>new Intl.DateTimeFormat(current,{month:'long',timeZone:'UTC'}).format(Date.UTC(2024,monthNames.indexOf(name),15));
+    if (element?.closest('[data-coco-playing="tiempo"]')) {
+      if (monthNames.includes(key)) return month(key);
+      const gap=key.match(/^¿Qué mes va entre (\w+) y (\w+)\?$/u);
+      if (gap && monthNames.includes(gap[1]) && monthNames.includes(gap[2])) return message('¿Qué mes va entre {a} y {b}?',{a:month(gap[1]),b:month(gap[2])});
+      const mid=key.match(/^El mes intermedio es (\w+)\.$/u);
+      if (mid && monthNames.includes(mid[1])) return message('El mes intermedio es {month}.',{month:month(mid[1])});
+    }
+    const streak=key.match(/^(Básico|Intermedio|Avanzado) · RACHA (\d+)$/u);
+    if(streak)return message(streak[1])+' · '+message('Racha')+' '+number(streak[2]);
+    const fraction=key.match(/^(Verdadero o falso) · (\d+)\/(\d+)$/u);
+    if(fraction)return message(fraction[1])+' · '+number(fraction[2])+'/'+number(fraction[3]);
     const tier = key.match(/^Nivel (\d+) · (\d+) tipos de reto$/u);
     if (tier) return message('Nivel')+' '+number(tier[1])+' · '+message('{n} tipos de reto',{n:number(tier[2])});
     const place = key.match(/^Coloca (portaaviones|crucero|fragata|submarino|patrullero): toca su primera casilla\.$/u);
@@ -280,7 +307,7 @@
       translated = message('Clasificación')+' · '+message(gameName);
     }
     if (report && translated === key) translated = reportPhrase(key,element);
-    if (game && translated === key) translated = gamePhrase(key,element);
+    if (game && translated === key) translated=gamePhrase(key,element);
     if (translated === key) {
       for (const prefix of ['Inicia sesión con tu cuenta gratuita para abrir ','Inicia sesión para abrir ','Copiar enlace de ']) {
         if (key.startsWith(prefix)) {
@@ -307,7 +334,7 @@
       ? owner?.childNodes.length === 1 && owner.getAttribute('data-coco-source-text')
       : node.getAttribute('data-coco-source-'+slot);
     const source = canonical || (previous && previous.output === value ? previous.source : value);
-    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game' || Boolean(owner.closest('[data-coco-playing]')),owner);
+    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game' || Boolean(owner.closest('[data-coco-playing],.cocoV144Modal')),owner);
     if (value !== output) write(output);
     bindings.set(slot,{source,output});
   }
@@ -331,7 +358,8 @@
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego,#coco-game-guides)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
   const reportCopy = ':is(.cocoFamilyV129,[data-family-integral-report],.cocoV16083Section,.cocoReportDocument,.rankingTitulo,.rankingNota,.navegacionJugador) :is(h2,h3,h4,b,strong,small,p,span,li,th,button,a)';
-  const gameplayCopy = '.selloRecomendado,[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,h4,strong,b,.instruccion,.pregunta,.textoReto,.aviso,.titulo,.cocoArcadeQuestionTag,.cocoArcadeProgressMeta span,.dato,.tipoSerie,.peso,.comoVa span,.enunciado,[data-col][aria-label])';
+  const moduleCopy = ':is(.cocoV144Modal,.cocoArcadeShell) :is(div,p,b,strong,small,span,button,label,legend,select,option[value],h1,h2,h3,h4,h5,figcaption,summary,dt,dd,[aria-label],[title],[placeholder])';
+  const gameplayCopy = moduleCopy+',.selloRecomendado,[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,h4,strong,b,.instruccion,.pregunta,.textoReto,.aviso,.titulo,.cocoArcadeQuestionTag,.cocoArcadeProgressMeta span,.dato,.tipoSerie,.peso,.comoVa span,.enunciado,[data-col][aria-label])';
   const familySections = ':is(.eternaV16061SubscriptionTop,.cocoFamilyProfileV160100,.eternaV159ParentSettings,.eternaV160FamilyPromo,.eternaV160ExpiredGate) :is(h5,h6,p,div,small,span,b,strong,summary,button,label,[title],[aria-label])';
   const familyAccessCopy = '.eternaLaunchV16068 :is(p,label,button,h2,strong,.eternaLaunchV16068Info,.eternaLaunchV16068Msg)';
   const authBoxes = '.caja:has(#oMail),.caja:has(#rNom),.caja:has(#nPas),.loginCard';
@@ -358,7 +386,7 @@
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
-    url.searchParams.set('v',folder==='packs'?'20261122-walk-1':folder==='assessment'?'20261122-2':'20261122-walk-1');
+    url.searchParams.set('v',folder==='packs'?'20261123-games-1':folder==='assessment'?'20261122-2':'20261123-games-1');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -712,13 +740,15 @@
       if (header && accountSlot.parentElement !== header) header.append(accountSlot);
       const tutorSlot = document.querySelector('#eternaOverlayV159.is-open [data-eterna-picker]');
       const familySlot = app?.querySelector('.cocoFamilyV129 [data-coco-family-picker]');
-      const target = tutorSlot || familySlot || (header ? accountSlot : publicSlot);
+      const gameSlot = document.querySelector('.cocoV144Modal.visible [data-coco-game-picker],.cocoArcadeOverlay.visible [data-coco-game-picker]');
+      const target = tutorSlot || familySlot || gameSlot || (header ? accountSlot : publicSlot);
       if (target && bar.parentElement !== target) target.append(bar);
       if (!header && accountSlot.isConnected) accountSlot.remove();
       if (publicSlot) publicSlot.hidden = Boolean(header);
     }
     placeLanguageMenu();
     window.addEventListener('coco:eterna-visibility',placeLanguageMenu);
+    window.addEventListener('coco:game-visibility',placeLanguageMenu);
     if (app && !menuObserver) {
       // The router replaces the top-level header on login, navigation and logout.
       menuObserver = new MutationObserver(placeLanguageMenu);

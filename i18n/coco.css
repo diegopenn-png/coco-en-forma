@@ -61,3 +61,7 @@ html[dir=rtl] body #cocoApp .cocoLocalizedThumbnailCopy{direction:rtl}
 #cocoApp [data-coco-family-picker] { flex:0 0 auto; padding:.25rem max(.75rem,env(safe-area-inset-right)); }
 #cocoApp [data-coco-family-picker] select { width:auto; min-height:44px; max-width:100%; margin:0; }
 @media print { [data-coco-family-picker] { display:none!important; } }
+
+[data-coco-game-picker] { flex:0 0 auto; padding:.2rem max(.6rem,env(safe-area-inset-right)); }
+[data-coco-game-picker] select { min-height:40px; max-width:100%; }
+@media print { [data-coco-game-picker] {display:none!important;} }
