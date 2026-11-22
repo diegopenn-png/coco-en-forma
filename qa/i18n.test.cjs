@@ -834,6 +834,42 @@ test('the game leaderboard keeps player names and updates the score and best gam
   }finally{dom.window.close();}
 });
 
+test('monthly and annual subscriptions, trial offers and the school profile translate after rendering',async()=>{
+  const get=async url=>({ok:true,json:async()=>JSON.parse(fs.readFileSync(path.join(root,url.pathname),'utf8'))});
+  const {doc,w,api,dom}=page('https://coco.test/',get);
+  try {
+    doc.documentElement.setAttribute('data-coco-extra-languages','');await api.ready;
+    const experience=fs.readFileSync(path.join(root,'eterna-experience-v160.js'),'utf8');
+    const part=(start,end)=>experience.slice(experience.indexOf('  function '+start+'('),experience.indexOf('  function '+end+'('));
+    const clean=value=>String(value||'').trim();
+    const plan=w.Function('clean','esc',part('dateES','strategyName')+part('planMeta','activePaidSubscription')+part('currentPlanHtml','bindSubscriptionUi')+';return currentPlanHtml;')(clean,clean);
+    const trial=w.Function(part('createTesterPlans','moveSubscriptionFirst')+';return createTesterPlans;')();
+    const family=fs.readFileSync(path.join(root,'coco-family-friendly-v160100.js'),'utf8');
+    const profile=w.Function('courseLabel',family.slice(family.indexOf('  function profileSection('),family.indexOf('  function installStyles('))+';return profileSection;')(()=> '');
+    const container=doc.createElement('section');container.className='eternaV16061SubscriptionTop';doc.body.append(container);
+    container.innerHTML=['monthly','annual'].map((planName,i)=>plan({plan:planName,provider_customer_id:'fixture',provider_subscription_id:'fixture',current_period_end:i?'2030-04-08T12:00:00Z':null,cancel_at_period_end:false})).join('');
+    container.append(trial(),profile({school_year:'Custom grade',autonomous_community:'Región de prueba'}));
+    const walker=doc.createTreeWalker(container,w.NodeFilter.SHOW_TEXT),copy=[];
+    while(walker.nextNode()){
+      const n=walker.currentNode;
+      if(n.parentElement.closest('time,output')||!/[a-záéóñ]{2}/i.test(n.data))continue;
+      copy.push([n,n.data.trim()]);
+    }
+    assert.ok(copy.length>=35);
+    for(const tag of [...locales.slice(1),'es']){
+      await api.setLanguage(tag);
+      for(const [n,text] of copy){
+        assert.equal(n.data.trim(),api.t(text),tag+' '+text);
+        if(tag!=='es' && text.split(' ').length>2)assert.notEqual(n.data.trim(),text,tag+' missing '+text);
+      }
+      const dt=new Date('2030-04-08T12:00:00Z').toLocaleDateString(tag,{day:'2-digit',month:'long',year:'numeric'});
+      assert.equal(container.querySelector('time').textContent,dt,tag);
+      assert.equal(container.querySelector('[data-coco-current-course]').textContent.includes('Custom grade'),true);
+      assert.equal(container.querySelectorAll('[data-et-v16080-switch]').length,2);
+    }
+  }finally{dom.window.close();}
+});
+
 test('family PIN setup localizes its instructions and confirmation placeholder in every language',async()=>{
   const read=async url=>({ok:true,json:()=>JSON.parse(fs.readFileSync(path.join(root,url.pathname),'utf8'))});
   const {w,doc,api,dom}=page('https://coco.test/',read);

@@ -124,6 +124,11 @@
   }
   function gamePhrase(key) {
     const number = value => Number(value).toLocaleString(current);
+    const difficulty = key.match(/^(Fácil|Medio|Difícil) · (\d+)(?:×(\d+)| parejas)$/u);
+    if (difficulty) {
+      const size=difficulty[3] ? number(difficulty[2])+'×'+number(difficulty[3]) : message('{n} parejas',{n:number(difficulty[2])});
+      return message(difficulty[1])+' · '+size;
+    }
     const question = key.match(/^Frase (\d+) de (\d+)$/);
     if (question) return message('Frase {n} de {total}',{n:number(question[1]),total:number(question[2])});
     const answered = key.match(/^(\d+) respondidas$/);
@@ -241,7 +246,7 @@
       ? owner?.childNodes.length === 1 && owner.getAttribute('data-coco-source-text')
       : node.getAttribute('data-coco-source-'+slot);
     const source = canonical || (previous && previous.output === value ? previous.source : value);
-    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game',owner);
+    const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game' || Boolean(owner.closest('[data-coco-playing]')),owner);
     if (value !== output) write(output);
     bindings.set(slot,{source,output});
   }
@@ -260,12 +265,13 @@
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.
   const privateAreas = '.carnet .quien strong,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-name],[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
-  const publicElements = '.resumen,.alerta,.card,.lead,.note,article.report caption,article.report td,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
+  const publicElements = 'div,section,header,aside,caption,article,td,h6,nav,main,figure,.resumen,.alerta,.card,.lead,.note,article.report caption,article.report td,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamiliaBtn span,.carnet .quien .pequeno,.carnet .tanteo .pequeno,.coco160904FamilyLoadingCard b,.coco160904FamilyLoadingCard span,.cocoFamilyLoading,#coco-startup-status p';
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego,#coco-game-guides)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
   const reportCopy = ':is(.cocoFamilyV129,[data-family-integral-report],.cocoV16083Section,.cocoReportDocument,.rankingTitulo,.rankingNota,.navegacionJugador) :is(h2,h3,h4,b,strong,small,p,span,li,th,button,a)';
-  const gameplayCopy = '[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,h4,strong,b,.instruccion,.pregunta,.textoReto,.aviso,.titulo,.cocoArcadeQuestionTag,.cocoArcadeProgressMeta span,.dato)';
+  const gameplayCopy = '.selloRecomendado,[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,h4,strong,b,.instruccion,.pregunta,.textoReto,.aviso,.titulo,.cocoArcadeQuestionTag,.cocoArcadeProgressMeta span,.dato)';
+  const familySections = ':is(.eternaV16061SubscriptionTop,.cocoFamilyProfileV160100,.eternaV159ParentSettings,.eternaV160FamilyPromo,.eternaV160ExpiredGate) :is(h5,h6,p,div,small,span,b,strong,summary,button,label,[title],[aria-label])';
   const familyAccessCopy = '.eternaLaunchV16068 :is(p,label,button,h2,strong,.eternaLaunchV16068Info,.eternaLaunchV16068Msg)';
   const authBoxes = '.caja:has(#oMail),.caja:has(#rNom),.caja:has(#nPas),.loginCard';
   const authCopy = ['p','label','b','.aviso','small'].map(t => ':is('+authBoxes+') '+t).join(',');
@@ -291,7 +297,7 @@
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
-    url.searchParams.set('v',folder==='packs'?'20261122-7':folder==='assessment'?'20261122-2':'20261122-account-1');
+    url.searchParams.set('v',folder==='packs'?'20261122-walk-1':folder==='assessment'?'20261122-2':'20261122-walk-1');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -466,7 +472,7 @@
     refreshTutor(root);
     const page = document.body.dataset.cocoLanguagePage;
     const medicalFields = '#cocoMedOverlay :is(h1,h2,h3,h4,p,div,b,button,span,small,summary,label,[aria-label]),#cocoMedRankingModal :is(h3,p,span,button)';
-    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,medicalFields,'.cocoV16086Pending,.rankingNota'].join(',');
+    const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familySections,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,medicalFields,'.cocoV16086Pending,.rankingNota'].join(',');
     each(root,query,el => {
       if (el.tagName === 'CANVAS' && el.hasAttribute('aria-label')) render(el,'aria-label',()=>el.getAttribute('aria-label'),v=>el.setAttribute('aria-label',v));
       if (el.closest('#eternaOverlayV159') || el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
@@ -504,7 +510,7 @@
     each(root,'time[data-coco-date]',el => {
       const date = new Date(Number(el.dataset.cocoDate));
       if (Number.isFinite(date.getTime())) {
-        const value = date.toLocaleDateString(current);
+        const value = date.toLocaleDateString(current, el.hasAttribute('data-long-date') ? {day:'2-digit',month:'long',year:'numeric'} : undefined);
         if (el.textContent !== value) el.textContent = value;
       }
     });

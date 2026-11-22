@@ -2351,7 +2351,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
       if(!r.ok||!data.url)throw new Error(data.error||"PORTAL");location.href=data.url
     }catch(e){
       if(button){button.disabled=false;button.textContent=original}
-      alert(switching?"No se pudo abrir el cambio de plan. Comprueba que el cambio de plan esté habilitado en Stripe.":"No se pudo abrir la gestión de la suscripción.")
+      var warning=switching?"No se pudo abrir el cambio de plan. Comprueba que el cambio de plan esté habilitado en Stripe.":"No se pudo abrir la gestión de la suscripción.";alert(root.CocoLocale?root.CocoLocale.t(warning):warning)
     }
   }
   function openEternaFromFamily(){
@@ -2359,15 +2359,21 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     queueMicrotask(function(){try{if(root.CocoEternaV160&&typeof root.CocoEternaV160.open==="function")root.CocoEternaV160.open()}catch(e){}})
   }
   function currentPlanHtml(sub){
-    var meta=planMeta(sub&&sub.plan),end=sub&&sub.current_period_end?dateES(sub.current_period_end):"",cancel=!!(sub&&sub.cancel_at_period_end);
-    var statusLine=cancel?(end?"Cancelación programada · acceso hasta "+end:"Cancelación programada al final del periodo"):(end?"Próxima renovación: "+end:"Suscripción activa");
+    var meta=planMeta(sub&&sub.plan),end=sub&&sub.current_period_end?new Date(sub.current_period_end).getTime():NaN,cancel=!!(sub&&sub.cancel_at_period_end);
+    var statusLine;
+    if(Number.isFinite(end)){
+      var label=cancel?"Cancelación programada · acceso hasta":"Próxima renovación:";
+      statusLine='<span>'+label+'</span> <time data-long-date data-coco-date="'+end+'">'+esc(dateES(end))+'</time>';
+    }else{
+      statusLine=cancel?"Cancelación programada al final del periodo":"Suscripción activa";
+    }
     var switchBlock="";
     if(sub&&sub.provider_customer_id&&sub.provider_subscription_id){
       switchBlock=meta.key==="monthly"
         ?'<div class="eternaV16079Alternative"><div><b>Ahorra con el plan anual</b><span>79,99 € / año. Stripe calculará el ajuste sobre esta misma suscripción.</span></div><button type="button" data-et-v16080-switch data-current-plan="monthly">Cambiar a plan anual</button></div>'
         :'<div class="eternaV16079Alternative"><div><b>¿Quieres cambiar de plan?</b><span>Consulta en Stripe los planes disponibles para esta misma suscripción.</span></div><button type="button" data-et-v16080-switch data-current-plan="'+esc(meta.key)+'">Ver planes disponibles</button></div>'
     }
-    return '<div class="eternaV16079CurrentPlan" data-et-current-plan="'+esc(meta.key)+'"><div class="eternaV16079CurrentPlanHead"><div><span class="eternaV16079CurrentPlanLabel">TU PLAN ACTUAL</span><h5>'+esc(meta.name)+'</h5>'+(meta.price?'<strong class="eternaV16079CurrentPlanPrice">'+esc(meta.price)+'</strong>':"")+'</div></div><p class="eternaV16079CurrentPlanMeta">'+esc(statusLine)+'</p><div class="eternaV16079PlanActions"><button type="button" class="is-primary" data-et-v16079-open>Abrir Eterna</button>'+(sub&&sub.provider_customer_id?'<button type="button" class="is-secondary" data-et-v16079-manage>Gestionar suscripción</button>':"")+'</div>'+switchBlock+'</div>'
+    return '<div class="eternaV16079CurrentPlan" data-et-current-plan="'+esc(meta.key)+'"><div class="eternaV16079CurrentPlanHead"><div><span class="eternaV16079CurrentPlanLabel">TU PLAN ACTUAL</span><h5>'+esc(meta.name)+'</h5>'+(meta.price?'<strong class="eternaV16079CurrentPlanPrice">'+esc(meta.price)+'</strong>':"")+'</div></div><p class="eternaV16079CurrentPlanMeta">'+statusLine+'</p><div class="eternaV16079PlanActions"><button type="button" class="is-primary" data-et-v16079-open>Abrir Eterna</button>'+(sub&&sub.provider_customer_id?'<button type="button" class="is-secondary" data-et-v16079-manage>Gestionar suscripción</button>':"")+'</div>'+switchBlock+'</div>'
   }
   function bindSubscriptionUi(wrap){
     if(!wrap)return;wrap.querySelectorAll("[data-et-v16079-open]").forEach(function(b){if(b.dataset.boundV16079)return;b.dataset.boundV16079="1";b.onclick=openEternaFromFamily});
@@ -2512,7 +2518,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     }
     if(existing){bindCreatedPlanButtons(existing);syncSubscriptionUi(existing,false);return true}
 
-    var status=card.querySelector(".eternaV159FamilyStatus"),statusText=clean(status&&status.textContent).toLowerCase();
+    var status=card.querySelector(".eternaV159FamilyStatus"),statusText=clean(status&&(root.CocoLocale?root.CocoLocale.sourceText(status):status.textContent)).toLowerCase();
     var trial=directChildren(card,"eternaV160TrialActive")[0]||null;
     var upgrade=directChildren(card,"eternaV160UpgradeWrap")[0]||null;
     var paidButtons=directChildren(card,"eternaV159Buttons").filter(function(n){
