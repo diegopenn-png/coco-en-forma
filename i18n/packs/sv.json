@@ -5953,7 +5953,15 @@
   "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Om spelaren är under 18 år måste en förälder eller vårdnadshavare skapa kontot eller godkänna att det skapas. Använd den ansvariga vuxnas e-postadress.",
   "Tu privacidad en Eterna | Coco en Forma": "Din integritet när du använder Eterna | Coco en Forma",
   "Privacidad explicada para menores usuarios de Eterna.": "Om integritet för barn och ungdomar som använder Eterna.",
-  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Nej. Eterna är till för att hjälpa dig att lära dig och stötta dig i skolarbetet. Om du berättar något som verkar viktigt för din trygghet eller för hur du mår kan Eterna föreslå att du pratar med en vuxen som du litar på."
+  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Nej. Eterna är till för att hjälpa dig att lära dig och stötta dig i skolarbetet. Om du berättar något som verkar viktigt för din trygghet eller för hur du mår kan Eterna föreslå att du pratar med en vuxen som du litar på.",
+  "Todos los juegos son gratuitos": "Alla spel är gratis",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "Kontot är också gratis. Du behöver varken betalkort eller abonnemang för att spela.",
+  "Cuenta gratuita · sin publicidad": "Gratis konto · utan reklam",
+  "Juega sin tarjeta ni suscripción.": "Spela utan betalkort eller abonnemang.",
+  "Apoyo escolar opcional con IA": "Valfritt stöd för skolarbetet med AI",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "En separat tjänst. Efter provperioden kan du välja ett abonnemang.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "En självskattning för ökad självkännedom med en personlig PDF-rapport. En betaltjänst som är separat från spelen.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "Logga in på ditt gratis konto för att öppna {game}"
  },
  "chess": {
   "Peón": "Bonde",

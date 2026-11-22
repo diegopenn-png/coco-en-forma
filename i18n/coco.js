@@ -137,7 +137,7 @@
     if (report && translated === key) translated = reportPhrase(key,element);
     if (game && translated === key) translated = gamePhrase(key);
     if (translated === key) {
-      for (const prefix of ['Inicia sesión para abrir ','Copiar enlace de ']) {
+      for (const prefix of ['Inicia sesión con tu cuenta gratuita para abrir ','Inicia sesión para abrir ','Copiar enlace de ']) {
         if (key.startsWith(prefix)) {
           translated = message(prefix+'{game}',{game:message(key.slice(prefix.length))});
           break;
@@ -200,7 +200,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261122-1');
+    url.searchParams.set('v','20261122-3');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -387,8 +387,6 @@
     document.documentElement.dir = tag === 'ar' ? 'rtl' : 'ltr';
     select.value = tag; select.setAttribute('aria-label',label[tag]); status.textContent = '';
     accountCaption.textContent = label[tag];
-    previous.setAttribute('aria-label',message('Idioma anterior'));
-    next.setAttribute('aria-label',message('Idioma siguiente'));
     const manifest = document.querySelector('link[rel="manifest"]');
     if (manifest) manifest.href = tag === 'es' ? new URL('../manifest.webmanifest',base) : new URL('manifests/'+tag+'.webmanifest',base);
     if (tag === 'es') { watching?.disconnect(); watching = null; } else observe();
@@ -397,26 +395,11 @@
     return true;
   }
   bar.className = 'coco-language-bar';
-  const icon = document.createElement('span'); icon.textContent = '◎'; icon.setAttribute('aria-hidden','true');
   const status = document.createElement('span'); status.setAttribute('role','status');
   Object.entries(languages).forEach(([id,name]) => { const option = new Option(name,id); option.lang = id; select.add(option); });
   select.setAttribute('aria-label',label.es);
   select.addEventListener('change',() => { status.textContent = ''; void setLanguage(select.value); });
-  function languageStep(direction,symbol,description) {
-    const button = document.createElement('button');
-    button.type = 'button'; button.textContent = symbol;
-    button.setAttribute('aria-label',description);
-    button.addEventListener('click',() => {
-      const tags = Object.keys(languages);
-      const target = (select.selectedIndex + direction + tags.length) % tags.length;
-      select.selectedIndex = target;
-      void setLanguage(tags[target]);
-    });
-    return button;
-  }
-  const previous = languageStep(-1,'‹','Idioma anterior');
-  const next = languageStep(1,'›','Idioma siguiente');
-  bar.append(status,icon,previous,select,next);
+  bar.append(status,select);
   const accountSlot = document.createElement('div');
   accountSlot.setAttribute('data-coco-language-menu','');
   accountSlot.setAttribute('data-coco-language-account','');

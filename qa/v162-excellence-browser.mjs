@@ -32,7 +32,7 @@ await check("Todas las tarjetas públicas dirigen al login con su nombre",async(
   for(let index=0;index<13;index+=1){
     const card=cards.nth(index),name=(await card.locator(":scope > b").innerText()).trim();
     await card.click();
-    assert.equal((await page.locator(".cocoV144Toast").last().innerText()).trim(),`Inicia sesión para abrir ${name}.`);
+    assert.equal((await page.locator(".cocoV144Toast").last().innerText()).trim(),`Inicia sesión con tu cuenta gratuita para abrir ${name}.`);
     assert.equal(await page.locator(".cocoV144Modal.visible").count(),0);
     assert.equal(await page.evaluate(()=>document.activeElement===document.querySelector("#cocoApp input[type='email']")),true);
   }

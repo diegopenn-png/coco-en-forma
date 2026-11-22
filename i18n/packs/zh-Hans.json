@@ -5817,7 +5817,15 @@
   "Protección": "数据保护",
   "Suscripciones": "订阅",
   "Si hablas por el micrófono, esa información se utiliza para ayudarte con esa consulta. Coco no la guarda por defecto como una biblioteca permanente de grabaciones.": "当你对着麦克风说话时，你说的内容会用来回答这次的问题。默认情况下，Coco 不会建立永久保存你录音的资料库。",
-  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "不可以。Eterna 专门用来帮助你学习学校课程。如果你说的事可能关系到你的安全或身心状况，它可能会建议你找一位信任的成年人聊聊。"
+  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "不可以。Eterna 专门用来帮助你学习学校课程。如果你说的事可能关系到你的安全或身心状况，它可能会建议你找一位信任的成年人聊聊。",
+  "Todos los juegos son gratuitos": "所有游戏均免费",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "创建账户同样免费。玩游戏无需提供银行卡，也无需订阅。",
+  "Cuenta gratuita · sin publicidad": "免费账户 · 无广告",
+  "Juega sin tarjeta ni suscripción.": "无需银行卡或订阅，即可玩游戏。",
+  "Apoyo escolar opcional con IA": "可自选的 AI 学习辅导",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "独立服务。试用后可自行选择是否订阅。",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "自我认知评估，附个人 PDF 报告。这是一项独立于游戏的付费服务。",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "登录免费账户，即可打开 {game}"
  },
  "chess": {
   "Peón": "兵",

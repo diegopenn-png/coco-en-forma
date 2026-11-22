@@ -5934,7 +5934,15 @@
   "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Is de speler jonger dan 18 jaar? Dan moet een ouder of wettelijke voogd het account aanmaken of er toestemming voor geven. Gebruik het e-mailadres van de verantwoordelijke volwassene.",
   "Tu privacidad en Eterna | Coco en Forma": "Je privacy bij Eterna | Coco en Forma",
   "Privacidad explicada para menores usuarios de Eterna.": "Privacy uitgelegd voor kinderen en jongeren die Eterna gebruiken.",
-  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Nee. Eterna is bedoeld om je te helpen leren en je te ondersteunen bij schoolwerk. Vertel je iets dat belangrijk lijkt voor je veiligheid of welzijn? Dan kan Eterna je aanraden om met een volwassene te praten die je vertrouwt."
+  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Nee. Eterna is bedoeld om je te helpen leren en je te ondersteunen bij schoolwerk. Vertel je iets dat belangrijk lijkt voor je veiligheid of welzijn? Dan kan Eterna je aanraden om met een volwassene te praten die je vertrouwt.",
+  "Todos los juegos son gratuitos": "Alle spellen zijn gratis",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "Je account is ook gratis. Je hebt geen betaalkaart of abonnement nodig om te spelen.",
+  "Cuenta gratuita · sin publicidad": "Gratis account · zonder reclame",
+  "Juega sin tarjeta ni suscripción.": "Speel zonder betaalkaart of abonnement.",
+  "Apoyo escolar opcional con IA": "Optionele leerondersteuning met AI",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "Een aparte dienst. Na de proefperiode kun je kiezen voor een abonnement.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "Een zelfonderzoek met een persoonlijk PDF-rapport. Een betaalde dienst die losstaat van de spellen.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "Log in met je gratis account om {game} te openen"
  },
  "chess": {
   "Peón": "Pion",

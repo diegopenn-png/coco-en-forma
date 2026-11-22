@@ -509,7 +509,7 @@
 
   function ensurePublicFreemiumMessage(app){
     app=app||document.getElementById("cocoApp");if(!app)return false;var launcher=app.querySelector("#eternaLauncherV159");if(!launcher||app.querySelector(".cocoFreemiumV16084"))return false;
-    var block=document.createElement("section");block.className="cocoFreemiumV16084";block.setAttribute("aria-label","Qué es gratis en Coco en Forma y prueba de Eterna");block.innerHTML='<article><span>🧠 COCO EN FORMA</span><b>Juegos para la mente</b><strong>Gratis siempre · sin publicidad</strong><small>Entrena con los juegos de Coco sin suscripción.</small></article><article class="et"><span>✨ ETERNA · APOYO ESCOLAR</span><b>Ayuda escolar personalizada con IA</b><strong>7 días gratis · sin tarjeta</strong><small>Después, suscripción opcional mensual o anual.</small></article>';
+    var block=document.createElement("section");block.className="cocoFreemiumV16084";block.setAttribute("aria-label","Qué es gratis en Coco en Forma y prueba de Eterna");block.innerHTML='<article><span>🧠 COCO EN FORMA</span><b>Todos los juegos son gratuitos</b><strong>Cuenta gratuita · sin publicidad</strong><small>Juega sin tarjeta ni suscripción.</small></article><article class="et"><span>✨ ETERNA · APOYO ESCOLAR</span><b>Apoyo escolar opcional con IA</b><strong>7 días gratis · sin tarjeta</strong><small>Servicio independiente. Después de la prueba, suscripción opcional.</small></article>';
     launcher.parentElement.insertBefore(block,launcher);homeFreemiumRuns++;return true
   }
 

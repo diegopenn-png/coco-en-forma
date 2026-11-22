@@ -96,6 +96,9 @@ html body #cocoApp .cocoCopyStatus,html body #cocoApp .cocoCopyManual{grid-colum
 html body #cocoApp .cocoCopyManual{padding:10px 6px;border:1px solid #acc5d9;border-radius:8px;user-select:text}
 
 /* Access and installation use the same navy, gold and Coco identity as the catalogue. */
+html body #cocoApp .cocoFreeGamesNotice{display:grid;gap:6px;margin:0 0 18px;padding:14px 16px;border:1px solid #91d4b3;border-radius:14px;background:#e6f8ee;color:#164f39;text-align:start}
+html body #cocoApp .cocoFreeGamesNotice b{color:#164f39!important;font-size:16px!important;font-weight:800!important;line-height:1.35}
+html body #cocoApp .cocoFreeGamesNotice p{margin:0!important;color:#285b46!important;font-size:13px!important;line-height:1.5}
 html body #cocoApp .cocoAccesoGrid>.loginCard{padding:26px!important;border:1px solid #b7944b!important;border-radius:24px!important;background:radial-gradient(ellipse at 100% 0,#184567,transparent 60%),linear-gradient(145deg,#091c3d,#112c4d)!important;box-shadow:0 10px 28px #091c3d24!important;color:#fff!important}
 html body #cocoApp .loginCard .cocoEyebrow{color:#9ce7ff!important;font-size:10px!important;letter-spacing:.12em!important;line-height:1.5;margin-bottom:14px!important}
 html body #cocoApp .loginCard>h2{display:flex;align-items:center;justify-content:space-between;gap:14px;color:#fff!important;font-size:32px!important;line-height:1.15!important;margin:0 0 14px!important;text-shadow:none!important}

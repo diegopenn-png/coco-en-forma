@@ -52,10 +52,10 @@ test("Practice exposes counters while adaptive difficulty remains internal", () 
 
 test("web entrypoint and Service Worker invalidate the corrected assets together", () => {
   assert.match(index, /eterna-state-contract-v3\.js\?v=160920/);
-  assert.match(index, /coco-v153-fixes\.js\?v=160128/);
+  assert.match(index, /coco-v153-fixes\.js\?v=20261122-3/);
   assert.match(index, /eterna-v159\.js\?v=160114/);
   assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
-  assert.match(index, /coco-v144-core\.js\?v=15001/);
+  assert.match(index, /coco-v144-core\.js\?v=20261122-3/);
   assertPwaRelease(serviceWorker);
   assert.match(serviceWorker, /"\.\/eterna-state-contract-v3\.js"/);
   assert.match(serviceWorker, /ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);

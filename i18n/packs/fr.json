@@ -5939,7 +5939,15 @@
   "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Si le joueur a moins de 18 ans, un parent ou son représentant légal doit créer le compte ou en autoriser la création. Utilisez l’adresse e-mail de l’adulte responsable.",
   "Tu privacidad en Eterna | Coco en Forma": "Ta vie privée quand tu utilises Eterna | Coco en Forma",
   "Privacidad explicada para menores usuarios de Eterna.": "Des informations sur la vie privée pour les enfants et les ados qui utilisent Eterna.",
-  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Non. Eterna est conçue pour t’aider à apprendre et à travailler pour l’école. Si tu lui dis quelque chose qui semble important pour ta sécurité ou ton bien-être, elle peut te proposer d’en parler à un adulte de confiance."
+  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Non. Eterna est conçue pour t’aider à apprendre et à travailler pour l’école. Si tu lui dis quelque chose qui semble important pour ta sécurité ou ton bien-être, elle peut te proposer d’en parler à un adulte de confiance.",
+  "Todos los juegos son gratuitos": "Tous les jeux sont gratuits",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "Le compte est gratuit lui aussi. Aucune carte bancaire ni aucun abonnement ne sont nécessaires pour jouer.",
+  "Cuenta gratuita · sin publicidad": "Compte gratuit · sans publicité",
+  "Juega sin tarjeta ni suscripción.": "Joue sans carte bancaire ni abonnement.",
+  "Apoyo escolar opcional con IA": "Soutien scolaire facultatif avec IA",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "Un service indépendant. Après l’essai, l’abonnement reste facultatif.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "Une évaluation de connaissance de soi avec un rapport personnel en PDF. Un service payant indépendant des jeux.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "Connecte-toi à ton compte gratuit pour ouvrir {game}"
  },
  "chess": {
   "Peón": "Pion",

@@ -5867,7 +5867,15 @@
   "Tu privacidad en Eterna | Coco en Forma": "خصوصيتك عند استخدام Eterna | Coco en Forma",
   "Privacidad explicada para menores usuarios de Eterna.": "شرح الخصوصية للأطفال واليافعين الذين يستخدمون Eterna.",
   "IA Eterna": "الذكاء الاصطناعي Eterna",
-  "¿Eterna puede hablar de cualquier cosa?": "هل يمكنني التحدث مع Eterna عن أي شيء؟"
+  "¿Eterna puede hablar de cualquier cosa?": "هل يمكنني التحدث مع Eterna عن أي شيء؟",
+  "Todos los juegos son gratuitos": "جميع الألعاب مجانية",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "الحساب مجاني أيضًا. لا تحتاج إلى بطاقة دفع أو اشتراك للعب.",
+  "Cuenta gratuita · sin publicidad": "حساب مجاني · بلا إعلانات",
+  "Juega sin tarjeta ni suscripción.": "العب من دون بطاقة دفع أو اشتراك.",
+  "Apoyo escolar opcional con IA": "دعم دراسي اختياري بالذكاء الاصطناعي",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "خدمة مستقلة. الاشتراك بعد الفترة التجريبية اختياري.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "تقييم للتعرّف إلى الذات مع تقرير شخصي بصيغة PDF. خدمة مدفوعة مستقلة عن الألعاب.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "سجّل الدخول إلى حسابك المجاني لفتح {game}"
  },
  "chess": {
   "Peón": "بيدق",

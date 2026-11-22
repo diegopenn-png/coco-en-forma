@@ -5909,7 +5909,15 @@
   "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "Hvis spilleren er under 18 år, skal en forælder eller værge oprette kontoen eller godkende, at den oprettes. Brug den ansvarlige voksnes e-mailadresse.",
   "Tu privacidad en Eterna | Coco en Forma": "Dit privatliv, når du bruger Eterna | Coco en Forma",
   "Privacidad explicada para menores usuarios de Eterna.": "Om privatliv for børn og unge, der bruger Eterna.",
-  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Nej. Eterna er lavet til at hjælpe dig med at lære og støtte dig i skolearbejdet. Hvis du fortæller noget, som kan være vigtigt for din sikkerhed eller trivsel, kan Eterna foreslå, at du taler med en voksen, du stoler på."
+  "No. Eterna está diseñada para permanecer dentro del aprendizaje y el apoyo escolar. Si le cuentas algo que parece importante para tu seguridad o bienestar, puede pedirte que hables con un adulto de confianza.": "Nej. Eterna er lavet til at hjælpe dig med at lære og støtte dig i skolearbejdet. Hvis du fortæller noget, som kan være vigtigt for din sikkerhed eller trivsel, kan Eterna foreslå, at du taler med en voksen, du stoler på.",
+  "Todos los juegos son gratuitos": "Alle spil er gratis",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "Kontoen er også gratis. Du behøver hverken betalingskort eller abonnement for at spille.",
+  "Cuenta gratuita · sin publicidad": "Gratis konto · uden reklamer",
+  "Juega sin tarjeta ni suscripción.": "Spil uden betalingskort eller abonnement.",
+  "Apoyo escolar opcional con IA": "Valgfri støtte til skolearbejdet med AI",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "En selvstændig tjeneste. Efter prøveperioden kan du vælge et abonnement.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "En vurdering til øget selvindsigt med en personlig PDF-rapport. En betalt tjeneste, der er uafhængig af spillene.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "Log ind på din gratis konto for at åbne {game}"
  },
  "chess": {
   "Peón": "Bonde",

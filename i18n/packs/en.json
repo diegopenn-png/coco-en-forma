@@ -5935,7 +5935,15 @@
   "Etapa escolar: Bachillerato": "Upper secondary education (Bachillerato)",
   "Si el jugador es menor de 18 años, la cuenta debe crearla o autorizarla su padre, madre o tutor legal y utilizar un correo del adulto responsable.": "If the player is under 18, a parent or legal guardian must create or authorise the account. Use the responsible adult’s email address.",
   "Tu privacidad en Eterna | Coco en Forma": "Your privacy when you use Eterna | Coco en Forma",
-  "Privacidad explicada para menores usuarios de Eterna.": "Privacy information for children and teenagers who use Eterna."
+  "Privacidad explicada para menores usuarios de Eterna.": "Privacy information for children and teenagers who use Eterna.",
+  "Todos los juegos son gratuitos": "All games are free",
+  "La cuenta también es gratuita. No necesitas tarjeta ni suscripción para jugar.": "Your account is free too. You don’t need a payment card or subscription to play.",
+  "Cuenta gratuita · sin publicidad": "Free account · no ads",
+  "Juega sin tarjeta ni suscripción.": "Play without a payment card or subscription.",
+  "Apoyo escolar opcional con IA": "Optional AI school support",
+  "Servicio independiente. Después de la prueba, suscripción opcional.": "A separate service. An optional subscription is available after the trial.",
+  "Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.": "A self-awareness assessment with a personal PDF report. A paid service separate from the games.",
+  "Inicia sesión con tu cuenta gratuita para abrir {game}": "Sign in to your free account to open {game}"
  },
  "chess": {
   "Peón": "Pawn",
