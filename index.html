@@ -582,7 +582,7 @@ try{if(new URL(location.href).searchParams.get("coco_home")==="1")localStorage.s
 </script>
 <script src="./supabase-js-2.112.3.min.js?v=15000"></script>
 <link rel="stylesheet" href="./eterna-v159.css?v=160980">
-<link rel="stylesheet" href="/assets/styles/coco-unified-v160127.css?v=20261122-4"><link rel="stylesheet" href="/i18n/coco.css?v=20261122-11"><script defer src="/i18n/reward-cards.js?v=1"></script><script defer src="/i18n/word-games.js?v=1"></script><script defer src="/i18n/coco.js?v=20261122-14"></script></head><body><div data-coco-language-menu></div>
+<link rel="stylesheet" href="/assets/styles/coco-unified-v160127.css?v=20261122-4"><link rel="stylesheet" href="/i18n/coco.css?v=20261122-11"><script defer src="/i18n/reward-cards.js?v=1"></script><script defer src="/i18n/word-games.js?v=1"></script><script defer src="/i18n/med.js?v=20261122-reviewed"></script><script defer src="/i18n/coco.js?v=20261122-15"></script></head><body><div data-coco-language-menu></div>
 <div id="coco-startup-status" role="status" aria-live="polite"><img src="./assets/brand/coco-premium-v160127/icon-192.png" width="96" height="96" alt=""><p>Preparando Coco…</p></div>
 <script>window.COCO_VERSION="2026-08-20-v155.0-identidad-unificada";window.COCO_GENERAL_RANKING_IDS_V153=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol","conecta","ajedrez"]);var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://www.cocoenforma.com/icon-512.png',correo:'info@cocoenforma.com',privacidad:'https://www.cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',eternaEndpoint:'https://coco-eterna-v159.chatinmobiliario.workers.dev'};</script>
 <script id="coco-scoring-v160110" src="./coco-scoring-v160110.js?v=16010048"></script>
@@ -3780,6 +3780,12 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
 #cocoApp .cocoMedNuevo{display:inline-block;margin-left:7px;padding:2px 7px;border-radius:999px;background:#EF6C05;color:#fff!important;font-size:10px;font-weight:900;vertical-align:2px}
 #cocoApp .cocoMedOverlay{position:fixed;inset:0;z-index:100100;background:rgba(5,20,32,.84);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:none;padding:14px;overflow:auto}
 #cocoApp .cocoMedOverlay.abierto{display:block}
+html[lang="es"] .cocoMedOriginal{display:none}
+.cocoMedOriginal{margin-top:1rem;padding:.65rem .85rem;font-size:.9rem}
+.cocoMedOriginal summary{cursor:pointer}
+.cocoMedOriginal ol{list-style:upper-alpha;padding-inline-start:2rem}
+.cocoMedTopAcciones select[data-med-locale]{max-width:9rem;background:#fff;color:#173e52;border:1px solid #bad2db;border-radius:.65rem;padding:.45rem;min-height:2.5rem}
+.cocoMedOverlay[dir="rtl"] :is(.cocoMedOpcion,.cocoMedMateria,.cocoMedEtapa,.cocoMedPregunta){text-align:start}
 #cocoApp .cocoMedApp{width:min(1020px,100%);margin:0 auto;background:#F6FBFE;border-radius:30px;border:3px solid #D6EAF4;box-shadow:0 28px 80px rgba(0,0,0,.35);overflow:hidden;min-height:calc(100vh - 28px)}
 #cocoApp .cocoMedTop{background:linear-gradient(135deg,#0D2B46,#17678E);padding:21px;color:#fff;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:5}
 #cocoApp .cocoMedTop h2{margin:0!important;color:#fff!important;font-size:31px!important}
@@ -4145,6 +4151,12 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
        '</div>'+
      '</div>';
 
+   if(window.CocoLocale){
+     var picker=document.createElement('select');picker.dataset.medLocale='';picker.setAttribute('aria-label','Idioma');
+     Object.entries(window.CocoLocale.languages).forEach(function(pair){var opt=new Option(pair[1],pair[0]);opt.lang=pair[0];picker.add(opt)});
+     picker.value=window.CocoLocale.tag;picker.onchange=async function(){picker.disabled=true;try{await window.CocoLocale.setLanguage(picker.value)}finally{picker.value=window.CocoLocale.tag;picker.disabled=false}};
+     o.querySelector('.cocoMedTopAcciones').prepend(picker);
+   }
    app.appendChild(o);
 
    var cerrarBtn=o.querySelector(".cocoMedCerrar");
@@ -4173,7 +4185,11 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
    var c=document.getElementById("cocoMedContenido");
    c.innerHTML='<div class="coco-cargando">Conectando tu perfil de Coco con la Liga Médica…</div>';
    try{
-     var results=await Promise.all([cargarCuentaMed(),cargarBancoMed()]);
+     var results=await Promise.all([cargarCuentaMed(),cargarBancoMed(),(async function(){
+       await window.CocoLocale?.ready;
+       await window.CocoMedLanguage?.load(window.CocoLocale?.tag||'es');
+       window.CocoLocale?.refresh(overlay);
+     })()]);
      var ok=results[0];
      if(!overlay.classList.contains("abierto"))return;
      if(ok){
@@ -4221,7 +4237,7 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
        var yo=uid&&x.user_id===uid;
        return '<div class="cocoMedRankingFila'+(yo?' yo':'')+'" data-user="'+x.user_id+'">'+
          '<div class="cocoMedPuesto">'+Number(x.rank_position||0)+'</div>'+
-         '<div class="cocoMedRankingNombre"><b>'+escapeMed(x.username||"Jugador Coco")+(yo?' · Tú':'')+'</b><small>'+escapeMed(x.rank_name||"Estudiante de Medicina")+'</small>'+
+         '<div class="cocoMedRankingNombre"><b><span data-coco-verbatim>'+escapeMed(x.username||"Jugador Coco")+'</span>'+(yo?' · <span>Tú</span>':'')+'</b><small>'+escapeMed(x.rank_name||"Estudiante de Medicina")+'</small>'+
          '<div class="cocoMedRankingStats"><span>Exámenes: '+Number(x.exams_completed||0)+'</span><span>Precisión: '+Number(x.accuracy||0)+'%</span><span>Racha: '+Number(x.current_streak||0)+'</span></div></div>'+
          '<div class="cocoMedRankingPuntos"><b>'+Number(x.med_points||0)+' pts</b><small>Última actividad: '+escapeMed(x.last_activity_label||"—")+'</small></div>'+
        '</div>';
@@ -4340,12 +4356,16 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
    return req.join(" · ");
  }
 
+ function bancoPorIdiomaMed(){
+   if(!window.CocoLocale || window.CocoLocale.tag==='es')return banco;
+   return banco.filter(function(q){return window.CocoMedLanguage.hasQuestion(q.id)});
+ }
  function etapasOrdenadasMed(){
    var preferidas=[
      "Preuniversitario","1.º año","2.º año","3.º año","4.º año",
      "5.º año","6.º año","Internado","Residencias"
    ];
-   var existentes=Array.from(new Set(banco.map(function(q){return q.stage})));
+   var existentes=Array.from(new Set(bancoPorIdiomaMed().map(function(q){return q.stage})));
    return preferidas.filter(function(e){return existentes.indexOf(e)>=0})
      .concat(existentes.filter(function(e){return preferidas.indexOf(e)<0}));
  }
@@ -4362,7 +4382,7 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
    var pct=met.cobertura;
    c.innerHTML=
    '<div class="cocoMedContextBar">'+
-     '<div class="cocoMedIdentidad"><div class="cocoMedIdentidadMini">'+(cocoMedUsuarioActual().charAt(0).toUpperCase())+'</div><div><span class="cocoMedSubmarca">TU CUENTA · LIGA MÉDICA</span><b>'+cocoMedUsuarioActual()+'</b></div></div>'+
+     '<div class="cocoMedIdentidad"><div class="cocoMedIdentidadMini">'+(cocoMedUsuarioActual().charAt(0).toUpperCase())+'</div><div><span class="cocoMedSubmarca">TU CUENTA · LIGA MÉDICA</span><b data-coco-verbatim>'+escapeMed(cocoMedUsuarioActual())+'</b></div></div>'+
      '<div class="cocoMedLigaCompacta"><span aria-hidden="true">★</span><p><b>Puntuación propia:</b> Coco Med usa tu cuenta de Coco en Forma, pero compite en una liga independiente.</p></div>'+
    '</div>'+
    '<div class="cocoMedCabeceraInicio">'+
@@ -4386,10 +4406,16 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
      ["Básica","🌱","Básico"],["Media","⚡","Intermedio"],["Avanzada","🏆","Avanzado"]
    ].map(function(x){return '<button type="button" class="'+(estado.nivel===x[0]?'active':'')+'" data-med-difficulty="'+x[0]+'" aria-pressed="'+(estado.nivel===x[0]?'true':'false')+'"><span>'+x[1]+'</span>'+x[2]+'</button>'}).join('')+'</div></section>'+ 
    '<h3 style="font-size:24px">Elige tu etapa</h3><p class="apagado">Cada día recibes hasta 20 preguntas rotadas del nivel elegido, con materias y respuestas equilibradas. El programa recorre Preuniversitario, 1.º a 6.º año, Internado y Residencias.</p>'+ 
-   '<div class="cocoMedGrid">'+etapasOrdenadasMed().map(function(e,i){var cantidad=banco.filter(function(q){return q.stage===e}).length;return '<button type="button" class="cocoMedEtapa" data-etapa-index="'+i+'"><b>'+e+'</b><span>'+textoCantidadMed(e,cantidad)+'</span></button>'}).join('')+'</div>'+ 
+   '<div class="cocoMedGrid">'+etapasOrdenadasMed().map(function(e,i){var cantidad=bancoPorIdiomaMed().filter(function(q){return q.stage===e}).length;return '<button type="button" class="cocoMedEtapa" data-etapa-index="'+i+'"><b>'+e+'</b><span>'+textoCantidadMed(e,cantidad)+'</span></button>'}).join('')+'</div>'+
    '<h3 style="font-size:23px;margin-top:24px">Tu carrera en Coco Med</h3><div class="cocoMedTarjetas">'+catalogoRangosMed().map(function(x){var actual=x.name===(n&&n.name),cumplido=x.cumple(met),cls=actual?' actual':(cumplido?'':' bloqueada');return '<div class="cocoMedTarjeta'+cls+'"><h4 class="cocoMedRangoTitulo"><span class="cocoMedTarjetaIcono">'+escapeMed(x.icon||"🩺")+'</span><span>'+escapeMed(x.name||"Nivel médico")+'</span></h4><p>'+escapeMed(x.desc||"")+'</p><small>'+(actual?'Rango actual':cumplido?'Conseguido':escapeMed(requisitosNivelMed(x,met)))+'</small></div>'}).join('')+'</div>';
    cargarPosicionMed().then(function(p){if(!p)return;var a=document.getElementById("medPosicionActual"),t=document.getElementById("medTotalJugadores");if(a)a.textContent=p.rank_position||"—";if(t)t.textContent=p.total_players||"—"});
    c.querySelectorAll("[data-med-difficulty]").forEach(function(btn){btn.addEventListener("click",function(){estado.nivel=this.dataset.medDifficulty||"Media";inicio()})});
+   if(window.CocoLocale && window.CocoLocale.tag!=='es'){
+     var grid=c.querySelector('.cocoMedGrid'),info=grid.previousElementSibling;
+     info.textContent='Hay 24 preguntas en este idioma. El banco completo de 4.704 preguntas está disponible en español.';
+     var full=document.createElement('button');full.type='button';full.className='cocoMedBtn sec';full.id='medBancoCompleto';full.textContent='Abrir el banco completo en español';
+     full.onclick=function(){window.CocoLocale.setLanguage('es')};grid.before(full);
+   }
    var etapasDisponibles=etapasOrdenadasMed();
    c.querySelectorAll("[data-etapa-index]").forEach(function(b){
      b.addEventListener("click",function(e){
@@ -4403,7 +4429,7 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
    cancelarTutorMed();estado.avanzando=false;
    configurarVolverSuperiorMed(inicio,true);
    var c=document.getElementById("cocoMedContenido");
-   var listaEtapa=banco.filter(function(q){return q.stage===estado.etapa});
+   var listaEtapa=bancoPorIdiomaMed().filter(function(q){return q.stage===estado.etapa});
    var materiasLista=Array.from(new Set(listaEtapa.map(function(q){return q.subject})));
    c.innerHTML='<button type="button" class="cocoMedBtn sec" id="medInicio">← Inicio</button>'+
      '<h3 style="font-size:26px;margin-top:14px">'+escapeMed(estado.etapa||"Etapa")+'</h3>'+
@@ -4484,7 +4510,20 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
    configurarVolverSuperiorMed(materias,true);
    var c=document.getElementById("cocoMedContenido");if(estado.indice>=estado.preguntas.length)return resultado();
    var q=estado.preguntas[estado.indice],p=Math.round(100*estado.indice/estado.preguntas.length);
-   c.innerHTML='<button class="cocoMedBtn sec" id="medSalir">← Materias</button><div class="cocoMedHud"><span>'+estado.etapa+' · '+estado.materia+'</span><span>Pregunta '+(estado.indice+1)+' de '+estado.preguntas.length+' · Aciertos '+estado.aciertos+'</span></div><div class="cocoMedProgreso"><span style="width:'+p+'%"></span></div><div class="cocoMedQuiz"><div class="cocoMedMeta"><span class="cocoMedTag">'+q.subject+'</span><span class="cocoMedTag">'+q.difficulty+'</span></div><h3 class="cocoMedPregunta">'+q.stem+'</h3><div class="cocoMedOpciones">'+q.options.map(function(o,i){return '<button type="button" class="cocoMedOpcion" data-op="'+i+'">'+String.fromCharCode(65+i)+'. '+o+'</button>'}).join('')+'</div><div id="medFeedback" class="cocoMedFeedback"></div></div>';
+   c.innerHTML='<button class="cocoMedBtn sec" id="medSalir">← Materias</button><div class="cocoMedHud"><span>'+estado.etapa+' · '+estado.materia+'</span><span>Pregunta '+(estado.indice+1)+' de '+estado.preguntas.length+' · Aciertos '+estado.aciertos+'</span></div><div class="cocoMedProgreso"><span style="width:'+p+'%"></span></div><div class="cocoMedQuiz"><div class="cocoMedMeta"><span class="cocoMedTag">'+q.subject+'</span><span class="cocoMedTag">'+q.difficulty+'</span></div><h3 class="cocoMedPregunta">'+escapeMed(q.stem)+'</h3><div class="cocoMedOpciones">'+q.options.map(function(o,i){return '<button type="button" class="cocoMedOpcion" data-op="'+i+'">'+String.fromCharCode(65+i)+'. <span>'+escapeMed(o)+'</span></button>'}).join('')+'</div><div id="medFeedback" class="cocoMedFeedback"></div></div>';
+   // A player can change language inside a Spanish exam. Preserve any unreviewed
+   // source question and its answers without altering the running exam or its score.
+   if(!window.CocoMedLanguage?.hasQuestion(q.id)){
+     c.querySelectorAll('.cocoMedPregunta,[data-op] span').forEach(function(el){el.setAttribute('data-coco-verbatim','');el.lang='es';el.dir='ltr'});
+   }
+   var original=document.createElement('details');
+   original.className='cocoMedOriginal';
+   var summary=document.createElement('summary');summary.textContent='Ver original en español';original.appendChild(summary);
+   var quoted=document.createElement('div');quoted.lang='es';quoted.dir='ltr';quoted.setAttribute('data-coco-verbatim','');
+   var stem=document.createElement('p');stem.textContent=q.stem;quoted.appendChild(stem);
+   var answers=document.createElement('ol');answers.type='A';
+   q.options.forEach(function(option){var item=document.createElement('li');item.textContent=option;answers.appendChild(item)});
+   quoted.appendChild(answers);original.appendChild(quoted);c.querySelector('.cocoMedQuiz').appendChild(original);
    document.getElementById("medSalir").addEventListener("click",materias);
    c.querySelectorAll("[data-op]").forEach(function(btn){
      btn.addEventListener("click",function(e){
@@ -4581,9 +4620,42 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
    }
  }
 
+ window.addEventListener('coco:language',function(event){
+   var overlay=document.getElementById('cocoMedOverlay');
+   if(!overlay?.classList.contains('abierto'))return;
+   var content=document.getElementById('cocoMedContenido');
+   if(content?.querySelector('.cocoMedGrid')){inicio();return}
+   if(content?.querySelector('#medGeneral')){
+     if(etapasOrdenadasMed().includes(estado.etapa))materias();else inicio();
+     return;
+   }
+   if(event.detail?.locale==='es')return;
+   var panel=document.getElementById('medTutorPanel'),q=estado.preguntas[estado.indice];
+   if(panel&&q&&estado.respondida&&panel.childElementCount){
+     cancelarTutorMed();ampliarDesdeBancoMed(panel,q);var btn=document.getElementById('medExplicarMejor');
+     if(btn){btn.disabled=false;btn.textContent='Ampliar respuesta'}
+   }
+ });
+ function medTextoTutor(value){return window.CocoMedLanguage?.text(value,window.CocoLocale?.tag)||value}
+ function ampliarDesdeBancoMed(panel,q){
+   var base=q.id.replace(/(?:-v\d+|-extra\d+)$/,'').slice(0,-1);
+   var related=[q.explanation];if(window.CocoLocale?.tag==='es')['a','c'].forEach(function(suffix){
+     var item=banco.find(function(entry){return entry.id===base+suffix});
+     if(item&&item.explanation&&!related.includes(item.explanation))related.push(item.explanation);
+   });
+   panel.replaceChildren();
+   var header=document.createElement('b');header.textContent='Explicación ampliada';panel.appendChild(header);
+   related.forEach(function(source){var line=document.createElement('p');line.textContent=source;panel.appendChild(line)});
+   if(q.reference){var cite=document.createElement('cite');cite.setAttribute('data-coco-verbatim','');cite.textContent=q.reference;panel.appendChild(cite)}
+   window.CocoLocale?.refresh(panel);
+ }
  async function explicarMejorMed(q,respuestaElegida,acerto){
    var panel=document.getElementById("medTutorPanel");if(!panel)return;
    cancelarTutorMed();
+   if(window.CocoLocale?.tag && window.CocoLocale.tag!=='es'){
+     ampliarDesdeBancoMed(panel,q);
+     return;
+   }
    var tutorToken=Number(estado.tutorToken||0)+1;estado.tutorToken=tutorToken;
    var boton=document.getElementById("medExplicarMejor");
    if(boton){boton.disabled=true;boton.textContent="Preparando…"}
@@ -4595,14 +4667,15 @@ body.cocoInstallLocked{overflow:hidden!important;touch-action:none}
      var sesion=await obtenerSesionTutorMed(false);
      var endpoint=(window.COCO_CONFIG&&window.COCO_CONFIG.tutorEndpoint)||"https://coco-med-tutor.chatinmobiliario.workers.dev/";
      var cuerpo=JSON.stringify({
-       pregunta:q.stem,
-       opciones:q.options,
-       respuesta_correcta:q.options[q.answer],
-       explicacion:q.explanation,
+       idioma:window.CocoLocale?.tag||'es',
+       pregunta:medTextoTutor(q.stem),
+       opciones:q.options.map(medTextoTutor),
+       respuesta_correcta:medTextoTutor(q.options[q.answer]),
+       explicacion:medTextoTutor(q.explanation),
        referencia:q.reference,
-       etapa:q.stage,
-       materia:q.subject,
-       respuesta_usuario:respuestaElegida,
+       etapa:medTextoTutor(q.stage),
+       materia:medTextoTutor(q.subject),
+       respuesta_usuario:medTextoTutor(respuestaElegida),
        acerto:Boolean(acerto)
      });
      var r=await pedirExplicacionTutorMed(endpoint,cuerpo,sesion,controlador?controlador.signal:null);
@@ -4689,7 +4762,7 @@ function mostrarLogroMed(racha,continuar){
     }else{
       estado.racha=0;vibrarMed("mal");
     }
-    window.CocoResponseV135&&window.CocoResponseV135.show(ok?"correct":"incorrect",ok?{}:{answer:respuestaCorrecta});
+    window.CocoResponseV135&&window.CocoResponseV135.show(ok?"correct":"incorrect",ok?{}:{answer:window.CocoMedLanguage?.text(respuestaCorrecta,window.CocoLocale?.tag)||respuestaCorrecta});
     var f=document.getElementById("medFeedback");
     f.className="cocoMedFeedback visible "+(ok?"bien":"mal");
     f.innerHTML=
@@ -4704,6 +4777,12 @@ function mostrarLogroMed(racha,continuar){
       '<p>'+escapeMed(q.explanation||"")+'</p>'+
       '<div class="cocoMedFuente"><b>Referencia:</b> '+escapeMed(q.reference||"Referencia no disponible")+'</div>'+
       '<div id="medTutorPanel" class="cocoMedTutorPanel" aria-live="polite"></div>';
+    if(!window.CocoMedLanguage?.hasQuestion(q.id)){
+      var copy=document.querySelectorAll('#medFeedback > p');
+      copy.forEach(function(el){el.setAttribute('data-coco-verbatim','');el.lang='es';el.dir='ltr'});
+    }
+    var quoted=document.querySelector('.cocoMedOriginal [data-coco-verbatim]');
+    if(quoted && q.explanation){var explanation=document.createElement('p');explanation.textContent=q.explanation;quoted.appendChild(explanation)}
     document.getElementById("medExplicarMejor").addEventListener("click",function(event){event.preventDefault();if(!estado.avanzando)explicarMejorMed(q,q.options[i],ok)});
     document.getElementById("medSiguiente").addEventListener("click",function(event){event.preventDefault();avanzarPreguntaMed(ok)});
  }

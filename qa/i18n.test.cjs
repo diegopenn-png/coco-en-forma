@@ -58,7 +58,7 @@ test('all QH locales keep the original account fields, scores and PWA identity',
       assert.deepEqual([...doc.querySelectorAll('td')].map(td=>td.textContent),['Memoria','23']);
       assert.equal(w.localStorage.getItem('coco.language.v1'),locale);
       const badge=doc.querySelector('[data-game-language]');
-      assert.equal(badge?.textContent,locale==='es'?undefined:readPack(locale).strings['Juego en español']);
+      assert.equal(badge,null);
       const manifestPath=new URL(doc.querySelector('link').href).pathname;
       const manifest=JSON.parse(fs.readFileSync(path.join(root,manifestPath),'utf8'));
       assert.equal(new URL(manifest.id,'https://coco.test'+manifestPath).pathname,'/');

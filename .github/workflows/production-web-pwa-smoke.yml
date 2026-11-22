@@ -13,6 +13,7 @@ on:
       - "qa/account-language-browser.cjs"
       - "qa/study-language-browser.cjs"
       - "i18n/assessment/**"
+      - "i18n/med/**"
   push:
     branches:
       - main
@@ -24,6 +25,7 @@ on:
       - "qa/account-language-browser.cjs"
       - "qa/study-language-browser.cjs"
       - "i18n/assessment/**"
+      - "i18n/med/**"
       - "index.html"
       - "sw.js"
       - "coco-scoring-v160110.js"
@@ -45,7 +47,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: production-web-pwa-smoke
+  group: production-web-pwa-smoke-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -79,7 +81,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.2-eneagrama-analysis
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.96-enneagram-languages
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.97-med-languages
       EXPECTED_ENEAGRAMA_REPORT_VERSION: 2026-11-22-coaching-4
     steps:
       - name: Fetch uncached production assets
