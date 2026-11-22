@@ -202,7 +202,7 @@
     return Array.from(node.childNodes).map(sourceText).join('');
   }
   const authored = '#rConsentText,#rConsentText a,.cocoLegalResumenRegistro,head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
-  const spanishGames = new Set(['cocomed','bank']);
+  const spanishGames = new Set(['cocomed']);
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
   // explicitly authored messages and control labels are eligible.

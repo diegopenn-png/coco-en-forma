@@ -46,11 +46,11 @@ export default {
   const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers});
   if(origin&&!ORIGINS.has(origin))return json({error:'Origen no permitido.'},403);
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers});
-  if(url.pathname==='/health'&&request.method==='GET')return json({ok:true,version:VERSION,private:false,requiresLogin:true});
+  if(url.pathname==='/health'&&request.method==='GET')return json({ok:true,version:VERSION,language_revision:'20261122',private:false,requiresLogin:true});
   try{
    const user=await authenticate(request,env);if(!user)return json({error:'Entra con tu cuenta de Coco para guardar tu partida.'},401);
    if(request.method==='GET'&&url.pathname==='/access')return json({allowed:true,version:VERSION});
-   if(request.method==='GET'&&url.pathname==='/bundle')return new Response(renderApp(),{headers:{...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors https://www.cocoenforma.com https://cocoenforma.com"}});
+   if(request.method==='GET'&&url.pathname==='/bundle')return new Response(renderApp(url.searchParams.get('lang')),{headers:{...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors https://www.cocoenforma.com https://cocoenforma.com"}});
    if(request.method==='GET'&&url.pathname==='/state')return json(await advance(env,user.id));
    if(request.method==='POST'&&url.pathname==='/action'){
     if(!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'Formato no admitido.'},415);
