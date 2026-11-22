@@ -1,6 +1,13 @@
 # Análisis y resultados · versión 2026-11-22-coaching-4
 
-Actualización editorial local del 22 de noviembre de 2026. La publicación de esta versión se verifica por separado; los registros históricos inferiores no acreditan este cambio.
+Actualización editorial publicada el 22 de noviembre de 2026 mediante la [PR 135](https://github.com/diegopenn-png/coco-en-forma/pull/135), fusión `90b7ce0c34978616bd3fb5f3d9291c9117d8ebb9`. Los registros históricos inferiores corresponden a versiones anteriores.
+
+## Publicación verificada
+
+- Worker activo 642: `4e854950-8a2a-4584-9ed1-cd1c553ddf27`, con el 100 % del tráfico; despliegue `78223b11-758a-45c7-96bd-3a4007c98d67`. Código idéntico a la vista previa `8916247e-9d30-4cec-9bf1-1b2ffa9223e0`, compilada desde `48010ae3a287f2098f7012870375a0fd26980ace`; 50 bindings, orígenes y configuración de producción conservados.
+- [CI del Worker](https://github.com/diegopenn-png/coco-en-forma/actions/runs/45026273507): 1.194/1.194 pruebas correctas. [Vista previa autenticada](https://github.com/diegopenn-png/coco-en-forma/actions/runs/45026273522), [regresión Eterna](https://github.com/diegopenn-png/coco-en-forma/actions/runs/45026273686) y [cuestionario/PDF](https://github.com/diegopenn-png/coco-en-forma/actions/runs/45026273491) correctos.
+- [Pages](https://github.com/diegopenn-png/coco-en-forma/actions/runs/45026878509) y [comprobación de producción](https://github.com/diegopenn-png/coco-en-forma/actions/runs/45026878968) correctos: Worker `160.100.2-eneagrama-analysis`, informe `2026-11-22-coaching-4` y caché PWA `coco-en-forma-v160.100.86-eneagrama-analysis`.
+- Navegador real: portada y entrada de Eneagrama disponibles, selector nativo y avisos de gratuidad visibles. La muestra pública conserva datos inventados y se regenera con este mismo modelo de informe. No se efectuó una compra ni un recorrido autenticado de producción con datos de una persona.
 
 ## Cambios comprobados
 
