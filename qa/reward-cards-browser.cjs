@@ -71,6 +71,37 @@ const {chromium} = require('playwright');
     assert.equal(await gallery.locator('b').textContent(),'Coco héroe');
     await page.goto(origin+'/tarjetas/ver/?id=coco-campeon&lang=ar');
     await page.locator('#save').waitFor(); assert.equal(await page.locator('html').getAttribute('dir'),'rtl');
+    await page.goto(origin+'/?lang=fi&verify='+Date.now(),{waitUntil:'domcontentloaded'});
+    const select = page.locator('.coco-language-bar select:visible').first();
+    await select.waitFor();
+    for (const tag of ['fi','nb','ar','zh-Hans','es']) {
+      await select.selectOption(tag);
+      await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
+      if (tag==='es') {
+        await page.waitForFunction(()=>!document.querySelector('.cocoLocalizedThumbnail,.cocoLocalizedHero'));
+        break;
+      }
+      await page.waitForFunction(tag=>{
+        const hero = [...document.querySelectorAll('.cocoLocalizedHero')].find(el=>el.offsetWidth);
+        const poster = [...document.querySelectorAll('.cocoLocalizedPoster')].find(el=>el.offsetWidth);
+        const memory = [...document.querySelectorAll('[data-coco-thumbnail="memoria"]')].find(el=>el.offsetWidth);
+        return hero?.querySelector('img')?.naturalWidth && poster?.querySelector('img')?.naturalWidth
+          && poster.querySelector('.cocoRewardHeader')?.textContent === CocoRewardCards.describe('coco',tag).header
+          && memory?.querySelector('strong')?.textContent === CocoLocale.t('Memoria');
+      },tag,{timeout:45000});
+      const fits = await page.evaluate(()=>{
+        const captions = [...document.querySelectorAll('.cocoLocalizedHero [data-coco-banner-caption],.cocoLocalizedPoster [data-coco-banner-caption]')].filter(el=>el.offsetWidth);
+        return captions.every(el=>{
+          const frame=el.parentElement.getBoundingClientRect();
+          return [...el.children].every(child=>{
+            const box=child.getBoundingClientRect();
+            return box.top>=frame.top-1 && box.bottom<=frame.bottom+1 && box.left>=frame.left-1 && box.right<=frame.right+1;
+          });
+        });
+      });
+      assert.equal(fits,true,'home banner overflow: '+tag);
+    }
+    console.log('Verified live home banner and game thumbnail language changes.');
     console.log('Verified 84 localized reward JPEGs, touch download, gallery language changes, locked state and Spanish restoration.');
   } finally { await browser.close(); }
 })().catch(error=>{console.error(error);process.exitCode=1;});

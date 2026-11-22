@@ -271,7 +271,7 @@
       if (!art) {
         art = document.createElement('div'); art.className = 'cocoLocalizedHero';
         const img = document.createElement('img'); img.className = 'cocoLocalizedHeroArt';
-        img.src = new URL('../share/premium-v160126/art/conecta.webp',base);
+        img.src = new URL('../share/premium-v160127/hero-explorer-clean.webp',base);
         img.width = 1200; img.height = 630; img.alt = ''; img.decoding = 'async';
         const caption = document.createElement('div'); caption.setAttribute('data-coco-banner-caption','eterna');
         caption.append(bannerText('b','Juegos para la mente y apoyo escolar'),bannerText('span','Con Coco y Eterna.'));
@@ -298,14 +298,18 @@
       if (!art) {
         art = document.createElement('div'); art.className = 'cocoLocalizedPoster';
         const img = document.createElement('img'); img.className = 'cocoLocalizedPosterArt';
-        img.src = new URL('../assets/brand/coco-premium-v160127/icon-512.png',base);
-        img.width = 512; img.height = 512; img.decoding = 'async';
+        img.src = new URL('../assets/tarjetas/premium-v160127/coco-clean.webp',base);
+        img.width = 456; img.height = 608; img.decoding = 'async';
         img.alt = 'Tarjeta Coco: Tu primer gran paso';
         img.setAttribute('data-coco-source-alt',img.alt);
         const caption = document.createElement('div'); caption.setAttribute('data-coco-banner-caption','coco');
         caption.append(bannerText('b','Coco'),bannerText('span','Tu primer gran paso'));
-        art.append(img,caption); stage.append(art);
+        const header = document.createElement('strong'); header.className = 'cocoRewardHeader';
+        art.append(img,header,caption); stage.append(art);
       }
+      const header = art.querySelector('.cocoRewardHeader');
+      const heading = window.CocoRewardCards?.describe('coco',current)?.header || 'Coco';
+      if (header.textContent !== heading) header.textContent = heading;
       // The Spanish image retains its src/srcset/error fallback while hidden;
       // an image error cannot bring its embedded Spanish text back into view.
       stage.setAttribute('data-coco-localized-banner','coco');
