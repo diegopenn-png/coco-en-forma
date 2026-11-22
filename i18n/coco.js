@@ -40,6 +40,24 @@
       : Object.hasOwn(activePack.strings,source) ? activePack.strings[source] : source;
     return args ? template.replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(args, key) ? String(args[key]) : match) : template;
   }
+  const playerTitles = {
+    es:['Mis retos','Mis tarjetas','Mi clasificación','Impresiones 3D'],
+    en:['My challenges','My cards','My ranking','3D prints'],
+    de:['Meine Herausforderungen','Meine Karten','Meine Platzierung','3D-Drucke'],
+    nl:['Mijn uitdagingen','Mijn kaarten','Mijn positie','3D-prints'],
+    fr:['Mes défis','Mes cartes','Mon classement','Impressions 3D'],
+    it:['Le mie sfide','Le mie carte','La mia classifica','Stampe 3D'],
+    pl:['Moje wyzwania','Moje karty','Moje miejsce w rankingu','Wydruki 3D'],
+    uk:['Мої виклики','Мої картки','Мій рейтинг','3D-друк'],
+    ru:['Мои испытания','Мои карточки','Мой рейтинг','3D-печать'],
+    'zh-Hans':['我的挑战','我的卡片','我的排名','3D 打印作品'],
+    ar:['تحدياتي','بطاقاتي','ترتيبي','مطبوعات ثلاثية الأبعاد'],
+    sv:['Mina utmaningar','Mina kort','Min placering','3D-utskrifter'],
+    fi:['Omat haasteet','Omat kortit','Oma sijoitus','3D-tulosteet'],
+    nb:['Mine utfordringer','Mine kort','Min plassering','3D-utskrifter'],
+    da:['Mine udfordringer','Mine kort','Min placering','3D-print']
+  };
+  const playerMenuOrder = ['challenges','cards','ranking','prints'];
   function schoolYear(value) {
     // Translate the configured Spanish stages, preserving custom school descriptions.
     const standard = /^(?:Infantil · (?:0–2|[345]) años|[1-6]º de Primaria|[1-4]º de ESO|[12]º de Bachillerato|Curso no indicado)$/u;
@@ -129,6 +147,8 @@
       const age = key.match(/^(\d+) años?$/u);
       if (age) return new Intl.NumberFormat(current,{style:'unit',unit:'year',unitDisplay:'long'}).format(Number(age[1]));
     }
+    const menu = element?.matches('b') && element.closest('[data-player-menu]');
+    if (menu) return playerTitles[current][playerMenuOrder.indexOf(menu.dataset.playerMenu)] || value;
     let translated = (report && reportStatistic(key)) || message(key);
     if (translated === key && key.startsWith('Tabla independiente dedicada exclusivamente a ') && key.endsWith('.')) {
       const gameName = key.slice('Tabla independiente dedicada exclusivamente a '.length,-1);
@@ -378,6 +398,12 @@
       }
       const attrs = el.tagName === 'META' ? ['content'] : ['placeholder','aria-label','alt','title'];
       for (const a of attrs) if (el.hasAttribute(a)) render(el,a,() => el.getAttribute(a),v => el.setAttribute(a,v));
+    });
+    each(root,'a[data-player-menu="prints"]',link => {
+      const url = new URL(link.href);
+      if (url.searchParams.get('lang') !== current) {
+        url.searchParams.set('lang',current);link.href=url.pathname+url.search+url.hash;
+      }
     });
     const pageLinks = document.querySelector('[data-coco-original-document]')
       ? 'nav a[href],main a[href]'
