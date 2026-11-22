@@ -22,6 +22,18 @@ La simplificación del selector se publicó con `coco-en-forma-v160.100.85-dropd
 
 ### Evidencia operativa · 22 de noviembre de 2026
 
+#### Corrección de la portada mezclada · 22 de noviembre de 2026
+
+La captura aportada por Diego mostró la interfaz china con los avisos de prueba y los banners todavía en español. La reproducción identificó dos causas: el normalizador de Eterna, cargado después de la portada, reescribía tres textos sin conservar su traducción; además, el botón de prueba buscaba «Crear cuenta» por su texto visible español y podía dejar de abrir el registro al cambiar el idioma.
+
+La corrección conserva la fuente de cada texto y aplica el idioma activo de forma síncrona. Tanto el acceso inicial como el módulo diferido encuentran el control de alta mediante su fuente original. Los 14 paquetes adicionales incluyen los avisos que faltaban. Se completan también las etiquetas visibles de la guía de juegos, las sugerencias y dos pistas de la portada, y se corrige el texto alternativo chino del póster.
+
+Los dos banners decorativos de portada usan ilustraciones existentes sin letras y rótulos HTML traducidos cuando el idioma no es español. Los originales se restauran al volver a español. La colección de tarjetas de logro y sus descargas conserva su contenido original; esta corrección no supone traducir esos archivos ni el contenido del tutor o del cuestionario de Eneagrama.
+
+Esta entrega prepara la caché `coco-en-forma-v160.100.87-complete-launcher-languages`, la revisión compartida `20261122-4` y la carga diferida de Eterna `160109`. El arte horizontal nuevo se incluye en el precaché. El Worker `160.100.2-eneagrama-analysis` y el informe `2026-11-22-coaching-4` no requieren otra publicación.
+
+Verificación local: las 27 pruebas de idiomas pasan, incluidas tres regresiones nuevas que recorren los 15 idiomas, el acceso al alta, las omisiones de portada y los banners clonados con retorno al español. Las 18 pruebas de actualización PWA y paridad de vista previa también pasan. Se añade al control existente de navegador una comprobación móvil en chino, árabe, alemán, inglés y español, con capturas y apertura del registro sin introducir ni enviar datos. El estado de ejecución de ese control y la evidencia de publicación se registran en la PR asociada a esta entrega; preparar el código no acredita por sí solo su publicación.
+
 En la propiedad de Search Console `https://cocoenforma.com/`, se reenvió `sitemap.xml` y el panel confirmó su lectura en esta fecha con estado **Correcto** y **52 URL descubiertas**, frente a las 38 anteriores. Este recuento acredita descubrimiento, no indexación.
 
 La inspección de `https://cocoenforma.com/en/free-brain-games/` confirmó que Google la había detectado mediante el sitemap y que todavía no estaba indexada. La solicitud manual de indexación fue aceptada y pasó a la cola prioritaria. La aceptación de la solicitud tampoco acredita que la página ya esté indexada ni garantiza una fecha.

@@ -288,7 +288,8 @@
     if(!root)return null;
     var nodes=root.querySelectorAll("button,a,[role='button']");
     for(var i=0;i<nodes.length;i++){
-      if(/^\s*crear\s+cuenta\s*$/i.test(String(nodes[i].textContent||"")))return nodes[i]
+      var source=window.CocoLocale?window.CocoLocale.sourceText(nodes[i]):nodes[i].textContent;
+      if(/^\s*crear\s+cuenta\s*$/i.test(String(source||"")))return nodes[i]
     }
     return null
   }
@@ -385,6 +386,7 @@
       launcherPills[2].textContent=loggedOut?"📚 Tareas":"🧠 Explicar";
       launcherPills[3].textContent=loggedOut?"✅ Revisión":"✅ Revisar";
     }
+    if(window.CocoLocale)window.CocoLocale.refresh(launcher);
     var left=loggedOut?login:(visible(carnet)?carnet:(login||carnet));
     var retos=root.querySelector("#retosCard,.retosCard");
 

@@ -51,11 +51,11 @@ function render(tag, copy) {
 <link rel="canonical" href="${url}">
 ${alternates}
 <link rel="alternate" hreflang="x-default" href="${origin}/juegos-gratis/">
-<link rel="icon" href="/assets/brand/coco-premium-v160127/favicon.png"><link rel="stylesheet" href="/seo/localized.css?v=20261122-3">
+<link rel="icon" href="/assets/brand/coco-premium-v160127/favicon.png"><link rel="stylesheet" href="/seo/localized.css?v=20261122-4">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Coco en Forma"><meta property="og:locale" content="${ogLocales[tag]}"><meta property="og:title" content="${esc(copy.title)}"><meta property="og:description" content="${esc(copy.description)}"><meta property="og:url" content="${url}">
 <meta property="og:image" content="${origin}/assets/brand/coco-premium-v160127/icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:image:alt" content="Coco en Forma">
 <meta name="twitter:card" content="summary"><meta name="twitter:title" content="${esc(copy.title)}"><meta name="twitter:description" content="${esc(copy.description)}"><meta name="twitter:image" content="${origin}/assets/brand/coco-premium-v160127/icon-512.png"><meta name="twitter:image:alt" content="Coco en Forma">
-<script type="application/ld+json">${json({'@context':'https://schema.org','@graph':graph})}</script><script defer src="/seo/localized.js?v=20261122-3"></script>
+<script type="application/ld+json">${json({'@context':'https://schema.org','@graph':graph})}</script><script defer src="/seo/localized.js?v=20261122-4"></script>
 </head><body data-coco-landing-locale="${tag}">
 <a class="skip" href="#contenido">${esc(labels.skip)}</a>
 <header class="site-header"><div class="wrap header-inner"><a class="brand" href="${esc(accountUrl)}"><img src="/assets/brand/coco-premium-v160127/icon-192.png" width="48" height="48" alt=""><span>Coco en Forma</span></a><div class="locale-switch"><label for="landing-language">${esc(labels.language)}</label><select id="landing-language" aria-label="${esc(labels.language)}">${tags.map(code => `<option value="${localizedLandingPath(code)}" lang="${code}"${code === tag ? ' selected' : ''}>${localeNames[code]}</option>`).join('')}</select></div></div></header>
