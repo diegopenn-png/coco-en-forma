@@ -14,23 +14,25 @@ export function makePDF(result,{alias='Mi exploración',age=result.age??18,date=
  const section=(p,title,text,y,size=10.5)=>{p.text(title,44,y,11,gold,true);return p.para(text,44,y+22,507,size)+15};
  let p=add(sample?'MUESTRA FICTICIA · NO ES TU RESULTADO':'TU CUADERNO PERSONAL','Comprenderte para elegir');
  const aliasEnd=p.para(String(alias).slice(0,40),44,158,507,17);
- p.text(`${date}  /  ${age} años  /  ${result.answered} de 54 respuestas`,44,Math.max(192,aliasEnd+8),10,muted);
+ p.text(`${date}  /  ${age} años  /  ${r.results.coverage.answered} de ${r.results.coverage.total} respuestas`,44,Math.max(192,aliasEnd+8),10,muted);
  const cx=177,cy=384,rad=108;
  const pts=TYPES.map(t=>{const a=(t.id*40-90)*Math.PI/180;return {x:cx+rad*Math.cos(a),y:cy+rad*Math.sin(a),a}}),point=n=>pts[n-1];
  for(const [a,b] of [[1,4],[4,2],[2,8],[8,5],[5,7],[7,1],[3,6],[6,9],[9,3]])p.line(point(a).x,point(a).y,point(b).x,point(b).y,'#d5dbd7');
- if(result.eligible)p.poly(result.rows.map((v,i)=>{const dist=14+(v.score-1)/4*82;return [cx+dist*Math.cos(pts[i].a),cy+dist*Math.sin(pts[i].a)]}),'#e5d7bc');
+ if(result.eligible)p.poly(r.results.rows.map((v,i)=>{const dist=14+(v.score-1)/4*82;return [cx+dist*Math.cos(pts[i].a),cy+dist*Math.sin(pts[i].a)]}),'#e5d7bc');
  TYPES.forEach((t,i)=>{p.circle(pts[i].x,pts[i].y,14,t.color);p.text(t.id,pts[i].x-3.5,pts[i].y-8,12,'#ffffff',true)});
  p.text('MEDIA / 5',466,244,9,muted,true);p.text('RESP.',526,246,7,muted);
- result.rows.forEach((v,i)=>{const y=269+i*29;p.text(`${v.id}  ${v.name}`,325,y,10,ink,true);p.text(v.score===null?'Sin dato':v.score.toFixed(2).replace('.',','),495,y,10);p.text(`${v.answered}/6`,526,y+3,7,muted);p.line(325,y+20,551,y+20,'#e2e5de')});
- p.para('Nueve medias de respuestas, en escala 1-5. No son porcentajes, probabilidades ni medidas de capacidad.',44,549,507,10,muted);
- p.rect(44,603,507,112,'#eaf0ec');p.text(r.title,60,617,15,ink,true);p.para(r.evidence,60,645,475,10.5);
- p.para('Lee una hipótesis, contrástala con tu experiencia y elige una práctica. Autoconocimiento: no es un diagnóstico ni una definición de quién eres.',44,736,507,10);
+ r.results.rows.forEach((v,i)=>{const y=269+i*29;p.text(`${v.id}  ${v.name}`,325,y,10,ink,true);p.text(v.mean,v.score===null?474:495,y,v.score===null?9.5:10);p.text(v.coverage,526,y+1,9,muted);p.line(325,y+20,551,y+20,'#e2e5de')});
+ p.para(r.results.coverage.label,44,545,507,10,ink);
+ p.para(r.results.coverage.note,44,566,507,9.5,muted);
+ p.para(r.results.comparison.caption,44,597,507,9.5,muted);
+ p.rect(44,632,507,100,'#eaf0ec');p.text(r.title,60,642,14,ink,true);const evidenceEnd=p.para(r.evidence,60,669,475,10);if(evidenceEnd>733)throw Error('Report overflow: cover evidence');
+ p.para(r.results.scale+' Lee una hipótesis, contrástala y elige una práctica. Autoconocimiento, sin diagnóstico.',44,752,507,9.5);
  p=add('01 / LECTURA PERSONAL',r.minor?'Una conversación abierta':'Lo que merece tu atención');
  let y=p.para(r.intro,44,153,507,11)+18;
- for(const v of r.readings){p.text(`${v.id} / ${v.name}`,44,y,12,v.color,true);y=p.para(v.pattern,44,y+24,507,10.5)+7;y=p.para(v.question,44,y,507,10.5,gold)+19}
+ for(const v of r.readings){p.text(`${v.id} / ${v.name}`,44,y,12,v.color,true);y=p.para(v.observed,44,y+22,507,9.5,muted)+5;y=p.para(v.pattern,44,y,507,10)+5;y=p.para('Recurso posible: '+v.resource,44,y,507,10)+5;y=p.para('Para contrastarlo: '+v.contrast,44,y,507,10,gold)+16}
  if(!r.readings.length)y=section(p,r.minor?'Tu experiencia lleva la voz':'Empezar por los hechos',r.minor?'Elige algo de casa, del colegio o de tus amistades que quieras comprender. No tienes que responder todo ni contar cosas privadas. Una persona adulta puede ayudarte a poner palabras sin decidir qué sientes.':'Antes de buscar una explicación, anota qué ocurrió, qué hiciste y qué efecto tuvo. Evita convertir un único episodio en una afirmación sobre toda tu vida.',y);
  y=section(p,r.minor?'Para quien acompaña':r.readings.length>1?'Cómo pueden convivir estas miradas':'Tu margen para elegir',r.synthesis,y);
- y=section(p,'Una comprobación importante',r.minor?'Busca también un día en que actuaste de otra manera. Las personas aprendemos y cambiamos según lo que vivimos.':'Elige qué parte te resulta útil y cuál no reconoces. Una carga real o un reparto desigual también pueden explicar el malestar, sin atribuirlo todo a tu forma de ser. Una media menor no significa que te falte ese recurso.',y);check(y,'reading');
+ if(!r.readings.length)y=section(p,'Una comprobación importante',r.minor?'Busca también un día en que actuaste de otra manera. Las personas aprendemos y cambiamos según lo que vivimos.':'Elige qué parte te resulta útil y cuál no reconoces. Una carga real o un reparto desigual también pueden explicar el malestar, sin atribuirlo todo a tu forma de ser. Una media menor no significa que te falte ese recurso.',y);check(y,'reading');
  p=add('02 / CONCIENCIA Y ACCIÓN','De la reacción a la elección');y=153;
  y=p.para('Ejemplo ilustrativo, no un episodio declarado por ti. Utilízalo solo si te ayuda a reconocer una situación propia.',44,y,507,10,muted)+15;
  y=section(p,'La situación',r.episode.scene,y);
@@ -39,7 +41,7 @@ export function makePDF(result,{alias='Mi exploración',age=result.age??18,date=
  y=section(p,'La alternativa que puedes elegir',r.episode.choice,y);
  y=section(p,'Una frase para ensayar','«'+r.episode.phrase+'»',y);
  y=p.para(r.episode.question,44,y,507,10.5,gold)+13;
- p.text('PRÁCTICA BREVE',44,y,10,gold,true);y+=22;
+ p.text(r.episode.practiceTitle,44,y,11,gold,true);y+=22;
  r.episode.practice.forEach((t,i)=>{y=p.para(`${i+1}. ${t}`,44,y,507,10)+6});check(y,'episode');
  for(let half=0;half<2;half++){
   p=add(`${half+3<10?'0':''}${half+3} / TU VIDA COTIDIANA`,half?'Espacio para tu propia vida':'Vínculos y responsabilidades');y=153;
