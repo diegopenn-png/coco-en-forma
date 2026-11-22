@@ -38,7 +38,15 @@ En la propiedad de Search Console `https://cocoenforma.com/`, se reenvió `sitem
 
 La inspección de `https://cocoenforma.com/en/free-brain-games/` confirmó que Google la había detectado mediante el sitemap y que todavía no estaba indexada. La solicitud manual de indexación fue aceptada y pasó a la cola prioritaria. La aceptación de la solicitud tampoco acredita que la página ya esté indexada ni garantiza una fecha.
 
-La comprobación de SMTP/Auth sigue pendiente de una sesión disponible del dashboard. No se ha verificado la recepción real de los correos de alta o recuperación. Tampoco se dispone de un iPhone físico para validar la PWA instalada. Estos controles permanecen abiertos.
+#### Correos de acceso activados en Coco V2 · 22 de noviembre de 2026
+
+Se guardaron en producción las plantillas `supabase/templates/confirmation.html` y `supabase/templates/recovery.html`. Tras recargar cada página del panel, el contenido recuperado del editor coincidió exactamente con el archivo correspondiente. Los cuerpos incluyen los 15 idiomas y dirección de lectura RTL para árabe; conservan `.ConfirmationURL` y priorizan el idioma del enlace solicitado sobre el idioma anterior del perfil.
+
+El asunto de ambos correos queda como **Coco en Forma**, nombre de marca común a todos los idiomas. El panel rechazó el asunto condicional largo por su máximo de 255 caracteres; esa propuesta no se guardó. El título, las instrucciones, el botón y el aviso del cuerpo sí cambian por idioma.
+
+Se comprobó que SMTP personalizado está activo, con nombre de remitente **Coco en Forma**, servidor `smtp.servidor-correo.net` y puerto 587. No se modificaron sus credenciales. El Site URL es `https://cocoenforma.com`; la lista de redirecciones ya incluye `https://cocoenforma.com/**` y `https://www.cocoenforma.com/**`, que cubren las rutas usadas por alta y recuperación. No se amplió la lista.
+
+La activación de las plantillas y la lectura de la configuración quedan completadas. No se envió un correo real en esta comprobación: la recepción en un buzón y el recorrido desde ese mensaje siguen pendientes. Tampoco se dispone de un iPhone físico para validar la PWA instalada. Las referencias a configuración pendiente dentro del historial inferior describen el estado previo a esta activación.
 
 Los juegos marcados en español, las sesiones del tutor y el cuestionario/PDF original de Eneagrama mantienen el alcance lingüístico indicado. La revisión editorial completa de los paquetes anteriores sigue siendo distinta de la redacción nueva de estas landings.
 
