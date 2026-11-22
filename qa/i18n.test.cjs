@@ -273,17 +273,35 @@ for(const standalone of [false,true])test('the '+(standalone?'PWA':'web')+' acco
   } finally {dom.window.close();}
 });
 
-test('all catalogue descriptions, guides and standalone game menu text have entries in each language',()=>{
+test('all catalogue pages provide translated menu text or complete static language navigation',()=>{
   const guides=fs.readdirSync(root,{withFileTypes:true})
     .filter(f=>f.isDirectory() && /^(?:apoyo|aprender|ayuda|preparar|juegos-)/.test(f.name))
     .map(f=>f.name+'/index.html');
   const directories=folder=>fs.readdirSync(path.join(root,folder)).map(id=>folder+'/'+id+'/index.html');
-  const paths=['juegos/index.html','explora/index.html',...directories('juego'),...directories('games'),...guides];
+  const landingCopy=JSON.parse(fs.readFileSync(path.join(root,'seo/locales/free-games.json'),'utf8'));
+  const landingRoutes=locales.map(tag=>[tag,tag==='es'?'/juegos-gratis/':`/${tag.toLowerCase()}/${landingCopy[tag].slug}/`]);
+  const staticPages=new Map(landingRoutes.map(([tag,route])=>[route.slice(1)+'index.html',tag]));
+  const paths=new Set(['juegos/index.html','explora/index.html',...directories('juego'),...directories('games'),...guides,...staticPages.keys()]);
   const strings=new Set();
   for(const file of paths){
     const dom=new JSDOM(fs.readFileSync(path.join(root,file),'utf8'));
     try {
       const doc=dom.window.document;
+      const staticTag=staticPages.get(file);
+      if(staticTag){
+        // These guides ship their own translated HTML and navigate between real language URLs.
+        assert.equal(doc.body.dataset.cocoLandingLocale,staticTag,file);
+        assert.equal(doc.documentElement.lang,staticTag,file);
+        assert.equal(doc.querySelector('h1')?.textContent,landingCopy[staticTag].heading,file);
+        assert.equal(doc.querySelector('.lead')?.textContent,landingCopy[staticTag].intro,file);
+        const menu=doc.querySelector('#landing-language');
+        assert.ok(menu,file+' needs its static language selector');
+        assert.equal(menu.value,'/'+file.replace(/index\.html$/,''),file);
+        assert.deepEqual([...menu.options].map(option=>[option.lang,option.value]),landingRoutes,file);
+        assert.deepEqual([...doc.querySelectorAll('.all-languages a[hreflang]')].map(link=>[link.hreflang,link.getAttribute('href')]),landingRoutes,file);
+        assert.deepEqual([...doc.querySelectorAll('script[src]')].map(script=>new URL(script.getAttribute('src'),'https://coco.test').pathname),['/seo/localized.js'],file);
+        continue;
+      }
       assert.ok(doc.querySelector('[data-coco-language-menu]'),file);
       for(const el of doc.body.querySelectorAll('p,button,a,label,h1,h2,h3,h4,li,span,b,strong,small,summary,figcaption')){
         if(el.closest('[data-coco-verbatim],code'))continue;
