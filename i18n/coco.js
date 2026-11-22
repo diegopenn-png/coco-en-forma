@@ -145,7 +145,7 @@
       }
     }
     if (translated === key) {
-      const decoration = key.match(/^(\p{Extended_Pictographic}\uFE0F?\s+)(.+)$/u);
+      const decoration = key.match(/^((?:\p{Extended_Pictographic}|✦)\uFE0F?\s+)(.+)$/u);
       if (decoration) translated = decoration[1]+message(decoration[2]);
     }
     if (translated === key) return value;
@@ -157,9 +157,11 @@
     let bindings = sources.get(node);
     if (!bindings) { bindings = new Map(); sources.set(node, bindings); }
     const previous = bindings.get(slot);
-    const canonical = slot !== 'text' && node.getAttribute('data-coco-source-'+slot);
-    const source = canonical || (previous && previous.output === value ? previous.source : value);
     const owner = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+    const canonical = slot === 'text'
+      ? owner?.childNodes.length === 1 && owner.getAttribute('data-coco-source-text')
+      : node.getAttribute('data-coco-source-'+slot);
+    const source = canonical || (previous && previous.output === value ? previous.source : value);
     const output = current === 'es' ? source : localize(source,Boolean(owner.closest(reportScope)),document.body.dataset.cocoLanguagePage === 'game',owner);
     if (value !== output) write(output);
     bindings.set(slot,{source,output});
@@ -173,7 +175,7 @@
     }
     return Array.from(node.childNodes).map(sourceText).join('');
   }
-  const authored = 'head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
+  const authored = '#rConsentText,#rConsentText a,.cocoLegalResumenRegistro,head title,.cocoFamilyError,[data-family-recover-msg],[data-coco-calculated-age],[data-coco-copy],[data-coco-attrs],.cocoRankingEmpty b,.cocoRankingEmpty span,.cocoRankingSummary span:not([data-coco-number]),[data-ranking-description],.cocoGameRankingShell header span';
   const spanishGames = new Set(['sopa','crucigrama','palabras','cocomed','verdadero','tiempo','bank']);
   const staticControls = 'button,label,option[value],legend,summary,nav a,th,h1,h2,h3,h4,[placeholder],[aria-label]';
   // Public editorial pages contain no profile data. In the application only
@@ -181,7 +183,7 @@
   const privateAreas = '.cocoMedOverlay,.cocoV16086ExportIdentity,.cocoV16083Person,[data-player-name],#lobbyPlayers,#winner,#topName,#bottomName,#playingAs,#roomCode,#notes,.chat-message,.eterna-thread,[data-et-name],[data-et-chat],textarea,[contenteditable]:not([contenteditable=false]),[data-coco-verbatim],[data-coco-language-menu],script,style,svg,code,pre,kbd,canvas';
   const publicElements = '.resumen,.alerta,.card,.lead,.note,[role=note],[role=status],#notice,#toast,#lastResult,#modalBody,#gameMeta,#levelLabel,a,b,strong,em,i,li,dt,dd,small,span,p,figcaption,footer,title,button,label,option,legend,summary,th,h1,h2,h3,h4,h5,ol,ul,details,img,[aria-label],[placeholder],meta[name="description"],meta[property="og:description"],meta[property="og:title"],meta[property="og:image:alt"],meta[name="twitter:description"],meta[name="twitter:title"]';
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamilyLoading,#coco-startup-status p';
-  const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego)';
+  const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego,#coco-game-guides)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
   const reportCopy = ':is(.cocoFamilyV129,[data-family-integral-report],.cocoV16083Section,.cocoReportDocument,.rankingTitulo,.rankingNota,.navegacionJugador) :is(h2,h3,h4,b,strong,small,p,span,li,th,button,a)';
   const gameplayCopy = '[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,.instruccion,.pregunta,.textoReto,.aviso,.titulo)';
@@ -200,7 +202,7 @@
   }
   async function readPack(tag) {
     const url = new URL('packs/'+tag+'.json',base);
-    url.searchParams.set('v','20261122-3');
+    url.searchParams.set('v','20261122-5');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -243,8 +245,75 @@
     const text = message('Juego en español');
     if (badge.textContent !== text) badge.textContent = text;
   }
+  function bannerText(tag, source) {
+    const el = document.createElement(tag);
+    el.setAttribute('data-coco-copy','');
+    // The home renderer clones its decoration. Preserve the authored source in
+    // the clone as well, rather than treating its current translation as source.
+    el.setAttribute('data-coco-source-text',source);
+    el.textContent = source;
+    return el;
+  }
+  function localizeHomeArtwork(root) {
+    each(root,'#cocoApp .eternaLauncherVisualFinal3',visual => {
+      let art = visual.querySelector(':scope > .cocoLocalizedHero');
+      if (current === 'es') {
+        if (visual.hasAttribute('data-coco-banner-background')) {
+          const value = visual.getAttribute('data-coco-banner-background');
+          if (value) visual.style.setProperty('background-image',value,visual.getAttribute('data-coco-banner-background-priority') || '');
+          else visual.style.removeProperty('background-image');
+          visual.removeAttribute('data-coco-banner-background');
+          visual.removeAttribute('data-coco-banner-background-priority');
+        }
+        art?.remove(); visual.removeAttribute('data-coco-localized-banner');
+        return;
+      }
+      if (!art) {
+        art = document.createElement('div'); art.className = 'cocoLocalizedHero';
+        const img = document.createElement('img'); img.className = 'cocoLocalizedHeroArt';
+        img.src = new URL('../share/premium-v160126/art/conecta.webp',base);
+        img.width = 1200; img.height = 630; img.alt = ''; img.decoding = 'async';
+        const caption = document.createElement('div'); caption.setAttribute('data-coco-banner-caption','eterna');
+        caption.append(bannerText('b','Juegos para la mente y apoyo escolar'),bannerText('span','Con Coco y Eterna.'));
+        art.append(img,caption); visual.append(art);
+      }
+      if (!visual.hasAttribute('data-coco-banner-background')) {
+        visual.setAttribute('data-coco-banner-background',visual.style.getPropertyValue('background-image'));
+        visual.setAttribute('data-coco-banner-background-priority',visual.style.getPropertyPriority('background-image'));
+      }
+      // The late identity stylesheet also declares its Spanish artwork with
+      // !important. The inline override keeps that decoration out of every locale.
+      visual.style.setProperty('background-image','none','important');
+      visual.setAttribute('data-coco-localized-banner','eterna');
+    });
+    each(root,'#cocoApp .loginDecorStage',stage => {
+      // Only the fixed decoration on the access page and its home clone.
+      // The actual achievement collection, unlock levels and downloads stay intact.
+      if (!stage.querySelector(':scope > .loginPoster')) return;
+      let art = stage.querySelector(':scope > .cocoLocalizedPoster');
+      if (current === 'es') {
+        art?.remove(); stage.removeAttribute('data-coco-localized-banner');
+        return;
+      }
+      if (!art) {
+        art = document.createElement('div'); art.className = 'cocoLocalizedPoster';
+        const img = document.createElement('img'); img.className = 'cocoLocalizedPosterArt';
+        img.src = new URL('../assets/brand/coco-premium-v160127/icon-512.png',base);
+        img.width = 512; img.height = 512; img.decoding = 'async';
+        img.alt = 'Tarjeta Coco: Tu primer gran paso';
+        img.setAttribute('data-coco-source-alt',img.alt);
+        const caption = document.createElement('div'); caption.setAttribute('data-coco-banner-caption','coco');
+        caption.append(bannerText('b','Coco'),bannerText('span','Tu primer gran paso'));
+        art.append(img,caption); stage.append(art);
+      }
+      // The Spanish image retains its src/srcset/error fallback while hidden;
+      // an image error cannot bring its embedded Spanish text back into view.
+      stage.setAttribute('data-coco-localized-banner','coco');
+    });
+  }
   function refresh(root = document) {
     if (!document.body) return;
+    localizeHomeArtwork(root);
     const page = document.body.dataset.cocoLanguagePage;
     const query = page === 'public' || page === 'game' ? publicElements : [authored,staticControls,shellCopy,authCopy,familyAccessCopy,gameplayCopy,homeCopy,reportCopy,'.cocoV16086Pending,.rankingNota'].join(',');
     each(root,query,el => {
@@ -252,7 +321,7 @@
       if (el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
       // Card titles and some legacy controls are used for DOM-based identification.
       // Their translation is handled by the owning renderer once a stable id exists.
-      if (!page && el.closest('.cocoGameCard,.cocoMiniJuego') && !el.closest('[data-coco-juego],[data-coco-chess-entry],[data-coco-city-entry],[data-coco-naval-entry],[data-coco-generala-entry]')) return;
+      if (!page && el.closest('.cocoGameCard,.cocoMiniJuego') && !el.closest('[data-coco-juego],[data-coco-chess-entry],[data-coco-city-entry],[data-coco-naval-entry],[data-coco-generala-entry],[data-coco-suggestion],.cocoMiniSuggestion')) return;
       // Nicknames, room codes, board cells and questionnaire answers are model values.
       if (el.closest('[role=grid],.cocoCrossBoard,#board,#lobbyPlayers,.player,.answer-review,#history') || el.matches('[data-answer],#turnTitle:not([data-coco-copy]),#turn,#winner,#playingAs,#playingName')) return;
       if (el.tagName !== 'OPTION' || el.hasAttribute('value')) {

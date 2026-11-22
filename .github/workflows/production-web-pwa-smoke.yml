@@ -47,7 +47,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.2-eneagrama-analysis
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.86-eneagrama-analysis
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.87-complete-launcher-languages
       EXPECTED_ENEAGRAMA_REPORT_VERSION: 2026-11-22-coaching-4
     steps:
       - name: Fetch uncached production assets
@@ -96,7 +96,7 @@ jobs:
             fetch_live "${APEX_URL}/eterna-landing-captacion-v1.html?" /tmp/eterna-landing-captacion-v1.html
             if grep -Fq "const CACHE_VERSION=\"${EXPECTED_PWA_CACHE}\"" /tmp/sw.js \
               && grep -Fq "${EXPECTED_FRONTEND_VERSION}" /tmp/eterna-v159.js \
-              && grep -Fq 'eterna-v159.js?v=160114' /tmp/apex.html; then
+              && grep -Fq 'eterna-v159.js?v=160115' /tmp/apex.html; then
               web_ready=1
               break
             fi

@@ -109,8 +109,8 @@ test("the release invalidates both frontend assets and has verified rollback", (
   const bootstrap = read("coco-v153-fixes.js");
   const sw = read("sw.js");
   const workflow = read(".github/workflows/eterna-worker-production-160937.yml");
-  assert.match(index, /eterna-v159\.js\?v=160114/);
-  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160108/);
+  assert.match(index, /eterna-v159\.js\?v=160115/);
+  assert.match(bootstrap, /eterna-experience-v160\.js\?v=160109/);
   assert.ok(Number(sw.match(/const CACHE_VERSION="coco-en-forma-v160\.100\.(\d+)-/)?.[1]) >= 60);
   assert.match(workflow, /EXPECTED_VERSION: 160\.93\.7-family-plans-unlimited/);
   assert.match(workflow, /wrangler versions upload/);

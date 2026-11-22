@@ -62,7 +62,7 @@ test('all 15 languages render useful, distinct content before JavaScript runs', 
     assert.equal(text(d.querySelector('#ejemplo details p')), expected.example.answer, tag);
     assert.equal(text(d.querySelector('.language-note')), expected.note.spanishContent, tag);
     assert.ok(text(d.querySelector('.related')).includes(expected.note.eterna), tag);
-    assert.deepEqual([...d.querySelectorAll('script[src]')].map(el => el.getAttribute('src')), ['/seo/localized.js?v=20261122-3'], tag);
+    assert.deepEqual([...d.querySelectorAll('script[src]')].map(el => el.getAttribute('src')), ['/seo/localized.js?v=20261122-4'], tag);
     if (tag !== 'es') {
       assert.notEqual(expected.heading, copy.es.heading, tag);
       assert.notEqual(expected.intro, copy.es.intro, tag);

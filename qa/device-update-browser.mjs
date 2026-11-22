@@ -121,6 +121,136 @@ async function preparePage(context, profileName) {
   return { page, pageErrors };
 }
 
+const LAUNCHER_COPY = Object.freeze({
+  trial: "⭐ 7 días gratis",
+  noCard: "Sin tarjeta ni datos bancarios para empezar.",
+  cta: "Probar Eterna gratis 7 días",
+  heroTitle: "Juegos para la mente y apoyo escolar",
+  heroSubtitle: "Con Coco y Eterna.",
+  posterTitle: "Coco",
+  posterSubtitle: "Tu primer gran paso",
+});
+
+function expectedLanguageCopy(locale) {
+  const strings = locale === "es" ? {} : JSON.parse(fs.readFileSync(new URL(`../i18n/packs/${locale}.json`, import.meta.url), "utf8")).strings;
+  const copy = Object.fromEntries(Object.entries(LAUNCHER_COPY).map(([key, source]) => [key, strings[source] || source]));
+  copy.trial = `⭐ ${strings["7 días gratis"] || "7 días gratis"}`;
+  return copy;
+}
+
+async function selectLauncherLanguage(page, locale) {
+  const copy = expectedLanguageCopy(locale);
+  await page.locator(".coco-language-bar select:visible").selectOption(locale);
+  // The experience module loads lazily. Wait for its final copy, so an earlier
+  // translated render cannot conceal a later Spanish overwrite.
+  await page.waitForFunction(({ locale, copy }) => {
+    const launcher = document.querySelector("#eternaLauncherV159");
+    return document.documentElement.lang === locale
+      && launcher?.querySelector(".eternaLauncherTrialFinal3 strong")?.textContent.trim() === copy.trial
+      && launcher?.querySelector(".eternaLauncherTrialFinal3 span")?.textContent.trim() === copy.noCard
+      && launcher?.querySelector(".eternaLauncherCtaFinal3")?.textContent.trim() === copy.cta;
+  }, { locale, copy }, { timeout: 20_000 });
+  if (locale !== "es") {
+    await page.waitForFunction(() => {
+      const images = [...document.querySelectorAll(".cocoLocalizedHeroArt,.cocoLocalizedPosterArt")].filter(image => image.getBoundingClientRect().width && image.getBoundingClientRect().height);
+      return images.length >= 2 && images.every(image => image.complete && image.naturalWidth > 0);
+    }, null, { timeout: 15_000 });
+  }
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  return copy;
+}
+
+async function inspectLauncherLanguage(page) {
+  return page.evaluate(() => {
+    const visible = node => Boolean(node && node.getBoundingClientRect().width && node.getBoundingClientRect().height && getComputedStyle(node).visibility !== "hidden");
+    const text = selector => [...document.querySelectorAll(selector)].find(visible)?.textContent.trim() || "";
+    const hero = document.querySelector(".eternaLauncherVisualFinal3");
+    return {
+      lang: document.documentElement.lang,
+      dir: document.documentElement.dir,
+      copy: {
+        trial: text(".eternaLauncherTrialFinal3 strong"),
+        noCard: text(".eternaLauncherTrialFinal3 span"),
+        cta: text(".eternaLauncherCtaFinal3"),
+        heroTitle: text('[data-coco-banner-caption="eterna"] b'),
+        heroSubtitle: text('[data-coco-banner-caption="eterna"] span'),
+        posterTitle: text('[data-coco-banner-caption="coco"] b'),
+        posterSubtitle: text('[data-coco-banner-caption="coco"] span'),
+      },
+      heroBackground: hero ? getComputedStyle(hero).backgroundImage : "",
+      originalPosterVisible: [...document.querySelectorAll(".loginDecorStage > .loginPoster")].some(visible),
+      localizedImages: [...document.querySelectorAll(".cocoLocalizedHeroArt,.cocoLocalizedPosterArt")].filter(visible).map(image => ({
+        src: new URL(image.currentSrc || image.src).pathname,
+        loaded: image.complete && image.naturalWidth > 0,
+        visible: visible(image),
+      })),
+    };
+  });
+}
+
+async function verifyMobileLanguages(browser, results) {
+  const profile = DEVICE_MATRIX.find(item => item.name === "phone-modern");
+  const context = await browser.newContext({
+    viewport: { width: profile.width, height: profile.height },
+    screen: { width: profile.width, height: profile.height },
+    userAgent: profile.ua, deviceScaleFactor: profile.dpr,
+    isMobile: true, hasTouch: true, locale: "es-ES", serviceWorkers: "block",
+  });
+  let page;
+  try {
+    const prepared = await preparePage(context, "mobile-languages");
+    page = prepared.page;
+    for (const locale of ["zh-Hans", "ar", "de", "en", "es"]) {
+      const copy = await selectLauncherLanguage(page, locale);
+      const snapshot = await inspect(page);
+      const language = await inspectLauncherLanguage(page);
+      assertSnapshot(profile, snapshot);
+      assert.equal(language.lang, locale);
+      assert.equal(language.dir, locale === "ar" ? "rtl" : "ltr");
+      if (locale === "es") {
+        assert.deepEqual(language.localizedImages, [], "Spanish artwork must return after switching back");
+        assert.ok(language.originalPosterVisible, "Spanish poster must remain visible");
+        assert.notEqual(language.heroBackground, "none", "Spanish hero artwork must return");
+        for (const key of ["trial", "noCard", "cta"]) assert.equal(language.copy[key], copy[key]);
+      } else {
+        assert.deepEqual(language.copy, copy, `${locale}: incomplete translated launcher or captions`);
+        assert.equal(language.heroBackground, "none", `${locale}: embedded Spanish hero text is still visible`);
+        assert.equal(language.originalPosterVisible, false, `${locale}: embedded Spanish poster text is still visible`);
+        assert.equal(language.localizedImages.length, 2, `${locale}: missing localized artwork`);
+        assert.ok(language.localizedImages.every(image => image.loaded && image.visible), `${locale}: artwork failed to load or is hidden`);
+      }
+      assert.deepEqual(prepared.pageErrors, [], `${locale}: JavaScript errors`);
+      await page.screenshot({ path: path.join(evidenceDir, `mobile-language-${safeName(locale)}.png`), fullPage: true });
+      results.push({ profile: `mobile-language-${locale}`, status: "PASS", snapshot, language });
+      console.log(`PASS  mobile language ${locale} · 390x844`);
+    }
+    await selectLauncherLanguage(page, "zh-Hans");
+    await page.locator(".eternaLauncherCtaFinal3:visible").click();
+    for (const id of ["rNom", "rMail", "rPas", "rPas2"]) await page.locator(`#cocoApp #${id}`).waitFor({ state: "visible", timeout: 10_000 });
+    const consent = page.locator("#rConsentText");
+    for (const [age, introduction] of [["35", "我确认自己已成年"], ["12", "我确认自己是该未成年人的父母或监护人"]]) {
+      await page.locator("#rEdad").fill(age);
+      await page.waitForFunction(text => document.querySelector("#rConsentText")?.textContent.includes(text), introduction);
+      assert.match(await consent.innerText(), /我已阅读/);
+      assert.equal(await consent.locator("a").count(), 2);
+      assert.equal(await consent.locator("a").first().innerText(), "隐私政策");
+    }
+    assert.match(await page.locator("#rIntro").innerText(), /未成年人须在父母或监护人陪同下注册/);
+    assert.match(await page.locator("#rNom").getAttribute("placeholder"), /不能包含空格/);
+    assert.match(await page.locator(".cocoLegalResumenRegistro").innerText(), /行使您的权利/);
+    assertSnapshot(profile, await inspect(page));
+    assert.deepEqual(prepared.pageErrors, [], "Chinese registration: JavaScript errors");
+    await page.screenshot({ path: path.join(evidenceDir, "mobile-language-zh-hans-registration.png"), fullPage: true });
+    results.push({ profile: "mobile-language-zh-Hans-registration", status: "PASS", submitted: false });
+    console.log("PASS  Chinese Eterna CTA opens registration without submitting data");
+  } catch (error) {
+    if (page) await page.screenshot({ path: path.join(evidenceDir, "mobile-language-failure.png"), fullPage: true }).catch(() => {});
+    throw error;
+  } finally {
+    await context.close();
+  }
+}
+
 fs.mkdirSync(evidenceDir, { recursive: true });
 const browser = await chromium.launch(launchOptions());
 const results = [];
@@ -176,6 +306,7 @@ try {
   } finally {
     await rotationContext.close();
   }
+  await verifyMobileLanguages(browser, results);
 } catch (error) {
   console.error(`FAIL  ${error.stack || error.message}`);
   process.exitCode = 1;
@@ -184,4 +315,4 @@ try {
   await browser.close();
 }
 
-if (!process.exitCode) console.log(`\n${DEVICE_MATRIX.length}/10 perfiles y la rotación superados.`);
+if (!process.exitCode) console.log(`\n${DEVICE_MATRIX.length}/10 perfiles, rotación, 5 idiomas y acceso al registro superados.`);

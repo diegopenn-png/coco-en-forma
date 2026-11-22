@@ -288,7 +288,8 @@
     if(!root)return null;
     var nodes=root.querySelectorAll("button,a,[role='button']");
     for(var i=0;i<nodes.length;i++){
-      if(/^\s*crear\s+cuenta\s*$/i.test(String(nodes[i].textContent||"")))return nodes[i]
+      var source=window.CocoLocale?window.CocoLocale.sourceText(nodes[i]):nodes[i].textContent;
+      if(/^\s*crear\s+cuenta\s*$/i.test(String(source||"")))return nodes[i]
     }
     return null
   }
@@ -319,8 +320,8 @@
         '<h2>Tu ayuda escolar personalizada</h2>'+
         '<p>Escribe o habla. Eterna te guía paso a paso y se adapta al curso y al progreso.</p>'+
         '<div class="eternaLauncherActionsV159"><span class="eternaLauncherPillV159">✏️ Escritura</span><span class="eternaLauncherPillV159">🎙️ Voz</span><span class="eternaLauncherPillV159">📚 Tareas</span><span class="eternaLauncherPillV159">✅ Revisión</span></div>'+
-        '<div class="eternaLauncherTrialFinal3"><strong>⭐ Prueba gratuita · 7 días</strong><span>Sin tarjeta para empezar · después, 7,99 €/mes si la familia decide continuar.</span><small>Escritura o voz → una pista cada vez → comprobación final.</small></div>'+
-        '<span class="eternaLauncherCtaFinal3">Probar Eterna</span>'+
+        '<div class="eternaLauncherTrialFinal3"><strong>⭐ 7 días gratis</strong><span>Sin tarjeta ni datos bancarios para empezar.</span><small>Escritura o voz → una pista cada vez → comprobación final.</small></div>'+
+        '<span class="eternaLauncherCtaFinal3">Probar Eterna gratis 7 días</span>'+
       '</div>'+
       '<div class="eternaLauncherVisualFinal3" aria-hidden="true">'+
         '<div class="eternaTabletV160">'+
@@ -375,7 +376,7 @@
     var launcherCta=launcher.querySelector(".eternaLauncherCtaFinal3");
     var launcherTitle=launcher.querySelector("h2"),launcherText=launcher.querySelector("p");
     var launcherEyebrow=launcher.querySelector(".eternaLauncherEyebrowV159"),launcherPills=launcher.querySelectorAll(".eternaLauncherPillV159");
-    if(launcherCta)launcherCta.textContent=loggedOut?"Probar Eterna":"Abrir Eterna";
+    if(launcherCta)launcherCta.textContent=loggedOut?"Probar Eterna gratis 7 días":"Abrir Eterna";
     if(launcherTitle)launcherTitle.textContent=loggedOut?"Tu ayuda escolar personalizada":"Eterna · tu ayuda escolar";
     if(launcherText)launcherText.textContent=loggedOut?"Escribe o habla. Eterna te guía paso a paso y se adapta al curso y al progreso.":"Continúa una tarea, resuelve una duda o practica lo que más te cuesta.";
     if(launcherEyebrow)launcherEyebrow.textContent=loggedOut?"✨ ETERNA · APOYO ESCOLAR":"✨ ETERNA · LISTA PARA AYUDARTE";
@@ -385,6 +386,7 @@
       launcherPills[2].textContent=loggedOut?"📚 Tareas":"🧠 Explicar";
       launcherPills[3].textContent=loggedOut?"✅ Revisión":"✅ Revisar";
     }
+    if(window.CocoLocale)window.CocoLocale.refresh(launcher);
     var left=loggedOut?login:(visible(carnet)?carnet:(login||carnet));
     var retos=root.querySelector("#retosCard,.retosCard");
 

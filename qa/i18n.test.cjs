@@ -69,6 +69,223 @@ test('all QH locales keep the original account fields, scores and PWA identity',
   } finally {dom.window.close();}
 });
 
+test('the real Eterna launcher patch keeps translated trial copy and opens the translated signup control',async()=>{
+  const {api,w,doc,dom}=page('https://coco.test/?lang=zh-Hans',undefined,undefined,
+    '<main id="cocoApp"><section class="loginCard"><button type="button" data-signup>Crear cuenta</button></section></main>');
+  const source=fs.readFileSync(path.join(root,'eterna-v159.js'),'utf8');
+  const experience=fs.readFileSync(path.join(root,'eterna-experience-v160.js'),'utf8');
+  const start=source.indexOf('  function findCreateAccountControl(){');
+  const end=source.indexOf('  function createBrainPanel(',start);
+  const patchStart=experience.indexOf('/* ETERNA v160.70 · STATE MACHINE DE LANZAMIENTO');
+  const patchEnd=experience.indexOf('/* ETERNA Spoken Dialogue',patchStart);
+  assert.ok(start>=0&&end>start&&patchStart>=0&&patchEnd>patchStart);
+  try {
+    await api.ready;
+    const app=doc.getElementById('cocoApp'),login=app.querySelector('.loginCard');
+    const signup=app.querySelector('[data-signup]');
+    let signupClicks=0,closed=0,remembered=0;
+    signup.onclick=()=>{signupClicks++;};
+    const fail=()=>{throw Error('the launcher must open signup instead of the tutor while logged out');};
+    const launcher=w.Function('visible','rememberEternaAfterAuth','open',
+      source.slice(start,end)+';return createLauncher();')(()=>true,()=>{remembered++;},fail);
+    app.append(launcher);
+    // The tutor remains Spanish-only even when the surrounding interface changes.
+    const noteMarkup=source.match(/<p data-eterna-language-note hidden><\/p>/)[0];
+    launcher.insertAdjacentHTML('beforeend',noteMarkup);
+    api.refresh(launcher);
+    const cta=launcher.querySelector('.eternaLauncherCtaFinal3');
+    // The base launcher can be clicked before the experience module arrives.
+    for(const locale of locales){
+      await api.setLanguage(locale);
+      const trial=launcher.querySelector('.eternaLauncherTrialFinal3');
+      assert.equal(cta.textContent,api.t('Probar Eterna gratis 7 días'),locale+' initial CTA');
+      assert.equal(trial.querySelector('strong').textContent,'⭐ '+api.t('7 días gratis'),locale+' initial trial');
+      assert.equal(trial.querySelector('span').textContent,api.t('Sin tarjeta ni datos bancarios para empezar.'),locale+' initial no card');
+      const before=signupClicks;
+      cta.click();
+      assert.equal(signupClicks,before+1,locale+' base signup click');
+    }
+    assert.equal(remembered,locales.length);
+    const baseClicks=signupClicks;
+    await api.setLanguage('zh-Hans');
+    const authChanges=[],frames=[];
+    w.__COCO_SUPABASE_CLIENT={auth:{getSession:async()=>({data:{session:null}}),
+      onAuthStateChange:handler=>{authChanges.push(handler);}}};
+    w.CocoEternaV160={close:()=>{closed++;}};
+    w.requestAnimationFrame=callback=>{frames.push(callback);return frames.length;};
+    // Execute the actual lazy-loaded state-machine patch after the Chinese shell.
+    w.eval(experience.slice(patchStart,patchEnd));
+    assert.equal(authChanges.length,1);
+    const trial=launcher.querySelector('.eternaLauncherTrialFinal3');
+    const assertCopy=()=>{
+      assert.equal(cta.textContent,api.t('Probar Eterna gratis 7 días'),api.tag+' CTA');
+      assert.equal(trial.querySelector('strong').textContent,'⭐ '+api.t('7 días gratis'),api.tag+' trial');
+      assert.equal(trial.querySelector('span').textContent,api.t('Sin tarjeta ni datos bancarios para empezar.'),api.tag+' no card');
+    };
+    for(const locale of ['zh-Hans',...locales.filter(l=>l!=='zh-Hans'),'es']) {
+      await api.setLanguage(locale);
+      if(locale!=='es')for(const phrase of ['7 días gratis','Sin tarjeta ni datos bancarios para empezar.','Probar Eterna gratis 7 días']) {
+        assert.ok(readPack(locale).strings[phrase],locale+' / '+phrase);
+        assert.notEqual(api.t(phrase),phrase,locale+' must not fall back to Spanish');
+      }
+      // Auth callbacks and the scheduled normalizer must render in the active
+      // language synchronously, without first flashing the Spanish patch text.
+      authChanges[0]('SIGNED_OUT',null);
+      frames.forEach(callback=>callback());
+      assertCopy();
+      assert.equal(api.sourceText(cta),'Probar Eterna gratis 7 días');
+      assert.equal(api.sourceText(signup),'Crear cuenta');
+      const before=signupClicks;
+      cta.click();
+      assert.equal(signupClicks,before+1,locale+' translated signup click');
+      const note=launcher.querySelector('[data-eterna-language-note]');
+      assert.equal(note.hidden,locale==='es');
+      if(locale!=='es')assert.equal(note.textContent,api.t('Las sesiones de Eterna se realizan en español.'));
+      login.style.display='none';
+      authChanges[0]('SIGNED_IN',null);
+      assert.equal(cta.textContent,api.t('Abrir Eterna'),locale+' signed-in CTA');
+      login.style.display='';
+    }
+    assert.equal(closed,signupClicks-baseClicks);
+    assert.equal(doc.querySelectorAll('[data-signup]').length,1);
+  } finally {await new Promise(resolve=>setTimeout(resolve,0));dom.window.close();}
+});
+
+test('signup renders the adult and guardian consent, links and data notice in every language',async()=>{
+  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+  const ageLogic=html.match(/function actualizarRegistroEdad\(\)\{[\s\S]*?\}edadInput\.addEventListener/)[0].split('}edadInput.addEventListener')[0]+'}';
+  const intro=html.match(/<p class="pequeno apagado" id="rIntro">[\s\S]*?<\/p>/)[0];
+  const nameField=html.match(/<input id="rNom"[^>]+>/)[0];
+  const legal=html.slice(html.indexOf('  function informarRegistro(){'),html.indexOf('  function preparar(){',html.indexOf('  function informarRegistro(){')));
+  const markup='<main id="cocoApp"><div class="caja">'+intro+nameField+'<input id="rEdad"><label id="rMailLabel"></label><p id="rMailAyuda"></p><span id="rConsentText"></span><input id="rPas2"></div></main>';
+  const {api,w,doc,dom}=page('https://coco.test/',undefined,undefined,markup);
+  try {
+    await api.ready;
+    w.Function(legal+';informarRegistro()')();
+    const consent=doc.querySelector('#rConsentText'), age=doc.querySelector('#rEdad');
+    const update=w.Function('edadInput','mailLabel','mailAyuda','consentText','o',ageLogic+';return actualizarRegistroEdad')(age,doc.querySelector('#rMailLabel'),doc.querySelector('#rMailAyuda'),consent,'/politica-de-privacidad.html');
+    for(const tag of locales){
+      await api.setLanguage(tag);
+      for(const years of [35,12]){
+        age.value=String(years); update();
+        const canonical=consent.firstChild.data.trim();
+        await new Promise(resolve=>setTimeout(resolve,0));
+        assert.equal(consent.firstChild.data.trim(),api.t(canonical));
+        assert.equal(consent.querySelector('a').textContent,api.t('política de privacidad'));
+        assert.equal(consent.querySelectorAll('a').length,2);
+        if(tag!=='es'){
+          assert.notEqual(consent.firstChild.data.trim(),canonical,tag+' consent');
+          assert.doesNotMatch(doc.querySelector('#rIntro').textContent,/Los menores deben hacerlo/);
+          assert.doesNotMatch(doc.querySelector('.cocoLegalResumenRegistro').textContent,/Puede ejercer sus derechos/);
+          assert.doesNotMatch(doc.querySelector('#rNom').placeholder,/Sin espacios ni acentos/);
+        }
+      }
+    }
+  } finally {dom.window.close();}
+});
+
+test('home game hints, suggestion cards and the guide translate their actual rendered copy',async()=>{
+  const {api,w,doc,dom}=page(undefined,undefined,undefined,'<main id="cocoApp"><article class="cocoGameCard" data-coco-juego="memoria"><h3>Memoria</h3></article><div class="cocoMiniJuego" data-coco-city-entry><b>Coco Ciudad</b></div></main>');
+  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+  let suggestions=0;
+  try {
+    await api.ready;
+    for(const game of ['generala','naval']) {
+      const entry=fs.readFileSync(path.join(root,'games',game,'entry.mjs'),'utf8');
+      w.Function(entry.slice(0,entry.indexOf('window.addEventListener'))+';attach();')();
+    }
+    const iconStart=html.indexOf('  function questionIconSvg(){'),iconEnd=html.indexOf('  function nodeGameTitle(',iconStart);
+    const cardsStart=html.indexOf('  function ensureSuggestionCards(){'),cardsEnd=html.indexOf('  function discoverGames(){',cardsStart);
+    w.Function('ALL_IDS','idFromCard','openSuggestionForm',html.slice(iconStart,iconEnd)+html.slice(cardsStart,cardsEnd)+';ensureSuggestionCards();')(['memoria'],card=>card.dataset.cocoJuego,()=>{suggestions++;});
+    const guidesStart=html.indexOf('  function crearFooter(){'),guidesEnd=html.indexOf('  function informarRegistro(){',guidesStart);
+    w.Function(html.slice(guidesStart,guidesEnd)+';crearFooter();')();
+    const selectors=['.cocoMiniSuggestion b','.cocoMiniSuggestion .cocoMiniEstado','.cocoSuggestionCard h3','.cocoSuggestionCard .cocoDescripcion','.cocoSuggestionPromise b','.cocoSuggestionPromise span','.cocoSuggestionCard button','#coco-game-guides .cocoGuidesEyebrow','#coco-game-guides strong','#coco-game-guides .cocoGuidesDescription'];
+    const copy=selectors.map(selector=>{const el=doc.querySelector(selector);assert.ok(el,selector);return[el,el.textContent];});
+    for(const locale of locales) {
+      await api.setLanguage(locale);
+      for(const [el,source] of copy) {
+        if(locale!=='es')assert.ok(readPack(locale).strings[source],locale+' / '+source);
+        assert.equal(el.textContent,api.t(source),locale+' / '+source);
+      }
+      for(const [game,source] of [['generala','Tira, guarda y anota'],['naval','Busca y descubre']]) {
+        assert.equal(doc.querySelector('[data-coco-'+game+'-entry] .cocoExcellenceMeta span:last-child').textContent,'✦ '+api.t(source));
+      }
+      const guide=doc.querySelector('#coco-game-guides');
+      assert.equal(guide.getAttribute('aria-label'),api.t('Guías de los juegos'));
+      assert.equal(guide.querySelector('.cocoGuidesButton').firstChild.data.trim(),api.t('Explorar los juegos'));
+      assert.equal(guide.querySelector('[aria-hidden]').textContent,'→');
+      doc.querySelector('.cocoMiniSuggestion').click();
+      doc.querySelector('.cocoSuggestionCard button').click();
+    }
+    assert.equal(suggestions,locales.length*2);
+    await api.setLanguage('zh-Hans');
+    assert.equal(doc.querySelector('.cocoGuidesEyebrow').textContent,'Coco 的世界');
+    assert.equal(doc.querySelector('.cocoSuggestionPromise b').textContent,'你的创意很重要');
+  } finally {await new Promise(resolve=>setTimeout(resolve,0));dom.window.close();}
+});
+
+test('the two home banners use clean artwork and localized captions, including cloned decoration and return to Spanish',async()=>{
+  const {api,w,doc,dom}=page(undefined,undefined,undefined,'<main id="cocoApp"><section class="loginCard"></section><section id="cocoHomeFinal3"></section><section class="galeriaTarjetasLogro"><img class="tarjetaImagenOptimizada" src="/assets/tarjetas/premium-v160127/coco-en-racha-mini.webp"></section></main>');
+  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+  const source=fs.readFileSync(path.join(root,'eterna-v159.js'),'utf8');
+  const identity=fs.readFileSync(path.join(root,'coco-v155-identity.js'),'utf8');
+  try {
+    await api.ready;
+    const style=doc.createElement('style');style.textContent=fs.readFileSync(path.join(root,'i18n/coco.css'),'utf8');doc.head.append(style);
+    const app=doc.getElementById('cocoApp'),decor=doc.createElement('div');decor.className='loginDecor loginDecorMinimal';
+    decor.innerHTML=html.match(/q\.innerHTML='([^']*class="loginDecorTitle"[^']+)'/)[1];
+    const original=decor.querySelector('.loginPoster');
+    original.src='/assets/tarjetas/premium-v160127/coco-mini.webp';
+    const fallback=()=>{original.src='/assets/tarjetas/premium-v160127/coco.jpg';};original.onerror=fallback;
+    app.querySelector('.loginCard').append(decor);
+    const launcherStart=source.indexOf('  function createLauncher(){'),launcherEnd=source.indexOf('  function createBrainPanel(',launcherStart);
+    const launcher=w.Function(source.slice(launcherStart,launcherEnd)+';return createLauncher();')();
+    app.querySelector('#cocoHomeFinal3').append(launcher);
+    // Load the real late identity CSS too: its !important Spanish background
+    // must not override the localized image even when that script arrives last.
+    w.requestAnimationFrame=callback=>w.setTimeout(callback,0);
+    w.eval(identity);
+    const achievement=app.querySelector('.tarjetaImagenOptimizada');
+    const achievementSrc=achievement.getAttribute('src');
+    let clone;
+    for(const locale of ['zh-Hans',...locales.filter(l=>l!=='zh-Hans'),'es']) {
+      await api.setLanguage(locale);
+      if(!clone) {
+        const strip=source.match(/^  function stripIds\(node\).*$/m)[0];
+        const brainStart=source.indexOf('  function createBrainPanel(source){'),brainEnd=source.indexOf('  function ensureHomeLayout(){',brainStart);
+        clone=w.Function(strip+source.slice(brainStart,brainEnd)+';return createBrainPanel;')()(decor);
+        app.querySelector('#cocoHomeFinal3').append(clone);api.refresh(clone);
+      }
+      const visual=launcher.querySelector('.eternaLauncherVisualFinal3');
+      assert.equal(original.onerror,fallback,'the original image fallback is retained');
+      assert.equal(original.getAttribute('src'),'/assets/tarjetas/premium-v160127/coco-mini.webp');
+      assert.equal(achievement.getAttribute('src'),achievementSrc,'achievement collection is untouched');
+      if(locale==='es') {
+        assert.equal(app.querySelectorAll('[data-coco-localized-banner],[data-coco-banner-caption]').length,0);
+        assert.notEqual(w.getComputedStyle(original).display,'none');
+        assert.match(w.getComputedStyle(visual).backgroundImage,/hero-explorer-v160129/);
+        assert.equal(original.alt,'Tarjeta Coco: Tu primer gran paso');
+      } else {
+        assert.equal(w.getComputedStyle(visual).backgroundImage,'none',locale+' clean hero background');
+        assert.equal(w.getComputedStyle(original).display,'none',locale+' Spanish poster hidden');
+        assert.equal(visual.querySelectorAll('.cocoLocalizedHero').length,1);
+        assert.match(visual.querySelector('.cocoLocalizedHeroArt').src,/\/art\/conecta\.webp$/);
+        assert.equal(visual.querySelector('[data-coco-banner-caption] b').textContent,api.t('Juegos para la mente y apoyo escolar'));
+        assert.equal(visual.querySelector('[data-coco-banner-caption] span').textContent,api.t('Con Coco y Eterna.'));
+        for(const stage of app.querySelectorAll('.loginDecorStage')) {
+          assert.equal(stage.querySelectorAll('.cocoLocalizedPoster').length,1);
+          const img=stage.querySelector('.cocoLocalizedPosterArt');
+          assert.match(img.src,/\/coco-premium-v160127\/icon-512\.png$/);
+          assert.equal(img.alt,api.t('Tarjeta Coco: Tu primer gran paso'));
+          assert.equal(stage.querySelector('[data-coco-banner-caption] span').textContent,api.t('Tu primer gran paso'));
+        }
+      }
+    }
+    await api.setLanguage('zh-Hans');
+    assert.equal(app.querySelector('.cocoLocalizedPosterArt').alt,'Coco 卡片：迈出第一大步');
+  } finally {await new Promise(resolve=>setTimeout(resolve,0));dom.window.close();}
+});
+
 test('the latest selection wins and failed downloads preserve the active language',async()=>{
   let reply; const {api,dom,doc}=page(undefined,async url=>{
     const id=path.basename(url.pathname,'.json');
