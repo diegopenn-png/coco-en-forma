@@ -149,7 +149,7 @@ async function run(browser, origin, standalone) {
     }
     await picker.selectOption('de');await page.waitForFunction(()=>document.documentElement.lang==='de');
     await profile.locator('.cocoFamiliaBtn').click();
-    await page.locator('.cocoFamilyPin input').fill('6382');
+    await page.locator('.cocoFamilyPin input[placeholder="••••"]').fill('6382');
     await page.locator('[data-family-enter]').click();
     const plan=page.locator('[data-et-current-plan="monthly"]');
     await plan.waitFor({timeout:25000});
