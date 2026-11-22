@@ -227,6 +227,17 @@ async function verifyMobileLanguages(browser, results) {
     await selectLauncherLanguage(page, "zh-Hans");
     await page.locator(".eternaLauncherCtaFinal3:visible").click();
     for (const id of ["rNom", "rMail", "rPas", "rPas2"]) await page.locator(`#cocoApp #${id}`).waitFor({ state: "visible", timeout: 10_000 });
+    const consent = page.locator("#rConsentText");
+    for (const [age, introduction] of [["35", "我确认自己已成年"], ["12", "我确认自己是该未成年人的父母或监护人"]]) {
+      await page.locator("#rEdad").fill(age);
+      await page.waitForFunction(text => document.querySelector("#rConsentText")?.textContent.includes(text), introduction);
+      assert.match(await consent.innerText(), /我已阅读/);
+      assert.equal(await consent.locator("a").count(), 2);
+      assert.equal(await consent.locator("a").first().innerText(), "隐私政策");
+    }
+    assert.match(await page.locator("#rIntro").innerText(), /未成年人须在父母或监护人陪同下注册/);
+    assert.match(await page.locator("#rNom").getAttribute("placeholder"), /不能包含空格/);
+    assert.match(await page.locator(".cocoLegalResumenRegistro").innerText(), /行使您的权利/);
     assertSnapshot(profile, await inspect(page));
     assert.deepEqual(prepared.pageErrors, [], "Chinese registration: JavaScript errors");
     await page.screenshot({ path: path.join(evidenceDir, "mobile-language-zh-hans-registration.png"), fullPage: true });

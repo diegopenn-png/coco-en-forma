@@ -151,6 +151,39 @@ test('the real Eterna launcher patch keeps translated trial copy and opens the t
   } finally {await new Promise(resolve=>setTimeout(resolve,0));dom.window.close();}
 });
 
+test('signup renders the adult and guardian consent, links and data notice in every language',async()=>{
+  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+  const ageLogic=html.match(/function actualizarRegistroEdad\(\)\{[\s\S]*?\}edadInput\.addEventListener/)[0].split('}edadInput.addEventListener')[0]+'}';
+  const intro=html.match(/<p class="pequeno apagado" id="rIntro">[\s\S]*?<\/p>/)[0];
+  const nameField=html.match(/<input id="rNom"[^>]+>/)[0];
+  const legal=html.slice(html.indexOf('  function informarRegistro(){'),html.indexOf('  function preparar(){',html.indexOf('  function informarRegistro(){')));
+  const markup='<main id="cocoApp"><div class="caja">'+intro+nameField+'<input id="rEdad"><label id="rMailLabel"></label><p id="rMailAyuda"></p><span id="rConsentText"></span><input id="rPas2"></div></main>';
+  const {api,w,doc,dom}=page('https://coco.test/',undefined,undefined,markup);
+  try {
+    await api.ready;
+    w.Function(legal+';informarRegistro()')();
+    const consent=doc.querySelector('#rConsentText'), age=doc.querySelector('#rEdad');
+    const update=w.Function('edadInput','mailLabel','mailAyuda','consentText','o',ageLogic+';return actualizarRegistroEdad')(age,doc.querySelector('#rMailLabel'),doc.querySelector('#rMailAyuda'),consent,'/politica-de-privacidad.html');
+    for(const tag of locales){
+      await api.setLanguage(tag);
+      for(const years of [35,12]){
+        age.value=String(years); update();
+        const canonical=consent.firstChild.data.trim();
+        await new Promise(resolve=>setTimeout(resolve,0));
+        assert.equal(consent.firstChild.data.trim(),api.t(canonical));
+        assert.equal(consent.querySelector('a').textContent,api.t('política de privacidad'));
+        assert.equal(consent.querySelectorAll('a').length,2);
+        if(tag!=='es'){
+          assert.notEqual(consent.firstChild.data.trim(),canonical,tag+' consent');
+          assert.doesNotMatch(doc.querySelector('#rIntro').textContent,/Los menores deben hacerlo/);
+          assert.doesNotMatch(doc.querySelector('.cocoLegalResumenRegistro').textContent,/Puede ejercer sus derechos/);
+          assert.doesNotMatch(doc.querySelector('#rNom').placeholder,/Sin espacios ni acentos/);
+        }
+      }
+    }
+  } finally {dom.window.close();}
+});
+
 test('home game hints, suggestion cards and the guide translate their actual rendered copy',async()=>{
   const {api,w,doc,dom}=page(undefined,undefined,undefined,'<main id="cocoApp"><article class="cocoGameCard" data-coco-juego="memoria"><h3>Memoria</h3></article><div class="cocoMiniJuego" data-coco-city-entry><b>Coco Ciudad</b></div></main>');
   const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
