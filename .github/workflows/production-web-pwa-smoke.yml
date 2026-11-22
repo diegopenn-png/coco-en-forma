@@ -10,6 +10,7 @@ on:
       - "i18n/reward-cards.js"
       - "tarjetas/ver/**"
       - "qa/reward-cards-browser.cjs"
+      - "qa/account-language-browser.cjs"
   push:
     branches:
       - main
@@ -18,6 +19,7 @@ on:
       - "i18n/reward-cards.js"
       - "tarjetas/ver/**"
       - "qa/reward-cards-browser.cjs"
+      - "qa/account-language-browser.cjs"
       - "index.html"
       - "sw.js"
       - "coco-scoring-v160110.js"
@@ -60,6 +62,7 @@ jobs:
           trap 'kill "$server_pid"' EXIT
           curl --retry 5 --retry-connrefused -fsS "$COCO_QA_URL/tarjetas/ver/" -o /dev/null
           node qa/reward-cards-browser.cjs
+          node qa/account-language-browser.cjs
   live-smoke:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -70,7 +73,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.2-eneagrama-analysis
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.90-localized-reward-cards
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.91-signed-in-language
       EXPECTED_ENEAGRAMA_REPORT_VERSION: 2026-11-22-coaching-4
     steps:
       - name: Fetch uncached production assets
@@ -232,7 +235,9 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: qa/reward-cards-browser.cjs
+          sparse-checkout: |
+            qa/reward-cards-browser.cjs
+            qa/account-language-browser.cjs
           sparse-checkout-cone-mode: false
       - name: Download and verify localized reward images on the live mobile web
         env:
@@ -242,3 +247,4 @@ jobs:
         run: |
           npm install --prefix "$RUNNER_TEMP/coco-reward-browser" --ignore-scripts --no-audit --no-fund playwright@1.63.0
           node qa/reward-cards-browser.cjs
+          node qa/account-language-browser.cjs

@@ -526,26 +526,23 @@
   accountCaption.className = 'coco-language-caption';
   accountCaption.textContent = label.es;
   accountSlot.append(accountCaption);
-  let publicSlot, menuObserver;
-  function placeLanguageMenu() {
-    if (!publicSlot?.isConnected) publicSlot = document.querySelector('[data-coco-language-menu]:not([data-coco-language-account])');
-    const menu = document.querySelector('#cocoApp .navegacionJugador');
-    if (menu) {
-      if (accountSlot.parentElement !== menu) menu.prepend(accountSlot);
-      if (bar.parentElement !== accountSlot) accountSlot.append(bar);
-    } else {
-      if (publicSlot && bar.parentElement !== publicSlot) publicSlot.append(bar);
-      if (accountSlot.isConnected) accountSlot.remove();
-    }
-    if (publicSlot && publicSlot.hidden !== Boolean(menu)) publicSlot.hidden = Boolean(menu);
-  }
+  let menuObserver;
   function mount() {
-    placeLanguageMenu();
+    const publicSlot = document.querySelector('[data-coco-language-menu]:not([data-coco-language-account])');
     const app = document.getElementById('cocoApp');
+    function placeLanguageMenu() {
+      const header = app?.querySelector(':scope > [data-coco-account-header]');
+      if (header && accountSlot.parentElement !== header) header.append(accountSlot);
+      const target = header ? accountSlot : publicSlot;
+      if (target && bar.parentElement !== target) target.append(bar);
+      if (!header && accountSlot.isConnected) accountSlot.remove();
+      if (publicSlot) publicSlot.hidden = Boolean(header);
+    }
+    placeLanguageMenu();
     if (app && !menuObserver) {
-      // The signed-in menu is rebuilt during navigation, including while using Spanish.
+      // The router replaces the top-level header on login, navigation and logout.
       menuObserver = new MutationObserver(placeLanguageMenu);
-      menuObserver.observe(app,{childList:true,subtree:true});
+      menuObserver.observe(app,{childList:true});
     }
     observe();
     refresh();
