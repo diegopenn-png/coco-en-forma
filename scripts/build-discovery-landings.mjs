@@ -1,3 +1,4 @@
+import {localizeLandingArtwork} from './landing-artwork.mjs';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {games,origin} from '../seo/catalog.mjs';
@@ -38,7 +39,7 @@ ${isEterna?offer(p):`<section class="section" id="elige-juego"><p class="eyebrow
 ${isEterna?`<section class="discover-cross"><h2>También puedes empezar jugando.</h2><p>Memoria, palabras, cálculo y estrategia: los juegos gratuitos de Coco tienen su propio espacio.</p><a class="button" href="/juegos-gratis/">Descubrir juegos gratis →</a></section>`:eternaCross}
 <section class="section"><h2>Sigue explorando Coco</h2><nav class="discover-links" aria-label="Guías relacionadas">${links(p.related.map(s=>{if(!bySlug.has(s))throw Error('Unknown related page '+s);return bySlug.get(s);}))}</nav></section>
 <section class="closing"><div><h2>${isEterna?'Una duda puede ser el principio.':'El siguiente reto lo eliges tú.'}</h2><p>${isEterna?'Explora Eterna con tu familia y decide después de probar.':'Abre las reglas, elige un juego y empieza a tu ritmo.'}</p></div><a class="button" href="${isEterna?esc(trial(p)):'#elige-juego'}">${isEterna?'Probar Eterna →':'Elegir juego →'}</a></section><p class="discover-meta">Por Coco en Forma · Actualizado el <time datetime="2026-11-13">13 de noviembre de 2026</time>.</p></main>${footer}</body></html>\n`;
- mkdirSync(root+path,{recursive:true});writeFileSync(root+path+'index.html',html);
+ mkdirSync(root+path,{recursive:true});writeFileSync(root+path+'index.html',localizeLandingArtwork(html));
 }
 export function buildDiscovery(){discoveryPages.forEach(build);buildLocalizedLandings();console.log(`Built ${discoveryPages.length} search-intent landings.`);}
 if(process.argv[1]===fileURLToPath(import.meta.url))buildDiscovery();
