@@ -30,7 +30,11 @@ test('ten useful static pages have unique metadata and complete local navigation
    assert.ok(existsSync(new URL('.'+dest,root)),`${path} -> ${dest}`);
    if(u.hash){const target=u.pathname===path?d:page(dest);assert.ok(target.getElementById(decodeURIComponent(u.hash.slice(1))),`${path} missing ${u.hash}`);}
   }
-  for(const img of d.images){assert.ok(img.alt);assert.ok(img.width>0&&img.height>0);}
+  for(const img of d.images){
+   if(p.slug==='juegos-gratis'&&img.alt==='')assert.ok(img.closest('[aria-hidden="true"]')||img.closest('a.brand')?.textContent.trim(),'decorative image needs hidden art or an adjacent brand name');
+   else assert.ok(img.alt);
+   assert.ok(img.hasAttribute('alt'));assert.ok(img.width>0&&img.height>0);
+  }
   const graph=JSON.parse(d.querySelector('script[type="application/ld+json"]').textContent)['@graph'];
   for(const q of graph.find(x=>x['@type']==='FAQPage').mainEntity){assert.ok(d.body.textContent.includes(q.name));assert.ok(d.body.textContent.includes(q.acceptedAnswer.text));}
   assert.ok(!/aggregateRating|reviewCount/.test(JSON.stringify(graph)));
@@ -44,7 +48,15 @@ test('free-game CTAs use existing game routes and Eterna modes survive the login
  for(const p of discoveryPages){const d=page(`/${p.slug}/index.html`);
   if(p.type==='games'){
    assert.equal(d.querySelectorAll('[data-play]').length,p.games.length);
-   for(const a of d.querySelectorAll('[data-play]'))assert.ok(p.games.some(id=>games.find(g=>g.id===id).play===a.getAttribute('href')));
+   for(const a of d.querySelectorAll('[data-play]')){
+    const target=new URL(a.href);
+    if(p.slug==='juegos-gratis'){
+     assert.equal(target.searchParams.get('lang'),'es');
+     assert.equal(target.searchParams.get('source'),'seo_free_games_es');
+     target.searchParams.delete('lang');target.searchParams.delete('source');
+    }
+    assert.ok(p.games.some(id=>new URL(games.find(g=>g.id===id).play,origin).href===target.href));
+   }
   }else{
    for(const a of d.querySelectorAll('[data-eterna]')){const q=new URL(a.href).searchParams;assert.equal(q.get('open'),'eterna');assert.equal(q.get('mode'),p.mode);assert.ok(onboarding.includes('"'+p.mode+'"'));assert.match(q.get('source'),/^seo_/);}
    assert.match(d.querySelector('#planes').textContent,/7,99 €/);assert.match(d.querySelector('#planes').textContent,/79,99 €/);
@@ -68,5 +80,9 @@ test('share copies canonical URL and static examples do not contact services',as
  const w=dom.window;let copied;Object.defineProperty(w.navigator,'clipboard',{value:{writeText:async value=>{copied=value;}}});
  w.eval(read('seo/landing.js'));w.document.querySelector('[data-copy]').click();await new Promise(setImmediate);
  assert.equal(copied,origin+'/apoyo-escolar-con-ia/');
- for(const p of discoveryPages){const d=page(`/${p.slug}/index.html`);assert.deepEqual([...d.querySelectorAll('script[src]')].map(x=>x.getAttribute('src')),['/seo/landing.js?v=1','/i18n/coco.js?v=20261121-1']);}
+ for(const p of discoveryPages){
+  const d=page(`/${p.slug}/index.html`);
+  const scripts=p.slug==='juegos-gratis'?['/seo/localized.js?v=20261122-1']:['/seo/landing.js?v=1','/i18n/coco.js?v=20261122-2'];
+  assert.deepEqual([...d.querySelectorAll('script[src]')].map(x=>x.getAttribute('src')),scripts);
+ }
 });

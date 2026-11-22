@@ -88,6 +88,41 @@ async function openBoard(testContext, fen) {
   return {find, square, move, languages, result, pgn};
 }
 
+test('the generated chess guide mounts all 15 languages and carries the choice into the game', async context => {
+  const dom = new JSDOM(read('juego/ajedrez/index.html'), {
+    url: origin + '/juego/ajedrez/?lang=es', runScripts: 'outside-only'
+  });
+  context.after(() => dom.window.close());
+  const w = dom.window, d = w.document;
+  const loaded = new Promise(resolve => d.addEventListener('DOMContentLoaded', resolve, {once:true}));
+  const script = d.querySelector('script[src*="/i18n/coco.js"]');
+  assert.ok(script, 'the generated guide must load the language runtime');
+  Object.defineProperty(d, 'currentScript', {get: () => script});
+  w.fetch = async url => ({ok:true,json:async () => packs[path.basename(url.pathname, '.json')]});
+  w.eval(read('i18n/coco.js'));
+  await Promise.all([loaded, w.CocoLocale.ready]);
+  const select = d.querySelector('.coco-language-bar select');
+  assert.ok(select, 'the generated guide must provide a connected language menu');
+  assert.equal(select.options.length, 15);
+  assert.equal(d.body.dataset.cocoLanguagePage, 'public');
+  assert.ok(d.body.hasAttribute('data-coco-chess'), 'chess vocabulary must remain active on its guide');
+  const changed = new Promise(resolve => w.addEventListener('coco:language', resolve, {once:true}));
+  select.value = 'en';
+  select.dispatchEvent(new w.Event('change', {bubbles:true}));
+  await changed;
+  assert.equal(d.documentElement.lang, 'en');
+  assert.equal(d.querySelector('h1').textContent, packs.en.strings['Ajedrez online con Coco']);
+  const result = 'Jaque mate. Gana el equipo grafito (negras).';
+  assert.equal(w.CocoLocale.t(result), packs.en.chess[result]);
+  const gameLinks = [...d.querySelectorAll('a[href*="/games/ajedrez/"]')];
+  assert.ok(gameLinks.length >= 2, 'both guide CTAs must lead to the game');
+  for (const link of gameLinks) {
+    const target = new URL(link.href);
+    assert.equal(target.pathname, '/games/ajedrez/');
+    assert.equal(target.searchParams.get('lang'), 'en');
+  }
+});
+
 test('a selected piece, its legal destinations and the checkmate result survive all 15 language changes', async context => {
   const board = await openBoard(context);
   board.square('f2').click();

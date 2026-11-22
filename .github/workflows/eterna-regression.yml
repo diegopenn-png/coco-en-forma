@@ -13,6 +13,12 @@ on:
       - "coco-v142-unified.js"
       - "i18n/**"
       - "qa/i18n.test.cjs"
+      - "seo/**"
+      - "scripts/build-*-landings.mjs"
+      - "qa/localized-landings.test.mjs"
+      - "qa/discovery-landings.test.mjs"
+      - "qa/seo-indexing.test.mjs"
+      - "sitemap.xml"
       - "index.html"
       - "eterna.html"
       - "eterna-captacion.html"
@@ -85,6 +91,9 @@ jobs:
         run: |
           npm install --prefix "$RUNNER_TEMP/coco-startup-qa" --no-audit --no-fund jsdom@26
           COCO_JSDOM_PATH="$RUNNER_TEMP/coco-startup-qa/node_modules/jsdom" node --test qa/first-paint.test.cjs qa/startup-light.test.cjs qa/navigation/recovery.test.cjs qa/i18n.test.cjs
+      - name: Check localized discovery pages and crawlable language links
+        run: |
+          COCO_JSDOM_PATH="$RUNNER_TEMP/coco-startup-qa/node_modules/jsdom" node --test qa/localized-landings.test.mjs qa/discovery-landings.test.mjs qa/seo-indexing.test.mjs
       - name: Check signup and recovery email templates in every language
         run: go test -v qa/auth_language_templates_test.go
       - name: Check 48-conversation Eterna matrix

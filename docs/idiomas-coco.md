@@ -6,7 +6,24 @@ La web y la PWA comparten la preferencia de idioma. El catálogo usa español, i
 
 Diego autorizó conservar en español los juegos con una adaptación lingüística compleja. El aviso previo cubre Descifra la palabra, Sopa de letras, Crucigrama, Coco Med, Verdadero o falso, Reto tiempo y Coco Bank. Coco Med, Verdadero o falso y Reto tiempo tienen bancos de preguntas o microdesafíos de contenido. Coco Bank incluye su propia escuela de inversión, presupuesto y simulación familiar.
 
-## Estado de la rama
+## Estado vigente · 22 de noviembre de 2026
+
+El selector público y los 15 idiomas se publicaron mediante la PR 132, commit `c0e10ab783d4f0374e59c9f5bd230251617426be`. GitHub Pages y la comprobación de producción terminaron correctamente. En cocoenforma.com se comprobó la actualización desde la versión anterior mediante «Nueva versión disponible · actualizar», la aparición del selector y la conservación del francés tras recargar. Las notas de preparación más abajo son históricas.
+
+Diego amplió el encargo: selector dentro del menú después de entrar, landings de captación en cada idioma y corrección de una pregunta repetida por Eterna tras responder. Esta entrega incluye:
+
+- El mismo selector se coloca en `.navegacionJugador` cuando el menú está abierto y regresa al espacio público al salir. No duplica los controles ni reinicia el juego. El renderer real, con Supabase simulado, se comprobó entrando, cambiando pestañas, abriendo la clasificación y Memoria, cambiando idioma con una carta girada y cerrando sesión, en web y modo PWA. Las 24 pruebas de idiomas pasan.
+- La página española `/juegos-gratis/` conserva su URL. Se añaden 14 equivalentes con HTML estático y redacción propia, canonical individual, 15 alternates `hreflang` y `x-default`, enlaces de idioma utilizables sin JavaScript, metadatos sociales y FAQ coherente con su JSON-LD. El sitemap pasa de 38 a 52 URL. El generador único conserva las nuevas direcciones al reconstruir el catálogo.
+- El contenido se encuentra en `seo/locales/free-games.json`; las palabras clave son intenciones editoriales, sin estimaciones inventadas de demanda o posición. Cada página incluye seis juegos, un ejemplo resuelto, pasos para empezar, FAQ y enlaces a la aplicación que conservan el idioma. Las 14 pruebas de páginas/SEO pasan. No se afirma que Google haya indexado las nuevas URL.
+- Eterna `160.100.1-conversation-continuity` impide recuperar desde el historial una pregunta que un turno posterior ya cerró. Conserva las preguntas legítimamente pendientes y registra como aprendidas las ideas correspondientes a la pregunta contestada. La reproducción y siete regresiones nuevas pasan con fixtures y sin llamadas a modelos; la validación backend afectada pasa 596 comprobaciones. Su publicación requiere promover un candidato con los bindings de la versión activa, sin adoptar los orígenes de las vistas previas.
+
+La caché de esta entrega es `coco-en-forma-v160.100.84-menu-languages`; los archivos compartidos de idioma utilizan `20261122-2`. El estado final de despliegue y los identificadores de la publicación se registran en la PR de esta entrega. No dar por publicada una versión solo por existir en la rama.
+
+Pendientes de validación externa: correos de alta/recuperación recibidos en un buzón real; PWA instalada en un iPhone físico; inspección posterior de las nuevas URL en Search Console. No se dispone de un conector GSC en esta sesión. Los juegos marcados en español, las sesiones del tutor y el cuestionario/PDF original de Eneagrama mantienen el alcance lingüístico indicado. La revisión editorial completa de los paquetes anteriores sigue siendo distinta de la redacción nueva de estas landings.
+
+Referencias técnicas de SEO: [versiones localizadas](https://developers.google.com/search/docs/specialty/international/localized-versions) y [contenido para la búsqueda con IA](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide). La publicación, el rastreo, la indexación y la obtención de usuarios son etapas diferentes.
+
+## Historial de preparación · 21–22 de noviembre
 
 Están en preparación los paquetes de texto y los accesos desde la aplicación, los juegos independientes y las páginas del catálogo. Hay traducciones de borrador que requieren revisión. La rama no constituye una publicación. Quedan por verificar los recorridos completos de cuenta, reportes en pantalla y exportados, estadísticas, juegos y PWA instalada. Comprobar que los textos originales usados por las reglas de juego y los valores personales sigan intactos después de cambiar el idioma.
 

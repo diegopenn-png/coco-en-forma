@@ -202,17 +202,106 @@ test('language arrows wrap around and the native menu stays in sync',async()=>{
   }finally{dom.window.close();}
 });
 
-test('all catalogue descriptions, guides and standalone game menu text have entries in each language',()=>{
+for(const standalone of [false,true])test('the '+(standalone?'PWA':'web')+' account menu keeps one language selector through login, play, navigation and logout',async()=>{
+  const {api,w,doc,dom}=page('https://coco.test/?source='+(standalone?'pwa-v159':'web'),undefined,undefined,'<div id="cocoApp"></div>');
+  const settle=()=>new Promise(resolve=>setTimeout(resolve,40));
+  try {
+    await api.ready;
+    const app=doc.getElementById('cocoApp');
+    const publicSlot=doc.querySelector('[data-coco-language-menu]');
+    const select=publicSlot.querySelector('select');
+    const scripts=[...fs.readFileSync(path.join(root,'index.html'),'utf8').matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+    let session=null,signIns=0,signOuts=0;
+    const data=table=>({data:table==='perfiles'?{id:'fixture',apodo:'Memoria',rol:'jugador',edad:20}:table==='ajustes'?{id:1,partidas_por_dia:1,registro_abierto:true}:[],error:null});
+    function query(table){const builder=new Proxy({}, {get:(_,key)=>key==='then'?(resolve,reject)=>Promise.resolve(data(table)).then(resolve,reject):()=>builder});return builder;}
+    const client={from:query,rpc:async name=>({data:name==='racha_de'?0:[]}),auth:{
+      getSession:async()=>({data:{session}}),
+      signInWithPassword:async credentials=>{assert.deepEqual({...credentials},{email:'fixture@example.invalid',password:'synthetic-password'});signIns++;session={user:{id:'fixture'}};return{data:{...session,session}};},
+      signOut:async()=>{signOuts++;session=null;},onAuthStateChange(){}
+    }};
+    w.supabase={createClient:()=>client};w.__COCO_SUPABASE_CLIENT=client;
+    w.CocoDailyV134={claim:async()=>({ok:true})};
+    w.CocoFirstPaint={dataReady(){}};w.matchMedia=()=>({matches:standalone});
+    Object.defineProperty(w.navigator,'standalone',{value:standalone});
+    w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};
+    w.eval(scripts.find(m=>m[2].startsWith('window.COCO_VERSION'))[2]);
+    w.eval(scripts.find(m=>m[2].startsWith('!function(){var a=window.COCO_CONFIG'))[2]);
+    await settle();
+    assert.equal(publicSlot.querySelector('select'),select);
+    app.querySelector('#cMail').value='fixture@example.invalid';
+    app.querySelector('#cPas').value='synthetic-password';
+    await app.querySelector('.loginCard .btn.lima').onclick();
+    await settle();
+    const menu=app.querySelector('.navegacionJugador');
+    assert.equal(signIns,1);
+    assert.equal(menu.querySelector('[data-coco-language-account] select'),select);
+    assert.equal(publicSlot.hidden,true);
+    const cardsPanel=app.querySelectorAll('.panelJugador')[1];
+    [...menu.querySelectorAll('.pestanaJugador')].find(b=>api.sourceText(b).includes('Mis tarjetas')).click();
+    const choose=async tag=>{const changed=new Promise(resolve=>w.addEventListener('coco:language',resolve,{once:true}));select.value=tag;select.dispatchEvent(new w.Event('change',{bubbles:true}));await changed;};
+    await choose('fr');
+    assert.equal(menu.querySelector('.coco-language-caption').textContent,'Langue');
+    assert.ok(cardsPanel.classList.contains('activa'));
+    assert.equal(w.localStorage.getItem('coco_pestana_jugador'),'tarjetas');
+    app.querySelector('.bRankCarnet').click();await settle();
+    assert.equal(publicSlot.querySelector('select'),select);
+    app.querySelector('.rankingVolverV83').click();await settle();
+    const rebuilt=app.querySelector('.navegacionJugador');
+    assert.notEqual(rebuilt,menu);
+    assert.equal(rebuilt.querySelector('[data-coco-language-account] select'),select);
+    assert.equal(select.value,'fr');
+    assert.ok(app.querySelectorAll('.panelJugador')[1].classList.contains('activa'));
+    [...rebuilt.querySelectorAll('.pestanaJugador')].find(b=>api.sourceText(b).includes('Mis retos')).click();
+    const memory=[...app.querySelectorAll('.juego')].find(card=>api.sourceText(card.querySelector('h3'))==='Memoria');
+    memory.querySelector('button').click();await settle();
+    app.querySelector('.nivelesJuego button').click();
+    const board=app.querySelector('.memoriaGrid'),card=board.querySelector('.memoriaCarta');
+    card.click();await choose('ar');
+    assert.equal(app.querySelector('.memoriaGrid'),board);
+    assert.ok(card.classList.contains('volteada'));
+    assert.equal(publicSlot.querySelector('select'),select);
+    app.querySelector('.barraVolver button').click();await settle();
+    assert.equal(app.querySelector('.navegacionJugador select'),select);
+    assert.equal(select.value,'ar');
+    await app.querySelector('.cabecera .fin > button').onclick();await settle();
+    assert.equal(signOuts,1);
+    assert.equal(publicSlot.hidden,false);
+    assert.equal(publicSlot.querySelector('select'),select);
+    assert.equal(doc.querySelectorAll('.coco-language-bar').length,1);
+    assert.equal(select.value,'ar');
+    assert.equal(w.localStorage.getItem('coco.language.v1'),'ar');
+  } finally {dom.window.close();}
+});
+
+test('all catalogue pages provide translated menu text or complete static language navigation',()=>{
   const guides=fs.readdirSync(root,{withFileTypes:true})
     .filter(f=>f.isDirectory() && /^(?:apoyo|aprender|ayuda|preparar|juegos-)/.test(f.name))
     .map(f=>f.name+'/index.html');
   const directories=folder=>fs.readdirSync(path.join(root,folder)).map(id=>folder+'/'+id+'/index.html');
-  const paths=['juegos/index.html','explora/index.html',...directories('juego'),...directories('games'),...guides];
+  const landingCopy=JSON.parse(fs.readFileSync(path.join(root,'seo/locales/free-games.json'),'utf8'));
+  const landingRoutes=locales.map(tag=>[tag,tag==='es'?'/juegos-gratis/':`/${tag.toLowerCase()}/${landingCopy[tag].slug}/`]);
+  const staticPages=new Map(landingRoutes.map(([tag,route])=>[route.slice(1)+'index.html',tag]));
+  const paths=new Set(['juegos/index.html','explora/index.html',...directories('juego'),...directories('games'),...guides,...staticPages.keys()]);
   const strings=new Set();
   for(const file of paths){
     const dom=new JSDOM(fs.readFileSync(path.join(root,file),'utf8'));
     try {
       const doc=dom.window.document;
+      const staticTag=staticPages.get(file);
+      if(staticTag){
+        // These guides ship their own translated HTML and navigate between real language URLs.
+        assert.equal(doc.body.dataset.cocoLandingLocale,staticTag,file);
+        assert.equal(doc.documentElement.lang,staticTag,file);
+        assert.equal(doc.querySelector('h1')?.textContent,landingCopy[staticTag].heading,file);
+        assert.equal(doc.querySelector('.lead')?.textContent,landingCopy[staticTag].intro,file);
+        const menu=doc.querySelector('#landing-language');
+        assert.ok(menu,file+' needs its static language selector');
+        assert.equal(menu.value,'/'+file.replace(/index\.html$/,''),file);
+        assert.deepEqual([...menu.options].map(option=>[option.lang,option.value]),landingRoutes,file);
+        assert.deepEqual([...doc.querySelectorAll('.all-languages a[hreflang]')].map(link=>[link.hreflang,link.getAttribute('href')]),landingRoutes,file);
+        assert.deepEqual([...doc.querySelectorAll('script[src]')].map(script=>new URL(script.getAttribute('src'),'https://coco.test').pathname),['/seo/localized.js'],file);
+        continue;
+      }
       assert.ok(doc.querySelector('[data-coco-language-menu]'),file);
       for(const el of doc.body.querySelectorAll('p,button,a,label,h1,h2,h3,h4,li,span,b,strong,small,summary,figcaption')){
         if(el.closest('[data-coco-verbatim],code'))continue;

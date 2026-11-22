@@ -41,6 +41,8 @@ jobs:
       CLOUDFLARE_ACCOUNT_INPUT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - uses: actions/setup-node@v4
         with:
@@ -92,6 +94,7 @@ jobs:
           allowed_origins="https://www.cocoenforma.com,https://cocoenforma.com,https://raw.githack.com"
           npx wrangler versions upload \
             --name coco-eterna-v159 \
+            --tag "coco-${{ github.event.pull_request.head.sha || github.sha }}" \
             --keep-vars \
             --var "ENABLE_ETERNA_LIBRARY:true" \
             --var "ETERNA_LIBRARY_RELEASE:eterna-library-2026.09-v8-410-consolidated-1c484e" \
@@ -108,7 +111,7 @@ jobs:
       - name: Preserve preview coordinates
         uses: actions/upload-artifact@v4
         with:
-          name: eterna-worker-preview-${{ github.sha }}
+          name: eterna-worker-preview-${{ github.event.pull_request.head.sha || github.sha }}
           path: eterna-worker/preview-upload.log
           if-no-files-found: error
           retention-days: 7
