@@ -11,6 +11,7 @@ on:
       - "tarjetas/ver/**"
       - "qa/reward-cards-browser.cjs"
       - "qa/account-language-browser.cjs"
+      - "qa/family-report-navigation-v160130.cjs"
       - "qa/study-language-browser.cjs"
       - "i18n/assessment/**"
       - "i18n/med/**"
@@ -23,6 +24,7 @@ on:
       - "tarjetas/ver/**"
       - "qa/reward-cards-browser.cjs"
       - "qa/account-language-browser.cjs"
+      - "qa/family-report-navigation-v160130.cjs"
       - "qa/study-language-browser.cjs"
       - "i18n/assessment/**"
       - "i18n/med/**"
@@ -69,6 +71,7 @@ jobs:
           curl --retry 5 --retry-connrefused -fsS "$COCO_QA_URL/tarjetas/ver/" -o /dev/null
           node qa/reward-cards-browser.cjs
           node qa/account-language-browser.cjs
+          COCO_QA_BROWSER_CHANNEL=chrome node qa/family-report-navigation-v160130.cjs --progress
           node --test qa/study-language-data.test.cjs
           node qa/study-language-browser.cjs
   live-smoke:
@@ -81,7 +84,7 @@ jobs:
       WORKER_HEALTH_URL: https://coco-eterna-v159.chatinmobiliario.workers.dev/health
       EXPECTED_WORKER_VERSION: 160.100.2-eneagrama-analysis
       EXPECTED_FRONTEND_VERSION: 160.99.25-contextual-dialogue
-      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.101-round-languages
+      EXPECTED_PWA_CACHE: coco-en-forma-v160.100.102-family-report
       EXPECTED_ENEAGRAMA_REPORT_VERSION: 2026-11-22-coaching-4
     steps:
       - name: Fetch uncached production assets
@@ -246,8 +249,10 @@ jobs:
           sparse-checkout: |
             qa/reward-cards-browser.cjs
             qa/account-language-browser.cjs
+            qa/family-report-navigation-v160130.cjs
             qa/study-language-browser.cjs
             i18n/assessment/*.json
+            supabase-js-2.112.3.min.js
           sparse-checkout-cone-mode: false
       - name: Download and verify localized reward images on the live mobile web
         env:
@@ -258,4 +263,5 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/coco-reward-browser" --ignore-scripts --no-audit --no-fund playwright@1.63.0
           node qa/reward-cards-browser.cjs
           node qa/account-language-browser.cjs
+          COCO_QA_BROWSER_CHANNEL=chrome node qa/family-report-navigation-v160130.cjs --progress
           node qa/study-language-browser.cjs
