@@ -2132,7 +2132,7 @@ window.ETERNA_RELEASE_V16057=Object.freeze({
         }
       };
       var resend=node.querySelector("[data-legal-resend]");if(resend)resend.onclick=async function(){var c=getClient(),s=await session(),email=s&&s.user&&s.user.email;if(!c||!email){message(node,"No se encontró el correo de la cuenta.","error");return}resend.disabled=true;try{var r=await c.auth.resend({type:"signup",email:email});if(r&&r.error)throw r.error;message(node,"Te hemos enviado un correo de verificación. Después vuelve a entrar en Zona Familiar.","ok")}catch(e){message(node,"No se pudo enviar el correo de verificación.","error")}finally{resend.disabled=false}};
-      var withdraw=node.querySelector("[data-legal-withdraw]");if(withdraw)withdraw.onclick=async function(){if(!confirm("Retirar la autorización bloqueará Eterna hasta que un adulto vuelva a autorizarla. Esto no cancela por sí solo una suscripción de pago. ¿Continuar?"))return;withdraw.disabled=true;try{await postLegal({action:"withdraw"});await renderLegalCard(false);alert("Autorización retirada. Si existe una suscripción de pago y no quieres futuras renovaciones, gestiona también la suscripción desde Zona Familiar.")}catch(e){withdraw.disabled=false;message(node,"No se pudo retirar la autorización.","error")}};
+      var withdraw=node.querySelector("[data-legal-withdraw]");if(withdraw)withdraw.onclick=async function(){if(!confirm((window.CocoLocale?.t || String)("Retirar la autorización bloqueará Eterna hasta que un adulto vuelva a autorizarla. Esto no cancela por sí solo una suscripción de pago. ¿Continuar?")))return;withdraw.disabled=true;try{await postLegal({action:"withdraw"});await renderLegalCard(false);alert((window.CocoLocale?.t || String)("Autorización retirada. Si existe una suscripción de pago y no quieres futuras renovaciones, gestiona también la suscripción desde Zona Familiar."))}catch(e){withdraw.disabled=false;message(node,"No se pudo retirar la autorización.","error")}};
       try{performance.mark("family_legal_ready")}catch(e){}
       try{root.dispatchEvent(new CustomEvent("coco:family-legal-ready",{detail:{card:card,node:node,state:st}}))}catch(e){}
       return true
@@ -2477,7 +2477,7 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
       location.href=data.url
     }catch(e){
       button.disabled=false;button.textContent=original;
-      alert("No se pudo abrir la pasarela de pago. Inténtalo de nuevo.")
+      alert((window.CocoLocale?.t || String)("No se pudo abrir la pasarela de pago. Inténtalo de nuevo."))
     }
   }
 
@@ -2793,8 +2793,8 @@ window.ETERNA_RELEASE_V16070=Object.freeze({version:"160.70",consolidated_contro
     var kit=root.CocoFamilyReportKitV16083,panel=document.querySelector("#cocoApp .eternaV159FamilyCard .eternaV160ProgressPanel");if(!kit||!panel||!model)return false;var sig=kit.signature(model);if(panel.dataset.etPremiumReport==="16083"&&panel.dataset.etPremiumSignature===sig)return true;panel.dataset.etPremiumReport="16083";panel.dataset.etPremiumSignature=sig;panel.classList.add("eternaV160StrengthMap");panel.innerHTML=kit.coreHtml(model)+'<div class="cocoV16083InlineActions"><button type="button" data-et-export>Exportar informe</button><button type="button" data-et-learning-whatsapp data-report-share>Compartir por WhatsApp</button></div>';return true
   }
   async function syncLearningPremiumReport(force){var model=await getLearningReportModel(!!force);if(model)renderLearningPremiumPanel(model);return model}
-  async function exportReport(button){var kit=root.CocoFamilyReportKitV16083;if(!kit){alert("El generador visual todavía no está listo.");return}var model=await getLearningReportModel(false);if(!model){alert("No se pudo preparar el informe de progreso de Eterna.");return}return kit.export(model,button)}
-  async function shareLearningReport(button){var kit=root.CocoFamilyReportKitV16083;if(!kit){alert("El generador visual todavía no está listo.");return}var model=await getLearningReportModel(false);if(!model){alert("No se pudo preparar el informe de progreso de Eterna.");return}return kit.share(model,button)}
+  async function exportReport(button){var kit=root.CocoFamilyReportKitV16083;if(!kit){alert((window.CocoLocale?.t || String)("El generador visual todavía no está listo."));return}var model=await getLearningReportModel(false);if(!model){alert((window.CocoLocale?.t || String)("No se pudo preparar el informe de progreso de Eterna."));return}return kit.export(model,button)}
+  async function shareLearningReport(button){var kit=root.CocoFamilyReportKitV16083;if(!kit){alert((window.CocoLocale?.t || String)("El generador visual todavía no está listo."));return}var model=await getLearningReportModel(false);if(!model){alert((window.CocoLocale?.t || String)("No se pudo preparar el informe de progreso de Eterna."));return}return kit.share(model,button)}
 
   function install(){
     injectStyles();

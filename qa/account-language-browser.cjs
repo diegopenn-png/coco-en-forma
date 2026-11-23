@@ -188,6 +188,71 @@ async function run(browser, origin, standalone) {
     await padel.locator('.cocoGameNavigation button').last().click();
     await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
     console.log('Coco Pádel player directory in 15 languages.');
+    // Capture the actual lettering drawn into the downloadable file.
+    await page.evaluate(()=>{
+      window.cocoDownloadLetters=[];
+      const original=CanvasRenderingContext2D.prototype.fillText;
+      CanvasRenderingContext2D.prototype.fillText=function(text,...args){
+        if(this.canvas.width===1200&&this.canvas.height===630)window.cocoDownloadLetters.push(String(text));
+        return original.call(this,text,...args);
+      };
+      window.CocoShareToolV1('bank');
+    });
+    const share=page.locator('.cocoShareModal');
+    const download=share.locator('.cocoDownloadCard');
+    for(const tag of await picker.locator('option').evaluateAll(options=>options.map(o=>o.value))){
+      await page.evaluate(tag=>window.CocoLocale.setLanguage(tag),tag);
+      const file=tag==='es'?'coco-bank.jpg':'coco-bank-'+tag+'.jpg';
+      await page.waitForFunction(file=>document.querySelector('.cocoShareModal .cocoDownloadCard')?.download===file,file);
+      if(tag!=='es'){
+        const dimensions=await download.evaluate(async a=>{
+          if(!a.href.startsWith('data:image/jpeg;base64,'))return [];
+          const img=new Image();img.src=a.href;await img.decode();return [img.naturalWidth,img.naturalHeight];
+        });
+        assert.deepEqual(dimensions,[1200,630],tag+' localized downloadable JPEG');
+        const lettering=await page.evaluate(()=>({
+          observed:window.cocoDownloadLetters.slice(-2),
+          expected:['Coco Bank','Gestiona tu dinero'].map(key=>window.CocoLocale.t(key))
+        }));
+        assert.deepEqual(lettering.observed,lettering.expected,tag+' lettering drawn into the JPEG');
+      }
+    }
+    await share.locator('[data-share-close]').click();
+    console.log('Downloadable catalogue thumbnail in 15 languages passed.');
+    await picker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
+    const truthCard=page.locator(grid+' > [data-coco-juego="verdadero"]');
+    await truthCard.locator('.cocoBotonJuego,button.btn').first().click();
+    const quiz=page.locator('.cocoArcadeOverlay.visible[data-coco-playing="verdadero"]');
+    const quizPicker=quiz.locator('[data-coco-game-picker] select');
+    await quizPicker.waitFor();
+    await quiz.locator('[data-arcade-start]').click();
+    const question=quiz.locator('.cocoArcadePrompt');
+    await question.waitFor();
+    await quizPicker.selectOption('es');
+    await page.waitForFunction(()=>document.documentElement.lang==='es');
+    const original=await question.textContent();
+    for(const tag of await quizPicker.locator('option').evaluateAll(options=>options.map(o=>o.value))){
+      await quizPicker.selectOption(tag);
+      await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
+      const prompt=await question.textContent();
+      if(tag==='es')assert.equal(prompt,original);
+      else assert.notEqual(prompt,original,tag+' current question');
+      assert.equal(await quiz.locator('[data-option]:enabled').count(),2,tag+' same active round');
+    }
+    await quizPicker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
+    const mainMenu=quiz.locator('.cocoGameNavigation button').last();
+    const [confirmation]=await Promise.all([
+      page.waitForEvent('dialog').then(async dialog=>{
+        const message=dialog.message();await dialog.dismiss();return message;
+      }),
+      mainMenu.click()
+    ]);
+    assert.equal(confirmation,'Return to your challenges? This round will not be saved.');
+    assert.ok(await question.isVisible(),'cancelling leaves the same round open');
+    await Promise.all([page.waitForEvent('dialog').then(dialog=>dialog.accept()),mainMenu.click()]);
+    await picker.waitFor();
+    console.log('Active true-or-false round in 15 languages and native exit confirmation passed.');
+
     await page.evaluate(()=>window.CocoEternaV160.open());
     const tutor=page.locator('#eternaOverlayV159.is-open');
     const inside=tutor.locator('[data-eterna-picker] select');

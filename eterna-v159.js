@@ -681,9 +681,9 @@
         cc='<option value="">Selecciona tu comunidad</option>'+CCAA.map(function(x){return '<option>'+esc(x)+'</option>'}).join("");
     chat.innerHTML='<div class="eternaV159Setup"><h3>Configura tu contexto escolar</h3><p>Esto permite que Eterna adapte el nivel y consulte el currículo adecuado. No es un perfil psicológico.</p><label>Curso</label><select data-et-year>'+opts+'</select><label>Comunidad autónoma</label><select data-et-ccaa>'+cc+'</select><div class="eternaV159Buttons" style="margin-top:14px"><button type="button" class="eternaV159Primary" data-et-save>Guardar y continuar</button></div></div>';
     chat.querySelector("[data-et-save]").onclick=async function(){
-      var sy=chat.querySelector("[data-et-year]"),ccaa=chat.querySelector("[data-et-ccaa]");if(!sy.value||!ccaa.value)return alert("Selecciona el curso y la comunidad autónoma.");
+      var sy=chat.querySelector("[data-et-year]"),ccaa=chat.querySelector("[data-et-ccaa]");if(!sy.value||!ccaa.value)return alert(tr("Selecciona el curso y la comunidad autónoma."));
       var option=sy.options[sy.selectedIndex],payload={user_id:state.session.user.id,stage:option.dataset.stage,school_year:sy.value,autonomous_community:ccaa.value,preferred_language:"es",updated_at:new Date().toISOString()};
-      var r=await client().from("eterna_student_profiles").upsert(payload,{onConflict:"user_id"}).select().single();if(r.error){alert("No se pudo guardar la configuración escolar.");return}
+      var r=await client().from("eterna_student_profiles").upsert(payload,{onConflict:"user_id"}).select().single();if(r.error){alert(tr("No se pudo guardar la configuración escolar."));return}
       state.profile=r.data;state.dataLoadedAt=Date.now();setIdentity();render()
     }
   }
@@ -846,29 +846,29 @@
   async function microphonePermissionState(){try{if(navigator.permissions&&navigator.permissions.query){var p=await navigator.permissions.query({name:"microphone"});return p&&p.state||null}}catch(e){}return null}
   async function toggleRecord(){
     var b=overlay().querySelector("[data-et-mic]");
-    if(state.parentSettings&&state.parentSettings.allow_audio_input===false){announceVoiceState("idle");alert("El micrófono está desactivado desde Zona familiar.");return}
+    if(state.parentSettings&&state.parentSettings.allow_audio_input===false){announceVoiceState("idle");alert(tr("El micrófono está desactivado desde Zona familiar."));return}
     if(state.recorder&&state.recorder.state==="recording"){announceVoiceState("transcribing");state.recorder.stop();return}
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==="undefined"){announceVoiceState("idle");alert("Este navegador no permite grabar audio desde Eterna. Puedes escribir la pregunta.");return}
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==="undefined"){announceVoiceState("idle");alert(tr("Este navegador no permite grabar audio desde Eterna. Puedes escribir la pregunta."));return}
     try{
-      var permission=await microphonePermissionState();if(permission==="denied"){announceVoiceState("idle");alert("El micrófono está bloqueado para Coco en Forma. Actívalo en los permisos del navegador o de la app.");return}
+      var permission=await microphonePermissionState();if(permission==="denied"){announceVoiceState("idle");alert(tr("El micrófono está bloqueado para Coco en Forma. Actívalo en los permisos del navegador o de la app."));return}
       var stream=await navigator.mediaDevices.getUserMedia({audio:true}),mime=recorderMime(),options=mime?{mimeType:mime}:undefined;try{localStorage.setItem("coco_eterna_mic_granted_v1","1")}catch(_e){}state.chunks=[];
       var rec=options?new MediaRecorder(stream,options):new MediaRecorder(stream);state.recorder=rec;
       rec.ondataavailable=function(e){if(e.data&&e.data.size)state.chunks.push(e.data)};
       rec.onstop=async function(){b.classList.remove("recording");b.textContent="🎙️";stream.getTracks().forEach(function(t){t.stop()});announceVoiceState("transcribing");var type=rec.mimeType||mime||(state.chunks[0]&&state.chunks[0].type)||"audio/webm",blob=new Blob(state.chunks,{type:type});state.recorder=null;await transcribe(blob,audioFilename(type))};
       rec.start(250);b.classList.add("recording");b.textContent="■";announceVoiceState("listening");setStatus("Escuchando… toca de nuevo para terminar","warn")
-    }catch(e){announceVoiceState("idle");window.__ETERNA_VOICE_DIALOG_ACTIVE__=false;alert("No se pudo acceder al micrófono. Revisa el permiso del navegador.")}
+    }catch(e){announceVoiceState("idle");window.__ETERNA_VOICE_DIALOG_ACTIVE__=false;alert(tr("No se pudo acceder al micrófono. Revisa el permiso del navegador."))}
   }
 
   async function transcribe(blob,name){var voiceDialog=window.__ETERNA_VOICE_DIALOG_ACTIVE__===true;setStatus("Transcribiendo tu pregunta…","warn");try{var fd=new FormData();fd.append("locale",locale());fd.append("audio",blob,name||audioFilename(blob.type));var r=await api("/v1/transcribe",{method:"POST",body:fd}),data=await safeJson(r);if(!r.ok||!data.text)throw new Error("TRANSCRIPTION_FAILED");var i=overlay().querySelector("[data-et-input]");i.value=cleanText(data.text);state.inputSource="voice";if(voiceDialog){announceVoiceState("thinking");setStatus("Te he oído. Eterna está preparando su respuesta…","warn");await send()}else{announceVoiceState("idle");setStatus("He escrito lo que te he oído. Revísalo y envíalo.","ok");i.focus()}}catch(e){window.__ETERNA_VOICE_DIALOG_ACTIVE__=false;announceVoiceState("idle");setStatus("No pude transcribir el audio. Puedes escribirlo.","warn")}}
   function speechButtonLabel(button,status){if(!button)return;var playing=status===true||status==="playing",loading=status==="loading";button.classList.toggle("is-playing",playing||loading);button.setAttribute("aria-pressed",playing?"true":"false");button.setAttribute("aria-busy",loading?"true":"false");button.textContent=loading?"⏳ Preparando…":playing?"⏸ Pausar":button.hasAttribute("data-et-listen-slow")?"🐢 Más lento":"🔊 Escuchar"}
   function stopAudio(){try{if(state.lastAudio){state.lastAudio.pause();state.lastAudio=null}if(window.speechSynthesis)window.speechSynthesis.cancel();speechButtonLabel(state.lastSpeechButton,false);state.lastSpeechButton=null;state.lastUtterance=null}catch(e){}}
   async function fetchSpeechBlob(text){var lastError=null,payload=JSON.stringify({locale:locale(),text:cleanText(String(text||"")).slice(0,1800)});for(var attempt=0;attempt<2;attempt++){var controller=typeof AbortController!=="undefined"?new AbortController():null,timer=controller?setTimeout(function(){controller.abort()},15000):null;try{var options={method:"POST",headers:{"Content-Type":"application/json"},body:payload};if(controller)options.signal=controller.signal;var r=await api("/v1/speak",options);if(r.ok)return await r.blob();lastError=new Error("TTS_"+r.status)}catch(e){lastError=e}finally{if(timer)clearTimeout(timer)}if(attempt===0)setStatus("La voz tarda un poco. Reintentando…","warn")}throw lastError||new Error("TTS")}
-  async function speak(text,rate,button,voiceDialog){if(state.parentSettings&&state.parentSettings.voice_enabled===false){announceVoiceState("idle");alert("La voz de Eterna está desactivada desde Zona familiar.");return}if(button&&state.lastSpeechButton===button&&state.lastAudio){if(state.lastAudio.paused){await state.lastAudio.play();speechButtonLabel(button,true);announceVoiceState("speaking")}else{state.lastAudio.pause();speechButtonLabel(button,false);announceVoiceState("idle")}return}stopAudio();state.lastSpeechButton=button||null;speechButtonLabel(button,"loading");announceVoiceState("preparing");try{var blob=await fetchSpeechBlob(text);if(state.lastSpeechUrl)URL.revokeObjectURL(state.lastSpeechUrl);state.lastSpeechUrl=URL.createObjectURL(blob);var a=voiceDialog&&window.__ETERNA_VOICE_AUDIO__?window.__ETERNA_VOICE_AUDIO__:new Audio();a.src=state.lastSpeechUrl;a.muted=false;a.volume=1;a.playbackRate=rate||1;state.lastAudio=a;a.onended=function(){speechButtonLabel(button,false);announceVoiceState("idle");if(state.lastAudio===a){state.lastAudio=null;state.lastSpeechButton=null}};a.onerror=a.onended;speechButtonLabel(button,true);announceVoiceState("speaking");await a.play();return}catch(e){speechButtonLabel(button,false);state.lastSpeechButton=null;announceVoiceState("idle");setStatus("No pude preparar la voz de Eterna. Toca Escuchar para intentarlo de nuevo.","warn")}}
+  async function speak(text,rate,button,voiceDialog){if(state.parentSettings&&state.parentSettings.voice_enabled===false){announceVoiceState("idle");alert(tr("La voz de Eterna está desactivada desde Zona familiar."));return}if(button&&state.lastSpeechButton===button&&state.lastAudio){if(state.lastAudio.paused){await state.lastAudio.play();speechButtonLabel(button,true);announceVoiceState("speaking")}else{state.lastAudio.pause();speechButtonLabel(button,false);announceVoiceState("idle")}return}stopAudio();state.lastSpeechButton=button||null;speechButtonLabel(button,"loading");announceVoiceState("preparing");try{var blob=await fetchSpeechBlob(text);if(state.lastSpeechUrl)URL.revokeObjectURL(state.lastSpeechUrl);state.lastSpeechUrl=URL.createObjectURL(blob);var a=voiceDialog&&window.__ETERNA_VOICE_AUDIO__?window.__ETERNA_VOICE_AUDIO__:new Audio();a.src=state.lastSpeechUrl;a.muted=false;a.volume=1;a.playbackRate=rate||1;state.lastAudio=a;a.onended=function(){speechButtonLabel(button,false);announceVoiceState("idle");if(state.lastAudio===a){state.lastAudio=null;state.lastSpeechButton=null}};a.onerror=a.onended;speechButtonLabel(button,true);announceVoiceState("speaking");await a.play();return}catch(e){speechButtonLabel(button,false);state.lastSpeechButton=null;announceVoiceState("idle");setStatus("No pude preparar la voz de Eterna. Toca Escuchar para intentarlo de nuevo.","warn")}}
 
   async function subscriptionStatus(){await loadData(true);return state.subscription||{status:masterAccess()?"active":"inactive"}}
-  async function startTrial(button){button.disabled=true;button.textContent="Activando…";try{var r=await api("/v1/trial",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),data=await safeJson(r);if(!r.ok)throw new Error(data.error||"TRIAL");state.dataLoadedAt=0;await loadData(true);injectFamilyCard(true);alert("Prueba gratuita de Eterna activada. No se han solicitado datos bancarios.")}catch(e){alert("No se pudo activar la prueba.")}finally{button.disabled=false}}
-  async function checkout(plan,button){button.disabled=true;button.textContent="Abriendo pago…";try{var r=await api("/v1/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan})}),data=await safeJson(r);if(!r.ok)throw new Error(data.error||"CHECKOUT");if(data.url)location.href=data.url;else throw new Error("CHECKOUT_URL")}catch(e){alert("No se pudo abrir la pasarela de pago. Inténtalo de nuevo.");button.disabled=false}}
-  async function portal(button){button.disabled=true;try{var r=await api("/v1/portal",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),data=await safeJson(r);if(!r.ok)throw new Error(data.error||"PORTAL");if(data.url)location.href=data.url;else throw new Error("PORTAL_URL")}catch(e){alert("No se pudo abrir la gestión de la suscripción.");button.disabled=false}}
+  async function startTrial(button){button.disabled=true;button.textContent="Activando…";try{var r=await api("/v1/trial",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),data=await safeJson(r);if(!r.ok)throw new Error(data.error||"TRIAL");state.dataLoadedAt=0;await loadData(true);injectFamilyCard(true);alert(tr("Prueba gratuita de Eterna activada. No se han solicitado datos bancarios."))}catch(e){alert(tr("No se pudo activar la prueba."))}finally{button.disabled=false}}
+  async function checkout(plan,button){button.disabled=true;button.textContent="Abriendo pago…";try{var r=await api("/v1/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan})}),data=await safeJson(r);if(!r.ok)throw new Error(data.error||"CHECKOUT");if(data.url)location.href=data.url;else throw new Error("CHECKOUT_URL")}catch(e){alert(tr("No se pudo abrir la pasarela de pago. Inténtalo de nuevo."));button.disabled=false}}
+  async function portal(button){button.disabled=true;try{var r=await api("/v1/portal",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),data=await safeJson(r);if(!r.ok)throw new Error(data.error||"PORTAL");if(data.url)location.href=data.url;else throw new Error("PORTAL_URL")}catch(e){alert(tr("No se pudo abrir la gestión de la suscripción."));button.disabled=false}}
 
   function bindFamilyToggleLabels(card){
     card.querySelectorAll(".eternaV160Toggle").forEach(function(label){
@@ -889,7 +889,7 @@
       var p=state.parentSettings||{},ok=(p.voice_enabled!==false)===expected.voice_enabled&&(p.allow_image_input!==false)===expected.allow_image_input&&(p.allow_audio_input!==false)===expected.allow_audio_input&&Number(p.max_sessions_per_day||20)===expected.max_sessions_per_day;
       if(!ok)throw new Error("PERSISTENCE");
       button.textContent="Guardado ✓";setTimeout(function(){button.textContent="Guardar ajustes";button.disabled=false},1200)
-    }catch(e){button.disabled=false;button.textContent="Guardar ajustes";alert("No se pudieron guardar y confirmar los ajustes de Eterna.")}
+    }catch(e){button.disabled=false;button.textContent="Guardar ajustes";alert(tr("No se pudieron guardar y confirmar los ajustes de Eterna."))}
   }
 
   function strategyName(k){return({socratic_question:"preguntas guiadas",worked_example:"ejemplos similares",analogy:"analogías",visual_structure:"apoyo visual y estructura",retrieval_practice:"preguntas de recuerdo",step_by_step:"pasos cortos",error_analysis:"análisis de errores",direct_explanation:"explicación directa"})[k]||k}
@@ -939,7 +939,7 @@
        Cualquier invocación residual se deriva al único informe integral visible. */
     var integral=document.querySelector("#cocoApp [data-family-integral-report='1'] [data-family-integral-export]");
     if(integral&&!integral.disabled){try{integral.click();return true}catch(e){}}
-    alert("El informe integral todavía se está preparando. Inténtalo de nuevo en unos segundos.");
+    alert(tr("El informe integral todavía se está preparando. Inténtalo de nuevo en unos segundos."));
     return false
   }
 
@@ -956,20 +956,20 @@
   }
 
   async function deleteEternaData(button){
-    if(!confirm("¿Quieres borrar la memoria pedagógica y los temas recordados por Eterna?\n\nSe eliminará lo que Eterna ha aprendido sobre el progreso de este alumno, pero se conservarán su cuenta, curso, controles familiares y suscripción."))return;
-    if(!confirm("Esta acción no se puede deshacer. ¿Confirmas que quieres borrar únicamente la memoria pedagógica?"))return;
+    if(!confirm(tr("¿Quieres borrar la memoria pedagógica y los temas recordados por Eterna?\n\nSe eliminará lo que Eterna ha aprendido sobre el progreso de este alumno, pero se conservarán su cuenta, curso, controles familiares y suscripción.")))return;
+    if(!confirm(tr("Esta acción no se puede deshacer. ¿Confirmas que quieres borrar únicamente la memoria pedagógica?")))return;
     var original=button.textContent,protectedProfile=state.profile?Object.assign({},state.profile):null,protectedSettings=state.parentSettings?Object.assign({},state.parentSettings):null;
     button.disabled=true;button.textContent="Borrando…";
     try{
       var r=await api("/v1/delete-data",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"}),d=await safeJson(r);if(!r.ok)throw new Error(d.error||"DELETE");
       await restoreProtectedData(protectedProfile,protectedSettings);
       state.history=[];state.learningMemory=[];state.strategyMemory=[];state.modeState=freshModeState();state.conversationState=freshConversationState();state.pedagogicalState=freshPedagogicalState(state.mode);clearLearningSession();state.dataLoadedAt=0;invalidateFamilyLearningReport();await loadData(true);
-      button.textContent="Memoria borrada ✓";alert("La memoria pedagógica y los temas recordados por Eterna se han borrado. La cuenta, el curso, los controles familiares y la suscripción se conservan.");await injectFamilyCard(true)
-    }catch(e){button.disabled=false;button.textContent=original;alert("No se pudo borrar la memoria de Eterna.")}
+      button.textContent="Memoria borrada ✓";alert(tr("La memoria pedagógica y los temas recordados por Eterna se han borrado. La cuenta, el curso, los controles familiares y la suscripción se conservan."));await injectFamilyCard(true)
+    }catch(e){button.disabled=false;button.textContent=original;alert(tr("No se pudo borrar la memoria de Eterna."))}
   }
 
-  function directEternaUrl(mode){var base=location.origin+"/eterna.html";if(mode&&MODE_CONFIG[mode])base+="?mode="+encodeURIComponent(mode);return base}
-  async function shareEterna(button){var url=directEternaUrl(),title="Eterna · Tu ayuda escolar personalizada",text="Prueba Eterna gratis durante 7 días. Empieza sin tarjeta ni datos bancarios; al terminar, tú decides si quieres continuar.";try{if(navigator.share){await navigator.share({title:title,text:text,url:url});return}if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);var old=button.textContent;button.textContent="Enlace copiado ✓";setTimeout(function(){button.textContent=old},1400);return}window.prompt("Copia este enlace de Eterna:",url)}catch(e){if(!e||e.name!=="AbortError")window.prompt("Copia este enlace de Eterna:",url)}}
+  function directEternaUrl(mode){var base=location.origin+"/eterna.html";if(mode&&MODE_CONFIG[mode])base+="?mode="+encodeURIComponent(mode);return window.CocoLocale?.shareUrl(base) ?? base}
+  async function shareEterna(button){var url=directEternaUrl(),title=tr("Eterna · Tu ayuda escolar personalizada"),text=tr("Prueba Eterna gratis durante 7 días. Empieza sin tarjeta ni datos bancarios; al terminar, tú decides si quieres continuar.");try{if(navigator.share){await navigator.share({title:title,text:text,url:url});return}if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);var old=button.textContent;button.textContent="Enlace copiado ✓";setTimeout(function(){button.textContent=old},1400);return}window.prompt(tr("Copia este enlace de Eterna:"),url)}catch(e){if(!e||e.name!=="AbortError")window.prompt(tr("Copia este enlace de Eterna:"),url)}}
 
   function trialLabel(sub){
     if(!sub||sub.status!=="trialing")return"";

@@ -247,7 +247,7 @@
 
   function back() {
     if (!game) { C.closeModal(); return; }
-    if (!game.finished && !game.stopped && !confirm('¿Volver al inicio del juego? Esta partida no se guardará.')) return;
+    if (!game.finished && !game.stopped && !confirm((window.CocoLocale?.t || String)('¿Volver al inicio del juego? Esta partida no se guardará.'))) return;
     dispose();renderIntro();
   }
   var api = { back: back,
