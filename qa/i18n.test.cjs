@@ -1080,3 +1080,45 @@ test('Coco Pádel keeps the language selector and club directory available in al
     w.CocoV144.closeModal();assert.equal(doc.querySelector('[data-coco-language-menu] select'),original);
   }finally{dom.window.close();}
 });
+
+test('family learning reports translate stored concepts, subjects and signal guidance on screen and in saved HTML',async()=>{
+  const {api,w,doc,dom}=page();
+  try {
+    await api.ready;
+    w.eval(fs.readFileSync(path.join(root,'coco-v153-fixes.js'),'utf8'));
+    w.eval(fs.readFileSync(path.join(root,'eterna-worker/src/library/compass-data-v1.js'),'utf8'));
+    const subjects=[...new Set(Object.values(w.ETERNA_COMPASS_DATA.subjects).flat())];
+    const guidance=fs.readFileSync(path.join(root,'eterna-v159.js'),'utf8').match(/var FAMILY_SIGNAL_DEFINITION="([^"]+)"/)[1];
+    const inputs=['Fracciones equivalentes','suma de fracciones con distinto denominador','DIVISIÓN','capitales de Europa','tabla del 7','multiplicaciones','tabla de multiplicar del 12','Taller, «A y B»'];
+    const scores=[64,89,55,79,52,54,70,45],custom=inputs.at(-1);
+    const model={theme:'learning',signalDefinition:guidance,hero:{title:'Más avance en: '+inputs[1]},
+      bars:inputs.map((label,i)=>({label,sublabel:i===3?'Ciencias Sociales':'Matemáticas',value:scores[i],detail:'21 interacciones'})),
+      panels:[{items:[{label:inputs[3],detail:'Ciencias Sociales · 9 interacciones'}]}],
+      nextStep:{title:'Practicar: '+inputs[2]},groups:[{title:'Materias trabajadas',items:subjects.concat(['Matemáticas I',custom])}]};
+    const kit=w.CocoFamilyReportKitV16084;
+    doc.body.insertAdjacentHTML('beforeend',kit.coreHtml(model));
+    for(const tag of ['es',...locales.slice(1),'es']){
+      await api.setLanguage(tag);
+      const exported=new w.DOMParser().parseFromString(kit.documentHtml(model),'text/html');
+      const terms=tag==='es'?{}:readPack(tag).reportTerms;
+      const normalize=s=>s.toLowerCase().normalize('NFD').replace(/\p{M}/gu,'');
+      const expected=tag==='es'?inputs:inputs.map((v,i)=>i===7?custom:i===4||i===6?
+        terms['tabla del {n}'].replace('{n}',(i===4?7:12).toLocaleString(tag)):terms[normalize(v)]);
+      for(const scope of [doc,exported]){
+        const body=scope.querySelector('.cocoV16083ReportBody');
+        assert.equal(body.querySelector('.cocoV16083SignalNote p').textContent,api.t(guidance));
+        if(tag!=='es')assert.notEqual(api.t(guidance),guidance,tag+' guidance');
+        assert.deepEqual([...body.querySelectorAll('.cocoV16083BarLabel b')].map(el=>el.textContent),expected);
+        assert.deepEqual([...body.querySelectorAll('.cocoV16083BarList article>strong')].map(el=>el.textContent),scores.map(n=>n.toLocaleString(tag)));
+        assert.equal(body.querySelector('.cocoV16083Item b').textContent,expected[3]);
+        assert.ok(body.querySelector('.cocoV16083Next h3').textContent.includes(expected[2]));
+        const social=tag==='es'?'Ciencias Sociales':terms['ciencias sociales'];
+        assert.ok(body.querySelector('.cocoV16083Item span').textContent.includes(social));
+        assert.deepEqual([...body.querySelectorAll('.cocoV16083GroupGrid article>div>span')].map(el=>el.textContent),[
+          ...subjects.map(subject=>tag==='es'?subject:terms[subject==='Volumen'?'volumen (asignatura)':normalize(subject)]),
+          tag==='es'?'Matemáticas I':terms.matematicas+' I',custom
+        ]);
+      }
+    }
+  }finally{dom.window.close();}
+});

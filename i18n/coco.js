@@ -70,12 +70,33 @@
   }
   const reportScope = '[data-family-integral-report],.cocoV16083ReportBody,.cocoReportDocument';
   const reportSkills = ['Cálculo y patrones','Memoria','Atención y estrategia','Rapidez con precisión','Lenguaje','Percepción y coordinación'];
+  // Historical academic records keep their original labels. Only look up recognised
+  // curriculum terms, so custom subjects and student names retain their spelling.
+  const reportAliases = {
+    'multiplicacion':'multiplicaciones','divisiones':'division','sumas':'suma','restas':'resta',
+    'suma de fracciones con denominadores distintos':'suma de fracciones con distinto denominador',
+    'suma de fracciones con diferentes denominadores':'suma de fracciones con distinto denominador',
+    'resta de fracciones con denominadores distintos':'resta de fracciones con distinto denominador',
+    'resta de fracciones con diferentes denominadores':'resta de fracciones con distinto denominador',
+    'capitales europeas':'capitales de europa'
+  };
+  function reportTerm(source,subject=false) {
+    const terms=activePack.reportTerms;
+    if(!terms)return message(source);
+    const key=source.trim().toLocaleLowerCase('es').normalize('NFD').replace(/\p{M}/gu,'').replace(/\s+/g,' ');
+    const table=key.match(/^tabla (?:de multiplicar )?(?:del? |de el )?(\d+)$/u);
+    if(table && terms['tabla del {n}'])return terms['tabla del {n}'].replace('{n}',Number(table[1]).toLocaleString(current));
+    const course=subject && key.match(/^(.+) (i{1,3}|iv)$/u);
+    if(course && Object.hasOwn(terms,course[1]))return terms[course[1]]+' '+course[2].toUpperCase();
+    const label=subject && key==='volumen'?'volumen (asignatura)':Object.hasOwn(reportAliases,key)?reportAliases[key]:key;
+    return Object.hasOwn(terms,label)?terms[label]:message(source);
+  }
   function reportStatistic(key) {
     const number = value => Number(value).toLocaleString(current);
     const count = key.match(/^(?:(.+?) · )?(\d+) (interacción|interacciones|observación|observaciones)$/u);
     if (count) {
       const label = message(count[3].startsWith('inter') ? 'Interacciones' : 'Observaciones');
-      return (count[1] ? message(count[1])+' · ' : '') + label + ': '+number(count[2]);
+      return (count[1] ? reportTerm(count[1],true)+' · ' : '') + label + ': '+number(count[2]);
     }
     const ratio = key.match(/^(\d+)\/(\d+)$/);
     if (ratio) return number(ratio[1])+'/'+number(ratio[2]);
@@ -93,7 +114,7 @@
       ['Se desenvuelve mejor en ', 'Se desenvuelve mejor en {topic}']
     ];
     for (const [prefix, template] of templates) {
-      if (key.startsWith(prefix)) return message(template,{topic:message(key.slice(prefix.length))});
+      if (key.startsWith(prefix)) return message(template,{topic:reportTerm(key.slice(prefix.length))});
     }
     const score = key.match(/^Señal observada · (\d+)\/100$/);
     if (score) return message('Señal observada · {score}/100',{score:Number(score[1]).toLocaleString(current)});
@@ -119,7 +140,7 @@
     if (summary) {
       const recorded = element?.getAttribute('data-coco-report-subjects');
       const topics = recorded ? JSON.parse(recorded) : summary[1].split(', ');
-      const list = new Intl.ListFormat(current).format(topics.map(topic => message(topic)));
+      const list = new Intl.ListFormat(current).format(topics.map(topic => reportTerm(topic,true)));
       const guidance = summary[2].startsWith(',')
         ? 'Todavía hace falta repetir un mismo concepto para valorar el progreso.'
         : 'Solo se valoran conceptos con al menos dos interacciones. El resto figura como actividad.';
@@ -305,7 +326,8 @@
       const phrase=assessmentPhrase(key);
       if(phrase!==key)return value.replace(/\S[\s\S]*\S|\S/,()=>phrase);
     }
-    let translated = (report && reportStatistic(key)) || message(key);
+    const isSubject = report && element?.matches('.cocoV16083BarLabel span,.cocoV16083Item span,.cocoV16083GroupGrid span');
+    let translated = report ? reportStatistic(key) || reportTerm(key,isSubject) : message(key);
     if (translated === key && key.startsWith('Tabla independiente dedicada exclusivamente a ') && key.endsWith('.')) {
       const gameName = key.slice('Tabla independiente dedicada exclusivamente a '.length,-1);
       translated = message('Clasificación')+' · '+message(gameName);
@@ -361,7 +383,7 @@
   const shellCopy = '.loginCard p,.loginCard .cocoEyebrow,.loginDecorTitle,.retosCard .cocoEyebrow,.cocoDescripcion,.cocoFreemiumV16084 p,.cocoFreemiumV16084 strong,.cocoFamilyHero small,.cocoReportNavigation button,.cocoArcadeProgressMeta span,.cocoFamilyV129 header span,.cocoFamiliaBtn,.cocoFamiliaBtn span,.carnet .quien .pequeno,.carnet .tanteo .pequeno,.coco160904FamilyLoadingCard b,.coco160904FamilyLoadingCard span,.cocoFamilyLoading,#coco-startup-status p';
   const publicHome = ':is(#cocoHomeFinal3,.loginCard,.retosCard,.cocoInstallEntryCard,.cocoFreemiumV16084,#eternaLauncherV159,.cocoGameCard,.cocoMiniJuego,#coco-game-guides)';
   const homeCopy = publicHome+' :is(b,h2,h3,strong,small,p,span,button,a,[aria-label],[alt])';
-  const reportCopy = ':is(.cocoFamilyV129,[data-family-integral-report],.cocoV16083Section,.cocoReportDocument,.rankingTitulo,.rankingNota,.navegacionJugador) :is(h2,h3,h4,b,strong,small,p,span,li,th,button,a)';
+  const reportCopy = ':is(.cocoFamilyV129,[data-family-integral-report],.cocoV16083ReportBody,.cocoV16083Section,.cocoReportDocument,.rankingTitulo,.rankingNota,.navegacionJugador) :is(h2,h3,h4,b,strong,small,p,span,li,th,button,a)';
   const moduleCopy = ':is(.cocoV144Modal,.cocoArcadeShell) :is(div,p,b,strong,small,span,button,label,legend,select,option[value],h1,h2,h3,h4,h5,figcaption,summary,dt,dd,[aria-label],[title],[placeholder])';
   const gameplayCopy = moduleCopy+',.selloRecomendado,[data-coco-playing] :is(p,small,button,label,legend,h1,h2,h3,h4,strong,b,.instruccion,.pregunta,.textoReto,.aviso,.titulo,.cocoArcadeQuestionTag,.cocoArcadeProgressMeta span,.dato,.tipoSerie,.peso,.comoVa span,.enunciado,[data-col][aria-label])';
   const familySections = ':is(.eternaV16061SubscriptionTop,.cocoFamilyProfileV160100,.eternaV159ParentSettings,.eternaV160FamilyPromo,.eternaV160ExpiredGate) :is(h5,h6,p,div,small,span,b,strong,summary,button,label,[title],[aria-label])';
@@ -390,7 +412,7 @@
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
-    url.searchParams.set('v',folder==='packs'?'20261123-rounds-2':folder==='assessment'?'20261122-2':'20261123-rounds-2');
+    url.searchParams.set('v',folder==='packs'?'20261123-family-report-1':folder==='assessment'?'20261122-2':'20261123-rounds-2');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
