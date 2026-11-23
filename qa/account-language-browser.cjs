@@ -240,14 +240,16 @@ async function run(browser, origin, standalone) {
       assert.equal(await quiz.locator('[data-option]:enabled').count(),2,tag+' same active round');
     }
     await quizPicker.selectOption('en');await page.waitForFunction(()=>document.documentElement.lang==='en');
-    const confirmation=page.waitForEvent('dialog').then(async dialog=>{
-      const message=dialog.message();await dialog.dismiss();return message;
-    });
-    await quiz.locator('.cocoArcadeClose').click();
-    assert.equal(await confirmation,'Return to your challenges? This round will not be saved.');
+    const mainMenu=quiz.locator('.cocoGameNavigation button').last();
+    const [confirmation]=await Promise.all([
+      page.waitForEvent('dialog').then(async dialog=>{
+        const message=dialog.message();await dialog.dismiss();return message;
+      }),
+      mainMenu.click()
+    ]);
+    assert.equal(confirmation,'Return to your challenges? This round will not be saved.');
     assert.ok(await question.isVisible(),'cancelling leaves the same round open');
-    page.once('dialog',dialog=>dialog.accept());
-    await quiz.locator('.cocoArcadeClose').click();
+    await Promise.all([page.waitForEvent('dialog').then(dialog=>dialog.accept()),mainMenu.click()]);
     await picker.waitFor();
     console.log('Active true-or-false round in 15 languages and native exit confirmation passed.');
 
