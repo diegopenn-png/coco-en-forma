@@ -132,16 +132,22 @@ const {chromium} = require('playwright');
     await desktop.setViewportSize({width:1024,height:768});
     await collection.waitFor();
     assert.equal(await cards.count(),6);
-    for (const mode of ['standalone','minimal-ui','pwa-url']) {
+    for (const mode of ['standalone','minimal-ui','ios-standalone','pwa-url']) {
       const installed = await browser.newPage({viewport:{width:1440,height:900}});
-      if (mode !== 'pwa-url') {
-        const cdp = await installed.context().newCDPSession(installed);
-        await cdp.send('Emulation.setEmulatedMedia',{features:[{name:'display-mode',value:mode}]});
-      }
+      // Headless Chrome does not expose installed-window display modes through CDP.
+      // Model those browser signals, and also exercise the real manifest launch URL separately.
+      if (mode !== 'pwa-url') await installed.addInitScript(launchMode=>{
+        if (launchMode === 'ios-standalone') {
+          Object.defineProperty(navigator,'standalone',{value:true});
+          return;
+        }
+        const native = window.matchMedia.bind(window);
+        window.matchMedia = query=>native(query.replace(/\(display-mode:\s*([\w-]+)\)/g,
+          (_,value)=>value===launchMode?'(min-width: 0px)':'(max-width: 0px)'));
+      },mode);
       const requests = [];
       installed.on('request',request=>{if(request.url().includes('desktop-streak-cards')) requests.push(request.url());});
       await installed.goto(origin+'/?lang=es'+(mode==='pwa-url'?'&source=pwa-v159':''),{waitUntil:'domcontentloaded'});
-      if (mode!=='pwa-url') assert.equal(await installed.evaluate(value=>matchMedia('(display-mode: '+value+')').matches,mode),true,mode);
       await installed.locator('.cocoHomeBrainFinal3').waitFor();
       assert.equal(await installed.locator('.cocoHomeBrainFinal3 .loginPoster').first().getAttribute('alt'),'Tarjeta Coco: Tu primer gran paso');
       assert.equal(await installed.locator('.cocoWebStreaks').count(),0,mode);
