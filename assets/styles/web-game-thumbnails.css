@@ -1,0 +1,28 @@
+/* The source posters include lettering right up to the sides. Size the frame
+   from the artwork itself at every column width, including after a language switch. */
+html body #cocoApp .cocoGameCard :is(.emoji, .cocoIconoEspecial).cocoOfficialThumbBox {
+  display: block !important;
+  box-sizing: border-box;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  aspect-ratio: auto !important;
+  flex: none;
+}
+
+html body #cocoApp :is(.cocoGameCard, .cocoMiniJuego) .cocoOfficialThumbBox > img.cocoOfficialThumb:not([data-coco-original-thumbnail]) {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  object-fit: contain !important;
+}
+
+/* Keep the copy control clear of the poster, with its usual touch target. */
+html body #cocoApp .cocoGameCard:not(.cocoSuggestionCard):has(> .cocoCardCopy) {
+  padding-top: 56px !important;
+}
+
+html body #cocoApp :is(.cocoGameCard, .cocoMiniJuego) .cocoLocalizedThumbnailCopy {
+  gap: 2cqw;
+}

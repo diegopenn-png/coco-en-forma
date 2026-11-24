@@ -162,10 +162,15 @@
 
   // Older desktop visitors can still have the previous home HTML cached.
   // This existing, revalidated catalogue also reaches those browser tabs.
-  function enableDesktopCollection() {
+  function enableWebCatalogue() {
     if (!document.getElementById('cocoApp') || navigator.standalone ||
         /^pwa/i.test(new URLSearchParams(location.search).get('source') || '') ||
         !matchMedia('(display-mode: browser)').matches) return;
+    const thumbnails = document.createElement('link');
+    thumbnails.rel = 'stylesheet';
+    thumbnails.href = '/assets/styles/web-game-thumbnails.css';
+    thumbnails.media = '(display-mode: browser)';
+    document.head.append(thumbnails);
     const wideHome = matchMedia('(display-mode: browser) and (min-width: 901px) and (min-height: 621px), (display-mode: browser) and (min-width: 1001px)');
     function load() {
       if (!wideHome.matches) return;
@@ -181,6 +186,6 @@
     wideHome.addEventListener('change',load);
     load();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',enableDesktopCollection,{once:true});
-  else enableDesktopCollection();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',enableWebCatalogue,{once:true});
+  else enableWebCatalogue();
 })();
