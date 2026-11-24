@@ -65,34 +65,49 @@ async function run(browser, origin, standalone) {
       }));
     }
     async function verifyArtwork(grid,tag,expected) {
-      const posterIds=await page.locator(grid).evaluate(async (container,{tag,expected})=>{
+      const posterIds=await page.locator(grid).evaluate(async (container,{tag,expected,standalone})=>{
         const seen=[];
         for(const id of expected){
-          const art=container.querySelector('[data-coco-thumbnail="'+id+'"]');
-          const image=art?.querySelector('img');
-          if(!image)throw Error(tag+' missing illustration for '+id);
+          const card = [...container.children].find(el =>
+            !el.hasAttribute('data-coco-suggestion') && (el.dataset.cocoJuego === id ||
+            (tag === 'es' && el.querySelector('img.cocoOfficialThumb[src$="/'+id+'.jpg"]')) ||
+            el.querySelector('[data-coco-thumbnail="'+id+'"]')));
+          const original = card?.querySelector('.cocoOfficialThumbBox > img.cocoOfficialThumb');
+          const art = card?.querySelector('[data-coco-thumbnail="'+id+'"]');
+          const image = tag === 'es' ? original : art?.querySelector('img');
+          if (!image || (tag === 'es' && art)) throw Error(tag+' wrong illustration for '+id);
           image.scrollIntoView({block:'center',behavior:'instant'});
           await image.decode();
-          const box=image.getBoundingClientRect(),frame=art.parentElement.getBoundingClientRect();
+          const box=image.getBoundingClientRect(),frame=image.closest('.cocoOfficialThumbBox').getBoundingClientRect();
           const width=Math.min(box.right,frame.right)-Math.max(box.left,frame.left);
           const height=Math.min(box.bottom,frame.bottom)-Math.max(box.top,frame.top);
-          if(!(width>=36 && height>=18 && image.naturalWidth>0))
-            {
-              const sizes=[];
-              for(let el=image;el&&el!==container.parentElement;el=el.parentElement){
-                const b=el.getBoundingClientRect(),css=getComputedStyle(el);
-                sizes.push([el.className,b.width,b.height,css.display,css.gridTemplateColumns]);
-              }
-              throw Error(tag+' clipped illustration for '+id+': '+JSON.stringify(sizes));
+          const detail = tag+' / '+id+' / '+innerWidth+'px: image '+JSON.stringify(box)+' frame '+JSON.stringify(frame);
+          if (!(width>=36 && height>=18 && image.naturalWidth>0)) throw Error('Missing artwork '+detail);
+          if (!standalone) {
+            const inside = (a,b) => a.left>=b.left-1 && a.top>=b.top-1 && a.right<=b.right+1 && a.bottom<=b.bottom+1;
+            if (!inside(box,frame) || !inside(frame,card.getBoundingClientRect()) ||
+                Math.abs(box.height - box.width*image.naturalHeight/image.naturalWidth)>1)
+              throw Error('Cropped artwork '+detail);
+            const copy = card.querySelector('.cocoCardCopy')?.getBoundingClientRect();
+            if (card.classList.contains('cocoGameCard') && copy &&
+                Math.min(box.right,copy.right)>Math.max(box.left,copy.left)+1 &&
+                Math.min(box.bottom,copy.bottom)>Math.max(box.top,copy.top)+1)
+              throw Error('Share control overlaps artwork '+detail);
+            for (const label of art?.querySelectorAll('[data-coco-source-text]') || []) {
+              const range = document.createRange();
+              range.selectNodeContents(label);
+              if ([...range.getClientRects()].some(line => !inside(line,box)))
+                throw Error('Clipped caption "'+label.textContent+'" '+detail);
             }
-          for(const caption of art.querySelectorAll('[data-coco-source-text]')){
+          }
+          for(const caption of art?.querySelectorAll('[data-coco-source-text]') || []){
             const translated=window.CocoLocale.t(caption.getAttribute('data-coco-source-text'));
             if(!translated || caption.textContent!==translated)throw Error(tag+' wrong caption for '+id);
           }
           seen.push(id);
         }
         return seen;
-      },{tag,expected});
+      },{tag,expected,standalone});
       assert.deepEqual(posterIds,expected);
     }
     const grid='.cocoGridUnificada';
@@ -145,7 +160,15 @@ async function run(browser, origin, standalone) {
       await controls.nth(1).click();await page.locator('.panelJugador.activa:not([data-coco-panel="games"])').waitFor();
       await controls.first().click();await page.locator('[data-coco-panel="games"].activa').waitFor();
       assert.deepEqual(await catalog(grid),spanish,tag+' complete game list and order');
-      if(tag!=='es')await verifyArtwork(grid,tag,spanish);
+      if (standalone) {
+        if (tag !== 'es') await verifyArtwork(grid,tag,spanish);
+      } else {
+        for (const width of [390,1024,1440]) {
+          await page.setViewportSize({width,height:900});
+          await verifyArtwork(grid,tag,spanish);
+        }
+        await page.setViewportSize({width:390,height:844});
+      }
     }
     await picker.selectOption('de');await page.waitForFunction(()=>document.documentElement.lang==='de');
     await profile.locator('.cocoFamiliaBtn').click();
@@ -279,7 +302,7 @@ async function run(browser, origin, standalone) {
       await publicPicker.selectOption(tag);
       await page.waitForFunction(tag=>document.documentElement.lang===tag,tag);
       assert.deepEqual(await catalog('.cocoMiniJuegos'),spanish,tag+' public and signed-in catalogue order');
-      if(tag!=='es')await verifyArtwork('.cocoMiniJuegos',tag,spanish);
+      if (!standalone || tag !== 'es') await verifyArtwork('.cocoMiniJuegos',tag,spanish);
     }
     assert.equal(await page.locator('.coco-language-bar select:visible').count(),1);
     console.log((standalone?'Standalone':'Web')+' account header, portrait/landscape, stored language and logout passed.');
