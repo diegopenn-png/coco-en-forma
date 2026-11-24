@@ -1,0 +1,27 @@
+/* The games set the row height. Fit the collection into that space as the catalogue changes. */
+#cocoApp .cocoHomeGamesRowFinal3 > .cocoHomeBrainFinal3:has(> .cocoWebStreaks) {
+  position:relative;
+}
+html body #cocoApp .cocoHomeGamesRowFinal3 > .cocoHomeBrainFinal3:has(> .cocoWebStreaks) > :not(.cocoWebStreaks) {
+  display:none!important;
+}
+#cocoApp .cocoWebStreaks {
+  position:absolute; inset:clamp(12px,1.4vw,20px); display:grid;
+  grid-template-rows:auto minmax(0,1fr); gap:16px; min-width:0; text-align:center;
+}
+#cocoApp .cocoWebStreaks > :first-child {
+  justify-self:center; align-self:start; margin:0; padding:8px 14px; border-radius:14px;
+  background:#fff; color:#17394b; font-size:clamp(20px,2vw,27px); line-height:1.1;
+  box-shadow:0 4px 0 #d7eaf3;
+}
+#cocoApp .cocoWebStreaks ol {
+  display:grid; grid-auto-rows:minmax(0,1fr); gap:clamp(12px,1.2vw,20px);
+  min-height:0; margin:0; padding:0; list-style:none;
+}
+#cocoApp .cocoWebStreaks li {
+  display:grid; place-items:center; min-width:0; min-height:0; container-type:size;
+}
+#cocoApp .cocoWebStreaks li img {
+  display:block; width:min(100cqw,75cqh)!important; max-width:100%; height:auto!important; aspect-ratio:3/4;
+  border-radius:5%; box-shadow:0 3px 8px #102e4526;
+}

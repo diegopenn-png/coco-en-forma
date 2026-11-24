@@ -101,6 +101,61 @@ const {chromium} = require('playwright');
       });
       assert.equal(fits,true,'home banner overflow: '+tag);
     }
+    const desktop = await browser.newPage({viewport:{width:1440,height:900}});
+    const collection = desktop.locator('.cocoHomeGamesRowFinal3 .cocoWebStreaks');
+    const cards = collection.locator('li img');
+    await desktop.goto(origin+'/?lang=es',{waitUntil:'domcontentloaded'});
+    await collection.waitFor();
+    assert.equal(await cards.count(),6);
+    for (const card of await cards.all()) {
+      await card.scrollIntoViewIfNeeded();
+      await card.evaluate(img=>img.decode());
+    }
+    const fitsColumn = await collection.evaluate(el=>{
+      const panel = el.parentElement.getBoundingClientRect();
+      const games = el.parentElement.nextElementSibling.getBoundingClientRect();
+      const images = [...el.querySelectorAll('img')].map(img=>img.getBoundingClientRect());
+      return Math.abs(panel.bottom-games.bottom)<12 && images[0].top-panel.top<150 &&
+        panel.bottom-images.at(-1).bottom<120 && images.every((box,index)=>
+          box.width>90 && Math.abs(box.width/box.height-.75)<.02 &&
+          box.left>=panel.left && box.right<=panel.right && (!index || box.top>=images[index-1].bottom));
+    });
+    assert.equal(fitsColumn,true,'desktop streak cards fit the games column');
+    assert.deepEqual(await collection.locator('li').evaluateAll(items=>items.map(el=>el.getAttribute('aria-label'))),
+      ['Disponible desde el inicio','7 días','14 días','21 días','28 días','90 días']);
+    await desktop.evaluate(()=>CocoLocale.setLanguage('en'));
+    await desktop.waitForFunction(()=>document.querySelector('.cocoWebStreaks')?.lang==='en');
+    await cards.last().evaluate(img=>img.decode());
+    assert.match(await cards.last().getAttribute('alt'),/Legend/);
+    await desktop.setViewportSize({width:800,height:850});
+    await collection.waitFor({state:'detached'});
+    await desktop.setViewportSize({width:1024,height:768});
+    await collection.waitFor();
+    assert.equal(await cards.count(),6);
+    for (const mode of ['standalone','minimal-ui','ios-standalone','pwa-url']) {
+      const installed = await browser.newPage({viewport:{width:1440,height:900}});
+      // Headless Chrome does not expose installed-window display modes through CDP.
+      // Model those browser signals, and also exercise the real manifest launch URL separately.
+      if (mode !== 'pwa-url') await installed.addInitScript(launchMode=>{
+        if (launchMode === 'ios-standalone') {
+          Object.defineProperty(navigator,'standalone',{value:true});
+          return;
+        }
+        const native = window.matchMedia.bind(window);
+        window.matchMedia = query=>native(query.replace(/\(display-mode:\s*([\w-]+)\)/g,
+          (_,value)=>value===launchMode?'(min-width: 0px)':'(max-width: 0px)'));
+      },mode);
+      const requests = [];
+      installed.on('request',request=>{if(request.url().includes('desktop-streak-cards')) requests.push(request.url());});
+      await installed.goto(origin+'/?lang=es'+(mode==='pwa-url'?'&source=pwa-v159':''),{waitUntil:'domcontentloaded'});
+      await installed.locator('.cocoHomeBrainFinal3').waitFor();
+      assert.equal(await installed.locator('.cocoHomeBrainFinal3 .loginPoster').first().getAttribute('alt'),'Tarjeta Coco: Tu primer gran paso');
+      assert.equal(await installed.locator('.cocoWebStreaks').count(),0,mode);
+      assert.deepEqual(requests,[],mode);
+      await installed.close();
+    }
+    await desktop.close();
+    console.log('Verified the desktop streak column, resizing, language changes and installed app isolation.');
     console.log('Verified live home banner and game thumbnail language changes.');
     console.log('Verified 84 localized reward JPEGs, touch download, gallery language changes, locked state and Spanish restoration.');
   } finally { await browser.close(); }
