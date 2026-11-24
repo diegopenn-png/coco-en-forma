@@ -159,4 +159,28 @@
     finally { button.disabled = false; }
   }
   window.CocoRewardCards = {describe,cardId,viewUrl,jpeg,download,apply};
+
+  // Older desktop visitors can still have the previous home HTML cached.
+  // This existing, revalidated catalogue also reaches those browser tabs.
+  function enableDesktopCollection() {
+    if (!document.getElementById('cocoApp') || navigator.standalone ||
+        /^pwa/i.test(new URLSearchParams(location.search).get('source') || '') ||
+        !matchMedia('(display-mode: browser)').matches) return;
+    const wideHome = matchMedia('(display-mode: browser) and (min-width: 901px) and (min-height: 621px), (display-mode: browser) and (min-width: 1001px)');
+    function load() {
+      if (!wideHome.matches) return;
+      import('/assets/desktop-streak-cards.mjs').then(module => {
+        const cards = slugs.map(id => {
+          const card = describe(id,'es');
+          return {nombre:card.name,subtitulo:card.motto,mini:root+id+'-mini.webp',url:root+id+'.jpg'};
+        });
+        module.install(cards,wideHome);
+        wideHome.removeEventListener('change',load);
+      }).catch(() => {});
+    }
+    wideHome.addEventListener('change',load);
+    load();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',enableDesktopCollection,{once:true});
+  else enableDesktopCollection();
 })();
