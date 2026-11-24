@@ -140,8 +140,10 @@ const {chromium} = require('playwright');
       }
       const requests = [];
       installed.on('request',request=>{if(request.url().includes('desktop-streak-cards')) requests.push(request.url());});
-      await installed.goto(origin+(mode==='pwa-url'?'/?source=pwa-v159':'/'),{waitUntil:'domcontentloaded'});
-      await installed.locator('.cocoHomeBrainFinal3 .loginPoster').first().waitFor();
+      await installed.goto(origin+'/?lang=es'+(mode==='pwa-url'?'&source=pwa-v159':''),{waitUntil:'domcontentloaded'});
+      if (mode!=='pwa-url') assert.equal(await installed.evaluate(value=>matchMedia('(display-mode: '+value+')').matches,mode),true,mode);
+      await installed.locator('.cocoHomeBrainFinal3').waitFor();
+      assert.equal(await installed.locator('.cocoHomeBrainFinal3 .loginPoster').first().getAttribute('alt'),'Tarjeta Coco: Tu primer gran paso');
       assert.equal(await installed.locator('.cocoWebStreaks').count(),0,mode);
       assert.deepEqual(requests,[],mode);
       await installed.close();
