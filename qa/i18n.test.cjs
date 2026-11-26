@@ -512,7 +512,7 @@ for(const standalone of [false,true])test('the '+(standalone?'PWA':'web')+' acco
   } finally {dom.window.close();}
 });
 
-test('all catalogue pages provide translated menu text or complete static language navigation',()=>{
+test('all catalogue pages provide translated menu text or complete static language navigation',async()=>{
   const guides=fs.readdirSync(root,{withFileTypes:true})
     .filter(f=>f.isDirectory() && /^(?:apoyo|aprender|ayuda|preparar|juegos-)/.test(f.name))
     .map(f=>f.name+'/index.html');
@@ -521,7 +521,7 @@ test('all catalogue pages provide translated menu text or complete static langua
   const landingRoutes=locales.map(tag=>[tag,tag==='es'?'/juegos-gratis/':`/${tag.toLowerCase()}/${landingCopy[tag].slug}/`]);
   const staticPages=new Map(landingRoutes.map(([tag,route])=>[route.slice(1)+'index.html',tag]));
   const paths=new Set(['juegos/index.html','explora/index.html',...directories('juego'),...directories('games'),...guides,...staticPages.keys()]);
-  const strings=new Set();
+  const strings=new Set(), trucoStrings=new Set();
   for(const file of paths){
     const dom=new JSDOM(fs.readFileSync(path.join(root,file),'utf8'));
     try {
@@ -541,13 +541,22 @@ test('all catalogue pages provide translated menu text or complete static langua
         assert.deepEqual([...doc.querySelectorAll('script[src]')].map(script=>new URL(script.getAttribute('src'),'https://coco.test').pathname),['/seo/localized.js'],file);
         continue;
       }
+      if(file==='games/truco/index.html'){
+        assert.ok(doc.querySelector('select#lang'),file+' needs a language selector');
+        const {messages}=await import('../games/truco/locale.mjs');
+        for(const language of locales){
+          for(const key of ['title','back','solo','local','online','rulesText'])assert.ok(messages[language][key],language+' / '+key);
+        }
+        continue;
+      }
       assert.ok(doc.querySelector('[data-coco-language-menu]'),file);
+      const copy=['juego/truco/index.html','juegos/index.html'].includes(file)?trucoStrings:strings;
       for(const el of doc.body.querySelectorAll('p,button,a,label,h1,h2,h3,h4,li,span,b,strong,small,summary,figcaption')){
         if(el.closest('[data-coco-verbatim],code'))continue;
         for(const node of el.childNodes){
           if(node.nodeType!==3)continue;
           const key=node.data.trim().replace(/\s+/g,' ');
-          if(/[A-Za-zÀ-ɏ]{2}/.test(key))strings.add(key);
+          if(/[A-Za-zÀ-ɏ]{2}/.test(key))copy.add(key);
         }
       }
     } finally {dom.window.close();}
@@ -555,6 +564,8 @@ test('all catalogue pages provide translated menu text or complete static langua
   for(const language of locales.filter(l=>l!=='es')){
     const pack=readPack(language);
     for(const key of strings)assert.ok(pack.strings[key],language+' / '+key);
+    const supplemental=JSON.parse(fs.readFileSync(path.join(root,'i18n/truco',language+'.json'),'utf8')).strings;
+    for(const key of trucoStrings)assert.ok(supplemental[key]||pack.strings[key],language+' / '+key);
   }
 });
 

@@ -57,9 +57,9 @@ async function run(browser, origin, standalone) {
     await controls.nth(3).waitFor();
     async function catalog(selector) {
       const cards=page.locator(selector);
-      await cards.locator('[data-coco-naval-entry]').waitFor();
+      await cards.locator('[data-coco-truco-entry]').waitFor();
       return cards.evaluate(grid=>Array.from(grid.children).flatMap(card=>{
-        const extensions=[['cocoChessEntry','ajedrez'],['cocoCityEntry','ciudad'],['cocoGeneralaEntry','generala'],['cocoNavalEntry','naval']];
+        const extensions=[['cocoChessEntry','ajedrez'],['cocoCityEntry','ciudad'],['cocoGeneralaEntry','generala'],['cocoNavalEntry','naval'],['cocoTrucoEntry','truco']];
         const id=extensions.find(([attr])=>card.dataset[attr])?.[1]||card.dataset.cocoJuego;
         return id && !card.hasAttribute('data-coco-suggestion') ? [id] : [];
       }));
@@ -114,7 +114,7 @@ async function run(browser, origin, standalone) {
     await picker.selectOption('es');await page.waitForFunction(()=>document.documentElement.lang==='es');
     const spanish=await catalog(grid);
     assert.equal(new Set(spanish).size,spanish.length);
-    assert.ok(['conecta','sopa','ajedrez','crucigrama','ciudad','naval','bank','eneagrama'].every(id=>spanish.includes(id)));
+    assert.ok(['conecta','sopa','ajedrez','crucigrama','ciudad','naval','truco','bank','eneagrama'].every(id=>spanish.includes(id)));
     console.log('Spanish catalogue ('+spanish.length+'): '+spanish.join(', '));
     const profile=page.locator('.carnet');
     const launcher=page.locator('#eternaLauncherV159');

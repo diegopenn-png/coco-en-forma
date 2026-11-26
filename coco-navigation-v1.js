@@ -41,5 +41,6 @@ Promise.allSettled([
   import('./games/ajedrez/entry.mjs?v=daily-v1'),
   import('./games/ciudad/entry.mjs?v=city1'),
   import('./games/generala/entry.mjs?v=generala1'),
-  import('./games/naval/entry.mjs?v=naval1')
+  import('./games/naval/entry.mjs?v=naval1'),
+  import('./games/truco/entry.mjs')
 ]).then(function(){if(window.CocoFirstPaint)window.CocoFirstPaint.settled("catalog")});

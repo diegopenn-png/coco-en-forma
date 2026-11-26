@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <title>Espadas</title>
+  <g transform="rotate(24 48 48)" stroke="#304f69" stroke-linejoin="round" stroke-linecap="round">
+    <path d="m48 5 6.2 12.5-1 41.7H42.8l-1-41.7z" fill="#dae9ee" stroke-width="2.6"/>
+    <path d="m48 7 4.9 11.1-.9 39.8h-4z" fill="#83adb9" stroke="none"/>
+    <path d="M48 15v37" stroke="#fffdf2" stroke-width="1.8"/>
+    <path d="M28 59c4-4 10-4 16-2h8c6-2 12-2 16 2l-2 6-8-4-6 2h-8l-6-2-8 4z" fill="#ebb94e" stroke="#78502a" stroke-width="2.7"/>
+    <path d="M44.8 63h6.4l1 16h-8.4z" fill="#b3593c" stroke="#623d31" stroke-width="2.2"/>
+    <path d="m45.4 68 5.2-2m-5.3 7 5.6-2" stroke="#ffc476" stroke-width="1.7"/>
+    <path d="m48 79 4.8 4.6L48 89l-4.8-5.4z" fill="#eabc58" stroke="#76532e" stroke-width="2.2"/>
+  </g>
+</svg>

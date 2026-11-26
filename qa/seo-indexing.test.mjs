@@ -10,11 +10,22 @@ const read = path => readFileSync(new URL(path, root), 'utf8');
 const doc = path => new JSDOM(read(path)).window.document;
 const sitemap = new JSDOM(read('sitemap.xml'), {contentType:'application/xml'}).window.document;
 const urls = [...sitemap.querySelectorAll('loc')].map(el => el.textContent);
-const exclusions = read('robots.txt').split('\n').filter(line => line.startsWith('Disallow:')).map(line => line.slice(9).trim());
+const robotsGroups = new Map();
+let group;
+for (const line of read('robots.txt').split('\n')) {
+  if (line.startsWith('User-agent:')) {
+    group = line.slice(11).trim();
+    robotsGroups.set(group, []);
+  } else if (group && line.startsWith('Disallow:')) {
+    robotsGroups.get(group).push(line.slice(9).trim());
+  }
+}
+const exclusions = robotsGroups.get('*');
 const canCrawl = url => !exclusions.some(path => new URL(url).pathname.startsWith(path));
 
 test('every sitemap URL is crawlable, indexable and declares itself as canonical', () => {
-  assert.equal(urls.length, 52);
+  assert.equal(urls.length, 53);
+  assert.ok(urls.includes(origin + '/juego/truco/'));
   assert.equal(new Set(urls).size, urls.length);
   for (const url of urls) {
     const u = new URL(url);
@@ -50,6 +61,7 @@ test('all indexable HTML has one absolute canonical; verification and noindex pa
 
 test('duplicate entry URLs can expose canonical and internal pages can expose noindex', () => {
   assert.deepEqual(exclusions, ['/api/','/qa/','/supabase/']);
+  assert.deepEqual(robotsGroups.get('Google-Extended'), exclusions);
   assert.equal(doc('index.html').querySelector('link[rel=canonical]').href, origin + '/');
   for (const path of ['/?juego=memoria','/?coco_bank=1','/index.html?juego=memoria','/explora/jugar.html']) {
     assert.ok(canCrawl(origin + path), path);
