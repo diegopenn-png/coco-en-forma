@@ -403,7 +403,8 @@
   async function readPack(tag) {
     const isAssessment = document.documentElement.hasAttribute('data-coco-assessment');
     const folders = ['packs'];
-    if (['/', '/index.html', '/juegos/', '/juego/truco/'].includes(location.pathname)) folders.push('truco');
+    const gameCatalogue = document.documentElement.hasAttribute('data-coco-extra-languages') && ['/', '/index.html'].includes(location.pathname);
+    if (gameCatalogue || ['/juegos/', '/juego/truco/'].includes(location.pathname)) folders.push('truco');
     if (document.documentElement.hasAttribute('data-coco-extra-languages')) folders.push('extra');
     if (isAssessment) folders.push('assessment');
     const loaded = await Promise.all(folders.map(folder=>readLanguageFile(tag,folder)));
