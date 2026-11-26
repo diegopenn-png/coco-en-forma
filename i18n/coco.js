@@ -412,7 +412,7 @@
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
-    url.searchParams.set('v',folder==='packs'?'20261123-family-report-1':folder==='assessment'?'20261122-2':'20261123-rounds-2');
+    url.searchParams.set('v',folder==='packs'?'20261123-family-report-1':folder==='assessment'?'20261122-2':'20261126-home-preview');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
