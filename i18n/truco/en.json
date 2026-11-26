@@ -1,0 +1,32 @@
+{
+ "locale": "en",
+ "strings": {
+  "Truco argentino": "Argentine Truco",
+  "Juega contra Coco o con amigos en mesas de 2, 4 o 6.": "Play against Coco or with friends at tables for 2, 4 or 6.",
+  "Tres cartas por mano. Jugá mano a mano o en equipo y elegí cuándo cantar envido o truco.": "Three cards per hand. Play head-to-head or in teams and decide when to call envido or truco.",
+  "Repartir cartas": "Deal cards",
+  "No puntúa para la clasificación general": "Does not count towards the overall ranking",
+  "Mano": "Hand",
+  "Tus cartas": "Your cards",
+  "Puntos": "Points",
+  "Juega al truco argentino": "Play Argentine Truco",
+  "Juega en este dispositivo o abre una sala privada con un apodo.": "Play on this device or open a private room with a nickname.",
+  "Elige cuántas personas van a jugar, crea la sala y comparte la invitación. La primera mano se reparte cuando se ocupa el último asiento.": "Choose how many people will play, create a room and share the invitation. The first hand is dealt when the last seat is filled.",
+  "En un mismo dispositivo, cada jugador descubre sus cartas al recibirlo y las oculta al terminar su turno.": "On a shared device, each player reveals their cards when they receive it and hides them at the end of their turn.",
+  "Tienes el 6 y el 7 de oros y un rey de copas. ¿Cuánto envido tienes?": "You hold the 6 and 7 of coins and the king of cups. What is your envido score?",
+  "Tienes 33 de envido. El 6 y el 7 de oros suman 13 y, por ser del mismo palo, añaden 20.": "Your envido is 33. The 6 and 7 of coins add up to 13. Add 20 because they share a suit.",
+  "¿Cómo invito a mis amigos?": "How do I invite my friends?",
+  "¿Puntúa para la clasificación general?": "Does this game count towards the overall ranking?",
+  "¿Podemos compartir un móvil?": "Can we share one phone?",
+  "¿Qué variante de truco se juega?": "Which variant of Truco are we playing?",
+  "Truco argentino sin flor, a 15 o 30 puntos. Con seis jugadores se juega siempre en equipos de tres.": "Argentine Truco without flor, played to 15 or 30 points. At a table of six, you always play in two teams of three.",
+  "Se reparten tres cartas por persona. Los compañeros se sientan en puestos alternos. En cada baza, todos juegan una carta y gana la más fuerte. Ganar dos bazas da la mano. Si hay una parda, pesa la primera baza ganada. Si las tres son pardas, gana el equipo de quien salió primero (la mano).": "Everyone gets three cards. Teammates sit in alternating seats. Each player plays one card per trick. The strongest card wins. Win two tricks to take the hand. If a trick is tied, the first trick won outright takes priority. If all three tie, the starting player’s team wins.",
+  "De mayor a menor: 1 de espadas, 1 de bastos, 7 de espadas, 7 de oros, los 3, los 2, los demás 1, los 12, los 11, los 10, los demás 7, los 6, los 5 y los 4.": "Strongest to weakest: 1 of swords, 1 of clubs, 7 of swords, 7 of coins, threes, twos, remaining ones, twelves, elevens, tens, remaining sevens, sixes, fives, fours.",
+  "El truco sube el valor de la mano de 1 a 2 puntos. El retruco lo lleva a 3 y el vale cuatro, a 4. Para el envido, suma tus dos mejores cartas del mismo palo y añade 20. Las figuras valen cero. Sin pareja de palo, cuenta la carta más alta. En un empate gana quien esté antes en el orden de salida. La falta envido vale lo que le falta al equipo que va primero para llegar a 15 si ambos están en malas, o a la meta en los demás casos. Jugamos sin flor y, con seis jugadores, todos participan en cada mano, sin pica-pica.": "A hand is worth 1 point. An accepted truco raises it to 2, retruco to 3 and vale cuatro to 4. For envido, add your two best cards of the same suit plus 20. Face cards count as zero. With three different suits, count your highest card alone. Ties go to whoever plays earlier in the order, starting with the opening player. Falta envido is worth what the leading team needs to reach 15 if both sides are below 15, otherwise the match target. There is no flor. At a table of six, everyone plays every hand, without pica-pica duels.",
+  "Juega al truco argentino | Coco en Forma": "Play Argentine Truco | Coco en Forma",
+  "¿Qué es Truco argentino?": "Which variant of Truco are we playing?",
+  "¿Cómo accedo a Truco argentino?": "How do I invite my friends?",
+  "Juega en este dispositivo o abre una sala privada con un apodo. El botón de esta página te lleva al juego dentro de Coco.": "Play on this device or open a private room with a nickname.",
+  "Copiar enlace de Truco argentino": "Share game"
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "locale": "sv",
+ "strings": {
+  "Truco argentino": "Argentinsk truco",
+  "Juega contra Coco o con amigos en mesas de 2, 4 o 6.": "Spela mot Coco eller med vänner vid bord för 2, 4 eller 6 spelare.",
+  "Tres cartas por mano. Jugá mano a mano o en equipo y elegí cuándo cantar envido o truco.": "Tre kort på hand. Spela mot en motståndare eller i lag och välj när du vill bjuda envido eller truco.",
+  "Repartir cartas": "Dela ut kort",
+  "No puntúa para la clasificación general": "Räknas inte i den totala rankningen",
+  "Mano": "Giv",
+  "Tus cartas": "Dina kort",
+  "Puntos": "Poäng",
+  "Juega al truco argentino": "Spela argentinsk truco",
+  "Juega en este dispositivo o abre una sala privada con un apodo.": "Spela på den här enheten eller öppna ett privat rum med ett smeknamn.",
+  "Elige cuántas personas van a jugar, crea la sala y comparte la invitación. La primera mano se reparte cuando se ocupa el último asiento.": "Välj antal spelare, skapa ett rum och dela inbjudan. De första korten delas ut när den sista platsen har fyllts.",
+  "En un mismo dispositivo, cada jugador descubre sus cartas al recibirlo y las oculta al terminar su turno.": "Om ni delar en enhet visar varje spelare sina kort när det är dags att ta över och döljer dem när turen är slut.",
+  "Tienes el 6 y el 7 de oros y un rey de copas. ¿Cuánto envido tienes?": "Du har 6 och 7 i mynt samt kungen i bägare. Hur många poäng har du i envido?",
+  "Tienes 33 de envido. El 6 y el 7 de oros suman 13 y, por ser del mismo palo, añaden 20.": "Din envido är 33. Sexan och sjuan i mynt ger 13 tillsammans. Lägg till 20 eftersom de har samma färg.",
+  "¿Cómo invito a mis amigos?": "Hur bjuder jag in mina vänner?",
+  "¿Puntúa para la clasificación general?": "Räknas matchen i den totala rankningen?",
+  "¿Podemos compartir un móvil?": "Kan vi dela en mobil?",
+  "¿Qué variante de truco se juega?": "Vilken variant av truco spelar vi?",
+  "Truco argentino sin flor, a 15 o 30 puntos. Con seis jugadores se juega siempre en equipos de tres.": "Argentinsk truco utan flor, till 15 eller 30 poäng. Med sex spelare spelar ni alltid i två tremannalag.",
+  "Se reparten tres cartas por persona. Los compañeros se sientan en puestos alternos. En cada baza, todos juegan una carta y gana la más fuerte. Ganar dos bazas da la mano. Si hay una parda, pesa la primera baza ganada. Si las tres son pardas, gana el equipo de quien salió primero (la mano).": "Alla får tre kort. Spelare från lagen sitter växelvis runt bordet. Var och en spelar ett kort per stick och det starkaste kortet vinner. Ta två stick för att vinna given. Vid ett oavgjort stick avgör det första vunna sticket. Om alla tre blir oavgjorda vinner laget som spelade ut först.",
+  "De mayor a menor: 1 de espadas, 1 de bastos, 7 de espadas, 7 de oros, los 3, los 2, los demás 1, los 12, los 11, los 10, los demás 7, los 6, los 5 y los 4.": "Från starkast till svagast: svärd-1, stav-1, svärd-7, mynt-7, treor, tvåor, övriga ettor, tolvor, elvor, tior, övriga sjuor, sexor, femmor och fyror.",
+  "El truco sube el valor de la mano de 1 a 2 puntos. El retruco lo lleva a 3 y el vale cuatro, a 4. Para el envido, suma tus dos mejores cartas del mismo palo y añade 20. Las figuras valen cero. Sin pareja de palo, cuenta la carta más alta. En un empate gana quien esté antes en el orden de salida. La falta envido vale lo que le falta al equipo que va primero para llegar a 15 si ambos están en malas, o a la meta en los demás casos. Jugamos sin flor y, con seis jugadores, todos participan en cada mano, sin pica-pica.": "En giv är värd 1 poäng. Ett antaget truco höjer värdet till 2, retruco till 3 och vale cuatro till 4. Vid envido lägger du ihop dina två bästa kort i samma färg och lägger till 20. Klädda kort är värda noll. Med tre olika färger räknas bara det högsta kortet. Vid lika vinner den som sitter först i turordningen från öppningsspelaren. Falta envido ger så många poäng som ledarlaget behöver för att nå 15 om båda lagen har under 15, annars till matchens poängmål. Vi spelar utan flor. Vid sex spelare deltar alla i varje giv, utan pica-pica-dueller.",
+  "Juega al truco argentino | Coco en Forma": "Spela argentinsk truco | Coco en Forma",
+  "¿Qué es Truco argentino?": "Vilken variant av truco spelar vi?",
+  "¿Cómo accedo a Truco argentino?": "Hur bjuder jag in mina vänner?",
+  "Juega en este dispositivo o abre una sala privada con un apodo. El botón de esta página te lleva al juego dentro de Coco.": "Spela på den här enheten eller öppna ett privat rum med ett smeknamn.",
+  "Copiar enlace de Truco argentino": "Dela spelet"
+ }
+}

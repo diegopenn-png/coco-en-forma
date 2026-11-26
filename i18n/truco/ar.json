@@ -1,0 +1,32 @@
+{
+ "locale": "ar",
+ "strings": {
+  "Truco argentino": "تروكو الأرجنتينية",
+  "Juega contra Coco o con amigos en mesas de 2, 4 o 6.": "العب ضد Coco أو مع أصدقائك على طاولة للاعبين أو أربعة أو ستة لاعبين.",
+  "Tres cartas por mano. Jugá mano a mano o en equipo y elegí cuándo cantar envido o truco.": "ثلاث أوراق لكل لاعب. العب وجهًا لوجه أو ضمن فريق واختر متى تنادي envido أو truco.",
+  "Repartir cartas": "وزّع الأوراق",
+  "No puntúa para la clasificación general": "لا تُحتسب في الترتيب العام",
+  "Mano": "توزيعة",
+  "Tus cartas": "أوراقك",
+  "Puntos": "النقاط",
+  "Juega al truco argentino": "العب تروكو الأرجنتينية",
+  "Juega en este dispositivo o abre una sala privada con un apodo.": "العب على هذا الجهاز أو افتح غرفة خاصة باستخدام اسم مستعار.",
+  "Elige cuántas personas van a jugar, crea la sala y comparte la invitación. La primera mano se reparte cuando se ocupa el último asiento.": "اختر عدد اللاعبين وأنشئ غرفة ثم شارك الدعوة. تبدأ التوزيعة الأولى فور شغل المقعد الأخير.",
+  "En un mismo dispositivo, cada jugador descubre sus cartas al recibirlo y las oculta al terminar su turno.": "عند مشاركة جهاز واحد، يكشف كل لاعب أوراقه حين يتسلّمه ويخفيها في نهاية دوره.",
+  "Tienes el 6 y el 7 de oros y un rey de copas. ¿Cuánto envido tienes?": "معك ٦ العملات و٧ العملات وملك الكؤوس. كم تبلغ نقاط envido لديك؟",
+  "Tienes 33 de envido. El 6 y el 7 de oros suman 13 y, por ser del mismo palo, añaden 20.": "لديك ٣٣ نقطة في envido. مجموع ٦ و٧ يساوي ١٣، وتضيف ٢٠ لأن الورقتين من نوع العملات.",
+  "¿Cómo invito a mis amigos?": "كيف أدعو أصدقائي؟",
+  "¿Puntúa para la clasificación general?": "هل تُحتسب المباراة في الترتيب العام؟",
+  "¿Podemos compartir un móvil?": "هل يمكننا اللعب بهاتف واحد؟",
+  "¿Qué variante de truco se juega?": "أي نسخة من تروكو نلعب؟",
+  "Truco argentino sin flor, a 15 o 30 puntos. Con seis jugadores se juega siempre en equipos de tres.": "تروكو الأرجنتينية من دون flor، إلى ١٥ أو ٣٠ نقطة. وعند اللعب بستة لاعبين يتكوّن كل فريق دائمًا من ثلاثة.",
+  "Se reparten tres cartas por persona. Los compañeros se sientan en puestos alternos. En cada baza, todos juegan una carta y gana la más fuerte. Ganar dos bazas da la mano. Si hay una parda, pesa la primera baza ganada. Si las tres son pardas, gana el equipo de quien salió primero (la mano).": "يأخذ كل لاعب ثلاث أوراق، ويجلس لاعبو الفريقين بالتناوب. في كل أكلة يلعب الجميع ورقة واحدة وتفوز الأقوى. الفوز بأكلتين يحسم التوزيعة. عند تعادل أكلة تكون الأفضلية للفريق الذي فاز بأول أكلة حاسمة. وإذا تعادلت الأكلات الثلاث يفوز فريق من بدأ التوزيعة.",
+  "De mayor a menor: 1 de espadas, 1 de bastos, 7 de espadas, 7 de oros, los 3, los 2, los demás 1, los 12, los 11, los 10, los demás 7, los 6, los 5 y los 4.": "من الأقوى إلى الأضعف: ١ السيوف، ١ العصيّ، ٧ السيوف، ٧ العملات، ثم الثلاثات، فالاثنانات، فالآحاد الباقية، ثم ١٢، ثم ١١، ثم ١٠، فالسبعات الباقية، فالستات، فالخمسات، فالأربعات.",
+  "El truco sube el valor de la mano de 1 a 2 puntos. El retruco lo lleva a 3 y el vale cuatro, a 4. Para el envido, suma tus dos mejores cartas del mismo palo y añade 20. Las figuras valen cero. Sin pareja de palo, cuenta la carta más alta. En un empate gana quien esté antes en el orden de salida. La falta envido vale lo que le falta al equipo que va primero para llegar a 15 si ambos están en malas, o a la meta en los demás casos. Jugamos sin flor y, con seis jugadores, todos participan en cada mano, sin pica-pica.": "قيمة التوزيعة نقطة واحدة. بعد قبول truco تصبح نقطتين، ومع retruco ثلاثًا، ومع vale cuatro أربعًا. لحساب envido اجمع أعلى ورقتين من النوع نفسه وأضف ٢٠. أوراق الصور تساوي صفرًا. إذا كانت الأنواع الثلاثة مختلفة فتحسب أعلى ورقة فقط. عند التعادل يفوز الأسبق في ترتيب اللعب بدءًا بمن افتتح التوزيعة. قيمة falta envido هي ما ينقص الفريق المتقدم لبلوغ ١٥ إذا كان كلا الفريقين دون ١٥، وإلا فهي ما ينقصه لبلوغ هدف المباراة. نلعب من دون flor. وعند اللعب بستة لاعبين يشارك الجميع في كل توزيعة من دون مبارزات pica-pica.",
+  "Juega al truco argentino | Coco en Forma": "العب تروكو الأرجنتينية | Coco en Forma",
+  "¿Qué es Truco argentino?": "أي نسخة من تروكو نلعب؟",
+  "¿Cómo accedo a Truco argentino?": "كيف أدعو أصدقائي؟",
+  "Juega en este dispositivo o abre una sala privada con un apodo. El botón de esta página te lleva al juego dentro de Coco.": "العب على هذا الجهاز أو افتح غرفة خاصة باستخدام اسم مستعار.",
+  "Copiar enlace de Truco argentino": "مشاركة اللعبة"
+ }
+}

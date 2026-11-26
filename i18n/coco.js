@@ -403,6 +403,7 @@
   async function readPack(tag) {
     const isAssessment = document.documentElement.hasAttribute('data-coco-assessment');
     const folders = ['packs'];
+    if (['/', '/index.html', '/juegos/', '/juego/truco/'].includes(location.pathname)) folders.push('truco');
     if (document.documentElement.hasAttribute('data-coco-extra-languages')) folders.push('extra');
     if (isAssessment) folders.push('assessment');
     const loaded = await Promise.all(folders.map(folder=>readLanguageFile(tag,folder)));
@@ -527,7 +528,7 @@
   }
   // Keep the original image node and src intact: the identity renderer uses
   // them to recognise cards. Rewriting src would trigger a replacement loop.
-  const thumbnailCopy = {"conecta": ["Conecta colores", "Une los colores"], "numeros": ["Une los números", "Traza tu camino"], "calculo": ["Cálculo veloz", "Haz la cuenta"], "palabras": ["Descifra la palabra", "Ordena las letras"], "sopa": ["Sopa de letras", "Encuentra palabras"], "sudoku": ["Sudoku", "Completa el tablero"], "memoria": ["Memoria", "Descubre las parejas"], "series": ["Series lógicas", "Sigue el patrón"], "crucigrama": ["Crucigrama", "Resuelve las pistas"], "tiempo": ["Reto tiempo", "Activa el reloj"], "verdadero": ["Verdadero o falso", "Elige tu respuesta"], "cocomed": ["Coco Med", "Explora la salud"], "futbol": ["Fútbol", "Marca el gol"], "padel": ["Pádel", "Organiza tu partido"], "ajedrez": ["Ajedrez", "Haz tu jugada"], "bank": ["Coco Bank", "Gestiona tu dinero"], "ciudad": ["Coco Ciudad", "Tira el dado"], "generala": ["Coco Generala", "Tira tus dados"], "naval": ["Coco Batalla Naval", "Encuentra la flota"], "eneagrama": ["Coco Eneagrama", "Explora tus tendencias"], "ideas": ["Tu idea cuenta", "Danos una idea"], "hero-explorer-v160129": ["Juegos para la mente y apoyo escolar", "Con Coco y Eterna."]};
+  const thumbnailCopy = {"truco":["Truco argentino","Repartir cartas"],"conecta": ["Conecta colores", "Une los colores"], "numeros": ["Une los números", "Traza tu camino"], "calculo": ["Cálculo veloz", "Haz la cuenta"], "palabras": ["Descifra la palabra", "Ordena las letras"], "sopa": ["Sopa de letras", "Encuentra palabras"], "sudoku": ["Sudoku", "Completa el tablero"], "memoria": ["Memoria", "Descubre las parejas"], "series": ["Series lógicas", "Sigue el patrón"], "crucigrama": ["Crucigrama", "Resuelve las pistas"], "tiempo": ["Reto tiempo", "Activa el reloj"], "verdadero": ["Verdadero o falso", "Elige tu respuesta"], "cocomed": ["Coco Med", "Explora la salud"], "futbol": ["Fútbol", "Marca el gol"], "padel": ["Pádel", "Organiza tu partido"], "ajedrez": ["Ajedrez", "Haz tu jugada"], "bank": ["Coco Bank", "Gestiona tu dinero"], "ciudad": ["Coco Ciudad", "Tira el dado"], "generala": ["Coco Generala", "Tira tus dados"], "naval": ["Coco Batalla Naval", "Encuentra la flota"], "eneagrama": ["Coco Eneagrama", "Explora tus tendencias"], "ideas": ["Tu idea cuenta", "Danos una idea"], "hero-explorer-v160129": ["Juegos para la mente y apoyo escolar", "Con Coco y Eterna."]};
   async function thumbnailJpeg(id,tag) {
     const copy=thumbnailCopy[id];
     if(tag!==current || !copy)throw Error('thumbnail unavailable');
@@ -619,7 +620,7 @@
       if (el.closest('#eternaOverlayV159') || el.closest(privateAreas+',.loginDecorTitle') || el.hasAttribute('data-game-language')) return;
       // Card titles and some legacy controls are used for DOM-based identification.
       // Their translation is handled by the owning renderer once a stable id exists.
-      if (!page && el.closest('.cocoGameCard,.cocoMiniJuego') && !el.closest('[data-coco-juego],[data-coco-chess-entry],[data-coco-city-entry],[data-coco-naval-entry],[data-coco-generala-entry],[data-coco-suggestion],.cocoMiniSuggestion')) return;
+      if (!page && el.closest('.cocoGameCard,.cocoMiniJuego') && !el.closest('[data-coco-juego],[data-coco-chess-entry],[data-coco-city-entry],[data-coco-truco-entry],[data-coco-naval-entry],[data-coco-generala-entry],[data-coco-suggestion],.cocoMiniSuggestion')) return;
       // Nicknames, room codes, board cells and questionnaire answers are model values.
       const protectedGame = el.closest('[role=grid],.cocoCrossBoard,#board,#lobbyPlayers,.player,#history');
       const authoredGame = el.matches('[data-coco-copy],#history:is(button),.player > small,.player > span:not(.playerName,.avatar)') || el.closest('.boardCenter');

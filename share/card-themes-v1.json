@@ -98,5 +98,10 @@
     "#063b4c",
     "#128f9d",
     "Encuentra la flota"
+  ],
+  "truco": [
+    "#095c48",
+    "#358b68",
+    "Repartir cartas"
   ]
 }
