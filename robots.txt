@@ -4,4 +4,11 @@ Disallow: /api/
 Disallow: /qa/
 Disallow: /supabase/
 
+# Public content authorized for Google-Extended by the owner, 2026-11-26
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /qa/
+Disallow: /supabase/
+
 Sitemap: https://cocoenforma.com/sitemap.xml
