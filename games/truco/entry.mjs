@@ -1,7 +1,11 @@
 // The public menu and the signed-in PWA both render a Naval card.
 function attach() {
   document.querySelectorAll('#cocoApp [data-coco-naval-entry]').forEach(anchor=>{
-    if(Array.from(anchor.parentElement.children).some(el=>el.hasAttribute('data-coco-truco-entry')))return;
+    const existing=Array.from(anchor.parentElement.children).find(el=>el.hasAttribute('data-coco-truco-entry'));
+    if(existing){
+      if(anchor.nextElementSibling!==existing)anchor.after(existing);
+      return;
+    }
     const mini=anchor.classList.contains('cocoMiniJuego'),card=document.createElement('article');
     card.className=anchor.className;card.classList.remove('cocoDailyComplete','cocoSharedTarget');
     card.dataset.cocoTrucoEntry='true';card.dataset.cocoExcellence='1';card.dataset.cocoKind='tool';
