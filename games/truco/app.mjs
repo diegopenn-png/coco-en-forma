@@ -150,7 +150,7 @@ function gameMove(action){
  if(page==='online')return onlineAction('play',action);
  const g=local.game,s=local.mode==='solo'?0:actor(g);try{move(g,s,action);write(localKey,local);render();}catch{render();}
 }
-function handle(action){
+async function handle(action){
  if(action.startsWith('mode-')){mode=action.slice(5);networkIssue='';render();return;}
  switch(action){
  case 'start':if(local&&local.game.phase!=='finished'){modal('<p>'+esc(t.confirmLeave)+'</p>'+button(t.newGame,'replace','primary'));return;}return startLocal();
@@ -160,7 +160,14 @@ function handle(action){
  case 'daily':return dailyPlay();
  case 'menu':return goMenu();
  case 'rules':return modal('<h2>'+esc(t.rules)+'</h2><p style="margin-top:.7rem;white-space:pre-line">'+esc(t.rulesText)+'</p>');
- case 'share':return copy(new URL('/juego/truco/?lang='+lang,location.origin).href);
+ case 'share':{
+   const link=new URL('/juego/truco/?lang='+lang,location.origin).href;
+   if(navigator.share){
+    try{await navigator.share({title:t.title+' · Coco en Forma',url:link});return;}
+    catch(error){if(error.name==='AbortError')return;}
+   }
+   return copy(link);
+  }
  case 'invite':return copy(gameURL(room.code));
  case 'create':case 'join':case 'resumeRoom':return onlineAction(action);
  case 'refresh':return refresh();
