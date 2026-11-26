@@ -35,9 +35,24 @@ function setHeader(){
   document.querySelector('#lang').innerHTML=Object.entries(languages).map(([k,n])=>'<option value="'+k+'"'+(k===lang?' selected':'')+'>'+n+'</option>').join('');
 }
 document.querySelector('#lang').onchange=e=>{setLanguage(e.target.value);lang=getLanguage();t=messages[lang];setHeader();render();};
+let dailyState,authClient;
+async function dailyPlay(action){
+ if(busy)return;
+ busy=true;
+ try{
+ authClient??=window.supabase.createClient('https://fcatttsfufjiphgohgwp.supabase.co','sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X');
+ const {data:{session}}=await authClient.auth.getSession();
+ if(!session){modal('<p>'+esc(t.login)+'</p><a href="/?lang='+lang+'">'+esc(t.back)+'</a>');return;}
+ const call=async body=>fetch('https://fcatttsfufjiphgohgwp.supabase.co/functions/v1/coco-truco-diario',{method:'POST',headers:{Authorization:'Bearer '+session.access_token,'Content-Type':'application/json',apikey:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X'},body:JSON.stringify(body)});
+ let r=await call(action?{move:action,version:dailyState.version,dia:dailyState.dia}:{});
+ if(r.status===409)r=await call({});
+ if(!r.ok)throw Error(r.status===401?t.login:t.connectError);
+ dailyState=await r.json();page='daily';
+ }catch(e){notice(e.message||t.connectError);}finally{busy=false;render();}
+}
 function renderMenu(){
  const hasRoom=read(roomKey);
- app.innerHTML='<section class="hero"><h1>'+esc(t.title)+'</h1><p>'+esc(t.entry)+'</p></section><div class="panels"><section class="panel"><h2>'+esc(t.newGame)+'</h2><div class="modes">'+['solo','local','online'].map(x=>button(t[x],'mode-'+x,'mode','aria-pressed="'+(mode===x)+'"')).join('')+'</div>'+
+ app.innerHTML='<section class="hero"><h1>'+esc(t.title)+'</h1><p>'+esc(t.entry)+'</p></section><div class="panels"><section class="panel">'+button(t.daily+' · '+t.solo,'daily','prominent')+'<p class="small">'+esc(t.victory)+' +100 · '+esc(t.goal)+' 15</p><h2>'+esc(t.newGame)+'</h2><div class="modes">'+['solo','local','online'].map(x=>button(t[x],'mode-'+x,'mode','aria-pressed="'+(mode===x)+'"')).join('')+'</div>'+
  '<div class="settings"><label>'+esc(t.players)+'<select id="capacity">'+options([2,4,6],capacity)+'</select></label><label>'+esc(t.goal)+'<select id="goal">'+options([15,30],goal)+'</select></label></div>'+
  (mode==='online'?'<label class="field">'+esc(t.nickname)+'<input id="name" autocomplete="nickname" maxlength="24" value="'+esc(name)+'"></label><div class="actions">'+button(t.create,'create','primary')+'</div><div class="formRow"><label class="field">'+esc(t.code)+'<input id="code" class="code" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="20" value="'+esc(joinCode)+'"></label>'+button(t.join,'join','primary')+'</div>'+ (hasRoom?'<div class="box">'+button(t.resumeRoom,'resumeRoom')+'</div>':''):
  '<div class="actions">'+button(t.start,'start','primary')+(local?.mode===mode?button(t.continueGame,'resumeLocal'):'')+'</div>')+
@@ -79,6 +94,7 @@ function renderBoard(v) {
 function render(){
  clearTimeout(botTimer);
  if(page==='menu')return renderMenu();
+ if(page==='daily'){dailyState.game.names=[t.you,'Coco'];renderBoard(dailyState.game);app.insertAdjacentHTML('afterbegin','<h2>'+esc(t.daily)+' · '+esc(dailyState.dia)+'</h2>');if(dailyState.points!==null)app.insertAdjacentHTML('beforeend','<p>'+esc(t.points)+' +'+dailyState.points+'</p>');return;}
  if(page==='online'){
    if(!room)return renderMenu();
    if(room.closed){app.innerHTML='<div class="cover panel"><h1>'+esc(t.left)+'</h1>'+button(t.menu,'menu','primary')+'</div>';return;}
@@ -130,6 +146,7 @@ async function onlineAction(action,moveName){
 }
 function goMenu(){generation++;busy=false;page='menu';shownSeat=null;networkIssue='';clearTimeout(pollTimer);render();}
 function gameMove(action){
+ if(page==='daily')return dailyPlay(action);
  if(page==='online')return onlineAction('play',action);
  const g=local.game,s=local.mode==='solo'?0:actor(g);try{move(g,s,action);write(localKey,local);render();}catch{render();}
 }
@@ -140,6 +157,7 @@ function handle(action){
  case 'replace':dialog.close();return startLocal();
  case 'resumeLocal':page='local';shownSeat=null;return render();
  case 'reveal':shownSeat=actor(local.game);return render();
+ case 'daily':return dailyPlay();
  case 'menu':return goMenu();
  case 'rules':return modal('<h2>'+esc(t.rules)+'</h2><p style="margin-top:.7rem;white-space:pre-line">'+esc(t.rulesText)+'</p>');
  case 'share':return copy(new URL('/juego/truco/?lang='+lang,location.origin).href);
