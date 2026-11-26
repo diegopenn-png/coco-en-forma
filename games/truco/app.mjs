@@ -1,6 +1,6 @@
 import {actor,bot,calls,deck,newMatch,move,view} from './engine.mjs';
 import {hex,request} from './online.mjs';
-import {getLanguage,setLanguage,messages} from './locale.mjs';
+import {getLanguage,setLanguage,messages} from './locale.mjs?v=palitos-1';
 const app=document.querySelector('#app'),dialog=document.querySelector('#dialog');
 const localKey='coco.truco.local.v1',roomKey='coco.truco.room.v1';
 const read=(k,f=null)=>{try{return JSON.parse(localStorage.getItem(k))??f;}catch{return f;}};
