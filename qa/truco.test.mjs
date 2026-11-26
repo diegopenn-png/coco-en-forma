@@ -57,3 +57,29 @@ test('all 15 locales have menu, guide and card names; the share route is catalog
  assert.match(file('juegos/index.html'),/href="\/juego\/truco\/"/);assert.match(file('juego/truco/index.html'),/data-play href="\/games\/truco\/"/);
  assert.match(file('sw.js'),/\.\/games\/truco\/online.mjs/);
 });
+
+test('played cards stay in their trick and seat until the next deal',()=>{
+ for(const n of [2,4,6]){
+  const g=newMatch(names(n),30,random(n)),laid=[];
+  while(g.phase==='play'){
+   const seat=actor(g),card=g.hands[seat][0];laid.push({seat,card,trick:g.tricks.length});move(g,seat,card);
+   assert.deepEqual(view(g,0).played,laid);
+  }
+  assert.ok(laid.length>=2*n);move(g,0,'next');assert.deepEqual(view(g,0).played,[]);
+ }
+});
+test('accepted envido announces every count in seat order, while refused envido keeps totals private',()=>{
+ for(const choice of ['accept','decline']){
+  const g=newMatch(names(4),15,()=>0);
+  move(g,0,'envido');assert.deepEqual(view(g,1).envidoCalls,[]);
+  move(g,1,choice);const v=view(g,2);
+  assert.deepEqual(v.envidoCalls,choice==='accept'?g.original.map((cards,seat)=>({seat,score:envido(cards)})):[]);
+  assert.deepEqual(v.played,[]);assert(!('original' in v));
+ }
+});
+test('legacy hands recover only publicly played cards across a resumed trick',()=>{
+ const g=newMatch(names(2),15,()=>0),laid=[];
+ for(let i=0;i<3;i++){const s=actor(g),card=g.hands[s][0];laid.push(card);move(g,s,card);}
+ delete g.played;assert.deepEqual(view(g,0).played.map(p=>p.card).sort(),laid.sort());
+ const s=actor(g),card=g.hands[s][0];move(g,s,card);assert.equal(view(g,0).played.length,4);
+});

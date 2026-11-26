@@ -1,6 +1,6 @@
-import {actor,bot,calls,deck,newMatch,move,view} from './engine.mjs';
+import {actor,bot,calls,deck,envido,newMatch,move,view} from './engine.mjs?v=mesa-1';
 import {hex,request} from './online.mjs';
-import {getLanguage,setLanguage,messages} from './locale.mjs?v=palitos-1';
+import {getLanguage,setLanguage,messages} from './locale.mjs?v=mesa-1';
 const app=document.querySelector('#app'),dialog=document.querySelector('#dialog');
 const localKey='coco.truco.local.v1',roomKey='coco.truco.room.v1';
 const read=(k,f=null)=>{try{return JSON.parse(localStorage.getItem(k))??f;}catch{return f;}};
@@ -18,7 +18,7 @@ const button=(label,act,cls='',extra='')=>'<button type="button" class="btn '+cl
 const options=(arr,selected)=>arr.map(x=>'<option value="'+x+'"'+(x===selected?' selected':'')+'>'+x+'</option>').join('');
 const backs=(n=3)=>'<div class="backs" aria-hidden="true">'+('<i class="backCard"></i>').repeat(n)+'</div>';
 const teamName=team=>t.team+' '+(team+1);
-const seatName=(v,s)=>local&&page==='local'?(local.mode==='solo'?(s===0?t.you:'Coco '+s):t.seat+' '+(s+1)):v.names[s];
+const seatName=(v,s)=>local&&page==='local'?(local.mode==='solo'?(s===0?t.you:v.names.length===2?'Coco':'Coco '+s):t.seat+' '+(s+1)):v.names[s];
 const labelAct=a=>calls[a]||t[a]||a;
 function msg(key){return t[key]||t.connectError;}
 function notice(text){const n=document.querySelector('#notice');n.textContent=text;clearTimeout(toastTimer);toastTimer=setTimeout(()=>n.textContent='',3500);}
@@ -69,7 +69,54 @@ function cardHTML(card,clickable=false,mini=false) {
  const inner='<strong>'+num+'</strong><img alt="" src="./art/'+suit+'.svg"><i aria-hidden="true">'+num+'</i>'+(!mini?'<small>'+esc(t[suit])+'</small>':'');
  return clickable?'<button class="card" data-act="'+card+'" aria-label="'+esc(label)+'">'+inner+'</button>':'<span class="card" role="img" aria-label="'+esc(label)+'">'+inner+'</span>';
 }
-function laidCards(v,table){return table.map(({seat,card})=>'<div class="slot">'+cardHTML(card,false,true)+'<span>'+esc(seatName(v,seat))+'</span></div>').join('');}
+function playedTable(v){
+ const n=v.names.length,seats=[];
+ for(let offset=0;offset<n;offset++){
+  const seat=(v.seat+offset)%n;
+  const played=v.played.filter(play=>play.seat===seat);
+  const slots=[0,1,2].map(trick=>{
+   const play=played.find(p=>p.trick===trick);
+   return '<span class="trickSlot" aria-label="'+esc(t.trick)+' '+(trick+1)+'">'+(play?cardHTML(play.card,false,true):'')+'</span>';
+  }).join('');
+  const older=played.filter(p=>p.trick===null).map(p=>cardHTML(p.card,false,true)).join('');
+  seats.push('<div class="tableSeat position'+offset+'"><div class="seatLabel">'+esc(seatName(v,seat))+
+    (n>2?' <small>· '+esc(teamName(seat%2))+'</small>':'')+'</div><div class="playedRow">'+slots+'</div>'+
+    (older?'<div class="earlierCards">'+older+'</div>':'')+'</div>');
+ }
+ return '<div class="playedTable seats'+n+'">'+seats.join('')+'</div>';
+}
+function envidoResult(v){
+ const result=v.events.find(e=>e.type==='envResult');
+ if(!result)return '';
+ const calls=v.envidoCalls.map(e=>'<span>'+esc(seatName(v,e.seat))+' <b>'+e.score+'</b></span>').join('');
+ const verdict=result.score===undefined?t.decline+' · '+t.won:t.won;
+ return '<section class="envResult"><strong>Envido</strong> '+calls+'<span>'+esc(verdict)+' · '+esc(seatName(v,result.seat))+' +'+result.points+'</span></section>';
+}
+function envidoBuilder(v){
+ const own=[...v.cards,...v.played.filter(p=>p.seat===v.seat).map(p=>p.card)];
+ const key=[page,v.handNo,v.seat,...own.slice().sort()].join(':');
+ const old=app.querySelector('.envidoBuilder');
+ const same=old?.dataset.key===key;
+ const selected=same?Array.from(old.querySelectorAll('[aria-pressed="true"]'),b=>b.dataset.countCard):[];
+ const choices=own.map(card=>'<button type="button" data-count-card="'+esc(card)+'" aria-pressed="'+selected.includes(card)+'">'+cardHTML(card,false,true)+'</button>').join('');
+ return '<details class="envidoBuilder" data-key="'+esc(key)+'"'+(same&&old.open?' open':'')+'><summary>'+esc(t.buildEnvido)+'</summary><p>'+esc(t.countHint)+'</p><div class="countChoices">'+choices+'</div><output aria-live="polite">'+envidoEquation(selected)+'</output></details>';
+}
+function envidoEquation(cards){
+ if(!cards.length)return '—';
+ const values=cards.map(card=>{const n=Number(card.split('-')[0]);return n<10?n:0;});
+ return (cards.length===2?'20 + '+values.join(' + ')+' = ':'')+envido(cards);
+}
+function countCard(button){
+ const builder=button.closest('.envidoBuilder'),suit=button.dataset.countCard.split('-')[1];
+ const chosen=Array.from(builder.querySelectorAll('[aria-pressed="true"]'));
+ const adding=button.getAttribute('aria-pressed')!=='true';
+ if(adding){
+  for(const prior of chosen)if(prior.dataset.countCard.split('-')[1]!==suit)prior.setAttribute('aria-pressed','false');
+  if(chosen.length===2)chosen[0].setAttribute('aria-pressed','false');
+ }
+ button.setAttribute('aria-pressed',String(adding));
+ builder.querySelector('output').textContent=envidoEquation(Array.from(builder.querySelectorAll('[aria-pressed="true"]'),b=>b.dataset.countCard));
+}
 function logText(v,e){
  if(e.type==='action')return seatName(v,e.seat)+' · '+labelAct(e.action);
  if(e.type==='envResult')return seatName(v,e.seat)+(e.score===undefined?'':' ('+e.score+')')+' · +'+e.points;
@@ -100,11 +147,9 @@ function renderBoard(v) {
  mine?t.chooseCard:t.turn+' · '+seatName(v,current);
  const showExtras=!!app.querySelector('.boardExtras[open]');
  const handLabel=page==='local'&&local.mode==='local'?t.yourCards+' · '+seatName(v,s):t.yourCards;
- const lastTrick=!v.table.length&&v.lastTable.length;
  app.innerHTML=scoreboard(v)+
- '<div class="felt"><div class="feltHead"><strong>'+esc(t.hand)+' '+v.handNo+' · '+esc(t.trick)+' '+Math.min(3,v.tricks.length+1)+'</strong><span>×'+v.stake+'</span></div><div class="tableCards">'+(v.table.length?laidCards(v,v.table):lastTrick?laidCards(v,v.lastTable):backs())+'</div>'+
- (lastTrick?'<p class="lastTrick">'+esc(t.latest)+'</p>':'')+'</div>'+
- '<div class="boardInfo"><div class="rowTitle"><h3>'+esc(handLabel)+'</h3><span class="pill">'+esc(t.pointsInHand)+' '+v.myEnvido+'</span></div><div class="hand">'+v.cards.map(c=>cardHTML(c,canPlay&&v.options.includes(c))).join('')+'</div><p class="status" aria-live="polite">'+esc(status)+'</p>'+
+ '<div class="felt"><div class="feltHead"><strong>'+esc(t.hand)+' '+v.handNo+' · '+esc(t.trick)+' '+Math.min(3,v.tricks.length+1)+'</strong><span>×'+v.stake+'</span></div>'+playedTable(v)+envidoResult(v)+'</div>'+
+ '<div class="boardInfo"><div class="handHead"><h3>'+esc(handLabel)+'</h3>'+envidoBuilder(v)+'</div><div class="hand">'+v.cards.map(c=>cardHTML(c,canPlay&&v.options.includes(c))).join('')+'</div><p class="status" aria-live="polite">'+esc(status)+'</p>'+
  '<div class="actions">'+(canPlay?v.options.filter(x=>!deck.includes(x)&&x!=='fold').map(x=>button(labelAct(x),x,['accept','truco','envido'].includes(x)?'prominent':'')).join(''):'')+
  (canPlay&&v.options.includes('fold')?button(t.fold,'askFold','quiet'):'')+
  (v.phase==='between'?button(t.next,'next','primary'):v.phase==='finished'?button(t.menu,'menu','primary'):'')+'</div></div>'+
@@ -200,7 +245,7 @@ async function handle(action){
  default:if(dialog.open)dialog.close();return gameMove(action);
  }
 }
-document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&!busy)handle(b.dataset.act);});
+document.addEventListener('click',e=>{const counter=e.target.closest('[data-count-card]');if(counter){countCard(counter);return;}const b=e.target.closest('[data-act]');if(b&&!busy)handle(b.dataset.act);});
 document.addEventListener('input',e=>{if(e.target.id==='name'){name=e.target.value;write('coco.truco.nick',name);}if(e.target.id==='code')joinCode=e.target.value;});
 document.addEventListener('change',e=>{if(e.target.id==='capacity')capacity=Number(e.target.value);if(e.target.id==='goal')goal=Number(e.target.value);});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&page==='local'&&local?.mode==='local'){shownSeat=null;render();}if(!document.hidden&&page==='online')refresh();});
