@@ -26,7 +26,7 @@ function deal(game, random) {
   game.hands=game.names.map((_,i)=>[shuffled[i],shuffled[i+n],shuffled[i+n*2]]);
   game.original=game.hands.map(cards=>cards.slice());
   Object.assign(game,{phase:'play',folded:[],turn:game.mano,lead:game.mano,stake:1,raiseTeam:null,
-    envDone:false,pending:null,suspended:null,tricks:[],table:[],lastTable:[],events:[],handWinner:null});
+    envDone:false,pending:null,suspended:null,tricks:[],played:[],table:[],lastTable:[],events:[],handWinner:null});
 }
 export function newMatch(names,goal=15,random=Math.random) {
   if (![2,4,6].includes(names.length)||![15,30].includes(goal)) throw Error('settings');
@@ -126,12 +126,28 @@ function respond(g,s,choice) {
   record(g,{type:'envResult',seat:winner.seat,points,score:winner.score});
   g.envDone=true;g.pending=g.suspended;g.suspended=null;award(g,winner.seat%2,points);
 }
+// Older saved hands kept only the previous and current tricks. Recover the
+// exposed cards by subtracting the remaining hand; never guess an unknown order.
+function priorPlays(g){
+  const plays=[];
+  for(const [seat,original] of g.original.entries()){
+    const last=g.lastTable.find(p=>p.seat===seat),current=g.table.find(p=>p.seat===seat);
+    const earlier=original.filter(card=>!g.hands[seat].includes(card)&&card!==last?.card&&card!==current?.card);
+    for(const card of earlier)plays.push({seat,card,trick:g.tricks.length===2?0:null});
+    if(last)plays.push({...last,trick:g.tricks.length-1});
+    if(current)plays.push({...current,trick:g.tricks.length});
+  }
+  return plays;
+}
 export function move(g,s,action,random=Math.random) {
   if(!Number.isInteger(s)||s<0||s>=g.names.length||!legal(g,s).includes(action))throw Error('stale');
   if(action==='next'){
     g.mano=advance(g,g.mano);g.handNo++;deal(g,random);return;
   }
-  if(deck.includes(action)){g.hands[s].splice(g.hands[s].indexOf(action),1);g.table.push({seat:s,card:action});finishTurn(g,s);return;}
+  g.played??=priorPlays(g);
+  if(deck.includes(action)){
+    g.played.push({seat:s,card:action,trick:g.tricks.length});
+    g.hands[s].splice(g.hands[s].indexOf(action),1);g.table.push({seat:s,card:action});finishTurn(g,s);return;}
   record(g,{type:'action',seat:s,action});
   if(action==='fold'){
     const unopened=!g.envDone && g.table.length===0 && !g.tricks.length && g.stake===1;
@@ -153,7 +169,12 @@ export function move(g,s,action,random=Math.random) {
 }
 export function view(g,s) {
   const {hands,original,...publicGame}=g;
-  return {...publicGame,seat:s,cards:hands[s].slice(),counts:hands.map(h=>h.length),
+  const result=g.events.find(e=>e.type==='envResult');
+  const envidoCalls=result?.score!==undefined?g.names.map((_,i)=>{
+    const seat=(g.mano+i)%g.names.length;
+    return {seat,score:envido(original[seat])};
+  }):[];
+  return {...publicGame,played:g.played??priorPlays(g),envidoCalls,seat:s,cards:hands[s].slice(),counts:hands.map(h=>h.length),
     myEnvido:envido(original[s]),options:legal(g,s)};
 }
 export function bot(v,random=Math.random) {
