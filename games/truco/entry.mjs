@@ -10,7 +10,7 @@ function attach() {
     card.className=anchor.className;card.classList.remove('cocoDailyComplete','cocoSharedTarget');
     card.dataset.cocoTrucoEntry='true';card.dataset.cocoExcellence='1';card.dataset.cocoKind='tool';
     const img='<img class="cocoOfficialThumb" src="./share/premium-v160126/truco.jpg" srcset="./share/premium-v160126/truco-720.webp 720w, ./share/premium-v160126/truco.jpg 1200w" sizes="(max-width:600px) 90vw, 480px" alt="Truco argentino" loading="lazy" decoding="async">';
-    const ranking='No puntúa para la clasificación general';
+    const ranking='Solo la partida del día';
     card.innerHTML=mini?'<span class="cocoMiniIcono cocoOfficialThumbBox">'+img+'</span><b>Truco argentino</b><span class="cocoTrucoStatus" style="grid-column:2;color:#14614c;font-weight:700">'+ranking+'</span>':
       '<div class="emoji cocoOfficialThumbBox">'+img+'</div><h3>Truco argentino</h3><p class="cocoDescripcion">Juega contra Coco o con amigos en mesas de 2, 4 o 6.</p><p>'+ranking+'</p><button type="button" class="btn cocoBotonJuego">Repartir cartas</button>';
     if(mini){card.tabIndex=0;card.setAttribute('role','link');card.onkeydown=e=>{if(e.target===card&&['Enter',' '].includes(e.key)){e.preventDefault();openGame();}};}
