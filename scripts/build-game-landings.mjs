@@ -39,5 +39,5 @@ const paths=[...new Set([...extra,hubPath,...games.map(g=>g.path),...discoveryPa
 writeFileSync(root+'sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+paths.map(p=>`  <url><loc>${origin}${p}</loc>${localizedPaths.includes(p)?`<lastmod>${landingUpdated}</lastmod>`:p==='/galeria/impresiones-3d/'?'<lastmod>2026-11-08</lastmod>':p==='/regalos/'||discoveryPages.some(page=>`/${page.slug}/`===p)?'<lastmod>2026-11-13</lastmod>':''}</url>`).join('\n')+'\n</urlset>\n');
 // Let crawlers read canonical/noindex on app URLs; robots.txt is not a deduplication mechanism.
 // Keep source/test/API exclusions. Authentication still protects all private data.
-writeFileSync(root+'robots.txt',`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /qa/\nDisallow: /supabase/\n\nSitemap: ${origin}/sitemap.xml\n`);
+writeFileSync(root+'robots.txt',`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /qa/\nDisallow: /supabase/\n\n# Public content authorized for Google-Extended by the owner, 2026-11-26\nUser-agent: Google-Extended\nAllow: /\nDisallow: /api/\nDisallow: /qa/\nDisallow: /supabase/\n\nSitemap: ${origin}/sitemap.xml\n`);
 console.log(`Built ${games.length} game landings, catalogue, robots and sitemap (${paths.length} URLs).`);
