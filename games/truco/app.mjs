@@ -63,7 +63,7 @@ function renderMenu(){
 function renderLobby(){
  app.innerHTML='<section class="hero"><h1>'+esc(t.waiting)+'</h1><p>'+esc(t.players)+' · '+room.names.length+' / '+room.capacity+'</p></section><section class="panel box"><h2>'+esc(t.code)+'</h2><p class="code" dir="ltr">'+room.code.match(/.{1,4}/g).join(' – ')+'</p><div class="navActions">'+button(t.invite,'invite','primary')+'</div><ol class="seatList">'+room.names.map((n,i)=>'<li class="tag">'+esc(n)+' · '+esc(teamName(i%2))+'</li>').join('')+'</ol>'+onlineFoot()+'</section>';
 }
-function onlineFoot(){return '<div class="tools">'+button(t.menu,'menu','minor')+button(t.retry,'refresh','minor')+button(t.leave,'askLeave','minor')+'</div><p role="status" class="muted small">'+esc(networkIssue?msg(networkIssue):'')+'</p>';}
+function onlineFoot(showStatus=true){return '<div class="tools">'+button(t.menu,'menu','minor')+button(t.retry,'refresh','minor')+button(t.leave,'askLeave','minor')+'</div>'+(showStatus&&networkIssue?'<p role="status" class="muted small">'+esc(msg(networkIssue))+'</p>':'');}
 function cardHTML(card,clickable=false,mini=false) {
  const [num,suit]=card.split('-'),label=num+' · '+t[suit];
  const inner='<strong>'+num+'</strong><img alt="" src="./art/'+suit+'.svg"><i aria-hidden="true">'+num+'</i>'+(!mini?'<small>'+esc(t[suit])+'</small>':'');
@@ -76,25 +76,49 @@ function logText(v,e){
  if(e.type==='award')return teamName(e.team)+' · +'+e.points;
  return t.trick+' · '+(e.team===-1?t.tie:teamName(e.team));
 }
+const tallyStrokes=['M4 21 L4 4','M4 4 L21 4','M21 4 L21 21','M21 21 L4 21','M3 22 L22 3'];
+function tallyMarks(points){
+ const groups=[];
+ for(let start=0;start<points;start+=5){
+  const marks=tallyStrokes.slice(0,points-start).map(line=>'<path d="'+line+'"/>').join('');
+  groups.push('<svg viewBox="0 0 25 25" focusable="false">'+marks+'</svg>');
+ }
+ return '<span class="tallyMarks" aria-hidden="true">'+groups.join('')+'</span>';
+}
+function scoreboard(v){
+ const teams=v.scores.map((points,i)=>{
+  const name=v.names.length===2?seatName(v,i):teamName(i);
+  return '<div class="teamScore"><div class="scoreLine"><strong>'+esc(name)+'</strong><span dir="ltr"><b>'+points+'</b> / '+v.goal+'</span></div>'+tallyMarks(points)+'</div>';
+ });
+ return '<section class="score" aria-label="'+esc(t.points)+'">'+teams.join('')+'</section>';
+}
 function renderBoard(v) {
  const s=v.seat,current=actor(v),mine=current===s,canPlay=mine&&v.phase==='play'&&!busy;
  const ended=v.phase!=='play';
  const status=ended?(v.phase==='finished'?t.victory+' · '+teamName(v.matchWinner):t.between+' · '+teamName(v.handWinner)):
  v.pending?seatName(v,v.pending.by)+' · '+labelAct(v.pending.last)+' · '+(mine?t.answer:t.turn+' · '+seatName(v,current)):
  mine?t.chooseCard:t.turn+' · '+seatName(v,current);
- app.innerHTML='<section class="score"><h1>'+esc(t.title)+'</h1><div class="points">'+v.scores.map((p,i)=>'<span>'+esc(teamName(i))+' <b>'+p+'</b> / '+v.goal+'</span>').join('')+'</div></section>'+
- '<div class="felt"><div class="feltHead"><h2>'+esc(t.table)+'</h2><span>'+esc(t.hand)+' '+v.handNo+' · '+esc(t.trick)+' '+Math.min(3,v.tricks.length+1)+'</span></div><div class="tableCards">'+(v.table.length?laidCards(v,v.table):v.lastTable.length?laidCards(v,v.lastTable):backs())+'</div><div class="feltFoot"><span>'+esc(v.lastTable.length&&!v.table.length?t.latest:t.hand)+' · '+esc(seatName(v,v.mano))+'</span><b>×'+v.stake+'</b></div></div>'+
- '<div class="boardInfo"><div class="rowTitle"><h3>'+esc(t.yourCards)+' · '+esc(seatName(v,s))+'</h3><span class="pill">'+esc(t.pointsInHand)+' '+v.myEnvido+'</span></div><div class="hand">'+v.cards.map(c=>cardHTML(c,canPlay&&v.options.includes(c))).join('')+'</div><p class="status" aria-live="polite">'+esc(status)+'</p>'+
+ const showExtras=!!app.querySelector('.boardExtras[open]');
+ const handLabel=page==='local'&&local.mode==='local'?t.yourCards+' · '+seatName(v,s):t.yourCards;
+ const lastTrick=!v.table.length&&v.lastTable.length;
+ app.innerHTML=scoreboard(v)+
+ '<div class="felt"><div class="feltHead"><strong>'+esc(t.hand)+' '+v.handNo+' · '+esc(t.trick)+' '+Math.min(3,v.tricks.length+1)+'</strong><span>×'+v.stake+'</span></div><div class="tableCards">'+(v.table.length?laidCards(v,v.table):lastTrick?laidCards(v,v.lastTable):backs())+'</div>'+
+ (lastTrick?'<p class="lastTrick">'+esc(t.latest)+'</p>':'')+'</div>'+
+ '<div class="boardInfo"><div class="rowTitle"><h3>'+esc(handLabel)+'</h3><span class="pill">'+esc(t.pointsInHand)+' '+v.myEnvido+'</span></div><div class="hand">'+v.cards.map(c=>cardHTML(c,canPlay&&v.options.includes(c))).join('')+'</div><p class="status" aria-live="polite">'+esc(status)+'</p>'+
  '<div class="actions">'+(canPlay?v.options.filter(x=>!deck.includes(x)&&x!=='fold').map(x=>button(labelAct(x),x,['accept','truco','envido'].includes(x)?'prominent':'')).join(''):'')+
+ (canPlay&&v.options.includes('fold')?button(t.fold,'askFold','quiet'):'')+
  (v.phase==='between'?button(t.next,'next','primary'):v.phase==='finished'?button(t.menu,'menu','primary'):'')+'</div></div>'+
- '<ul class="seatList">'+v.names.map((n,i)=>'<li class="tag '+(!ended&&i===current?'active':'')+'">'+esc(seatName(v,i))+' · '+esc(teamName(i%2))+(v.folded?.includes(i)?' · '+esc(t.fold):'')+'</li>').join('')+'</ul>'+
- '<details class="histBlock"><summary>'+esc(t.history)+'</summary><ul class="history">'+v.events.map(e=>'<li>'+esc(logText(v,e))+'</li>').join('')+'</ul></details><div class="tools">'+button(t.rules,'rules','minor')+(canPlay&&v.options.includes('fold')?button(t.fold,'askFold','minor'):'')+'</div>'+
- (page==='online'?onlineFoot():'<div class="tools">'+button(t.menu,'menu','minor')+'</div>');
+ (page==='online'&&networkIssue?'<p role="status">'+esc(msg(networkIssue))+'</p>':'')+
+ '<details class="boardExtras"'+(showExtras?' open':'')+'><summary>'+esc(t.more)+'</summary>'+
+ '<p class="small">'+esc(t.hand)+' · '+esc(seatName(v,v.mano))+'</p><ul class="seatList">'+v.names.map((n,i)=>'<li class="tag '+(!ended&&i===current?'active':'')+'">'+esc(seatName(v,i))+' · '+esc(teamName(i%2))+(v.folded?.includes(i)?' · '+esc(t.fold):'')+'</li>').join('')+'</ul>'+
+ '<details class="histBlock"'+(app.querySelector('.histBlock[open]')?' open':'')+'><summary>'+esc(t.history)+'</summary><ul class="history">'+v.events.map(e=>'<li>'+esc(logText(v,e))+'</li>').join('')+'</ul></details>'+
+ '<div class="tools">'+button(t.rules,'rules','minor')+(page!=='online'?button(t.menu,'menu','minor'):'')+'</div>'+
+ (page==='online'?onlineFoot(false):'')+'</details>';
 }
 function render(){
  clearTimeout(botTimer);
  if(page==='menu')return renderMenu();
- if(page==='daily'){dailyState.game.names=[t.you,'Coco'];renderBoard(dailyState.game);app.insertAdjacentHTML('afterbegin','<h2>'+esc(t.daily)+' · '+esc(dailyState.dia)+'</h2>');if(dailyState.points!==null)app.insertAdjacentHTML('beforeend','<p>'+esc(t.points)+' +'+dailyState.points+'</p>');return;}
+ if(page==='daily'){dailyState.game.names=[t.you,'Coco'];renderBoard(dailyState.game);app.insertAdjacentHTML('afterbegin','<p class="dailyHeading">'+esc(t.daily)+' · '+esc(dailyState.dia)+'</p>');if(dailyState.points!==null)app.insertAdjacentHTML('beforeend','<p>'+esc(t.points)+' +'+dailyState.points+'</p>');return;}
  if(page==='online'){
    if(!room)return renderMenu();
    if(room.closed){app.innerHTML='<div class="cover panel"><h1>'+esc(t.left)+'</h1>'+button(t.menu,'menu','primary')+'</div>';return;}
