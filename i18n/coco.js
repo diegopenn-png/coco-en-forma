@@ -739,8 +739,9 @@
     if (guideLanguage && tag !== guideLanguage) {
       const alternate = document.querySelector('link[rel="alternate"][hreflang="'+tag+'"]');
       if (alternate) {
-        if (explicitLanguage === tag) location.replace(alternate.href);
-        else location.assign(alternate.href);
+        const path = new URL(alternate.href).pathname;
+        if (explicitLanguage === tag) location.replace(path);
+        else location.assign(path);
         return true;
       }
     }

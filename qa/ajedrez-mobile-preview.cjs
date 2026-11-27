@@ -16,7 +16,7 @@ async function verify(page, origin) {
   for (const link of await page.locator('a[href*="/games/ajedrez/"]').all()) {
     assert.equal(new URL(await link.getAttribute('href'), origin).searchParams.get('lang'), 'en');
   }
-  await page.locator('.closing a.button').tap();
+  await page.locator('a[data-play]').tap();
   await page.locator('[data-mode="standard"]').tap();
   await page.locator('[data-opponent="local"]').tap();
   await page.locator('#start').tap();

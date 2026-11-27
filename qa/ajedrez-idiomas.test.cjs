@@ -106,20 +106,25 @@ test('the generated chess guide mounts all 15 languages and carries the choice i
   assert.equal(select.options.length, 15);
   assert.equal(d.body.dataset.cocoLanguagePage, 'public');
   assert.ok(d.body.hasAttribute('data-coco-chess'), 'chess vocabulary must remain active on its guide');
-  const changed = new Promise(resolve => w.addEventListener('coco:language', resolve, {once:true}));
-  select.value = 'en';
-  select.dispatchEvent(new w.Event('change', {bubbles:true}));
-  await changed;
-  assert.equal(d.documentElement.lang, 'en');
-  assert.equal(d.querySelector('h1').textContent, packs.en.strings['Ajedrez online con Coco']);
-  const result = 'Jaque mate. Gana el equipo grafito (negras).';
-  assert.equal(w.CocoLocale.t(result), packs.en.chess[result]);
-  const gameLinks = [...d.querySelectorAll('a[href*="/games/ajedrez/"]')];
-  assert.ok(gameLinks.length >= 2, 'both guide CTAs must lead to the game');
-  for (const link of gameLinks) {
-    const target = new URL(link.href);
-    assert.equal(target.pathname, '/games/ajedrez/');
-    assert.equal(target.searchParams.get('lang'), 'en');
+  const {games}=await import('../seo/catalog.mjs');
+  const {gamePath,tags}=await import('../seo/game-pages.mjs');
+  const chess=games.find(game=>game.id==='ajedrez');
+  for (const tag of tags) {
+    const path=gamePath(chess,tag);
+    assert.equal(d.querySelector(`link[hreflang="${tag}"]`).getAttribute('href'),'https://cocoenforma.com'+path);
+    assert.equal(d.querySelector(`a[hreflang="${tag}"]`).getAttribute('href'),path);
+    const translated=new JSDOM(read(path.slice(1)+'index.html'),{url:origin+path});
+    try {
+      const page=translated.window.document;
+      assert.equal(page.documentElement.lang,tag);
+      const gameLinks=[...page.querySelectorAll('a[href*="/games/ajedrez/"]')];
+      assert.ok(gameLinks.length >= (tag==='es'?2:1),'guide must link to chess in '+tag);
+      for (const link of gameLinks) {
+        const target=new URL(link.href);
+        assert.equal(target.pathname,'/games/ajedrez/');
+        assert.equal(target.searchParams.get('lang') || 'es',tag);
+      }
+    } finally {translated.window.close();}
   }
 });
 
