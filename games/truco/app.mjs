@@ -16,7 +16,7 @@ const invited=normalize(url.searchParams.get('mesa')||new URLSearchParams(url.ha
 let joinCode=invited,name=read('coco.truco.nick',''),pendingCreate='',busy=false,shownSeat=null,botTimer,pollTimer,toastTimer,generation=0,networkIssue='';
 let profileName='',profileId='',soundOn=read('coco.truco.sound',true);
 const guestNames=[];
-if(invited)mode='online';
+if(invited || url.searchParams.get('modo') === 'amigos')mode='online';
 const button=(label,act,cls='',extra='')=>'<button type="button" class="btn '+cls+'" data-act="'+esc(act)+'" '+extra+'>'+esc(label)+'</button>';
 const options=(arr,selected)=>arr.map(x=>'<option value="'+x+'"'+(x===selected?' selected':'')+'>'+x+'</option>').join('');
 const backs=(n=3)=>'<div class="backs" aria-hidden="true">'+('<i class="backCard"></i>').repeat(n)+'</div>';

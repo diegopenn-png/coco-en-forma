@@ -10,7 +10,8 @@
   "numeros": {
     "slug": "connect-the-numbers",
     "name": "Connect the numbers",
-    "intro": "Trace a path through the numbered squares in order. Once your path uses a square, you can’t pass through it again.",
+    "searchTitle": "Connect the Numbers – Free Online Number Path Puzzle",
+    "intro": "Play a free number path puzzle online. Connect the numbered squares in order without stepping on the same square twice. Can you leave a path to the last number?",
     "tip": "Before you connect 2 to 3, find 4. Leave yourself a way out of 3 that doesn’t cross the path you just drew.",
     "challenge": "From 2 you can reach 3 along the border or through the centre. The centre is the only way from 3 to 4. Which route should you take first?",
     "answer": "Take the border from 2 to 3. The central square will still be free when you need it to reach 4."

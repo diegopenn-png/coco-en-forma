@@ -1,12 +1,12 @@
 export const guideCopy = {
   "es": {
-    "headline": "Juega al truco argentino",
-    "access": "Juega en este dispositivo o abre una sala privada con un apodo.",
-    "inviteHelp": "Elige cuántas personas van a jugar, crea la sala y comparte la invitación. La primera mano se reparte cuando se ocupa el último asiento.",
+    "headline": "Jugá al truco argentino online",
+    "access": "Con un apodo podés jugar con amigos. Para sumar a la clasificación, entrá con tu cuenta de Coco y ganá la Partida del día.",
+    "inviteHelp": "Elegí una mesa de 2, 4 o 6, escribí tu apodo y tocá «Crear sala». Copiá la invitación y mandala al grupo. Cuando se ocupa el último asiento, se reparte la primera mano.",
     "localHelp": "En un mismo dispositivo, cada jugador descubre sus cartas al recibirlo y las oculta al terminar su turno.",
-    "example": "Tienes el 6 y el 7 de oros y un rey de copas. ¿Cuánto envido tienes?",
-    "solution": "Tienes 33 de envido. El 6 y el 7 de oros suman 13 y, por ser del mismo palo, añaden 20.",
-    "qFriends": "¿Cómo invito a mis amigos?",
+    "example": "Tenés el 6 y el 7 de oros y un rey de copas. ¿Cuánto envido cantás?",
+    "solution": "Tenés 33 de envido. El 6 y el 7 de oros suman 13 y, como son del mismo palo, agregás 20.",
+    "qFriends": "¿Cómo juego al truco online con amigos?",
     "qScore": "¿Puntúa para la clasificación general?",
     "qMode": "¿Podemos compartir un móvil?",
     "qRules": "¿Qué variante de truco se juega?",

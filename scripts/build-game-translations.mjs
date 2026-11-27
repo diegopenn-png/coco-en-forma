@@ -8,12 +8,12 @@ const escape = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&
 const logo = '/assets/brand/coco-premium-v160127/icon-192.png';
 
 function render(game,tag) {
-  const {name,intro,tip,challenge,answer} = gameCopy(game,tag);
+  const {name,searchTitle,intro,tip,challenge,answer} = gameCopy(game,tag);
   if (![name,intro,tip,challenge,answer].every(text => typeof text === 'string' && text.trim())) throw Error('Missing game copy: '+tag+'/'+game.id);
   const hub = landingLocales[tag], labels = hub.labels;
   const [online,tool,tipTitle,copyLink,copied,openTool] = ui[tag];
   const toolPage = game.kind === 'tool';
-  const title = name+' · '+(toolPage ? tool : online)+' | Coco en Forma';
+  const title = (searchTitle || name+' · '+(toolPage ? tool : online))+' | Coco en Forma';
   const path = gamePath(game,tag), url = origin + path, hubPath = localizedLandingPath(tag);
   const play = new URL(game.play,origin);
   play.searchParams.set('lang',tag);
