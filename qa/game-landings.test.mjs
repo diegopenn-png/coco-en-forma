@@ -15,6 +15,10 @@ test('all 19 active game routes are substantial, unique and crawlable without JS
   assert.equal(d.querySelectorAll('h1').length,1,g.id);
   assert.equal(d.querySelector('link[rel=canonical]').href,origin+g.path,g.id);
   assert.equal(d.querySelector('meta[property="og:url"]').content,origin+g.path);
+  for(const selector of ['meta[property="og:image"]','meta[name="twitter:image"]']){
+    assert.equal(d.querySelector(selector).content,origin+(g.socialImage||g.image),g.id);
+  }
+  assert.equal(d.querySelector('meta[property="og:image:type"]').content,'image/jpeg');
   assert.match(d.querySelector('meta[name=robots]').content,/index,follow/);
   assert.ok(!/location\.(replace|assign)|http-equiv="refresh"/.test(html),g.id+' redirects readers');
   assert.ok(d.querySelector('main').textContent.split(/\s+/).length>300,g.id+' thin page');
