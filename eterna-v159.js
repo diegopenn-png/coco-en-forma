@@ -10,7 +10,7 @@
 (function(){
   "use strict";
 
-  var VERSION="160.99.25-contextual-dialogue";
+  var VERSION="160.99.26-explain-entry";
   var DEFAULT_MODE="explain";
   var DATA_CACHE_MS=15000;
   var RESUME_KEY="coco_eterna_resume_after_auth_v1603";
@@ -286,7 +286,7 @@
   }
 
   function rememberEternaAfterAuth(){
-    try{localStorage.setItem(RESUME_KEY,JSON.stringify({mode:state.mode,at:Date.now()}))}catch(e){}
+    try{localStorage.setItem(RESUME_KEY,JSON.stringify({at:Date.now()}))}catch(e){}
   }
 
   function findCreateAccountControl(){
@@ -643,13 +643,21 @@
 
   async function open(options){
     var o=overlay(),opening=!o.classList.contains("is-open");
-    if(opening)state.mode=MODE_CONFIG[options&&options.mode]?options.mode:DEFAULT_MODE;
+    if(opening){
+      state.mode=MODE_CONFIG[options&&options.mode]?options.mode:DEFAULT_MODE;
+      state.modeState=activityModeState(ensureActivity(state.mode,false));
+      state.pedagogicalState=freshPedagogicalState(state.mode);
+      o.querySelector("[data-et-chat]").replaceChildren();
+      o.querySelector("[data-et-composer]").style.display="none";
+      syncModeButtons();renderModeBar();setPlaceholder()
+    }
     o.classList.add("is-open");window.dispatchEvent(new Event("coco:eterna-visibility"));lockEternaViewport(o);
     perfMark("eterna_overlay_visible");
     perfMeasure("eterna_click_to_overlay","eterna_open_click","eterna_overlay_visible");
-    if(opening){state.modeState=activityModeState(ensureActivity(state.mode,false));state.pedagogicalState=freshPedagogicalState(state.mode);syncModeButtons();setPlaceholder()}
     setStatus("Comprobando tu cuenta…","");
-    await loadData(Boolean(options&&options.force));restoreLearningSession();setIdentity();render();renderModeBar();syncSendAvailability();
+    await loadData(Boolean(options&&options.force));
+    if(!o.classList.contains("is-open"))return;
+    restoreLearningSession();setIdentity();render();renderModeBar();syncSendAvailability();
     requestAnimationFrame(function(){var i=o.querySelector("[data-et-input]");if(i&&activeSubscription()&&state.profile)i.focus()})
   }
 
@@ -1284,7 +1292,6 @@
         state.session=session;state.dataLoadedAt=0;
         var pending=null;try{pending=JSON.parse(localStorage.getItem(RESUME_KEY)||"null")}catch(e){}
         if(pending&&Date.now()-Number(pending.at||0)<30*60*1000){
-          if(MODE_CONFIG[pending.mode])state.mode=pending.mode;
           try{localStorage.removeItem(RESUME_KEY)}catch(e){}
           queueMicrotask(open)
         }
@@ -1329,8 +1336,8 @@
 
   function boot(){
     injectFinal3Styles();ensureHomeLayout();startObserver();client();
-    var q=new URLSearchParams(location.search),aliases={tarea:"homework",homework:"homework",duda:"ask",ask:"ask",revisar:"review",review:"review",explicar:"explain",explain:"explain",examen:"exam",exam:"exam",practicar:"practice",practice:"practice"},requested=aliases[String(q.get("mode")||"").toLowerCase()]||null;
-    if(q.get("eterna")==="1"||q.get("open")==="eterna")queueMicrotask(function(){open({mode:requested})})
+    var q=new URLSearchParams(location.search);
+    if(q.get("eterna")==="1"||q.get("open")==="eterna")queueMicrotask(open)
   }
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();

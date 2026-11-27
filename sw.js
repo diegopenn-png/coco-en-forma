@@ -1,5 +1,5 @@
 /* Coco en Forma · Service Worker v160.100.22 · Conecta colores integrated */
-const CACHE_VERSION="coco-en-forma-v160.100.111-eterna";
+const CACHE_VERSION="coco-en-forma-v160.100.112-eterna";
 const CACHE_PREFIX="coco-en-forma-";
 const SCOPE_URL=new URL("./",self.registration.scope);
 const INDEX_URL=new URL("index.html",SCOPE_URL).href;
@@ -23,15 +23,33 @@ function absolute(p){return new URL(p,SCOPE_URL).href}
 function releaseRequest(url){const fresh=new URL(url);fresh.searchParams.set("__coco_release",CACHE_VERSION);return new Request(fresh.href,{cache:"reload"})}
 function bounded(promise,ms,onTimeout){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>{if(onTimeout)onTimeout();reject(new Error("COCO_NETWORK_TIMEOUT"))},ms)})]).finally(()=>clearTimeout(timer))}
 function fetchTimed(request,ms=8000){const controller=new AbortController();return bounded(fetch(request,{signal:controller.signal}),ms,()=>controller.abort())}
+// Older controllers serve the canonical tutor script even for versioned URLs.
+async function refreshInstalledEterna(url,response){
+  if(!/javascript/i.test(response.headers.get("Content-Type")||""))return;
+  const source=await response.clone().text();
+  if(!source.includes('var VERSION="160.99.26-explain-entry"'))return;
+  const keys=await caches.keys();
+  for(const key of keys.filter(k=>k.startsWith(CACHE_PREFIX)&&k!==CACHE_VERSION)){
+    const previous=await caches.open(key);
+    if(await previous.match(url))await previous.put(url,response.clone());
+  }
+}
 async function cacheCore(){
   const c=await caches.open(CACHE_VERSION);
   // Keep offline assets, but avoid competing with the page with 100+ parallel fetches.
-  const queue=Array.from(new Set(["./index.html",...CORE]));
+  const queue=Array.from(new Set(["./index.html",ETERNA_CORE_PATH,...CORE]));
   let next=0;
   async function download(){
     while(next<queue.length){
       const u=absolute(queue[next++]),controller=new AbortController();
-      try{await bounded((async()=>{const r=await fetch(releaseRequest(u),{signal:controller.signal});if(r&&r.ok)await c.put(u,r.clone())})(),15000,()=>controller.abort())}catch(_e){}
+      try{
+        await bounded((async()=>{
+          const r=await fetch(releaseRequest(u),{signal:controller.signal});
+          if(!r||!r.ok)return;
+          await c.put(u,r.clone());
+          if(u===absolute(ETERNA_CORE_PATH))await refreshInstalledEterna(u,r);
+        })(),15000,()=>controller.abort());
+      }catch(_e){}
     }
   }
   await Promise.all(Array.from({length:4},download));

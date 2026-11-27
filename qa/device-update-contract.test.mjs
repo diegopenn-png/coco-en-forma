@@ -252,3 +252,40 @@ test("the live preview gate covers representative devices, rotation, overflow an
   assert.match(workflow, /did not receive the exact preview revision after 10 attempts/);
   for (const name of ["iphone-safari", "android-chrome", "ipad-safari", "desktop-safari", "desktop-chrome"]) assert.match(workflow, new RegExp(name));
 });
+
+test("a waiting worker delivers the corrected tutor to an installed PWA using its previous controller", async () => {
+  const origin = "https://cocoenforma.com/";
+  const tutor = new URL("eterna-v159.js", origin).href;
+  const source = readFileSync("eterna-v159.js", "utf8");
+  const oldName = "coco-en-forma-previous";
+  const cacheData = new Map();
+  const store = name => {
+    if (!cacheData.has(name)) cacheData.set(name, new Map());
+    return cacheData.get(name);
+  };
+  store(oldName).set(tutor, "previous tutor");
+  store(oldName).set(origin + "index.html", "previous shell");
+  store("another-app").set(tutor, "other app");
+  const events = new Map();
+  const context = {
+    URL, Request, Response, AbortController, setTimeout, clearTimeout,
+    fetch: async request => new URL(request.url).pathname === "/eterna-v159.js"
+      ? new Response(source, {headers: {"Content-Type": "application/javascript"}})
+      : new Response(null, {status: 404}),
+    caches: {
+      keys: async () => [...cacheData.keys()],
+      open: async name => ({
+        match: async key => store(name).get(key),
+        put: async (key, response) => store(name).set(key, await response.text()),
+      }),
+    },
+    self: {registration: {scope: origin}, addEventListener(type, fn) { events.set(type, fn); }},
+  };
+  vm.runInNewContext(serviceWorker, context);
+  let done;
+  events.get("install")({waitUntil(p) { done = p; }});
+  await done;
+  assert.equal(store(oldName).get(tutor), source);
+  assert.equal(store(oldName).get(origin + "index.html"), "previous shell");
+  assert.equal(store("another-app").get(tutor), "other app");
+});

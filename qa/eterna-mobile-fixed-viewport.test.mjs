@@ -12,7 +12,7 @@ const read = file => fs.readFileSync(path.join(rootDir, file), "utf8");
 test("Eterna owns the mobile visual viewport while it is open", () => {
   const core = read("eterna-v159.js");
 
-  assert.match(core, /160\.99\.25-contextual-dialogue/);
+  assert.match(core, /160\.99\.26-explain-entry/);
   assert.match(core, /function lockEternaViewport\(o\)/);
   assert.match(core, /body\.style\.position="fixed"/);
   assert.match(core, /body\.style\.top=\(-eternaPageLock\.y\)\+"px"/);

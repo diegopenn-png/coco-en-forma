@@ -10,7 +10,7 @@ test("the bottom composer exposes an accessible Pensando indicator", () => {
   const css = read("eterna-v159.css");
   const composer = core.slice(core.indexOf('<div class="eternaV159Composer"'), core.indexOf("</main>"));
 
-  assert.match(core, /160\.99\.25-contextual-dialogue/);
+  assert.match(core, /160\.99\.26-explain-entry/);
   assert.match(composer, /data-et-thinking role="status" aria-live="polite" aria-atomic="true"/);
   assert.match(composer, /<span>Pensando…<\/span>/);
   assert.ok(composer.indexOf("data-et-thinking") < composer.indexOf("eternaV159InputRow"));

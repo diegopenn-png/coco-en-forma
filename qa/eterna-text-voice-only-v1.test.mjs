@@ -14,7 +14,7 @@ const identity = read("coco-v155-identity.js");
 const serviceWorker = read("sw.js");
 
 test("Eterna keeps all six pedagogical modes with text and voice input", () => {
-  assert.match(client, /160\.99\.25-contextual-dialogue/);
+  assert.match(client, /160\.99\.26-explain-entry/);
   for (const mode of ["homework", "ask", "review", "explain", "exam", "practice"]) {
     assert.match(client, new RegExp(`${mode}:\\{`));
   }

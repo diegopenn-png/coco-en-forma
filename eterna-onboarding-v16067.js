@@ -82,9 +82,7 @@
   }
   function setIntent(source){
     captureAttribution();
-    var mode="homework";
-    try{var q=new URLSearchParams(location.search),m=clean(q.get("mode")).toLowerCase();if(["homework","ask","review","explain","exam","practice"].indexOf(m)>=0)mode=m}catch(e){}
-    try{localStorage.setItem(INTENT_KEY,JSON.stringify({at:Date.now(),source:source||currentSource(),mode:mode}))}catch(e){}
+    try{localStorage.setItem(INTENT_KEY,JSON.stringify({at:Date.now(),source:source||currentSource(),mode:"explain"}))}catch(e){}
   }
   function getIntent(){
     try{

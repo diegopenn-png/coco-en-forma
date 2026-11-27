@@ -9,7 +9,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const json=s=>JSON.stringify(s).replace(/</g,'\\u003c');
 const pathFor=p=>'/'+p.slug+'/';
 const bySlug=new Map(discoveryPages.map(p=>[p.slug,p]));
-const trial=p=>`/?open=eterna&mode=${p.mode||'homework'}&source=seo_${p.slug.replaceAll('-','_')}`;
+const trial=p=>`/?open=eterna&mode=${p.mode||'explain'}&source=seo_${p.slug.replaceAll('-','_')}`;
 const links=pages=>pages.map(p=>`<a href="${pathFor(p)}">${esc(p.label)} →</a>`).join('');
 export const discoveryNav=`<section class="discover-cross" aria-label="Elige cómo empezar en Coco"><p class="eyebrow">Encuentra lo que buscas</p><h2>Un juego para hoy. Una ayuda para estudiar.</h2><div class="discover-links">${links(discoveryPages)}</div></section>`;
 export const eternaCross=`<section class="discover-cross"><p class="eyebrow">También en Coco · Para las familias</p><h2>¿Hay una duda del cole detrás del reto?</h2><p>Conoce Eterna: apoyo escolar con IA por escritura y voz, con modos para tareas, explicaciones y repaso. Prueba ${eternaOffer.trialDays} días sin tarjeta. Después, ${eternaOffer.monthly}/mes o ${eternaOffer.annual}/año si decides continuar.</p><a class="button" href="/apoyo-escolar-con-ia/">Conocer Eterna y sus planes →</a></section>`;

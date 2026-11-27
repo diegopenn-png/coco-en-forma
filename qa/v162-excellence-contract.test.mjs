@@ -81,7 +81,7 @@ test("entrypoint, preview and PWA cache ship the exact excellence version",()=>{
   assert.match(core,/\.cocoMiniJuego\[data-coco-juego\]/);
   assert.match(core,/Inicia sesión con tu cuenta gratuita para abrir /);
   assert.match(core,/#cocoApp input\[type='email'\]/);
-  assert.match(workflow,/frontend 160\.99\.25-contextual-dialogue/);
+  assert.match(workflow,/frontend 160\.99\.26-explain-entry/);
   assert.match(workflow,/verify=\$\{GITHUB_SHA\}-\$\{attempt\}/);
   assert.match(workflow,/coco-excellence-v160934\.js\?v=160960&verify=\$\{GITHUB_SHA\}/);
   assert.match(workflow,/grep -F '160\.96\.0-dynamic-daily-missions'/);

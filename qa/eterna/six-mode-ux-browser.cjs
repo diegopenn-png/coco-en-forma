@@ -15,10 +15,11 @@ const root = path.resolve(__dirname, '../..');
       await page.setContent('<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body></body></html>');
       await page.evaluate(() => {
         for(const key of ['localStorage','sessionStorage']){const map={};Object.defineProperty(window,key,{value:{getItem:k=>map[k]||null,setItem:(k,v)=>map[k]=String(v),removeItem:k=>delete map[k]},configurable:true});}
-        window.COCO_CONFIG={eternaEndpoint:'https://synthetic.invalid'};
+        window.supabase={createClient(){throw Error('Expected the existing test client')}};
+        window.COCO_CONFIG={url:'https://synthetic.invalid',clave:'synthetic',eternaEndpoint:'https://synthetic.invalid'};
         window.fetch=()=>{throw Error('No live requests allowed');};
         window.testSession={access_token:'synthetic',user:{id:'qa-synthetic'}};
-        window.__COCO_SUPABASE_CLIENT={auth:{getSession:async()=>({data:{session:testSession}}),onAuthStateChange:()=>{}}};
+        window.__COCO_SUPABASE_CLIENT={auth:{getSession:async()=>({data:{session:testSession}}),onAuthStateChange:listener=>{window.emitAuth=()=>listener('SIGNED_IN',testSession)}}};
       });
       await page.addScriptTag({content:fs.readFileSync(path.join(root,'eterna-state-contract-v3.js'),'utf8')});
       const client=fs.readFileSync(path.join(root,'eterna-v159.js'),'utf8').replace('  window.CocoEternaV160=Object.freeze({','  loadData=async()=>{}; window.__qa={state,overlay,setMode,appendMessage,resetVisibleSession,MODE_CONFIG,replaceSend:fn=>{send=fn}};\n  window.CocoEternaV160=Object.freeze({');
@@ -30,6 +31,15 @@ const root = path.resolve(__dirname, '../..');
       });
       await page.evaluate(()=>CocoEternaV160.open());
       assert.equal(await page.evaluate(()=>__qa.state.mode),'explain');
+      // The auth notification can arrive while the opening overlay is already visible.
+      await page.evaluate(()=>{
+        localStorage.setItem('coco_eterna_resume_after_auth_v1603',JSON.stringify({mode:'homework',at:Date.now()}));
+        window.emitAuth();
+      });
+      assert.equal(await page.evaluate(()=>__qa.state.mode),'explain');
+      assert.match(await page.locator('[data-et-modebar] b').first().innerText(),/Explícame un tema/);
+      assert.match(await page.locator('[data-et-chat] h3').innerText(),/tema/);
+      assert.match(await page.locator('[data-et-input]').getAttribute('placeholder'),/tema/);
       await page.evaluate(()=>{__qa.setMode('practice',false); CocoEternaV160.close()});
       await page.evaluate(()=>CocoEternaV160.open());
       assert.equal(await page.evaluate(()=>__qa.state.mode),'explain');

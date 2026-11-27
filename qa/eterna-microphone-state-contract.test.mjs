@@ -45,5 +45,5 @@ test("the fixed microphone assets invalidate browser and PWA caches together", (
   assertPwaRelease(serviceWorker);
   assert.match(serviceWorker, /const ETERNA_EXPERIENCE_PATH="\.\/eterna-experience-v160\.js"/);
   assert.match(serviceWorker, /if\(eternaExperience\)\{e\.respondWith\(eternaExperienceWithMicOnly\(e\)\)/);
-  assert.match(previewWorkflow, /frontend 160\.99\.25-contextual-dialogue/);
+  assert.match(previewWorkflow, /frontend 160\.99\.26-explain-entry/);
 });

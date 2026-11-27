@@ -9,7 +9,7 @@ const css = readFileSync(new URL("../eterna-v159.css", import.meta.url), "utf8")
 const index = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const sw = readFileSync(new URL("../sw.js", import.meta.url), "utf8");
 
-assert.match(client, /160\.99\.25-contextual-dialogue/);
+assert.match(client, /160\.99\.26-explain-entry/);
 assert.match(client, /function trialExpired\(\)/);
 assert.match(client, /status==="expired"/);
 assert.match(client, /status==="trialing"&&\(!Number\.isFinite\(end\)\|\|end<=Date\.now\(\)\)/);
