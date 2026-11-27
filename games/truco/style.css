@@ -51,8 +51,6 @@ main{width:min(62rem,100%);margin:0 auto;padding:clamp(.8rem,2.8vw,2rem) clamp(.
 [dir=rtl] .tableCoco{transform:scaleX(-1)}
 .seats2 .position1,.seats4 .position2,.seats6 .position3{grid-column:3/6;justify-self:start;width:100%}
 .manoTag{display:inline-block;vertical-align:middle;background:#ffe294;color:#37280c;border-radius:1rem;font-weight:750;font-size:.74rem;line-height:1.25;padding:.12rem .48rem;white-space:nowrap}
-.openingBid{text-align:center;margin-block:.35rem}
-.openingBid .btn{min-height:44px;border-color:#d6a546;background:#ffdc85;color:#32270f}
 .playedTable .card,.countChoices .card{display:grid;width:100%;border-radius:.25rem;padding:.25rem}
 .playedTable .card:before,.countChoices .card:before{inset:.1rem}
 .playedTable .card strong,.countChoices .card strong{font-size:.77rem;inset-inline-start:.18rem;top:.12rem}
@@ -64,8 +62,15 @@ main{width:min(62rem,100%);margin:0 auto;padding:clamp(.8rem,2.8vw,2rem) clamp(.
 .envidoBuilder{margin-top:.4rem;color:#31524b;font-size:.88rem}.envidoBuilder p{margin:.4rem 0}
 .countChoices{display:inline-flex;gap:.4rem;margin-inline-end:.6rem}.countChoices button{background:transparent;border:2px solid transparent;border-radius:.4rem;padding:2px;width:3rem}
 .countChoices button[aria-pressed=true]{border-color:#09694c;background:#def0df}.envidoBuilder output{font-weight:700;direction:ltr;display:inline-block}
-.handHead{display:flow-root}.handHead h3{float:inline-start;margin:.8rem .5rem .25rem 0}
-.handHead .envidoBuilder{margin:0;text-align:end}
+.handControls{border-block-start:1px solid #d8dfd0;padding-block-start:.5rem;margin-block-start:.6rem;text-align:center}
+.handControls .status{margin:0 0 .45rem}
+.moveRows{display:grid;gap:.35rem;max-width:34rem;margin-inline:auto}
+.moveRow{display:flex;justify-content:center;gap:.35rem}
+.moveRow .btn{flex:1 1 0;min-width:0;min-height:44px;overflow-wrap:anywhere;padding:.45rem .35rem}
+.moveRow .envidoButton{background:#fff0c6;border-color:#cead65;color:#453310}
+.moveRow .foldButton{background:#fffdf8;border-color:#a6b8a7;color:#365445}
+.foldPrompt{margin:0;font-weight:700}
+.handControls .envidoBuilder{margin:.45rem auto 0}
 .envidoBuilder summary{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;max-width:100%;border:1px solid #c19b49;border-radius:.65rem;background:#ffe6a3;color:#46340f;padding:.5rem .8rem;font-size:1rem;line-height:1.2;text-align:start}
 .envidoBuilder summary::-webkit-details-marker{display:none}
 .envidoBuilder summary::after{content:"";width:.45rem;height:.45rem;flex:none;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);margin-block-end:.2rem}

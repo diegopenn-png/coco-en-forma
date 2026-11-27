@@ -236,6 +236,22 @@ function soundButton(){
 function tableTools(){
  return '<nav class="tableTools">'+button(t.rules,'rules')+button(t.menu,'menu')+soundButton()+'</nav>';
 }
+// Keep the same reading order at every seat: answers, envido, then truco and fold.
+function moveControls(v,canPlay,openingEnvido){
+ if(v.phase==='between')return '<div class="moveRows"><div class="moveRow">'+button(t.next,'next','primary')+'</div></div>';
+ if(!canPlay)return '';
+ const rows=[['accept','decline'],['envido','real','falta'],['truco','retruco','cuatro','fold']];
+ const html=rows.map(group=>{
+  const choices=group.filter(action=>v.options.includes(action)).map(action=>{
+   if(action==='fold')return button(t.fold,'askFold','foldButton');
+   const label=action==='envido'&&openingEnvido?t.openEnvido:labelAct(action);
+   const cls=action==='accept'?'primary':action==='decline'?'':group[0]==='envido'?'envidoButton':'prominent';
+   return button(label,action,cls);
+  });
+  return choices.length?'<div class="moveRow">'+choices.join('')+'</div>':'';
+ }).join('');
+ return '<div class="moveRows">'+html+'</div>';
+}
 function renderBoard(v) {
  const s=v.seat,current=actor(v),mine=current===s,canPlay=mine&&v.phase==='play'&&!busy;
  const ended=v.phase!=='play';
@@ -256,11 +272,9 @@ function renderBoard(v) {
  const handLabel=page==='local'&&local.mode==='local'?t.yourCards+' · '+seatName(v,s):t.yourCards;
  app.innerHTML=tableTools()+scoreboard(v)+(ended?'<p class="resultBanner" role="status">'+esc(status)+'</p>':'')+
  '<div class="felt"><div class="feltHead"><strong>'+esc(t.hand)+' '+v.handNo+' · '+esc(t.trick)+' '+Math.min(3,v.tricks.length+1)+'</strong><span>×'+v.stake+'</span></div>'+playedTable(v)+envidoResult(v)+'</div>'+
- '<div class="boardInfo"><div class="handHead"><h3>'+esc(handLabel)+'</h3>'+envidoBuilder(v)+'</div>'+
- (openingEnvido?'<div class="openingBid">'+button(t.openEnvido,'envido','primary')+'</div>':'')+'<div class="hand">'+v.cards.map(c=>cardHTML(c,canPlay&&v.options.includes(c))).join('')+'</div>'+(!ended?'<p class="status" aria-live="polite">'+esc(status)+'</p>':'')+
- '<div class="actions">'+(canPlay?v.options.filter(x=>!deck.includes(x)&&x!=='fold'&&!(openingEnvido&&x==='envido')).map(x=>button(labelAct(x),x,['accept','truco','envido'].includes(x)?'prominent':'')).join(''):'')+
- (canPlay&&v.options.includes('fold')?button(t.fold,'askFold','quiet'):'')+
- (v.phase==='between'?button(t.next,'next','primary'):'')+'</div></div>'+
+ '<div class="boardInfo"><h3>'+esc(handLabel)+'</h3><div class="hand">'+v.cards.map(c=>cardHTML(c,canPlay&&v.options.includes(c))).join('')+'</div>'+
+ '<div class="handControls">'+(!ended?'<p class="status" aria-live="polite">'+esc(status)+'</p>':'')+
+ moveControls(v,canPlay,openingEnvido)+envidoBuilder(v)+'</div></div>'+
  (page==='online'&&networkIssue?'<p role="status">'+esc(msg(networkIssue))+'</p>':'')+
  '<details class="boardExtras"'+(showExtras?' open':'')+'><summary>'+esc(t.more)+'</summary>'+
  '<ul class="seatList">'+v.names.map((n,i)=>'<li class="tag '+(!ended&&i===current?'active':'')+'">'+esc(seatName(v,i))+' · '+esc(teamName(i%2))+(v.folded?.includes(i)?' · '+esc(t.fold):'')+'</li>').join('')+'</ul>'+
@@ -355,7 +369,13 @@ async function handle(action){
  case 'invite':return copy(gameURL(room.code));
  case 'create':case 'join':case 'resumeRoom':return onlineAction(action);
  case 'refresh':return refresh();
- case 'askLeave':case 'askFold':return modal('<p>'+esc(action==='askLeave'?t.confirmLeave:t.fold+'?')+'</p>'+button(action==='askLeave'?t.leave:t.fold,action==='askLeave'?'leave':'fold','primary'));
+ case 'askLeave':return modal('<p>'+esc(t.confirmLeave)+'</p>'+button(t.leave,'leave','primary'));
+ case 'askFold':{
+   const rows=app.querySelector('.moveRows');
+   rows.innerHTML='<p class="foldPrompt">'+esc((lang==='es'?'¿':'')+t.fold+'?')+'</p><div class="moveRow">'+button(t.fold,'fold','primary')+button(t.close,'cancelFold')+'</div>';
+   rows.querySelector('[data-act="cancelFold"]').focus({preventScroll:true});return;
+ }
+ case 'cancelFold':render();app.querySelector('[data-act="askFold"]')?.focus({preventScroll:true});return;
  case 'leave':dialog.close();return onlineAction('leave');
  default:if(dialog.open)dialog.close();return gameMove(action);
  }
@@ -367,6 +387,9 @@ document.addEventListener('click',e=>{
  const b=e.target.closest('[data-act]');
  if(e.target.closest('summary,#dialogClose')||['reveal','rules','menu','askFold','askLeave'].includes(b?.dataset.act))cue('tap');
  if(b&&!busy)handle(b.dataset.act);
+});
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'&&app.querySelector('[data-act="cancelFold"]'))handle('cancelFold');
 });
 document.addEventListener('input',e=>{if(e.target.matches('[data-guest-seat]'))guestNames[Number(e.target.dataset.guestSeat)]=e.target.value.trim();if(e.target.id==='name'){name=e.target.value;write('coco.truco.nick',name);}if(e.target.id==='code')joinCode=e.target.value;});
 document.addEventListener('change',e=>{if(e.target.id==='capacity'){capacity=Number(e.target.value);if(mode==='local')renderMenu();}if(e.target.id==='goal')goal=Number(e.target.value);});
