@@ -5,7 +5,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '../..');
 (async () => {
-  const browser = await chromium.launch({headless:true,args:['--no-sandbox']});
+  const browser = await chromium.launch({headless:true,executablePath:process.env.COCO_CHROMIUM_PATH,args:['--no-sandbox']});
   const cases=[];
   try {
     for(const viewport of [{width:393,height:852},{width:393,height:500},{width:820,height:1180},{width:1440,height:900}]) {
@@ -21,15 +21,26 @@ const root = path.resolve(__dirname, '../..');
         window.__COCO_SUPABASE_CLIENT={auth:{getSession:async()=>({data:{session:testSession}}),onAuthStateChange:()=>{}}};
       });
       await page.addScriptTag({content:fs.readFileSync(path.join(root,'eterna-state-contract-v3.js'),'utf8')});
-      const client=fs.readFileSync(path.join(root,'eterna-v159.js'),'utf8').replace('  window.CocoEternaV160=Object.freeze({','  window.__qa={state,overlay,setMode,appendMessage,resetVisibleSession,MODE_CONFIG,replaceSend:fn=>{send=fn}};\n  window.CocoEternaV160=Object.freeze({');
+      const client=fs.readFileSync(path.join(root,'eterna-v159.js'),'utf8').replace('  window.CocoEternaV160=Object.freeze({','  loadData=async()=>{}; window.__qa={state,overlay,setMode,appendMessage,resetVisibleSession,MODE_CONFIG,replaceSend:fn=>{send=fn}};\n  window.CocoEternaV160=Object.freeze({');
       await page.addScriptTag({content:client});
       await page.evaluate(()=>{
-        Object.assign(__qa.state,{session:testSession,baseProfile:{edad:10,apodo:'Prueba'},profile:{stage:'primaria',school_year:'5º de Primaria'},subscription:{status:'active'},parentSettings:{allow_audio_input:true}});
-        __qa.overlay().classList.add('is-open');
+        Object.assign(__qa.state,{session:testSession,baseProfile:{edad:10,apodo:'Prueba'},profile:{stage:'primaria',school_year:'5º de Primaria',autonomous_community:'Andalucía'},subscription:{status:'active'},parentSettings:{allow_audio_input:true}});
+        localStorage.setItem('coco_eterna_mode_v160','homework');
         __qa.replaceSend(()=>{window.capturedPractice={mode:__qa.state.mode,text:document.querySelector('[data-et-input]').value,history:__qa.state.history.slice()};});
       });
+      await page.evaluate(()=>CocoEternaV160.open());
+      assert.equal(await page.evaluate(()=>__qa.state.mode),'explain');
+      await page.evaluate(()=>{__qa.setMode('practice',false); CocoEternaV160.close()});
+      await page.evaluate(()=>CocoEternaV160.open());
+      assert.equal(await page.evaluate(()=>__qa.state.mode),'explain');
+      await page.evaluate(()=>{CocoEternaV160.close();return CocoEternaV160.open({mode:'exam'})});
+      assert.equal(await page.evaluate(()=>__qa.state.mode),'exam');
       for(const mode of ['homework','ask','review','explain','exam','practice']) {
-        await page.evaluate(mode=>__qa.setMode(mode,false),mode);
+        if(await page.locator('[data-et-changemode]').isVisible()){
+          await page.locator('[data-et-changemode]').click();
+          await page.locator('[data-et-modechoice="'+mode+'"]').click();
+        }else await page.locator('[data-et-mode="'+mode+'"]').click();
+        assert.equal(await page.evaluate(()=>__qa.state.mode),mode);
         const input=page.locator('[data-et-input]');
         await input.evaluate(el=>el.placeholder='Escribe tu respuesta…');
         await page.locator('[data-et-newactivity]').click();
@@ -38,7 +49,8 @@ const root = path.resolve(__dirname, '../..');
         const heading=await page.locator('.eternaV159Check b').last().textContent();
         assert.equal(heading,({homework:'Tu siguiente paso',review:'Revisamos este paso',exam:'Tu pregunta de examen',practice:'Tu turno para practicar'})[mode]||'Comprueba esta idea');
         const bounds=await page.evaluate(()=>{
-          const selectors=['[data-et-input]','[data-et-send]','[data-et-newactivity]','[data-et-changemode]'];
+          const modeControl=document.querySelector('[data-et-changemode]').getBoundingClientRect().width?'[data-et-changemode]':'[data-et-mode].is-active';
+          const selectors=['[data-et-input]','[data-et-send]','[data-et-newactivity]',modeControl];
           return selectors.map(selector=>{const r=document.querySelector(selector).getBoundingClientRect();return{selector,left:r.left,right:r.right,width:r.width};});
         });
         for(const b of bounds){assert.ok(b.width>0,JSON.stringify(b));assert.ok(b.left>=-1&&b.right<=viewport.width+1,JSON.stringify({viewport,mode,...b}));}

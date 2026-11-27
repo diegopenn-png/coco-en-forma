@@ -11,14 +11,14 @@ test("Eterna has one canonical Worker entrypoint", () => {
   assert.match(wrangler, /"main"\s*:\s*"src\/index\.js"/);
   assert.match(wrangler, /"ai"\s*:\s*\{\s*"binding"\s*:\s*"AI"/);
   assert.match(wrangler, /"AI_PROVIDER"\s*:\s*"cloudflare"/);
-  assert.match(wrangler, /"TUTOR_MODEL"\s*:\s*"@cf\/qwen\/qwen3-30b-a3b-fp8"/);
+  assert.match(wrangler, /"TUTOR_MODEL"\s*:\s*"@cf\/meta\/llama-3.3-70b-instruct-fp8-fast"/);
   assert.match(wrangler, /"ENABLE_OPENAI_FALLBACK"\s*:\s*"true"/);
   assert.match(wrangler, /"OPENAI_FALLBACK_MODEL"\s*:\s*"gpt-5\.6-luna"/);
   assert.match(wrangler, /"OPENAI_VISION_MODEL"\s*:\s*"gpt-5\.6-sol"/);
   assert.match(wrangler, /"VISION_MODEL"\s*:\s*"@cf\/meta\/llama-4-scout-17b-16e-instruct"/);
   assert.match(wrangler, /"VISION_SAFETY_MODEL"\s*:\s*"@cf\/moondream\/moondream3\.1-9B-A2B"/);
   assert.match(wrangler, /"VISION_FALLBACK_MODEL"\s*:\s*"@cf\/moondream\/moondream3\.1-9B-A2B"/);
-  assert.match(wrangler, /"VISION_STRUCTURING_MODEL"\s*:\s*"@cf\/qwen\/qwen3-30b-a3b-fp8"/);
+  assert.match(wrangler, /"VISION_STRUCTURING_MODEL"\s*:\s*"@cf\/meta\/llama-3.3-70b-instruct-fp8-fast"/);
   assert.match(wrangler, /"VERIFIER_MODEL"\s*:\s*"@cf\/meta\/llama-3\.1-8b-instruct-fast"/);
   assert.match(wrangler, /"TUTOR_REASONING_EFFORT"\s*:\s*"high"/);
   assert.match(wrangler, /"VERIFIER_REASONING_EFFORT"\s*:\s*"high"/);

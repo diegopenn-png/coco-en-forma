@@ -103,7 +103,7 @@ export const discoveryPages = [
   heading:'Cuando aparece una duda, empieza una conversación.',eyebrow:'Eterna · Apoyo escolar con IA',
   description:'Conoce Eterna, el apoyo escolar con IA de Coco: tareas, explicaciones, repaso y Zona Familiar. Prueba 7 días sin tarjeta y consulta los planes.',
   intro:'Eterna es el servicio de apoyo escolar con inteligencia artificial de Coco en Forma. El alumno puede escribir o hablar, explicar su duda y trabajar paso a paso con modos para tareas, preguntas, revisión, explicación, exámenes y práctica.',
-  image:'/share/premium-v160127/hero-explorer-v160129.jpg',mode:'homework',
+  image:'/share/premium-v160127/hero-explorer-v160129.jpg',mode:'explain',
   leadTitle:'Una ayuda concreta para cada momento del estudio',
   paragraphs:['Cuando hay un ejercicio delante, «Ayúdame con mi tarea» parte del enunciado y de lo que el alumno ha intentado. Si el problema es un concepto, «Explícame un tema» ofrece otra forma de abordarlo. «Revisa lo que hice» permite conversar sobre un procedimiento ya escrito.',
   'Para repasar, «Prepárame para un examen» plantea preguntas y continúa a partir de las respuestas. «Practicar lo que me cuesta» se orienta a reforzar temas trabajados. Antes de empezar, conviene indicar el curso, la asignatura y qué parte resulta difícil.',
