@@ -1,0 +1,15 @@
+{
+ "locale": "uk",
+ "strings": {
+  "Puntuación registrada": "Результат збережено",
+  "Pendiente de sincronizar": "Очікує синхронізації",
+  "Inicia sesión para puntuar": "Увійди, щоб здобувати очки",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "Перша гра, яку ти щодня завершуєш зі своїм обліковим записом, зараховується до загального рейтингу.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "На спільному пристрої очки отримує обліковий запис першого гравця.",
+  "Los retos puntuables admiten una partida diaria.": "У кожному випробуванні зараховується одна гра на день.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Збудуй місто за допомогою кубика та 120 карток.",
+  "Tira cinco dados y completa tu planilla.": "Кинь п’ять кубиків і заповни таблицю результатів.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Розташуй флот і знайди кораблі суперника.",
+  "120 tarjetas": "120 карток"
+ }
+}

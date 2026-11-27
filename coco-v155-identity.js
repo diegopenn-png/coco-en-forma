@@ -4,8 +4,8 @@
   var VERSION="2026-08-23-v160-final4.7";
   var DATA={
     truco:{name:"Truco argentino",description:"Juega contra Coco o con amigos en mesas de 2, 4 o 6."},
-    naval:{name:"Coco Batalla Naval",description:"Cinco barcos y un océano por descubrir. Juega contra Coco o invita a un amigo a una sala privada. No puntúa para la clasificación general."},
-    generala:{name:"Coco Generala",description:"Cinco dados, tres tiradas y tu mejor jugada. Contra Coco, en familia o en salas privadas. No puntúa para la clasificación general."},
+    naval:{name:"Coco Batalla Naval",description:"Coloca tu flota y descubre los barcos de tu rival."},
+    generala:{name:"Coco Generala",description:"Tira cinco dados y completa tu planilla."},
     eneagrama:{name:"Coco Eneagrama",description:"Evaluación de autoconocimiento con informe personal en PDF. Servicio de pago independiente de los juegos.",url:"https://cocoenforma.com/explora/"},
     bank:{name:"Coco Bank",description:"Recibe dinero de juego, paga tus gastos y ahorra para tu meta. Coco te guía paso a paso."},
     ajedrez:{name:"Coco Ajedrez · Partida del día",description:"Entrena estrategia y planificación. Puntúa solo la partida del día."},

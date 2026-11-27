@@ -1,5 +1,7 @@
+import {newRankingMatch,tableRanking} from '../mesa-ranking.mjs?v=liga1';
 import {SHIPS,SIZE,coordinate,cellsFor,placeShip,validateFleet,randomFleet,newGame,addPlayer,lockFleet,fire,resign,viewFor,chooseShot} from './engine.mjs';
-import {OnlineNaval} from './online.mjs';
+import {OnlineNaval,client} from './online.mjs?v=liga1';
+const finishRanking=tableRanking('naval',client);
 const $=id=>document.getElementById(id),esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SAVE='coco-naval-local-v1',STATS='coco-naval-stats-v1',SHARE='https://cocoenforma.com/juego/naval/';
 // Local save identifiers also work in older WebViews and HTTP development previews.
@@ -29,12 +31,12 @@ $('share').onclick=()=>copy(SHARE);
 function startBot(){
  const run=()=>{online.stop();clearTimeout(botTimer);botTimer=null;mode='bot';room=null;draft=[];selectedShip='carrier';vertical=false;selectedCell=null;boardView='attack';finishShown=false;
   let state=addPlayer(newGame('you','Tú'),'coco','Coco');state=lockFleet(state,'coco',randomFleet());
-  local={v:1,id:localId(),difficulty,state,draft:[]};persist();render();};
+  local={v:1,id:localId(),rankingMatch:newRankingMatch(),difficulty,state,draft:[]};persist();render();};
  const old=saved();if(old&&['placement','battle'].includes(old.state.phase))modal('¿Empezar una partida nueva?','<p>Tu partida local guardada será reemplazada.</p>',[{label:'Conservar mi partida'},{label:'Empezar otra',primary:true,run}]);else run();
 }
 $('playBot').onclick=()=>show('setup');$('learnPlay').onclick=()=>show('setup');$('prepareBot').onclick=startBot;
 document.querySelectorAll('[data-level]').forEach(b=>b.onclick=()=>{difficulty=b.dataset.level;document.querySelectorAll('[data-level]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});
-$('resume').onclick=()=>{const s=saved();if(!s)return notice('No hay una partida guardada disponible.');local=s;mode='bot';room=null;draft=Array.isArray(s.draft)?s.draft:[];difficulty=s.difficulty;finishShown=false;boardView='attack';selectedCell=null;render();};
+$('resume').onclick=()=>{const s=saved();if(!s)return notice('No hay una partida guardada disponible.');local=s;if(!local.rankingMatch&&local.state.phase!=='finished')local.rankingMatch=newRankingMatch();mode='bot';room=null;draft=Array.isArray(s.draft)?s.draft:[];difficulty=s.difficulty;finishShown=false;boardView='attack';selectedCell=null;render();};
 document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>b.dataset.nav==='home'?home():show(b.dataset.nav));
 $('back').onclick=()=>{if(screen==='home')location.assign('../../');else if(screen==='lobby'){online.stop();room=null;openOnline();}else home();};
 $('help').onclick=()=>modal('Cómo jugar','<ol class="steps"><li>Coloca los cinco barcos. Puedes girarlos o distribuirlos al azar.</li><li>En tu turno, toca una casilla de <b>Atacar</b> y pulsa <b>Disparar</b>.</li><li>Agua: no hay barco. Tocado: acertaste. Hundido: completaste un barco.</li><li>Un disparo por turno, incluso cuando aciertas. Encuentra los cinco barcos para ganar.</li></ol><p>Tu flota está en otra pestaña. Los barcos pueden tocarse, pero no superponerse.</p>',[{label:'Entendido',primary:true}]);
@@ -120,7 +122,7 @@ function recordResult(v){
  stats.played=(Number(stats.played)||0)+1;stats.wins=(Number(stats.wins)||0)+(v.winner===v.me.id?1:0);stats.shots=(Number(stats.shots)||0)+v.me.shots.length;stats.hits=(Number(stats.hits)||0)+v.me.shots.filter(s=>s.kind!=='miss').length;stats.done=[...stats.done,id].slice(-200);write(STATS,stats);
 }
 function renderFinished(v){
- recordResult(v);finishShown=true;show('finished');const won=v.winner===v.me.id;
+ finishRanking(local?.rankingMatch,mode==='online'?v:local.state,mode==='online'?room?.id:null);recordResult(v);finishShown=true;show('finished');const won=v.winner===v.me.id;
  $('winner').textContent=won?'¡Victoria, capitán!':'Esta vez ganó '+v.opponent.name+'.';
  $('endReason').textContent=v.reason==='timeout'?'La partida terminó por inactividad.':v.reason==='resign'?'La partida terminó al abandonar uno de los capitanes.':won?'Encontraste los cinco barcos de la flota rival.':'Cada pista cuenta. La próxima estrategia empieza aquí.';
  const hits=v.me.shots.filter(s=>s.kind!=='miss').length,accuracy=v.me.shots.length?Math.round(hits/v.me.shots.length*100):0;
@@ -129,7 +131,7 @@ function renderFinished(v){
 }
 $('viewFinal').onclick=()=>{boardView='attack';renderBattle(view());};
 $('again').onclick=()=>{if(mode==='online'){online.stop();room=null;openOnline();}else startBot();};
-$('stats').onclick=()=>{const s=read(STATS,{played:0,wins:0,shots:0,hits:0});modal('Tus travesías','<div class="result-stats"><div><strong>'+esc(s.played||0)+'</strong><small>Partidas</small></div><div><strong>'+esc(s.wins||0)+'</strong><small>Victorias</small></div><div><strong>'+(s.shots?Math.round(s.hits/s.shots*100):0)+'%</strong><small>Precisión</small></div></div><p>Se guardan solo en este navegador. No suman puntos a la clasificación general.</p>',[{label:'Seguir jugando',primary:true}]);};
+$('stats').onclick=()=>{const s=read(STATS,{played:0,wins:0,shots:0,hits:0});modal('Tus travesías','<div class="result-stats"><div><strong>'+esc(s.played||0)+'</strong><small>Partidas</small></div><div><strong>'+esc(s.wins||0)+'</strong><small>Victorias</small></div><div><strong>'+(s.shots?Math.round(s.hits/s.shots*100):0)+'%</strong><small>Precisión</small></div></div><p>La primera partida completada del día con tu cuenta suma a la clasificación general.</p>',[{label:'Seguir jugando',primary:true}]);};
 function render(){
  const v=view();if(!v)return;
  if(v.phase==='waiting'||(v.phase==='placement'&&v.me.ready))renderLobby(v);

@@ -8,7 +8,7 @@ Juego de dados de Coco en Forma, disponible en `/games/generala/` y con guía p�
 - Cinco dados, hasta tres tiradas por turno, dados reservables y once casillas. Elegir una casilla confirma el resultado; un cero requiere confirmación explícita.
 - Números: suma de los dados del valor elegido. Escalera 12345 o 23456: 20; full 3+2: 30; póker de al menos cuatro: 40. Estas tres combinaciones suman 5 si se consiguen en la primera tirada.
 - Generala: 50; doble: 100 solo después de una generala anotada de 50. La generala servida gana inmediatamente si se activa esa regla antes de iniciar. Los empates por puntos comparten victoria.
-- La partida local y las estadísticas se guardan en este navegador. No se escriben puntos ni posiciones en la clasificación general de Coco.
+- La partida local y las estadísticas se guardan en este navegador. La primera partida terminada del día por cuenta puntúa en la clasificación general. En dispositivo compartido puntúa el primer asiento y en sala, cada participante.
 - En móvil, Dados y Mi planilla son dos vistas de la misma partida. Se abre la planilla tras la tercera tirada; se puede anotar antes con «Elegir dónde anotar».
 
 ## Online

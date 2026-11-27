@@ -1,0 +1,15 @@
+{
+ "locale": "de",
+ "strings": {
+  "Puntuación registrada": "Punktzahl gespeichert",
+  "Pendiente de sincronizar": "Synchronisierung ausstehend",
+  "Inicia sesión para puntuar": "Zum Punkten anmelden",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "Das erste Spiel, das du pro Tag mit deinem Konto beendest, zählt für die Gesamtwertung.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "Auf einem gemeinsam genutzten Gerät erhält das Konto auf dem ersten Platz die Punkte.",
+  "Los retos puntuables admiten una partida diaria.": "Pro Herausforderung zählt täglich eine Partie.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Baue deine Stadt mit einem Würfel und 120 Karten.",
+  "Tira cinco dados y completa tu planilla.": "Wirf fünf Würfel und fülle deinen Wertungsblock aus.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Platziere deine Flotte und finde die gegnerischen Schiffe.",
+  "120 tarjetas": "120 Karten"
+ }
+}

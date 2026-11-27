@@ -23,13 +23,13 @@ function harness(cards=[]){
  vm.runInContext(section('  function cognitiveProfile(rows){','  async function loadPlayerRows'),context);
  return{context,window,writes};
 }
-const unranked=['ciudad','bank','padel','eneagrama','generala','naval','truco'];
+const companion=['ciudad','bank','padel','eneagrama','generala','naval','truco'];
 test('catalogue discovery cannot promote companion tools or unknown cards into the general league',()=>{
- const cards=[...unranked,'inventado','cocomed'].map(id=>({dataset:{cocoJuego:id,cocoKind:'tool',cocoClasificacion:'general'},classList:{contains:()=>false},querySelector:()=>({textContent:id})}));
+ const cards=[...companion,'inventado','cocomed'].map(id=>({dataset:{cocoJuego:id,cocoKind:'tool',cocoClasificacion:'general'},classList:{contains:()=>false},querySelector:()=>({textContent:id})}));
  const {context,window}=harness(cards);context.discoverGames();
  assert.deepEqual(plain(context.GENERAL_IDS),window.COCO_GENERAL_RANKING_IDS_V153);
- for(const id of [...unranked,'inventado']){
-  assert.equal(context.classificationIsGeneral(id),false,id);
+ for(const id of [...companion,'inventado']){
+  assert.equal(context.classificationIsGeneral(id),['ciudad','generala','naval','truco'].includes(id),id);
   assert.equal(window.CocoCognitiveCatalog.registerGame(id,{classification:'general'}),false,id);
  }
  assert.equal(window.CocoCognitiveCatalog.registerGame('memoria',{classification:'own'}),true);
@@ -39,7 +39,7 @@ test('catalogue discovery cannot promote companion tools or unknown cards into t
 test('generic score saving performs no local or remote write for companion tools, unknown games, or free chess',async()=>{
  const {context,writes}=harness();
  context.gameClient=()=>{throw Error('Unranked experience reached the database client')};
- for(const id of [...unranked,'inventado','ajedrez']){
+ for(const id of [...companion,'inventado','ajedrez']){
   const result=await context.saveScore(id,100,{},'synthetic');
   assert.equal(result.ok,false,id);assert.equal(result.unranked,true,id);
  }
@@ -54,10 +54,10 @@ test('daily cognitive games and the separate Coco Med score retain their existin
 test('companion results cannot alter cognitive report values or counted plays',()=>{
  const {context,window}=harness();
  const ranked=[{juego:'memoria',puntos:80,puntuacion_version:'balanced-v1',rendimiento:.8}];
- const contamination=unranked.map(juego=>({juego,puntos:100000,puntuacion_version:'balanced-v1',rendimiento:1}));
+ const contamination=companion.map(juego=>({juego,puntos:100000,puntuacion_version:'balanced-v1',rendimiento:1}));
  assert.deepEqual(plain(context.cognitiveProfile([...ranked,...contamination])),plain(context.cognitiveProfile(ranked)));
  const audit=window.CocoCognitiveCatalog.audit();
- assert.deepEqual(plain(audit.companionGames).sort(),[...unranked].sort());
+ assert.deepEqual(plain(audit.companionGames).sort(),[...companion].sort());
  assert.equal(audit.unmappedGames.length,0);
- for(const ids of Object.values(audit.areas))for(const id of unranked)assert.ok(!ids.includes(id));
+ for(const ids of Object.values(audit.areas))for(const id of companion)assert.ok(!ids.includes(id));
 });

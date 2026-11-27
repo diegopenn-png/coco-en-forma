@@ -1,0 +1,15 @@
+{
+ "locale": "ar",
+ "strings": {
+  "Puntuación registrada": "سُجلت النقاط",
+  "Pendiente de sincronizar": "في انتظار المزامنة",
+  "Inicia sesión para puntuar": "سجّل الدخول لكسب النقاط",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "تُحتسب أول مباراة تكملها يوميًا بحسابك في الترتيب العام.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "عند مشاركة جهاز، تُسجَّل النقاط لحساب اللاعب الأول.",
+  "Los retos puntuables admiten una partida diaria.": "تُحتسب مباراة واحدة يوميًا لكل تحدٍّ.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "ابنِ مدينتك باستخدام حجر نرد و120 بطاقة.",
+  "Tira cinco dados y completa tu planilla.": "ارمِ خمسة أحجار نرد واملأ بطاقة النقاط.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "وزّع أسطولك واعثر على سفن خصمك.",
+  "120 tarjetas": "120 بطاقة"
+ }
+}

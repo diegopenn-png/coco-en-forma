@@ -1,0 +1,15 @@
+{
+ "locale": "it",
+ "strings": {
+  "Puntuación registrada": "Punteggio registrato",
+  "Pendiente de sincronizar": "In attesa di sincronizzazione",
+  "Inicia sesión para puntuar": "Accedi per ottenere punti",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "La prima partita che completi ogni giorno con il tuo account vale per la classifica generale.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "Su un dispositivo condiviso, i punti vanno al primo giocatore collegato.",
+  "Los retos puntuables admiten una partida diaria.": "Per ogni sfida vale una partita al giorno.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Costruisci la tua città con un dado e 120 carte.",
+  "Tira cinco dados y completa tu planilla.": "Lancia cinque dadi e completa la tua scheda.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Posiziona la flotta e trova le navi avversarie.",
+  "120 tarjetas": "120 carte"
+ }
+}

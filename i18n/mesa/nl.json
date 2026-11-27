@@ -1,0 +1,15 @@
+{
+ "locale": "nl",
+ "strings": {
+  "Puntuación registrada": "Score opgeslagen",
+  "Pendiente de sincronizar": "Wachten op synchronisatie",
+  "Inicia sesión para puntuar": "Log in om punten te verdienen",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "De eerste partij die je elke dag met je account voltooit, telt mee voor het algemeen klassement.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "Op een gedeeld apparaat gaan de punten naar het account van de eerste speler.",
+  "Los retos puntuables admiten una partida diaria.": "Per uitdaging telt één partij per dag mee.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Bouw je stad met een dobbelsteen en 120 kaarten.",
+  "Tira cinco dados y completa tu planilla.": "Gooi vijf dobbelstenen en vul je scorekaart in.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Plaats je vloot en zoek de schepen van je tegenstander.",
+  "120 tarjetas": "120 kaarten"
+ }
+}

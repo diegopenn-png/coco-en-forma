@@ -404,6 +404,7 @@
     const isAssessment = document.documentElement.hasAttribute('data-coco-assessment');
     const folders = ['packs'];
     const gameCatalogue = document.documentElement.hasAttribute('data-coco-extra-languages') && ['/', '/index.html'].includes(location.pathname);
+    if (gameCatalogue || /^\/(?:games|juego)\/(?:ciudad|generala|naval)\//.test(location.pathname)) folders.push('mesa');
     if (gameCatalogue || ['/juegos/', '/juego/truco/'].includes(location.pathname)) folders.push('truco');
     if (document.documentElement.hasAttribute('data-coco-extra-languages')) folders.push('extra');
     if (isAssessment) folders.push('assessment');

@@ -584,7 +584,7 @@ try{if(new URL(location.href).searchParams.get("coco_home")==="1")localStorage.s
 <link rel="stylesheet" href="./eterna-v159.css?v=160980">
 <link rel="stylesheet" href="/assets/styles/coco-unified-v160127.css?v=20261122-4"><link rel="stylesheet" href="/i18n/coco.css?v=20261123-rounds-2"><script defer src="/i18n/reward-cards.js?v=1"></script><script defer src="/i18n/word-games.js?v=1"></script><script defer src="/i18n/med.js?v=20261122-reviewed"></script><script defer src="/i18n/coco.js?v=20261126-truco"></script></head><body><div data-coco-language-menu></div>
 <div id="coco-startup-status" role="status" aria-live="polite"><img src="./assets/brand/coco-premium-v160127/icon-192.png" width="96" height="96" alt=""><p>Preparando Coco…</p></div>
-<script>window.COCO_VERSION="2026-08-20-v155.0-identidad-unificada";window.COCO_GENERAL_RANKING_IDS_V153=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol","conecta","ajedrez"]);var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://www.cocoenforma.com/icon-512.png',correo:'info@cocoenforma.com',privacidad:'https://www.cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',eternaEndpoint:'https://coco-eterna-v159.chatinmobiliario.workers.dev'};</script>
+<script>window.COCO_VERSION="2026-08-20-v155.0-identidad-unificada";window.COCO_GENERAL_RANKING_IDS_V153=Object.freeze(["numeros","calculo","palabras","series","memoria","sudoku","sopa","crucigrama","tiempo","verdadero","futbol","conecta","ajedrez","truco","ciudad","generala","naval"]);var _q=new URLSearchParams(location.search);window.COCO_CONFIG={url:'https://fcatttsfufjiphgohgwp.supabase.co',clave:'sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X',imagen:'https://www.cocoenforma.com/icon-512.png',correo:'info@cocoenforma.com',privacidad:'https://www.cocoenforma.com/politica-de-privacidad.html',modo:_q.get('modo')||'juegos',tutorEndpoint:'https://coco-med-tutor.chatinmobiliario.workers.dev/',eternaEndpoint:'https://coco-eterna-v159.chatinmobiliario.workers.dev'};</script>
 <script id="coco-scoring-v160110" src="./coco-scoring-v160110.js?v=16010048"></script>
 <style id="coco-v134-style">:root{color-scheme:light}
 html{scroll-behavior:smooth}
@@ -1769,13 +1769,13 @@ if(respuestaGlobal.error){
 
 var JUEGOS_RANKING_V153=[
   ["numeros","Números"],["calculo","Cálculo"],["palabras","Palabras"],["series","Series"],["memoria","Memoria"],
-  ["sudoku","Sudoku"],["sopa","Sopa"],["crucigrama","Crucigrama"],["tiempo","Tiempo"],["verdadero","V/F"],["futbol","Fútbol"],["conecta","Colores"],["ajedrez","Ajedrez"]
+  ["sudoku","Sudoku"],["sopa","Sopa"],["crucigrama","Crucigrama"],["tiempo","Tiempo"],["verdadero","V/F"],["futbol","Fútbol"],["conecta","Colores"],["ajedrez","Ajedrez"],["truco","Truco"],["ciudad","Coco Ciudad"],["generala","Coco Generala"],["naval","Coco Batalla Naval"]
 ];
 var filas=(Array.isArray(respuestaGlobal.data)?respuestaGlobal.data:[]).map(function(fila){
   var salida={id:fila.jugador_id,jugador_id:fila.jugador_id,apodo:fila.apodo,racha:0};
   var suma=0;
   JUEGOS_RANKING_V153.forEach(function(def){var valor=Number(fila[def[0]])||0;salida[def[0]]=valor;suma+=valor});
-  salida.total=suma;
+  salida.total=Number(fila.total ?? suma);
   return salida
 });
 
@@ -6703,7 +6703,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   var GENERAL_IDS=(window.COCO_GENERAL_RANKING_IDS_V153||[]).slice();
   var OWN_IDS=["cocomed"];
   var TOOL_IDS=["padel","bank","ciudad","generala","naval","truco","eneagrama"];
-  var ALL_IDS=GENERAL_IDS.concat(OWN_IDS,TOOL_IDS);
+  var ALL_IDS=Array.from(new Set(GENERAL_IDS.concat(OWN_IDS,TOOL_IDS)));
   var TITLE_TO_ID={"Conecta colores":"conecta","Une los números":"numeros","Cálculo veloz":"calculo","Descifra la palabra":"palabras","Series lógicas":"series","Memoria":"memoria","Sudoku":"sudoku","Sopa de letras":"sopa","Crucigrama":"crucigrama","Reto Tiempo":"tiempo","Reto tiempo":"tiempo","Verdadero o falso":"verdadero","Coco Med":"cocomed","Fútbol":"futbol","Coco Fútbol":"futbol","Pádel":"padel","Coco Pádel":"padel","Coco Pádel Club":"padel"};
   var DISPLAY_NAMES={bank:"Coco Bank",ciudad:"Coco Ciudad",generala:"Coco Generala",naval:"Coco Batalla Naval",truco:"Truco argentino",eneagrama:"Coco Eneagrama",ajedrez:"Coco Ajedrez · Partida del día",conecta:"Conecta colores",numeros:"Une los números",calculo:"Cálculo veloz",palabras:"Descifra la palabra",series:"Series lógicas",memoria:"Memoria",sudoku:"Sudoku",sopa:"Sopa de letras",crucigrama:"Crucigrama",tiempo:"Reto tiempo",verdadero:"Verdadero o falso",cocomed:"Coco Med",futbol:"Fútbol",padel:"Pádel"};
   var GAME_META={
@@ -6897,7 +6897,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
   async function saveScore(id,points,detail,userId){
     // Companion experiences never write scores. Daily chess has its own server-validated endpoint.
-    if(id==="ajedrez"||(!classificationIsGeneral(id)&&OWN_IDS.indexOf(id)<0))return{ok:false,unranked:true,error:id==="ajedrez"?"Puntúa solo la partida del día, validada por el servidor.":"No puntúa para la clasificación general"};
+    if(["ajedrez","truco","ciudad","generala","naval"].includes(id)||(!classificationIsGeneral(id)&&OWN_IDS.indexOf(id)<0))return{ok:false,unranked:true,error:classificationIsGeneral(id)?"Puntúa solo la partida del día, validada por el servidor.":"No puntúa para la clasificación general"};
     detail=detail||{};var api=scoringApi(),general=Boolean(api&&api.isGeneral(id)),difficulty=general?api.normalizeDifficulty(id,detail.difficulty||2):null,scoreLimit=general?api.maxScore:1000;points=Math.round(clamp(points,0,scoreLimit));var performance=general&&Number.isFinite(Number(detail.performance))?clamp(Number(detail.performance),0,1):general?clamp(points/Math.max(1,api.cap(id,difficulty)),0,1):null;var cli=gameClient(),session=await currentSession(false);if(session)syncDailyIdentity(session);if(!cli||!session)return saveLocal(id,points,detail,userId||(session&&session.user&&session.user.id));
     var unlimited=unlimitedTesting(session.user.id),before=await loadStats(id);if(before.today>0)return unlimited?{ok:true,test:true,unranked:true,error:"",stats:before}:{ok:false,daily:true,error:"La partida de hoy ya estaba registrada.",stats:before};
     session=await currentSession(false)||session;var payload={jugador:session.user.id,juego:id,puntos:points},saved;
@@ -7718,7 +7718,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 
   function bindRankingBadge(card,id){
     var badge=card&&card.querySelector(".cocoLigaBadge");if(!badge||!id)return;
-    var daily=id==="ajedrez"||id==="truco",general=daily||classificationIsGeneral(id);
+    var daily=["ajedrez","truco","ciudad","generala","naval"].includes(id),general=daily||classificationIsGeneral(id);
     var label=general?"Puntúa para la clasificación general":classificationLabel(id,true);
     badge.dataset.general=general?"yes":"no";
     badge.innerHTML='<span aria-hidden="true">'+(general?'🏆':'•')+'</span><b>'+esc(label)+'</b>'+(daily?'<small class="cocoScoringScope">Solo la partida del día</small>':'');badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";badge.dataset.cocoRankBound="status-v153";
@@ -7731,7 +7731,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 
   function upgradeAccess(){
     document.querySelectorAll("#cocoApp .cocoMiniJuego").forEach(function(item){if(item.classList.contains("cocoMiniSuggestion"))return;var title=item.querySelector("b"),id=item.dataset.cocoJuego||title&&(TITLE_TO_ID[(window.CocoLocale?.sourceText(title) ?? title.textContent).trim()]||String((window.CocoLocale?.sourceText(title) ?? title.textContent)||"").toLowerCase().replace(/[^a-z0-9]+/g,"-"));if(!id||id==="abaco")return;var state=item.querySelector(".cocoMiniEstado"),copy=isClubTool(id)?"Herramienta del club":"Una vez al día";if(state){if((window.CocoLocale?.sourceText(state) ?? state.textContent)!==copy)state.textContent=copy;state.classList.remove("obra")}var icon=item.querySelector(".cocoMiniIcono");if(icon&&icon.dataset.cocoIconVersion!=="132"){icon.innerHTML=iconSvg(id);icon.dataset.cocoIconVersion="132"}item.dataset.cocoV132Ready="1"});
-    var note=document.querySelector("#cocoApp .cocoRetosNota"),noteCopy="Los retos puntuables admiten una partida diaria. Coco Generala, Ciudad, Bank, Pádel y Eneagrama no suman a la clasificación general. En ajedrez puntúa solo la partida del día; el resto es libre.";if(note&&(window.CocoLocale?.sourceText(note) ?? note.textContent)!==noteCopy)note.textContent=noteCopy;
+    var note=document.querySelector("#cocoApp .cocoRetosNota"),noteCopy="Los retos puntuables admiten una partida diaria.";if(note&&(window.CocoLocale?.sourceText(note) ?? note.textContent)!==noteCopy)note.textContent=noteCopy;
   }
 
   function questionIconSvg(){return '<svg class="cocoUnifiedIcon" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="cocoSuggestionGlow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7658d6"/><stop offset="1" stop-color="#2fa9dc"/></linearGradient></defs><rect x="4" y="4" width="112" height="112" rx="30" fill="url(#cocoSuggestionGlow)"/><circle cx="37" cy="26" r="21" fill="#fff" opacity=".14"/><path d="M44 45c1-14 11-22 26-22 16 0 27 9 27 23 0 11-6 17-15 22-8 5-11 9-11 17" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/><circle cx="70" cy="99" r="7" fill="#ffc93c"/><path d="m21 82 10-3 4-10 5 10 10 3-10 5-5 10-4-10Z" fill="#ffc93c"/></svg>'}
@@ -7812,7 +7812,7 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   window.CocoCognitiveCatalog={
     areas:COG_AREAS.slice(),
     registerGame:function(id,config){
-      id=String(id||"").trim();config=config||{};if(!id||(!classificationIsGeneral(id)&&OWN_IDS.indexOf(id)<0))return false;var own=OWN_IDS.indexOf(id)>=0;
+      id=String(id||"").trim();config=config||{};if(!id||isClubTool(id)||(!classificationIsGeneral(id)&&OWN_IDS.indexOf(id)<0))return false;var own=OWN_IDS.indexOf(id)>=0;
       if(ALL_IDS.indexOf(id)<0){ALL_IDS.push(id);(own?OWN_IDS:GENERAL_IDS).push(id)}DISPLAY_NAMES[id]=config.title||DISPLAY_NAMES[id]||id;GAME_META[id]={domain:config.domain||"Flexibilidad cognitiva y aprendizaje",group:own?"own":"general"};COG_WEIGHTS[id]=config.weights||DEFAULT_WEIGHTS;SCORE_CAPS[id]=Number(config.cap)||(!own?320:1000);GAMES[id]=Object.assign({id:id,title:DISPLAY_NAMES[id],subtitle:config.subtitle||"Nuevo reto Coco",description:config.description||"Entrena tu mente jugando.",icon:config.icon||"🧠",group:own?"own":"general",type:config.type||"external"},config.game||{});return true
     }
   };
@@ -8127,11 +8127,11 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
 <script id="coco-v149-unified" src="./coco-v142-unified.js?v=160932"></script>
 <script id="coco-v149-core" src="./coco-v144-core.js?v=20261122-4"></script>
 <script id="coco-v152-padel" src="./coco-v152-padel.js?v=15201"></script>
-<script id="coco-v153-fixes" src="./coco-v153-fixes.js?v=20261122-4"></script>
+<script id="coco-v153-fixes" src="./coco-v153-fixes.js?v=liga1"></script>
 <script id="coco-product-ux-v160903" src="./coco-release-v160903.js?v=160960"></script>
 <script id="coco-reto-2026-direct" src="./coco-reto-2026-v160908.js?v=160100"></script>
 <script id="coco-family-friendly-v160100" src="./coco-family-friendly-v160100.js?v=160100"></script>
-<script id="coco-v155-identity" src="./coco-v155-identity.js?v=truco1"></script>
+<script id="coco-v155-identity" src="./coco-v155-identity.js?v=liga1"></script>
 
 
 

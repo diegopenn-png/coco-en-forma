@@ -2,7 +2,7 @@
 const URL='https://fcatttsfufjiphgohgwp.supabase.co';
 const KEY='sb_publishable_Jn3efpb36_j-vhx0nr_k3A_PLCY0y5X';
 let sdkPromise;
-async function client(){
+export async function client(){
  if(window.__COCO_SUPABASE_CLIENT)return window.__COCO_SUPABASE_CLIENT;
  if(!window.supabase){
   sdkPromise??=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='../../supabase-js-2.112.3.min.js';s.onload=resolve;s.onerror=()=>{sdkPromise=null;s.remove();reject(new Error('No se pudo conectar. Revisa tu conexión.'))};document.head.append(s)});

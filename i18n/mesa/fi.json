@@ -1,0 +1,15 @@
+{
+ "locale": "fi",
+ "strings": {
+  "Puntuación registrada": "Pisteet tallennettu",
+  "Pendiente de sincronizar": "Odottaa synkronointia",
+  "Inicia sesión para puntuar": "Kirjaudu sisään saadaksesi pisteitä",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "Päivän ensimmäinen tililläsi loppuun pelattu peli lasketaan kokonaisrankingiin.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "Yhteisellä laitteella pisteet kirjataan ensimmäisen pelaajan tilille.",
+  "Los retos puntuables admiten una partida diaria.": "Kustakin haasteesta lasketaan yksi peli päivässä.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Rakenna kaupunkisi nopan ja 120 kortin avulla.",
+  "Tira cinco dados y completa tu planilla.": "Heitä viittä noppaa ja täytä tuloskorttisi.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Aseta laivastosi ja etsi vastustajan alukset.",
+  "120 tarjetas": "120 korttia"
+ }
+}

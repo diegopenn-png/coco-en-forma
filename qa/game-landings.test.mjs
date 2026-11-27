@@ -65,7 +65,7 @@ test('20 premium artworks, fixed aspect ratio, mobile renditions and PWA cache c
 });
 test('special product promises remain accurate',()=>{
  assert.match(read('juego/ajedrez/index.html'),/100 puntos por victoria, 50 por tablas y 0 por derrota/);
- assert.match(read('juego/ciudad/index.html'),/no añade puntos a la clasificación general/);
+ assert.match(read('juego/ciudad/index.html'),/primera partida completada del día con tu cuenta suma a la clasificación general/);
  assert.match(read('juego/bank/index.html'),/No se compran productos financieros reales/);
  assert.match(read('juego/padel/index.html'),/herramienta para organizar partidos y encuentros reales/);
  assert.match(read('explora/index.html'),/Cuestionario original no validado/);

@@ -1,0 +1,15 @@
+{
+ "locale": "en",
+ "strings": {
+  "Puntuación registrada": "Score recorded",
+  "Pendiente de sincronizar": "Waiting to sync",
+  "Inicia sesión para puntuar": "Sign in to score",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "The first game you finish each day with your account counts towards the overall leaderboard.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "On a shared device, the account in the first seat earns the points.",
+  "Los retos puntuables admiten una partida diaria.": "One game per ranked challenge counts each day.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Build your city with a die and 120 cards.",
+  "Tira cinco dados y completa tu planilla.": "Roll five dice and fill in your scorecard.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Place your fleet and find your opponent’s ships.",
+  "120 tarjetas": "120 cards"
+ }
+}

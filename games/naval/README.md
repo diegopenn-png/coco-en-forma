@@ -2,7 +2,7 @@
 
 Standalone game at `/games/naval/`, with a public guide and social preview at
 `/juego/naval/`. The public and signed-in catalogues place it after Generala.
-It does not contribute to the general ranking or cognitive report scores.
+The first completed fleet battle per signed-in account and Madrid day counts towards the general ranking. Cognitive reports use their own activities.
 
 ## Rules and implementation
 
@@ -26,7 +26,7 @@ It does not contribute to the general ranking or cognitive report scores.
 - UI tests cover placement, rotation, bot turns, resume, sharing and manual copy
   fallback, results, login state, and one correctly anchored icon per catalogue card.
 - 21 landing, PWA update and balanced-scoring checks pass. Seven additional reward
-  and non-scoring checks cover Naval's exclusion from ranking and report totals.
+  and report checks cover Naval’s separate game and cognitive report paths.
 - Browser review at 390 px and 320 px covers entry, placement, battle, persistent
   confirmation, return controls and resume. This is an emulated viewport check,
   not a physical iPhone installation test.

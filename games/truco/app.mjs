@@ -207,12 +207,6 @@ function countCard(button){
  button.setAttribute('aria-pressed',String(adding));
  builder.querySelector('output').textContent=envidoEquation(Array.from(builder.querySelectorAll('[aria-pressed="true"]'),b=>b.dataset.countCard));
 }
-function logText(v,e){
- if(e.type==='action')return seatName(v,e.seat)+' · '+labelAct(e.action);
- if(e.type==='envResult')return seatName(v,e.seat)+(e.score===undefined?'':' ('+e.score+')')+' · +'+e.points;
- if(e.type==='award')return teamPlayers(v,e.team)+' · +'+e.points;
- return t.trick+' · '+(e.team===-1?t.tie:teamPlayers(v,e.team));
-}
 const tallyStrokes=['M4 21 L4 4','M4 4 L21 4','M21 4 L21 21','M21 21 L4 21','M3 22 L22 3'];
 function tallyMarks(points){
  const groups=[];
@@ -265,18 +259,10 @@ function moveControls(v,canPlay,openingEnvido){
  return '<div class="moveRows">'+html+'</div>';
 }
 function tableConversation(v,status,controls){
- const lines=[];
- function say(seat,words){
-  lines.push('<li class="talkLine'+(seat===v.seat?' own':'')+'"><strong><bdi>'+esc(seatName(v,seat))+'</bdi></strong><span>'+esc(words)+'</span></li>');
- }
- for(const event of v.events){
-  if(event.type==='action'){
-   say(event.seat,event.action==='fold'?t.sayFold:labelAct(event.action));
-  }else if(event.type==='envResult'&&event.score!==undefined){
-   for(const call of v.envidoCalls)say(call.seat,t.sayCount.replace('{n}',String(call.score)));
-  }
- }
- const log=lines.length?'<ol class="talkLog" role="log" aria-labelledby="talkTitle" tabindex="0">'+lines.join('')+'</ol>':'';
+ let last;
+ for(let i=v.events.length-1;i>=0;i--)if(v.events[i].type==='action'){last=v.events[i];break;}
+ const words=last&&(last.action==='fold'?t.sayFold:labelAct(last.action));
+ const log=last?'<p class="talkLine'+(last.seat===v.seat?' own':'')+'" role="status"><strong><bdi>'+esc(seatName(v,last.seat))+'</bdi></strong> <span>'+esc(words)+'</span></p>':'';
  const prompt=v.phase==='play'?'<p class="status talkTurn" aria-live="polite">'+esc(status)+'</p>':'';
  return '<section class="tableTalk" aria-labelledby="talkTitle"><h3 id="talkTitle"><svg aria-hidden="true" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 4h14v10H8l-5 4V4Z"/><path d="M9 17h7l5 4V9h-2"/></svg>'+esc(t.tableTalk)+'</h3>'+log+prompt+controls+'</section>';
 }
@@ -288,10 +274,6 @@ function renderBoard(v) {
  v.pending?t.replyToCall.replace(/\{(name|call)\}/g,(_,key)=>key==='name'?seatName(v,current):labelAct(v.pending.last)):
  mine?seatName(v,current)+' · '+t.chooseCard:t.turn+' · '+seatName(v,current);
  const showExtras=!!app.querySelector('.boardExtras[open]');
- const oldLog=app.querySelector('.talkLog');
- const keepScroll=oldLog&&app.querySelector('.playedTable')?.dataset.hand===String(v.handNo)
-  && oldLog.scrollHeight-oldLog.clientHeight-oldLog.scrollTop>4;
- const logTop=keepScroll?oldLog.scrollTop:null;
  const previous=app.querySelector('.playedTable');
  const hasBots=page==='daily'||(page==='local'&&local.mode==='solo');
  let newPlays=[];
@@ -309,10 +291,7 @@ function renderBoard(v) {
  (page==='online'&&networkIssue?'<p role="status">'+esc(msg(networkIssue))+'</p>':'')+
  '<details class="boardExtras"'+(showExtras?' open':'')+'><summary>'+esc(t.more)+'</summary>'+
  '<ul class="seatList">'+v.names.map((n,i)=>'<li class="tag '+(!ended&&i===current?'active':'')+'">'+esc(seatName(v,i))+' · '+esc(teamName(i%2))+(v.folded?.includes(i)?' · '+esc(t.fold):'')+'</li>').join('')+'</ul>'+
- '<details class="histBlock"'+(app.querySelector('.histBlock[open]')?' open':'')+'><summary>'+esc(t.history)+'</summary><ul class="history">'+v.events.map(e=>'<li>'+esc(logText(v,e))+'</li>').join('')+'</ul></details>'+
  (page==='online'?onlineFoot(false):'')+'</details>';
- const log=app.querySelector('.talkLog');
- if(log)log.scrollTop=logTop??log.scrollHeight;
  if(v.phase==='finished'&&previous){
   const winner=app.querySelector('.scoreWinner.scoreGlow');
   if(winner&&winner.getBoundingClientRect().top<0)winner.scrollIntoView({block:'center',behavior:'instant'});

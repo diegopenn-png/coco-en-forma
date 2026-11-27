@@ -1,0 +1,15 @@
+{
+ "locale": "zh-Hans",
+ "strings": {
+  "Puntuación registrada": "得分已记录",
+  "Pendiente de sincronizar": "等待同步",
+  "Inicia sesión para puntuar": "登录后即可积分",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "每天使用你的账户完成的第一局计入总排行榜。",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "共用设备时，积分归第一位玩家的账户。",
+  "Los retos puntuables admiten una partida diaria.": "每项挑战每天有一局计入排名。",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "用一枚骰子和120张卡牌建设你的城市。",
+  "Tira cinco dados y completa tu planilla.": "掷五枚骰子并填好计分表。",
+  "Coloca tu flota y descubre los barcos de tu rival.": "部署舰队，找出对手的船只。",
+  "120 tarjetas": "120张卡牌"
+ }
+}

@@ -6,6 +6,7 @@ const fs=require('node:fs'),assert=require('node:assert/strict');
  Object.assign(w,E,{structuredClone});Object.defineProperty(w.crypto,'randomUUID',{value:undefined});w.scrollTo=()=>{};w.lockFleet=(s,u,f)=>E.lockFleet(s,u,f,()=>0);w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
  let copied='';Object.defineProperty(w.navigator,'clipboard',{value:{writeText:async s=>{copied=s}},configurable:true});
  class FakeOnline{stop(){}async init(){return null}}w.OnlineNaval=FakeOnline;
+ w.client=async()=>null;w.eval(fs.readFileSync('games/mesa-ranking.mjs','utf8').replace(/^export /gm,''));
  w.eval(fs.readFileSync('games/naval/app.mjs','utf8').replace(/^import .*;\n/gm,''));
  const $=s=>d.querySelector(s),click=s=>{assert($(s)&&!$(s).disabled,s);$(s).click()},wait=ms=>new Promise(r=>setTimeout(r,ms)),visible=id=>{assert(!$('#'+id).hidden,id);assert.equal([...d.querySelectorAll('main>.screen')].filter(x=>!x.hidden).length,1)};
  visible('home');click('#playBot');visible('setup');click('[data-level="hard"]');click('#prepareBot');visible('placement');assert($('#ready').disabled);assert.equal(d.querySelectorAll('#placementBoard [data-cell]').length,100);

@@ -1,0 +1,15 @@
+{
+ "locale": "da",
+ "strings": {
+  "Puntuación registrada": "Point registreret",
+  "Pendiente de sincronizar": "Afventer synkronisering",
+  "Inicia sesión para puntuar": "Log ind for at få point",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "Det første spil, du gennemfører hver dag med din konto, tæller i den samlede stilling.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "På en delt enhed får den første spillers konto pointene.",
+  "Los retos puntuables admiten una partida diaria.": "Ét spil pr. udfordring tæller hver dag.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Byg din by med en terning og 120 kort.",
+  "Tira cinco dados y completa tu planilla.": "Kast fem terninger og udfyld pointskemaet.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Placér din flåde og find modstanderens skibe.",
+  "120 tarjetas": "120 kort"
+ }
+}

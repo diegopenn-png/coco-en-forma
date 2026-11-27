@@ -9,7 +9,7 @@ Coco's original 2–6 person board game at `/games/ciudad/`. Forty numbered squa
 - Each turn: optional single portfolio management action → roll → revealed card/property decision → end. The game ends after exactly 12 turns per person. Decks avoid repeats until their category is exhausted.
 - Purchases, rent, up to two upgrades, bank sales at 70%, proposals to sell to another participant, consent-based 50/50 purchases, and one-lap ascending auctions are implemented. Shared assets cannot be sold/upgraded by one owner alone. Market events change rent by ±20% for the current and following round.
 - Mandatory expenses can create debt. Optional purchases require cash. Everyone stays in the game. Score is floor(net worth/100) + learning×2 + experiences×3 + community×3 + wellbeing×2 + 15 per achieved goal. Ties share victory.
-- Match ranking is independent of Coco's daily/general score; there is no paid API, subscription, AI generation, or real-money transaction in gameplay.
+- The first completed game per signed-in account and Madrid day counts towards the general ranking; there is no paid API, subscription, AI generation, or real-money transaction in gameplay.
 
 ## State and access
 

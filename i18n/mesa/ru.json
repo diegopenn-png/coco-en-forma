@@ -1,0 +1,15 @@
+{
+ "locale": "ru",
+ "strings": {
+  "Puntuación registrada": "Результат сохранён",
+  "Pendiente de sincronizar": "Ожидание синхронизации",
+  "Inicia sesión para puntuar": "Войди, чтобы получать очки",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "Первая игра, завершённая за день с твоего аккаунта, учитывается в общем рейтинге.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "На общем устройстве очки получает аккаунт первого игрока.",
+  "Los retos puntuables admiten una partida diaria.": "В каждом испытании засчитывается одна игра в день.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Построй город с помощью кубика и 120 карточек.",
+  "Tira cinco dados y completa tu planilla.": "Брось пять кубиков и заполни таблицу очков.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Расставь флот и найди корабли соперника.",
+  "120 tarjetas": "120 карточек"
+ }
+}

@@ -39,8 +39,8 @@
 Promise.allSettled([
   import('./explora/entry.mjs'),
   import('./games/ajedrez/entry.mjs?v=daily-v1'),
-  import('./games/ciudad/entry.mjs?v=city1'),
-  import('./games/generala/entry.mjs?v=generala1'),
-  import('./games/naval/entry.mjs?v=naval1'),
-  import('./games/truco/entry.mjs?v=daily-rule-2')
+  import('./games/ciudad/entry.mjs?v=liga1'),
+  import('./games/generala/entry.mjs?v=liga1'),
+  import('./games/naval/entry.mjs?v=liga1'),
+  import('./games/truco/entry.mjs?v=liga1')
 ]).then(function(){if(window.CocoFirstPaint)window.CocoFirstPaint.settled("catalog")});

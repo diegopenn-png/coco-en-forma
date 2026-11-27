@@ -1,0 +1,15 @@
+{
+ "locale": "sv",
+ "strings": {
+  "Puntuación registrada": "Poängen har sparats",
+  "Pendiente de sincronizar": "Väntar på synkronisering",
+  "Inicia sesión para puntuar": "Logga in för att få poäng",
+  "La primera partida completada del día con tu cuenta suma a la clasificación general.": "Det första spelet du slutför varje dag med ditt konto räknas i den totala rankningen.",
+  "En un dispositivo compartido, puntúa la cuenta que juega en el primer asiento.": "På en delad enhet får den första spelarens konto poängen.",
+  "Los retos puntuables admiten una partida diaria.": "Ett spel per utmaning och dag räknas.",
+  "Construye tu ciudad con el dado y 120 tarjetas.": "Bygg din stad med en tärning och 120 kort.",
+  "Tira cinco dados y completa tu planilla.": "Kasta fem tärningar och fyll i protokollet.",
+  "Coloca tu flota y descubre los barcos de tu rival.": "Placera din flotta och hitta motståndarens fartyg.",
+  "120 tarjetas": "120 kort"
+ }
+}
