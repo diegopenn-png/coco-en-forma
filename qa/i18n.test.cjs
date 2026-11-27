@@ -516,12 +516,13 @@ test('all catalogue pages provide translated menu text or complete static langua
   const guides=fs.readdirSync(root,{withFileTypes:true})
     .filter(f=>f.isDirectory() && /^(?:apoyo|aprender|ayuda|preparar|juegos-)/.test(f.name))
     .map(f=>f.name+'/index.html');
-  const directories=folder=>fs.readdirSync(path.join(root,folder)).map(id=>folder+'/'+id+'/index.html');
+  const directories=folder=>fs.readdirSync(path.join(root,folder),{withFileTypes:true})
+    .filter(entry=>entry.isDirectory()).map(entry=>folder+'/'+entry.name+'/index.html');
   const landingCopy=JSON.parse(fs.readFileSync(path.join(root,'seo/locales/free-games.json'),'utf8'));
   const landingRoutes=locales.map(tag=>[tag,tag==='es'?'/juegos-gratis/':`/${tag.toLowerCase()}/${landingCopy[tag].slug}/`]);
   const staticPages=new Map(landingRoutes.map(([tag,route])=>[route.slice(1)+'index.html',tag]));
   const paths=new Set(['juegos/index.html','explora/index.html',...directories('juego'),...directories('games'),...guides,...staticPages.keys()]);
-  const strings=new Set(), trucoStrings=new Set();
+  const strings=new Set(), trucoStrings=new Set(), mesaStrings=new Set();
   for(const file of paths){
     const dom=new JSDOM(fs.readFileSync(path.join(root,file),'utf8'));
     try {
@@ -550,7 +551,8 @@ test('all catalogue pages provide translated menu text or complete static langua
         continue;
       }
       assert.ok(doc.querySelector('[data-coco-language-menu]'),file);
-      const copy=['juego/truco/index.html','juegos/index.html'].includes(file)?trucoStrings:strings;
+      const tableGame=/^(?:juego|games)\/(?:ciudad|generala|naval)\//.test(file);
+      const copy=tableGame?mesaStrings:['juego/truco/index.html','juegos/index.html'].includes(file)?trucoStrings:strings;
       for(const el of doc.body.querySelectorAll('p,button,a,label,h1,h2,h3,h4,li,span,b,strong,small,summary,figcaption')){
         if(el.closest('[data-coco-verbatim],code'))continue;
         for(const node of el.childNodes){
@@ -564,6 +566,8 @@ test('all catalogue pages provide translated menu text or complete static langua
   for(const language of locales.filter(l=>l!=='es')){
     const pack=readPack(language);
     for(const key of strings)assert.ok(pack.strings[key],language+' / '+key);
+    const mesa=JSON.parse(fs.readFileSync(path.join(root,'i18n/mesa',language+'.json'),'utf8')).strings;
+    for(const key of mesaStrings)assert.ok(mesa[key]||pack.strings[key],language+' / '+key);
     const supplemental=JSON.parse(fs.readFileSync(path.join(root,'i18n/truco',language+'.json'),'utf8')).strings;
     for(const key of trucoStrings)assert.ok(supplemental[key]||pack.strings[key],language+' / '+key);
   }
@@ -595,6 +599,9 @@ test('Generala can switch between every language after a roll without losing the
     Object.defineProperty(d,'currentScript',{get:()=>script});
     w.fetch=async url=>({ok:true,json:async()=>readPack(path.basename(url.pathname,'.json'))});
     w.eval(code);await w.CocoLocale.ready;
+    w.client=()=>{throw new Error('Unexpected network access in local game');};
+    const rankingSource=fs.readFileSync(path.join(root,'games/mesa-ranking.mjs'),'utf8').replace(/^export /gm,'');
+    w.eval(rankingSource+'\nObject.assign(window,{newRankingMatch,tableRanking});');
     w.eval(fs.readFileSync(path.join(root,'games/generala/app.mjs'),'utf8').replace(/^import[^\n]+\n/gm,''));
     d.querySelector('[data-mode="solo"]').click();
     d.querySelector('[name=playerName]').value='Memoria';

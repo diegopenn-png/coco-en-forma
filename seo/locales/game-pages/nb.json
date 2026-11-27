@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "koble-sammen-farger",
+    "name": "Koble sammen fargene",
+    "intro": "Trekk en linje mellom hvert par med samme farge. Linjene kan ikke krysse hverandre, og alle parene må få plass på brettet.",
+    "tip": "Start med paret som bare har én mulig vei gjennom en trang passasje.",
+    "challenge": "Den blå linjen må gjennom et trangt felt. Rød kan gå der eller langs kanten. Hvor bør rød gå?",
+    "answer": "La rød gå langs kanten, slik at blå fortsatt har en åpen vei."
+  },
+  "numeros": {
+    "slug": "koble-sammen-tallene",
+    "name": "Koble sammen tallene",
+    "intro": "Tegn en sammenhengende vei fra tall til tall i riktig rekkefølge. Du kan bare bruke hver rute én gang.",
+    "tip": "Se etter hvor du skal videre før du når neste tall, slik at du ikke sperrer veien for deg selv.",
+    "challenge": "To veier fører fra 2 til 3. Bare én av dem lar feltet videre til 4 stå åpent. Hvilken velger du?",
+    "answer": "Velg veien som holder feltet til 4 ledig. Da kan du fortsette uten å bruke samme rute på nytt."
+  },
+  "calculo": {
+    "slug": "hoderegning",
+    "name": "Rask hoderegning",
+    "intro": "Løs regnestykker med ulik vanskelighetsgrad. Øv på å legge sammen, trekke fra, gange og dele.",
+    "tip": "Prøv å regne 19 + 8 som 20 + 8, og trekk fra én til slutt.",
+    "challenge": "Hvordan kan du regne ut 49 + 26 i hodet?",
+    "answer": "Regn først 50 + 26 og trekk fra én. Svaret er 75."
+  },
+  "palabras": {
+    "slug": "ordspill-med-bokstaver",
+    "name": "Sett sammen ord",
+    "intro": "Bruk ledetråden til å finne ordet som skjuler seg i en samling bokstaver. Ordne bokstavene slik at ordet passer til beskrivelsen.",
+    "tip": "Si et mulig svar høyt og sjekk om du har akkurat de bokstavene du trenger.",
+    "challenge": "Bokstavene er O, S og L. Hva kan du lage med ledetråden «lyser på himmelen om dagen»?",
+    "answer": "SOL. Du bruker hver av de tre bokstavene én gang."
+  },
+  "sopa": {
+    "slug": "ordjakt",
+    "name": "Ordjakt",
+    "intro": "Finn ordene fra listen i et rutenett fylt med bokstaver. Marker hvert ord du finner til hele listen er ferdig.",
+    "tip": "Let etter den første bokstaven rad for rad, og sjekk om neste bokstav ligger ved siden av.",
+    "challenge": "Du leter etter ROS i raden R, A, R, O, S. Hvor starter ordet?",
+    "answer": "På den tredje bokstaven. Der står R rett foran O og S."
+  },
+  "sudoku": {
+    "slug": "sudoku",
+    "name": "Sudoku på nett",
+    "intro": "Fyll ut et brett på 4 × 4 eller 6 × 6 ruter. Hvert tall skal finnes én gang i hver rad, kolonne og blokk.",
+    "tip": "Finn en rad med bare én ledig rute og sjekk tallet mot kolonnen og blokken.",
+    "challenge": "En rad i et 4 × 4-brett inneholder 1, 2 og 4. Hvilket tall mangler?",
+    "answer": "3. Hver rad skal inneholde tallene fra 1 til 4 én gang hver."
+  },
+  "memoria": {
+    "slug": "memory-finn-par",
+    "name": "Memory – finn parene",
+    "intro": "Snu to kort og se om bildene er like. Husk hvor kortene ligger når de snus tilbake, og finn alle parene.",
+    "tip": "Når to kort ikke passer sammen, velg et kjennetegn ved hvert bilde og husk hvor det lå.",
+    "challenge": "I forrige tur så du en stjerne øverst til venstre. Nå har du snudd en annen stjerne. Hvilket kort velger du?",
+    "answer": "Kortet øverst til venstre. Det var der du så den første stjernen."
+  },
+  "series": {
+    "slug": "logiske-rekker",
+    "name": "Logiske rekker",
+    "intro": "Se på rekken og finn regelen som binder leddene sammen. Velg det som skal stå på neste plass.",
+    "tip": "Hvis én regel ikke passer for hele rekken, undersøk annethvert ledd for seg.",
+    "challenge": "Hvilket tall følger etter 2, 5, 8 og 11 hvis mønsteret fortsetter?",
+    "answer": "14. For hvert ledd legger du til tre."
+  },
+  "crucigrama": {
+    "slug": "kryssord",
+    "name": "Kryssord",
+    "intro": "Les ledetrådene og fyll inn ordene som krysser hverandre. Hver bokstav du får på plass, kan hjelpe deg med et nytt svar.",
+    "tip": "Begynn med et ord du er sikker på, og bruk bokstavene der ordene krysser hverandre.",
+    "challenge": "Ledetråden er «kjæledyr som mjauer». Mønsteret er K _ T T. Hvilken bokstav skal inn?",
+    "answer": "A. KATT passer både med ledetråden og med bokstavene du har."
+  },
+  "tiempo": {
+    "slug": "quiz-pa-tid",
+    "name": "Quiz på tid",
+    "intro": "Løs korte oppgaver før tiden går ut. Du veksler mellom språk, regning, logikk, naturfag og oppmerksomhetsoppgaver.",
+    "tip": "Bruk det første øyeblikket på å se hva oppgaven ber deg om før du velger et svar.",
+    "challenge": "Tiden går og oppgaven er 6 × 7. Hvilket tall velger du?",
+    "answer": "42. Du kan regne 5 × 7 + 7."
+  },
+  "verdadero": {
+    "slug": "sant-eller-usant",
+    "name": "Sant eller usant?",
+    "intro": "Ta stilling til en påstand og velg om den er sann eller usann. Etterpå kan du lese forklaringen.",
+    "tip": "Hvis påstanden sier «alltid», prøv å komme på ett tilfelle der den ikke stemmer.",
+    "challenge": "Sant eller usant: Alle månedene har nøyaktig 30 dager?",
+    "answer": "Usant. Januar har for eksempel 31 dager."
+  },
+  "cocomed": {
+    "slug": "coco-med-kroppen",
+    "name": "Coco Med – quiz om kroppen",
+    "intro": "Utforsk kroppen, kosthold og vaner gjennom spørsmål. Hvert svar følges av en forklaring om temaet.",
+    "tip": "Når du møter et nytt begrep, prøv å forklare det med egne ord.",
+    "challenge": "Hvilket organ pumper blodet rundt i kroppen: hjertet eller lungene?",
+    "answer": "Hjertet. Lungene bidrar til at blodet tar opp oksygen."
+  },
+  "futbol": {
+    "slug": "fotballspill-med-hukommelse",
+    "name": "Coco Fotball – husk hvor du skal skyte",
+    "intro": "Følg med på feltene som lyser opp i målet. Skyt mot feltet som ikke lyste.",
+    "tip": "Gi feltene faste navn, som «oppe til høyre», mens du følger lysene.",
+    "challenge": "Tre av fire hjørner i målet lyser opp: øverst til venstre, øverst til høyre og nederst til venstre. Hvor skyter du?",
+    "answer": "Nederst til høyre. Det var det eneste hjørnet som ikke lyste."
+  },
+  "padel": {
+    "slug": "planlegg-padelturnering",
+    "name": "Coco Padel – planlegg en padelturnering",
+    "intro": "Legg inn spillere og baner, sett opp rundene og registrer kampresultatene. Følg stillingen i gruppa underveis.",
+    "tip": "Avtal hvordan poengene skal regnes før dere starter, og før inn resultatet straks kampen er ferdig.",
+    "challenge": "En kamp er over og neste runde skal snart begynne. Hva bør dere gjøre med resultatet?",
+    "answer": "Før resultatet inn på riktig kamp med en gang. Da kan dere se stillingen før neste runde."
+  },
+  "bank": {
+    "slug": "coco-bank-budsjettspill",
+    "name": "Coco Bank – lær om penger",
+    "intro": "Øv på å styre en konto med lekepenger. Betal månedens utgifter, spar til et mål og prøv simulerte investeringer.",
+    "tip": "Trekk fra regningene som snart forfaller før du bestemmer hvor mye du vil spare.",
+    "challenge": "Du har 100 i lekepenger på kontoen og må snart betale en regning på 65. Hvor mye har du igjen til andre formål?",
+    "answer": "35 i lekepenger når regningen er dekket."
+  },
+  "ciudad": {
+    "slug": "coco-ciudad-brettspill",
+    "name": "Coco Ciudad – brettspill om byen",
+    "intro": "Kast terningen og gå gjennom en by med 40 felt. To til seks spillere tar valg om eiendom, penger og hverdagsliv på én enhet eller i et privat rom på nett.",
+    "tip": "Sjekk hvordan valget på kortet påvirker både økonomien og trivselen.",
+    "challenge": "Et kort foreslår noe som koster penger, men som kan gi bedre trivsel i byen. Hva bør du vurdere?",
+    "answer": "Sammenlign kostnaden og virkningen på trivselen med det du ønsker å oppnå i byen."
+  },
+  "generala": {
+    "slug": "generala-terningspill",
+    "name": "Generala – terningspill",
+    "intro": "Kast fem terninger opptil tre ganger i hver tur. Velg hvilke du vil beholde, og før en kombinasjon i ett av de elleve feltene på blokka.",
+    "tip": "Se hvilke felt som fortsatt er ledige før du bestemmer hvilke terninger du vil kaste på nytt.",
+    "challenge": "Du får tre femmere i første kast, og feltet for femmere er ledig. Hvordan kan du prøve å få flere femmere?",
+    "answer": "Behold de tre femmerne og kast de to andre terningene på nytt."
+  },
+  "naval": {
+    "slug": "senke-slagskip",
+    "name": "Senke slagskip",
+    "intro": "Plasser fem skip på et brett med 10 × 10 ruter og prøv å finne motstanderens flåte. Spill mot Coco eller inviter en venn.",
+    "tip": "Når du har to treff på samme linje, prøv en rute i hver ende for å finne resten av skipet.",
+    "challenge": "Du treffer i C4 og D4. Hvilke ruter ligger i hver ende på samme linje?",
+    "answer": "B4 og E4. Prøv disse for å se om skipet strekker seg videre."
+  },
+  "truco": {
+    "slug": "argentinsk-truco",
+    "name": "Argentinsk truco – kortspill",
+    "intro": "Du får tre kort og prøver å vinne to stikk. Spill mot Coco eller med venner ved et bord med to, fire eller seks spillere.",
+    "tip": "Med to kort i samme farge legger du 20 til kortverdiene når du regner envido. Bildekort teller som null.",
+    "challenge": "Du har en firer og en sjuer i samme farge og et tredje kort i en annen farge. Hvor mye er det i envido?",
+    "answer": "31. Legg 4 og 7 sammen, og legg til 20 for paret i samme farge."
+  },
+  "ajedrez": {
+    "slug": "sjakk",
+    "name": "Spill sjakk på nett",
+    "intro": "Spill sjakk mot Coco, del et brett på samme enhet eller møt en annen spiller i et rom på nett. Du kan også prøve dagens parti og ulike sjakkutfordringer.",
+    "tip": "Se etter trusler mot kongen og ubeskyttede brikker før du starter et angrep.",
+    "challenge": "Kongen din står i sjakk. Kan du true motstanderens dronning med et trekk som lar din egen konge stå i sjakk?",
+    "answer": "Nei. Trekket må oppheve sjakken, for eksempel ved at kongen flyttes til et trygt felt."
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "koppla-ihop-farger",
+    "name": "Koppla ihop färger",
+    "intro": "Dra en väg mellan varje par av punkter i samma färg. Vägarna får aldrig korsa varandra, så lämna plats åt paren som är kvar.",
+    "tip": "Börja med paret som bara har en möjlig väg genom en trång passage.",
+    "challenge": "Den blå vägen måste genom en smal passage. Rött kan gå antingen där eller runt kanten. Var ska du dra den röda vägen?",
+    "answer": "Dra rött längs kanten så att blått kan använda sin enda passage."
+  },
+  "numeros": {
+    "slug": "koppla-ihop-siffrorna",
+    "name": "Koppla ihop siffrorna",
+    "intro": "Dra en sammanhängande väg mellan talen i rätt ordning. Varje ruta på vägen får bara användas en gång.",
+    "tip": "Titta ett tal framåt. Innan du når trean behöver du veta hur du ska komma vidare till fyran.",
+    "challenge": "Två vägar leder från tvåan till trean. Bara den ena lämnar en fri ruta fram till fyran. Vilken väljer du?",
+    "answer": "Välj vägen som lämnar rutan till fyran fri. Då kan du fortsätta utan att använda samma ruta två gånger."
+  },
+  "calculo": {
+    "slug": "huvudrakning",
+    "name": "Snabb huvudräkning",
+    "intro": "Lös räkneuppgifter med olika svårighetsgrad. Du får bland annat addera, subtrahera, multiplicera och dividera.",
+    "tip": "Räkna 19 + 8 som 20 + 8 och dra sedan bort ett.",
+    "challenge": "En uppgift visar 49 + 26. Hur kan du räkna snabbt i huvudet?",
+    "answer": "Ta 50 + 26 och dra bort ett. Svaret är 75."
+  },
+  "palabras": {
+    "slug": "kasta-om-bokstaver",
+    "name": "Bilda ord av bokstäver",
+    "intro": "Bokstäverna har hamnat i oordning. Läs ledtråden och flytta om bokstäverna tills de bildar ordet som söks.",
+    "tip": "Tänk först ut ett ord som passar ledtråden. Kontrollera sedan att alla bokstäver räcker till.",
+    "challenge": "Vilket ord bildar bokstäverna O, S och L med ledtråden ”lyser på himlen på dagen”?",
+    "answer": "SOL. Alla tre bokstäverna används en gång."
+  },
+  "sopa": {
+    "slug": "ordsok",
+    "name": "Ordsök",
+    "intro": "Hitta orden från listan i ett rutnät fyllt med bokstäver. Markera varje ord och fortsätt tills hela listan är klar.",
+    "tip": "Leta rad för rad efter ordets första bokstav och kontrollera sedan bokstaven intill.",
+    "challenge": "Du letar efter ROS. På en rad står R, A, R, O, S. Var börjar ordet?",
+    "answer": "Vid radens tredje bokstav. Där följs R av både O och S."
+  },
+  "sudoku": {
+    "slug": "sudoku",
+    "name": "Sudoku för barn och vuxna",
+    "intro": "Fyll i ett sudoku med 4 × 4 eller 6 × 6 rutor. Varje siffra får bara förekomma en gång i varje rad, kolumn och block.",
+    "tip": "Börja i en rad med en enda tom ruta och kontrollera siffran mot kolumnen och blocket.",
+    "challenge": "I en rad i ett 4 × 4-sudoku står 1, 2 och 4. Vilken siffra saknas?",
+    "answer": "3. Varje rad ska innehålla siffrorna 1 till 4 en gång var."
+  },
+  "memoria": {
+    "slug": "memory-hitta-par",
+    "name": "Memory – hitta paren",
+    "intro": "Vänd två kort och se om bilderna bildar ett par. Minns platserna när korten vänds tillbaka och hitta alla par på bordet.",
+    "tip": "Om två bilder skiljer sig åt, lägg bådas placering på minnet innan du vänder nästa kort.",
+    "challenge": "Du såg en stjärna uppe till vänster i förra draget. Nu har du vänt upp en annan stjärna. Vilket kort vänder du härnäst?",
+    "answer": "Kortet uppe till vänster. Där såg du den första stjärnan."
+  },
+  "series": {
+    "slug": "logiska-serier",
+    "name": "Logiska serier",
+    "intro": "Vad kommer härnäst i följden? Hitta regeln bakom mönstret och välj det alternativ som följer den.",
+    "tip": "Om följden verkar hoppa fram och tillbaka, jämför vartannat led för sig.",
+    "challenge": "Vilket tal kommer efter 2, 5, 8 och 11 om regeln fortsätter?",
+    "answer": "14. Varje tal är tre större än det förra."
+  },
+  "crucigrama": {
+    "slug": "korsord",
+    "name": "Korsord",
+    "intro": "Läs ledtrådarna och fyll i orden i ett rutnät där svaren korsar varandra. Varje löst ord ger bokstäver till nästa.",
+    "tip": "Lös en ledtråd du känner dig säker på och använd en korsande bokstav i ett svårare ord.",
+    "challenge": "Ledtråden är ”husdjur som jamar”. Du har fyra rutor och mönstret K _ T T. Vilken bokstav saknas?",
+    "answer": "A. Ordet KATT passar både ledtråden och bokstäverna."
+  },
+  "tiempo": {
+    "slug": "fragesport-pa-tid",
+    "name": "Frågesport på tid",
+    "intro": "Lös en kort uppgift innan tiden går ut. Uppgifterna växlar mellan språk, matematik, logik, vetenskap och uppmärksamhet.",
+    "tip": "Läs frågans sista ord innan du väljer svar. Ibland är det just där skillnaden mellan alternativen finns.",
+    "challenge": "Klockan går och uppgiften är 6 × 7. Vilket tal väljer du?",
+    "answer": "42. Du kan tänka 5 × 7 + 7."
+  },
+  "verdadero": {
+    "slug": "sant-eller-falskt",
+    "name": "Sant eller falskt?",
+    "intro": "Avgör om påståendet stämmer. Efter varje svar får du en förklaring som visar hur det hänger ihop.",
+    "tip": "Försök hitta ett motexempel om ett påstående innehåller ordet ”alltid”.",
+    "challenge": "Sant eller falskt: alla månader har exakt 30 dagar?",
+    "answer": "Falskt. Januari har till exempel 31 dagar."
+  },
+  "cocomed": {
+    "slug": "coco-med-kroppen",
+    "name": "Coco Med – frågesport om kroppen",
+    "intro": "Svara på frågor om kroppen, mat och vardagsvanor. Läs förklaringen för att förstå vad som ligger bakom svaret.",
+    "tip": "När ett nytt ord dyker upp, försök förklara det med egna ord innan du går vidare.",
+    "challenge": "Vilken kroppsdel pumpar runt blodet: hjärtat eller lungorna?",
+    "answer": "Hjärtat. Lungorna hjälper i stället blodet att ta upp syre."
+  },
+  "futbol": {
+    "slug": "fotbollsminne",
+    "name": "Coco Fotboll – skjut från minnet",
+    "intro": "Titta på de delar av målet som lyser upp. När det är dags att skjuta ska du sikta på den yta som förblev mörk.",
+    "tip": "Säg positionerna tyst för dig själv, till exempel ”uppe till vänster”, så blir den tomma ytan lättare att hitta.",
+    "challenge": "Uppe till vänster, uppe till höger och nere till vänster lyser i ett mål med fyra hörn. Vart skjuter du?",
+    "answer": "Nere till höger, eftersom det hörnet förblev mörkt."
+  },
+  "padel": {
+    "slug": "organisera-padelturnering",
+    "name": "Coco Padel – planera en padelturnering",
+    "intro": "Lägg in spelare och banor, planera omgångarna och registrera resultaten. Följ gruppens ställning efter varje omgång.",
+    "tip": "Bestäm hur ni ska räkna poängen före första matchen och skriv in resultatet direkt efteråt.",
+    "challenge": "En match har slutat och nästa omgång ska börja. Vad bör ni göra med resultatet först?",
+    "answer": "Skriv in resultatet på rätt match innan nästa omgång startar. Då kan ni kontrollera gruppens ställning."
+  },
+  "bank": {
+    "slug": "coco-bank-pengaspel",
+    "name": "Coco Bank – ett spel om pengar",
+    "intro": "Sköt ett konto med låtsaspengar. Betala månadens utgifter, spara till ett mål och prova simulerade investeringar.",
+    "tip": "Reservera pengar för nästa räkning innan du bestämmer hur mycket som kan sparas.",
+    "challenge": "Du har 100 i spelpengar och en räkning på 65 förfaller snart. Hur mycket återstår när du reserverat pengar för räkningen?",
+    "answer": "35 i spelpengar. Den summan kan du sedan fördela mellan sparande och andra utgifter."
+  },
+  "ciudad": {
+    "slug": "coco-ciudad-bradspel",
+    "name": "Coco Ciudad – staden som brädspel",
+    "intro": "Slå tärningen och flytta genom en stad med 40 rutor. Två till sex spelare fattar beslut om pengar, fastigheter och vardagsliv, på en enhet eller i ett privat spelrum.",
+    "tip": "Läs vad kortet gör för både ekonomin och välmåendet innan du väljer.",
+    "challenge": "Ett kort kräver ett utlägg, men kan också förbättra invånarnas välmående. Vad behöver du väga in?",
+    "answer": "Jämför både kostnaden och effekten på välmåendet med dina mål för staden."
+  },
+  "generala": {
+    "slug": "generala-tarningsspel",
+    "name": "Generala – tärningsspel",
+    "intro": "Kasta fem tärningar upp till tre gånger per tur. Spara tärningar och skriv in en kombination i en av de elva rutorna i protokollet.",
+    "tip": "Titta på vilka rutor som är lediga innan du väljer vilka tärningar du vill kasta om.",
+    "challenge": "Efter första kastet visar tre tärningar fem och fältet för femmor är ledigt. Hur kan du jaga fler femmor?",
+    "answer": "Spara de tre femmorna och kasta om de två andra tärningarna."
+  },
+  "naval": {
+    "slug": "sanka-skepp",
+    "name": "Sänka skepp",
+    "intro": "Placera fem fartyg på ett rutnät med 10 × 10 rutor och försök hitta motståndarens flotta. Spela mot Coco eller bjud in en vän.",
+    "tip": "Om du får två träffar i rad på samma linje, prova rutorna i linjens båda ändar.",
+    "challenge": "Du träffar i C4 och D4. Vilka rutor ligger närmast i linjens båda ändar?",
+    "answer": "B4 och E4. Där kan du leta efter en fortsättning på samma fartyg."
+  },
+  "truco": {
+    "slug": "argentinsk-truco",
+    "name": "Argentinsk truco – kortspel",
+    "intro": "Spela med tre kort på handen och försök ta två stick. Spela mot Coco eller med vänner vid ett bord för två, fyra eller sex.",
+    "tip": "Har du två kort i samma färg? När du räknar envido lägger du 20 till kortens värde. Klädda kort räknas som noll.",
+    "challenge": "Du har en fyra och en sjua i samma färg och ett kort i en annan färg. Hur många poäng har du i envido?",
+    "answer": "31. Lägg ihop 4 och 7 och lägg till 20 för de två korten i samma färg."
+  },
+  "ajedrez": {
+    "slug": "schack",
+    "name": "Spela schack",
+    "intro": "Spela schack mot Coco, dela ett bräde på samma enhet eller bjud in någon till ett spelrum online. Du kan också prova dagens parti och schackutmaningar.",
+    "tip": "Titta efter hot mot kungen och oskyddade pjäser innan du planerar ett angrepp.",
+    "challenge": "Din kung är i schack. Kan du göra ett drag som låter den stå kvar i schack om draget hotar motståndarens dam?",
+    "answer": "Nej. Ditt drag måste ta bort schacken, till exempel genom att flytta kungen till en säker ruta."
+  }
+}

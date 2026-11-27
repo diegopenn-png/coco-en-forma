@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "farben-verbinden",
+    "name": "Farben verbinden",
+    "intro": "Verbinde jeweils zwei gleichfarbige Punkte mit einer Linie. Die Wege dürfen sich nicht kreuzen, und jedes Farbpaar braucht einen freien Weg über das Spielfeld.",
+    "tip": "Suche zuerst nach einem Paar, dessen Weg durch eine Engstelle führen muss. Halte diesen Durchgang frei, wenn du die anderen Linien zeichnest.",
+    "challenge": "Rot kann am Rand entlang oder durch eine Lücke in der Mitte. Für Blau ist die Lücke der einzige Weg. Wo ziehst du die rote Linie?",
+    "answer": "Führe Rot am Rand entlang und halte die Lücke für Blau frei. So kannst du beide Paare verbinden."
+  },
+  "numeros": {
+    "slug": "zahlen-verbinden",
+    "name": "Zahlen verbinden",
+    "intro": "Ziehe einen Weg, der die Zahlen in der vorgegebenen Reihenfolge verbindet. Dabei darfst du jedes Feld nur einmal benutzen.",
+    "tip": "Schau schon beim Weg von der 2 zur 3, wo die 4 liegt. Lass dir an der 3 einen Ausgang in die richtige Richtung frei.",
+    "challenge": "Von der 2 zur 3 kommst du über den Rand oder durch die Mitte. Von der 3 zur 4 führt nur ein Weg durch die Mitte. Wie kommst du zur 3?",
+    "answer": "Nimm den Weg am Rand. So ist das Feld in der Mitte noch frei, wenn du von der 3 zur 4 weiterziehst."
+  },
+  "calculo": {
+    "slug": "kopfrechnen",
+    "name": "Kopfrechnen",
+    "intro": "Rechne die Aufgabe im Kopf und wähle das passende Ergebnis. Je nach Stufe kommen zu den Grundrechenarten auch Prozentaufgaben und Rechnungen mit mehreren Schritten hinzu.",
+    "tip": "Bei 39 + 16 kannst du zuerst 40 + 16 rechnen. Zieh anschließend die eins wieder ab, die du beim Aufrunden ergänzt hast.",
+    "challenge": "Wie kannst du 48 + 27 über den nächsten Zehner rechnen?",
+    "answer": "Zerlege 27 in 2 und 25. Rechne zuerst 48 + 2 = 50 und dann 50 + 25 = 75."
+  },
+  "palabras": {
+    "slug": "buchstabensalat",
+    "name": "Buchstabensalat",
+    "intro": "Finde das gesuchte Wort, indem du die durcheinandergeratenen Buchstaben ordnest. Der Hinweis verrät dir etwas über die Bedeutung des Wortes.",
+    "tip": "Fallen dir zwei Wörter zum Hinweis ein? Zähle die Buchstaben und prüfe, welches Wort sich aus den vorhandenen Buchstaben legen lässt.",
+    "challenge": "Vor dir liegen die Buchstaben R, O und H. Der Hinweis lautet „Damit hörst du“. Welches Wort passt?",
+    "answer": "OHR. Ordne die drei Buchstaben so an, dass sie das gesuchte Körperteil ergeben."
+  },
+  "sopa": {
+    "slug": "wortsuche",
+    "name": "Wortsuche im Buchstabengitter",
+    "intro": "Suche die Wörter aus der Liste im Buchstabengitter. Je nach Rätsel stammen sie aus Themengebieten wie Natur, Sport, Wissenschaft oder Technik.",
+    "tip": "Wähle ein Wort mit einem auffälligen Buchstaben. Suche erst diesen Buchstaben und prüfe dann, ob seine Nachbarn zum Wort passen.",
+    "challenge": "Du suchst das Wort HASE. In einer Zeile steht K H A S E T. Welche Felder markierst du?",
+    "answer": "Beginne beim H auf dem zweiten Feld und gehe nach rechts bis zum E auf dem fünften Feld. Die vier Buchstaben bilden HASE."
+  },
+  "sudoku": {
+    "slug": "mini-sudoku",
+    "name": "Mini-Sudoku",
+    "intro": "Fülle ein 4×4- oder 6×6-Gitter so aus, dass jede Zahl in jeder Zeile, Spalte und jedem Block genau einmal vorkommt. Es gibt drei Schwierigkeitsstufen und eine begrenzte Zahl an Hinweisen.",
+    "tip": "Stehen in einer Viererzeile schon 1, 2 und 4, fehlt die 3. Prüfe zur Kontrolle auch die Spalte und den Block des freien Feldes.",
+    "challenge": "Eine Zeile im 4×4-Sudoku lautet 2, Lücke, 4, 3. Welche Zahl fehlt?",
+    "answer": "Die 1. Sie ist die einzige Zahl von 1 bis 4, die in dieser Zeile noch fehlt."
+  },
+  "memoria": {
+    "slug": "paare-finden",
+    "name": "Paare finden – das Gedächtnisspiel",
+    "intro": "Decke zwei Karten auf und finde gleiche Bildmotive. Auch zwei verschiedene Karten helfen dir weiter, wenn du dir ihre Plätze für später merkst.",
+    "tip": "Verbinde jedes Motiv mit einem Ort, zum Beispiel „Stern oben links“. Taucht der zweite Stern auf, weißt du, welche Karte du brauchst.",
+    "challenge": "Vorhin hast du unten links ein Fahrrad aufgedeckt. Jetzt siehst du oben rechts ein zweites Fahrrad. Welche Karte wählst du als Nächstes?",
+    "answer": "Die Karte unten links. Dort hast du dir das passende Motiv gemerkt."
+  },
+  "series": {
+    "slug": "zahlenreihen-fortsetzen",
+    "name": "Zahlenreihen fortsetzen",
+    "intro": "Entdecke die Regel einer Zahlenfolge und wähle die nächste Zahl. Manchmal wird immer dieselbe Zahl addiert, manchmal wechseln sich zwei Muster ab.",
+    "tip": "Erkennst du keinen Zusammenhang zwischen zwei Nachbarzahlen, lies zunächst nur die erste, dritte und fünfte Zahl. Prüfe danach die geraden Positionen.",
+    "challenge": "Was folgt auf 2, 9, 4, 8, 6, 7, wenn sich die beiden Muster weiterhin abwechseln?",
+    "answer": "Die 8. An den ungeraden Positionen stehen 2, 4 und 6, also immer zwei mehr. Dazwischen wird von 9 aus rückwärts gezählt."
+  },
+  "crucigrama": {
+    "slug": "kreuzwortraetsel",
+    "name": "Kreuzworträtsel",
+    "intro": "Lies die Hinweise und trage die gesuchten Wörter ins Gitter ein. An jeder Kreuzung muss ein Buchstabe zu beiden Antworten passen.",
+    "tip": "Beginne mit einer Antwort, bei der du sicher bist. Nutze ihre Buchstaben und die Länge der freien Felder, um ein kreuzendes Wort zu finden.",
+    "challenge": "Der Hinweis lautet „der rote Planet“. Im Gitter stehen M, Lücke, R und S. Welcher Buchstabe fehlt?",
+    "answer": "Das A ergänzt MARS. Damit kennst du auch einen Buchstaben des Wortes, das an dieser Stelle kreuzt."
+  },
+  "tiempo": {
+    "slug": "quiz-gegen-die-uhr",
+    "name": "Quiz gegen die Uhr",
+    "intro": "Löse zehn kurze Aufgaben mit Zeitlimit. Von einer Runde zur nächsten kann das Thema von Rechnen zu Sprache, Logik, Wissenschaft oder Aufmerksamkeit wechseln.",
+    "tip": "Lies bei jeder neuen Aufgabe zuerst, was gesucht wird. Nach einer Rechenaufgabe kann ein Wort gefragt sein, obwohl die Uhr weiterläuft.",
+    "challenge": "Zuerst sollst du 7 + 5 rechnen. Danach sollst du das Farbwort unter „acht“, „blau“ und „hoch“ finden. Wie lauten die Antworten?",
+    "answer": "Zuerst 12, dann „blau“. Die zweite Aufgabe verlangt ein Wort, auch wenn du gerade noch gerechnet hast."
+  },
+  "verdadero": {
+    "slug": "wahr-oder-falsch",
+    "name": "Wahr oder falsch?",
+    "intro": "Entscheide, ob eine Aussage stimmt, und lies anschließend die Erklärung. Die Fragen behandeln unter anderem Mathematik, Sprache, Wissenschaft und Technik.",
+    "tip": "Achte auf Wörter wie „immer“ oder „alle“. Ein einziges Gegenbeispiel kann reichen, um die Aussage zu widerlegen.",
+    "challenge": "Wahr oder falsch? Jedes Vielfache von 2 ist auch ein Vielfaches von 4.",
+    "answer": "Falsch. 6 ist durch 2 teilbar, aber nicht ohne Rest durch 4."
+  },
+  "cocomed": {
+    "slug": "koerper-und-gesundheit-quiz",
+    "name": "Coco Med – Quiz zu Körper und Gesundheit",
+    "intro": "Erkunde den menschlichen Körper, Ernährung und gesunde Gewohnheiten mit Quizfragen. Die Erläuterungen zeigen dir, warum eine Antwort passt.",
+    "tip": "Taucht ein neues Organ auf, beschreibe seine Aufgabe mit eigenen Worten. Beim Herzen könnte das heißen: Es pumpt Blut durch den Körper.",
+    "challenge": "Welches Organ pumpt Blut durch den Körper: das Herz oder die Lunge?",
+    "answer": "Das Herz pumpt das Blut. In der Lunge gelangt Sauerstoff aus der Atemluft ins Blut."
+  },
+  "futbol": {
+    "slug": "fussball-merkspiel",
+    "name": "Fußball-Merkspiel",
+    "intro": "Beobachte, welche Bereiche im Fußballtor nacheinander aufleuchten. Schieße anschließend auf die Stelle, die dunkel geblieben ist.",
+    "tip": "Benenne die Positionen beim Aufleuchten, etwa „oben links“ oder „unten rechts“. Welche Position fehlte in deiner Aufzählung?",
+    "challenge": "Drei Ecken leuchten auf: oben links, unten rechts und unten links. Welche Ecke ist dunkel geblieben?",
+    "answer": "Oben rechts. Auf diese Ecke zielst du, sobald die Abfolge vorbei ist."
+  },
+  "padel": {
+    "slug": "padel-turnierplaner",
+    "name": "Padel-Turnierplaner",
+    "intro": "Organisiere die Spieler, Plätze und Runden für euer Treffen auf dem Padelplatz. Trage die Ergebnisse ein, um den Tabellenstand der Gruppe zu verfolgen.",
+    "tip": "Vereinbart vor dem ersten Aufschlag, wie lange jede Runde dauert und wie ihr zählt. Tragt jedes Ergebnis gleich nach dem Spiel ein.",
+    "challenge": "Acht Personen möchten auf zwei Plätzen Doppel spielen. Wie viele können in derselben Runde mitspielen?",
+    "answer": "Alle acht. Für ein Doppel braucht ihr vier Personen pro Platz. Zwei Plätze reichen also genau aus."
+  },
+  "bank": {
+    "slug": "taschengeld-und-sparspiel",
+    "name": "Coco Bank – Planspiel mit virtuellem Geld",
+    "intro": "Verwalte ein virtuelles Konto, bezahle Haushaltsausgaben und spare auf ein Ziel. Mit dem übrigen Spielgeld kannst du auch simulierte Geldanlagen ausprobieren.",
+    "tip": "Lege den Betrag für die nächste Rechnung beiseite. Bei einem Guthaben von 100 und fälligen Ausgaben von 60 bleiben dir 40 für deine weiteren Pläne.",
+    "challenge": "Auf deinem Spielkonto sind 100. Du brauchst 60 für Rechnungen und möchtest 25 sparen. Wie viel bleibt für etwas anderes?",
+    "answer": "15 Einheiten Spielgeld. Ziehe die Rechnungen und das Ersparte ab: 100 − 60 − 25 = 15."
+  },
+  "ciudad": {
+    "slug": "stadt-brettspiel",
+    "name": "Coco Ciudad – das Stadt-Brettspiel",
+    "intro": "Würfelt euch mit zwei bis sechs Spielern über einen Stadtplan mit 40 Feldern, an einem Gerät oder in einem privaten Online-Raum. Die Felder bringen euch zu Grundstücken und Entscheidungen rund um das Stadtleben.",
+    "tip": "Überlege vor einem Grundstückskauf, wie viel Spielgeld dir danach bleibt und ob der Kauf zu deinem aktuellen Ziel passt.",
+    "challenge": "Ein Grundstück kostet 90, und du hast 100 Spielgeld. Du möchtest 25 für ein anderes Ziel behalten. Geht beides sofort?",
+    "answer": "Nein. Nach dem Kauf blieben dir 10. Um 25 zurückzulegen, dürftest du höchstens 75 ausgeben."
+  },
+  "generala": {
+    "slug": "generala-wuerfelspiel",
+    "name": "Generala – Würfelspiel mit fünf Würfeln",
+    "intro": "Würfle pro Zug bis zu dreimal und lege passende Würfel für den nächsten Wurf beiseite. Entscheide dann, in welches der elf Felder du dein Ergebnis einträgst.",
+    "tip": "Hast du drei Vieren gewürfelt, schau auf deinen Wertungsblock: Sind die Vierer oder der Viererpasch noch frei? Davon hängt ab, ob sich ein weiterer Wurf lohnt.",
+    "challenge": "Du würfelst beim ersten Wurf 4, 4, 4, 2 und 5. Dein Viererfeld ist noch frei. Wie viele Punkte kannst du sofort eintragen?",
+    "answer": "12 Punkte im Viererfeld. Du kannst die drei Vieren auch behalten und mit den beiden anderen Würfeln eine größere Kombination versuchen."
+  },
+  "naval": {
+    "slug": "schiffe-versenken",
+    "name": "Schiffe versenken",
+    "intro": "Verstecke fünf Schiffe auf einem 10×10-Raster und feuere abwechselnd mit deinem Gegner je einen Schuss ab. Spiele gegen Coco oder lade jemanden in einen privaten Online-Raum ein.",
+    "tip": "Hast du zweimal in einer Linie getroffen, suche an den beiden Enden weiter. Schiffe dürfen sich berühren, also kann neben einem versenkten Schiff noch ein weiteres liegen.",
+    "challenge": "Du triffst D4 und D5. Das Schiff ist noch nicht versenkt. Welche beiden unbeschossenen Felder verlängern die Trefferlinie?",
+    "answer": "D3 und D6. Probiere eines der beiden Enden aus. Gehören die beiden Treffer zum selben Schiff, liegt es in dieser Reihe."
+  },
+  "truco": {
+    "slug": "argentinisches-truco",
+    "name": "Argentinisches Truco",
+    "intro": "Spiele das argentinische Kartenspiel gegen Coco oder mit Freunden zu zweit, zu viert oder zu sechst. Gespielt wird mit Envido und Truco, ohne Flor, bis 15 oder 30 Punkte.",
+    "tip": "Prüfe vor der Ansage „Envido“, ob du zwei Karten derselben Farbe hältst. Eine Sechs und eine Sieben derselben Farbe ergeben zusammen 33: 20 plus die beiden Kartenwerte.",
+    "challenge": "Du hast die Münz-Sechs, die Münz-Sieben und den Kelch-König. Wie viele Punkte hast du beim Envido?",
+    "answer": "33. Sechs und Sieben gehören zur selben Farbe, also rechnest du 20 + 6 + 7."
+  },
+  "ajedrez": {
+    "slug": "schach-online",
+    "name": "Schach online spielen",
+    "intro": "Spiele Schach gegen Coco, zu zweit an einem Gerät oder mit anderen registrierten Spielern in einem Online-Raum. Zum Üben gibt es Lektionen, Aufgaben und eine tägliche Partie.",
+    "tip": "Prüfe vor einem Zug, welche Figur du damit vielleicht ungedeckt lässt. Überlege dann, welchen Antwortzug dein Gegner wählen könnte.",
+    "challenge": "Ein Springer gibt deinem König Schach. Kannst du das Schach abwehren, indem du eine Figur dazwischenstellst?",
+    "answer": "Nein. Ein Springer überspringt andere Figuren. Du musst mit dem König auf ein sicheres Feld ziehen oder den angreifenden Springer mit einem legalen Zug schlagen."
+  }
+}

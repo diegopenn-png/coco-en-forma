@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {runInNewContext} from 'node:vm';
+import {gamePath} from '../seo/game-pages.mjs';
 import {games, origin} from '../seo/catalog.mjs';
 
 const require = createRequire(import.meta.url);
@@ -148,9 +149,7 @@ test('game and account CTAs retain language, source and real game routing', () =
       assert.equal(actual.href, original.href, `${tag}: ${game.id} route or game intent changed`);
       for (const link of card.querySelectorAll('a:not([data-play])')) {
         const target = new URL(link.href);
-        assert.equal(target.searchParams.get('lang'), tag, `${tag}: ${game.id} guide`);
-        target.searchParams.delete('lang');
-        assert.equal(target.href, origin + game.path, `${tag}: ${game.id} guide`);
+        assert.equal(target.href, origin + gamePath(game,tag), `${tag}: ${game.id} guide`);
       }
     }
     assert.equal(d.querySelectorAll('[data-account]').length, 2, tag);

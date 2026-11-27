@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "polacz-kolory",
+    "name": "Połącz kolory",
+    "intro": "Połącz każdą parę kropek w tym samym kolorze. Poprowadź linie tak, aby się nie przecinały i żadna z nich nie zablokowała drogi innej parze.",
+    "tip": "Poszukaj pary, która ma tylko jedno wąskie przejście. Zarezerwuj dla niej miejsce, zanim wytyczysz pozostałe trasy.",
+    "challenge": "Do niebieskiej kropki prowadzi jedno wąskie przejście. Czerwona linia może biec przez to przejście albo wzdłuż brzegu. Którą drogę wybierzesz?",
+    "answer": "Poprowadź czerwoną linię wzdłuż brzegu. Inaczej zajmiesz jedyną dostępną drogę dla niebieskiej pary."
+  },
+  "numeros": {
+    "slug": "polacz-liczby",
+    "name": "Połącz liczby po kolei",
+    "intro": "Wyznacz ścieżkę przez kolejne liczby na planszy. Do każdej musisz dotrzeć w odpowiedniej kolejności, a na to samo pole możesz wejść tylko raz.",
+    "tip": "Zanim połączysz 2 i 3, sprawdź, którędy dojdziesz do 4. Najkrótsza droga może odciąć jedyne przejście.",
+    "challenge": "Od 2 do 3 można dojść brzegiem lub przez środek. Środkowe pole to jedyna droga do 4. Którędy pójdziesz?",
+    "answer": "Wzdłuż brzegu do 3. Zachowasz wtedy środkowe pole na następny odcinek i nie utkniesz przed 4."
+  },
+  "calculo": {
+    "slug": "liczenie-w-pamieci",
+    "name": "Liczenie w pamięci",
+    "intro": "Rozwiązuj w pamięci działania o różnym stopniu trudności. Zależnie od poziomu czekają cię dodawanie, odejmowanie, mnożenie, dzielenie i bardziej złożone obliczenia.",
+    "tip": "Dodając 19, dodaj najpierw 20 i odejmij 1. Wypróbuj ten sposób na przykładzie 37 + 19.",
+    "challenge": "Jak obliczyć w pamięci 48 + 19, korzystając z okrągłej liczby?",
+    "answer": "Dodaj 20 do 48, a otrzymasz 68. Teraz odejmij dodatkową jedynkę. Wynik to 67."
+  },
+  "palabras": {
+    "slug": "ukladanie-slow-z-liter",
+    "name": "Układanie słów z liter",
+    "intro": "Przeczytaj podpowiedź i przestaw litery tak, aby powstało ukryte słowo. Odpowiedź musi pasować zarówno do wskazówki, jak i do zestawu liter.",
+    "tip": "Pomyśl o dwóch słowach pasujących do podpowiedzi. Najpierw sprawdź, czy do któregoś z nich brakuje litery.",
+    "challenge": "Jakie słowo ułożysz z liter T, O, K, jeśli podpowiedź brzmi „domowy zwierzak, który mruczy”?",
+    "answer": "KOT. Słowo pasuje do podpowiedzi, a do jego zapisania używasz każdej podanej litery dokładnie raz."
+  },
+  "sopa": {
+    "slug": "wykreslanka",
+    "name": "Wykreślanka słowna",
+    "intro": "Odszukaj wśród liter wszystkie słowa z listy. Zaznaczaj znalezione hasła i wracaj do planszy po następne.",
+    "tip": "Szukaj pierwszej litery wybranego słowa, przeglądając kolejne rzędy. Przy każdym trafieniu sprawdź od razu drugą literę.",
+    "challenge": "Szukasz słowa LAS. W pierwszym rzędzie po L widzisz O, a w następnym kolejno L, A i S. Co zaznaczysz?",
+    "answer": "Zaznacz L, A i S w drugim rzędzie. Sama początkowa litera w pierwszym nie wystarcza, by zaliczyć słowo."
+  },
+  "sudoku": {
+    "slug": "sudoku",
+    "name": "Sudoku 4×4 i 6×6",
+    "intro": "Uzupełniaj puste pola tak, by cyfry nie powtarzały się w żadnym rzędzie, kolumnie ani bloku. Do wyboru masz trzy poziomy trudności i ograniczoną liczbę podpowiedzi.",
+    "tip": "Zacznij od rzędu, w którym zostało jedno wolne pole. Po wpisaniu cyfry przyjrzyj się kolumnie, do której właśnie trafiła.",
+    "challenge": "W rzędzie sudoku 4×4 są już 2, 4 i 1. Co wpiszesz do jedynej pustej kratki?",
+    "answer": "3. W rzędzie mają znaleźć się wszystkie cyfry od 1 do 4, a pozostałe trzy już masz."
+  },
+  "memoria": {
+    "slug": "znajdz-pare",
+    "name": "Znajdź parę — gra memory",
+    "intro": "Odkrywaj po dwie karty i szukaj par z takim samym obrazkiem. Każda odkryta karta podpowiada, gdzie zajrzeć przy kolejnej próbie.",
+    "tip": "Połącz obrazek z jego położeniem, na przykład „piłka w lewym górnym rogu”. Gdy zobaczysz drugą piłkę, łatwiej wrócisz na właściwe pole.",
+    "challenge": "W poprzedniej turze gwiazda była w lewym dolnym rogu. Teraz odkrywasz drugą gwiazdę u góry. Którą kartę odwrócisz w parze?",
+    "answer": "Tę w lewym dolnym rogu. Pamiętasz jej obrazek, więc możesz od razu skompletować parę."
+  },
+  "series": {
+    "slug": "ciagi-logiczne",
+    "name": "Ciągi logiczne",
+    "intro": "Przyjrzyj się ciągowi, odgadnij regułę i wybierz kolejny element. Pomysł, który pasuje do pierwszych dwóch pozycji, sprawdź na dalszych.",
+    "tip": "Spróbuj porównać elementy na miejscach pierwszym, trzecim i piątym. Czasem łatwiej dostrzec wzór, patrząc co drugą pozycję.",
+    "challenge": "Jaki element uzupełni ciąg 4, 7, 10, 13?",
+    "answer": "16. Różnica między każdą parą sąsiednich liczb wynosi 3. Dodaj więc 3 do 13."
+  },
+  "crucigrama": {
+    "slug": "krzyzowka",
+    "name": "Krzyżówka",
+    "intro": "Odgaduj hasła z definicji i wpisuj je w kratki. Wspólne litery na skrzyżowaniach pomagają rozwiązać kolejne hasła.",
+    "tip": "Zacznij tam, gdzie znasz odpowiedź. Przy trudniejszej definicji policz kratki i wykorzystaj literę z już wpisanego słowa.",
+    "challenge": "Definicja brzmi „stolica Polski”. Masz osiem kratek, a ostatnia litera z innego hasła to A. Co wpiszesz?",
+    "answer": "WARSZAWA. Zgadza się znaczenie, liczba liter i litera na skrzyżowaniu."
+  },
+  "tiempo": {
+    "slug": "quiz-na-czas",
+    "name": "Quiz na czas",
+    "intro": "Wybieraj odpowiedzi, zanim skończy się czas. W kolejnych rundach mogą czekać na ciebie rachunki, łamigłówki językowe, zadania na spostrzegawczość lub pytania z nauk przyrodniczych.",
+    "tip": "Najpierw przeczytaj całe polecenie, potem spójrz na odpowiedzi. Zwróć uwagę na krótkie słowa, takie jak „nie”.",
+    "challenge": "Pytanie na czas: która z liczb 18, 21 i 24 jest nieparzysta?",
+    "answer": "21. Jej ostatnia cyfra jest nieparzysta, natomiast 18 i 24 dzielą się przez 2 bez reszty."
+  },
+  "verdadero": {
+    "slug": "prawda-czy-falsz",
+    "name": "Prawda czy fałsz",
+    "intro": "Oceń, czy podane stwierdzenie jest prawdziwe. Po udzieleniu odpowiedzi możesz przeczytać wyjaśnienie i sprawdzić swoje rozumowanie.",
+    "tip": "Jeśli w zdaniu pada „zawsze” lub „nigdy”, spróbuj znaleźć wyjątek. Nawet jeden przykład może przesądzić o odpowiedzi.",
+    "challenge": "„Każda liczba parzysta dzieli się przez 4”. Prawda czy fałsz?",
+    "answer": "Fałsz. Wystarczy sprawdzić 6: jest parzysta, ale nie dzieli się przez 4 bez reszty."
+  },
+  "cocomed": {
+    "slug": "quiz-o-ciele-i-zdrowiu",
+    "name": "Coco Med — quiz o ciele i zdrowiu",
+    "intro": "Odpowiadaj na pytania o ludzkie ciało, profilaktykę i codzienne nawyki. Wyjaśnienie po każdej odpowiedzi pomaga zrozumieć omawiane pojęcie.",
+    "tip": "Gdy trafisz na nieznany termin, przeczytaj wyjaśnienie i spróbuj własnymi słowami opowiedzieć, co oznacza.",
+    "challenge": "Który narząd pompuje krew przez ciało: serce czy płuca?",
+    "answer": "Serce. Jego skurcze wprawiają krew w ruch, podczas gdy w płucach zachodzi wymiana gazowa."
+  },
+  "futbol": {
+    "slug": "pilka-nozna-gra-pamieciowa",
+    "name": "Piłka nożna z Coco — gra pamięciowa",
+    "intro": "Zapamiętaj, które części bramki się podświetlają. Po zakończeniu pokazu strzel w miejsce, które przez cały czas pozostawało ciemne.",
+    "tip": "Nazywaj w myślach pozycje, na przykład „lewa góra” i „prawy dół”. Po pokazie przypomnij sobie, której pozycji zabrakło.",
+    "challenge": "Wyobraź sobie bramkę z trzema strefami. Najpierw rozświetla się środkowa, potem lewa, a na koniec ponownie środkowa. Gdzie strzelisz?",
+    "answer": "W prawą strefę. Środkowa była podświetlona dwa razy, a prawa ani razu."
+  },
+  "padel": {
+    "slug": "organizator-turniejow-padelowych",
+    "name": "Organizator turniejów padlowych",
+    "intro": "Dodaj graczy i korty, ustaw rundy oraz zasady punktacji. Po rozegranych meczach wpisuj wyniki i sprawdzaj miejsca w tabeli.",
+    "tip": "Ustalcie sposób liczenia punktów przed pierwszym meczem. Po każdej rundzie zapiszcie wynik z każdego kortu, zanim zacznie się następna.",
+    "challenge": "Runda na dwóch kortach dobiegła końca. W tabeli jest dopiero wynik z pierwszego. Co zrobisz, zanim ogłosisz miejsca w grupie?",
+    "answer": "Wpisz wynik z drugiego kortu i sprawdź, do których par trafiły punkty. Dopiero wtedy zobaczysz tabelę po całej rundzie."
+  },
+  "bank": {
+    "slug": "gra-o-pieniadzach",
+    "name": "Coco Bank — gra o pieniądzach",
+    "intro": "Zarządzaj wirtualnym budżetem, opłacaj miesięczne wydatki i odkładaj na wybrany cel. Możesz też wypróbować inwestowanie za pieniądze z gry.",
+    "tip": "Zanim zainwestujesz, odejmij od salda kwotę zbliżających się opłat. Dopiero wtedy zdecyduj, ile przeznaczyć na oszczędności.",
+    "challenge": "Masz 80 wirtualnych monet. Jutro czeka cię opłata w wysokości 35 monet. Ile możesz odłożyć, jeśli nie masz innych wydatków?",
+    "answer": "45 monet. Po zarezerwowaniu 35 na opłatę zostaje 80 − 35."
+  },
+  "ciudad": {
+    "slug": "miasto-coco-gra-planszowa",
+    "name": "Miasto Coco — gra planszowa",
+    "intro": "Rzucajcie kostką, przemierzajcie planszę z 40 polami i odkrywajcie karty zdarzeń. Od 2 do 6 osób może grać na wspólnym urządzeniu lub w pokoju online.",
+    "tip": "Zaglądaj do swoich celów w trakcie rozgrywki. Po 12 turach każdego gracza liczą się również osiągnięcia inne niż zgromadzone pieniądze.",
+    "challenge": "Po ostatniej turze jedna osoba ma najwięcej pieniędzy. Czy na tej podstawie można już wskazać zwycięzcę?",
+    "answer": "Jeszcze nie. Gra bierze pod uwagę także inne wyniki, między innymi realizację celów i dobrostan. Warto porównać całe podsumowanie."
+  },
+  "generala": {
+    "slug": "generala-gra-w-kosci",
+    "name": "Generala — gra w kości",
+    "intro": "Rzuć pięcioma kośćmi, zachowaj wybrane i przerzuć pozostałe. W jednej turze możesz wykonać do trzech rzutów, a wynik wpisać do jednej wolnej kategorii.",
+    "tip": "Przed kolejnym rzutem zajrzyj do tabeli. Jeśli masz już układ pasujący do wolnej kategorii, możesz od razu go zapisać.",
+    "challenge": "W pierwszym rzucie wypadają 2, 2, 2, 4 i 6. Chcesz zdobyć cztery jednakowe kości. Które zachowasz?",
+    "answer": "Zatrzymaj trzy dwójki i przerzuć 4 oraz 6. Wystarczy jeszcze jedna dwójka, by uzyskać wybrany układ."
+  },
+  "naval": {
+    "slug": "gra-w-statki",
+    "name": "Gra w statki",
+    "intro": "Rozstaw pięć okrętów na planszy 10×10 i spróbuj zatopić flotę przeciwnika. Zagraj przeciwko Coco lub zaproś znajomego do prywatnego pokoju online.",
+    "tip": "Po dwóch trafieniach w jednej linii sprawdź pola na jej końcach. Statki mogą się stykać, więc nie skreślaj wszystkich pól wokół zatopionego okrętu.",
+    "challenge": "Masz trafienia na D4 i D5, ale okręt wciąż pływa. Jakie pola sprawdzisz w pierwszej kolejności?",
+    "answer": "D3 i D6, o ile nie padły tam jeszcze strzały. Oba przedłużają linię trafień."
+  },
+  "truco": {
+    "slug": "argentynskie-truco",
+    "name": "Argentyńskie truco",
+    "intro": "Każdy gracz dostaje trzy karty. Zdobywaj lewy i zgłaszaj truco, by podnieść stawkę rozdania, lub envido, by porównać punkty na kartach.",
+    "tip": "Przy envido wybierz dwie najcenniejsze karty tego samego koloru i dodaj 20 do sumy ich wartości. Figury liczą się wtedy jako zero.",
+    "challenge": "Do envido masz 7 i 4 w tym samym kolorze oraz 2 w innym. Ile to punktów?",
+    "answer": "31. Dodaj 7 i 4 z kart w tym samym kolorze, a następnie dolicz 20."
+  },
+  "ajedrez": {
+    "slug": "szachy",
+    "name": "Szachy z Coco",
+    "intro": "Zagraj w klasyczne szachy przeciwko Coco, z drugą osobą na jednym urządzeniu lub w pokoju online. Możesz też wybrać naukę gry albo partię dnia.",
+    "tip": "Przed każdym ruchem sprawdź, czy twój król jest szachowany. Potem zobacz, czy przeciwnik grozi zbiciem którejś z twoich figur.",
+    "challenge": "Twój król jest szachowany. Możesz zbić wieżę przeciwnika, ale król pozostałby pod szachem. Czy taki ruch jest dozwolony?",
+    "answer": "Nie. Ruch musi usunąć szacha. Sprawdź, czy możesz odejść królem, zbić atakującą figurę albo zasłonić linię ataku."
+  }
+}

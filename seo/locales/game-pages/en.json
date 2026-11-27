@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "connect-the-colours",
+    "name": "Connect the colours",
+    "intro": "Draw a path between each pair of matching colours. The paths share a board, so a route that works for one pair can cut off another.",
+    "tip": "Look for a pair that must pass through a narrow gap. Reserve that gap before drawing a line for a colour with more room.",
+    "challenge": "A red pair can go around the edge or through a gap in the centre. The blue pair can only use the gap. Where should the red line go?",
+    "answer": "Take red around the edge and leave the gap for blue. That way both pairs can still connect."
+  },
+  "numeros": {
+    "slug": "connect-the-numbers",
+    "name": "Connect the numbers",
+    "intro": "Trace a path through the numbered squares in order. Once your path uses a square, you can’t pass through it again.",
+    "tip": "Before you connect 2 to 3, find 4. Leave yourself a way out of 3 that doesn’t cross the path you just drew.",
+    "challenge": "From 2 you can reach 3 along the border or through the centre. The centre is the only way from 3 to 4. Which route should you take first?",
+    "answer": "Take the border from 2 to 3. The central square will still be free when you need it to reach 4."
+  },
+  "calculo": {
+    "slug": "mental-maths",
+    "name": "Mental maths challenge",
+    "intro": "Work out the answer to each calculation and choose it on screen. The difficulty ranges from basic arithmetic to percentages and multi-step sums.",
+    "tip": "For 39 + 16, try 40 + 16 and take one away. The same trick works whenever a number is close to a multiple of ten.",
+    "challenge": "You need 48 + 27. How could you reach the next ten before finishing the sum?",
+    "answer": "Split 27 into 2 and 25. Add 2 to 48 to reach 50, then add 25 to get 75."
+  },
+  "palabras": {
+    "slug": "word-scramble",
+    "name": "Word scramble",
+    "intro": "Use the clue to work out the hidden word, then put the scrambled letters in order. Your answer has to fit both the clue and the letters on screen.",
+    "tip": "Think of two possible answers to the clue. Count the letters and see which one you can actually build.",
+    "challenge": "The letters are R, A and E. The clue says ‘the part of your body you use to hear’. Which word fits?",
+    "answer": "EAR. ARE uses the same letters, but it doesn’t fit the clue."
+  },
+  "sopa": {
+    "slug": "word-search",
+    "name": "Word search",
+    "intro": "Find the words from the list hidden in a grid of letters. Each puzzle has a theme, from nature and sport to science and technology.",
+    "tip": "Choose a word with an unusual letter. Find that letter in the grid, then check its neighbours for the rest of the word.",
+    "challenge": "You are looking for LION. One row reads K L I O N E. Which letters do you mark?",
+    "answer": "Start at L, the second letter, and continue to N, the fifth. Those four cells spell LION in order."
+  },
+  "sudoku": {
+    "slug": "mini-sudoku",
+    "name": "Mini Sudoku",
+    "intro": "Fill a 4×4 or 6×6 grid so each number appears once in every row, column and block. Try three difficulty levels with a limited supply of hints.",
+    "tip": "In a 4×4 row containing 1, 2 and 4, the empty square needs a 3. Check its column and block to confirm the move.",
+    "challenge": "A row of a 4×4 puzzle reads 2, empty, 4, 3. Which number belongs in the empty square?",
+    "answer": "1. It is the only number from 1 to 4 missing from that row."
+  },
+  "memoria": {
+    "slug": "memory-matching-game",
+    "name": "Memory matching game",
+    "intro": "Turn over two cards at a time and look for matching pictures. When two different pictures turn up, their positions become clues for later turns.",
+    "tip": "Give each new picture a location as you see it, such as ‘star, top left’. That gives you somewhere to go when its twin appears.",
+    "challenge": "Earlier you turned over a bicycle in the bottom left. You have just found a bicycle in the top right. Which card do you turn next?",
+    "answer": "Choose the bottom-left card. The remembered position lets you match the two bicycles."
+  },
+  "series": {
+    "slug": "number-sequences",
+    "name": "Number sequence puzzles",
+    "intro": "Find the rule behind a sequence of numbers and choose what comes next. The pattern might involve a steady increase, a multiplier or two sequences taking turns.",
+    "tip": "If consecutive numbers seem unrelated, read the first, third and fifth together. Then try the second, fourth and sixth.",
+    "challenge": "What follows 2, 9, 4, 8, 6, 7 if the two alternating patterns continue?",
+    "answer": "8. The numbers in positions 1, 3 and 5 go up by two: 2, 4, 6. The other numbers count down from 9."
+  },
+  "crucigrama": {
+    "slug": "crossword-puzzles",
+    "name": "Crossword puzzles",
+    "intro": "Read each clue and fit its answer into the grid. Where two words cross, a single letter has to work for both answers.",
+    "tip": "Fill in a clue you know, then try the words that cross it. Check the length of each answer before committing to it.",
+    "challenge": "The clue is ‘a planet called the Red Planet’. Your four squares read M, blank, R, S. Which letter belongs in the gap?",
+    "answer": "A completes MARS. The answer also gives you an A for the word that crosses the gap."
+  },
+  "tiempo": {
+    "slug": "beat-the-clock-quiz",
+    "name": "Beat the clock quiz",
+    "intro": "Take on ten short, timed challenges. A maths problem can be followed by a word question, a logic puzzle or a test of attention.",
+    "tip": "Read the instruction on each new screen first. The previous question might have asked for a number while this one asks for a word.",
+    "challenge": "One timed question asks for 7 + 5. The next asks which word names a colour: ‘eight’, ‘blue’ or ‘high’. What are the two answers?",
+    "answer": "12, then blue. Read the instruction on the second screen before you look for another number."
+  },
+  "verdadero": {
+    "slug": "true-or-false-quiz",
+    "name": "True or false quiz",
+    "intro": "Decide whether a statement is true or false, then read the explanation. The questions range across maths, language, science and technology.",
+    "tip": "When a statement says ‘always’ or ‘never’, try to think of one exception before you choose.",
+    "challenge": "True or false: every multiple of 2 is also a multiple of 4.",
+    "answer": "False. Six is a multiple of 2, but 6 cannot be divided evenly by 4."
+  },
+  "cocomed": {
+    "slug": "human-body-and-health-quiz",
+    "name": "Coco Med: human body and health quiz",
+    "intro": "Explore anatomy, nutrition and everyday health habits through quiz questions. Read the explanation after each answer to see how the idea works.",
+    "tip": "When a question introduces an organ, say its job in your own words. For example, the heart pumps blood through the body.",
+    "challenge": "Which organ pumps blood around the body: the heart or the lungs?",
+    "answer": "The heart pumps blood. The lungs allow oxygen to move from the air into the blood."
+  },
+  "futbol": {
+    "slug": "football-memory-game",
+    "name": "Football goal memory game",
+    "intro": "Watch different sections of a football goal light up in sequence. When the lights stop, shoot at the section that stayed dark.",
+    "tip": "Name the corners as they light up. At the end, check which position is missing from your list.",
+    "challenge": "Three corners of the goal flashed: top left, bottom right and bottom left. Which corner stayed dark?",
+    "answer": "Top right. Aim there once the sequence ends."
+  },
+  "padel": {
+    "slug": "padel-tournament-organiser",
+    "name": "Padel tournament organiser",
+    "intro": "Set up the players, courts and rounds for a padel session you play in person. Enter match results to follow your group’s standings.",
+    "tip": "Agree on round length and scoring before anyone takes the court. Enter each score while the players still remember it.",
+    "challenge": "Eight players want to play doubles on two courts. How many players can play in the same round?",
+    "answer": "All eight. A doubles match uses four players per court, so two courts hold eight players."
+  },
+  "bank": {
+    "slug": "virtual-money-budgeting-game",
+    "name": "Coco Bank: virtual money budgeting game",
+    "intro": "Manage a virtual account, cover household expenses and save towards a goal. Use the money left over to explore simulated investments.",
+    "tip": "Set aside the next bill before choosing an investment. If you have 100 and owe 60, base your next decision on the remaining 40.",
+    "challenge": "Your virtual balance is 100. You need 60 for expenses and want to save 25. How much is left for something else?",
+    "answer": "15 units of game money. Deduct both the bills and your savings: 100 − 60 − 25 = 15."
+  },
+  "ciudad": {
+    "slug": "city-board-game",
+    "name": "Coco City board game",
+    "intro": "Roll the die and explore a 40-space city board with two to six players, on a shared device or in a private online room. Landing on a space can bring a property or a choice about city life.",
+    "tip": "Before buying a property, work out what you would have left afterwards and check whether the purchase helps your current goal.",
+    "challenge": "A property costs 90 and you have 100 in game money. You want to keep 25 for another goal. Can you do both now?",
+    "answer": "No. The purchase would leave you with 10. To keep 25 for your goal, you could spend at most 75."
+  },
+  "generala": {
+    "slug": "generala-dice-game",
+    "name": "Generala dice game",
+    "intro": "Roll five dice up to three times per turn, keeping the dice you want between rolls. Choose one of the eleven categories on your scorecard for your result.",
+    "tip": "With three fours, check whether your fours category or four of a kind is still open. That can change which dice are worth rolling again.",
+    "challenge": "On your first roll you get 4, 4, 4, 2 and 5. Your fours category is open. What could you score immediately?",
+    "answer": "12 in fours. You can also keep the three fours and roll the other two dice again to try for a bigger combination."
+  },
+  "naval": {
+    "slug": "battleships",
+    "name": "Battleships",
+    "intro": "Hide five ships on a 10×10 grid and take turns firing one shot at the opposing fleet. Play against Coco or invite a friend to a private online room.",
+    "tip": "After two hits in a line, try the squares at either end. Ships can touch in this version, so a square next to a sunken ship can still hold another one.",
+    "challenge": "You hit D4 and D5, and the ship is still afloat. Which untried squares extend that line?",
+    "answer": "D3 and D6. Fire at one end first. If those hits belong to the same ship, it must run along that row."
+  },
+  "truco": {
+    "slug": "argentine-truco",
+    "name": "Argentine Truco card game",
+    "intro": "Play Argentine Truco against Coco or with friends at tables for two, four or six. Choose a target of 15 or 30 points and play with envido and truco, without flor.",
+    "tip": "Check for two cards of the same suit before calling envido. A six and a seven of the same suit are worth 33 together: 20 plus their two values.",
+    "challenge": "You hold the six and seven of coins and a king of cups. How many points can you claim for envido?",
+    "answer": "33. The six and seven share a suit, so you add 20 to their values: 20 + 6 + 7."
+  },
+  "ajedrez": {
+    "slug": "online-chess",
+    "name": "Online chess",
+    "intro": "Play chess against Coco, share a board on one device or meet another registered player in an online room. There are also lessons, challenges and a daily game.",
+    "tip": "Before moving a defender, check which piece it currently protects. Picture your opponent’s best reply to the move you have in mind.",
+    "challenge": "Your king is in check from a knight. Can you escape by putting another piece between them?",
+    "answer": "No. A knight jumps, so its check cannot be blocked. You need a legal king move or a legal capture of the attacking knight."
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "kleuren-verbinden",
+    "name": "Kleuren verbinden",
+    "intro": "Trek een lijn tussen de twee stippen van elke kleur. De lijnen mogen elkaar niet kruisen en elk paar heeft een eigen route nodig.",
+    "tip": "Zoek eerst de smalle doorgangen. Kan één kleur maar langs één vakje, houd dat vakje dan vrij.",
+    "challenge": "Blauw kan alleen door het middelste vakje. Rood kan door het midden of langs de rand. Welke route kies je voor rood?",
+    "answer": "Langs de rand. Zo houd je het enige doorgangsvakje voor blauw vrij."
+  },
+  "numeros": {
+    "slug": "getallen-verbinden",
+    "name": "Getallen verbinden",
+    "intro": "Verbind de getallen in de juiste volgorde door een pad over het rooster te tekenen. Je mag elk vakje maar één keer gebruiken.",
+    "tip": "Kijk voor je naar de 3 gaat al hoe je straks de 4 bereikt. Een route langs de rand kan het midden vrijhouden.",
+    "challenge": "Van 2 naar 3 kun je door het midden of langs de rand. Om daarna van 3 naar 4 te komen, moet je door het midden. Welke route neem je eerst?",
+    "answer": "Ga van 2 naar 3 langs de rand. Dan is het midden nog vrij wanneer je naar de 4 gaat."
+  },
+  "calculo": {
+    "slug": "hoofdrekenen",
+    "name": "Hoofdrekenen",
+    "intro": "Los sommen van verschillende moeilijkheidsgraden uit het hoofd op. Afhankelijk van het niveau krijg je ook percentages en sommen met meerdere stappen.",
+    "tip": "Reken voor 19 + 8 eerst 20 + 8 uit. Trek er daarna 1 af en je komt op 27.",
+    "challenge": "Hoe kun je 48 + 17 uitrekenen met een tussenstap via 50?",
+    "answer": "Haal 2 van 17 af en tel die bij 48 op. Je krijgt 50 + 15, dus 65."
+  },
+  "palabras": {
+    "slug": "woordpuzzel-letters-husselen",
+    "name": "Woordpuzzel met gehusselde letters",
+    "intro": "Zet de letters in de goede volgorde om het verborgen woord te vinden. De aanwijzing vertelt je iets over de betekenis.",
+    "tip": "Bedenk eerst een woord dat bij de aanwijzing past. Kijk daarna of het precies de gegeven letters gebruikt.",
+    "challenge": "Je krijgt de letters N, Z en O. De aanwijzing luidt: ‘De ster die het dichtst bij de aarde staat.’ Welk woord maak je?",
+    "answer": "ZON. Je gebruikt precies de drie gegeven letters."
+  },
+  "sopa": {
+    "slug": "woordzoeker",
+    "name": "Woordzoeker",
+    "intro": "Zoek de woorden uit de lijst in het letterrooster. Selecteer elk gevonden woord en werk zo de lijst af.",
+    "tip": "Zoek rij voor rij naar de beginletter van één woord. Zie je die, kijk dan meteen waar de tweede letter staat.",
+    "challenge": "In een rij staan de letters K A T E N. Welk huisdier van drie letters vind je van links naar rechts?",
+    "answer": "KAT. Het woord begint in het eerste vakje en eindigt in het derde."
+  },
+  "sudoku": {
+    "slug": "sudoku",
+    "name": "Sudoku 4×4 en 6×6",
+    "intro": "Vul de lege vakjes in zonder een cijfer te herhalen in een rij, kolom of blok. Kies een rooster en een van de drie moeilijkheidsniveaus.",
+    "tip": "Begin bij een rij met één leeg vakje. Controleer ook de kolom en het blok voordat je het ontbrekende cijfer invult.",
+    "challenge": "In een rij van een sudoku van 4×4 staat ‘4 · 1 · leeg vakje · 3’. Welk cijfer ontbreekt?",
+    "answer": "De 2. Dat is het enige cijfer van 1 tot en met 4 dat nog niet in de rij staat."
+  },
+  "memoria": {
+    "slug": "memory-kaartspel",
+    "name": "Memory: zoek de paren",
+    "intro": "Draai steeds twee kaarten om en onthoud waar de afbeeldingen liggen. Zoek zo alle gelijke paren op het bord.",
+    "tip": "Koppel elk plaatje aan een plek, bijvoorbeeld ‘ster linksboven’. Dan weet je welke kaart je moet omdraaien als je de tweede ster ziet.",
+    "challenge": "Vorige beurt zag je een maan linksonder. Nu draai je ergens anders een maan om. Welke kaart kies je als tweede?",
+    "answer": "De kaart linksonder. Daar lag de andere maan, dus samen vormen ze een paar."
+  },
+  "series": {
+    "slug": "logische-reeksen",
+    "name": "Logische reeksen",
+    "intro": "Bekijk de reeks, ontdek de regel achter het patroon en kies welk element erna komt.",
+    "tip": "Zie je geen vaste stap? Bekijk dan eerst het eerste, derde en vijfde element en vergelijk die met elkaar.",
+    "challenge": "Welk getal volgt op 3, 6, 12 en 24 als het getal bij elke stap verdubbelt?",
+    "answer": "48. Je vermenigvuldigt 24 met 2, net zoals bij de vorige stappen."
+  },
+  "crucigrama": {
+    "slug": "kruiswoordpuzzel",
+    "name": "Kruiswoordpuzzel",
+    "intro": "Los de omschrijvingen op en vul de woorden in het rooster in. Waar twee woorden elkaar kruisen, krijg je een letter voor het volgende antwoord.",
+    "tip": "Begin bij een omschrijving die je zeker weet. Met de kruisletters kun je andere antwoorden sneller uitsluiten.",
+    "challenge": "De omschrijving luidt ‘natuurlijke satelliet van de aarde’. Het antwoord heeft vier letters en de laatste kruisletter is een N. Welk woord past?",
+    "answer": "MAAN. Het heeft vier letters, eindigt op N en klopt met de omschrijving."
+  },
+  "tiempo": {
+    "slug": "quiz-tegen-de-klok",
+    "name": "Quiz tegen de klok",
+    "intro": "Beantwoord korte vragen over rekenen, taal, logica en wetenschap of los een aandachtspuzzel op. Voor elke opgave heb je beperkt de tijd.",
+    "tip": "Lees bij iedere nieuwe vraag eerst wat je moet doen. Na een rekensom kan de volgende vraag over de betekenis van een woord gaan.",
+    "challenge": "De klok loopt. Welk woord hoort niet in het rijtje ‘appel’, ‘stoel’, ‘peer’?",
+    "answer": "Stoel. Een appel en een peer zijn vruchten. Een stoel is een meubelstuk."
+  },
+  "verdadero": {
+    "slug": "waar-of-niet-waar",
+    "name": "Quiz: waar of niet waar?",
+    "intro": "Bepaal bij elke stelling of die klopt en lees daarna de uitleg bij het antwoord.",
+    "tip": "Let op woorden als ‘altijd’ en op getallen. Eén detail kan het verschil maken tussen waar en niet waar.",
+    "challenge": "‘Elk vierkant heeft vier even lange zijden.’ Waar of niet waar?",
+    "answer": "Waar. Een vierkant heeft vier gelijke zijden en vier rechte hoeken."
+  },
+  "cocomed": {
+    "slug": "quiz-menselijk-lichaam",
+    "name": "Coco Med: quiz over het menselijk lichaam",
+    "intro": "Beantwoord vragen over het lichaam, preventie en dagelijkse gewoonten. De uitleg vertelt je hoe het zit.",
+    "tip": "Kom je een nieuw orgaan tegen, probeer dan in je eigen woorden te vertellen wat het doet.",
+    "challenge": "Welk orgaan pompt het bloed door je lichaam?",
+    "answer": "Het hart. Bij elke samentrekking pompt het hart bloed de bloedvaten in."
+  },
+  "futbol": {
+    "slug": "voetbal-geheugenspel",
+    "name": "Coco Voetbal: geheugenspel",
+    "intro": "Kijk welke vakken in het doel oplichten en schiet daarna op het vak dat donker bleef.",
+    "tip": "Geef de hoeken een naam, zoals ‘rechtsboven’. Zo kun je beter onthouden welke hoek nog niet is opgelicht.",
+    "challenge": "Alle vakken van het doel lichten op, behalve het vak rechtsonder. Waar moet je schieten?",
+    "answer": "Rechtsonder. Je mikt op de plek die tijdens de reeks donker bleef."
+  },
+  "padel": {
+    "slug": "padeltoernooi-organiseren",
+    "name": "Coco Padel: een padeltoernooi organiseren",
+    "intro": "Plan een padelmiddag met wisselende partners of zet een toernooi op. Stel spelers, banen en rondes in, vul uitslagen in en bekijk de stand.",
+    "tip": "Spreek vóór de eerste wedstrijd af hoe jullie tellen. Noteer de uitslag zodra de ronde is afgelopen.",
+    "challenge": "Er zijn acht spelers en twee vrije banen. Hoeveel dubbelwedstrijden kunnen tegelijk beginnen?",
+    "answer": "Twee. Per baan spelen twee koppels, dus vier spelers."
+  },
+  "bank": {
+    "slug": "budgetspel",
+    "name": "Coco Bank: budgetspel",
+    "intro": "Beheer een rekening met virtueel geld, betaal je maandelijkse uitgaven en spaar voor een doel. Je kunt ook uitproberen hoe gesimuleerde beleggingen werken.",
+    "tip": "Zet eerst geld apart voor rekeningen die je binnenkort moet betalen. Kijk daarna hoeveel speelgeld je kunt missen.",
+    "challenge": "Je hebt 90 munten in het spel. Je reserveert er 40 voor uitgaven en 30 voor je spaardoel. Hoeveel kun je nog besteden?",
+    "answer": "20 munten. Van je saldo van 90 trek je zowel de 40 als de 30 gereserveerde munten af."
+  },
+  "ciudad": {
+    "slug": "bordspel-stad",
+    "name": "Coco Ciudad: bordspel in de stad",
+    "intro": "Gooi de dobbelsteen en verken een stad met 40 vakjes. Speel met twee tot zes personen op één apparaat of nodig elkaar uit in een online speelkamer.",
+    "tip": "Bekijk voor je een pand koopt hoeveel geld je overhoudt voor de volgende beurten en of de aankoop bij je doel past.",
+    "challenge": "Als je het pand op dit vakje koopt, is je speelgeld bijna op. Wat zou je bekijken voordat je beslist?",
+    "answer": "Kijk hoeveel je overhoudt en wat je nog nodig hebt voor je doelen. Verwacht je andere uitgaven, dan kan een reserve meer opleveren voor je plan."
+  },
+  "generala": {
+    "slug": "generala-dobbelspel",
+    "name": "Generala: dobbelspel",
+    "intro": "Gooi vijf dobbelstenen en kies welke combinatie je op je scoreblad zet. Speel tegen Coco, samen op één apparaat of in een besloten online speelkamer.",
+    "tip": "Drie vieren gegooid? Kijk eerst welke vakjes nog vrij zijn. Je kunt bij de vieren al 12 punten invullen of met de andere stenen doorwerpen.",
+    "challenge": "Je gooit 5, 5, 5, 2 en 3. Het vak voor de vijven is nog leeg. Hoeveel punten kun je daar meteen invullen?",
+    "answer": "15 punten. Voor dit vak tel je alleen de drie dobbelstenen met vijf ogen bij elkaar op."
+  },
+  "naval": {
+    "slug": "zeeslag",
+    "name": "Zeeslag",
+    "intro": "Plaats je vijf schepen op een rooster van 10 bij 10 en spoor de vloot van je tegenstander op. Speel op drie niveaus tegen Coco of nodig een vriend uit.",
+    "tip": "Heb je twee treffers naast elkaar? Probeer de vakjes aan beide uiteinden van die lijn om de rest van het schip te vinden.",
+    "challenge": "Je hebt een schip geraakt op D4. Welk vakje kan bij datzelfde schip horen: D3 of E5?",
+    "answer": "D3, want dat vakje ligt direct naast D4. E5 ligt schuin en schepen liggen horizontaal of verticaal."
+  },
+  "truco": {
+    "slug": "argentijnse-truco",
+    "name": "Argentijnse Truco",
+    "intro": "Speel het Argentijnse kaartspel waarin je slagen probeert te winnen en met een bod de inzet kunt verhogen. Speel tegen Coco of met vrienden aan een tafel voor twee, vier of zes.",
+    "tip": "Zoek voor de envido eerst twee kaarten van dezelfde kleur. De 6 en de 7 van munten zijn samen 33 punten waard.",
+    "challenge": "Je hebt de 4 en de 7 van munten en een koning van bekers. Hoeveel punten heb je voor de envido?",
+    "answer": "31 punten. Voor de twee kaarten van munten tel je 20 + 4 + 7. De koning van bekers telt bij dit paar niet mee."
+  },
+  "ajedrez": {
+    "slug": "schaken",
+    "name": "Schaken",
+    "intro": "Schaak tegen Coco, speel samen op één apparaat of open een online speelkamer. Je kunt ook een schaakuitdaging of de partij van de dag proberen.",
+    "tip": "Bekijk vóór je zet welke stukken je verdedigt. Als je een stuk verplaatst, kan de lijn naar je koning ineens openliggen.",
+    "challenge": "Kan een paard op een leeg schaakbord in één zet van b1 naar c3 springen?",
+    "answer": "Ja. Het paard gaat twee rijen vooruit en één lijn opzij. Samen vormen die stappen een L."
+  }
+}

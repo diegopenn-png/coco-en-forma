@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "yhdista-varit",
+    "name": "Yhdistä värit",
+    "intro": "Piirrä reitti jokaisen samanvärisen pisteparin välille. Reitit eivät saa risteytyä, ja laudalle täytyy mahtua reitti jokaiselle värille.",
+    "tip": "Aloita parista, jonka reitti kulkee väistämättä kapean kohdan läpi.",
+    "challenge": "Sinisen reitin on kuljettava kapeasta kohdasta. Punainen pääsee joko siitä tai laudan reunaa pitkin. Kumman reitin valitset punaiselle?",
+    "answer": "Ohjaa punainen reunaa pitkin, jotta siniselle jää vapaa reitti."
+  },
+  "numeros": {
+    "slug": "yhdista-numerot",
+    "name": "Yhdistä numerot",
+    "intro": "Piirrä yhtenäinen reitti numerosta toiseen oikeassa järjestyksessä. Saat kulkea jokaisen ruudun kautta vain kerran.",
+    "tip": "Katso yhtä numeroa pidemmälle. Tarkista jo ennen kolmosta, mitä kautta pääset neloseen.",
+    "challenge": "Kakkosesta pääsee kolmoseen kahta reittiä. Vain toisella reitillä käytävä neloseen jää vapaaksi. Kumman valitset?",
+    "answer": "Valitse reitti, joka jättää tien neloseen auki. Silloin sinun ei tarvitse kulkea samaa ruutua uudelleen."
+  },
+  "calculo": {
+    "slug": "paassalaskupeli",
+    "name": "Nopea päässälasku",
+    "intro": "Ratkaise eritasoisia laskutehtäviä päässä. Mukana on muun muassa yhteen-, vähennys-, kerto- ja jakolaskuja.",
+    "tip": "Laske 19 + 8 ensin laskemalla 20 + 8 ja vähentämällä tuloksesta yksi.",
+    "challenge": "Miten laskisit päässäsi 49 + 26?",
+    "answer": "Laske ensin 50 + 26 ja vähennä yksi. Tulos on 75."
+  },
+  "palabras": {
+    "slug": "muodosta-sana-kirjaimista",
+    "name": "Muodosta sana kirjaimista",
+    "intro": "Kirjaimet ovat menneet sekaisin. Lue vihje ja järjestä kirjaimet sanaksi, joka sopii vihjeeseen.",
+    "tip": "Keksi ensin vihjeeseen sopiva sana ja tarkista, löytyvätkö kaikki sen kirjaimet.",
+    "challenge": "Kirjaimet ovat A, T, S ja A. Mikä sana sopii vihjeeseen ”kymmenen kertaa kymmenen”?",
+    "answer": "SATA. Tarvitset S- ja T-kirjaimet sekä kaksi A-kirjainta."
+  },
+  "sopa": {
+    "slug": "sanaetsinta",
+    "name": "Sanaetsintä",
+    "intro": "Etsi sanalistan sanat kirjainruudukosta. Merkitse löytämäsi sanat, kunnes koko lista on käyty läpi.",
+    "tip": "Etsi sanan alkukirjainta rivi kerrallaan. Kun löydät sen, katso näkyykö seuraava kirjain vieressä.",
+    "challenge": "Etsit sanaa PUU riviltä P, A, P, U, U. Mistä kohdasta sana alkaa?",
+    "answer": "Kolmannesta kirjaimesta. Siinä P-kirjainta seuraa kaksi U-kirjainta."
+  },
+  "sudoku": {
+    "slug": "sudoku",
+    "name": "Sudoku netissä",
+    "intro": "Täytä 4 × 4 tai 6 × 6 ruudun sudoku. Jokaisen numeron pitää esiintyä vain kerran kullakin rivillä, kussakin sarakkeessa ja jokaisessa lohkossa.",
+    "tip": "Aloita rivistä, jolta puuttuu vain yksi numero. Tarkista sitten numero myös sarakkeesta ja lohkosta.",
+    "challenge": "4 × 4 -sudokun yhdellä rivillä on numerot 1, 2 ja 4. Mikä puuttuu?",
+    "answer": "3. Jokaisella rivillä täytyy olla numerot yhdestä neljään, kukin kerran."
+  },
+  "memoria": {
+    "slug": "muistipeli-etsi-parit",
+    "name": "Muistipeli – etsi parit",
+    "intro": "Käännä kaksi korttia ja katso, onko niissä sama kuva. Paina korttien paikat mieleesi ja etsi kaikki kuvaparit.",
+    "tip": "Jos kuvat ovat erilaiset, nimeä kumpikin mielessäsi ja muista, missä kohdassa se oli.",
+    "challenge": "Näit edellisellä vuorolla tähden vasemmassa yläkulmassa. Nyt käänsit esiin toisen tähden. Minkä kortin valitset seuraavaksi?",
+    "answer": "Vasemmassa yläkulmassa olevan kortin. Siinä oli pariksi sopiva tähti."
+  },
+  "series": {
+    "slug": "loogiset-sarjat",
+    "name": "Loogiset sarjat",
+    "intro": "Mikä tulee sarjassa seuraavaksi? Päättele, millä säännöllä sarja etenee, ja valitse siihen sopiva jatko.",
+    "tip": "Jos yksi sääntö ei sovi koko sarjaan, vertaa ensin joka toista jäsentä keskenään.",
+    "challenge": "Mikä luku tulee lukujen 2, 5, 8 ja 11 jälkeen, jos sarja jatkuu samalla säännöllä?",
+    "answer": "14. Jokaiseen lukuun lisätään kolme."
+  },
+  "crucigrama": {
+    "slug": "sanaristikko",
+    "name": "Sanaristikko",
+    "intro": "Lue vihjeet ja täytä risteävät sanat ruudukkoon. Jokainen ratkaistu sana antaa kirjaimia myös muihin vastauksiin.",
+    "tip": "Ratkaise ensin tuttu vihje. Katso sitten, miten saamasi kirjain rajaa risteävän sanan vaihtoehtoja.",
+    "challenge": "Vihje on ”kehräävä lemmikki”, ja ruuduissa lukee K I _ S A. Mikä kirjain puuttuu?",
+    "answer": "S. KISSA sopii sekä vihjeeseen että ruudukossa jo oleviin kirjaimiin."
+  },
+  "tiempo": {
+    "slug": "tietovisa-aikaa-vastaan",
+    "name": "Tietovisa aikaa vastaan",
+    "intro": "Ratkaise lyhyitä tehtäviä ennen ajan loppumista. Aiheina ovat muun muassa laskeminen, kieli, logiikka, luonnontieteet ja tarkkaavaisuus.",
+    "tip": "Tarkista ensin, pyydetäänkö tehtävässä sanaa, lukua vai kuvion jatkoa. Valitse vasta sitten vastaus.",
+    "challenge": "Aika kuluu ja tehtävänä on 6 × 7. Minkä luvun valitset?",
+    "answer": "42. Voit laskea ensin 5 × 7 ja lisätä vielä seitsemän."
+  },
+  "verdadero": {
+    "slug": "totta-vai-tarua",
+    "name": "Totta vai tarua?",
+    "intro": "Päätä, pitääkö väite paikkansa. Vastauksen jälkeen voit lukea perustelun ja verrata sitä omaan päättelyysi.",
+    "tip": "Jos väitteessä lukee ”aina”, yritä keksiä yksikin tilanne, jossa se ei pidä paikkaansa.",
+    "challenge": "Totta vai tarua: kaikissa kuukausissa on tasan 30 päivää?",
+    "answer": "Tarua. Esimerkiksi tammikuussa on 31 päivää."
+  },
+  "cocomed": {
+    "slug": "coco-med-kehovisa",
+    "name": "Coco Med – tietovisa kehosta",
+    "intro": "Tutustu kehoon, ravintoon ja arjen terveystottumuksiin kysymysten avulla. Jokaisen vastauksen yhteydessä saat myös selityksen.",
+    "tip": "Kun vastaan tulee uusi käsite, yritä selittää sen merkitys omin sanoin.",
+    "challenge": "Kumpi pumppaa verta kehossa, sydän vai keuhkot?",
+    "answer": "Sydän. Keuhkoissa puolestaan siirtyy happea vereen."
+  },
+  "futbol": {
+    "slug": "jalkapallo-muistipeli",
+    "name": "Coco Jalkapallo – muista vapaa kohta",
+    "intro": "Seuraa, mitkä maalin alueet syttyvät. Laukaise sitten siihen kohtaan, joka jäi pimeäksi.",
+    "tip": "Nimeä sijainnit mielessäsi, esimerkiksi ”vasen yläkulma”, niin huomaat helpommin vapaan kohdan.",
+    "challenge": "Maalin neljästä kulmasta syttyvät vasen yläkulma, oikea yläkulma ja vasen alakulma. Mihin laukaiset?",
+    "answer": "Oikeaan alakulmaan. Se oli ainoa pimeäksi jäänyt kulma."
+  },
+  "padel": {
+    "slug": "padelturnauksen-jarjestaminen",
+    "name": "Coco Padel – järjestä padelturnaus",
+    "intro": "Syötä pelaajat ja kentät, suunnittele kierrokset ja kirjaa otteluiden tulokset. Voit seurata ryhmän sijoituksia turnauksen edetessä.",
+    "tip": "Sopikaa pisteytyksestä ennen ensimmäistä ottelua ja kirjatkaa tulos heti ottelun jälkeen.",
+    "challenge": "Ottelu on päättynyt, ja seuraava kierros alkaa pian. Mitä tulokselle kannattaa tehdä?",
+    "answer": "Kirjaa tulos heti oikean ottelun kohdalle. Silloin sijoitukset ovat ajan tasalla ennen seuraavaa kierrosta."
+  },
+  "bank": {
+    "slug": "coco-bank-talouspeli",
+    "name": "Coco Bank – talouspeli",
+    "intro": "Hoida omaa tiliäsi leikkirahalla. Maksa kuukauden menot, säästä tavoitettasi varten ja kokeile sijoittamista pelissä.",
+    "tip": "Varaa ensin rahat seuraavaan laskuun. Katso vasta sitten, kuinka paljon voit säästää tai sijoittaa.",
+    "challenge": "Tilillä on 100 leikkirahaa, ja seuraava lasku maksaa 65. Paljonko jää muuhun käyttöön?",
+    "answer": "35 leikkirahaa, kun olet varannut 65 laskua varten."
+  },
+  "ciudad": {
+    "slug": "coco-ciudad-kaupunkilautapeli",
+    "name": "Coco Ciudad – kaupunkilautapeli",
+    "intro": "Heitä noppaa ja kulje 40 ruudun kaupungissa. Kaksi–kuusi pelaajaa tekee rahaan, kiinteistöihin ja arkeen liittyviä valintoja samalla laitteella tai yksityisessä pelihuoneessa.",
+    "tip": "Lue kortista, miten valinta vaikuttaa sekä rahatilanteeseesi että hyvinvointiisi.",
+    "challenge": "Kortin valinta maksaa rahaa mutta voi parantaa kaupungin hyvinvointia. Mitä kannattaa punnita?",
+    "answer": "Vertaa sekä hintaa että hyvinvointivaikutusta siihen, mitä haluat kaupungissasi saavuttaa."
+  },
+  "generala": {
+    "slug": "generala-noppapeli",
+    "name": "Generala-noppapeli",
+    "intro": "Heitä viittä noppaa enintään kolme kertaa vuorollasi. Valitse säästettävät nopat ja merkitse yhdistelmä yhteen pistetaulukon yhdestätoista kohdasta.",
+    "tip": "Katso ennen uutta heittoa, mitkä pistetaulukon kohdat ovat vielä vapaina.",
+    "challenge": "Sait ensimmäisellä heitolla kolme viitosta, ja viitosten kohta on vielä vapaa. Miten voit tavoitella lisää viitosia?",
+    "answer": "Säästä kolme viitosta ja heitä kaksi muuta noppaa uudelleen."
+  },
+  "naval": {
+    "slug": "laivanupotus",
+    "name": "Laivanupotus",
+    "intro": "Sijoita viisi laivaa 10 × 10 ruudun pelilaudalle ja etsi vastustajan laivasto. Pelaa Cocoa vastaan tai kutsu ystävä yksityiseen pelihuoneeseen.",
+    "tip": "Kun saat kaksi osumaa samalle suoralle, kokeile osumarivin molempia päitä.",
+    "challenge": "Sait osumat ruutuihin C4 ja D4. Mitkä ruudut ovat näiden osumien muodostaman rivin päissä?",
+    "answer": "B4 ja E4. Niitä kokeilemalla selviää, jatkuuko laiva samaan suuntaan."
+  },
+  "truco": {
+    "slug": "argentiinalainen-truco",
+    "name": "Argentiinalainen truco-korttipeli",
+    "intro": "Saat kolme korttia käteesi ja yrität voittaa kaksi tikkiä. Pelaa Cocoa vastaan tai ystävien kanssa kahden, neljän tai kuuden pelaajan pöydässä.",
+    "tip": "Jos kaksi korttia on samaa maata, lisää niiden yhteisarvoon 20, kun lasket envido-pisteet. Kuvakortin arvo on nolla.",
+    "challenge": "Sinulla on samaa maata oleva nelonen ja seiska sekä yksi eri maata oleva kortti. Kuinka monta envido-pistettä saat?",
+    "answer": "31. Laske 4 ja 7 yhteen ja lisää 20, koska kortit ovat samaa maata."
+  },
+  "ajedrez": {
+    "slug": "shakki",
+    "name": "Pelaa shakkia netissä",
+    "intro": "Pelaa shakkia Cocoa vastaan, jaa pelilauta samalla laitteella tai kohtaa vastustaja verkossa. Voit kokeilla myös päivän peliä ja shakkitehtäviä.",
+    "tip": "Tarkista ennen hyökkäystä, uhkaako vastustaja kuningastasi tai jotakin suojaamatonta nappulaasi.",
+    "challenge": "Kuninkaasi on shakissa. Saatko uhata vastustajan kuningatarta siirrolla, joka jättää oman kuninkaasi shakkiin?",
+    "answer": "Et. Siirron täytyy purkaa shakki esimerkiksi siirtämällä kuningas turvaan."
+  }
+}

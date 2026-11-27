@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "collega-i-colori",
+    "name": "Collega i colori",
+    "intro": "Traccia un percorso tra i due punti di ogni colore senza incrociare gli altri percorsi. Lascia spazio anche alle coppie che devi ancora unire.",
+    "tip": "Individua i passaggi stretti. Se un colore può passare solo da una casella, riservagliela.",
+    "challenge": "Il blu deve passare per la casella centrale, mentre il rosso può passare dal centro o dal bordo. Quale strada scegli per il rosso?",
+    "answer": "Quella sul bordo. Se il rosso occupasse il centro, il blu non avrebbe più un passaggio."
+  },
+  "numeros": {
+    "slug": "unisci-i-numeri",
+    "name": "Unisci i numeri",
+    "intro": "Collega i numeri in ordine disegnando un percorso sulla griglia. Puoi attraversare ogni casella una sola volta.",
+    "tip": "Prima di arrivare al 3, guarda da che parte potrai proseguire verso il 4. A volte conviene passare dal bordo.",
+    "challenge": "Dal 2 puoi raggiungere il 3 passando dal centro o dal bordo. Dal 3 al 4, invece, il centro è l’unico passaggio. Da dove inizi?",
+    "answer": "Dal bordo per andare dal 2 al 3. La casella centrale rimane libera per il tratto successivo."
+  },
+  "calculo": {
+    "slug": "calcolo-mentale",
+    "name": "Calcolo mentale",
+    "intro": "Risolvi operazioni di difficoltà diversa e scegli il metodo più comodo per fare i conti a mente. A seconda del livello troverai anche percentuali e calcoli in più passaggi.",
+    "tip": "Per sommare 19 e 8 puoi fare 20 + 8 e togliere 1. Il risultato è 27.",
+    "challenge": "Come puoi calcolare 48 + 17 a mente usando il numero 50?",
+    "answer": "Sposta 2 unità dal 17 al 48. Ottieni 50 + 15, cioè 65."
+  },
+  "palabras": {
+    "slug": "anagrammi",
+    "name": "Anagrammi con indizi",
+    "intro": "Rimetti in ordine le lettere per scoprire la parola nascosta. L’indizio ti aiuta a capire che cosa cercare.",
+    "tip": "Pensa a una parola che risponda all’indizio, poi controlla se riesci a scriverla usando tutte le lettere a disposizione.",
+    "challenge": "Le lettere sono E, L, O, S. L’indizio è «la stella più vicina alla Terra». Qual è la parola?",
+    "answer": "SOLE. La parola usa tutte e quattro le lettere e corrisponde all’indizio."
+  },
+  "sopa": {
+    "slug": "crucipuzzle",
+    "name": "Crucipuzzle: trova le parole",
+    "intro": "Cerca nella griglia di lettere le parole dell’elenco. Seleziona ogni parola che riconosci fino a completare il tabellone.",
+    "tip": "Cerca l’iniziale di una parola riga per riga. Quando la trovi, controlla subito se la seconda lettera è vicina.",
+    "challenge": "Nella riga «T O P O S», quale animale di quattro lettere puoi trovare leggendo da sinistra verso destra?",
+    "answer": "TOPO. Occupa le prime quattro caselle della riga."
+  },
+  "sudoku": {
+    "slug": "sudoku",
+    "name": "Sudoku 4×4 e 6×6",
+    "intro": "Riempi le caselle della griglia senza ripetere una cifra nella stessa riga, colonna o regione. Scegli fra tre livelli di difficoltà.",
+    "tip": "Parti da una riga con un solo spazio vuoto. Controlla anche la colonna e la regione prima di inserire la cifra mancante.",
+    "challenge": "In una riga di un sudoku 4×4 leggi «4 · 1 · casella vuota · 3». Quale cifra manca?",
+    "answer": "Il 2. È l’unica cifra da 1 a 4 che non compare ancora nella riga."
+  },
+  "memoria": {
+    "slug": "memory-coppie",
+    "name": "Memory: trova le coppie",
+    "intro": "Gira le carte a due a due, ricorda la posizione dei disegni e trova tutte le coppie uguali.",
+    "tip": "Associa ogni figura a un punto preciso, per esempio «stella in alto a sinistra». Quando trovi la gemella, saprai dove tornare.",
+    "challenge": "Al turno precedente hai visto una luna nell’angolo in basso a sinistra. Ora giri un’altra luna. Quale carta scegli per fare coppia?",
+    "answer": "Quella nell’angolo in basso a sinistra, dove ricordi di aver visto la prima luna."
+  },
+  "series": {
+    "slug": "sequenze-logiche",
+    "name": "Sequenze logiche",
+    "intro": "Osserva la sequenza, scopri la regola che lega gli elementi e scegli come prosegue.",
+    "tip": "Se i passaggi sembrano seguire regole diverse, prova a leggere un elemento sì e uno no.",
+    "challenge": "Quale numero viene dopo 3, 6, 12 e 24 se ogni numero è il doppio del precedente?",
+    "answer": "48. L’ultimo passaggio è 24 × 2, come nei passaggi precedenti."
+  },
+  "crucigrama": {
+    "slug": "cruciverba",
+    "name": "Cruciverba",
+    "intro": "Risolvi le definizioni e inserisci le parole nella griglia. Ogni lettera all’incrocio ti dà un indizio per un’altra risposta.",
+    "tip": "Comincia da una definizione di cui conosci la risposta. Usa le sue lettere per restringere le possibilità nelle parole che la incrociano.",
+    "challenge": "La definizione è «satellite naturale della Terra». Servono quattro lettere e un incrocio dà una N al terzo posto. Qual è la soluzione?",
+    "answer": "LUNA. La lunghezza è giusta e la N coincide con la lettera dell’incrocio."
+  },
+  "tiempo": {
+    "slug": "quiz-a-tempo",
+    "name": "Quiz a tempo",
+    "intro": "Affronta brevi domande di calcolo, lingua, logica, scienze e attenzione. Per ciascuna risposta hai un tempo limitato.",
+    "tip": "A ogni domanda controlla che cosa devi fare. Dopo un calcolo potresti dover scegliere il significato di una parola.",
+    "challenge": "Il tempo scorre. Qual è l’intruso tra «mela», «sedia» e «pera»?",
+    "answer": "Sedia. La mela e la pera sono frutti. La sedia è un mobile."
+  },
+  "verdadero": {
+    "slug": "vero-o-falso",
+    "name": "Quiz vero o falso",
+    "intro": "Leggi ogni affermazione, decidi se è vera o falsa e confronta la tua idea con la spiegazione.",
+    "tip": "Prima di scegliere cerca nella frase il dettaglio decisivo, come un numero o una parola come “sempre”.",
+    "challenge": "«Tutti i quadrati hanno quattro lati della stessa lunghezza.» Vero o falso?",
+    "answer": "Vero. Un quadrato ha quattro lati uguali e quattro angoli retti."
+  },
+  "cocomed": {
+    "slug": "quiz-corpo-umano",
+    "name": "Coco Med: quiz sul corpo umano",
+    "intro": "Rispondi a domande sul corpo, sulla prevenzione e sulle abitudini quotidiane. Dopo la risposta puoi leggere una spiegazione del concetto.",
+    "tip": "Quando compare il nome di un organo, prova a raccontare con parole tue a che cosa serve.",
+    "challenge": "Quale organo pompa il sangue per farlo circolare nel corpo?",
+    "answer": "Il cuore. Quando si contrae, spinge il sangue nei vasi sanguigni."
+  },
+  "futbol": {
+    "slug": "calcio-gioco-di-memoria",
+    "name": "Coco Calcio: gioco di memoria",
+    "intro": "Osserva le zone della porta che si illuminano, poi calcia verso quella rimasta spenta.",
+    "tip": "Dai un nome alle posizioni, per esempio “in alto a destra”. Sarà più facile ricordare l’angolo che manca.",
+    "challenge": "Si illuminano tutte le zone della porta tranne quella in basso a destra. Dove calci?",
+    "answer": "In basso a destra, proprio nella zona rimasta spenta durante la sequenza."
+  },
+  "padel": {
+    "slug": "organizzare-torneo-padel",
+    "name": "Coco Padel: organizza un torneo",
+    "intro": "Prepara incontri di padel a rotazione o un campionato. Imposta giocatori, campi e turni, poi registra i risultati per seguire la classifica.",
+    "tip": "Prima di scendere in campo concordate come contare i punti. Segna il risultato appena termina ciascun turno.",
+    "challenge": "Hai otto giocatori e due campi disponibili. Quante partite di doppio possono iniziare nello stesso momento?",
+    "answer": "Due. In ciascun campo giocano due coppie, per un totale di quattro persone a campo."
+  },
+  "bank": {
+    "slug": "gioco-gestione-denaro",
+    "name": "Coco Bank: gestisci il tuo budget",
+    "intro": "Organizza un conto con denaro virtuale, paga le spese del mese e risparmia per un obiettivo. Puoi anche provare investimenti simulati.",
+    "tip": "Metti da parte la somma per le prossime scadenze prima di decidere quanto investire nel gioco.",
+    "challenge": "Hai 90 monete virtuali. Ne metti da parte 40 per le spese e 30 per il tuo obiettivo. Quante ne puoi ancora usare?",
+    "answer": "Te ne restano 20. Dal saldo di 90 devi sottrarre entrambe le somme già impegnate."
+  },
+  "ciudad": {
+    "slug": "gioco-da-tavolo-citta",
+    "name": "Coco Ciudad: gioco da tavolo",
+    "intro": "Da due a sei giocatori lanciano il dado e si muovono su un tabellone di 40 caselle. Si può giocare sullo stesso dispositivo o in una stanza online.",
+    "tip": "Prima di acquistare una proprietà, controlla quanto denaro ti rimarrà e se l’acquisto ti avvicina al tuo obiettivo.",
+    "challenge": "L’acquisto della proprietà su cui sei arrivato ti lascerebbe quasi senza denaro. Che cosa controlleresti prima di decidere?",
+    "answer": "Confronta il saldo che ti rimarrebbe con gli obiettivi della partita. Se prevedi altre spese, tenere una riserva può essere più utile dell’acquisto."
+  },
+  "generala": {
+    "slug": "generala-gioco-di-dadi",
+    "name": "Generala: gioco di dadi",
+    "intro": "Lancia cinque dadi e scegli quale combinazione segnare sulla scheda. Gioca contro Coco, sullo stesso dispositivo con altre persone o in una stanza privata online.",
+    "tip": "Con tre 4 puoi tenerli e rilanciare gli altri due dadi. Controlla prima se hai ancora libera la casella dei 4: puoi già segnarci 12 punti.",
+    "challenge": "Con un lancio ottieni 5, 5, 5, 2 e 3. Se la casella dei 5 è libera, quanti punti puoi segnarci subito?",
+    "answer": "15 punti. Nella casella dei 5 sommi solo i tre dadi che mostrano 5."
+  },
+  "naval": {
+    "slug": "battaglia-navale",
+    "name": "Battaglia navale",
+    "intro": "Disponi cinque navi su una griglia 10 × 10 e cerca la flotta avversaria. Sfida Coco a tre livelli di difficoltà o invita un amico in una stanza privata.",
+    "tip": "Dopo due colpi a segno sulla stessa linea, prova le caselle alle due estremità per scoprire il resto della nave.",
+    "challenge": "Hai colpito una nave in D4. Tra D3 ed E5, quale casella potrebbe appartenere alla stessa nave?",
+    "answer": "D3, che è adiacente a D4. E5 è in diagonale, mentre le navi si dispongono in orizzontale o in verticale."
+  },
+  "truco": {
+    "slug": "truco-argentino",
+    "name": "Truco argentino",
+    "intro": "Scopri il gioco di carte argentino in cui le prese e le chiamate decidono la mano. Gioca contro Coco o con gli amici a un tavolo da due, quattro o sei persone.",
+    "tip": "Per l’envido cerca due carte dello stesso seme. Il 6 e il 7 di denari insieme valgono 33 punti.",
+    "challenge": "Hai il 4 e il 7 di denari e un re di coppe. Quanti punti di envido hai?",
+    "answer": "31 punti. Le due carte di denari valgono 20 + 4 + 7. Il re di coppe resta fuori dal conteggio."
+  },
+  "ajedrez": {
+    "slug": "scacchi",
+    "name": "Scacchi",
+    "intro": "Gioca a scacchi contro Coco, condividi la scacchiera sullo stesso dispositivo o apri una stanza online. Puoi provare anche le sfide e la partita del giorno.",
+    "tip": "Prima di muovere un pezzo, controlla che cosa sta difendendo. Spostarlo potrebbe lasciare una linea aperta verso il tuo re.",
+    "challenge": "Su una scacchiera vuota, un cavallo in b1 può raggiungere c3 con una sola mossa?",
+    "answer": "Sì. Cambia di due traverse e una colonna, disegnando la L tipica del cavallo."
+  }
+}

@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {newGamePaths} from '../seo/game-pages.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync} from 'node:fs';
 import {createRequire} from 'node:module';
@@ -23,8 +24,8 @@ for (const line of read('robots.txt').split('\n')) {
 const exclusions = robotsGroups.get('*');
 const canCrawl = url => !exclusions.some(path => new URL(url).pathname.startsWith(path));
 
-test('every sitemap URL is crawlable, indexable and declares itself as canonical', () => {
-  assert.equal(urls.length, 53);
+test('every sitemap URL is crawlable, indexable and declares itself as canonical', async () => {
+  assert.equal(urls.length, 53 + newGamePaths().length);
   assert.ok(urls.includes(origin + '/juego/truco/'));
   assert.equal(new Set(urls).size, urls.length);
   for (const url of urls) {
@@ -36,10 +37,12 @@ test('every sitemap URL is crawlable, indexable and declares itself as canonical
     assert.deepEqual([...d.querySelectorAll('link[rel=canonical]')].map(el => el.href), [url], url);
     assert.ok(![...d.querySelectorAll('meta[name=robots],meta[name=googlebot]')].some(el => /noindex|none/.test(el.content)), url);
     for (const el of d.querySelectorAll('meta[property="og:url"]')) assert.equal(el.content, url, url);
+    d.defaultView.close();
+    await new Promise(setImmediate);
   }
 });
 
-test('all indexable HTML has one absolute canonical; verification and noindex pages are exempt', () => {
+test('all indexable HTML has one absolute canonical; verification and noindex pages are exempt', async () => {
   function walk(dir = '') {
     return readdirSync(new URL(dir, root), {withFileTypes:true}).flatMap(entry => {
       if (entry.name.startsWith('.') || ['qa','node_modules','supabase'].includes(entry.name)) return [];
@@ -50,12 +53,17 @@ test('all indexable HTML has one absolute canonical; verification and noindex pa
   for (const path of walk()) {
     if (path === 'googlee572e794d4f008ee.html') continue;
     const d = doc(path);
-    if ([...d.querySelectorAll('meta[name=robots]')].some(el => /noindex/.test(el.content))) continue;
+    if ([...d.querySelectorAll('meta[name=robots]')].some(el => /noindex/.test(el.content))) {
+      d.defaultView.close();
+      continue;
+    }
     const links = [...d.querySelectorAll('head link[rel=canonical]')];
     assert.equal(links.length, 1, path);
     const u = new URL(links[0].href);
     assert.equal(u.origin, origin, path);
     assert.equal(u.search + u.hash, '', path);
+    d.defaultView.close();
+    await new Promise(setImmediate);
   }
 });
 

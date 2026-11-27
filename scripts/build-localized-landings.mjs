@@ -1,17 +1,16 @@
 import {localizeLandingArtwork} from './landing-artwork.mjs';
-import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {mkdirSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {games, origin} from '../seo/catalog.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-export const landingLocales = JSON.parse(readFileSync(root + 'seo/locales/free-games.json', 'utf8'));
-export const landingUpdated = '2026-11-22';
-export const localeNames = {es:'Español',en:'English',de:'Deutsch',nl:'Nederlands',fr:'Français',it:'Italiano',pl:'Polski',uk:'Українська',ru:'Русский','zh-Hans':'简体中文',ar:'العربية',sv:'Svenska',fi:'Suomi',nb:'Norsk bokmål',da:'Dansk'};
+import {landingLocales,localeNames,localizedLandingPath,gamePath,gameCopy} from '../seo/game-pages.mjs';
+export {landingLocales,localeNames,localizedLandingPath};
+export const landingUpdated = '2026-11-27';
 const ogLocales = {es:'es_ES',en:'en_GB',de:'de_DE',nl:'nl_NL',fr:'fr_FR',it:'it_IT',pl:'pl_PL',uk:'uk_UA',ru:'ru_RU','zh-Hans':'zh_CN',ar:'ar_SA',sv:'sv_SE',fi:'fi_FI',nb:'nb_NO',da:'da_DK'};
 const ids = ['memoria','sudoku','conecta','ajedrez','generala','naval'];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const json = value => JSON.stringify(value).replace(/</g, '\\u003c');
-export const localizedLandingPath = tag => tag === 'es' ? '/juegos-gratis/' : `/${tag.toLowerCase()}/${landingLocales[tag].slug}/`;
 export const localizedLandingPaths = () => Object.keys(localeNames).map(localizedLandingPath);
 const localizedLink = (path, tag, source = false) => {
   const url = new URL(path, origin);
@@ -34,7 +33,7 @@ function render(tag, copy) {
     inLanguage:tag,dateModified:landingUpdated,keywords:copy.keywords.join(', '),publisher:{'@id':organization['@id']},
     mainEntity:{'@type':'ItemList',numberOfItems:ids.length,itemListElement:ids.map((id, position) => {
       const game = games.find(g => g.id === id);
-      return {'@type':'ListItem',position:position + 1,name:copy.gameCards[id].title,url:origin + localizedLink(game.path,tag)};
+      return {'@type':'ListItem',position:position + 1,name:copy.gameCards[id].title,url:origin + gamePath(game,tag)};
     })}
   }, {
     '@type':'BreadcrumbList',itemListElement:[
@@ -44,8 +43,9 @@ function render(tag, copy) {
   }, {'@type':'FAQPage','@id':url + '#preguntas',inLanguage:tag,mainEntity:copy.faq.map(item => ({'@type':'Question',name:item.question,acceptedAnswer:{'@type':'Answer',text:item.answer}}))}];
   const cards = ids.map(id => {
     const game = games.find(g => g.id === id), text = copy.gameCards[id];
-    return `<article class="game-card" data-discovery-game="${id}"><a class="game-image" href="${esc(localizedLink(game.path,tag))}"><img src="${game.image}" width="1200" height="630" alt="${esc(text.title)}" loading="lazy" decoding="async"></a><div class="game-copy"><h3>${esc(text.title)}</h3><p>${esc(text.text)}</p><div class="game-actions"><a class="button compact" data-play href="${esc(localizedLink(game.play,tag,true))}">${esc(labels.play)} <span aria-hidden="true">↗</span></a><a class="text-link" href="${esc(localizedLink(game.path,tag))}">${esc(labels.learnMore)}</a></div></div></article>`;
+    return `<article class="game-card" data-discovery-game="${id}"><a class="game-image" href="${esc(gamePath(game,tag))}"><img src="${game.image}" width="1200" height="630" alt="${esc(text.title)}" loading="lazy" decoding="async"></a><div class="game-copy"><h3>${esc(text.title)}</h3><p>${esc(text.text)}</p><div class="game-actions"><a class="button compact" data-play href="${esc(localizedLink(game.play,tag,true))}">${esc(labels.play)} <span aria-hidden="true">↗</span></a><a class="text-link" href="${esc(gamePath(game,tag))}">${esc(labels.learnMore)}</a></div></div></article>`;
   }).join('\n');
+  const moreGames = games.filter(game => !ids.includes(game.id)).map(game => `<a hreflang="${tag}" href="${gamePath(game,tag)}">${esc(gameCopy(game,tag).name)}</a>`).join(' ');
   const spanishGuides = tag === 'es' ? '<nav class="related-guides" aria-label="Guías de juegos"><a href="/juegos-de-memoria/">Juegos de memoria</a><a href="/juegos-de-logica/">Juegos de lógica</a><a href="/juegos-de-matematicas/">Juegos de matemáticas</a><a href="/juegos-en-familia/">Juegos en familia</a></nav>' : '';
   return `<!doctype html>
 <html lang="${tag}" dir="${tag === 'ar' ? 'rtl' : 'ltr'}"><head>
@@ -66,7 +66,7 @@ ${alternates}
 <nav class="breadcrumbs" aria-label="${esc(labels.home)}"><a href="${esc(accountUrl)}">${esc(labels.home)}</a><span aria-hidden="true">/</span><span aria-current="page">${esc(copy.eyebrow)}</span></nav>
 <section class="hero"><div class="hero-copy"><p class="free-games-badge" data-free-games>${esc(labels.free)}</p><h1>${esc(copy.heading)}</h1><p class="lead">${esc(copy.intro)}</p><div class="actions"><a class="button" href="#elige-juego">${esc(labels.explore)} <span aria-hidden="true">↓</span></a><a class="button secondary" data-account href="${esc(accountUrl)}">${esc(labels.account)}</a></div><ul class="hero-points">${copy.heroPoints.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div><div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="number-tile">3 · 6 · 12 · ?</div><img class="mascot" src="/assets/brand/coco-premium-v160127/icon-512.png" width="512" height="512" alt="" fetchpriority="high"><div class="mini-grid"><span>1</span><span>2</span><span>4</span><span>?</span><span>♞</span><span>♜</span><span>♟</span><span>♚</span></div><div class="dot-tile"><i></i><i></i><i></i><i></i></div></div></section>
 <nav class="page-nav" aria-label="${esc(labels.explore)}"><a href="#elige-juego">${esc(labels.explore)}</a><a href="#guia">${esc(labels.howItWorks)}</a><a href="#ejemplo">${esc(labels.example)}</a><a href="#preguntas">${esc(labels.faq)}</a></nav>
-<section id="elige-juego" class="section"><div class="section-heading"><p class="eyebrow">Coco en Forma</p><h2>${esc(labels.explore)}</h2></div><div class="game-grid">${cards}</div><p class="language-note">${esc(copy.note.spanishContent)}</p></section>
+<section id="elige-juego" class="section"><div class="section-heading"><p class="eyebrow">Coco en Forma</p><h2>${esc(labels.explore)}</h2></div><div class="game-grid">${cards}</div><nav class="related-guides" aria-label="${esc(labels.explore)}">${moreGames}</nav><p class="language-note">${esc(copy.note.spanishContent)}</p></section>
 <section id="guia" class="section editorial-grid">${copy.sections.map(s => `<article><h2>${esc(s.title)}</h2>${s.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</article>`).join('')}</section>
 <section class="example" id="ejemplo"><div><p class="eyebrow">${esc(labels.example)}</p><h2>${esc(copy.example.title)}</h2><p>${esc(copy.example.prompt)}</p></div><details><summary>${esc(labels.reveal)}</summary><p>${esc(copy.example.answer)}</p></details></section>
 <section class="section"><h2>${esc(labels.steps)}</h2><ol class="steps">${copy.steps.map((step,i) => `<li><span class="step-number" aria-hidden="true">0${i+1}</span><div><h3>${esc(step.title)}</h3><p>${esc(step.text)}</p></div></li>`).join('')}</ol></section>

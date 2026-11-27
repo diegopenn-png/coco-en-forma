@@ -415,7 +415,7 @@
   }
   async function readLanguageFile(tag,folder) {
     const url = new URL(folder+'/'+tag+'.json',base);
-    url.searchParams.set('v',folder==='packs'?'20261123-family-report-1':folder==='assessment'?'20261122-2':'20261126-home-preview');
+    url.searchParams.set('v',folder==='packs'?'20261123-family-report-1':folder==='assessment'?'20261122-2':folder==='mesa'?'20261127-game-guides':'20261126-home-preview');
     // Also works on the first visit before the service worker controls this page.
     let cache;
     try { cache = await window.caches?.open('coco-language-files-v1'); } catch {}
@@ -730,11 +730,20 @@
   const installLanguage = supported(params.get('pwa_lang'));
   const rememberedLanguage = stored();
   const originalDocument = params.get('document_original') === 'es' && Boolean(document.querySelector('[data-coco-original-document]'));
-  const requested = originalDocument ? 'es' : (explicitLanguage || rememberedLanguage || installLanguage || 'es');
+  const guideLanguage = document.body?.dataset.gameGuideLocale;
+  const requested = originalDocument ? 'es' : (explicitLanguage || guideLanguage || rememberedLanguage || installLanguage || 'es');
 
   async function setLanguage(tag, persist = true) {
     tag = supported(tag);
     if (!tag) return false;
+    if (guideLanguage && tag !== guideLanguage) {
+      const alternate = document.querySelector('link[rel="alternate"][hreflang="'+tag+'"]');
+      if (alternate) {
+        if (explicitLanguage === tag) location.replace(alternate.href);
+        else location.assign(alternate.href);
+        return true;
+      }
+    }
     const attempt = ++generation;
     if (!packs.has(tag)) {
       packs.set(tag, readPack(tag).catch(error => { packs.delete(tag); throw error; }));
@@ -821,7 +830,7 @@
   window.CocoLocale = {get tag(){return current;},
     t:message, schoolYear, pinDigits, thumbnailJpeg, shareUrl, accountReturn, spanishGame:id=>spanishGames.has(id), sourceText, reportDocument, refresh, setLanguage, languages:Object.freeze(languages)};
   if (requested !== 'es') window.CocoFirstPaint?.hold('language');
-  window.CocoLocale.ready = setLanguage(requested,!originalDocument && Boolean(explicitLanguage || (!rememberedLanguage && installLanguage))).finally(() => {
+  window.CocoLocale.ready = setLanguage(requested,!originalDocument && Boolean(explicitLanguage || guideLanguage || (!rememberedLanguage && installLanguage))).finally(() => {
     if (requested !== 'es') window.CocoFirstPaint?.settled('language');
   });
 })();

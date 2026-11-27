@@ -1,0 +1,162 @@
+{
+  "conecta": {
+    "slug": "relier-les-couleurs",
+    "name": "Relier les couleurs",
+    "intro": "Trace un chemin entre les deux points de chaque couleur. Les chemins doivent rester séparés jusqu’à ce que toutes les paires soient reliées.",
+    "tip": "Repère les passages étroits avant de tracer ton premier chemin. Si une couleur ne peut passer que par une seule case, garde-la libre.",
+    "challenge": "Les points bleus ne peuvent être reliés que par la case centrale. Le rouge peut passer par le centre ou par le bord. Par où faire passer le rouge ?",
+    "answer": "Par le bord. Si le rouge occupe la case centrale, il ne restera aucun passage pour le bleu."
+  },
+  "numeros": {
+    "slug": "relier-les-nombres",
+    "name": "Relier les nombres",
+    "intro": "Relie les nombres dans l’ordre en traçant un chemin sur la grille. Chaque case ne peut servir qu’une fois.",
+    "tip": "Avant de rejoindre le 3, regarde comment tu pourras repartir vers le 4. Un détour peut te laisser une issue.",
+    "challenge": "Pour aller du 2 au 3, tu peux passer par le centre ou par le bord. Pour aller ensuite du 3 au 4, tu devras passer par le centre. Quel trajet choisis-tu d’abord ?",
+    "answer": "Du 2 au 3, passe par le bord. Tu gardes ainsi la case centrale pour rejoindre le 4 sans repasser sur tes pas."
+  },
+  "calculo": {
+    "slug": "calcul-mental",
+    "name": "Calcul mental",
+    "intro": "Résous des opérations dont la difficulté varie au fil des défis. Selon le niveau, tu travailleras aussi les pourcentages ou les calculs en plusieurs étapes.",
+    "tip": "Pour calculer 19 + 8, fais 20 + 8, puis retire 1. Tu trouveras 27 sans compter un à un.",
+    "challenge": "Quelle petite astuce te permet de calculer 48 + 17 de tête ?",
+    "answer": "Ajoute 2 à 48 pour arriver à 50, puis ajoute les 15 qui restent. Le résultat est 65."
+  },
+  "palabras": {
+    "slug": "lettres-en-desordre",
+    "name": "Lettres en désordre",
+    "intro": "Remets les lettres dans le bon ordre pour retrouver le mot caché. Un indice te met sur la piste de son sens.",
+    "tip": "Lis l’indice et propose un mot à voix haute. Vérifie ensuite que tu peux l’écrire avec toutes les lettres disponibles.",
+    "challenge": "Avec les lettres U, E et F, forme un mot de trois lettres qui désigne ce qui brûle dans la cheminée.",
+    "answer": "FEU. La lettre F vient en premier, puis E et U."
+  },
+  "sopa": {
+    "slug": "mots-meles",
+    "name": "Mots mêlés",
+    "intro": "Retrouve les mots de la liste dans une grille de lettres. Repère un mot, sélectionne-le et poursuis ta recherche jusqu’à compléter la liste.",
+    "tip": "Choisis un mot et cherche son initiale ligne par ligne. À chaque fois que tu la vois, regarde où se trouve la deuxième lettre.",
+    "challenge": "Dans la ligne « C H A T S », quel animal de quatre lettres peux-tu sélectionner d’un seul trait ?",
+    "answer": "CHAT. Le mot occupe les quatre premières cases de gauche à droite."
+  },
+  "sudoku": {
+    "slug": "sudoku",
+    "name": "Sudoku 4×4 et 6×6",
+    "intro": "Complète une grille de quatre ou six cases de côté sans répéter de chiffre dans une ligne, une colonne ou un bloc. Trois niveaux de difficulté sont proposés.",
+    "tip": "Commence par une ligne à laquelle il manque un seul chiffre. Avant de le poser, vérifie aussi la colonne et le bloc.",
+    "challenge": "Dans une ligne d’un sudoku 4×4, on lit « 4 · 1 · case vide · 3 ». Quel chiffre manque ?",
+    "answer": "Le 2. C’est le seul chiffre de 1 à 4 qui n’apparaît pas dans cette ligne."
+  },
+  "memoria": {
+    "slug": "jeu-de-memoire",
+    "name": "Jeu de mémoire par paires",
+    "intro": "Retourne les cartes deux par deux et retrouve les images identiques. Les cartes déjà aperçues te serviront au prochain essai.",
+    "tip": "Associe chaque image à un emplacement précis, par exemple « étoile en haut à gauche ».",
+    "challenge": "Au tour précédent, tu as vu une lune dans le coin inférieur gauche. Tu retournes maintenant une autre lune. Quelle carte choisis-tu ensuite ?",
+    "answer": "Celle du coin inférieur gauche. Les deux lunes forment une paire."
+  },
+  "series": {
+    "slug": "suites-logiques",
+    "name": "Suites logiques",
+    "intro": "Observe les éléments d’une suite, trouve la règle qui les relie et choisis celui qui vient ensuite.",
+    "tip": "Si la règle semble changer à chaque étape, lis d’abord le premier, le troisième et le cinquième élément.",
+    "challenge": "Quelle est la prochaine valeur de la suite 3, 6, 12, 24 si l’on double le nombre à chaque étape ?",
+    "answer": "48. Il faut multiplier 24 par 2, comme pour les trois passages précédents."
+  },
+  "crucigrama": {
+    "slug": "mots-croises",
+    "name": "Mots croisés",
+    "intro": "Lis les définitions et inscris tes réponses dans la grille. Les lettres communes aux mots horizontaux et verticaux te permettent de vérifier tes idées.",
+    "tip": "Commence par une définition dont tu es sûr. Ses lettres peuvent révéler un mot que tu n’arrivais pas à trouver.",
+    "challenge": "La définition est « satellite naturel de la Terre ». La réponse compte quatre lettres et un croisement donne un N en troisième position. Quel mot convient ?",
+    "answer": "LUNE. Ses quatre lettres conviennent à la définition et son N confirme le croisement."
+  },
+  "tiempo": {
+    "slug": "quiz-contre-la-montre",
+    "name": "Quiz contre la montre",
+    "intro": "Passe du calcul aux mots, de la logique aux sciences, avec un temps limité pour chaque question.",
+    "tip": "Relis le verbe de la consigne à chaque écran. Après une addition, le défi suivant peut te demander de comparer deux mots.",
+    "challenge": "Le chronomètre tourne. Quel mot est l’intrus parmi « pomme », « chaise » et « poire » ?",
+    "answer": "Chaise. La pomme et la poire sont des fruits, la chaise est un meuble."
+  },
+  "verdadero": {
+    "slug": "vrai-ou-faux",
+    "name": "Quiz vrai ou faux",
+    "intro": "Décide si chaque affirmation est vraie ou fausse, puis découvre l’explication de la réponse.",
+    "tip": "Repère le détail qui pourrait rendre la phrase fausse, comme un nombre ou le mot « toujours », avant de te décider.",
+    "challenge": "« Tous les carrés ont quatre côtés de même longueur. » Vrai ou faux ?",
+    "answer": "Vrai. Un carré a quatre côtés égaux et quatre angles droits."
+  },
+  "cocomed": {
+    "slug": "quiz-corps-humain",
+    "name": "Coco Med : quiz sur le corps humain",
+    "intro": "Réponds à des questions sur le corps, la prévention et les habitudes du quotidien. Les explications t’aident à comprendre chaque réponse.",
+    "tip": "Quand tu rencontres un organe inconnu, essaie de décrire son rôle en une phrase avant de passer à la question suivante.",
+    "challenge": "Quel organe pompe le sang pour le faire circuler dans le corps ?",
+    "answer": "Le cœur. À chaque contraction, il pousse le sang dans les vaisseaux."
+  },
+  "futbol": {
+    "slug": "football-jeu-de-memoire",
+    "name": "Coco Football : jeu de mémoire",
+    "intro": "Observe les zones du but qui s’allument, puis tire vers celle qui est restée éteinte.",
+    "tip": "Donne un nom aux coins du but, comme « en haut à droite ». Tu retrouveras plus facilement celui qui manque.",
+    "challenge": "Toutes les zones du but s’allument à tour de rôle, sauf celle en bas à droite. Vers quelle zone dois-tu tirer ?",
+    "answer": "En bas à droite. Il faut viser l’emplacement qui n’est pas apparu dans la séquence."
+  },
+  "padel": {
+    "slug": "organiser-tournoi-padel",
+    "name": "Coco Padel : organiser un tournoi",
+    "intro": "Prépare une rencontre de padel avec rotations ou un championnat. Choisis les joueurs, les terrains et les manches, puis saisis les scores pour suivre le classement.",
+    "tip": "Avant le premier match, mettez-vous d’accord sur le comptage des points. Note le score dès la fin de chaque manche.",
+    "challenge": "Huit joueurs sont présents et deux terrains sont libres. Combien de matchs de double peuvent commencer en même temps ?",
+    "answer": "Deux matchs. Chaque terrain accueille deux équipes de deux, soit quatre joueurs."
+  },
+  "bank": {
+    "slug": "jeu-gestion-budget",
+    "name": "Coco Bank : jeu de gestion de budget",
+    "intro": "Gère un compte en monnaie virtuelle, règle les dépenses du mois et mets de côté de quoi financer un projet. Tu peux aussi essayer des placements simulés.",
+    "tip": "Réserve d’abord l’argent des factures à venir. Tu verras ensuite quelle somme reste pour ton objectif d’épargne.",
+    "challenge": "Ton compte de jeu contient 90 pièces. Tu en réserves 40 pour les dépenses et 30 pour ton projet. Combien peux-tu encore utiliser ?",
+    "answer": "Il te reste 20 pièces disponibles : 90 moins 40 moins 30."
+  },
+  "ciudad": {
+    "slug": "jeu-de-plateau-ville",
+    "name": "Coco Ciudad : jeu de plateau",
+    "intro": "À deux, trois ou jusqu’à six joueurs, lancez le dé pour parcourir une ville de 40 cases. Partagez le même appareil ou retrouvez-vous dans un salon en ligne.",
+    "tip": "Avant d’acheter un bien, regarde combien il te restera pour les prochaines cases et si cet achat te rapproche de ton objectif.",
+    "challenge": "Sur une case propriété, l’achat prendrait presque tout ton argent de jeu. Que vérifierais-tu avant de te décider ?",
+    "answer": "Regarde combien il te resterait et ce que demandent tes objectifs en cours. Si tu dois bientôt dépenser ailleurs, garder une réserve peut t’être plus utile."
+  },
+  "generala": {
+    "slug": "generala-jeu-de-des",
+    "name": "Generala : jeu de dés",
+    "intro": "Lance cinq dés et choisis une combinaison à inscrire sur ta feuille de score. Joue contre Coco, sur le même appareil à plusieurs ou dans un salon privé en ligne.",
+    "tip": "Si tu obtiens trois 4, vérifie les cases encore libres avant de relancer les deux autres dés. Tu peux déjà marquer 12 dans la case des 4.",
+    "challenge": "Tu obtiens 5, 5, 5, 2 et 3. La case des 5 est encore libre. Combien de points peux-tu y inscrire sans relancer ?",
+    "answer": "15 points. Dans la case des 5, seuls les trois dés qui affichent 5 sont additionnés."
+  },
+  "naval": {
+    "slug": "bataille-navale",
+    "name": "Bataille navale",
+    "intro": "Place tes cinq navires sur une grille de 10 × 10, puis cherche la flotte adverse. Affronte Coco à trois niveaux de difficulté ou invite un ami dans un salon privé.",
+    "tip": "Deux touches sur la même ligne ? Essaie les cases juste après chaque extrémité pour retrouver le reste du navire.",
+    "challenge": "Tu touches un navire en D4. D3 et E5 sont encore inconnues. Laquelle de ces deux cases pourrait prolonger ce navire ?",
+    "answer": "D3. Elle partage un côté avec D4, alors que E5 est en diagonale. Les navires sont disposés horizontalement ou verticalement."
+  },
+  "truco": {
+    "slug": "truco-argentin",
+    "name": "Truco argentin",
+    "intro": "Découvre le jeu de cartes argentin où l’on dispute des plis et où les annonces font monter l’enjeu. Joue contre Coco ou retrouve tes amis à une table de deux, quatre ou six joueurs.",
+    "tip": "Pour l’envido, repère d’abord deux cartes de la même enseigne. Un 6 et un 7 de deniers valent ensemble 33 points.",
+    "challenge": "Tu as le 4 et le 7 de deniers, ainsi qu’un roi de coupes. Combien vaut ton envido ?",
+    "answer": "31 points. Les deux cartes de deniers donnent 20 + 4 + 7. Le roi de coupes ne fait pas partie de cette paire."
+  },
+  "ajedrez": {
+    "slug": "jeu-echecs",
+    "name": "Jeu d’échecs",
+    "intro": "Joue aux échecs contre Coco, partage un échiquier sur le même appareil ou ouvre un salon en ligne. Tu peux aussi essayer les défis et la partie du jour.",
+    "tip": "Avant de déplacer une pièce, regarde ce qu’elle protège. Son départ peut ouvrir une ligne d’attaque vers ton roi.",
+    "challenge": "Sur un échiquier vide, un cavalier placé en b1 peut-il atteindre c3 en un seul coup ?",
+    "answer": "Oui. De b1 à c3, il avance de deux rangées et se décale d’une colonne, ce qui forme le L du cavalier."
+  }
+}
