@@ -28,7 +28,14 @@ const settle=()=>new Promise(r=>setImmediate(r));
  route('home');assert.equal($('board').children.length,0,'no inactive board at entry');
  click('[data-mode=standard]');route('setup');assert.equal(d.activeElement.id,'setupTitle');click('[data-opponent=local]');assert.ok($('aiSettings').hidden);
  click('#start');await settle();route('play');assert.equal($('board').children.length,64);assert.equal(d.activeElement.id,'turnTitle');
- click('[data-square=e2]');click('[data-square=e4]');await settle();assert.ok($('board').querySelector('[data-square=e4] .piece'));const saved=JSON.parse(w.localStorage.getItem('coco-chess-standard-v1')).pgn;
+ assert.equal($('turnTitle').textContent,'Turno de las blancas');
+ const pieces=$('board').querySelectorAll('.piece');
+ assert.equal(pieces.length,32);
+ for(const el of pieces){
+  assert.ok(el.dataset.symbol,'an unloaded image still has a visible chess symbol');
+  assert.equal(el.querySelector('img').getAttribute('src'),'./pieces/'+el.dataset.color+el.dataset.type+'.webp');
+ }
+ click('[data-square=e2]');click('[data-square=e4]');await settle();assert.ok($('board').querySelector('[data-square=e4] .piece'));assert.equal($('turnTitle').textContent,'Turno de las negras');const saved=JSON.parse(w.localStorage.getItem('coco-chess-standard-v1')).pgn;
  click('#options');assert.ok($('optionsDialog').open);click('[data-close=optionsDialog]');assert.ok(!$('optionsDialog').open);
  click('#back');route('setup');click('#back');route('home');click('[data-mode=learn]');route('catalog');click('.catalog-item');route('play');click('[data-square=e4]');await settle();assert.ok(!$('next').hidden);assert.equal(JSON.parse(w.localStorage.getItem('coco-chess-standard-v1')).pgn,saved,'lessons preserve local match');
  click('#back');route('catalog');click('#back');route('home');click('#resume');await settle();route('play');assert.ok($('board').querySelector('[data-square=e4] .piece'));
@@ -37,6 +44,7 @@ const settle=()=>new Promise(r=>setImmediate(r));
  click('#createRoom');await settle();route('waiting');assert.match($('inviteCode').textContent,/1234 5678 90AB CDEF/);assert.ok($('playing').hidden);
  latest={...latest,black_user:'black-user',black_name:'Luis',status:'active',version:1};watched(latest);route('play');assert.ok($('hint').hidden);assert.ok($('undo').hidden);
  click('[data-square=e2]');click('[data-square=e4]');await settle();assert.equal(networkCalls.filter(x=>x==='move').length,1);assert.ok($('board').querySelector('[data-square=e4] .piece'));
+ assert.equal($('turnTitle').textContent,'Turno de tu rival · Luis · Negras');
  click('[data-square=e7]');click('[data-square=e5]');await settle();assert.equal(networkCalls.filter(x=>x==='move').length,1,'cannot move rival pieces');
  w.dispatchEvent(new w.Event('offline'));assert.ok(!$('reconnectRoom').hidden);click('[data-square=d2]');click('[data-square=d4]');await settle();assert.equal(networkCalls.filter(x=>x==='move').length,1,'no moves while disconnected');
  assert.equal(JSON.parse(w.localStorage.getItem('coco-chess-standard-v1')).pgn,saved,'online game preserves local save');
