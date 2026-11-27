@@ -189,7 +189,10 @@ export function bot(v,random=Math.random) {
     if(raise&&highest>=11&&r<0.35)return raise;
     return highest>=5||r<0.32?'accept':'decline';
   }
-  if(options.includes('envido')&&(v.myEnvido>=26||r<0.09))return 'envido';
+  if(options.includes('envido')){
+    const opening=v.seat===v.mano && !v.events.length && !v.table.length && !v.tricks.length;
+    if(opening ? v.myEnvido>=20 : v.myEnvido>=26||r<0.09)return 'envido';
+  }
   const raise=raises.find(x=>options.includes(x));
   if(raise&&((highest>=9&&r<0.55)||r<0.04))return raise;
   const sorted=v.cards.slice().sort((a,b)=>strength(a)-strength(b));

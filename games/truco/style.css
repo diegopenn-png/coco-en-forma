@@ -15,15 +15,15 @@ main{width:min(62rem,100%);margin:0 auto;padding:clamp(.8rem,2.8vw,2rem) clamp(.
 .playerFields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(10rem,100%),1fr));gap:0 .6rem}
 .playerFields [hidden]{display:none}
 .score{margin-block-end:.55rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:#fffcf0;border:1px solid #acb397;border-radius:.85rem;overflow:hidden;box-shadow:0 2px 6px #21402b12}
-.teamScore{min-width:0;padding:.45rem clamp(.65rem,2vw,1.15rem) .55rem;border-top:4px solid #267455}
-.teamScore+.teamScore{border-inline-start:1px solid #bcc5ac;border-top-color:#99642d}
+.teamScore{background:linear-gradient(145deg,#fffef7,#f6f4df);min-width:0;padding:.45rem clamp(.65rem,2vw,1.15rem) .55rem;border-top:4px solid #267455}
+.teamScore+.teamScore{background:linear-gradient(145deg,#fffaf1,#f8e8d0);border-inline-start:1px solid #bcc5ac;border-top-color:#99642d}
 .scoreLine{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap}
 .scoreLine strong{font:bold 1rem/1.2 Mont,system-ui;overflow-wrap:anywhere;min-width:0}
 .scoreLine span{white-space:nowrap;color:#4f5f4c;font-size:.88rem;font-variant-numeric:tabular-nums}
 .scoreLine b{font:900 clamp(1.45rem,3vw,1.85rem)/1 Mont,system-ui;color:#153f31}
-.tallyMarks{display:grid;grid-template-columns:repeat(3,1.4rem);grid-auto-rows:1.4rem;min-height:1.4rem;gap:.12rem .35rem;margin-block-start:.2rem;color:#1e6045}
-.teamScore+.teamScore .tallyMarks{color:#805326}
-.tallyMarks svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}
+.tallyMarks{--tile:clamp(1.6rem,6.8vw,2.25rem);display:grid;grid-template-columns:repeat(3,var(--tile));grid-auto-rows:var(--tile);gap:.22rem .32rem;margin-block-start:.32rem;color:#0c5038}
+.teamScore+.teamScore .tallyMarks{color:#783e18}
+.tallyMarks svg{width:100%;height:100%;background:#ffffffb8;border:1px dotted #a29e86;border-radius:.32rem;padding:1px;fill:none;stroke:currentColor;stroke-width:3.6;stroke-linecap:round}
 .resultBanner{background:#e6f2dc;color:#16452e;border:1px solid #a4c69a;border-radius:.65rem;padding:.4rem .7rem;margin-block-end:.55rem;text-align:center;font:700 1.05rem/1.35 Mont,system-ui;overflow-wrap:anywhere}
 .feltHead strong{font-size:.9rem}.lastTrick{font-size:.77rem;text-align:center;color:#dfebd9}
 .boardExtras{margin-block-start:.5rem}.boardExtras>summary{color:#4e685f;font-size:.89rem;padding:.65rem 0;width:fit-content}
@@ -33,7 +33,7 @@ main{width:min(62rem,100%);margin:0 auto;padding:clamp(.8rem,2.8vw,2rem) clamp(.
 
 .playedTable{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem .3rem;padding-block:.45rem}
 .tableSeat{display:grid;justify-items:center;align-content:start;min-width:0}
-.seatLabel{font-size:.8rem;font-weight:700;line-height:1.25;max-width:100%;overflow-wrap:anywhere;margin-bottom:.2rem}
+.seatLabel{font-size:.9rem;font-weight:700;line-height:1.25;max-width:100%;overflow-wrap:anywhere;margin-bottom:.2rem}
 .seatLabel small{font-size:.72rem;font-weight:500}
 .playedRow,.earlierCards{display:flex;direction:ltr;justify-content:center;gap:.25rem}
 .position0{grid-column:1/-1;grid-row:4}
@@ -42,7 +42,17 @@ main{width:min(62rem,100%);margin:0 auto;padding:clamp(.8rem,2.8vw,2rem) clamp(.
 .seats4 .position3,.seats6 .position4{grid-column:4/7;grid-row:2}
 .seats6 .position1{grid-column:1/4;grid-row:3}.seats6 .position5{grid-column:4/7;grid-row:3}
 .seats2 .position0{grid-row:2}.seats4 .position0{grid-row:3}
-.trickSlot{display:block;width:clamp(1.9rem,8.5vw,2.65rem);aspect-ratio:.69;border-radius:.25rem;background:#ffffff08;box-shadow:inset 0 0 0 1px #ffffff26}
+.trickSlot{display:block;width:clamp(1.9rem,8.5vw,2.65rem);aspect-ratio:.69;border-radius:.25rem;background:#082f2666;outline:1.5px dashed #c6d8b8;outline-offset:-1.5px}
+.trickSlot:has(.card){outline:none}
+.playedTable{position:relative}
+.tableCoco{display:grid;position:relative;width:clamp(3.6rem,18vw,9rem);height:auto;aspect-ratio:1;object-fit:contain;align-self:center;justify-self:end;grid-column:1/3;grid-row:1;pointer-events:none}
+.tableCoco img{width:100%;height:100%;object-fit:contain;grid-area:1/1}
+.tableCoco .throwPose{opacity:0}
+[dir=rtl] .tableCoco{transform:scaleX(-1)}
+.seats2 .position1,.seats4 .position2,.seats6 .position3{grid-column:3/6;justify-self:start;width:100%}
+.manoTag{display:inline-block;vertical-align:middle;background:#ffe294;color:#37280c;border-radius:1rem;font-weight:750;font-size:.74rem;line-height:1.25;padding:.12rem .48rem;white-space:nowrap}
+.openingBid{text-align:center;margin-block:.35rem}
+.openingBid .btn{min-height:44px;border-color:#d6a546;background:#ffdc85;color:#32270f}
 .playedTable .card,.countChoices .card{display:grid;width:100%;border-radius:.25rem;padding:.25rem}
 .playedTable .card:before,.countChoices .card:before{inset:.1rem}
 .playedTable .card strong,.countChoices .card strong{font-size:.77rem;inset-inline-start:.18rem;top:.12rem}

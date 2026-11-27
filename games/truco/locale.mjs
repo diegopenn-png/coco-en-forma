@@ -1,6 +1,8 @@
 // Truco names such as envido, retruco and vale cuatro are shared across languages.
 export const messages = {
   "es": {
+    "firstSeat": "Es mano",
+    "openEnvido": "Cantar envido",
     "sound": "Sonido",
     "buildEnvido": "Armar mi envido",
     "countHint": "Elegí una carta o dos del mismo palo. Las figuras valen cero.",
@@ -82,6 +84,8 @@ export const messages = {
     "rulesText": "Se reparten tres cartas por persona. Los compañeros se sientan en puestos alternos. En cada baza, todos juegan una carta y gana la más fuerte. Ganar dos bazas da la mano. Si hay una parda, pesa la primera baza ganada. Si las tres son pardas, gana el equipo de quien salió primero (la mano).\n\nDe mayor a menor: 1 de espadas, 1 de bastos, 7 de espadas, 7 de oros, los 3, los 2, los demás 1, los 12, los 11, los 10, los demás 7, los 6, los 5 y los 4.\n\nEl truco sube el valor de la mano de 1 a 2 puntos. El retruco lo lleva a 3 y el vale cuatro, a 4. Para el envido, suma tus dos mejores cartas del mismo palo y añade 20. Las figuras valen cero. Sin pareja de palo, cuenta la carta más alta. En un empate gana quien esté antes en el orden de salida. La falta envido vale lo que le falta al equipo que va primero para llegar a 15 si ambos están en malas, o a la meta en los demás casos. Jugamos sin flor y, con seis jugadores, todos participan en cada mano, sin pica-pica."
   },
   "en": {
+    "firstSeat": "Leads",
+    "openEnvido": "Call envido",
     "sound": "Sound",
     "buildEnvido": "Count my envido",
     "countHint": "Pick one card or two of the same suit. Face cards count as zero.",
@@ -163,6 +167,8 @@ export const messages = {
     "rulesText": "Everyone gets three cards. Teammates sit in alternating seats. Each player plays one card per trick. The strongest card wins. Win two tricks to take the hand. If a trick is tied, the first trick won outright takes priority. If all three tie, the starting player’s team wins.\n\nStrongest to weakest: 1 of swords, 1 of clubs, 7 of swords, 7 of coins, threes, twos, remaining ones, twelves, elevens, tens, remaining sevens, sixes, fives, fours.\n\nA hand is worth 1 point. An accepted truco raises it to 2, retruco to 3 and vale cuatro to 4. For envido, add your two best cards of the same suit plus 20. Face cards count as zero. With three different suits, count your highest card alone. Ties go to whoever plays earlier in the order, starting with the opening player. Falta envido is worth what the leading team needs to reach 15 if both sides are below 15, otherwise the match target. There is no flor. At a table of six, everyone plays every hand, without pica-pica duels."
   },
   "de": {
+    "firstSeat": "Spielt aus",
+    "openEnvido": "Envido ansagen",
     "sound": "Ton",
     "buildEnvido": "Mein Envido zählen",
     "countHint": "Wähle eine Karte oder zwei derselben Farbe. Bildkarten zählen null.",
@@ -244,6 +250,8 @@ export const messages = {
     "rulesText": "Alle erhalten drei Karten. Die Teams sitzen abwechselnd. Pro Stich spielt jeder eine Karte. Die stärkste Karte gewinnt. Zwei Stiche gewinnen die Runde. Bei einem unentschiedenen Stich hat der erste gewonnene Stich Vorrang. Enden alle drei unentschieden, gewinnt das Team, das ausgespielt hat.\n\nVon stark nach schwach: Schwert-1, Stab-1, Schwert-7, Münz-7, Dreier, Zweier, übrige Einser, Zwölfer, Elfer, Zehner, übrige Siebener, Sechser, Fünfer, Vierer.\n\nEine Runde zählt 1 Punkt. Ein angenommenes Truco erhöht auf 2, Retruco auf 3 und Vale cuatro auf 4. Beim Envido zählen die beiden besten Karten derselben Farbe plus 20. Bildkarten zählen als null. Bei drei Farben zählt die höchste Karte allein. Bei Gleichstand gewinnt, wer in der Reihenfolge ab dem Ausspiel früher sitzt. Falta envido zählt so viele Punkte, wie dem führenden Team bis 15 fehlen, wenn beide unter 15 liegen, sonst bis zum Spielziel. Gespielt wird ohne Flor. Zu sechst spielen alle jede Runde mit, ohne Pica-pica-Duelle."
   },
   "nl": {
+    "firstSeat": "Komt uit",
+    "openEnvido": "Envido bieden",
     "sound": "Geluid",
     "buildEnvido": "Mijn envido tellen",
     "countHint": "Kies één kaart of twee van dezelfde kleur. Plaatjes tellen als nul.",
@@ -325,6 +333,8 @@ export const messages = {
     "rulesText": "Iedereen krijgt drie kaarten. De teams zitten om en om. Iedere speler speelt één kaart per slag. De sterkste kaart wint. Met twee slagen win je de ronde. Bij een onbesliste slag geeft de eerste gewonnen slag de doorslag. Eindigen alle drie onbeslist, dan wint het team dat uitkwam.\n\nVan sterk naar zwak: zwaarden-1, staven-1, zwaarden-7, munten-7, drieën, tweeën, overige enen, twaalven, elven, tienen, overige zevens, zessen, vijven, vieren.\n\nEen ronde is 1 punt waard. Een aangenomen truco verhoogt dit naar 2, retruco naar 3 en vale cuatro naar 4. Voor envido tel je je twee hoogste kaarten van dezelfde soort op, plus 20. Plaatjes tellen als nul. Bij drie verschillende soorten telt alleen de hoogste kaart. Bij gelijke stand wint wie eerder aan de beurt komt, gerekend vanaf de eerste speler. Falta envido is het aantal punten dat het leidende team nodig heeft voor 15 als beide teams onder 15 staan, en anders voor het einddoel. We spelen zonder flor. Met zes spelers doet iedereen elke ronde mee, zonder pica-picaduels."
   },
   "fr": {
+    "firstSeat": "Entame",
+    "openEnvido": "Annoncer envido",
     "sound": "Son",
     "buildEnvido": "Calculer mon envido",
     "countHint": "Choisis une carte ou deux de la même couleur. Les figures valent zéro.",
@@ -406,6 +416,8 @@ export const messages = {
     "rulesText": "Chacun reçoit trois cartes. Les places alternent entre les équipes. À chaque pli, chacun joue une carte et la plus forte l’emporte. Deux plis gagnés donnent la donne. Si un pli est à égalité, le premier pli remporté départage les équipes. Si les trois sont à égalité, l’équipe qui a entamé gagne.\n\nDe la plus forte à la plus faible : 1 d’épées, 1 de bâtons, 7 d’épées, 7 de deniers, les 3, les 2, les autres 1, les 12, les 11, les 10, les autres 7, les 6, les 5 et les 4.\n\nUne donne vaut 1 point. Un truco accepté porte sa valeur à 2, un retruco à 3 et un vale cuatro à 4. Pour l’envido, additionne tes deux meilleures cartes de la même couleur et ajoute 20. Les figures valent zéro. Avec trois couleurs différentes, seule la carte la plus élevée compte. En cas d’égalité, le joueur le plus proche du premier dans l’ordre de jeu gagne. La falta envido vaut les points qui manquent à l’équipe en tête pour atteindre 15 si les deux sont sous 15, sinon pour atteindre le score final. On joue sans flor. À six, tout le monde joue chaque donne, sans duels pica-pica."
   },
   "it": {
+    "firstSeat": "Di mano",
+    "openEnvido": "Chiamare envido",
     "sound": "Audio",
     "buildEnvido": "Calcola il mio envido",
     "countHint": "Scegli una carta o due dello stesso seme. Le figure valgono zero.",
@@ -487,6 +499,8 @@ export const messages = {
     "rulesText": "Ogni giocatore riceve tre carte. I compagni siedono a posti alterni. In ogni presa tutti giocano una carta e vince la più forte. Chi fa due prese vince la mano. Se una presa è pari, prevale la prima presa vinta. Se tutte e tre sono pari, vince la squadra di chi ha aperto la mano.\n\nDalla più forte alla più debole: 1 di spade, 1 di bastoni, 7 di spade, 7 di denari, i 3, i 2, gli altri 1, i 12, gli 11, i 10, gli altri 7, i 6, i 5 e i 4.\n\nLa mano vale 1 punto. Un truco accettato la porta a 2, il retruco a 3 e il vale cuatro a 4. Per l’envido somma le due carte migliori dello stesso seme e aggiungi 20. Le figure valgono zero. Con tre semi diversi conta solo la carta più alta. A parità vince chi viene prima nel giro a partire dal primo di mano. La falta envido vale quanto manca alla squadra in vantaggio per arrivare a 15 se entrambe sono sotto 15, altrimenti al traguardo della partita. Si gioca senza flor. In sei si gioca tutti a ogni mano, senza duelli pica-pica."
   },
   "pl": {
+    "firstSeat": "Zaczyna",
+    "openEnvido": "Zgłoś envido",
     "sound": "Dźwięk",
     "buildEnvido": "Policz moje envido",
     "countHint": "Wybierz jedną kartę lub dwie w tym samym kolorze. Figury liczą się jako zero.",
@@ -568,6 +582,8 @@ export const messages = {
     "rulesText": "Każdy dostaje trzy karty. Gracze obu drużyn siedzą na przemian. Każdy zagrywa jedną kartę do lewy, a najsilniejsza wygrywa. Dwie lewy dają zwycięstwo w rozdaniu. Przy lewie remisowej rozstrzyga pierwsza wygrana lewa. Przy trzech remisach wygrywa drużyna gracza, który rozpoczynał rozdanie.\n\nOd najsilniejszej: 1 mieczy, 1 pałek, 7 mieczy, 7 monet, trójki, dwójki, pozostałe jedynki, dwunastki, jedenastki, dziesiątki, pozostałe siódemki, szóstki, piątki i czwórki.\n\nRozdanie jest warte 1 punkt. Przyjęte truco podnosi stawkę do 2, retruco do 3, a vale cuatro do 4. Przy envido dodaj wartości swoich dwóch najlepszych kart jednego koloru i dolicz 20. Figury są warte zero. Przy trzech różnych kolorach liczy się tylko najwyższa karta. Remis wygrywa osoba siedząca wcześniej w kolejności od rozpoczynającego. Falta envido jest warte tyle punktów, ile brakuje prowadzącej drużynie do 15, jeśli obie mają poniżej 15, a w pozostałych przypadkach do wyniku końcowego. Gramy bez flor. Przy sześciu osobach wszyscy grają w każdym rozdaniu, bez pojedynków pica-pica."
   },
   "uk": {
+    "firstSeat": "Ходить першим",
+    "openEnvido": "Оголосити енвідо",
     "sound": "Звук",
     "buildEnvido": "Порахувати моє енвідо",
     "countHint": "Вибери одну карту або дві однієї масті. Фігури дають нуль очок.",
@@ -649,6 +665,8 @@ export const messages = {
     "rulesText": "Кожен отримує три карти. Гравці двох команд сидять через одного. У кожній взятці кожен грає одну карту, а найсильніша виграє. Дві взятки дають перемогу в роздачі. Якщо у взятці нічия, перевагу має перша виграна взятка. Якщо всі три нічийні, виграє команда гравця, що почав роздачу.\n\nВід найсильнішої: 1 мечів, 1 палиць, 7 мечів, 7 монет, трійки, двійки, решта одиниць, дванадцятки, одинадцятки, десятки, решта сімок, шістки, п’ятірки й четвірки.\n\nРоздача коштує 1 очко. Прийняте truco підвищує ставку до 2, retruco — до 3, vale cuatro — до 4. Для envido склади дві найкращі карти однієї масті й додай 20. Фігури дають нуль. Якщо всі масті різні, рахуй лише найвищу карту. За рівності виграє той, хто раніше в черзі від гравця, який почав роздачу. Falta envido дає стільки очок, скільки бракує лідеру до 15, якщо обидві команди мають менш як 15, а інакше — до перемоги в матчі. Граємо без flor. За столом на шістьох усі беруть участь у кожній роздачі, без дуелей pica-pica."
   },
   "ru": {
+    "firstSeat": "Ходит первым",
+    "openEnvido": "Объявить энвидо",
     "sound": "Звук",
     "buildEnvido": "Посчитать моё энвидо",
     "countHint": "Выбери одну карту или две одной масти. Фигуры дают ноль очков.",
@@ -730,6 +748,8 @@ export const messages = {
     "rulesText": "Каждому раздают три карты. Игроки двух команд сидят через одного. В каждой взятке все играют по одной карте, и самая сильная побеждает. Две взятки приносят победу в раздаче. Если взятка закончилась вничью, преимущество у первой выигранной взятки. При трёх ничейных взятках побеждает команда того, кто ходил первым.\n\nОт сильной к слабой: 1 мечей, 1 дубинок, 7 мечей, 7 монет, тройки, двойки, остальные единицы, двенадцатки, одиннадцатки, десятки, остальные семёрки, шестёрки, пятёрки и четвёрки.\n\nРаздача стоит 1 очко. Принятое truco повышает ставку до 2, retruco — до 3, vale cuatro — до 4. Для envido сложи две лучшие карты одной масти и прибавь 20. Фигуры дают ноль. Если все масти разные, считай только старшую карту. При равенстве выигрывает тот, кто раньше по порядку от начавшего раздачу. Falta envido приносит столько очков, сколько лидеру не хватает до 15, если обе команды набрали менее 15, а в остальных случаях — до победы в матче. Игра идёт без flor. За столом на шестерых все участвуют в каждой раздаче, без дуэлей pica-pica."
   },
   "zh-Hans": {
+    "firstSeat": "先手",
+    "openEnvido": "叫 Envido",
     "sound": "声音",
     "buildEnvido": "计算我的 Envido 点数",
     "countHint": "选一张牌，或选两张相同花色的牌。人头牌算零点。",
@@ -811,6 +831,8 @@ export const messages = {
     "rulesText": "每人发三张牌，双方队员交替入座。每墩每人出一张，最大的牌赢墩。赢两墩即可赢得本局。如果有平墩，先赢下一墩的一方优先；三墩全平，则本局先出牌一方获胜。\n\n牌力从强到弱依次是宝剑 1、木棒 1、宝剑 7、金币 7、所有 3、所有 2、其余的 1、所有 12、所有 11、所有 10、其余的 7、所有 6、所有 5、所有 4。\n\n每局原值 1 分。接受 truco 后升至 2 分，retruco 为 3 分，vale cuatro 为 4 分。计算 envido 时，把点数最大的两张同花色牌相加，再加 20；人头牌算 0 点。三张花色各异时，只算最大的一张。同点时，从先手开始按出牌顺序，排在前面的人赢。双方都不到 15 分时，falta envido 的分值是领先方距离 15 分的差值；否则是领先方距离胜利目标的差值。本桌不玩 flor。六人桌每局六人一起打，不设 pica-pica 单挑。"
   },
   "ar": {
+    "firstSeat": "يبدأ اللعب",
+    "openEnvido": "نادِ إنفيدو",
     "sound": "الصوت",
     "buildEnvido": "احسب نقاط إنفيدو",
     "countHint": "اختر ورقة واحدة أو ورقتين من النوع نفسه. قيمة أوراق الصور صفر.",
@@ -892,6 +914,8 @@ export const messages = {
     "rulesText": "يأخذ كل لاعب ثلاث أوراق، ويجلس لاعبو الفريقين بالتناوب. في كل أكلة يلعب الجميع ورقة واحدة وتفوز الأقوى. الفوز بأكلتين يحسم التوزيعة. عند تعادل أكلة تكون الأفضلية للفريق الذي فاز بأول أكلة حاسمة. وإذا تعادلت الأكلات الثلاث يفوز فريق من بدأ التوزيعة.\n\nمن الأقوى إلى الأضعف: ١ السيوف، ١ العصيّ، ٧ السيوف، ٧ العملات، ثم الثلاثات، فالاثنانات، فالآحاد الباقية، ثم ١٢، ثم ١١، ثم ١٠، فالسبعات الباقية، فالستات، فالخمسات، فالأربعات.\n\nقيمة التوزيعة نقطة واحدة. بعد قبول truco تصبح نقطتين، ومع retruco ثلاثًا، ومع vale cuatro أربعًا. لحساب envido اجمع أعلى ورقتين من النوع نفسه وأضف ٢٠. أوراق الصور تساوي صفرًا. إذا كانت الأنواع الثلاثة مختلفة فتحسب أعلى ورقة فقط. عند التعادل يفوز الأسبق في ترتيب اللعب بدءًا بمن افتتح التوزيعة. قيمة falta envido هي ما ينقص الفريق المتقدم لبلوغ ١٥ إذا كان كلا الفريقين دون ١٥، وإلا فهي ما ينقصه لبلوغ هدف المباراة. نلعب من دون flor. وعند اللعب بستة لاعبين يشارك الجميع في كل توزيعة من دون مبارزات pica-pica."
   },
   "sv": {
+    "firstSeat": "Spelar ut",
+    "openEnvido": "Bjud envido",
     "sound": "Ljud",
     "buildEnvido": "Räkna mitt envido",
     "countHint": "Välj ett kort eller två i samma färg. Klädda kort räknas som noll.",
@@ -973,6 +997,8 @@ export const messages = {
     "rulesText": "Alla får tre kort. Spelare från lagen sitter växelvis runt bordet. Var och en spelar ett kort per stick och det starkaste kortet vinner. Ta två stick för att vinna given. Vid ett oavgjort stick avgör det första vunna sticket. Om alla tre blir oavgjorda vinner laget som spelade ut först.\n\nFrån starkast till svagast: svärd-1, stav-1, svärd-7, mynt-7, treor, tvåor, övriga ettor, tolvor, elvor, tior, övriga sjuor, sexor, femmor och fyror.\n\nEn giv är värd 1 poäng. Ett antaget truco höjer värdet till 2, retruco till 3 och vale cuatro till 4. Vid envido lägger du ihop dina två bästa kort i samma färg och lägger till 20. Klädda kort är värda noll. Med tre olika färger räknas bara det högsta kortet. Vid lika vinner den som sitter först i turordningen från öppningsspelaren. Falta envido ger så många poäng som ledarlaget behöver för att nå 15 om båda lagen har under 15, annars till matchens poängmål. Vi spelar utan flor. Vid sex spelare deltar alla i varje giv, utan pica-pica-dueller."
   },
   "fi": {
+    "firstSeat": "Aloittaja",
+    "openEnvido": "Tarjoa envidoa",
     "sound": "Ääni",
     "buildEnvido": "Laske envidopisteeni",
     "countHint": "Valitse yksi kortti tai kaksi saman maan korttia. Kuvakorttien arvo on nolla.",
@@ -1054,6 +1080,8 @@ export const messages = {
     "rulesText": "Jokainen saa kolme korttia. Joukkueiden pelaajat istuvat vuorotellen. Jokainen pelaa tikkiin yhden kortin, ja vahvin kortti voittaa. Kaksi tikkiä voittanut vie jaon. Jos tikki menee tasan, ensin voitettu tikki ratkaisee. Jos kaikki kolme menevät tasan, jaon aloittaneen pelaajan joukkue voittaa.\n\nVahvimmasta heikoimpaan: miekkojen 1, sauvojen 1, miekkojen 7, kolikoiden 7, kolmoset, kakkoset, muut ykköset, kaksitoistaset, yksitoistaset, kympit, muut seiskat, kuutoset, viitoset ja neloset.\n\nJako on yhden pisteen arvoinen. Hyväksytty truco nostaa arvon kahteen, retruco kolmeen ja vale cuatro neljään. Envidossa laske kaksi parasta saman maan korttia yhteen ja lisää 20. Kuvakortit ovat nollan arvoisia. Jos kaikki maat ovat eri, vain paras kortti lasketaan. Tasatilanteessa voittaa se, joka on jaon aloittajasta laskien ensin vuorossa. Falta envidosta saa johtavalta joukkueelta 15 pisteeseen puuttuvan määrän, jos molemmat ovat alle 15 pisteen, muutoin voittoon puuttuvan määrän. Peliin ei kuulu flor. Kuudella pelaajalla kaikki osallistuvat jokaiseen jakoon ilman pica-pica-kaksintaisteluja."
   },
   "nb": {
+    "firstSeat": "Spiller ut",
+    "openEnvido": "By envido",
     "sound": "Lyd",
     "buildEnvido": "Tell mitt envido",
     "countHint": "Velg ett kort eller to i samme farge. Bildekort teller som null.",
@@ -1135,6 +1163,8 @@ export const messages = {
     "rulesText": "Alle får tre kort. Spillerne fra de to lagene sitter annenhver rundt bordet. Alle spiller ett kort i hvert stikk, og det sterkeste kortet vinner. To stikk gir seier i given. Ved et uavgjort stikk avgjør det første stikket noen vant. Hvis alle tre blir uavgjort, vinner laget til den som spilte ut først.\n\nFra sterkest til svakest: sverd-1, stav-1, sverd-7, mynt-7, treere, toere, de andre enerne, tolvere, ellevere, tiere, de andre sjuerne, seksere, femmere og firere.\n\nEn giv er verdt 1 poeng. En godtatt truco øker verdien til 2, retruco til 3 og vale cuatro til 4. For envido legger du sammen de to beste kortene dine i samme farge og legger til 20. Bildekort teller som null. Med tre ulike farger teller bare det høyeste kortet. Ved likt vinner den som er først i spillerekkefølgen fra den som åpnet given. Falta envido gir poengene det ledende laget mangler på 15 hvis begge har under 15, ellers poengene som mangler på seiersmålet. Vi spiller uten flor. Med seks spillere spiller alle hver giv, uten pica-pica-dueller."
   },
   "da": {
+    "firstSeat": "Spiller ud",
+    "openEnvido": "Meld envido",
     "sound": "Lyd",
     "buildEnvido": "Tæl mit envido",
     "countHint": "Vælg ét kort eller to i samme kulør. Billedkort tæller som nul.",

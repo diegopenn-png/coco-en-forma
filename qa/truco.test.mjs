@@ -83,3 +83,38 @@ test('legacy hands recover only publicly played cards across a resumed trick',()
  delete g.played;assert.deepEqual(view(g,0).played.map(p=>p.card).sort(),laid.sort());
  const s=actor(g),card=g.hands[s][0];move(g,s,card);assert.equal(view(g,0).played.length,4);
 });
+
+test('the opening seat rotates even if the same team keeps winning',()=>{
+ for(const size of [2,4,6]){
+  const rng=random(53+size),g=newMatch(names(size),30,rng),first=g.mano;
+  for(let i=0;i<=size;i++){
+   const leader=(first+i)%size,other=(leader+1)%size;
+   assert.equal(g.mano,leader);assert.equal(actor(g),leader);assert.equal(g.lead,leader);
+   assert.ok(legal(g,leader).includes('envido'));assert.deepEqual(legal(g,other),[]);
+   if(leader%2)move(g,leader,g.hands[leader][0]);
+   move(g,actor(g),'truco');move(g,actor(g),'decline');
+   assert.equal(g.handWinner,0);move(g,other,'next',rng);
+  }
+ }
+});
+test('Coco opens with envido for any suited pair, leaving the lead intact after the answer',()=>{
+ for(const [cards,points] of [
+  [['10-copas','12-copas','1-espadas'],20],
+  [['4-bastos','1-bastos','3-oros'],25],
+  [['7-oros','6-oros','3-oros'],33],
+  [['7-copas','4-espadas','2-oros'],7]
+ ]){
+  const g=newMatch(['Diego','Coco'],15,()=>.51);
+  g.hands[1]=cards.slice();g.original[1]=cards.slice();
+  assert.equal(actor(g),1);assert.equal(view(g,1).myEnvido,points);
+  for(const r of [0,.5,.99]){
+   const decision=bot(view(g,1),()=>r);
+   if(points>=20)assert.equal(decision,'envido');else assert.notEqual(decision,'envido');
+  }
+  if(points>=20){
+   move(g,1,'envido');assert.equal(actor(g),0);assert.deepEqual(g.table,[]);
+   move(g,0,'accept');assert.equal(actor(g),1);
+   assert.deepEqual(view(g,0).envidoCalls.map(x=>x.seat),[1,0]);
+  }
+ }
+});
