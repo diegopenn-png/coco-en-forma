@@ -7,16 +7,24 @@ main{width:min(62rem,100%);margin:0 auto;padding:clamp(.8rem,2.8vw,2rem) clamp(.
 @media(max-width:640px){.panels{grid-template-columns:1fr}.hero p{max-width:68%;font-size:.92rem}.hero h1{max-width:65%}.brand{font-size:0}.brand img{width:1.8rem}.tableCards{gap:.32rem}.slot{max-width:3.4rem}.feltHead span{font-size:.82rem}.boardInfo{padding:.8rem}.tableCards .card{width:2.4rem}.minor,.btn{padding:.52rem .7rem}.card{width:clamp(4.55rem,23vw,6rem)}.hero{border-radius:.9rem}.tag{font-size:.8rem}.modes{grid-template-columns:1fr}.histBlock{font-size:.92rem}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.hand .card:enabled:hover{transform:none}}
 
 /* The two columns follow the paper scorepad, with three groups per row (15 tantos). */
-.score{margin-bottom:.55rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:0;background:#fffdf5;border:1px solid #cbd5c6;border-radius:.8rem;overflow:hidden}
-.teamScore{min-width:0;padding:.45rem clamp(.65rem,2vw,1.15rem) .55rem}
-.teamScore+.teamScore{border-inline-start:1px solid #cbd5c6}
-.scoreLine{display:flex;align-items:baseline;justify-content:space-between;gap:.4rem}
-.scoreLine strong{font-size:.9rem;overflow-wrap:anywhere}
-.scoreLine span{white-space:nowrap;color:#506259;font-size:.76rem}
-.scoreLine b{font:900 1.14rem Mont,system-ui;color:#163f34}
-.tallyMarks{display:grid;grid-template-columns:repeat(3,1.22rem);grid-auto-rows:1.22rem;min-height:1.22rem;gap:.13rem .35rem;margin-block-start:.18rem;color:#225947}
-.teamScore+.teamScore .tallyMarks{color:#795130}
-.tallyMarks svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+.tableTools{display:flex;align-items:stretch;gap:.45rem;margin-block-end:.55rem}
+.tableTools .btn,.envidoBuilder summary{min-height:44px}
+.tableTools .btn{background:#fffdf7;border-color:#97b6a3;color:#154d3c}
+.tableTools .soundSwitch{margin-inline-start:auto;align-self:flex-start;display:grid;place-items:center;width:44px;min-width:44px;padding:.5rem}
+.tableTools .soundSwitch[aria-pressed=true]{background:#e5efe3}
+.playerFields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(10rem,100%),1fr));gap:0 .6rem}
+.playerFields [hidden]{display:none}
+.score{margin-block-end:.55rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:#fffcf0;border:1px solid #acb397;border-radius:.85rem;overflow:hidden;box-shadow:0 2px 6px #21402b12}
+.teamScore{min-width:0;padding:.45rem clamp(.65rem,2vw,1.15rem) .55rem;border-top:4px solid #267455}
+.teamScore+.teamScore{border-inline-start:1px solid #bcc5ac;border-top-color:#99642d}
+.scoreLine{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-wrap:wrap}
+.scoreLine strong{font:bold 1rem/1.2 Mont,system-ui;overflow-wrap:anywhere;min-width:0}
+.scoreLine span{white-space:nowrap;color:#4f5f4c;font-size:.88rem;font-variant-numeric:tabular-nums}
+.scoreLine b{font:900 clamp(1.45rem,3vw,1.85rem)/1 Mont,system-ui;color:#153f31}
+.tallyMarks{display:grid;grid-template-columns:repeat(3,1.4rem);grid-auto-rows:1.4rem;min-height:1.4rem;gap:.12rem .35rem;margin-block-start:.2rem;color:#1e6045}
+.teamScore+.teamScore .tallyMarks{color:#805326}
+.tallyMarks svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}
+.resultBanner{background:#e6f2dc;color:#16452e;border:1px solid #a4c69a;border-radius:.65rem;padding:.4rem .7rem;margin-block-end:.55rem;text-align:center;font:700 1.05rem/1.35 Mont,system-ui;overflow-wrap:anywhere}
 .feltHead strong{font-size:.9rem}.lastTrick{font-size:.77rem;text-align:center;color:#dfebd9}
 .boardExtras{margin-block-start:.5rem}.boardExtras>summary{color:#4e685f;font-size:.89rem;padding:.65rem 0;width:fit-content}
 .boardExtras .seatList{margin:.35rem 0}.boardExtras .tools{justify-content:flex-start}
@@ -46,4 +54,12 @@ main{width:min(62rem,100%);margin:0 auto;padding:clamp(.8rem,2.8vw,2rem) clamp(.
 .envidoBuilder{margin-top:.4rem;color:#31524b;font-size:.88rem}.envidoBuilder p{margin:.4rem 0}
 .countChoices{display:inline-flex;gap:.4rem;margin-inline-end:.6rem}.countChoices button{background:transparent;border:2px solid transparent;border-radius:.4rem;padding:2px;width:3rem}
 .countChoices button[aria-pressed=true]{border-color:#09694c;background:#def0df}.envidoBuilder output{font-weight:700;direction:ltr;display:inline-block}
-.handHead{display:flow-root}.handHead h3{float:inline-start;margin:.46rem .45rem .25rem 0}.handHead .envidoBuilder{margin:0;text-align:end}.envidoBuilder summary{display:list-item;width:fit-content;margin-inline-start:auto;padding:.42rem .15rem}.envidoBuilder[open] p{clear:both}
+.handHead{display:flow-root}.handHead h3{float:inline-start;margin:.8rem .5rem .25rem 0}
+.handHead .envidoBuilder{margin:0;text-align:end}
+.envidoBuilder summary{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;max-width:100%;border:1px solid #c19b49;border-radius:.65rem;background:#ffe6a3;color:#46340f;padding:.5rem .8rem;font-size:1rem;line-height:1.2;text-align:start}
+.envidoBuilder summary::-webkit-details-marker{display:none}
+.envidoBuilder summary::after{content:"";width:.45rem;height:.45rem;flex:none;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);margin-block-end:.2rem}
+.envidoBuilder[open] summary::after{transform:rotate(225deg);margin-block-end:0}
+.envidoBuilder summary:focus-visible{outline:3px solid #bc6a09;outline-offset:2px}
+.envidoBuilder[open] p{clear:both}
+@media(max-width:420px){.tableTools .btn{font-size:.9rem}.tableTools{gap:.32rem}.scoreLine{gap:.2rem}.envidoBuilder summary{font-size:.94rem}}
