@@ -1,6 +1,6 @@
 import {actor,bot,calls,deck,envido,newMatch,move,view} from './engine.mjs?v=mesa-3';
 import {hex,request} from './online.mjs';
-import {getLanguage,setLanguage,messages} from './locale.mjs?v=mesa-3';
+import {getLanguage,setLanguage,messages} from './locale.mjs?v=mesa-5';
 import {cue,muteSound,resetTableSound,tableSound,unlockSound} from './sound.mjs?v=mesa-2';
 const app=document.querySelector('#app'),dialog=document.querySelector('#dialog');
 const localKey='coco.truco.local.v1',roomKey='coco.truco.room.v1';
@@ -222,12 +222,24 @@ function tallyMarks(points){
  }
  return '<span class="tallyMarks" aria-hidden="true">'+groups.join('')+'</span>';
 }
+function scoreAward(v){
+ if(v.phase==='finished')return {team:v.matchWinner,label:t.winner,kind:'match'};
+ if(v.phase==='between')return {team:v.handWinner,label:t.handWinnerLabel,kind:'hand'};
+ const last=v.events.at(-1);
+ if(last?.type==='envResult')return {team:last.seat%2,label:t.envidoWinnerLabel,kind:'envido'};
+ return null;
+}
 function scoreboard(v){
+ const award=scoreAward(v);
+ const key=award?[v.handNo,award.kind,award.team].join('-'):'';
+ const changed=key!==app.querySelector('.score')?.dataset.award;
  const teams=v.scores.map((points,i)=>{
   const name=teamPlayers(v,i);
-  return '<div class="teamScore"><div class="scoreLine"><strong>'+esc(name)+'</strong><span dir="ltr"><b>'+points+'</b> / '+v.goal+'</span></div>'+tallyMarks(points)+'</div>';
+  const wins=award?.team===i;
+  const badge=wins?'<strong class="winnerBadge"><span aria-hidden="true">★</span> '+esc(award.label)+'</strong>':'';
+  return '<div class="teamScore'+(wins?' scoreWinner'+(changed?' scoreGlow':''):'')+'"><div class="scoreLine"><strong>'+esc(name)+'</strong><span dir="ltr"><b>'+points+'</b> / '+v.goal+'</span></div>'+tallyMarks(points)+badge+'</div>';
  });
- return '<section class="score" aria-label="'+esc(t.points)+'">'+teams.join('')+'</section>';
+ return '<section class="score" data-award="'+esc(key)+'" aria-label="'+esc(t.points)+'">'+teams.join('')+'</section>';
 }
 function soundButton(){
  const icon=soundOn?'M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14':'m16 9 6 6m0-6-6 6';
@@ -252,14 +264,34 @@ function moveControls(v,canPlay,openingEnvido){
  }).join('');
  return '<div class="moveRows">'+html+'</div>';
 }
+function tableConversation(v,status,controls){
+ const lines=[];
+ function say(seat,words){
+  lines.push('<li class="talkLine'+(seat===v.seat?' own':'')+'"><strong><bdi>'+esc(seatName(v,seat))+'</bdi></strong><span>'+esc(words)+'</span></li>');
+ }
+ for(const event of v.events){
+  if(event.type==='action'){
+   say(event.seat,event.action==='fold'?t.sayFold:labelAct(event.action));
+  }else if(event.type==='envResult'&&event.score!==undefined){
+   for(const call of v.envidoCalls)say(call.seat,t.sayCount.replace('{n}',String(call.score)));
+  }
+ }
+ const log=lines.length?'<ol class="talkLog" role="log" aria-labelledby="talkTitle" tabindex="0">'+lines.join('')+'</ol>':'';
+ const prompt=v.phase==='play'?'<p class="status talkTurn" aria-live="polite">'+esc(status)+'</p>':'';
+ return '<section class="tableTalk" aria-labelledby="talkTitle"><h3 id="talkTitle"><svg aria-hidden="true" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3 4h14v10H8l-5 4V4Z"/><path d="M9 17h7l5 4V9h-2"/></svg>'+esc(t.tableTalk)+'</h3>'+log+prompt+controls+'</section>';
+}
 function renderBoard(v) {
  const s=v.seat,current=actor(v),mine=current===s,canPlay=mine&&v.phase==='play'&&!busy;
  const ended=v.phase!=='play';
  const openingEnvido=canPlay && s===v.mano && !v.events.length && !v.tricks.length && !v.table.length && v.options.includes('envido');
  const status=ended?(v.phase==='finished'?victoryText(v):t.between+' · '+teamPlayers(v,v.handWinner)):
- v.pending?seatName(v,v.pending.by)+' · '+labelAct(v.pending.last)+' · '+(mine?t.answer:t.turn+' · '+seatName(v,current)):
- mine?t.chooseCard:t.turn+' · '+seatName(v,current);
+ v.pending?t.replyToCall.replace(/\{(name|call)\}/g,(_,key)=>key==='name'?seatName(v,current):labelAct(v.pending.last)):
+ mine?seatName(v,current)+' · '+t.chooseCard:t.turn+' · '+seatName(v,current);
  const showExtras=!!app.querySelector('.boardExtras[open]');
+ const oldLog=app.querySelector('.talkLog');
+ const keepScroll=oldLog&&app.querySelector('.playedTable')?.dataset.hand===String(v.handNo)
+  && oldLog.scrollHeight-oldLog.clientHeight-oldLog.scrollTop>4;
+ const logTop=keepScroll?oldLog.scrollTop:null;
  const previous=app.querySelector('.playedTable');
  const hasBots=page==='daily'||(page==='local'&&local.mode==='solo');
  let newPlays=[];
@@ -273,13 +305,18 @@ function renderBoard(v) {
  app.innerHTML=tableTools()+scoreboard(v)+(ended?'<p class="resultBanner" role="status">'+esc(status)+'</p>':'')+
  '<div class="felt"><div class="feltHead"><strong>'+esc(t.hand)+' '+v.handNo+' · '+esc(t.trick)+' '+Math.min(3,v.tricks.length+1)+'</strong><span>×'+v.stake+'</span></div>'+playedTable(v)+envidoResult(v)+'</div>'+
  '<div class="boardInfo"><h3>'+esc(handLabel)+'</h3><div class="hand">'+v.cards.map(c=>cardHTML(c,canPlay&&v.options.includes(c))).join('')+'</div>'+
- '<div class="handControls">'+(!ended?'<p class="status" aria-live="polite">'+esc(status)+'</p>':'')+
- moveControls(v,canPlay,openingEnvido)+envidoBuilder(v)+'</div></div>'+
+ '<div class="handControls">'+tableConversation(v,status,moveControls(v,canPlay,openingEnvido))+envidoBuilder(v)+'</div></div>'+
  (page==='online'&&networkIssue?'<p role="status">'+esc(msg(networkIssue))+'</p>':'')+
  '<details class="boardExtras"'+(showExtras?' open':'')+'><summary>'+esc(t.more)+'</summary>'+
  '<ul class="seatList">'+v.names.map((n,i)=>'<li class="tag '+(!ended&&i===current?'active':'')+'">'+esc(seatName(v,i))+' · '+esc(teamName(i%2))+(v.folded?.includes(i)?' · '+esc(t.fold):'')+'</li>').join('')+'</ul>'+
  '<details class="histBlock"'+(app.querySelector('.histBlock[open]')?' open':'')+'><summary>'+esc(t.history)+'</summary><ul class="history">'+v.events.map(e=>'<li>'+esc(logText(v,e))+'</li>').join('')+'</ul></details>'+
  (page==='online'?onlineFoot(false):'')+'</details>';
+ const log=app.querySelector('.talkLog');
+ if(log)log.scrollTop=logTop??log.scrollHeight;
+ if(v.phase==='finished'&&previous){
+  const winner=app.querySelector('.scoreWinner.scoreGlow');
+  if(winner&&winner.getBoundingClientRect().top<0)winner.scrollIntoView({block:'center',behavior:'instant'});
+ }
  animateCocoPlays(newPlays);
 }
 function render(){
