@@ -7717,7 +7717,11 @@ var raiz=document.getElementById("cocoApp")||document.body;new MutationObserver(
   }
 
   function bindRankingBadge(card,id){
-    var badge=card&&card.querySelector(".cocoLigaBadge");if(!badge||!id)return;var label=classificationLabel(id,true);if(isClubTool(id))label="No puntúa para la clasificación general";badge.innerHTML='<span aria-hidden="true">'+(classificationIsGeneral(id)?'🏆':'•')+'</span><b>'+esc(label)+'</b>'+(id==="ajedrez"?'<small class="cocoScoringScope">Solo la partida del día</small>':'');badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";badge.dataset.cocoRankBound="status-v153";
+    var badge=card&&card.querySelector(".cocoLigaBadge");if(!badge||!id)return;
+    var daily=id==="ajedrez"||id==="truco",general=daily||classificationIsGeneral(id);
+    var label=general?"Puntúa para la clasificación general":classificationLabel(id,true);
+    badge.dataset.general=general?"yes":"no";
+    badge.innerHTML='<span aria-hidden="true">'+(general?'🏆':'•')+'</span><b>'+esc(label)+'</b>'+(daily?'<small class="cocoScoringScope">Solo la partida del día</small>':'');badge.setAttribute("role","status");badge.setAttribute("aria-disabled","true");badge.removeAttribute("tabindex");badge.removeAttribute("aria-label");badge.style.cursor="default";badge.dataset.cocoRankBound="status-v153";
   }
 
 
